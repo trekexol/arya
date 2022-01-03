@@ -45,9 +45,13 @@
     <th style="text-align: center; ">Cantidad</th>
     <th style="text-align: center; ">Precio Venta</th>
     <th style="text-align: center; ">Total Precio Venta</th>
+    @if (isset($coin) && $coin == 'dolares')
+      <th style="text-align: center; ">Total Precio Compra</th>
+    @endif
   </tr> 
   <?php
     $total = 0;
+    $total_buy = 0;
   ?>
   @foreach ($sales as $sale)
     <?php
@@ -55,6 +59,7 @@
             $total += $sale->price_sales;
         }else if(isset($coin) && $coin == 'dolares'){
             $total += $sale->price_sales_dolar;
+            $total_buy += ($sale->price_buy ?? 0) * $sale->amount_sales;
         }
     ?>
 
@@ -81,7 +86,9 @@
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_sales_dolar ?? 0), 2, ',', '.') }}</td>
         @endif
       @endif
-     
+      @if (isset($coin) && $coin == 'dolares')
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_buy ?? 0) * $sale->amount_sales, 2, ',', '.')  }}$</td>
+      @endif
     </tr> 
   @endforeach 
 
@@ -93,6 +100,9 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
     <th style="text-align: right; font-weight: normal;">{{ number_format($total, 2, ',', '.') }}</th>
+    @if (isset($coin) && $coin == 'dolares')
+      <th style="text-align: right; font-weight: normal;">{{ number_format($total_buy, 2, ',', '.') }}</th>
+    @endif
   </tr> 
 </table>
 

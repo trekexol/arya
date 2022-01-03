@@ -31,14 +31,18 @@
               Opciones 
           </button>
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-              
               <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla</a> 
               <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
                 @csrf
-                  <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+                <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
               </form>
+              <br>
+              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Productos</a> 
+              <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> 
           </div> 
       </div> 
+
+      
       <div class="col-sm-3">
         <a href="{{ route('products.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Producto </a>
       </div>
@@ -148,7 +152,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('import_product_procesar') }}" method="post">
+            <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
                 @csrf
                 <div class="form-group row">
                     <div class="offset-sm-1">
@@ -238,7 +242,40 @@
             /*-------------------------------*/     
 
             if(basename.slice(pos + 1) == 'xlsx'){
-                document.getElementById("fileForm").submit();
+                
+            }else{
+                alert("Solo puede cargar archivos .xlsx");
+            }            
+               
+        });
+
+        function import_product(){
+            document.getElementById("fileForm").submit();
+        }
+
+        function import_product_update_price(){
+            document.getElementById("fileForm").action = "{{ route('import_product_update_price') }}";
+            document.getElementById("fileForm").submit();
+        }
+
+        
+
+        $("#file_form").on('change',function(){
+            
+            var file = document.getElementById("file_form").value;
+
+            /*Extrae la extencion del archivo*/
+            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
+                                               // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
+
+            if (basename === "" || pos < 1) {
+                alert("El archivo no tiene extension");
+            }          
+            /*-------------------------------*/     
+
+            if(basename.slice(pos + 1) == 'xlsx'){
+              
             }else{
                 alert("Solo puede cargar archivos .xlsx");
             }            

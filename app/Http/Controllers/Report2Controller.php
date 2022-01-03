@@ -1044,8 +1044,8 @@ class Report2Controller extends Controller
             ->whereRaw(
                 "(DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','inventories.code','products.money','segments.description','subsegments.description')
+            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+            ->groupBy('products.description','products.type','products.price','products.price_buy','inventories.code','products.money','segments.description','subsegments.description')
             ->orderBy('products.description','asc')->get();
            
         }else{
@@ -1058,8 +1058,8 @@ class Report2Controller extends Controller
             ->whereRaw(
                 "(DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','inventories.code','products.money','segments.description','subsegments.description')
+            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+            ->groupBy('products.description','products.type','products.price','products.price_buy','inventories.code','products.money','segments.description','subsegments.description')
             ->orderBy('products.description','asc')->get();
         }
         

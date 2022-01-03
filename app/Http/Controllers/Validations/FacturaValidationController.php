@@ -29,6 +29,7 @@ class FacturaValidationController extends Controller
             $details = DetailVoucher::on(Auth::user()->database_name)
                         ->where('id_invoice',$this->quotation->id)
                         ->where('id_account',$account_mercancia_venta->id)
+                        ->where('status','C')
                         ->orderBy('id','desc')
                         ->first();
 

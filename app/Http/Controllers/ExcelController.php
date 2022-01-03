@@ -10,6 +10,7 @@ use App\Imports\ClientImport;
 use App\Imports\ExpensesImport;
 use App\Imports\ProductImport;
 use App\Imports\ProductReadImport;
+use App\Imports\ProductUpdatePriceImport;
 use App\Imports\ProviderImport;
 use App\Inventory;
 use App\Product;
@@ -220,11 +221,23 @@ class ExcelController extends Controller
 
    public function import_product_procesar(Request $request) 
    {
+       dd($request);
        
-       $file = $request->file('file_form');
+       $file = $request->file('file');
        
        Excel::import(new ProductImport, $file);
        
        return redirect('products')->with('success', 'Archivo importado con Exito!');
    }
+
+   public function import_product_update_price(Request $request) 
+   {
+       
+       $file = $request->file('file');
+       
+       Excel::import(new ProductUpdatePriceImport, $file);
+       
+       return redirect('products')->with('success', 'Se han actualizado los precios Correctamente');
+   }
+
 }

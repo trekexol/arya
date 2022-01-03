@@ -92,7 +92,12 @@ class DetailVoucherController extends Controller
 
                     $saldo_total_dolares = $account_dolares->balance_previus + $account_dolares->debe - $account_dolares->haber;
 
-                    $tasa_calculada = ($saldo_total_bs / $saldo_total_dolares);
+                    if($saldo_total_dolares != 0){
+                        $tasa_calculada = ($saldo_total_bs / ($saldo_total_dolares ?? 1));
+                    }else{
+                        $tasa_calculada = 0;
+                    }
+                    
                    
                }
             }else{
@@ -304,7 +309,7 @@ class DetailVoucherController extends Controller
                
             
             ]);
-
+           
             $var = new DetailVoucher();
             $var->setConnection(Auth::user()->database_name);
 

@@ -36,8 +36,12 @@ $suma_haber = 0;
 
                         <input type="hidden" name="coin" value="{{$coin ?? 'bolivares'}}" readonly>
                         <input type="hidden" name="id_header" value="{{$header->id ?? null}}" readonly>
-                        <input type="hidden" name="tasa_calculada" value="{{bcdiv($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, '1', 2)}}" readonly>
-                       
+                        @if (isset($tasa_calculada) && $tasa_calculada != 0)
+                            <input type="hidden" name="tasa_calculada" value="{{bcdiv($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, '1', 2)}}" readonly>
+                        @else
+                            <input type="hidden" name="tasa_calculada" value="{{bcdiv($bcv, '1', 2)}}" readonly>
+                        @endif
+                        
                         <div class="form-group row">
                             <label for="reference" class="col-sm-2 col-form-label text-md-right">Número</label>
 
@@ -269,11 +273,17 @@ $suma_haber = 0;
                                             <td>{{number_format($var->haber, 2, ',', '.')}}</td>
                                         @else
                                             <?php
-                                                $suma_debe += bcdiv($var->debe / $var->tasa, '1', 2);
-                                                $suma_haber += bcdiv($var->haber / $var->tasa, '1', 2);
+                                                $suma_debe += bcdiv($var->debe / $var->tasa ?? 1, '1', 2);
+                                                $suma_haber += bcdiv($var->haber / $var->tasa ?? 1, '1', 2);
                                             ?>
-                                            <td>{{number_format(bcdiv($var->debe / $var->tasa, '1', 2), 2, ',', '.')}}</td>
-                                            <td>{{number_format(bcdiv($var->haber / $var->tasa, '1', 2), 2, ',', '.')}}</td>
+                                            @if ($var->tasa != 0)
+                                                <td>{{number_format(bcdiv($var->debe / $var->tasa ?? 1, '1', 2), 2, ',', '.')}}</td>
+                                                <td>{{number_format(bcdiv($var->haber / $var->tasa ?? 1, '1', 2), 2, ',', '.')}}</td>
+                                            @else
+                                                <td>La Tasa es Cero</td>
+                                                <td>La Tasa es Cero</td>
+                                            @endif
+                                            
                                         @endif
                                        
                                     
@@ -442,7 +452,7 @@ $suma_haber = 0;
                // getSubsegment(reference_id);
            
             $.ajax({
-               // url:`../detailvouchers/listheader/${reference_id}`,
+             
                 url:"{{ route('detailvouchers.listheader') }}" + '/' + reference_id,
                 beforSend:()=>{
                     alert('consultando datos');

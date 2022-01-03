@@ -189,14 +189,18 @@ class AccountController extends Controller
         $users_role =   $user->role_id;
         if($users_role == '1'){
              
-            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_account',$id_account)->orderBy('id','desc')->get();
+            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_account',$id_account)->orderBy('id','desc')->get();
             $account = Account::on(Auth::user()->database_name)->find($id_account);
+            dd($detailvouchers);
+            if(empty($coin)){
+                $coin = "bolivares";
+            }
 
          }else if($users_role == '2'){
             return view('admin.index');
         }
         
-        return view('admin.accounts.index_account_movement',compact('detailvouchers','account'));
+        return view('admin.accounts.index_account_movement',compact('detailvouchers','account','coin'));
     }
 
     public function header_movements($id,$type,$id_account)
@@ -212,17 +216,17 @@ class AccountController extends Controller
         if($users_role == '1'){
              
             if($type == 'header_voucher'){
-                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id)->orderBy('id','desc')->get();
+                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_header_voucher',$id)->orderBy('id','desc')->get();
                 
                 $var = null;
                 $type = $detailvouchers[0]['headers']->description;
             }
             else if($type == 'invoice'){
-                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id)->get();
+                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_invoice',$id)->get();
                 $var = Quotation::on(Auth::user()->database_name)->find($id);
                 $type = 'Factura';
             }else{
-                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id)->orderBy('id','desc')->get();
+                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_header_voucher',$id)->orderBy('id','desc')->get();
                 
                 $var = null;
                 $type = $detailvouchers[0]['headers']->description;

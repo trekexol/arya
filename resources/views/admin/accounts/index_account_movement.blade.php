@@ -95,8 +95,14 @@
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
                         @endif
                     @else
-                        <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
-                        <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
+                        @if (isset($coin) && $coin == "bolivares")
+                            <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
+                        @elseif(isset($coin) && $coin == "dolares")
+                            <td class="text-right font-weight-bold">{{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">{{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                        @endif
+                        
                     @endif
                     
                     </tr>

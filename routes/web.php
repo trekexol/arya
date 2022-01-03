@@ -908,6 +908,8 @@ Route::group(["prefix"=>'export'],function(){
     Route::get('accounts','ExcelController@export_account')->name('export.account_template');
     Route::post('accountsimport','ExcelController@import_account')->name('import_account');
 
+    Route::post('productsupdatepriceimport','ExcelController@import_product_update_price')->name('import_product_update_price');
+
   });
 
   Route::group(["prefix"=>'orders'],function(){
