@@ -560,7 +560,6 @@ class PDF2Controller extends Controller
                 }
                 $quotation->iva_percentage = $iva;
                 $quotation->amount = $total * ($rate ?? 1);
-                $quotation->amount_exento =  $amount_exento;
                 $quotation->base_imponible = $base_imponible * ($rate ?? 1);
                 $quotation->amount_iva = $base_imponible * $quotation->iva_percentage / 100;
                 $quotation->amount_with_iva = ($quotation->amount + $quotation->amount_iva);
@@ -740,7 +739,6 @@ class PDF2Controller extends Controller
 
                 $quotation->iva_percentage = $iva;
                 $quotation->amount = $total * ($rate ?? 1);
-                $quotation->amount_exento =  $amount_exento;
                 $quotation->base_imponible = $base_imponible * ($rate ?? 1);
                 $quotation->amount_iva = ($base_imponible * $quotation->iva_percentage / 100) * ($rate ?? 1);
                
