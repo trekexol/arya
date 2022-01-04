@@ -191,7 +191,7 @@ class AccountController extends Controller
              
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_account',$id_account)->orderBy('id','desc')->get();
             $account = Account::on(Auth::user()->database_name)->find($id_account);
-            dd($detailvouchers);
+           
             if(empty($coin)){
                 $coin = "bolivares";
             }
