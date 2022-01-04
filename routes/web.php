@@ -391,6 +391,7 @@ Route::group(["prefix"=>'detailvouchers'],function(){
 
 
     Route::get('validation/{coin}/{id_header?}/{id_account?}','DetailVoucherController@createvalidation')->name('detailvouchers.createvalidation');
+    Route::delete('deletedetail','DetailVoucherController@deleteDetail')->name('detailvouchers.deletedetail');
 });
 
 Route::group(["prefix"=>'quotations'],function(){
