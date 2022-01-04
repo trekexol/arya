@@ -12,6 +12,24 @@ use Illuminate\Support\Facades\Auth;
 
 class CalculationController extends Controller
 {
+
+    public function calculate_all($coin,$date_begin,$date_end){
+       
+        $accounts = Account::on(Auth::user()->database_name)->get();
+
+        //dd($accounts);
+        foreach($accounts as $account){
+            
+            if(isset($coin) && $coin == 'bolivares'){
+                $account = $this->verificateAccount($account,$date_begin,$date_end);
+            }else{
+                $account =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+            }
+        }
+        
+        return $accounts;
+    }
+
     public function calculate_account($account,$coin,$date_begin,$date_end){
        
         if(isset($coin) && $coin == 'bolivares'){
@@ -32,7 +50,7 @@ class CalculationController extends Controller
     
     public function verificateAccount($account,$date_begin,$date_end)
     {
-
+       
         if($account->code_one != 0)
         {                      
             if($account->code_two != 0)

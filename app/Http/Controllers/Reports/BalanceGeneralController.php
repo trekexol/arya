@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reports;
 use App;
 use App\Account;
 use App\DetailVoucher;
+use App\Http\Controllers\Calculations\CalculationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use Carbon\Carbon;
@@ -87,13 +88,9 @@ class BalanceGeneralController extends Controller
             $level = 5;
         }
 
-        $global = new GlobalReportController();
-
-        if(isset($coin) && ($coin == "bolivares")){
-            $accounts_all = $global->calculation($from,$to);
-        }else{
-            $accounts_all = $global->calculation_dolar("dolares");
-        }
+        $global = new CalculationController();
+      
+        $accounts_all = $global->calculate_all($coin,$date_begin,$date_end);
       
 
         $accounts = $accounts_all->filter(function($account)
