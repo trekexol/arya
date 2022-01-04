@@ -288,7 +288,8 @@ $suma_haber = 0;
                                        
                                     
                                         <td>
-                                        <a href="{{route('detailvouchers.edit',[$coin,$var->id]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                            <a href="{{route('detailvouchers.edit',[$coin,$var->id]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                            <a href="#" class="delete" data-id-detail={{$var->id}} data-coin={{$coin ?? 'bolivares'}} data-header={{$header->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                         </td>
                                    
                                     </tr>
@@ -334,6 +335,36 @@ $suma_haber = 0;
         </div>
     </div>
 </div>
+<!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('detailvouchers.deletedetail') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <input id="id_detail_modal" type="hidden" class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_detail_modal" readonly required autocomplete="id_detail_modal">
+                <input id="coin_modal" type="hidden" class="form-control @error('coin_modal') is-invalid @enderror" name="coin_modal" readonly required autocomplete="coin_modal">
+                <input id="header_modal" type="hidden" class="form-control @error('header_modal') is-invalid @enderror" name="header_modal" readonly required autocomplete="header_modal">
+                      
+                <h5 class="text-center">Seguro que desea eliminar?</h5>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  </div>
+    
 
 @endsection
 
@@ -380,6 +411,20 @@ $suma_haber = 0;
         document.getElementById("headerForm").submit();
     }
 
+    $(document).on('click','.delete',function(){
+         
+         let id_detail = $(this).attr('data-id-detail');
+ 
+         $('#id_detail_modal').val(id_detail);
+
+         let coin = $(this).attr('data-coin');
+ 
+        $('#coin_modal').val(coin);
+
+        let header = $(this).attr('data-header');
+        
+        $('#header_modal').val(header);
+     });
 
 </script>
     @if (isset($header))
