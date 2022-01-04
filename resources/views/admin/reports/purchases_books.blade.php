@@ -45,9 +45,9 @@
     <th style="text-align: center; ">Serie</th>
     <th style="text-align: center; ">Monto</th>
     <th style="text-align: center; ">Base Imponible</th>
+    <th style="text-align: center; ">Excento</th>
     <th style="text-align: center; ">Ret.Iva</th>
     <th style="text-align: center; ">Ret.Islr</th>
-    <th style="text-align: center; ">Anticipo</th>
     <th style="text-align: center; ">IVA</th>
     <th style="text-align: center; ">Total</th>
   </tr> 
@@ -72,19 +72,29 @@
       <td style="text-align: center; font-weight: normal;">{{ $expense->providers['razon_social'] ?? '' }}</td>
       <td style="text-align: center; font-weight: normal;">{{ $expense->serie ?? ''}}</td>
       @if (isset($coin) && ($coin == 'bolivares'))
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount ?? 0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->base_imponible ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($expense->amount ?? 0, 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($expense->base_imponible ?? 0, 2, ',', '.') }}</td>
+        @if ($expense->excento == '1')
+        <td style="text-align: right; font-weight: normal;">{{ number_format($expense->price * $expense->amount ?? 0, 2, ',', '.') }}</td>
+        @else
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        @endif
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_iva ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_islr ?? 0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->anticipo ?? 0), 2, ',', '.') }}</td>
+        
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_iva ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_with_iva ?? 0), 2, ',', '.') }}</td>
       @else
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount / $expense->rate), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->base_imponible / $expense->rate), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_iva / $expense->rate), 2, ',', '.') }}</td>
+        @if ($expense->excento == '1')
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->price / $expense->rate) * $expense->amount ?? 0, 2, ',', '.') }}</td>
+        @else
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        @endif
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_iva / $expense->rate) ?? 0, 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_islr / $expense->rate), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->anticipo / $expense->rate), 2, ',', '.') }}</td>
+        
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_iva / $expense->rate), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_with_iva / $expense->rate), 2, ',', '.') }}</td>
       @endif
