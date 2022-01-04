@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App;
 use App\Account;
 use App\DetailVoucher;
+use App\Http\Controllers\Calculations\CalculationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use Carbon\Carbon;
 
@@ -84,13 +85,11 @@ class BalanceIngresosController extends Controller
             $level = 5;
         }
 
-        $global = new GlobalReportController();
+        $global = new CalculationController();
 
-        if(isset($coin) && ($coin == "bolivares")){
-            $accounts_all = $global->calculation($from,$to);
-        }else{
-            $accounts_all = $global->calculation_dolar("dolares");
-        }
+      
+        $accounts_all = $global->calculate_all($coin,$date_begin,$date_end);
+       
         
         foreach($accounts_all as $account){
             if(($account->code_one == 3) && ($account->code_two == 2) && ($account->code_three == 1) && ($account->code_four == 1) && ($account->code_five == 1)){

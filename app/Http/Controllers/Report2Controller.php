@@ -681,6 +681,7 @@ class Report2Controller extends Controller
                 $details_banks = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->where('detail_vouchers.status','C')
                 ->whereRaw(
                     "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
                     [$date_begin, $date_end])
@@ -700,6 +701,7 @@ class Report2Controller extends Controller
                 $details_banks = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->where('detail_vouchers.status','C')
                 ->whereRaw(
                     "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
                     [$date_begin, $date_end])
@@ -732,6 +734,7 @@ class Report2Controller extends Controller
         $period = $date->format('Y'); 
         $quotations = Quotation::on(Auth::user()->database_name)
                                     ->where('date_billing','<>',null)
+                                    ->where('status','C')
                                     ->whereRaw(
                                         "(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
@@ -758,6 +761,7 @@ class Report2Controller extends Controller
         $period = $date->format('Y'); 
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                     ->where('amount','<>',null)
+                                    ->where('status','C')
                                     ->whereRaw(
                                         "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])

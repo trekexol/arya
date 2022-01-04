@@ -226,7 +226,7 @@
           $total_level5 = $account->balance_previus + $account->debe - $account->haber;
         ?>
         <tr>
-          <th style="text-align: left; font-weight: normal; width: 58%; border-color: white; padding-left: 60px;">{{ $account->description }}</th>
+          <th style="text-align: left; font-weight: normal; width: 58%; border-color: white; padding-left: 60px;">{{ $account->description }} </th>
           <th style="text-align: right; font-weight: normal; width: 21%; border-color: white; ">{{ number_format($total_level5, 2, ',', '.') }}</th>
           <th style="text-align: left; font-weight: normal; width: 21%; border-color: white; "></th>
         </tr> 

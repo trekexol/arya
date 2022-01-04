@@ -76,7 +76,7 @@ class DetailVoucherController extends Controller
         if(isset($id_header)){
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
             if(isset($header) && $header->status != 'X'){
-                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->get();
+                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->whereIn('status',['1','N','C'])->get();
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
                 $detailvouchers_last = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','desc')->first();
                 if(isset($id_account)){
@@ -497,6 +497,26 @@ class DetailVoucherController extends Controller
         
 
    }
+
+   public function deleteDetail(Request $request)
+    {
+        
+        $detail = DetailVoucher::on(Auth::user()->database_name)->find(request('id_detail_modal')); 
+
+        $coin = request('coin_modal');
+
+        $header = request('header_modal');
+
+        DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header)
+        ->update(['status' => 'N']);
+
+        $detail->status = "X";
+        $detail->save();
+      
+
+        return redirect('/detailvouchers/register/'.$coin.'/'.$header.'')->withDanger('Eliminacion exitosa!!');
+        
+    }
 
 
    public function listheader(Request $request, $var = null){

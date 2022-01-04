@@ -10,16 +10,16 @@
                 Totales Generales:
         </div>
         <div class="col-sm-2" style="background: rgb(216, 216, 216); color: rgb(0, 0, 0);">
-            Saldo Anterior: {{ number_format($total_saldo_anterior ?? 0, 2, ',', '.')}}
+            Saldo Anterior: {{ number_format(bcdiv($total_saldo_anterior ?? 0, '1', 2), 2, ',', '.')}}
         </div>
         <div class="col-sm-3" style="background: rgb(216, 216, 216); color: rgb(0, 0, 0);">
-            Débitos: {{ number_format($total_debe ?? 0, 2, ',', '.')}}
+            Débitos: {{ number_format(bcdiv($total_debe ?? 0, '1', 2), 2, ',', '.')}}
         </div>
         <div class="col-sm-3" style="background: rgb(216, 216, 216); color: rgb(0, 0, 0);">
-            Créditos: {{ number_format($total_haber ?? 0, 2, ',', '.')}}
+            Créditos: {{ number_format(bcdiv($total_haber ?? 0, '1', 2), 2, ',', '.')}}
         </div>
         <div class="col-sm-2" style="background: rgb(216, 216, 216); color: rgb(0, 0, 0);">
-            Saldo Actual: {{ number_format(($total_saldo_anterior ?? 0) + ($total_debe ?? 0) - ($total_haber), 2, ',', '.')}}
+            Saldo Actual: {{ number_format(bcdiv($total_saldo_anterior ?? 0, '1', 2) + bcdiv($total_debe ?? 0, '1', 2) - bcdiv($total_haber?? 0, '1', 2), 2, ',', '.')}}
         </div>
     </div>
     <!-- Page Heading -->
