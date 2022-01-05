@@ -672,14 +672,13 @@ class AnticipoController extends Controller
 
         $historial_anticipo = new HistorialAnticipoController();
 
-        $historial_anticipo->registerAction($anticipo,"Se eliminó el Anticipo");
+        $historial_anticipo->registerAction($anticipo,"Se eliminó el Anticipo "."monto: ".$anticipo->amount." tasa: ".$anticipo->rate);
 
         if(isset($anticipo)){
            
-           
-            $anticipo->delete();
-           
             $this->disableMovementsAnticipo($anticipo);
+
+            $anticipo->delete();
 
             return redirect('/anticipos')->withSuccess('Eliminacion exitosa!!');
         }else{
@@ -693,14 +692,13 @@ class AnticipoController extends Controller
         
         $historial_anticipo = new HistorialAnticipoController();
 
-        $historial_anticipo->registerAction($anticipo,"Se eliminó el Anticipo");
+        $historial_anticipo->registerAction($anticipo,"Se eliminó el Anticipo "."monto: ".$anticipo->amount." tasa: ".$anticipo->rate);
 
         if(isset($anticipo)){
            
-           
-            $anticipo->delete();
-           
             $this->disableMovementsAnticipo($anticipo);
+
+            $anticipo->delete();
 
             return redirect('/anticipos/indexprovider')->withSuccess('Eliminacion exitosa!!');
         }else{
@@ -715,8 +713,11 @@ class AnticipoController extends Controller
         DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
             ->where('header_vouchers.id_anticipo','=',$anticipo->id)
-            ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
+            ->delete();
 
+        DB::connection(Auth::user()->database_name)->table('header_vouchers')
+            ->where('header_vouchers.id_anticipo','=',$anticipo->id)
+            ->delete();
     }
    /**
     * Remove the specified resource from storage.

@@ -96,6 +96,7 @@ class BalanceIngresosController extends Controller
             if(($account->code_one == 3) && ($account->code_two == 2) && ($account->code_three == 1) && ($account->code_four == 1) && ($account->code_five == 1)){
                 
                 $utilidad = ($account->debe - $account->haber) * -1;
+               // dd($account);
                 
             }
             if(($account->code_one == 2) && ($account->code_two == 1) && ($account->code_three == 3) && ($account->code_four == 1) && ($account->code_five == 8)){
