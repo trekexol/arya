@@ -127,10 +127,7 @@ class CalculationIngresosEgresosController extends Controller
                                         
                                         /*---------------------------------------------------*/
 
-                                        /* if(($account->code_one == 4) && ($account->code_two == 1) && ($account->code_three == 1) && ($account->code_four == 1) && ($account->code_five == 1))
-                                        {
-                                            dd($total_haber);
-                                        }*/
+                                      
 
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
@@ -1092,6 +1089,32 @@ class CalculationIngresosEgresosController extends Controller
                             [$date_begin, $date_end])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
 
+            $total_debe2 = DB::connection(Auth::user()->database_name)->table('accounts')
+                            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->where('accounts.code_one','>=', 3)
+                            ->where('accounts.code_two','>=', 2)
+                            ->where('accounts.code_three','>=', 1)
+                            ->where('accounts.code_four','>=', 1)
+                            ->where('accounts.code_five','>=', 1)
+                            ->whereIn('detail_vouchers.status', ['F','C'])
+                            ->whereRaw(
+                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                            [$date_begin, $date_end])
+                            ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
+                            
+            $total_haber2 = DB::connection(Auth::user()->database_name)->table('accounts')
+                            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->where('accounts.code_one','>=', 3)
+                            ->where('accounts.code_two','>=', 2)
+                            ->where('accounts.code_three','>=', 1)
+                            ->where('accounts.code_four','>=', 1)
+                            ->where('accounts.code_five','>=', 1)
+                            ->whereIn('detail_vouchers.status', ['F','C'])
+                            ->whereRaw(
+                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                            [$date_begin, $date_end])
+                            ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
+
         }else{
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
@@ -1115,8 +1138,10 @@ class CalculationIngresosEgresosController extends Controller
         }
         
  
-         $var->debe = $total_debe->total;
-         $var->haber = $total_haber->total;    
+         $var->debe = $total_debe->total + $total_debe2->total;
+         $var->haber = $total_haber->total + $total_haber2->total;    
+
+         dd($var->haber);
          //asi cuadra el balance
          $var->balance_previus = 0;   
   
