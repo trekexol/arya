@@ -1509,7 +1509,7 @@ class ReportController extends Controller
                                                         ->where('accounts.code_three', $var->code_three)
                                                         ->where('accounts.code_four', $var->code_four)
                                                         ->where('accounts.code_five', $var->code_five)
-                                                        ->where('detail_vouchers.status', 'C')
+                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                         ->whereRaw(
                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1525,7 +1525,7 @@ class ReportController extends Controller
                                                         ->where('accounts.code_three', $var->code_three)
                                                         ->where('accounts.code_four', $var->code_four)
                                                         ->where('accounts.code_five', $var->code_five)
-                                                        ->where('detail_vouchers.status', 'C')
+                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                         ->whereRaw(
                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1553,7 +1553,7 @@ class ReportController extends Controller
                                                                                 ->where('accounts.code_two', $var->code_two)
                                                                                 ->where('accounts.code_three', $var->code_three)
                                                                                 ->where('accounts.code_four', $var->code_four)
-                                                                                ->where('detail_vouchers.status', 'C')
+                                                                                ->whereIn('detail_vouchers.status', ['F','C'])
                                                                                 //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                                 ->whereRaw(
                                                             "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1566,7 +1566,7 @@ class ReportController extends Controller
                                                                                 ->where('accounts.code_two', $var->code_two)
                                                                                 ->where('accounts.code_three', $var->code_three)
                                                                                 ->where('accounts.code_four', $var->code_four)
-                                                                                ->where('detail_vouchers.status', 'C')
+                                                                                ->whereIn('detail_vouchers.status', ['F','C'])
                                                                                 //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                                 ->whereRaw(
                                                             "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1602,7 +1602,7 @@ class ReportController extends Controller
                                                                         ->where('accounts.code_one', $var->code_one)
                                                                         ->where('accounts.code_two', $var->code_two)
                                                                         ->where('accounts.code_three', $var->code_three)
-                                                                        ->where('detail_vouchers.status', 'C')
+                                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                         ->whereRaw(
                                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1614,7 +1614,7 @@ class ReportController extends Controller
                                                                         ->where('accounts.code_one', $var->code_one)
                                                                         ->where('accounts.code_two', $var->code_two)
                                                                         ->where('accounts.code_three', $var->code_three)
-                                                                        ->where('detail_vouchers.status', 'C')
+                                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                         ->whereRaw(
                                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1646,7 +1646,7 @@ class ReportController extends Controller
                                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                                                             ->where('accounts.code_one', $var->code_one)
                                                                             ->where('accounts.code_two', $var->code_two)
-                                                                            ->where('detail_vouchers.status', 'C')
+                                                                            ->whereIn('detail_vouchers.status', ['F','C'])
                                                                             //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                             ->whereRaw(
                                                                             "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1658,7 +1658,7 @@ class ReportController extends Controller
                                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                                                             ->where('accounts.code_one', $var->code_one)
                                                                             ->where('accounts.code_two', $var->code_two)
-                                                                            ->where('detail_vouchers.status', 'C')
+                                                                            ->whereIn('detail_vouchers.status', ['F','C'])
                                                                             //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                                             ->whereRaw(
                                                                             "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1686,7 +1686,7 @@ class ReportController extends Controller
                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                                         ->where('accounts.code_one', $var->code_one)
-                                                        ->where('detail_vouchers.status', 'C')
+                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                         ->whereRaw(
                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1698,7 +1698,7 @@ class ReportController extends Controller
                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                                         ->where('accounts.code_one', $var->code_one)
-                                                        ->where('detail_vouchers.status', 'C')
+                                                        ->whereIn('detail_vouchers.status', ['F','C'])
                                                         //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                                         ->whereRaw(
                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1734,7 +1734,7 @@ class ReportController extends Controller
         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                     ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                     ->where('accounts.code_one','>=', $var->code_one)
-                                    ->where('detail_vouchers.status', 'C')
+                                    ->whereIn('detail_vouchers.status', ['F','C'])
                                     //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                     ->whereRaw(
                                     "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1746,7 +1746,7 @@ class ReportController extends Controller
         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                     ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                     ->where('accounts.code_one','>=', $var->code_one)
-                                    ->where('detail_vouchers.status', 'C')
+                                    ->whereIn('detail_vouchers.status', ['F','C'])
                                     //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                                     ->whereRaw(
                                     "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
@@ -1770,7 +1770,7 @@ class ReportController extends Controller
         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                 ->where('accounts.code_one','>=', $code)
-                ->where('detail_vouchers.status', 'C')
+                ->whereIn('detail_vouchers.status', ['F','C'])
                 ->whereRaw(
                 "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
@@ -1781,7 +1781,7 @@ class ReportController extends Controller
         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                 ->where('accounts.code_one','>=', $code)
-                ->where('detail_vouchers.status', 'C')
+                ->whereIn('detail_vouchers.status', ['F','C'])
                 //->whereBetween('detail_vouchers.created_at', [$date_begin, $date_end])
                 ->whereRaw(
                 "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
