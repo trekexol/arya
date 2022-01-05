@@ -1229,7 +1229,7 @@ public function calculation_superavit($var,$code,$coin)
                      FROM accounts a
                      INNER JOIN detail_vouchers d 
                          ON d.id_account = a.id
-                     WHERE a.code_one >= 3 AND a.code_two >= 2 AND a.code_three >= 1 AND a.code_four >= 1 AND a.code_five >= 1 AND
+                     WHERE a.code_one = 3 AND a.code_two = 2 AND a.code_three = 1 AND a.code_four = 1 AND a.code_five = 1 AND
                      d.status = ?
                      '
                      , [$code,'C']);
@@ -1237,7 +1237,7 @@ public function calculation_superavit($var,$code,$coin)
                      FROM accounts a
                      INNER JOIN detail_vouchers d 
                          ON d.id_account = a.id
-                     WHERE a.code_one >= 3 AND a.code_two >= 2 AND a.code_three >= 1 AND a.code_four >= 1 AND a.code_five >= 1 AND
+                     WHERE a.code_one = 3 AND a.code_two = 2 AND a.code_three = 1 AND a.code_four = 1 AND a.code_five = 1 AND
                      d.status = ?
                      '
                      , [$code,'C']);
@@ -1273,7 +1273,7 @@ public function calculation_superavit($var,$code,$coin)
          FROM accounts a
          INNER JOIN detail_vouchers d 
              ON d.id_account = a.id
-         WHERE a.code_one >= 3 AND a.code_two >= 2 AND a.code_three >= 1 AND a.code_four >= 1 AND a.code_five >= 1 AND
+         WHERE a.code_one = 3 AND a.code_two = 2 AND a.code_three = 1 AND a.code_four = 1 AND a.code_five = 1 AND
          d.status = ?
          '
          , [$code,'C']);
@@ -1282,7 +1282,7 @@ public function calculation_superavit($var,$code,$coin)
          FROM accounts a
          INNER JOIN detail_vouchers d 
              ON d.id_account = a.id
-         WHERE a.code_one >= 3 AND a.code_two >= 2 AND a.code_three >= 1 AND a.code_four >= 1 AND a.code_five >= 1 AND
+         WHERE a.code_one = 3 AND a.code_two = 2 AND a.code_three = 1 AND a.code_four = 1 AND a.code_five = 1 AND
          d.status = ?
          '
          , [$code,'C']);
