@@ -121,7 +121,7 @@ class BackendController extends Controller
                 $mes += 1;
 
                 while($mes <= 12){
-                    dd($date->addDay(1)->format('Y-m-d'));
+                    //dd($date->addDay(1)->format('Y-m-d'));
                     $result = $calculate->calculate_account($accountActivo,$coin,$date->addDay(1)->format('Y-m-d'),$date->endOfMonth()->format('Y-m-d'));
                     $totals->push($result);
                 
