@@ -25,6 +25,7 @@ class DailyListingController extends Controller
                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                             ->where('header_vouchers.date', $datenow)
+                            ->whereIn('detail_vouchers.status', ['F','C'])
                             ->select('detail_vouchers.*','header_vouchers.*'
                             ,'accounts.description as account_description')->get();
             
@@ -64,6 +65,7 @@ class DailyListingController extends Controller
                                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                                 ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                                ->whereIn('detail_vouchers.status', ['F','C'])
                                 ->select('detail_vouchers.*','header_vouchers.*'
                                 ,'accounts.description as account_description')
                                 ->orderBy('detail_vouchers.id','desc')->get();
@@ -106,6 +108,7 @@ class DailyListingController extends Controller
                 ->from('detail_vouchers')
                 ->where('id_account',$id_account);
             })
+            ->whereIn('detail_vouchers.status', ['F','C'])
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
@@ -115,6 +118,7 @@ class DailyListingController extends Controller
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
             ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+            ->whereIn('detail_vouchers.status', ['F','C'])
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
@@ -165,7 +169,7 @@ class DailyListingController extends Controller
                 ->from('detail_vouchers')
                 ->where('id_account',$id_account);
             })
-            ->where('detail_vouchers.status','C')
+            ->whereIn('detail_vouchers.status', ['F','C'])
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
@@ -178,7 +182,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->where('detail_vouchers.status','C')
+                        ->whereIn('detail_vouchers.status', ['F','C'])
                         ->sum('detail_vouchers.debe');
 
             $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
@@ -186,7 +190,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->where('detail_vouchers.status','C')
+                        ->whereIn('detail_vouchers.status', ['F','C'])
                         ->sum('detail_vouchers.haber');       
             //-----------------------------------------------
         }else{
@@ -199,7 +203,7 @@ class DailyListingController extends Controller
                 ->from('detail_vouchers')
                 ->where('id_account',$id_account);
             })
-            ->where('detail_vouchers.status','C')
+            ->whereIn('detail_vouchers.status', ['F','C'])
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
