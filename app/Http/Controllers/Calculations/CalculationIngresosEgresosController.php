@@ -11,12 +11,12 @@ use App\DetailVoucher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class CalculationController extends Controller
+class CalculationIngresosEgresosController extends Controller
 {
 
     public function calculate_all($coin,$date_begin,$date_end){
        
-        $accounts = Account::on(Auth::user()->database_name)
+        $accounts = Account::on(Auth::user()->database_name)->where('code_one','>',3)
                                                             ->orderBy('code_one','asc')
                                                             ->orderBy('code_two','asc')
                                                             ->orderBy('code_three','asc')
@@ -24,7 +24,6 @@ class CalculationController extends Controller
                                                             ->orderBy('code_five','asc')
                                                             ->get();
 
-        //dd($accounts);
         foreach($accounts as $account){
             
             if(isset($coin) && $coin == 'bolivares'){
@@ -128,7 +127,10 @@ class CalculationController extends Controller
                                         
                                         /*---------------------------------------------------*/
 
-                                
+                                        /* if(($account->code_one == 4) && ($account->code_two == 1) && ($account->code_three == 1) && ($account->code_four == 1) && ($account->code_five == 1))
+                                        {
+                                            dd($total_haber);
+                                        }*/
 
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
