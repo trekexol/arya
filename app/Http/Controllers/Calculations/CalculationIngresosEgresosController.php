@@ -16,7 +16,7 @@ class CalculationIngresosEgresosController extends Controller
 
     public function calculate_all($coin,$date_begin,$date_end){
        
-        $accounts = Account::on(Auth::user()->database_name)->where('code_one','>',3)
+        $accounts = Account::on(Auth::user()->database_name)
                                                             ->orderBy('code_one','asc')
                                                             ->orderBy('code_two','asc')
                                                             ->orderBy('code_three','asc')
