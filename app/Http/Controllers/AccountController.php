@@ -594,7 +594,14 @@ class AccountController extends Controller
 
                         $var->coin =  $account->coin;
                         $var->rate =  $account->rate;
-                        $var->balance_current = $account->balance_previus + $account->debe - $account->haber;
+
+                        if($account->code_one <= 3){
+                           
+                            $var->balance_current = $account->balance_previus + $account->debe - $account->haber;
+                        }else{
+                            $var->balance_current = $account->debe - $account->haber;
+                        }
+                        
                         
                         $var->debe =  $account->debe ?? 0;
                         $var->haber =  $account->haber ?? 0;
