@@ -114,18 +114,18 @@ class BackendController extends Controller
                 ->where('code_four', 0)
                 ->where('code_five', 0)
                 ->first();
+               
                 
                 $totals->push($calculate->calculate_account($accountActivo,$coin,$date->startOfYear()->format('Y-m-d'),$date->endOfMonth()->format('Y-m-d')));
-               
-                $totals_per_month[$mes] = $totals[$mes]->debe ?? null;
+                $totals_per_month[$mes] = ($totals[$mes]->debe ?? 0) - ($totals[$mes]->haber ?? 0);
                 $mes += 1;
 
                 while($mes <= 12){
-                    //dd($date->addDay(1)->format('Y-m-d'));
-                    $result = $calculate->calculate_account($accountActivo,$coin,$date->addDay(1)->format('Y-m-d'),$date->endOfMonth()->format('Y-m-d'));
+                  
+                    $result = $calculate->calculate_account($accountActivo,$coin,$date->addDay(1)->format('Y-m-d'),$date->addDay(1)->endOfMonth()->format('Y-m-d'));
                     $totals->push($result);
                 
-                    $totals_per_month[$mes] = ($totals[$mes]->debe ?? 0) + ($totals[$mes]->balance_previus ?? 0) - ($totals[$mes]->haber ?? 0);
+                    $totals_per_month[$mes] = ($totals[$mes]->debe ?? 0) - ($totals[$mes]->haber ?? 0);
                     $mes += 1;
                 }
             /*------------------------------------- */
