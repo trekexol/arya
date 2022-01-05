@@ -8,6 +8,7 @@ use App;
 use App\Account;
 use App\DetailVoucher;
 use App\Http\Controllers\Calculations\CalculationController;
+use App\Http\Controllers\Calculations\CalculationIngresosEgresosController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use Carbon\Carbon;
 
@@ -85,8 +86,8 @@ class BalanceIngresosController extends Controller
             $level = 5;
         }
 
-        $global = new CalculationController();
-
+        
+        $global = new CalculationIngresosEgresosController();
       
         $accounts_all = $global->calculate_all($coin,$date_begin,$date_end);
        
@@ -104,10 +105,10 @@ class BalanceIngresosController extends Controller
             }
         }
         
+       
     
         $accounts = $accounts_all->filter(function($account)
-        {
-            
+        { 
             if($account->code_one >= 4){
                 $total = $account->debe - $account->haber;
                 if ($total != 0) {
