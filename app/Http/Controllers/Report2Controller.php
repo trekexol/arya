@@ -767,14 +767,29 @@ class Report2Controller extends Controller
                                         [$date_begin, $date_end])
                                     ->orderBy('date','desc')->get();
 
-        $total_exento = ExpensesDetail::on(Auth::user()->database_name)
-                                    ->where('exento','1')
-                                    ->whereRaw(
-                                        "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
-                                        [$date_begin, $date_end])
-                                    ->select(DB::connection(Auth::user()->database_name)->raw('SUM(price*amount) as total'))->get();
+         
+            foreach ($expenses as $expense) {
+                /*$total_exentoG = ExpensesDetail::on(Auth::user()->database_name)
+                ->where('id_expense',$expense->id)
+                ->where('exento','1')
+                ->orderBy('id_expense','asc')
+                ->get(); */               
+                //->select(DB::connection(Auth::user()->database_name)->raw('price*amount as totalG,id_expense as id_expense'))->get();    
+                $total_exentoG = 0;
+                $total_exentoG = DB::connection(Auth::user()->database_name)->table('expenses_details')
+                ->where('id_expense',$expense->id)
+                ->where('exento','1')
+                //>sum('price * amount as suma')
+                //->select('price','amount','id_expense')->get();          
+                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(price*amount) as total'))->get();          
+                //->select('price','amount','id_expense')->get();
+                $a_total[] = array(bcdiv($total_exentoG[0]->total,'1',2),$expense->id); 
 
-        $total_exento = $total_exento[0]->total;
+              
+ 
+            }
+           
+
 
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');
@@ -782,7 +797,7 @@ class Report2Controller extends Controller
         $date_end = $date_end->format('d-m-Y');
 
 
-        $pdf = $pdf->loadView('admin.reports.purchases_books',compact('coin','expenses','datenow','date_begin','date_end','total_exento'))->setPaper('a4', 'landscape');
+        $pdf = $pdf->loadView('admin.reports.purchases_books',compact('coin','expenses','datenow','date_begin','date_end','a_total'))->setPaper('a4', 'landscape');
         return $pdf->stream();
                  
     }
