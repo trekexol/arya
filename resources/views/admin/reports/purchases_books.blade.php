@@ -53,9 +53,12 @@
   </tr> 
   <?php
         $total_base_imponible = 0;
+        $c = 0;
+        $total_exento = 0;
   ?>
   @foreach ($expenses as $expense)
     <?php
+      
       if(isset($coin) && $coin == 'bolivares'){
         $total_base_imponible += $expense->base_imponible;
       }else{
@@ -74,11 +77,9 @@
       @if (isset($coin) && ($coin == 'bolivares'))
         <td style="text-align: right; font-weight: normal;">{{ number_format($expense->amount ?? 0, 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format($expense->base_imponible ?? 0, 2, ',', '.') }}</td>
-        @if ($expense->excento == '1')
-        <td style="text-align: right; font-weight: normal;">{{ number_format($expense->price * $expense->amount ?? 0, 2, ',', '.') }}</td>
-        @else
-        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
-        @endif
+   
+        <td style="text-align: right; font-weight: normal;">{{ number_format($a_total[$c][0] ?? 0, 2, ',', '.') }}</td>
+
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_iva ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_islr ?? 0), 2, ',', '.') }}</td>
         
@@ -87,11 +88,9 @@
       @else
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount / $expense->rate), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->base_imponible / $expense->rate), 2, ',', '.') }}</td>
-        @if ($expense->excento == '1')
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->price / $expense->rate) * $expense->amount ?? 0, 2, ',', '.') }}</td>
-        @else
-        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
-        @endif
+
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($a_total[$c][0] / $expense->rate) * $expense->amount ?? 0, 2, ',', '.') }}</td>
+
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_iva / $expense->rate) ?? 0, 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($expense->retencion_islr / $expense->rate), 2, ',', '.') }}</td>
         
@@ -100,6 +99,11 @@
       @endif
      
     </tr> 
+    <?php
+    $total_exento += $a_total[$c][0];
+    $c++;
+
+    ?>
   @endforeach 
 
   
