@@ -138,7 +138,7 @@
             
         });
         $(document).ready(function () {
-            $("#rate").mask('000.000.000.000.000.000,00', { reverse: true });
+            $("#rate").mask('000.000.000.000.000.000,0000', { reverse: true });
             
         });
         $(document).ready(function () {

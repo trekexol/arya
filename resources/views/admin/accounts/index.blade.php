@@ -160,7 +160,12 @@
                                     if(($account->balance != 0) && ($account->rate != 0)){
                                         $balance_new = $account->balance / $account->rate;
                                     }
+                                    if(isset($account->balance_previus) && ($account->balance_previus != 0)){
+                                        $balance_new = $account->balance_previus;
+                                    }
                                 }
+
+                                
                             ?>
                                
                             <!-- Cuando el status de la cuenta es M, quiere decir que tiene movimientos-->
@@ -259,7 +264,7 @@
                                     @endif
                                 @else
                                     @if($coin != "bolivares")
-                                        <td style="text-align:right; color:black; font-weight: bold;">{{number_format($balance_new, 2, ',', '.')}}</td>
+                                        <td style="text-align:right; color:black; font-weight: bold;">{{number_format($balance_new ?? $account->balance_previous ?? 0, 2, ',', '.')}}</td>
                                         <!-- Cuando quiero ver mis saldos todos en bolivares y mi cuenta es en bolivares-->
                                         <td style="text-align:right; color:black; font-weight: bold;">
                                             {{number_format($account->debe, 2, ',', '.')}}                      

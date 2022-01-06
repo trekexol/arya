@@ -59,12 +59,13 @@ class DetailVoucherController extends Controller
             $bcv = $company->rate;
         }
 
-
-        if(($coin == 'bolivares') ){
-            $coin = 'bolivares';
-        }else{
+        if(empty($coin)){
+            $coin = "bolivares";
+        }
+        elseif($coin != 'bolivares'){
             $coin = 'dolares';
         }
+
         $header = null;
         $detailvouchers = null;
         $account = null;
