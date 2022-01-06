@@ -79,24 +79,31 @@ class DetailVoucherController extends Controller
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->get();
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
                 $detailvouchers_last = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','desc')->first();
+
+                $detailvouchers_first = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','asc')->first();
                 if(isset($id_account)){
                     $account = Account::on(Auth::user()->database_name)->find($id_account);
 
-                    $calculationController = new CalculationController();
+                    if(empty($detailvouchers_first)){
+                        $calculationController = new CalculationController();
 
-                    $account_bolivares = $calculationController->calculate_account_all($account,"bolivares");
-
-                    $account_dolares = $calculationController->calculate_account_all($account,"dolares");
-
-                    $saldo_total_bs = $account_bolivares->balance_previus + $account_bolivares->debe - $account_bolivares->haber;
-
-                    $saldo_total_dolares = $account_dolares->balance_previus + $account_dolares->debe - $account_dolares->haber;
-
-                    if($saldo_total_dolares != 0){
-                        $tasa_calculada = ($saldo_total_bs / ($saldo_total_dolares ?? 1));
+                        $account_bolivares = $calculationController->calculate_account_all($account,"bolivares");
+    
+                        $account_dolares = $calculationController->calculate_account_all($account,"dolares");
+    
+                        $saldo_total_bs = $account_bolivares->balance_previus + $account_bolivares->debe - $account_bolivares->haber;
+    
+                        $saldo_total_dolares = $account_dolares->balance_previus + $account_dolares->debe - $account_dolares->haber;
+    
+                        if($saldo_total_dolares != 0){
+                            $tasa_calculada = ($saldo_total_bs / ($saldo_total_dolares ?? 1));
+                        }else{
+                            $tasa_calculada = 0;
+                        }
                     }else{
-                        $tasa_calculada = 0;
+                        $tasa_calculada = $detailvouchers_first->tasa;
                     }
+                   
                     
                    
                }
@@ -105,7 +112,6 @@ class DetailVoucherController extends Controller
             }
         }
         
-
         return view('admin.detailvouchers.create',compact('saldo_total_bs','saldo_total_dolares','tasa_calculada','detailvouchers_last','account','datenow','header_number','coin','bcv','header','detailvouchers'));
    }
 
@@ -551,7 +557,7 @@ class DetailVoucherController extends Controller
 
 
         /*-------------------------- */
-       return bcdiv($bcv, '1', 2);
+       return $bcv;
 
     }
 

@@ -150,7 +150,7 @@ $suma_haber = 0;
                         </div>
                         <label for="rate" class="col-md-1 col-form-label text-md-right">Tasa:</label>
                         <div class="col-md-2">
-                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ bcdiv($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, '1', 2) }}"  required readonly autocomplete="rate">
+                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, 10, ',', '.') }}"  required readonly autocomplete="rate">
                             @error('rate')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -401,10 +401,7 @@ $suma_haber = 0;
         $("#reference").mask('000000000000000', { reverse: true });
         
     });
-    $(document).ready(function () {
-        $("#rate").mask('000.000.000.000.000,00', { reverse: true });
-        
-    });
+   
 
     function updateForm(){
         document.getElementById("headerForm").action =  "{{route('headervouchers.update')}}";
