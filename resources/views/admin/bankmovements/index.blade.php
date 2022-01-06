@@ -33,18 +33,40 @@
                             
                                 <th class="text-center">Descripción</th>
                                 
-                                <th class="text-center">Saldo Actual</th>
-                            
+                                <th class="text-center">Saldo Actual Bs</th>
+                                
+                                <th class="text-center">Saldo Actual USD</th>
+
                                 <th class="text-center">Opciones</th>
                             </tr>
                             </thead>
                             
+
+
+                            @if (empty($accounts_USD)) <!-- calcula columna dolares -->
+                            @else  
+                            <?php
+                                $total2 = 0;
+                            ?>
+                                @foreach ($accounts_USD as $var2)
+                                    @if(($var2))
+                                    <?php 
+                                        $intercalar = false;
+                                        $total2 += ($var2->balance_previus + $var2->debe) - $var2->haber;
+                                        $total_USD[] = ($var2->balance_previus + $var2->debe) - $var2->haber;
+                                   ?> 
+                                    @endif
+                                @endforeach   
+                            @endif
+
+
                             <tbody>
                                 @if (empty($accounts))
                                 @else  
                                 <?php
                                     $intercalar = true;
                                     $total = 0;
+                                    $cont = 0;
                                 ?>
                             
                                     @foreach ($accounts as $var)
@@ -57,7 +79,7 @@
                                             <td style="text-align:right; color:black;">{{$var->description}}</td>
                                         
                                             <td style="text-align:right; color:black;">{{number_format(($var->balance_previus + $var->debe) - $var->haber, 2, ',', '.')}}</td>
-                                                            
+                                            <td style="text-align:right; color:black;">{{number_format($total_USD[$cont], 2, ',', '.')}}</td>                
                                         
                                             <td style="text-align:right; color:black;">  
                                                 <a href="{{ route('bankmovements.createdeposit',$var->id) }}" title="Depositar"><i class="fa fa-download"></i></a>
@@ -67,18 +89,25 @@
                                          
                                         @endif
                                     </tr>  
+                                    <?php
+                                    $cont++;
+                                    ?>
                                     @endforeach   
                                     <tr>
                                        
                                         <td style="background: #E0D7CD; text-align:right; color:black;">Totales</td>
                                         <td style="background: #E0D7CD; text-align:right; color:black;">{{number_format($total, 2, ',', '.')}}</td>
-                                        
+                                        <td style="background: #E0D7CD; text-align:right; color:black;">{{number_format($total2, 2, ',', '.')}}</td>
                                         <td style="background: #E0D7CD; text-align:right; color:black;"></td>
                                     
                                         </tr>
                                 @endif
                             </tbody>
                         </table>
+
+
+
+
                         </div>
     </div>
 </div>

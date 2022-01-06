@@ -36,11 +36,12 @@ class BankMovementController extends Controller
        if($users_role == '1'){
         
         $accounts = $this->calculation('bolivares');
+        $accounts_USD = $this->calculation('dolares');
 
         
         }
 
-       return view('admin.bankmovements.index',compact('accounts'));
+       return view('admin.bankmovements.index',compact('accounts','accounts_USD'));
    }
 
    public function indexmovement()
