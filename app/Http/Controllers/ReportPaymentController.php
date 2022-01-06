@@ -134,7 +134,7 @@ class ReportPaymentController extends Controller
 
             $client = Client::on(Auth::user()->database_name)->find($id_client_or_provider);
             
-        }if(isset($typeperson) && ($typeperson == 'Proveedor')){
+        }elseif(isset($typeperson) && ($typeperson == 'Proveedor')){
             
             $quotation_payments = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
             ->join('providers', 'providers.id','=','expenses_and_purchases.id_provider')
@@ -148,10 +148,10 @@ class ReportPaymentController extends Controller
             'expenses_and_purchases.id as number','expenses_and_purchases.rate as rate')
             ->orderBy('expenses_and_purchases.date','desc')
             ->get();
-            
+        
             $provider = Provider::on(Auth::user()->database_name)->find($id_client_or_provider);
-
-        }if(isset($typeperson) && ($typeperson == 'Vendedor')){
+           
+        }elseif(isset($typeperson) && ($typeperson == 'Vendedor')){
            
             $quotation_payments = DB::connection(Auth::user()->database_name)->table('quotations')
             ->join('clients', 'clients.id','=','quotations.id_client')
@@ -185,14 +185,13 @@ class ReportPaymentController extends Controller
 
             $client = Client::on(Auth::user()->database_name)->find($id_client_or_provider);
         }
-       
+
         foreach($quotation_payments as $quotation){
 
             $quotation->payment_type = $global->asignar_payment_type($quotation->payment_type);
 
         }
-
-
+        
         $pdf = $pdf->loadView('admin.reports_payment.payment',compact('coin','quotation_payments','datenow','date_end','client','provider','vendor'));
         return $pdf->stream();
                  
