@@ -30,7 +30,7 @@
                     <div class="row justify-content-center">
                         <div class="col-sm-3">
                           <div class="list-group" id="list-tab" role="tablist">
-                            <li class="list-group-item list-group-item-action list-group-item-primary text-center" style="padding: 0;" id="list-home-list" data-bs-toggle="list" role="tab" aria-controls="home"><font size="-1">Balance General</font></li>
+                            <li class="list-group-item list-group-item-action list-group-item-primary text-center" style="padding: 0;" id="list-home-list" data-bs-toggle="list" role="tab" aria-controls="home"><font size="-1">Balanc General</font></li>
                             <li class="list-group-item list-group-item-action list-group-item-light text-center" style="padding: 2% 0;" id="list-profile-list" data-bs-toggle="list"  role="tab" aria-controls="profile"><font size="-1">Activo <br>{{ number_format(bcdiv($account_activo, '1', 2), 2, ',', '.')}}</font></li>
                             <li class="list-group-item list-group-item-action list-group-item-ligh text-center" style="padding: 2% 0;" id="list-messages-list" data-bs-toggle="list"  role="tab" aria-controls="messages"><font size="-1">Pasivo <br>{{ number_format(bcdiv($account_pasivo, '1', 2), 2, ',', '.')}}</font></li>
                             <li class="list-group-item list-group-item-action list-group-item-light text-center" style="padding: 2% 0;" id="list-settings-list" data-bs-toggle="list" role="tab" aria-controls="settings"><font size="-1">Patrimonio <br>{{ number_format(bcdiv($account_patrimonio, '1', 2), 2, ',', '.')}}</font></li>
