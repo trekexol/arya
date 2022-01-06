@@ -7,6 +7,9 @@ use App\AccountHistorial;
 use App\BankMovement;
 use App\Company;
 use App\DetailVoucher;
+use App\Http\Controllers\Calculations\CalculationController;
+use App\Http\Controllers\Calculations\CalculationWithCController;
+use App\Http\Controllers\Calculations\CalculationWithoutDateController;
 use App\Quotation;
 use Illuminate\Http\Request;
 
@@ -40,8 +43,12 @@ class AccountController extends Controller
         $total_saldo_anterior2 = 0;
         $total_saldo_anterior3 = 0;
 
+        //$accounts = $this->calculation($coin);
+       // $calculationController = new CalculationWithCController();
         $accounts = $this->calculation($coin);
+      //  $accounts = $calculationController->calculate_all($coin);
 
+      //dd($accounts[8]);
         foreach($accounts as $account){
 
             if($account->level == 5){
@@ -559,9 +566,9 @@ class AccountController extends Controller
     public function year_end()
    {
       
-        $coin = 'bolivares';
-
-        $accounts = $this->calculation($coin);
+        $calculationController = new CalculationWithCController();
+        //$accounts = $this->calculation($coin);
+        $accounts = $calculationController->calculate_all("bolivares");
 
         $date = Carbon::now();
         $datenow = $date->format('Y');
@@ -576,9 +583,9 @@ class AccountController extends Controller
             //Verifica que no se haga el cierre 2 veces un mismo dia, empty es para cuando no existen cierres anteriores
             if( empty($last_detail_desactivate->date_end) || ((isset($last_detail_desactivate->date_end)) && $last_detail_desactivate->date_end != $datenow2))
             {
-                
+              
+                //dd($accounts[8]->balance_previus + $accounts[8]->debe - $accounts[8]->haber);
                 foreach($accounts as $account){ 
-                    
                     
                     $var = new AccountHistorial();
                     $var->setConnection(Auth::user()->database_name);
@@ -593,16 +600,23 @@ class AccountController extends Controller
                     $var->balance_previous = $account->balance_previus;
 
                         $var->coin =  $account->coin;
-                        $var->rate =  $account->rate;
+                       
 
+                        if($account->level == 5){
+                            $var->rate =  $this->tasa_calculada($account);
+                        }else{
+                            $var->rate =  $account->rate;
+                        }
+                       
+                        
                         if($account->code_one <= 3){
-                           
                             $var->balance_current = $account->balance_previus + $account->debe - $account->haber;
+                           
                         }else{
                             $var->balance_current = $account->debe - $account->haber;
                         }
                         
-                        
+                       
                         $var->debe =  $account->debe ?? 0;
                         $var->haber =  $account->haber ?? 0;
                         $var->debe_coin =  $account->dolar_debe ?? 0;
@@ -612,7 +626,9 @@ class AccountController extends Controller
                 
                     $var->save();
                     if($account->level == 5){
+                       
                         $var_account->balance_previus = $var->balance_current;
+                        $var_account->rate = $var->rate;
                         
                         $var_account->save();
                     }
@@ -635,7 +651,39 @@ class AccountController extends Controller
         }
 }
 
+public function tasa_calculada($account){
 
+    $calculationController = new CalculationWithCController();
+
+    $account_dolares = $calculationController->calculate_account_all($account,"dolares");
+
+    $account_bolivares = $calculationController->calculate_account_all($account,"bolivares");
+
+    
+
+    if($account->code_one <= 3){
+        $saldo_total_bs = $account_bolivares->balance_previus + $account_bolivares->debe - $account_bolivares->haber;
+
+        $saldo_total_dolares = $account_dolares->balance_previus + $account_dolares->debe - $account_dolares->haber;
+    }else{
+        $saldo_total_bs = $account_bolivares->debe - $account_bolivares->haber;
+
+        $saldo_total_dolares = $account_dolares->debe - $account_dolares->haber;
+    }
+
+   
+    if($saldo_total_dolares != 0){
+        $tasa_calculada = ($saldo_total_bs / ($saldo_total_dolares ?? 1));
+    }else{
+        $tasa_calculada = 0;
+    }
+
+   /*if($account->code_one == 1 && $account->code_two == 1 &&$account->code_three == 1 &&$account->code_four == 1 &&$account->code_five == 5){
+        dd($account_dolares);
+    }*/
+
+    return $tasa_calculada;
+}
 
 public function calculation($coin)
 {
