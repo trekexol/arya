@@ -28,6 +28,7 @@ class AccountImport implements ToCollection,WithHeadingRow, SkipsOnError
             $detail = Account::on(Auth::user()->database_name)->find($row['id']);
             if(isset($detail) && ($detail->code_five != 0)){
                 $detail->balance_previus = $row['balance_previus'];
+                $detail->rate = $row['rate'];
                 $detail->save();
             }
            
