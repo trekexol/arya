@@ -154,13 +154,26 @@
             <div class="modal-body">
             <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
                 @csrf
+                <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
+                            
                 <div class="form-group row">
                     <div class="offset-sm-1">
-                        <input id="file_form" type="file" value="import" accept=".xlsx" name="file_form" class="file">
+                        <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file">
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="contrapartida" class="col-sm-12 col-form-label text-md-center">La carga de estos productos es de: {{number_format($total_amount_for_import ?? 0, 2, ',', '.')}}</label>
+                </div>
+                <div class="form-group row">
+                    <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
+                    <div class="col-sm-6">
+                        <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                        @error('rate')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
                 </div>
                 <div class="form-group row">
                     @if (isset($contrapartidas))      
@@ -218,6 +231,11 @@
             "ordering": false,
             "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        });
+
+        $(document).ready(function () {
+            $("#rate").mask('000.000.000.000.000,00', { reverse: true });
+            
         });
 
         $(document).on('click','.delete',function(){

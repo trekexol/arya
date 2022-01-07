@@ -50,13 +50,16 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
             'islr'                  => $row['islr_1_o_0'], 
             'id_user'               => $user->id,
             'special_impuesto'      => 0,
-            'status'                => 1,
+            'status'                => $row['status'],
             'created_at'            => $date,
             'updated_at'            => $date,
         ]);
         $product->setConnection(Auth::user()->database_name);
 
-        return $product;
+        if($product->status == '1'){
+            return $product;
+        }
+        
 
     }
 
