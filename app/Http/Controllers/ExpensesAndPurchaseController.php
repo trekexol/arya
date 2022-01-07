@@ -1812,7 +1812,7 @@ class ExpensesAndPurchaseController extends Controller
                     
                 }
                 /*------------------------------- */
-                $anticipo = request('anticipo_form');
+               
 
                 if(isset($anticipo) && ($anticipo != 0)){
 
@@ -1840,7 +1840,7 @@ class ExpensesAndPurchaseController extends Controller
                     $expense->anticipo = 0;
                 }
 
-
+  
                 //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
                 $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     

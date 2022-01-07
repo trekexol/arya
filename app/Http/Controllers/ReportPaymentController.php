@@ -145,7 +145,7 @@ class ReportPaymentController extends Controller
                 [$date_begin, $date_end_consult])
             ->where('expenses_and_purchases.id_provider',$id_client_or_provider)
             ->select('expense_payments.*','accounts.description as account_description',
-            'expenses_and_purchases.id as number','expenses_and_purchases.rate as rate')
+            'expense_payments.id as number','expenses_and_purchases.rate as rate')
             ->orderBy('expenses_and_purchases.date','desc')
             ->get();
         
