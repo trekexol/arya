@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Client;
 use App\Exports\ExpensesExport;
+use App\Http\Controllers\Movement\MovementProductImportController;
 use App\Imports\AccountImport;
 use App\Imports\ClientImport;
 use App\Imports\ExpensesImport;
+use App\Imports\InventoryImport;
 use App\Imports\ProductImport;
 use App\Imports\ProductReadImport;
 use App\Imports\ProductUpdatePriceImport;
@@ -85,14 +87,14 @@ class ExcelController extends Controller
          ->join('inventories','inventories.product_id','=','products.id')
          ->select('products.id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
          'code_comercial','type','description','price','price_buy','cost_average','photo_product','money',
-         'exento','islr','inventories.amount')
+         'exento','islr','inventories.amount','products.status')
          ->get();
 
         
          $export = new ExpensesExport([
              ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
               ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','costo_promedio','foto','moneda_d_o_bs',
-              'exento_1_o_0','islr_1_o_0','Cantidad en Inventario'],
+              'exento_1_o_0','islr_1_o_0','Cantidad en Inventario','status'],
               $products
         ]);
         
@@ -215,19 +217,37 @@ class ExcelController extends Controller
         ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
         ->orderBY('description','asc')->pluck('description','id')->toArray();
 
+        $global = new GlobalController();
+
+        $bcv = $global->search_bcv();
         
-        return view('admin.products.index',compact('products','total_amount_for_import','contrapartidas'))->with(compact('file'));
+        return view('admin.products.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
    }
 
    public function import_product_procesar(Request $request) 
    {
-       dd($request);
+       if(isset($request->Subcontrapartida)){
+
+            $subcontrapartida = $request->Subcontrapartida;
+            $amount = $request->amount;
+            $rate = str_replace(',', '.', str_replace('.', '', $request->rate));
+    
+            $file = $request->file('file');
+            
+            Excel::import(new ProductImport, $file);
+
+            Excel::import(new InventoryImport, $file);
+    
+            $movement = new MovementProductImportController();
+    
+            $movement->add_movement($subcontrapartida,$amount,$rate);
+            
+            return redirect('products')->with('success', 'Archivo importado con Exito!');
+
+       }else{
+            return redirect('products')->with('danger', 'Debe seleccionar una cuenta de pago');
+       }
        
-       $file = $request->file('file');
-       
-       Excel::import(new ProductImport, $file);
-       
-       return redirect('products')->with('success', 'Archivo importado con Exito!');
    }
 
    public function import_product_update_price(Request $request) 
