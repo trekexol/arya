@@ -9,6 +9,7 @@ use App\Client;
 use App\Company;
 use App\DetailVoucher;
 use App\Exports\ProductsExport;
+use App\HeaderVoucher;
 use App\HistorialQuotation;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
@@ -907,7 +908,14 @@ class QuotationController extends Controller
                             
         if(empty($exist_multipayment)){
             if($quotation != 'X'){
-                $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)
+
+                HeaderVoucher::on(Auth::user()->database_name)
+                ->join('detail_vouchers','detail_vouchers.id_header_voucher','header_vouchers.id')
+                ->where('detail_vouchers.id_invoice',$id_quotation)
+                ->update(['header_vouchers.status' => 'X']);
+
+                $detail = DetailVoucher::on(Auth::user()->database_name)
+                ->where('id_invoice',$id_quotation)
                 ->update(['status' => 'X']);
     
                 
@@ -991,16 +999,113 @@ class QuotationController extends Controller
 
             $historial_quotation->registerAction($quotation,"quotation","Se Reversó MultiFactura");
 
-
-
-
             return redirect('invoices')->withSuccess('Reverso de Facturas Multipago Exitosa!');
         }else{
             return redirect('invoices')->withDanger('No se pudo reversar las facturas');
         }
         
     }
+
+    public function reversar_quotation_multipayment_with_id($id_quotation,$id_header){
+
+        
+        if(isset($id_header)){
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+
+            //aqui reversamos todo el movimiento del multipago
+            DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
+            ->where('header_vouchers.id','=',$id_header)
+            ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
+
+            //aqui se cambia el status de los pagos
+            DB::connection(Auth::user()->database_name)->table('multipayments')
+            ->join('quotation_payments', 'quotation_payments.id_quotation','=','multipayments.id_quotation')
+            ->where('multipayments.id_header','=',$id_header)
+            ->update(['quotation_payments.status' => 'X']);
+
+            //aqui aumentamos el inventario y cambiamos el status de los productos que se reversaron
+            DB::connection(Auth::user()->database_name)->table('multipayments')
+                ->join('quotation_products', 'quotation_products.id_quotation','=','multipayments.id_quotation')
+                ->join('inventories','inventories.id','quotation_products.id_inventory')
+                ->join('products','products.id','inventories.product_id')
+                ->where(function ($query){
+                    $query->where('products.type','MERCANCIA')
+                        ->orWhere('products.type','COMBO');
+                })
+                ->where('multipayments.id_header','=',$id_header)
+                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount') ,
+                        'quotation_products.status' => 'X']);
     
+
+            //aqui le cambiamos el status a todas las facturas a X de reversado
+            Multipayment::on(Auth::user()->database_name)
+            ->join('quotations', 'quotations.id','=','multipayments.id_quotation')
+            ->where('id_header',$id_header)->update(['quotations.status' => 'X']);
+
+            Multipayment::on(Auth::user()->database_name)->where('id_header',$id_header)->delete();
+
+
+
+            $historial_quotation = new HistorialQuotationController();
+
+            $historial_quotation->registerAction($quotation,"quotation","Se Reversó MultiFactura");
+        }
+        
+    }
+
+    public function reversar_quotation_with_id($id_invoice)
+    { 
+       
+        $id_quotation = $id_invoice;
+
+        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+
+        $exist_multipayment = Multipayment::on(Auth::user()->database_name)
+                            ->where('id_quotation',$quotation->id)
+                            ->first();
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');  
+                            
+        if(empty($exist_multipayment)){
+            if($quotation != 'X'){
+                $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)
+                ->update(['status' => 'X']);
+    
+                
+                $global = new GlobalController();
+                $global->deleteAllProducts($quotation->id);
+
+                QuotationPayment::on(Auth::user()->database_name)
+                                ->where('id_quotation',$quotation->id)
+                                ->update(['status' => 'X']);
+    
+                $quotation->status = 'X';
+                $quotation->save();
+
+
+
+                //Crear un nuevo anticipo con el monto registrado en la cotizacion
+                if((isset($quotation->anticipo))&& ($quotation->anticipo != 0)){
+
+                    $account_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos Clientes')->first();
+                    $anticipoController = new AnticipoController();
+                    $anticipoController->registerAnticipo($datenow,$quotation->id_client,$account_anticipo->id,"bolivares",
+                    $quotation->anticipo,$quotation->bcv,"reverso factura N°".$quotation->number_invoice);
+                    
+                }
+
+                $historial_quotation = new HistorialQuotationController();
+
+                $historial_quotation->registerAction($quotation,"quotation","Se Reversó la Factura");
+            }
+        }else{
+            $this->reversar_quotation_multipayment_with_id($id_quotation,$exist_multipayment->id_header);
+        }
+       
+      
+    }
 
     public function listinventory(Request $request, $var = null){
         //validar si la peticion es asincrona

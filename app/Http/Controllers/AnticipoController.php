@@ -367,6 +367,36 @@ class AnticipoController extends Controller
         
     }
 
+    public function registerAnticipoProvider($date_begin,$id_provider,$id_account,$coin,$amount,$rate,$reference,$id_quotation = null)
+    {
+   
+        $user       =   auth()->user();
+        $var = new Anticipo();
+        $var->setConnection(Auth::user()->database_name);
+        
+        $var->date = $date_begin;
+       
+        $var->id_provider = $id_provider;
+        
+        $var->id_quotation = $id_quotation;
+          
+
+        $var->id_account = $id_account;
+        $var->id_user =  $user->id;
+        $var->coin = $coin;
+        
+       
+        $var->amount = $amount; 
+        $var->rate = $rate;
+        
+        
+        $var->reference = $reference;
+        $var->status = 1;
+
+        $var->save();
+        
+    }
+
 
     public function store_provider(Request $request)
     {
@@ -707,6 +737,26 @@ class AnticipoController extends Controller
         
     }
 
+    public function delete_anticipo_with_id($id_anticipo)
+    {
+        $anticipo = Anticipo::on(Auth::user()->database_name)->find($id_anticipo); 
+
+        $historial_anticipo = new HistorialAnticipoController();
+
+        $historial_anticipo->registerAction($anticipo,"Se eliminó el Anticipo "."monto: ".$anticipo->amount." tasa: ".$anticipo->rate);
+
+        if(isset($anticipo)){
+           
+            $this->disableMovementsAnticipo($anticipo);
+
+            $anticipo->delete();
+
+            return redirect('/anticipos')->withSuccess('Eliminacion exitosa!!');
+        }else{
+            return redirect('/anticipos')->withDanger('No se pudo encontrar el anticipo!!');
+        }
+        
+    }
 
     public function disableMovementsAnticipo($anticipo){
 
