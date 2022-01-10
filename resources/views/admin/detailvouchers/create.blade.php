@@ -65,8 +65,9 @@ $suma_haber = 0;
                                 <button type="submit" class="btn btn-success" title="Agregarheader">Registrar Cabecera</button>  
                             </div>
                             <div class="col-sm-2">
-                               <a class="btn btn-danger" href="{{ route('detailvouchers.delete',$header->id ?? null) }}" title="Deshabilitar">Deshabilitar</a>  
+                               <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Deshabilitar</a>  
                             </div>
+                           
                             <div class="col-sm-1">
                                 <a id="btn_clean" class="btn btn-light2" href="{{ route('detailvouchers.create','bolivares') }}" title="Limpiar Referencia">Limpiar</a>  
                             </div>
@@ -349,7 +350,7 @@ $suma_haber = 0;
             <form action="{{ route('detailvouchers.deletedetail') }}" method="post">
                 @csrf
                 @method('DELETE')
-                <input id="id_detail_modal" type="hidden" class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_detail_modal" readonly required autocomplete="id_detail_modal">
+                <input id="id_detail_modal" type="hidden"  class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_detail_modal" readonly required autocomplete="id_detail_modal">
                 <input id="coin_modal" type="hidden" class="form-control @error('coin_modal') is-invalid @enderror" name="coin_modal" readonly required autocomplete="coin_modal">
                 <input id="header_modal" type="hidden" class="form-control @error('header_modal') is-invalid @enderror" name="header_modal" readonly required autocomplete="header_modal">
                       
@@ -365,7 +366,63 @@ $suma_haber = 0;
     </div>
   </div>
     
+<!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="disableModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Deshabilitar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('detailvouchers.delete') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <input id="id_detail_disable_modal" value="{{$header->id ?? null}}" type="hidden" class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_detail_modal" readonly required autocomplete="id_detail_modal">
+                
+                <h5 class="text-center">Seguro que desea deshabilitar todos los movimientos contables?</h5>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Deshabilitar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  </div>
 
+  <!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="disableAfterModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('detailvouchers.disable') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <input id="id_detail_disable_modal" value="{{$id_delete?? null}}" type="hidden" class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_modal" readonly required autocomplete="id_detail_modal">
+                <input id="type_modal" value="{{$type_delete ?? null}}" type="hidden" class="form-control @error('type_modal') is-invalid @enderror" name="type_modal" readonly required autocomplete="type_modal">
+                <input id="id_header_modal" value="{{$header->id ?? null}}" type="hidden" class="form-control @error('id_header_modal') is-invalid @enderror" name="id_header_modal" readonly required autocomplete="id_header_modal">
+                
+                <h5 class="text-center">{{$message_delete ?? ''}}</h5>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  </div>
 @endsection
 
 @section('validacion')
@@ -376,15 +433,15 @@ $suma_haber = 0;
                 
     });
     $(document).ready(function () {
-                $("#code_two").mask('0000', { reverse: true });
+        $("#code_two").mask('0000', { reverse: true });
                 
     });
     $(document).ready(function () {
-                $("#code_three").mask('0000', { reverse: true });
+        $("#code_three").mask('0000', { reverse: true });
                 
-            });
+    });
     $(document).ready(function () {
-                $("#code_four").mask('0000', { reverse: true });
+        $("#code_four").mask('0000', { reverse: true });
                 
     });
 
@@ -402,6 +459,13 @@ $suma_haber = 0;
         
     });
    
+    if("{{isset($message_delete)}}"){
+        showModalDelete();
+    }
+
+    function showModalDelete() {
+        $('#disableAfterModal').modal('show');
+    }
 
     function updateForm(){
         document.getElementById("headerForm").action =  "{{route('headervouchers.update')}}";

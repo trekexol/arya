@@ -76,7 +76,7 @@ class DetailVoucherController extends Controller
         
         if(isset($id_header)){
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
-            if(isset($header)){
+            if(isset($header) && ($header->status != 'X')){
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->get();
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
                 $detailvouchers_last = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','desc')->first();
@@ -486,6 +486,7 @@ class DetailVoucherController extends Controller
     */
    public function destroy($id = null)
    {
+      
        if(isset($id)){
         $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
 
@@ -501,13 +502,86 @@ class DetailVoucherController extends Controller
         return redirect('/detailvouchers/register/bolivares')->withDanger('Debe buscar un movimiento primero !!');
        
        }
-        
 
+   }
+
+   public function check_header(Request $request){
+       
+    $coin = "bolivares";
+    $date = Carbon::now();
+    $datenow = $date->format('Y-m-d');    
+    $company = Company::on(Auth::user()->database_name)->find(1);
+    $global = new GlobalController();
+    //Si la taza es automatica
+    if($company->tiporate_id == 1){
+        $bcv = $global->search_bcv();
+    }else{
+        //si la tasa es fija
+        $bcv = $company->rate;
+    }
+
+    $id = $request->id_detail_modal;
+   
+    $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
+    $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header->id)->first();
+
+    $id_delete = 0;
+    $type_delete = "";
+    $message_delete = "";
+
+    if(isset($header->id_anticipo)){
+        $id_delete = $header->id_anticipo;
+        $type_delete = "anticipo";
+        $message_delete = "Este movimiento posee el anticipo Numero ".$header->id_anticipo.", seguro desea eliminarlo?";
+    }else{
+        if(isset($detail->id_invoice)){
+            $id_delete = $detail->id_invoice;
+            $type_delete = "factura";
+            $message_delete = "Este movimiento posee la factura Numero ".$detail->id_invoice.", seguro desea eliminarla?";
+        }elseif(isset($detail->id_expense)){
+            $id_delete = $detail->id_expense;
+            $type_delete = "compra";
+            $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense.", seguro desea eliminarla?";
+        }
+    }
+ 
+    if($id_delete == 0){
+        $this->destroy($id);
+        return redirect('/detailvouchers/register/bolivares')->withSuccess('Se deshabilitó con éxito el movimiento!');
+    }else{
+        return view('admin.detailvouchers.create',compact('datenow','coin','bcv','header','type_delete','id_delete','message_delete'));
+    }
+    
+   }
+
+   public function disable(Request $request){
+
+   
+        $id_header = $request->id_header_modal;
+        $id_delete = $request->id_modal;
+        $type_modal = $request->type_modal;
+
+        if(isset($type_modal) && ($type_modal == "anticipo")){
+            $anticipo = new AnticipoController();
+            $anticipo->delete_anticipo_with_id($id_delete);
+        }else if(isset($type_modal) && ($type_modal == "factura")){
+            $invoice = new QuotationController();
+            $invoice->reversar_quotation_with_id($id_delete);
+            $this->destroy($id_header);
+        }else if(isset($type_modal) && ($type_modal == "compra")){
+            $expense = new ExpensesAndPurchaseController();
+            $expense->reversar_expense_with_id($id_delete);
+            $this->destroy($id_header);
+        }
+
+      
+
+        return redirect('/detailvouchers/register/bolivares')->withSuccess('Se deshabilitó con éxito el movimiento!');
    }
 
    public function deleteDetail(Request $request)
     {
-        
+       
         $detail = DetailVoucher::on(Auth::user()->database_name)->find(request('id_detail_modal')); 
 
         $coin = request('coin_modal');

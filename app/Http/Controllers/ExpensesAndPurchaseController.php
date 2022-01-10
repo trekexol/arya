@@ -2499,7 +2499,9 @@ class ExpensesAndPurchaseController extends Controller
         
         return redirect('/expensesandpurchases')->withDanger('Reverso Exitoso!!');
     }
-    public function reversar_expense($id_expense)
+
+
+  /*  public function reversar_expense($id_expense)
     { 
         if(isset($id_expense)){
 
@@ -2527,12 +2529,127 @@ class ExpensesAndPurchaseController extends Controller
         }else{
             return redirect('expensesandpurchases/indexhistorial')->withDanger('No se pudo reversar la Compra');
         }
+    }*/
+
+    public function reversar_expense($id_expense)
+    { 
+       
+        $id_expense = $id_expense;
+
+        $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+
+        $exist_multipayment = MultipaymentExpense::on(Auth::user()->database_name)
+                            ->where('id_expense',$expense->id)
+                            ->first();
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');  
+                            
+        if(empty($exist_multipayment)){
+            if($expense != 'X'){
+                $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)
+                ->update(['status' => 'X']);
+    
+                
+                $global = new GlobalController();
+                $global->deleteAllProducts($expense->id);
+
+                ExpensePayment::on(Auth::user()->database_name)
+                                ->where('id_expense',$expense->id)
+                                ->update(['status' => 'X']);
+    
+                $expense->status = 'X';
+                $expense->save();
+
+
+
+                //Crear un nuevo anticipo con el monto registrado en la cotizacion
+                if((isset($expense->anticipo))&& ($expense->anticipo != 0)){
+
+                    $account_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos Clientes')->first();
+                    $anticipoController = new AnticipoController();
+                    $anticipoController->registerAnticipoProvider($datenow,$expense->id_provider,$account_anticipo->id,"bolivares",
+                    $expense->anticipo,$expense->bcv,"reverso compra N°".$expense->id);
+                    
+                }
+
+                $historial_expense = new HistorialExpenseController();
+
+                $historial_expense->registerAction($expense,"expense","Se Reversó la Compra");
+
+                return redirect('expensesandpurchases/indexhistorial')->withSuccess('Reverso de Compra Exitosa!');
+            }
+        }else{
+            return redirect('expensesandpurchases/indexhistorial')->withDanger('No se pudo reversar la Compra');
+        }
     }
 
- /*   public function reversar_quotation_multipayment($id_quotation,$id_header){
+    
+
+    public function reversar_expense_with_id($id_expense)
+    { 
+       
+        $id_expense = $id_expense;
+
+        $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+
+        $exist_multipayment = MultipaymentExpense::on(Auth::user()->database_name)
+                            ->where('id_expense',$expense->id)
+                            ->first();
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');  
+                            
+        if(empty($exist_multipayment)){
+            if($expense != 'X'){
+
+                HeaderVoucher::on(Auth::user()->database_name)
+                ->join('detail_vouchers','detail_vouchers.id_header_voucher','header_vouchers.id')
+                ->where('detail_vouchers.id_expense',$id_expense)
+                ->update(['header_vouchers.status' => 'X']);
+
+                $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)
+                ->update(['status' => 'X']);
+    
+                
+                $global = new GlobalController();
+                $global->deleteAllProducts($expense->id);
+
+                ExpensePayment::on(Auth::user()->database_name)
+                                ->where('id_expense',$expense->id)
+                                ->update(['status' => 'X']);
+    
+                $expense->status = 'X';
+                $expense->save();
+
+
+
+                //Crear un nuevo anticipo con el monto registrado en la cotizacion
+                if((isset($expense->anticipo))&& ($expense->anticipo != 0)){
+
+                    $account_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos Clientes')->first();
+                    $anticipoController = new AnticipoController();
+                    $anticipoController->registerAnticipoProvider($datenow,$expense->id_provider,$account_anticipo->id,"bolivares",
+                    $expense->anticipo,$expense->bcv,"reverso compra N°".$expense->id);
+                    
+                }
+
+                $historial_expense = new HistorialExpenseController();
+
+                $historial_expense->registerAction($expense,"expense","Se Reversó la Factura");
+            }
+        }else{
+            
+            $this->reversar_expense_multipayment($id_expense,$exist_multipayment->id_header);
+        }
+    }
+
+    public function reversar_expense_multipayment($id_expense,$id_header){
 
         
         if(isset($id_header)){
+            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
+
             //aqui reversamos todo el movimiento del multipago
             DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
@@ -2541,37 +2658,40 @@ class ExpensesAndPurchaseController extends Controller
 
             //aqui se cambia el status de los pagos
             DB::connection(Auth::user()->database_name)->table('multipayments')
-            ->join('quotation_payments', 'quotation_payments.id_quotation','=','multipayments.id_quotation')
+            ->join('expense_payments', 'expense_payments.id_expense','=','multipayments.id_expense')
             ->where('multipayments.id_header','=',$id_header)
-            ->update(['quotation_payments.status' => 'X']);
+            ->update(['expense_payments.status' => 'X']);
 
             //aqui aumentamos el inventario y cambiamos el status de los productos que se reversaron
             DB::connection(Auth::user()->database_name)->table('multipayments')
-                ->join('quotation_products', 'quotation_products.id_quotation','=','multipayments.id_quotation')
-                ->join('inventories','inventories.id','quotation_products.id_inventory')
+                ->join('expense_products', 'expense_products.id_expense','=','multipayments.id_expense')
+                ->join('inventories','inventories.id','expense_products.id_inventory')
                 ->join('products','products.id','inventories.product_id')
                 ->where(function ($query){
                     $query->where('products.type','MERCANCIA')
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('multipayments.id_header','=',$id_header)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount') ,
-                        'quotation_products.status' => 'X']);
+                ->update(['inventories.amount' => DB::raw('inventories.amount+expense_products.amount') ,
+                        'expense_products.status' => 'X']);
     
 
             //aqui le cambiamos el status a todas las facturas a X de reversado
-            Multipayment::on(Auth::user()->database_name)
-            ->join('quotations', 'quotations.id','=','multipayments.id_quotation')
-            ->where('id_header',$id_header)->update(['quotations.status' => 'X']);
+            MultipaymentExpense::on(Auth::user()->database_name)
+            ->join('expenses', 'expenses.id','=','multipayments.id_expense')
+            ->where('id_header',$id_header)->update(['expenses.status' => 'X']);
 
-            Multipayment::on(Auth::user()->database_name)->where('id_header',$id_header)->delete();
+            MultipaymentExpense::on(Auth::user()->database_name)->where('id_header',$id_header)->delete();
 
-            return redirect('invoices')->withSuccess('Reverso de Facturas Multipago Exitosa!');
-        }else{
-            return redirect('invoices')->withDanger('No se pudo reversar las facturas');
+
+
+            $historial_expense = new HistorialExpenseController();
+
+            $historial_expense->registerAction($expense,"expense","Se Reversó MultiCompra");
+
+          
         }
-        
-    }*/
+    }
 
     public function deleteDetail(Request $request)
     {
