@@ -150,21 +150,28 @@
                             <td style="text-align:right; color:black; ">{{$account->type}}</td>
 
                             <?php 
-                                $balance_new = $account->balance;
-                                if(isset($account->coin)){
-                                    $balance_new = $account->balance / ($account->rate ?? 1);
-                                
-                                }
-                                if($coin != 'bolivares'){
-                                    //si la moneda seleccionada fue dolares, convertimos los balances de bs a dolares segun su tasa
-                                    if(($account->balance != 0) && ($account->rate != 0)){
-                                        $balance_new = $account->balance / $account->rate;
+                                try{
+                                    $balance_new = $account->balance;
+                                    if(isset($account->coin)){
+                                        $balance_new = $account->balance / ($account->rate ?? 1);
+                                    
                                     }
-                                    if(isset($account->balance_previus) && ($account->balance_previus != 0)){
-                                        $balance_new = $account->balance_previus;
-                                    }
-                                }
+                                    if($coin != 'bolivares'){
+                                        //si la moneda seleccionada fue dolares, convertimos los balances de bs a dolares segun su tasa
+                                        if(($account->balance != 0) && ($account->rate != 0)){
+                                            try{
+                                                $balance_new = $account->balance / $account->rate;
+                                            }catch(\Exception $e){
 
+                                            }
+                                        }
+                                        if(isset($account->balance_previus) && ($account->balance_previus != 0)){
+                                            $balance_new = $account->balance_previus;
+                                        }
+                                    }
+                                }catch(\Exception $e){
+
+                                }
                                 
                             ?>
                                
@@ -319,15 +326,19 @@
                         <td style="text-align:right; color:black; ">{{$account->type}}</td>
 
                         <?php 
-                            $balance_new = null;
-                            if(isset($account->coin)){
-                                $balance_new = $account->balance / ($account->rate ?? 1);
-                            
-                            }else if($coin != 'bolivares'){
-                                //si la moneda seleccionada fue dolares, convertimos los balances de bs a dolares segun su tasa
-                                if(($account->balance != 0) && ($account->rate != 0)){
-                                    $balance_new = $account->balance / $account->rate;
+                            try{
+                                $balance_new = null;
+                                if(isset($account->coin)){
+                                    $balance_new = $account->balance / ($account->rate ?? 1);
+                                
+                                }else if($coin != 'bolivares'){
+                                    //si la moneda seleccionada fue dolares, convertimos los balances de bs a dolares segun su tasa
+                                    if(($account->balance != 0) && ($account->rate != 0)){
+                                            $balance_new = $account->balance / $account->rate;
+                                    }
                                 }
+                            }catch(\Exception $e){
+
                             }
                         ?>
                            
