@@ -47,7 +47,7 @@ class AccountController extends Controller
        // $calculationController = new CalculationWithCController();
         $accounts = $this->calculation($coin);
       //  $accounts = $calculationController->calculate_all($coin);
-
+      $balance_new = 0;
       //dd($accounts[8]);
         foreach($accounts as $account){
 
@@ -161,14 +161,13 @@ class AccountController extends Controller
             if(($account->code_one == 3)&&($account->code_two == 0)&&($account->code_three == 0)&&($account->code_four == 0)&&($account->code_five == 0)){
                 $total_saldo_anterior3 += $account->balance;
             }
-            
+          
         }
 
         
         $total_saldo_anterior = $total_saldo_anterior1 + $total_saldo_anterior2 + $total_saldo_anterior3;
 
-       
-        
+      
        return view('admin.accounts.index',compact('total_debe','total_haber','total_saldo_anterior','accounts','coin','level'));
    }
 
