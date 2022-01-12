@@ -47,8 +47,7 @@ class AccountController extends Controller
        // $calculationController = new CalculationWithCController();
         $accounts = $this->calculation($coin);
       //  $accounts = $calculationController->calculate_all($coin);
-      $balance_new = 0;
-      //dd($accounts[8]);
+     
         foreach($accounts as $account){
 
             if($account->level == 5){
