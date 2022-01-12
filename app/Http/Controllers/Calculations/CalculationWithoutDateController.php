@@ -362,6 +362,10 @@ class CalculationWithoutDateController extends Controller
 
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
+
+                                        if($account->rate != 0){
+                                            $account->balance_previus = $account->balance_previus / $account->rate;
+                                        }
                                     }
                                 }else
                                 {
@@ -803,6 +807,10 @@ class CalculationWithoutDateController extends Controller
 
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
+
+                                        if($account->rate != 0){
+                                            $account->balance_previus = $account->balance_previus / $account->rate;
+                                        }
                                     }
                                 }else
                                 {
