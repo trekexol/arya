@@ -146,7 +146,7 @@
              <!-- <a  class="collapse-header" href="buttons.html">Gastos y Compras</a> -->
                 <a class="collapse-item" href="{{ route('expensesandpurchases')}}" > <i class="fas fa-file-invoice-dollar fa-sm fa-fw mr-2 text-black-400"></i><strong>Gastos y Compras</strong></a>
                 <a class="collapse-item" href="{{ route('providers')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i><strong>Proveedores</strong></a>
-                <a class="collapse-item" href="{{ route('directpaymentorders.create')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Ordenes de Pago</strong></a>
+                <a class="collapse-item" href="{{ route('bankmovements.indexorderpayment')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Ordenes de Pago</strong></a>
                 <a class="collapse-item" href="{{ route('products')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
                 <a class="collapse-item" href="{{ route('combos')}}" ><i class="fas fa-boxes fa-sm fa-fw mr-2 text-black-400"></i><strong>Combos</strong></a>
                 <a class="collapse-item" href="{{ route('anticipos.index_provider')}}" > <i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-black-400"></i><strong>Anticipos<br><div style="text-indent: 22px;">a Proveedores</div></strong></a>

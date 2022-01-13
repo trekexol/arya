@@ -190,14 +190,14 @@ class DirectPaymentOrderController extends Controller
                     $account->save();
                 }
 
-                return redirect('/directpaymentorders')->withSuccess('Registro Exitoso!');
+                return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');
 
            /* }else{
                 return redirect('/directpaymentorders'.request('id_account').'')->withDanger('El saldo de la Cuenta '.$check_amount->description.' es menor al monto del retiro!');
             }*/
 
         }else{
-            return redirect('/directpaymentorders')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
+            return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
     }
 

@@ -184,15 +184,44 @@ class ReportPaymentController extends Controller
             ->get();
 
             $client = Client::on(Auth::user()->database_name)->find($id_client_or_provider);
+            
+
         }
 
         foreach($quotation_payments as $quotation){
 
             $quotation->payment_type = $global->asignar_payment_type($quotation->payment_type);
+           
+
+            if ($typeperson == 'Cliente' || $typeperson == 'Vendedor') {
+            
+            $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
+            ->where('id_quotation', '=',$quotation->id_quotation)
+            ->select('id_account')->get();
+            } else {
+
+                if ($typeperson == 'Proveedor'){
+                     $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
+                    ->where('id_expense', '=',$quotation->id_quotation) 
+                    ->select('id_account')->get();
+                } else {
+                     $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
+                     ->where('id_quotation', '=',$quotation->id_quotation) 
+                    ->orwhere('id_expense', '=',$quotation->id_quotation)->get();
+                   
+                    
+                   // $anticiposs ='nin';
+
+                } 
+                
+                
+            } 
+            //dd($anticiposs);
+            //$array_antticipos[] = [$anticiposs->id_account];
 
         }
-        
-        $pdf = $pdf->loadView('admin.reports_payment.payment',compact('coin','quotation_payments','datenow','date_end','client','provider','vendor'));
+
+        $pdf = $pdf->loadView('admin.reports_payment.payment',compact('coin','quotation_payments','datenow','date_end','client','provider','vendor'))->setPaper('a4', 'landscape');
         return $pdf->stream();
                  
     }

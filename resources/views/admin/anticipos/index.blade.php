@@ -139,7 +139,7 @@
                     
                         <td class="text-center">{{$anticipo->clients['name'] ?? ''}}<br>{{$num_fac}}</td>
                         <td class="text-center">{{$anticipo->accounts['description'] ?? ''}}</td>
-                        <td class="text-center">{{$anticipo->date ?? ''}}</td>
+                        <td class="text-center">{{date('d-m-Y',strtotime($anticipo->date)) ?? ''}}</td>
                         <td class="text-center">{{$anticipo->reference ?? ''}}</td>
                         <td class="text-right">${{number_format($amount_bcv ?? 0, 2, ',', '.')}}</td>
                         <td class="text-right">{{number_format($anticipo->amount ?? 0, 2, ',', '.')}}</td>
