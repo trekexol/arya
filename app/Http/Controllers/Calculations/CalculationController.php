@@ -301,12 +301,13 @@ class CalculationController extends Controller
                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
                                             [$date_begin, $date_end])
                                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
+
                 $total_balance = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->sum('balance_previus'); 
                 /*---------------------------------------------------*/
                                            
-
+                                          
                 $account->debe = $total_debe->total;
                 $account->haber = $total_haber->total;           
                 $account->balance_previus = $total_balance;
