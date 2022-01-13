@@ -758,16 +758,16 @@ class Report2Controller extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y'); 
-        $period = $date->format('Y'); 
+        $period = $date->format('Y');
+        $a_total = array(); 
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                     ->where('amount','<>',null)
-                                    ->where('status','C')
                                     ->whereRaw(
                                         "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
                                     ->orderBy('date','desc')->get();
 
-         
+
             foreach ($expenses as $expense) {
                 /*$total_exentoG = ExpensesDetail::on(Auth::user()->database_name)
                 ->where('id_expense',$expense->id)
@@ -783,13 +783,13 @@ class Report2Controller extends Controller
                 //->select('price','amount','id_expense')->get();          
                 ->select(DB::connection(Auth::user()->database_name)->raw('SUM(price*amount) as total'))->get();          
                 //->select('price','amount','id_expense')->get();
-                $a_total[] = array(bcdiv($total_exentoG[0]->total,'1',2),$expense->id); 
-
+                //$a_total[] = array(bcdiv($total_exentoG[0]->total,'1',2),$expense->id); 
+                
+                
+                $a_total[] = [bcdiv($total_exentoG[0]->total,'1',2),$expense->id];
               
  
             }
-           
-
 
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');

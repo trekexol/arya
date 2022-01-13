@@ -455,6 +455,7 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::post('store','BankMovementController@store')->name('bankmovements.store');
     Route::get('{id}/edit','BankMovementController@edit')->name('bankmovements.edit');
     Route::get('delete/{id}','BankMovementController@destroy')->name('bankmovements.delete');
+    Route::get('delete/{id}','OrderPaymentListController@destroy')->name('orderpayment.delete');
     Route::patch('{id}/update','BankMovementController@update')->name('bankmovements.update');
 
     Route::get('registerdeposit/{id_account}','BankMovementController@createdeposit')->name('bankmovements.createdeposit');
@@ -469,6 +470,8 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::post('storetransfer','BankMovementController@storetransfer')->name('bankmovements.storetransfer');
 
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
+    
+    Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
 
 });
 
