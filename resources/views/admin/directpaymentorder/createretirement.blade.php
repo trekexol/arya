@@ -20,11 +20,22 @@
         </div>
     @endif
 <div class="container">
+    <div class="row justify-content-right">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-11" style="text-align: right;">
+            <a href="{{ route('bankmovements.indexorderpayment')}}" class="btn btn-info" title="Transferencia">Listar Orden de Pago</a>
+        </div>
+
+    </div>
     <div class="row justify-content-center">
+        
+
+        
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Ordenes de Pago Directas</div>
-
+                
+                <div class="card-header text-center font-weight-bold h3">Ordenes de Pago Directo</div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('directpaymentorders.store') }}" enctype="multipart/form-data">
                         @csrf
