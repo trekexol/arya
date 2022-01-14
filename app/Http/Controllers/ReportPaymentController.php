@@ -216,7 +216,7 @@ class ReportPaymentController extends Controller
                 
                 
             } 
-            //dd($anticiposs);
+            dd($anticiposs);
             //$array_antticipos[] = [$anticiposs->id_account];
 
         }

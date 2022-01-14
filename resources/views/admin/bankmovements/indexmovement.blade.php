@@ -54,6 +54,7 @@
                                         <td>{{ number_format($var->debe, 2, ',', '.')}}</td>
                                         <td>{{ number_format($var->haber, 2, ',', '.')}}</td>
                                         <td>
+                                    
                                             <a href="{{ route('bankmovements.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                         </td>  
                                         

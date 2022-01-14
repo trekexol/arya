@@ -14,7 +14,7 @@
     <div class="col-md-2">
     </div>
     <div class="col-md-4">
-        <a href="{{ route('bankmovements.indexmovement') }}" class="btn btn-info" title="Transferencia">Movimientos Bancarios</a>
+        <a href="{{ route('bankmovements.indexmovement') }}" class="btn btn-info" title="Transferencia">E Movimientos Bancarios</a>
     </div>
 </div>
 <br>

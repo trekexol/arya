@@ -78,7 +78,8 @@
                 <thead>
                 <tr> 
                    
-                    <th>Nombre</th>
+                    <th>Nombre / Razón Social</th>
+                    <th>Nombre Comercial</th>
                     <th>Cedula o Rif</th>
                     <th>Dirección</th>
                     <th>Telefono</th>
@@ -96,6 +97,7 @@
                             <tr>
                                
                                 <td>{{$client->name}}</td>
+                                <td>{{$client->name_ref}}</td>
                                 <td>{{$client->type_code}} {{$client->cedula_rif}}</td>
                                 <td>{{$client->direction}}</td>
                                 <td>{{$client->phone1}}</td>

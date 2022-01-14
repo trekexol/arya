@@ -29,7 +29,8 @@
                 <tr> 
                     <th></th>
                    
-                    <th>Nombre</th>
+                    <th>Nombre / Razón Social</th>
+                    <th>Nombre Comercial</th>
                     <th>Cedula o Rif</th>
                     <th>Dirección</th>
                     <th>Ciudad</th>
@@ -49,6 +50,7 @@
                                     <a href="{{ route('quotations.createquotationclient',$client->id) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                 <td >{{$client->name}}</td>
+                                <td >{{$client->name_ref}}</td>
                                 <td >{{$client->cedula_rif}}</td>
                                 <td >{{$client->direction}}</td>
                                 <td >{{$client->city}}</td>
