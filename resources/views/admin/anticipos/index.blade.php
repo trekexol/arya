@@ -39,7 +39,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-md-3 h4">
-            Anticipos Clientes
+            Anticipos Clientes.
         </div>
         <div class="col-md-2">
             <a href="{{ route('anticipos')}}" class="btn btn-info btn-icon-split">
