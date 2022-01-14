@@ -43,7 +43,7 @@
                                         <option value="E-">E-</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $var->cedula_rif }}" required autocomplete="cedula_rif">
     
                                     @error('cedula_rif')
@@ -52,7 +52,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            <label for="razon_social" class="col-md-2 col-form-label text-md-right">Razón Social</label>
+                            <label for="razon_social" class="col-md-3 col-form-label text-md-right">Nombre / Razón Social</label>
 
                             <div class="col-md-4">
                                 <input id="razon_social" type="text" class="form-control @error('razon_social') is-invalid @enderror" name="razon_social" value="{{ $var->name }}" required autocomplete="razon_social">
@@ -66,6 +66,37 @@
                             
                         </div>
                         
+
+                       
+                        <div class="form-group row">
+
+
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
+
+                            <div class="col-md-4">
+                                <input id="namecomercial" type="text" class="form-control @error('direction') is-invalid @enderror" name="namecomercial" value="{{ $var->name_ref }}" required autocomplete="direction">
+
+                                @error('namecomercial')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
+
+                            <div class="col-md-4">
+                                <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $var->direction }}" required autocomplete="direction">
+
+                                @error('direction')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                        </div>
+
                         <div class="form-group row">
                             <label for="country" class="col-md-2 col-form-label text-md-right">Pais</label>
 
@@ -90,31 +121,7 @@
                                 @enderror
                             </div>
                         </div>
-                       
-                        <div class="form-group row">
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
 
-                            <div class="col-md-4">
-                                <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $var->direction }}" required autocomplete="direction">
-
-                                @error('direction')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
-
-                            <div class="col-md-4">
-                            <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{ $var->amount_max_credit }}" required autocomplete="amount_max_credit">
-
-                            @error('amount_max_credit')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            </div>
-                        </div>
                         <div class="form-group row">
                             <label for="phone1" class="col-md-2 col-form-label text-md-right">Teléfono</label>
 
@@ -141,6 +148,33 @@
                         </div>
 
                         <div class="form-group row">
+                            <label for="email" class="col-md-2 col-form-label text-md-right">Email</label>
+
+                            <div class="col-md-4">
+                                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $var->email }}" required autocomplete="email">
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
+
+                            <div class="col-md-4">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ $var->personcontact }}" required autocomplete="personcontact">
+
+                                @error('personcontact')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group row">
                             <label for="email" class="col-md-2 col-form-label text-md-right">Tiene Crédito</label>
 
                             <div class="form-check">
@@ -162,6 +196,20 @@
                                       </span>
                                   @enderror
                               </div>
+
+
+                              <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
+
+                              <div class="col-md-2">
+                              <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{ $var->amount_max_credit }}" required autocomplete="amount_max_credit">
+  
+                              @error('amount_max_credit')
+                                  <span class="invalid-feedback" role="alert">
+                                      <strong>{{ $message }}</strong>
+                                  </span>
+                              @enderror
+                              </div>
+
                         </div>
 
                         <div class="form-group row">

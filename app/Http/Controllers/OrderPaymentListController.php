@@ -80,7 +80,7 @@ class OrderPaymentListController extends Controller
         }
 
        return view('admin.bankmovements.indexorderpayment',compact('detailvouchers'));
-   }
+   } 
 
    /**
     * Show the form for creating a new resource.
