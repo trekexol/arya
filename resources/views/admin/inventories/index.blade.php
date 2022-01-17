@@ -23,7 +23,7 @@
     <div class="row py-lg-2">
        
         <div class="col-md-4">
-            <a href="{{ route('products.create')}}" class="btn btn-warning  float-md-center" role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
+            <a href="{{ route('products.create')}}" class="btn btn-info  float-md-center"  role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
           </div>
        
         <div class="col-md-2 dropdown mb-4">
@@ -93,10 +93,10 @@
                 @else  
                     @foreach ($inventories as $var)
                         <tr>
-                            <td class="text-center">{{ $var->code }}</td>
-                            <td class="text-center">{{ $var->description}}</td>
-                            <td class="text-right">{{ number_format($var->amount, 2, ',', '.')}}</td> 
-                            <td class="text-right">{{number_format($var->price, 2, ',', '.')}}</td>
+                            <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
+                            <td class="text-center">{{ $var->description ?? '' }}</td>
+                            <td class="text-right">{{ number_format($var->amount ?? 0, 2, ',', '.')}}</td> 
+                            <td class="text-right">{{number_format($var->price ?? 0, 2, ',', '.') }}</td>
                             
                             @if($var->money == "D")
                             <td class="text-center">Dolar</td>
