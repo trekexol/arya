@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('clients.store') }}" enctype="multipart/form-data">
                         @csrf
-                        <input id="id_user" type="text" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
+                        <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
                         
                         <div class="form-group row">
                             <label for="type_code" class="col-md-2 col-form-label text-md-right">Código, Cédula / Rif:</label>
