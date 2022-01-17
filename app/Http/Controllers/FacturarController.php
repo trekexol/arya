@@ -23,6 +23,7 @@ class FacturarController extends Controller
 {
     public function createfacturar($id_quotation,$coin)
     {
+        
          $quotation = null;
              
          if(isset($id_quotation)){
@@ -100,6 +101,11 @@ class FacturarController extends Controller
              $total_servicios= 0;
 
              foreach($inventories_quotations as $var){
+
+                if($coin != "bolivares"){
+                    $var->price = bcdiv($var->price / $var->rate, '1', 2);
+                }
+
                  //Se calcula restandole el porcentaje de descuento (discount)
                     $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
 
@@ -133,7 +139,7 @@ class FacturarController extends Controller
                     $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
                 }
              }
-
+            
              $quotation->total_factura = $total;
              $quotation->base_imponible = $base_imponible;
             

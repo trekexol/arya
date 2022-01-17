@@ -37,8 +37,8 @@
                         <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
                         <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                        
-                        <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 / ($bcv ?? 1)}}" readonly>
-                        <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 / ($bcv ?? 1)}}" readonly>
+                        <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
+                        <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
 
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
@@ -89,7 +89,7 @@
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
                             <div class="col-md-4">
-                                <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($quotation->total_factura / ($bcv ?? 1) , 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
+                                <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($quotation->total_factura  , 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
     
                                 @error('total_factura')
                                     <span class="invalid-feedback" role="alert">
@@ -99,7 +99,7 @@
                             </div>
                             <label for="base_imponible" class="col-md-2 col-form-label text-md-right">Base Imponible:</label>
                             <div class="col-md-3">
-                                <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($quotation->base_imponible / ($bcv ?? 1) , 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
+                                <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($quotation->base_imponible  , 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
                                 @error('base_imponible')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -167,7 +167,7 @@
                             <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
 
                             <div class="col-md-3">
-                                <input id="islr_retencion" type="text" class="form-control @error('islr_retencion') is-invalid @enderror" name="islr_retencion" value="{{ number_format($total_retiene_islr / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="islr_retencion">
+                                <input id="islr_retencion" type="text" class="form-control @error('islr_retencion') is-invalid @enderror" name="islr_retencion" value="{{ number_format($total_retiene_islr , 2, ',', '.') }}" readonly required autocomplete="islr_retencion">
 
                                 @error('islr_retencion')
                                     <span class="invalid-feedback" role="alert">
@@ -296,13 +296,13 @@
                         <input type="hidden" id="amount_of_payments" name="amount_of_payments"  readonly>
 
                          <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                         <input type="hidden" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 / ($bcv ?? 1)}}" readonly>
+                         <input type="hidden" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 }}" readonly>
 
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="base_imponible_form" name="base_imponible_form"  readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura / ($bcv ?? 1)}}" readonly>
+                        <input type="hidden" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura }}" readonly>
                         
                         <!--Total de la factura sin restarle nada que se va a realizar-->
                         <input type="hidden" id="grandtotal_form" name="grandtotal_form"  readonly>
@@ -322,10 +322,10 @@
                         <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                         
                         <input type="hidden" id="total_retiene_iva" name="total_retiene_iva"  readonly>
-                        <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{$total_retiene_islr / ($bcv ?? 1)}}" readonly>
+                        <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{$total_retiene_islr }}" readonly>
 
-                        <input type="hidden" id="total_mercancia" name="total_mercancia" value="{{$total_mercancia ?? 0 / ($bcv ?? 1)}}" readonly>
-                        <input type="hidden" id="total_servicios" name="total_servicios" value="{{$total_servicios ?? 0 / ($bcv ?? 1)}}" readonly>
+                        <input type="hidden" id="total_mercancia" name="total_mercancia" value="{{$total_mercancia ?? 0 }}" readonly>
+                        <input type="hidden" id="total_servicios" name="total_servicios" value="{{$total_servicios ?? 0 }}" readonly>
 
                         
                         <div class="form-group row" id="formulario1" >
@@ -920,12 +920,12 @@
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
 
-                let totalFactura = "<?php echo $quotation->total_factura  / ($bcv ?? 1) ?>";       
+                let totalFactura = "<?php echo $quotation->total_factura   ?>";       
 
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
-                let totalBaseImponible = "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ?>";
+                let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100;  
+                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
 
 
 
@@ -1043,12 +1043,12 @@
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
 
-                let totalFactura = "<?php echo $quotation->total_factura  / ($bcv ?? 1) ?>";       
+                let totalFactura = "<?php echo $quotation->total_factura   ?>";       
 
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
-                let totalBaseImponible = "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ?>";
+                let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100;  
+                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
 
 
                 /*Toma la Base y la envia por form*/
