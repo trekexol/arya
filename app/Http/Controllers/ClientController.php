@@ -58,7 +58,6 @@ class ClientController extends Controller
             'type_code'         =>'required|max:20',
             'id_user'         =>'required',
             'name'         =>'required|max:80',
-            'name_ref'         =>'required|max:100',
             'cedula_rif'         =>'required|max:20',
             'direction'         =>'required|max:100',
     
@@ -79,7 +78,7 @@ class ClientController extends Controller
     $users->type_code = request('type_code');
    
     $users->name = request('name');
-    $users->name = request('name_ref');
+    //$users->name = request('name_ref');
     $users->cedula_rif = request('cedula_rif');
     $users->direction = request('direction');
     $users->city = request('city');
