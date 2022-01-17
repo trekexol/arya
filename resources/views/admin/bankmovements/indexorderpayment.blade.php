@@ -38,6 +38,8 @@
                                     <th class="text-center">Descripción</th>
                                     <th class="text-center">Debe</th>
                                     <th class="text-center">Haber</th>
+                                    <th class="text-center">Debe USD</th>
+                                    <th class="text-center">Haber USD</th>                                    
                                     <th class="text-center"></th>
                                 </tr>
                                 </thead>
@@ -55,6 +57,9 @@
                                        
                                         <td>{{ number_format($var->debe, 2, ',', '.')}}</td>
                                         <td>{{ number_format($var->haber, 2, ',', '.')}}</td>
+
+                                        <td>{{ number_format($var->debe / $var->tasa, 2, ',', '.')}}</td>
+                                        <td>{{ number_format($var->haber / $var->tasa, 2, ',', '.')}}</td>
                                         <td>
                                             <a href="{{ route('orderpayment.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                         </td>  
