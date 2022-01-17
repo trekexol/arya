@@ -41,7 +41,7 @@
                                         <option value="E-">E-</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ old('cedula_rif') }}" required autocomplete="cedula_rif">
     
                                     @error('cedula_rif')
@@ -76,7 +76,20 @@
                                 @enderror
                             </div>
 
-                                                    
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
+
+                            <div class="col-md-4">
+                                <input id="namecomercial" type="text" class="form-control @error('namecomercial') is-invalid @enderror" name="namecomercial" value="{{ old('namecomercial') }}" autocomplete="namecomercial">
+
+                                @error('namecomercial')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>                               
+
+                        </div>
+                        <div class="form-group row">
                             <label for="country" class="col-md-2 col-form-label text-md-right">Pais</label>
 
                             <div class="col-md-3">
@@ -89,9 +102,7 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="form-group row">
-                           
+
                             <label for="city" class="col-md-2 col-form-label text-md-right">Ciudad</label>
 
                             <div class="col-md-4">
@@ -103,9 +114,12 @@
                                     </span>
                                 @enderror
                             </div>
+
+                        </div>
+                        <div class="form-group row">
                             <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ old('direction') }}" required autocomplete="direction">
 
                                 @error('direction')
@@ -114,9 +128,19 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>
-                       
-                        
+                            <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
+
+                            <div class="col-md-4">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ old('personcontac') }}" autocomplete="personcontact">
+
+                                @error('personcontact')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                       </div>
                         <div class="form-group row">
                             <label for="phone1" class="col-md-2 col-form-label text-md-right">Teléfono</label>
 

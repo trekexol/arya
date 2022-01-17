@@ -58,9 +58,9 @@ class ClientController extends Controller
             'type_code'         =>'required|max:20',
             'id_user'         =>'required',
             'name'         =>'required|max:80',
-            'cedula_rif'         =>'required|max:20',
+            'name_ref'         =>'max:100',
             'direction'         =>'required|max:100',
-    
+            'personcontact'     =>'max:100',
             'city'         =>'required|max:20',
             'country'         =>'required|max:20',
             'phone1'         =>'required|max:20',
@@ -78,7 +78,7 @@ class ClientController extends Controller
     $users->type_code = request('type_code');
    
     $users->name = request('name');
-    //$users->name = request('name_ref');
+    $users->name_ref = request('namecomercial');
     $users->cedula_rif = request('cedula_rif');
     $users->direction = request('direction');
     $users->city = request('city');
@@ -156,16 +156,13 @@ class ClientController extends Controller
         'type_code'         =>'required|max:20',
         
         'razon_social'         =>'required|max:80',
-        'namecomercial'         =>'required|max:100',
+        'namecomercial'         =>'max:100',
         'cedula_rif'         =>'required|max:20',
         'direction'         =>'required|max:100',
-
+        'personcontact'     =>'max:100',
         'city'         =>'required|max:20',
         'country'         =>'required|max:20',
         'phone1'         =>'required|max:20',
-        
-
-        
         'days_credit'         =>'required|integer',
         
 
