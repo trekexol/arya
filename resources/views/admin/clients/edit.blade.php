@@ -74,7 +74,7 @@
                             <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
 
                             <div class="col-md-4">
-                                <input id="namecomercial" type="text" class="form-control @error('direction') is-invalid @enderror" name="namecomercial" value="{{ $var->name_ref }}" required autocomplete="direction">
+                                <input id="namecomercial" type="text" class="form-control @error('direction') is-invalid @enderror" name="namecomercial" value="{{ $var->name_ref }}" autocomplete="direction">
 
                                 @error('namecomercial')
                                     <span class="invalid-feedback" role="alert">
@@ -162,7 +162,7 @@
                             <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
 
                             <div class="col-md-4">
-                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ $var->personcontact }}" required autocomplete="personcontact">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ $var->personcontact }}" autocomplete="personcontact">
 
                                 @error('personcontact')
                                     <span class="invalid-feedback" role="alert">
