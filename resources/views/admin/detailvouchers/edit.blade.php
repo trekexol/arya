@@ -51,7 +51,7 @@
                         <div class="form-group row">
                             <label for="rate" class="col-md-3 col-form-label text-md-right">Tasa:</label>
                             <div class="col-md-4">
-                                <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ $var->tasa ?? $bcv }}" required autocomplete="rate">
+                                <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($var->tasa ?? $bcv, 10, ',', '.') }}" required autocomplete="rate">
                                 @error('rate')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -138,7 +138,7 @@
             
         });
         $(document).ready(function () {
-            $("#rate").mask('000.000.000.000.000.000,0000', { reverse: true });
+            $("#rate").mask('000.000.000.000.000.000,0000000000', { reverse: true });
             
         });
         $(document).ready(function () {
