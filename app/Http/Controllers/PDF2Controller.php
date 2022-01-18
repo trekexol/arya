@@ -72,7 +72,7 @@ class PDF2Controller extends Controller
                     $bcv = null;
                     
                 }else{
-                    $bcv = $quotation->login;
+                    $bcv = $quotation->bcv;
                 }
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
