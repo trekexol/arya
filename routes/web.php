@@ -1037,3 +1037,8 @@ Route::group(["prefix"=>'accounting_adjustments'],function(){
     Route::get('index/{coin?}','AccountingAdjustmentController@index')->name('accounting_adjustments.index');
     Route::post('store','AccountingAdjustmentController@store')->name('accounting_adjustments.store');
 });
+
+
+Route::group(["prefix"=>'export_reports'],function(){
+    Route::post('accountsreceivable','Exports\Reports\AccountReceivableExportController@exportExcel')->name('export_reports.accountsreceivable');
+});
