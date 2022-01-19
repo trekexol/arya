@@ -89,6 +89,7 @@
             </thead>
             
             <tbody>
+
                 @if (empty($inventories))
                 @else  
                     @foreach ($inventories as $var)
@@ -104,7 +105,7 @@
                             <td class="text-center">Bolívar</td>
                             @endif
 
-                            <td class="text-center">{{ $var->photo_product}}</td> 
+                            <td class="text-center">{{$var->photo_product}}</td> 
                             
                             <td class="text-center">
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>

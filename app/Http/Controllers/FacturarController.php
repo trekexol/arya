@@ -8,6 +8,7 @@ use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
 use App\Client;
+use App\Http\Controllers\Globals\HistoryInventoriesController;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use Illuminate\Http\Request;
@@ -1649,8 +1650,11 @@ class FacturarController extends Controller
             $quotation->status = "C";
             
             $quotation->save();
+/*
+            $history_inventories = new HistoryInventoriesController();
+            $history_inventories->
 
-            /*---------------------- */
+            ---------------------- */
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   

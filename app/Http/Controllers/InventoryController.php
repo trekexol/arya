@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class InventoryController extends Controller
 {
  
@@ -25,7 +27,7 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-   public function index()
+  public function index()  //original
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
@@ -42,7 +44,35 @@ class InventoryController extends Controller
         ->get();
         
        return view('admin.inventories.index',compact('inventories'));
-   }
+   } 
+ /*  public function index()
+   {
+       $user       =   auth()->user();
+       $users_role =   $user->role_id;
+
+       $global = new GlobalController();
+       
+        $inventories = InventoryHistories::on(Auth::user()->database_name)
+        ->join('products','products.id','inventory_histories.id_product')
+        ->where(function ($query){
+            $query->where('products.type','MERCANCIA')
+                ->orWhere('products.type','COMBO');
+        }) 
+       
+       ->where('products.status',1)
+       ->select('inventory_histories.id as id_inventory','inventory_histories.*','products.*')       
+       ->orderBy('inventory_histories.id' ,'DESC')
+       ->get();     
+        
+        
+        $inventories = $inventories->unique('id_product');
+
+        $inventories = $inventories->sortBydesc('amount_real');
+
+
+       return view('admin.inventories.index',compact('inventories'));
+   }*/
+
 
    public function indexmovements()
    {

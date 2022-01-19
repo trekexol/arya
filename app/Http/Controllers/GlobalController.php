@@ -589,13 +589,13 @@ class GlobalController extends Controller
             ->table('inventory_histories')
             ->where('id_product','=',$id_product)
             ->select('amount_real')
-            ->last(); 
+            ->get()->last(); 
         } else {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_product)
             ->select('inventory_histories.*')
-            ->last(); 
+            ->get()->last();
         }
       
           if (empty($inventories_quotations)) {
@@ -619,13 +619,13 @@ class GlobalController extends Controller
             ->table('inventory_histories')
             ->where('id_product','=',$id_product)
             ->select('inventory_histories.*')
-            ->last(); 
+            ->get()->last();
         } else { // sucursal
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_product)
             ->select('inventory_histories.*')
-            ->last(); 	
+            ->get()->last();	
         }
  
 
