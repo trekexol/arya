@@ -1437,6 +1437,7 @@ class FacturarController extends Controller
 
             $global = new GlobalController();
             $retorno = $global->discount_inventory($quotation->id);
+
             
             if($retorno != "exito"){
                 return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'');
@@ -1650,11 +1651,9 @@ class FacturarController extends Controller
             $quotation->status = "C";
             
             $quotation->save();
-/*
-            $history_inventories = new HistoryInventoriesController();
-            $history_inventories->
 
-            ---------------------- */
+            $transaction = new GlobalController;
+            $transaction->transaccion_inv('venta',$quotation->date_id_inventory,'prueba',1,10,'2022-01-20','Matriz','Matriz',$quotation->id,1);
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   

@@ -27,7 +27,7 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-  public function index()  //original
+/*  public function index()  //original
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
@@ -44,13 +44,13 @@ class InventoryController extends Controller
         ->get();
         
        return view('admin.inventories.index',compact('inventories'));
-   } 
- /*  public function index()
+   } */
+   public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
-       $global = new GlobalController();
+       //$global = new GlobalController();
        
         $inventories = InventoryHistories::on(Auth::user()->database_name)
         ->join('products','products.id','inventory_histories.id_product')
@@ -71,7 +71,7 @@ class InventoryController extends Controller
 
 
        return view('admin.inventories.index',compact('inventories'));
-   }*/
+   }
 
 
    public function indexmovements()
