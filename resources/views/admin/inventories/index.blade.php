@@ -74,7 +74,8 @@
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
+            <tr>
+                <th class="text-center">Id</th> 
                 <th class="text-center">SKU</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
@@ -94,6 +95,7 @@
                 @else  
                     @foreach ($inventories as $var)
                         <tr>
+                            <td class="text-center">{{ $var->id ?? '' }}</td>
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-right">{{ number_format($var->amount_real ?? 0, 2, ',', '.')}}</td> 
@@ -105,7 +107,7 @@
                             <td class="text-center">Bolívar</td>
                             @endif
 
-                            <td class="text-center">{{$var->photo_product}}</td> 
+                            <td class="text-center">{{$var->photo_product ?? ''}}</td> 
                             
                             <td class="text-center">
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>

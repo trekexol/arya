@@ -581,18 +581,18 @@ class GlobalController extends Controller
     }  
 
 
-    function consul_prod_invt($id_product,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
 
         if ($sucursal == 'Matriz') {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
+            ->where('id_product','=',$id_inventary)
             ->select('amount_real')
             ->get()->last(); 
         } else {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
+            ->where('id_product','=',$id_inventary)
             ->select('amount_real')
             ->get()->last();
         }
@@ -609,27 +609,22 @@ class GlobalController extends Controller
     }
     
     
-    function transaccion_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0,$id){
+    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0,$id){
     
         $msg = 'Sin Registro';   
     
-        $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
-    
-        if (isset($product)) {
-    
-             $id_product = $product;
-    
+       // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
             if ($branch == 'Matriz') { // todo
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
-                ->where('id_product','=',$id_product)
+                ->where('id_product','=',$id_inventary)
                 ->select('*')
                 ->get()->last();
             } else { // sucursal
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
-                ->where('id_product','=',$id_product)
+                ->where('id_product','=',$id_inventary)
                 ->select('*')
                 ->get()->last();	
             }
@@ -745,9 +740,8 @@ class GlobalController extends Controller
                     
                             
                         $new = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                        'id ' => 'AUTO',
                         'date' => $date,
-                        'id_product' => $id_product,
+                        'id_product' => $id_inventary,
                         'description' => $description,
                         'type' => $type,
                         'price' => $price,
@@ -759,7 +753,8 @@ class GlobalController extends Controller
                         'number_invoice' => $number_fac_note,
                         'user' => $user->id]);
                         
-                        DB::connection(Auth::user()->database_name)->table('quotation_product')
+
+                        DB::connection(Auth::user()->database_name)->table('quotation_products')
                         ->where('id_quotation','=',$id)
                         ->update(['id_inventory_histories' => $new]);  
     
@@ -807,12 +802,6 @@ class GlobalController extends Controller
             } else { // condicion cantidad
             $msg = "La cantidad de la oprecion debe ser mayor a cero";
             }
-    
-        } else { // condicion de producto
-        
-        $msg = "sin producto";
-        
-        }
     
     return $msg;
     

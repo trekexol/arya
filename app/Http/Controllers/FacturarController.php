@@ -1746,7 +1746,7 @@ class FacturarController extends Controller
                 foreach($quotation_products as $det_products){
 
                  $transaction = new GlobalController;
-                 $transaction->transaccion_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+                 $transaction->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
                     
                 } 
 
