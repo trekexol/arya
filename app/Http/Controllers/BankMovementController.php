@@ -41,6 +41,12 @@ class BankMovementController extends Controller
         
         }
 
+        $transaction = new GlobalController;
+        $transaction_res = $transaction->transaccion_inv('venta',68,'prueba',1,10,'2022-01-20','Matriz','Matriz',7,0);
+               
+        dd($transaction_res); 
+        
+
        return view('admin.bankmovements.index',compact('accounts','accounts_USD'));
    }
 
