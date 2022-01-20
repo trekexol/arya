@@ -1041,4 +1041,6 @@ Route::group(["prefix"=>'accounting_adjustments'],function(){
 
 Route::group(["prefix"=>'export_reports'],function(){
     Route::post('accountsreceivable','Exports\Reports\AccountReceivableExportController@exportExcel')->name('export_reports.accountsreceivable');
+    Route::post('debtstopay','Exports\Reports\AccountReceivableExportController@exportExcel')->name('export_reports.debtstopay');
+    
 });

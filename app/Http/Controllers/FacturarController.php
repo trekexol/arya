@@ -133,10 +133,18 @@ class FacturarController extends Controller
                     $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
                 }
 
-                if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
-                    $total_mercancia += ($var->price * $var->amount_quotation) - $percentage;
+                if($coin != "bolivares"){
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                    }else{
+                        $total_servicios += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                    }
                 }else{
-                    $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += ($var->price * $var->amount_quotation) - $percentage;
+                    }else{
+                        $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
+                    }
                 }
              }
             

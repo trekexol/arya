@@ -2,11 +2,13 @@
 
 namespace App\Exports\Reports;
 
-use App\Http\Controllers\Exports\Reports\AccountReceivableExportController;
+
+use App\Http\Controllers\Exports\Reports\DebtsToPayExportController;
+use Carbon\Carbon;
+
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-
-class AccountReceivableExportFromView implements FromView
+class DebtsToPayExportFromView implements FromView
 {
     public $request;
 
@@ -17,10 +19,10 @@ class AccountReceivableExportFromView implements FromView
 
     public function view(): View
     {
-        $report = new AccountReceivableExportController();
+        $report = new DebtsToPayExportController();
          
         
-        return $report->accounts_receivable_pdf_excel(
+        return $report->debtstopay_pdf(
             $this->request->coin ?? "bolivares",$this->request->date_end,
             $this->request->typeinvoice,$this->request->type,
             $this->request->id_client ?? $this->request->id_vendor ?? null);
