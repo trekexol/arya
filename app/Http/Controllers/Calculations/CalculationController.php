@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App;
 use App\Account;
 use App\DetailVoucher;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -321,7 +322,33 @@ class CalculationController extends Controller
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
 
+
+            /*REVISION DE BALANCE PREVIO POR CIERRE */
+
+            if($account->level == 5){
+                $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
+                                                ->where('accounts.code_one', $account->code_one)
+                                                ->where('accounts.code_two', $account->code_two)
+                                                ->where('accounts.code_three', $account->code_three)
+                                                ->where('accounts.code_four', $account->code_four)
+                                                ->where('accounts.code_five', $account->code_five)
+                                                ->orderBy('date_end','desc')->first();
+
+            
+                $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
+
+                $date_begin_new = Carbon::parse($date_begin);
+
+                
+                if($date_begin_new->lte($date_ultimo_historial)){
+                    $account_new->balance_previus = $ultimo_historial->balance_previous;
+                }
+            }
+            /*------------------------ */
+
+
             return $account_new;
+
         }else{
             return redirect('/accounts')->withDanger('El codigo uno es igual a cero!');
         }
@@ -1005,6 +1032,8 @@ class CalculationController extends Controller
             $account_new->debe = $account->debe;
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
+
+            
 
             return $account_new;
         }else{
