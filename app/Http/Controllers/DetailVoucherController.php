@@ -99,7 +99,7 @@ class DetailVoucherController extends Controller
                         if($saldo_total_dolares != 0){
                             $tasa_calculada = ($saldo_total_bs / ($saldo_total_dolares ?? 1));
                         }else{
-                            $tasa_calculada = 0;
+                            $tasa_calculada = null;
                         }
                     }else{
                         $tasa_calculada = $detailvouchers_first->tasa;
