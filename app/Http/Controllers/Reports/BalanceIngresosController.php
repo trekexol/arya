@@ -62,8 +62,8 @@ class BalanceIngresosController extends Controller
     {
       
         $pdf = App::make('dompdf.wrapper');
-        $utilidad = null;
-        $islr = null;
+        $utilidad = 0;
+        $islr = 0;
         
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
@@ -93,11 +93,11 @@ class BalanceIngresosController extends Controller
        
         
         foreach($accounts_all as $account){
+           
             if(($account->code_one == 3) && ($account->code_two == 2) && ($account->code_three == 1) && ($account->code_four == 1) && ($account->code_five == 1)){
                 
                 $utilidad = ($account->debe - $account->haber) * -1;
-               // dd($account);
-                
+               
             }
             if(($account->code_one == 2) && ($account->code_two == 1) && ($account->code_three == 3) && ($account->code_four == 1) && ($account->code_five == 8)){
                 
