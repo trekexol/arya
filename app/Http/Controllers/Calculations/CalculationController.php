@@ -342,7 +342,6 @@ class CalculationController extends Controller
     public function check_cierre($account,$date_begin){
         /*REVISION DE BALANCE PREVIO POR CIERRE */
        
-        if($account->level == 5){
             $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
                                             ->where('id_account', $account->id)
                                             ->orderBy('date_end','desc')->first();
@@ -354,12 +353,12 @@ class CalculationController extends Controller
 
            
             if($date_begin_new->lte($date_ultimo_historial)){
-               
+                
                 return $ultimo_historial->balance_previous;
             }else{
                 return $account->balance_previus;
             }
-        }
+       
         /*------------------------ */
     }
 
