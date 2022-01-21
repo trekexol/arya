@@ -1025,7 +1025,7 @@ class CalculationIngresosEgresosController extends Controller
                                             ->where('id_account', $account->id)
                                             ->orderBy('date_end','desc')->first();
 
-
+        if(isset($ultimo_historial)){
             $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
 
             $date_begin_new = Carbon::parse($date_begin);
@@ -1037,7 +1037,9 @@ class CalculationIngresosEgresosController extends Controller
             }else{
                 return $account->balance_previus;
             }
-       
+        }else{
+            return $account->balance_previus;
+        }
         /*------------------------ */
     }
 
@@ -1048,7 +1050,7 @@ class CalculationIngresosEgresosController extends Controller
                                             ->where('id_account', $account->id)
                                             ->orderBy('date_end','desc')->first();
 
-
+        if(isset($ultimo_historial)){
             $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
 
             $date_begin_new = Carbon::parse($date_begin);
@@ -1065,7 +1067,9 @@ class CalculationIngresosEgresosController extends Controller
                 }
                 return $account->balance_previus / $account->rate;
             }
-        
+        }else{
+            return $account->balance_previus;
+        }
         /*------------------------ */
     }
 
