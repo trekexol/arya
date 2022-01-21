@@ -365,7 +365,7 @@ class CalculationController extends Controller
     public function check_cierre_dolar($account,$date_begin){
         /*REVISION DE BALANCE PREVIO POR CIERRE */
        
-        if($account->level == 5){
+        
             $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
                                             ->where('id_account', $account->id)
                                             ->orderBy('date_end','desc')->first();
@@ -374,9 +374,9 @@ class CalculationController extends Controller
             $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
 
             $date_begin_new = Carbon::parse($date_begin);
-
            
             if($date_begin_new->lte($date_ultimo_historial)){
+                
                 if(empty($ultimo_historial->rate) || ($ultimo_historial->rate == 0)){
                     $ultimo_historial->rate = 1;
                 }
@@ -387,7 +387,7 @@ class CalculationController extends Controller
                 }
                 return $account->balance_previus / $account->rate;
             }
-        }
+       
         /*------------------------ */
     }
 
