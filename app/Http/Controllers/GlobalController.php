@@ -7,6 +7,7 @@ use App\ComboProduct;
 use App\ExpensePayment;
 use App\ExpensesDetail;
 use App\Inventory;
+use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use App\UserAccess;
@@ -298,7 +299,8 @@ class GlobalController extends Controller
 
     public function discount_inventory($id_quotation)
     {
-            /*Primero Revisa que todos los productos tengan inventario suficiente*/
+           /* 
+           //Primero Revisa que todos los productos tengan inventario suficiente
             $no_hay_cantidad_suficiente = DB::connection(Auth::user()->database_name)->table('inventories')
                                     ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
                                     ->join('products', 'products.id','=','inventories.product_id')
@@ -317,7 +319,7 @@ class GlobalController extends Controller
                 return "no_hay_cantidad_suficiente";
             }
 
-            /*Luego, descuenta del Inventario*/
+            //Luego, descuenta del Inventario
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
             ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
             ->where('quotation_products.id_quotation',$id_quotation)
@@ -357,9 +359,20 @@ class GlobalController extends Controller
                 return 'El Inventario de la cotizacion no existe!';
                 }
 
-            }
+            } */
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
-            return "exito";
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('id_quotation', '=', $id_quotation)->get();
+
+            foreach($quotation_products as $det_products){
+
+            $transaction = new GlobalController;
+            $msg = $transaction->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+
+            } 
+
+           dd($msg);
 
     }
 
@@ -642,7 +655,7 @@ class GlobalController extends Controller
             $datev = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
             
             $transaccion = 0;
-    
+            $agregar = 'true';
     
             if ($amount > 0 ) {
     
@@ -654,11 +667,11 @@ class GlobalController extends Controller
     
                     if ($id_historial_inv != 0) {
     
-                            $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
-                            ->table('inventory_histories')
-                            ->where('id','=',$id_historial_inv)
-                            ->select('*')
-                            ->get();   
+                        $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                        ->table('inventory_histories')
+                        ->where('id','=',$id_historial_inv)
+                        ->select('id','amount')
+                        ->get()->last();  
                         
                             if (!empty($inventories_quotations_hist)) {
                                 
@@ -685,42 +698,49 @@ class GlobalController extends Controller
                     case 'nota':
                             
                         if ($id_historial_inv != 0) {
-                            
+       
                             $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
                             ->where('id','=',$id_historial_inv)
-                            ->select('*')
-                            ->get();  
-    
+                            ->select('id','amount')
+                            ->get()->last();  
+                        
+
                             if (!empty($inventories_quotations_hist)) {
                         
                                 
                                 if ($inventories_quotations_hist->amount == $amount) {
                                     $amount_nota = 0;
-                                    $agregar = false;   
+                                    $transaccion = $amount_real;
+                                    $agregar = 'false';   
                                 } else {
-                                    $amount_nota = $inventories_quotations_hist->amount;	
-                                    $agregar = true;
+
+                                    if ($inventories_quotations_hist->amount > $amount) {
+                                        $transaccion =  $amount_real+$amount;	
+                                        $agregar = 'nota_rev';                                 
+                                    }  
+
+                                    if ($inventories_quotations_hist->amount < $amount) {
+                                        $transaccion = $amount_real-$amount;	
+                                        $agregar = 'true';                                   
+                                    }  
+
                                 }
     
                                 
                             } 
     
-                        } else { 
-                        
-                        $amount_nota = 0;
-                        $agregar = true;
-    
+                        } else {
+                                $transaccion = $amount_real-$amount; 
                         }
-    
-                    $transaccion = ($amount_real+$amount_nota)-$amount;
-    
     
                     break;               
                     case 'rev_nota':
                     $transaccion = $amount_real+$amount;
                     break;
-    
+                    case 'aju_nota':
+                        $transaccion = $amount_real+$amount;
+                    break;  
                     case 'rev_venta':
     
                     $transaccion = $amount_real+$amount;
@@ -738,25 +758,36 @@ class GlobalController extends Controller
     
                         $user       =   auth()->user();
                     
+                        if ($agregar != 'false') {
                             
-                        $new = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                        'date' => $date,
-                        'id_product' => $id_inventary,
-                        'description' => $description,
-                        'type' => $type,
-                        'price' => $price,
-                        'amount' => $amount,
-                        'amount_real' => $transaccion,
-                        'status' => 'A',
-                        'branch' => $branch,
-                        'centro_cost' => $centro_cost,
-                        'number_invoice' => $number_fac_note,
-                        'user' => $user->id]);
-                        
+                            if ($agregar == 'nota_rev') {
+                                $type = 'aju_nota';  
+                            }
 
-                        DB::connection(Auth::user()->database_name)->table('quotation_products')
-                        ->where('id_quotation','=',$id)
-                        ->update(['id_inventory_histories' => $new]);  
+                             DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                            'date' => $date,
+                            'id_product' => $id_inventary,
+                            'description' => $description,
+                            'type' => $type,
+                            'price' => $price,
+                            'amount' => $amount,
+                            'amount_real' => $transaccion,
+                            'status' => 'A',
+                            'branch' => $branch,
+                            'centro_cost' => $centro_cost,
+                            'number_invoice' => $number_fac_note,
+                            'user' => $user->id]);
+                            
+                            $id_last = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->select('id')
+                            ->get()->last();                             
+
+                            DB::connection(Auth::user()->database_name)->table('quotation_products')
+                            ->where('id','=',$id)
+                            ->update(['id_inventory_histories' => $id_last->id]);
+                        
+                        }
     
                         switch ($type) {
                             case 'compra':
@@ -770,14 +801,17 @@ class GlobalController extends Controller
                             break;
                             case 'nota':
                             
-                            $msg = 'La Nota fue registrada con exito';
+                            $msg = 'exito';//'La Nota fue registrada con exito';
                             break;  
     
                             case 'rev_nota':
                             
                             $msg = 'Reverso de Nota exitoso';
                             break;   
-    
+                            case 'aju_nota':
+                            
+                                $msg = 'Eliminacion de producto de la Nota exitoso';
+                                break;      
                             case 'rev_venta':
                         
                             $msg = 'Reverso de Factura exitoso';

@@ -372,18 +372,15 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-0">
-                                @if(!isset($quotation->date_delivery_note))
+                                
                                     <div class="col-md-4">
                                         @if($suma == 0)
-                                            <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
+                                            <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega a</a>  
                                         @else
                                             <a onclick="deliveryNoteSend()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
                                         @endif
                                     </div>
-                                @else
-                                    <div class="col-md-1">
-                                    </div>
-                                @endif
+
                                 <div class="col-md-4">
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
