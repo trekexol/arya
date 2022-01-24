@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App;
 use App\Account;
 use App\DetailVoucher;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,16 +24,21 @@ class CalculationController extends Controller
                                                             ->orderBy('code_four','asc')
                                                             ->orderBy('code_five','asc')
                                                             ->get();
-
+        $account_calculate = null;
         //dd($accounts);
         foreach($accounts as $account){
             
             if(isset($coin) && $coin == 'bolivares'){
-                $account = $this->verificateAccount($account,$date_begin,$date_end);
+                $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+              
             }else{
-                $account =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
             }
+            $account->balance_previus = $account_calculate->balance_previus;
+            $account->debe = $account_calculate->debe;
+            $account->haber = $account_calculate->haber;
         }
+        
         
         return $accounts;
     }
@@ -321,10 +327,73 @@ class CalculationController extends Controller
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
 
+
+            $account_new->balance_previus = $this->check_cierre($account,$date_begin);
+
+           
             return $account_new;
+
         }else{
             return redirect('/accounts')->withDanger('El codigo uno es igual a cero!');
         }
+    }
+
+
+    public function check_cierre($account,$date_begin){
+        /*REVISION DE BALANCE PREVIO POR CIERRE */
+       
+        $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
+                                            ->where('id_account', $account->id)
+                                            ->orderBy('date_end','desc')->first();
+
+        if(isset($ultimo_historial)){
+
+            $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
+
+            $date_begin_new = Carbon::parse($date_begin);
+
+           
+            if($date_begin_new->lte($date_ultimo_historial)){
+                
+                return $ultimo_historial->balance_previous;
+            }else{
+                return $account->balance_previus;
+            }
+        }else{
+            return $account->balance_previus;
+        }
+        /*------------------------ */
+    }
+
+    public function check_cierre_dolar($account,$date_begin){
+        /*REVISION DE BALANCE PREVIO POR CIERRE */
+       
+        
+            $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
+                                            ->where('id_account', $account->id)
+                                            ->orderBy('date_end','desc')->first();
+
+        if(isset($ultimo_historial)){
+            $date_ultimo_historial = Carbon::parse($ultimo_historial->date_end);
+
+            $date_begin_new = Carbon::parse($date_begin);
+           
+            if($date_begin_new->lte($date_ultimo_historial)){
+                
+                if(empty($ultimo_historial->rate) || ($ultimo_historial->rate == 0)){
+                    $ultimo_historial->rate = 1;
+                }
+                return $ultimo_historial->balance_previous / $ultimo_historial->rate;
+            }else{
+                if(empty($account->rate) || ($account->rate == 0)){
+                    $account->rate = 1;
+                }
+                return $account->balance_previus / $account->rate;
+            }
+        }else{
+            return $account->balance_previus;
+        }
+        /*------------------------ */
     }
 
   
@@ -572,6 +641,8 @@ class CalculationController extends Controller
             $account_new->debe = $account->debe;
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
+
+            $account_new->balance_previus = $this->check_cierre_dolar($account,$date_begin);
 
             return $account_new;
         }else{
@@ -1006,6 +1077,8 @@ class CalculationController extends Controller
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
 
+            
+
             return $account_new;
         }else{
             return redirect('/accounts')->withDanger('El codigo uno es igual a cero!');
@@ -1019,19 +1092,21 @@ class CalculationController extends Controller
         {
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->whereRaw(
-                        "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                         [$date_begin, $date_end])
                          ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->whereRaw(
-                        "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                         [$date_begin, $date_end])
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
 
@@ -1042,19 +1117,21 @@ class CalculationController extends Controller
         }else{
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->whereRaw(
-                        "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                         [$date_begin, $date_end])
                          ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as total'))->first();
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->whereRaw(
-                        "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                         [$date_begin, $date_end])
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as total'))->first();
 
@@ -1079,10 +1156,11 @@ class CalculationController extends Controller
         if($coin == 'bolivares'){
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->whereRaw(
-                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                             [$date_begin, $date_end])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
 
@@ -1090,20 +1168,22 @@ class CalculationController extends Controller
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->whereRaw(
-                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                             [$date_begin, $date_end])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
 
         }else{
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->whereRaw(
-                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                             [$date_begin, $date_end])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as total'))->first();
 
@@ -1111,10 +1191,11 @@ class CalculationController extends Controller
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->whereRaw(
-                            "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
+                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                             [$date_begin, $date_end])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as total'))->first();
         }
@@ -1135,12 +1216,14 @@ class CalculationController extends Controller
         {
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                          ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
@@ -1152,12 +1235,14 @@ class CalculationController extends Controller
         }else{
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                          ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as total'))->first();
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('accounts.code_one','>=', $var->code_one)
                         ->whereIn('detail_vouchers.status', ['F','C'])
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as total'))->first();
@@ -1183,6 +1268,7 @@ class CalculationController extends Controller
         if($coin == 'bolivares'){
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
@@ -1191,6 +1277,7 @@ class CalculationController extends Controller
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
@@ -1198,6 +1285,7 @@ class CalculationController extends Controller
         }else{
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as total'))->first();
@@ -1206,6 +1294,7 @@ class CalculationController extends Controller
 
             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->where('accounts.code_one','>=', $code)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as total'))->first();

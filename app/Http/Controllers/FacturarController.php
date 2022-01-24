@@ -134,10 +134,18 @@ class FacturarController extends Controller
                     $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
                 }
 
-                if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
-                    $total_mercancia += ($var->price * $var->amount_quotation) - $percentage;
+                if($coin != "bolivares"){
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                    }else{
+                        $total_servicios += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                    }
                 }else{
-                    $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += ($var->price * $var->amount_quotation) - $percentage;
+                    }else{
+                        $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
+                    }
                 }
              }
             
@@ -613,7 +621,7 @@ class FacturarController extends Controller
             $total_iva = ($base_imponible * $iva_percentage)/100;
 
         }
-     
+        
         //si el monto es menor o igual a cero, quiere decir que el anticipo cubre el total de la factura, por tanto no hay pagos
         if($sin_formato_total_pay > 0){
             $payment_type = request('payment_type');
@@ -1430,20 +1438,22 @@ class FacturarController extends Controller
             } 
 
         }
-
+        
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
         if(($total_pay == $sin_formato_total_pay) || ($sin_formato_total_pay <= 0))
         {
-
             $global = new GlobalController();
+
             $retorno = $global->discount_inventory($quotation->id);
 
+ 
+                $retorno = $global->discount_inventory($quotation->id);
+
             
-            if($retorno != "exito"){
-                return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'');
-            }
-            
-        
+                if($retorno != "exito"){
+                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($retorno);
+                }
+                   
             /*---------------- */
 
                 $header_voucher  = new HeaderVoucher();
@@ -1460,7 +1470,7 @@ class FacturarController extends Controller
 
                 
 
-            
+                
             if($validate_boolean1 == true){
                 $var->created_at = $date_payment;
                 $var->save();
@@ -1565,6 +1575,7 @@ class FacturarController extends Controller
             $quotation->date_billing = $date_begin;
 
             /*Anticipos*/
+            
             if(isset($anticipo) && ($anticipo != 0)){
                 $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('code_one',2)
                                                         ->where('code_two',3)

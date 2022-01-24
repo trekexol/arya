@@ -600,11 +600,11 @@ class AccountController extends Controller
                         $var->coin =  $account->coin;
                        
 
-                        if($account->level == 5){
+                        //if($account->level == 5){
                             $var->rate =  $this->tasa_calculada($account);
-                        }else{
+                        /*}else{
                             $var->rate =  $account->rate;
-                        }
+                        }*/
                        
                         
                         if($account->code_one <= 3){

@@ -1429,6 +1429,8 @@ class Report2Controller extends Controller
     }
 
 
+   
+
     function retencion_iva_expense($date_begin = null,$date_end = null,$level = null)
     {
       

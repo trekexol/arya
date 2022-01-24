@@ -67,6 +67,18 @@
                                 Buscar
                              </button>
                             </div>
+                            <div class="col-sm-3  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
@@ -91,7 +103,11 @@
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
 
-    
+    function exportToExcel(){
+
+        document.getElementById("formPost").action = "{{ route('export_reports.debtstopay') }}";
+        document.getElementById("formPost").submit();
+    }
     
 
     let provider  = "<?php echo $provider->razon_social ?? 0 ?>";  

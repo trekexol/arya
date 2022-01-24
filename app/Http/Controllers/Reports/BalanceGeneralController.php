@@ -92,7 +92,7 @@ class BalanceGeneralController extends Controller
       
         $accounts_all = $global->calculate_all($coin,$date_begin,$date_end);
       
-
+       
         $accounts = $accounts_all->filter(function($account)
         {
             if($account->code_one <= 3){
@@ -100,6 +100,10 @@ class BalanceGeneralController extends Controller
                 $total = $account->balance_previus + $account->debe - $account->haber;
                
                 if ($total != 0) {
+                   /* if(($account->code_one == 1) && ($account->code_two == 1) && ($account->code_three == 3) && 
+                                    ($account->code_four == 1) && ($account->code_five == 1) ){
+                        dd($account);
+                    }*/
                     return $account;
                 }
             }
