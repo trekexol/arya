@@ -388,7 +388,7 @@ class CalculationController extends Controller
                 if(empty($account->rate) || ($account->rate == 0)){
                     $account->rate = 1;
                 }
-                return $account->balance_previus / $account->rate;
+                return $account->balance_previus;
             }
         }else{
             return $account->balance_previus;
@@ -456,6 +456,7 @@ class CalculationController extends Controller
                                         $account->haber = $total_haber->total;
                                         if($account->rate != 0){
                                             $account->balance_previus = $account->balance_previus / $account->rate;
+                                           
                                         }
                                         
                                     }
@@ -641,7 +642,7 @@ class CalculationController extends Controller
             $account_new->debe = $account->debe;
             $account_new->haber = $account->haber;           
             $account_new->balance_previus = $account->balance_previus;
-
+           
             $account_new->balance_previus = $this->check_cierre_dolar($account,$date_begin);
 
             return $account_new;
