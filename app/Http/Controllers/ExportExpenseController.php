@@ -86,26 +86,30 @@ class ExportExpenseController extends Controller
 
         $date_new_end = Carbon::parse($date)->endOfMonth()->format('Y-m-d');
 
-        
-        $content = "";
-        $total_retiene_iva = 0;
-        $date = Carbon::now();
+       
+       // $total_retiene_iva = 0;
+        //$date = Carbon::now();
         $company = Company::on(Auth::user()->database_name)->first();
         
+
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
-                                        ->where('retencion_iva','<>',0)
+                                        ->where('retencion_islr','<>',0)
                                         ->whereRaw(
                                             "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
                                             [$date_new_begin, $date_new_end])
                                         ->get();
+
+
+        $content = '<?xml version="1.0" encoding="UTF-8"?>
+        <RelacionRetencionesISLR RifAgente="'.str_replace("-","",$company->code_rif).'" Periodo="'.date('Ym',strtotime($date)).'">';
+                                
+                            
         if(isset($expenses)){
             foreach ($expenses as  $expense) {
-                $expense->date = Carbon::parse($expense->date);
-                $total_retiene_iva = $this->calculatarTotalProductosSinIva($expense);
+                  $expense->date = Carbon::parse($expense->date);
+               // $total_retiene_iva = $this->calculatarTotalProductosSinIva($expense);
                 
-                $content .= '<?xml version="1.0" encoding="UTF-8"?>
-                <RelacionRetencionesISLR RifAgente="'.str_replace("-","",$company->code_rif).'" Periodo="'.$expense->date->format('Ym').'">
-                 <DetalleRetencion>
+                $content .= '<DetalleRetencion>
                   <RifRetenido>'.str_replace("-","",$expense->providers['code_provider']).'</RifRetenido>
                   <NumeroFactura>'.$expense->invoice.'</NumeroFactura>
                   <NumeroControl>'.$expense->serie.'</NumeroControl>
@@ -113,10 +117,11 @@ class ExportExpenseController extends Controller
                   <CodigoConcepto>'.str_pad($expense->id_islr_concept, 3, "0", STR_PAD_LEFT).'</CodigoConcepto>
                   <MontoOperacion>'.bcdiv($expense->base_imponible,'1',2) .'</MontoOperacion>
                   <PorcentajeRetencion>'.$expense->islr_concepts['value'].'</PorcentajeRetencion>
-                 </DetalleRetencion>
-                </RelacionRetencionesISLR>';
+                 </DetalleRetencion>';
 
-            }    
+            }   
+            
+            $content .= '</RelacionRetencionesISLR>';
         }else{
             $content = "No hay Compras con Retencion de ISLR";
         }
@@ -127,7 +132,7 @@ class ExportExpenseController extends Controller
       
         // make a response, with the content, a 200 response code and the headers
         return Response::make($content, 200, [
-        'Content-type' => 'text/plain', 
+        'Content-type' => 'text/xml', 
         'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
         'Content-Length' => strlen($content)]);
    }
