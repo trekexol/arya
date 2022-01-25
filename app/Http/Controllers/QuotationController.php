@@ -14,6 +14,7 @@ use App\HistorialQuotation;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\InventoryHistories;
 use App\Multipayment;
 use App\Product;
 use App\Quotation;
@@ -287,19 +288,34 @@ class QuotationController extends Controller
     public function selectproduct($id_quotation,$coin,$type)
     {
 
-        $services = null;
+           $services = null;
 
-        $inventories = DB::connection(Auth::user()->database_name)->table('inventories')
-            ->join('products', 'products.id', '=', 'inventories.product_id')
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+     
+            $global = new GlobalController();
+            
+            $inventories = InventoryHistories::on(Auth::user()->database_name)
+            ->join('inventories','inventories.id','inventory_histories.id_product')
+            ->join('products','products.id','inventories.product_id')
+           
+                         
             ->where(function ($query){
-                $query->where('products.type','MERCANCIA')
-                    ->orWhere('products.type','COMBO');
+                 $query->where('products.type','MERCANCIA')
+                     ->orWhere('products.type','COMBO');
             })
-            ->where('products.status',1)
-            ->select('products.*','inventories.amount as amount','inventories.id as id_inventory')
-            ->orderBy('products.code_comercial','desc')
-            ->get();
-        
+ 
+            ->where('inventory_histories.status','A')
+            ->select('inventories.id as id_inventory','inventory_histories.amount_real as amount','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+            ->orderBy('inventory_histories.id','DESC')
+            ->get();     
+             
+             
+            $inventories = $inventories->unique('id');
+     
+            $inventories = $inventories->sortBydesc('amount_real');
+    
+
         $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
         $bcv_quotation_product = $quotation->bcv;

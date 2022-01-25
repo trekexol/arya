@@ -231,7 +231,7 @@ class PDF2Controller extends Controller
                 
                  
 
-                 //if(!(isset($quotation->date_delivery_note))){
+                 if(!(isset($quotation->date_delivery_note))){
                     if(empty($quotation->number_delivery_note)){
                         //Me busco el ultimo numero en notas de entrega
                         $last_number = Quotation::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->orderBy('number_delivery_note','desc')->first();
@@ -247,19 +247,17 @@ class PDF2Controller extends Controller
                     
                     $global = new GlobalController();
                     $retorno = $global->discount_inventory($id_quotation);
-                    
-                    dd($retorno);
 
-                    //if($retorno != 'exito'){
-                     //   return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
-                    //}
+                    if($retorno != 'exito'){
+                       return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
+                    }
                    
 
-                // }else{
+                 }else{
                     if(isset($quotation->bcv)){
                         $bcv = $quotation->bcv;
                      }
-               //  }
+                 }
                  
                                      
             }else{

@@ -372,7 +372,6 @@ class GlobalController extends Controller
 
             } 
 
-           dd($msg);
 
     }
 

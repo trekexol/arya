@@ -121,11 +121,11 @@
                         </div>
                         <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
-                            <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
-                            <input id="id_inventory" type="hidden" class="form-control @error('id_inventory') is-invalid @enderror" name="id_inventory" value="{{ $inventory->id ?? -1 }}" readonly required autocomplete="id_inventory">
-                            <input id="coinhidden" type="hidden" class="form-control @error('coin') is-invalid @enderror" name="coin" value="{{ $coin ?? 'bolivares' }}" readonly required autocomplete="coin">
-                            <input id="bcv" type="hidden" class="form-control @error('bcv') is-invalid @enderror" name="bcv" value="{{ $bcv ?? $bcv_quotation_product }}" readonly required autocomplete="bcv">
-                            <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" readonly required autocomplete="id_user">
+                            <input id="id_quotation" type="text" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
+                            <input id="id_inventory" type="text" class="form-control @error('id_inventory') is-invalid @enderror" name="id_inventory" value="{{ $inventory->id ?? -1 }}" readonly required autocomplete="id_inventory">
+                            <input id="coinhidden" type="text" class="form-control @error('coin') is-invalid @enderror" name="coin" value="{{ $coin ?? 'bolivares' }}" readonly required autocomplete="coin">
+                            <input id="bcv" type="text" class="form-control @error('bcv') is-invalid @enderror" name="bcv" value="{{ $bcv ?? $bcv_quotation_product }}" readonly required autocomplete="bcv">
+                            <input id="id_user" type="text" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" readonly required autocomplete="id_user">
                        
                         
                         <div class="form-group row" id="formcoin">
@@ -314,42 +314,7 @@
                                        
                                             @foreach ($inventories_quotations as $var)
 
-                                            <?php
-                                                if($coin != 'bolivares'){
-                                                    $var->price = bcdiv(($var->price / ($var->rate ?? 1)), '1', 2);
-                                                }
-                                                
-                                                $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
 
-                                                $total_less_percentage = ($var->price * $var->amount_quotation) - $percentage;
-
-
-                                            ?>
-                                                <tr>
-                                                <td style="text-align: right">{{ $var->code}}</td>
-                                                @if(isset($var->retiene_iva) && ($var->retiene_iva == 1))
-                                                    <td style="text-align: right">{{ $var->description}} (E)</td>
-                                                @else
-                                                    <td style="text-align: right">{{ $var->description}}</td>
-                                                @endif
-                                                
-                                                <td style="text-align: right">{{ $var->amount_quotation}}</td>
-                                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
-                                                <td style="text-align: right">{{number_format($var->discount, 0, '', '.')}}%</td>
-                                                
-                                                <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
-                                               
-
-                                                <?php
-                                                    $suma += $total_less_percentage;
-                                                    
-                                                ?>
-                                                    <td style="text-align: right">
-                                                        <a href="{{ route('quotations.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                                                        <a href="#" class="delete" data-id={{$var->quotation_products_id}} data-description={{$var->description}} data-id-quotation={{$quotation->id}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                                                    </td>
-                                            
-                                                </tr>
                                             @endforeach
 
                                             <?php
