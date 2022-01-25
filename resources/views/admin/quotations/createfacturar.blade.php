@@ -283,9 +283,9 @@
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
 
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
+                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$datenow ?? null}}" readonly>
 
-                        <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow}}" readonly>
+                        <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
 
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
 
@@ -901,7 +901,7 @@
 
         $("#date-begin").on('change',function(){
             document.getElementById("date-begin-form").value = $(this).val();
-            
+           
         });
 
         $("#date-payment").on('change',function(){
