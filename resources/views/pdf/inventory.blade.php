@@ -49,16 +49,16 @@
   </tr> 
   @foreach ($inventories as $var)
       <?php
-      $percentage = ($var->products['price'] * 16) /100;
+      $percentage = ($var->price * 16) /100;
 
-      $total = $percentage + $var->products['price'];
+      $total = $percentage + $var->price;
       ?>
     <tr>
-      <th style="text-align: center; font-weight: normal;">{{ $var->products['code_comercial'] }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ $var->products['description'] }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 0, '', '.') }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->products['price'], 2, ',', '.')  }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format($percentage, 2, ',', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_real, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(16, 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
