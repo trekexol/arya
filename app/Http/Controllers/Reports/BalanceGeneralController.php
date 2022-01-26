@@ -100,7 +100,7 @@ class BalanceGeneralController extends Controller
                 $total = $account->balance_previus + $account->debe - $account->haber;
                
                 if ($total != 0) {
-                   /* if(($account->code_one == 1) && ($account->code_two == 1) && ($account->code_three == 3) && 
+                    /*if(($account->code_one == 1) && ($account->code_two == 1) && ($account->code_three == 3) && 
                                     ($account->code_four == 1) && ($account->code_five == 1) ){
                         dd($account);
                     }*/

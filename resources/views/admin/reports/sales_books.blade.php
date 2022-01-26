@@ -54,14 +54,28 @@
   </tr> 
   <?php
     $total_base_imponible = 0;
+    $total_amount = 0;
+    $total_amount_exento = 0;
+    $total_retencion_iva = 0;
+    $total_retencion_islr = 0;
+    $total_anticipo = 0;
+    $total_amount_iva = 0;
+    $total_amount_with_iva = 0;
   ?>
   @foreach ($quotations as $quotation)
       <?php
         $total_base_imponible += $quotation->base_imponible;
+        $total_amount += $quotation->amount;
+        $total_amount_exento += $quotation->amount_exento;
+        $total_retencion_iva += $quotation->retencion_iva;
+        $total_retencion_islr += $quotation->retencion_islr;
+        $total_anticipo += $quotation->anticipo;
+        $total_amount_iva += $quotation->amount_iva;
+        $total_amount_with_iva += $quotation->amount_with_iva;
       ?>
     <tr>
       
-      <td style="text-align: center; ">{{ $quotation->id ?? ''}}</td>
+      <td style="text-align: center; ">{{ $quotation->number_invoice ?? $quotation->id ?? ''}}</td>
       <td style="text-align: center; ">{{ $quotation->date_billing ?? ''}}</td>
       
       <td style="text-align: center; font-weight: normal;">{{ $quotation->clients['cedula_rif'] ?? '' }}</td>
@@ -95,15 +109,15 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th> 
     <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_retencion_islr, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_anticipo, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_with_iva, 2, ',', '.') }}</th>
   </tr> 
 </table>
 
