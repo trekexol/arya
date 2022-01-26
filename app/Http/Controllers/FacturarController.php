@@ -560,12 +560,10 @@ class FacturarController extends Controller
     }
 
 
-    public function storefactura(Request $request)
+public function storefactura(Request $request)
     {
-        
-        //dd($request);
         $data = request()->validate([
-            
+        
         ]);
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
@@ -1453,16 +1451,15 @@ class FacturarController extends Controller
         {
             $global = new GlobalController();
 
-            $retorno = $global->discount_inventory($quotation->id);
-
- 
+            if(empty($quotation->date_billing) && empty($quotation->date_delivery_note) && empty($quotation->date_order)){
+                
                 $retorno = $global->discount_inventory($quotation->id);
-
             
                 if($retorno != "exito"){
                     return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($retorno);
                 }
-                   
+            }
+        
             /*---------------- */
 
                 $header_voucher  = new HeaderVoucher();
@@ -1672,6 +1669,8 @@ class FacturarController extends Controller
             
             $quotation->save();
 
+            /*---------------------- */
+
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
 
@@ -1755,31 +1754,18 @@ class FacturarController extends Controller
             }
              
             //Aqui pasa los quotation_products a status C de Cobrado
-           DB::connection(Auth::user()->database_name)->table('quotation_products')
+            DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
                                                         ->update(['status' => 'C']);
-            
-            
-           /* $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                                                    ->where('id_quotation', '=', $quotation->id)->get();
-        
-            foreach($quotation_products as $det_products){
 
-                $transaction = new GlobalController;
-                //$transaction->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
-                
-            }  */
-
- 
-
-           /* $global = new GlobalController;                                                
-            $global->procesar_anticipos($quotation,$sin_formato_total_pay);*/
+            $global = new GlobalController;                                                
+            $global->procesar_anticipos($quotation,$sin_formato_total_pay);
             
             /*------------------------------------------------- */
 
-           // $historial_quotation = new HistorialQuotationController();
+            $historial_quotation = new HistorialQuotationController();
 
-           // $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
+            $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
 
             return redirect('quotations/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
 
