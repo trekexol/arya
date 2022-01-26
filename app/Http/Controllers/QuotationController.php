@@ -78,6 +78,7 @@ class QuotationController extends Controller
 
     public function createquotationclient($id_client)
     {
+        
         $client = null;
                 
         if(isset($id_client)){
@@ -137,6 +138,7 @@ class QuotationController extends Controller
 
     public function create($id_quotation,$coin)
     {
+     
         
         if($this->userAccess->validate_user_access($this->modulo)){
             $quotation = null;
@@ -155,8 +157,7 @@ class QuotationController extends Controller
                                 ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
                                 ->get(); 
-            
-                
+
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');  
 
@@ -302,7 +303,8 @@ class QuotationController extends Controller
                          
             ->where(function ($query){
                  $query->where('products.type','MERCANCIA')
-                     ->orWhere('products.type','COMBO');
+                     ->orWhere('products.type','COMBO')
+                     ->orWhere('products.type','SERVICIOS');
             })
  
             ->where('inventory_histories.status','A')
