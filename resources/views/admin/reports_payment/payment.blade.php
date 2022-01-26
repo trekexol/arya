@@ -56,15 +56,14 @@
         @if (empty($vendor) && empty($provider))
         <th style="text-align: center; width:20%;">Vendedor</th>
         @endif
-        <th style="text-align: center;">Monto Factura</th>
-        <th style="text-align: center;">Monto Cobrado</th>
+        <th style="text-align: center;">Monto</th>
       </tr> 
       @foreach ($quotation_payments as $quotation)
         <?php 
           if(isset($coin) && ($coin != 'bolivares')){
-              $quotation->amountp = $quotation->amountp / ($quotation->rate ?? 1);
+              $quotation->amount = $quotation->amount / ($quotation->rate ?? 1);
           }
-          $total_amount += $quotation->amountp;
+          $total_amount += $quotation->amount;
         ?>
         <tr>
           <th style="text-align: center; font-weight: normal;">{{ $quotation->number ?? ''}}</th>
@@ -75,12 +74,7 @@
           @if (empty($vendor) && empty($provider))
             <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}{{ $quotation->surname_vendor ?? ''}}</th>
           @endif
-
-
-
-
-          <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amountp ?? 0), 2, ',', '.') }}</th>
-          <th style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</th>
+          <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount ?? 0), 2, ',', '.') }}</th>
         </tr> 
       @endforeach 
 

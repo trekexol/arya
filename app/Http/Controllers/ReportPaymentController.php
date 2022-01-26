@@ -127,7 +127,8 @@ class ReportPaymentController extends Controller
             ->whereRaw("(DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end_consult])
             ->where('quotations.id_client',$id_client_or_provider)
-            ->select('quotation_payments.created_at','quotation_payments.reference','quotation_payments.rate','quotation_payments.payment_type','quotation_payments.payment_type','accounts.description as account_description','quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
+            ->select('quotation_payments.*','accounts.description as account_description',
+            'quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
             ->orderBy('quotations.date_billing','desc')
             ->get();
 
@@ -143,7 +144,8 @@ class ReportPaymentController extends Controller
             ->whereRaw("(DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end_consult])
             ->where('expenses_and_purchases.id_provider',$id_client_or_provider)
-            ->select('quotation_payments.created_at','quotation_payments.reference','quotation_payments.rate','quotation_payments.payment_type','quotation_payments.payment_type','accounts.description as account_description','quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
+            ->select('expense_payments.*','accounts.description as account_description',
+            'expense_payments.id as number','expenses_and_purchases.rate as rate')
             ->orderBy('expenses_and_purchases.date','desc')
             ->get();
         
@@ -159,7 +161,8 @@ class ReportPaymentController extends Controller
             ->whereRaw("(DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end_consult])
             ->where('quotations.id_vendor',$id_client_or_provider)
-            ->select('quotation_payments.created_at','quotation_payments.reference','quotation_payments.rate','quotation_payments.payment_type','quotation_payments.payment_type','accounts.description as account_description','quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
+            ->select('quotation_payments.*','accounts.description as account_description',
+            'quotations.number_invoice as number')
             ->orderBy('quotation_payments.created_at','desc')
             ->get();
 
@@ -176,7 +179,7 @@ class ReportPaymentController extends Controller
             ->where('quotation_payments.status','1')
             ->whereRaw("(DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_payments.created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end_consult])
-            ->select('quotation_payments.amount as amountp','quotation_payments.created_at','quotation_payments.reference','quotation_payments.rate','quotation_payments.payment_type','quotation_payments.payment_type','accounts.description as account_description','quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
+            ->select('quotation_payments.*','accounts.description as account_description','quotations.number_invoice as number','vendors.name as name_vendor','vendors.surname as surname_vendor')
             ->orderBy('quotation_payments.created_at','desc')
             ->get();
 
@@ -190,7 +193,7 @@ class ReportPaymentController extends Controller
             $quotation->payment_type = $global->asignar_payment_type($quotation->payment_type);
            
 
-            /*if ($typeperson == 'Cliente' || $typeperson == 'Vendedor') {
+            if ($typeperson == 'Cliente' || $typeperson == 'Vendedor') {
             
             $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
             ->where('id_quotation', '=',$quotation->id_quotation)
@@ -212,7 +215,7 @@ class ReportPaymentController extends Controller
                 } 
                 
                 
-            } */
+            } 
             //dd($anticiposs);
             //$array_antticipos[] = [$anticiposs->id_account];
 
