@@ -71,8 +71,7 @@
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr>
-                <th class="text-center">Id</th> 
+            <tr> 
                 <th class="text-center">Código</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Tipo</th>
@@ -89,7 +88,7 @@
                 @else  
                     @foreach ($products as $product)
                         <tr>
-                            <td class="text-center">{{$product->id}}</td>
+                           
                             <td class="text-center">{{$product->code_comercial}}</td>
                             <td class="text-center">{{$product->description}}</td>
                             <td class="text-center">{{$product->type}}</td>
