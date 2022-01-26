@@ -41,6 +41,12 @@ class BankMovementController extends Controller
         
         }
 
+        $transaction = new GlobalController;
+        $transaction_res = $transaction->transaccion_inv('venta',68,'prueba',1,10,'2022-01-20','Matriz','Matriz',7,0);
+               
+        dd($transaction_res); 
+        
+
        return view('admin.bankmovements.index',compact('accounts','accounts_USD'));
    }
 
@@ -73,7 +79,7 @@ class BankMovementController extends Controller
                             'header_vouchers.reference as header_reference','header_vouchers.date as header_date',
                             'accounts.description as account_description','accounts.code_one as account_code_one',
                             'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
-                            'accounts.code_four as account_code_four','accounts.code_five as account_code_five',)
+                            'accounts.code_four as account_code_four','accounts.code_five as account_code_five')
                             ->orderBy('header_vouchers.id','desc')
                             ->get();
 

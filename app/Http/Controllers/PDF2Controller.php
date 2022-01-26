@@ -249,7 +249,7 @@ class PDF2Controller extends Controller
                     $retorno = $global->discount_inventory($id_quotation);
 
                     if($retorno != 'exito'){
-                        return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
+                       return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
                     }
                    
 

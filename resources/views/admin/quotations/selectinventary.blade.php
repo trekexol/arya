@@ -79,7 +79,7 @@
                             <td>
                                 <a href="{{ route('quotations.createproduct',[$id_quotation,$coin,$var->id_inventory]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
-                            <td>{{ $var->code_comercial }}</td>
+                            <td>{{ $var->code_comercial}}</td>
                             <td>{{ $var->description}}</td>
                             <td>{{ $var->amount ?? 0}}</td>
                            

@@ -8,6 +8,7 @@ use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
 use App\Client;
+use App\Http\Controllers\Globals\HistoryInventoriesController;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use Illuminate\Http\Request;
@@ -460,6 +461,8 @@ class FacturarController extends Controller
 
         $date_payment = request('date-payment');
 
+
+
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
 
@@ -476,8 +479,17 @@ class FacturarController extends Controller
                 ->where('id_quotation', '=', $quotation->id)
                 ->update(['status' => 'C']);
 
+
         
-       
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $quotation->id)->get();
+        
+                foreach($quotation_products as $det_products){
+        
+                $transaction = new GlobalController;
+                $transaction->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+        
+                }   
         /*Busqueda de Cuentas*/
 
         //Cuentas por Cobrar Clientes
@@ -1443,15 +1455,16 @@ class FacturarController extends Controller
         {
             $global = new GlobalController();
 
-            if(empty($quotation->date_billing) && empty($quotation->date_delivery_note) && empty($quotation->date_order)){
-                
+            $retorno = $global->discount_inventory($quotation->id);
+
+ 
                 $retorno = $global->discount_inventory($quotation->id);
+
             
                 if($retorno != "exito"){
                     return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($retorno);
                 }
-            }
-        
+                   
             /*---------------- */
 
                 $header_voucher  = new HeaderVoucher();
@@ -1661,8 +1674,6 @@ class FacturarController extends Controller
             
             $quotation->save();
 
-            /*---------------------- */
-
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
 
@@ -1746,9 +1757,21 @@ class FacturarController extends Controller
             }
              
             //Aqui pasa los quotation_products a status C de Cobrado
-            DB::connection(Auth::user()->database_name)->table('quotation_products')
+           DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
                                                         ->update(['status' => 'C']);
+            
+            
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                                                    ->where('id_quotation', '=', $quotation->id)->get();
+        
+            foreach($quotation_products as $det_products){
+
+                $transaction = new GlobalController;
+                $transaction->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+                
+            } 
+
 
             $global = new GlobalController;                                                
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);

@@ -13,7 +13,7 @@
                 <input type="hidden" name="id_vendor" value="{{$vendor->id ?? null}}" readonly>
 
                 <div class="card-header text-center h4">
-                        Pagos Realizados;
+                        Pagos Realizados
                 </div>
 
                 <div class="card-body">

@@ -14,6 +14,7 @@ use App\HistorialQuotation;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\InventoryHistories;
 use App\Multipayment;
 use App\Product;
 use App\Quotation;
@@ -77,6 +78,7 @@ class QuotationController extends Controller
 
     public function createquotationclient($id_client)
     {
+        
         $client = null;
                 
         if(isset($id_client)){
@@ -136,6 +138,7 @@ class QuotationController extends Controller
 
     public function create($id_quotation,$coin)
     {
+     
         
         if($this->userAccess->validate_user_access($this->modulo)){
             $quotation = null;
@@ -154,8 +157,7 @@ class QuotationController extends Controller
                                 ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
                                 ->get(); 
-            
-                
+
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');  
 
@@ -287,19 +289,35 @@ class QuotationController extends Controller
     public function selectproduct($id_quotation,$coin,$type)
     {
 
-        $services = null;
+           $services = null;
 
-        $inventories = DB::connection(Auth::user()->database_name)->table('inventories')
-            ->join('products', 'products.id', '=', 'inventories.product_id')
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+     
+            $global = new GlobalController();
+            
+            $inventories = InventoryHistories::on(Auth::user()->database_name)
+            ->join('inventories','inventories.id','inventory_histories.id_product')
+            ->join('products','products.id','inventories.product_id')
+           
+                         
             ->where(function ($query){
-                $query->where('products.type','MERCANCIA')
-                    ->orWhere('products.type','COMBO');
+                 $query->where('products.type','MERCANCIA')
+                     ->orWhere('products.type','COMBO')
+                     ->orWhere('products.type','SERVICIOS');
             })
-            ->where('products.status',1)
-            ->select('products.*','inventories.amount as amount','inventories.id as id_inventory')
-            ->orderBy('products.code_comercial','desc')
-            ->get();
-        
+ 
+            ->where('inventory_histories.status','A')
+            ->select('inventories.id as id_inventory','inventory_histories.amount_real as amount','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+            ->orderBy('inventory_histories.id','DESC')
+            ->get();     
+             
+             
+            $inventories = $inventories->unique('id');
+     
+            $inventories = $inventories->sortBydesc('amount_real');
+    
+
         $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
         $bcv_quotation_product = $quotation->bcv;
@@ -786,7 +804,24 @@ class QuotationController extends Controller
         }else{
             
             $quotation_product->status = 'X'; 
-            $quotation_product->save(); 
+            $quotation_product->save();
+            $quotation = Quotation::on(Auth::user()->database_name)->find(request('id_quotation_modal'));
+
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('id', '=',request('id_quotation_product_modal'))->get();
+
+            foreach($quotation_products as $det_products){
+
+            $transaction = new GlobalController;
+            $transaction->transaction_inv('aju_nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+
+
+            } 
+
+
+
+
+
         }
 
         $historial_quotation = new HistorialQuotationController();
@@ -926,6 +961,18 @@ class QuotationController extends Controller
                                 ->where('id_quotation',$quotation->id)
                                 ->update(['status' => 'X']);
     
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                                ->where('id_quotation', '=', $quotation->id)->get();
+
+                foreach($quotation_products as $det_products){
+
+                $transaction = new GlobalController;
+                $transaction->transaction_inv('rev_venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
+
+                } 
+
+
+
                 $quotation->status = 'X';
                 $quotation->save();
 
