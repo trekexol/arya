@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.store_debtstopay') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.store_debtstopay') }}">
                     @csrf
 
                 <input type="hidden" name="id_provider" value="{{$provider->id ?? null}}" readonly>
