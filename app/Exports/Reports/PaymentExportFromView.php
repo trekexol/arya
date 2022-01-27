@@ -21,7 +21,9 @@ class PaymentExportFromView implements FromView
     {
         $report = new PaymentExportController();
         
-        return $report->payment_pdf($this->request->coin,$this->request->date_begin,$this->request->date_end,$this->request->typeperson,$this->request->id_client_or_provider = null);
+        return $report->payment_pdf($this->request->coin ?? "bolivares",$this->request->date_begin,
+        $this->request->date_end,$this->request->typeperson,
+        $this->request->id_client_or_provider ?? null);
     }
 
     

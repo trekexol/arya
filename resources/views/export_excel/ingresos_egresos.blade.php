@@ -24,14 +24,6 @@
 <body>
 
 
-  <table>
-    <tr>
-      <th style="text-align: left; font-weight: normal; width: 15%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
-      </th>
-      <th style="text-align: left; font-weight: normal; width: 85%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->code_rif ?? ''}} </h4></th>
-    </tr> 
-  </table>
-  
   <h4 style="color: black; text-align: center; font-weight: bold;">Ingresos y Egresos</h4>
 
   <h5 style="color: black; text-align: center; font-weight: bold;">Periodo desde {{ date('d-m-Y', strtotime( $date_begin ?? $detail_old->created_at ?? '')) }} al {{ date('d-m-Y', strtotime( $date_end ?? $datenow)) }}</h5>
