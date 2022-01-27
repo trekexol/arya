@@ -3,12 +3,12 @@
 namespace App\Exports\Reports;
 
 
-use App\Http\Controllers\Exports\Reports\BalanceGeneralExportController;
+use App\Http\Controllers\Exports\Reports\IngresosEgresosExportController;
 use Carbon\Carbon;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-class BalanceGeneralExportFromView implements FromView
+class IngresosEgresosExportFromView implements FromView
 {
     public $request;
 
@@ -19,12 +19,15 @@ class BalanceGeneralExportFromView implements FromView
 
     public function view(): View
     {
-        $report = new BalanceGeneralExportController();
+        $report = new IngresosEgresosExportController();
         
-        return $report->balance_pdf($this->request->coin ?? "bolivares",$this->request->date_begin,$this->request->date_end,
+        return $report->balance_ingresos_pdf($this->request->coin ?? "bolivares",$this->request->date_begin,$this->request->date_end,
                                         $this->request->level ?? null);
+                                        
     }
-   
+
+    
+
     public function setter($request){
         $this->request = $request;
      }

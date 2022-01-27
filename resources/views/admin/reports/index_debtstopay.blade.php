@@ -104,9 +104,10 @@
     });
 
     function exportToExcel(){
-
+        var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.debtstopay') }}";
         document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
     }
     
 
