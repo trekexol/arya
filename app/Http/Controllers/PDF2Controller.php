@@ -16,6 +16,7 @@ use App\ExpensesDetail;
 use App\HeaderVoucher;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use App\Inventory;
+use App\InventoryHistories;
 use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
@@ -939,9 +940,29 @@ class PDF2Controller extends Controller
       
         $pdf_inventory = App::make('dompdf.wrapper');
 
-        $inventories = Inventory::on(Auth::user()->database_name)->where('status','1')->orderBy('id','desc')->get();
+        //$inventories = Inventory::on(Auth::user()->database_name)->where('status','1')->orderBy('id','desc')->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
+
+        $inventories = InventoryHistories::on(Auth::user()->database_name)
+        ->join('inventories','inventories.id','inventory_histories.id_product')
+        ->join('products','products.id','inventories.product_id')
+      
+                    
+        ->where(function ($query){
+            $query->where('products.type','MERCANCIA')
+                ->orWhere('products.type','COMBO');
+        })
+       
+       ->where('inventory_histories.status','A')
+       ->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+       ->orderBy('inventory_histories.id' ,'DESC')
+       ->get();     
+        
+        
+        $inventories = $inventories->unique('id');
+
+        $inventories = $inventories->sortBydesc('amount_real');
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 

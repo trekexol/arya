@@ -582,90 +582,84 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_product,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
 
         if ($sucursal == 'Matriz') {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
+            ->where('id_product','=',$id_inventary)
             ->select('amount_real')
-            ->last(); 
+            ->get()->last(); 
         } else {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
-            ->select('inventory_histories.*')
-            ->last(); 
+            ->where('id_product','=',$id_inventary)
+            ->select('amount_real')
+            ->get()->last();
         }
-      
-          if (empty($inventories_quotations)) {
-          $amount_real = 0;
-          } else {
-             
-             $amount_real = 0;
-             $amount_real = $inventories_quotations->amount_real;
-         }
-      
-          return $amount_real;
-    }
-
     
-    function transaccion_inv($type,$id_product,$description = '-',$amount,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0){
-      
-        $msg = '';    
-    
-        if ($branch == 'Matriz') { // todo
-            $inventories_quotations = DB::connection(Auth::user()->database_name)
-            ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
-            ->select('inventory_histories.*')
-            ->last(); 
-        } else { // sucursal
-            $inventories_quotations = DB::connection(Auth::user()->database_name)
-            ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
-            ->select('inventory_histories.*')
-            ->last(); 	
-        }
- 
-
-        
-        /*DB::connection(Auth::user()->database_name)->table('anticipos')
-                                                    ->where('id', $anticipo->id)
-                                                    ->update(['status' => 'C']); */
-       
-        //DB::connection(Auth::user()->database_name)->table('anticipo_quotations')->insert(['id_quotation' => $quotation->id,'id_anticipo' => $anticipo->id]);
-           
-        
         if (empty($inventories_quotations)) {
-        $msg = 'El Producto no tiene inventario o no existe.';
+        $amount_real = 0;
         } else {
             
             $amount_real = 0;
             $amount_real = $inventories_quotations->amount_real;
-    
         }
     
-        $datev = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
-        
-        $transaccion = 0;
+        return $amount_real;
+    }
     
-
-        if ($amount > 0 ) {
-
-            switch ($type) {
-                case 'compra':
-                  $transaccion = $amount_real+$amount;
-                  break;
-                case 'venta':
-      
-                      if ($id_historial_inv != 0) {
- 
-                             $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
-                             ->table('inventory_histories')
-                             ->where('id','=',$id_historial_inv)
-                             ->select('inventory_histories.*')
-                             ->get();   
+    
+    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0,$id){
+    
+        $msg = 'Sin Registro';   
+    
+       // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
+    
+            if ($branch == 'Matriz') { // todo
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                ->table('inventory_histories')
+                ->where('id_product','=',$id_inventary)
+                ->select('*')
+                ->get()->last();
+            } else { // sucursal
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                ->table('inventory_histories')
+                ->where('id_product','=',$id_inventary)
+                ->select('*')
+                ->get()->last();	
+            }
+    
+    
+                if (empty($inventories_quotations)) {
+                    $msg = 'El Producto no tiene inventario o no existe.';
+                    $amount_real = 0;
+                } else {
+                    
+                    $amount_real = $inventories_quotations->amount_real;
+    
+                }
+    
+            $datev = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+            
+            $transaccion = 0;
+            $agregar = 'true';
+    
+            if ($amount > 0 ) {
+    
+                switch ($type) {
+                    case 'compra':
+                    $transaccion = $amount_real+$amount;
+                    break;
+                    case 'venta':
+    
+                    if ($id_historial_inv != 0) {
+    
+                        $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                        ->table('inventory_histories')
+                        ->where('id','=',$id_historial_inv)
+                        ->select('id','amount')
+                        ->get()->last();  
                         
                             if (!empty($inventories_quotations_hist)) {
                                 
@@ -677,146 +671,162 @@ class GlobalController extends Controller
                                     }
                                 
                             }
-
-                      } else {
-                      
-                      $transaccion = $amount_real-$amount;
-      
-                      }    
-      
-                  break;          
-                case 'entrada':
-                  $transaccion = $amount_real+$amount;
-                  break;      
-                case 'salida':
-                  $transaccion = $amount_real-$amount;
-                  break;
-                case 'nota':
-                         
-                         if ($id_historial_inv != 0) {
+    
+                    } else {
+                    $transaccion = $amount_real-$amount;
+                    }    
+    
+                    break;          
+                    case 'entrada':
+                    $transaccion = $amount_real+$amount;
+                    break;      
+                    case 'salida':
+                    $transaccion = $amount_real-$amount;
+                    break;
+                    case 'nota':
                             
+                        if ($id_historial_inv != 0) {
+       
                             $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
                             ->where('id','=',$id_historial_inv)
-                            ->select('inventory_histories.*')
-                            ->get();  
+                            ->select('id','amount')
+                            ->get()->last();  
+                        
 
-                             if (!empty($inventories_quotations_hist)) {
-                         
+                            if (!empty($inventories_quotations_hist)) {
+                        
                                 
                                 if ($inventories_quotations_hist->amount == $amount) {
                                     $amount_nota = 0;
-                                    $agregar = false;   
+                                    $transaccion = $amount_real;
+                                    $agregar = 'false';   
                                 } else {
-                                    $amount_nota = $inventories_quotations_hist->amount;	
-                                    $agregar = true;
+
+                                    if ($inventories_quotations_hist->amount > $amount) {
+                                        $transaccion =  $amount_real+$amount;	
+                                        $agregar = 'nota_rev';                                 
+                                    }  
+
+                                    if ($inventories_quotations_hist->amount < $amount) {
+                                        $transaccion = $amount_real-$amount;	
+                                        $agregar = 'true';                                   
+                                    }  
+
                                 }
-
-                                 
-                             } 
-      
-                         } else { 
-                         
-                         $amount_nota = 0;
-                         $agregar = true;
-      
-                         }
-      
-                      $transaccion = ($amount_real+$amount_nota)-$amount;
-      
-      
-                      break;               
-                    case 'rev_nota':
-                      $transaccion = $amount_real+$amount;
-                      break;
-      
-                    case 'rev_venta':
-      
-                     $transaccion = $amount_real+$amount;
-      
-                     break;  
-      
-                }
-
-
-                    if ($transaccion < 0) {
-                    $msg = "La cantidad es mayor a la disponible en inventario";
-                 
-                    } else {
-
-                        $user       =   auth()->user();
-                       
-                               
-           $new = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-            'id ' => 'AUTO',
-            'date' => $date,
-            'id_product' => $id_product,
-            'description' => $description,
-            'type' => $type,
-            'price' => $price,
-            'amount' => $amount,
-            'amount_real' => $transaccion,
-            'status' => 'A',
-            'branch' => $branch,
-            'centro_cost' => $centro_cost,
-            'number_invoice' => $number_fac_note,
-            'user' => $user->id]);
-
-
-                      switch ($type) {
-                        case 'compra':
-
-                          $msg = 'La Compra fue registrada con exito';
-                          break;
-                        case 'venta':
-       
-                          $msg = 'La Venta fue registrada con exito';
-                         
-                          break;
-                        case 'nota':
-                          
-                         /*if ($agregar == true) {
-                          $new = DBinsert($conn,'inventario_historial',$a_campos);	
-                          DBupdate($conn,"facturas_detalle",array('id_historial_inv'=>$new),'num_factura = ? and status = ? and id = ?',array($num_nota,'E',$id_factura));               
-                                  
-                          } */
-                          $msg = 'La Nota fue registrada con exito';
-                          break;  
-
-                         case 'rev_nota':
-                          
-                          $msg = 'Reverso de Nota exitoso';
-                          break;   
-
-                        case 'rev_venta':
-                       
-                          $msg = 'Reverso de Factura exitoso';
-                          
-                          break;                                           
-                        case 'entrada':
-                          
-                          $msg = 'Agregado a inventario exitosamente';
-                          break;
-                        case 'salida':
-                         
-                          $msg = 'Salida de inventario exitoso';
-                          break;
-                        default:
-                          $msg = 'La operacion no es valida';
-                          break;
+    
+                                
+                            } 
+    
+                        } else {
+                                $transaccion = $amount_real-$amount; 
                         }
-                  }
+    
+                    break;               
+                    case 'rev_nota':
+                    $transaccion = $amount_real+$amount;
+                    break;
+                    case 'aju_nota':
+                        $transaccion = $amount_real+$amount;
+                    break;  
+                    case 'rev_venta':
+    
+                    $transaccion = $amount_real+$amount;
+    
+                    break;  
+    
+                }
+    
+    
+                    if ($transaccion < 0) {
+    
+                       $msg = "La cantidad es mayor a la disponible en inventario";
+                
+                    } else {
+    
+                        $user       =   auth()->user();
+                    
+                        if ($agregar != 'false') {
+                            
+                            if ($agregar == 'nota_rev') {
+                                $type = 'aju_nota';  
+                            }
 
+                             DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                            'date' => $date,
+                            'id_product' => $id_inventary,
+                            'description' => $description,
+                            'type' => $type,
+                            'price' => $price,
+                            'amount' => $amount,
+                            'amount_real' => $transaccion,
+                            'status' => 'A',
+                            'branch' => $branch,
+                            'centro_cost' => $centro_cost,
+                            'number_invoice' => $number_fac_note,
+                            'user' => $user->id]);
+                            
+                            $id_last = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->select('id')
+                            ->get()->last();                             
 
-
-        } else { // condicion cantidad
-
+                            DB::connection(Auth::user()->database_name)->table('quotation_products')
+                            ->where('id','=',$id)
+                            ->update(['id_inventory_histories' => $id_last->id]);
+                        
+                        }
+    
+                        switch ($type) {
+                            case 'compra':
+    
+                            $msg = 'La Compra fue registrada con exito';
+                            break;
+                            case 'venta':
+    
+                            $msg = 'La Venta fue registrada con exito';
+                            
+                            break;
+                            case 'nota':
+                            
+                            $msg = 'exito';//'La Nota fue registrada con exito';
+                            break;  
+    
+                            case 'rev_nota':
+                            
+                            $msg = 'Reverso de Nota exitoso';
+                            break;   
+                            case 'aju_nota':
+                            
+                                $msg = 'Eliminacion de producto de la Nota exitoso';
+                                break;      
+                            case 'rev_venta':
+                        
+                            $msg = 'Reverso de Factura exitoso';
+                            
+                            break;                                           
+                            case 'entrada':
+                            
+                            $msg = 'Agregado a inventario exitosamente';
+                            break;
+                            case 'salida':
+                            
+                            $msg = 'Salida de inventario exitoso';
+                            break;
+                            default:
+                            $msg = 'La operacion no es valida';
+                            break;
+                        }
+                    }
+    
+    
+    
+            } else { // condicion cantidad
             $msg = "La cantidad de la oprecion debe ser mayor a cero";
-  
-       }
-
-       return $msg;
-
+            }
+    
+    return $msg;
+    
     } // fin de funcion transaccion
    
 }
