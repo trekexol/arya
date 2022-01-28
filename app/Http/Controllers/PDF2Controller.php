@@ -567,7 +567,7 @@ class PDF2Controller extends Controller
                 
                 
                 
-                $quotation->date_delivery_note = $date;
+                $quotation->date_order = $date;
                 $quotation->save();
 
                 if(isset($coin) && ($coin != 'bolivares')){
