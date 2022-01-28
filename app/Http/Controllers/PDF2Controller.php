@@ -567,7 +567,7 @@ class PDF2Controller extends Controller
                 
                 
                 
-                $quotation->date_delivery_note = $date;
+                $quotation->date_order = $date;
                 $quotation->save();
 
                 if(isset($coin) && ($coin != 'bolivares')){
@@ -810,7 +810,7 @@ class PDF2Controller extends Controller
              if(isset($expense)){
                
                 $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                           ->join('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
+                                                           ->rightJoin('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
                                                            ->where('expenses_details.id_expense',$expense->id)
                                                            ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',

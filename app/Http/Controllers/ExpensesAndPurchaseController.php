@@ -132,15 +132,17 @@ class ExpensesAndPurchaseController extends Controller
 
         if(isset($expense)){
            
-            $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                           ->join('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
+            $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('inventories', 'products.id', '=', 'inventories.product_id')
+                                                           ->rightJoin('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
                                                            ->where('expenses_details.id_expense',$expense->id)
+                                                           ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',
                                                            'expenses_details.amount as amount_expense','expenses_details.exento as retiene_iva_expense'
                                                            ,'expenses_details.islr as retiene_islr_expense')
                                                            ->get(); 
 
-           
+            
            $total= 0;
            $base_imponible= 0;
 
@@ -189,7 +191,7 @@ class ExpensesAndPurchaseController extends Controller
 
             return view('admin.expensesandpurchases.createdeliverynote',compact('coin','expense','datenow','bcv','total_retiene_iva','total_retiene_islr'));
         }else{
-            return redirect('/expensesandpurchases')->withDanger('La cotizacion no existe');
+            return redirect('/expensesandpurchases')->withDanger('La compra no existe');
         } 
         
    }
