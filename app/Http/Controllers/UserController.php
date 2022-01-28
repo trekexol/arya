@@ -76,6 +76,10 @@ class UserController extends Controller
            
         ]);
 
+        if($request->password != $request->password_confirmation){
+            return redirect('/users')->withDanger('Las contraseñas no coinciden!');
+        }
+
         $user_conected  =   auth()->user();
 
         $user_login = new User();
@@ -177,6 +181,7 @@ class UserController extends Controller
         $user_rol = $users->role_id;
         $user_status = $users->status;
       
+        
 
         $request->validate([
             'name'      =>'required|string|max:255',
@@ -186,8 +191,13 @@ class UserController extends Controller
             'status'     =>'max:2',
         ]);
 
-        if(isset($password)){
-            $password = Hash::make(request('password'));
+
+        if(isset($request->password)){
+            if($request->password != $request->password_confirmation){
+                return redirect('/users')->withDanger('Las contraseñas no coinciden!');
+            }
+           
+            $password = Hash::make($request->password);
         }else{
             $password = $users->password;
         }
@@ -218,11 +228,6 @@ class UserController extends Controller
         $user_rol = $users->role_id;
         $user_status = $users->status;
 
-        if(isset($password)){
-            $password = Hash::make(request('password'));
-        }else{
-            $password = $users->password;
-        }
         $user          = User::on($this->conection_logins)->findOrFail($id);
         $user->name         = request('name');
         $user->email        = request('email');
