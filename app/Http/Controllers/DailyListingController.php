@@ -254,6 +254,9 @@ class DailyListingController extends Controller
         $account = Account::on(Auth::user()->database_name)->find($id_account);
 
         if(isset($coin) && $coin !="bolivares"){
+            if(empty($account->rate) || ($account->rate == 0)){
+                $account->rate = 1;
+            }
             $account->balance_previus = $account->balance_previus / $account->rate;
         }
 

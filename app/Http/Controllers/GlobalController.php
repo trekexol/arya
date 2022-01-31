@@ -372,9 +372,8 @@ class GlobalController extends Controller
                 ->select('products.*')
                 ->first(); 
 
-        //si es un servicio no se chequea que posea inventario
-
-        if(isset($inventories_quotations) && (($inventories_quotations->type == "MERCANCIA") || ($inventories_quotations->type == "COMBO"))){
+        //si es un servicio no se chequea que posea inventario, ni tampoco el combo, el combo se revisa sus componentes si tienen inventario
+        if(isset($inventories_quotations) && (($inventories_quotations->type == "MERCANCIA"))){
             $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
 
             $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
