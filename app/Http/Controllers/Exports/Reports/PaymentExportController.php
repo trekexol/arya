@@ -1,87 +1,47 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Exports\Reports;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App;
+use App\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Client;
+use App\Exports\Reports\PaymentExportFromView;
+use App\Http\Controllers\GlobalController;
 use App\Provider;
 use App\Vendor;
-use App;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
-class ReportPaymentController extends Controller
+class PaymentExportController extends Controller
 {
-    public function index_payment($typeperson,$id = null)
+    public function exportExcel(Request $request) 
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-            $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');   
-            $client = null; 
-            $provider = null; 
-            $vendor = null; 
-
-
-            if(isset($typeperson) && $typeperson == 'Cliente'){
-                if(isset($id)){
-                    $client = Client::on(Auth::user()->database_name)->find($id);
-                }
-            }else if (isset($typeperson) && $typeperson == 'Proveedor'){
-                if(isset($id)){
-                    $provider = Provider::on(Auth::user()->database_name)->find($id);
-                }
-            }else if (isset($typeperson) && $typeperson == 'Vendedor'){
-                if(isset($id)){
-                    $vendor = Vendor::on(Auth::user()->database_name)->find($id);
-                }
-            }
+       
+        if(isset($request->id_client)){
             
-        }elseif($users_role == '2'){
-            return view('admin.index');
+            $request->id_client_or_provider = $request->id_client;
+
+        }else if(isset($request->id_provider)){
+
+            $request->id_client_or_provider = $request->id_provider;
+
+        }else if(isset($request->id_vendor)){
+
+            $request->id_client_or_provider = $request->id_vendor;
+
         }
 
-        return view('admin.reports_payment.index_payment',compact('client','datenow','typeperson','provider','vendor'));
-      
-    }
+        $export = new PaymentExportFromView($request);
 
-    public function store_payment(Request $request)
-    {
-        $date_begin = request('date_begin');
-        $date_end = request('date_end');
-        $type = request('type');
-        $id_client = request('id_client');
-        $id_provider = request('id_provider');
-        $id_vendor = request('id_vendor');
-        $coin = request('coin');
-        $client = null;
-        $provider = null;
-        $vendor = null;
-        $typeperson = 'ninguno';
+        $export->setter($request);
 
-        $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');   
-
-        if($type != 'todo'){
-            if(isset($id_client)){
-                $client    = Client::on(Auth::user()->database_name)->find($id_client);
-                $typeperson = 'Cliente';
-            }
-            if(isset($id_provider)){
-                $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
-                $typeperson = 'Proveedor';
-            }
-            if(isset($id_vendor)){
-                $vendor    = Vendor::on(Auth::user()->database_name)->find($id_vendor);
-                $typeperson = 'Vendedor';
-            }
-        }
-
-        return view('admin.reports_payment.index_payment',compact('datenow','coin','date_begin','date_end','client','provider','vendor','typeperson'));
+        $export->view();       
+        
+        return Excel::download($export, 'pagos.xlsx');
     }
 
     function payment_pdf($coin,$date_begin,$date_end,$typeperson,$id_client_or_provider = null)
@@ -220,31 +180,7 @@ class ReportPaymentController extends Controller
             //$array_antticipos[] = [$anticiposs->id_account];
 
         }
-
-        $pdf = $pdf->loadView('admin.reports_payment.payment',compact('coin','quotation_payments','datenow','date_end','client','provider','vendor'))->setPaper('a4', 'landscape');
-        return $pdf->stream();
+        return view('export_excel.payment',compact('coin','quotation_payments','datenow','date_end','client','provider','vendor'));
                  
-    }
-
-    public function select_client()
-    {
-        $clients    = Client::on(Auth::user()->database_name)->get();
-    
-        return view('admin.reports_payment.selectclient',compact('clients'));
-    }
-
-    public function select_vendor()
-    {
-        $vendors    = Vendor::on(Auth::user()->database_name)->get();
-    
-        return view('admin.reports_payment.selectvendor',compact('vendors'));
-    }
-
-   
-    public function select_provider()
-    {
-        $providers    = Provider::on(Auth::user()->database_name)->get();
-    
-        return view('admin.reports_payment.selectprovider',compact('providers'));
     }
 }

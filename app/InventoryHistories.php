@@ -17,6 +17,7 @@ protected $fillable = ['id','date','id_product','description','type','price','am
     public function products(){
         return $this->belongsTo('App\Permission\Models\Product','product_id');
     } */
-   
+
+    
     
 }

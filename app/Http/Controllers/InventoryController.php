@@ -17,8 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class InventoryController extends Controller
 {
  
@@ -27,7 +25,7 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-/*  public function index()  //original
+   /*public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;

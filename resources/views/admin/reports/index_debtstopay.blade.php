@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.store_debtstopay') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.store_debtstopay') }}">
                     @csrf
 
                 <input type="hidden" name="id_provider" value="{{$provider->id ?? null}}" readonly>
@@ -104,9 +104,10 @@
     });
 
     function exportToExcel(){
-
+        var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.debtstopay') }}";
         document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
     }
     
 

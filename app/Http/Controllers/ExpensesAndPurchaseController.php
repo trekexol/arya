@@ -132,15 +132,17 @@ class ExpensesAndPurchaseController extends Controller
 
         if(isset($expense)){
            
-            $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                           ->join('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
+            $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('inventories', 'products.id', '=', 'inventories.product_id')
+                                                           ->rightJoin('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
                                                            ->where('expenses_details.id_expense',$expense->id)
+                                                           ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',
                                                            'expenses_details.amount as amount_expense','expenses_details.exento as retiene_iva_expense'
                                                            ,'expenses_details.islr as retiene_islr_expense')
                                                            ->get(); 
 
-           
+            
            $total= 0;
            $base_imponible= 0;
 
@@ -189,7 +191,7 @@ class ExpensesAndPurchaseController extends Controller
 
             return view('admin.expensesandpurchases.createdeliverynote',compact('coin','expense','datenow','bcv','total_retiene_iva','total_retiene_islr'));
         }else{
-            return redirect('/expensesandpurchases')->withDanger('La cotizacion no existe');
+            return redirect('/expensesandpurchases')->withDanger('La compra no existe');
         } 
         
    }
@@ -258,23 +260,20 @@ class ExpensesAndPurchaseController extends Controller
     
             $company = Company::on(Auth::user()->database_name)->find(1);
                   
-           $expense_details = ExpensesDetail::on(Auth::user()->database_name)
+            /*$expense_details = ExpensesDetail::on(Auth::user()->database_name)
                                 ->where('id_expense',$expense->id)
-                                ->where('islr',1)->sum('amount * price')
-                                ->get();
+                                ->where('islr',1)->sum('amount * price');*/
 
-            /* $expense_details =  DB::connection(Auth::user()->database_name)->select('SELECT SUM(amount * price) AS total
+            $expense_details =  DB::connection(Auth::user()->database_name)->select('SELECT SUM(amount * price) AS total
                                 FROM expenses_details
                                 WHERE id_expense = ? AND
                                 islr = 1 
                                 '
-                                , [$expense->id]);*/
+                                , [$expense->id]);
                 
-            if(isset($expense_details)){
+
             $total_islr_details = $expense_details[0]->total;
-            } else {
-            $total_islr_details =0;    
-            }
+
             
             
             $pdf = $pdf->loadView('admin.expensesandpurchases.retencion_islr',compact('total_islr_details','company','expense','datenow','period','provider'))->setPaper('a4', 'landscape');
@@ -924,12 +923,9 @@ class ExpensesAndPurchaseController extends Controller
                                 }
                             }if($payment_type == 2){
                         
-                                $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica')->get()->first(); 
-                                if(isset($account_contado)) {
-                                 $var->id_account = $account_contado->id;
-                                } else {
-                                    $var->id_account = 0;   
-                                }                            
+                                $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica')->first(); 
+
+                                $var->id_account = $account_contado->id;
                             }
                             if($payment_type == 4){
                                 //DIAS DE CREDITO
@@ -2027,9 +2023,7 @@ class ExpensesAndPurchaseController extends Controller
 
         if(isset($id_islr_concept) && ($id_islr_concept > 0)){
             $expense->id_islr_concept = $id_islr_concept;
-        } else {
-            $expense->id_islr_concept = 0;  
-        }   
+        }    
 
         $expense->base_imponible = $sin_formato_base_imponible;
         $expense->amount =  $sin_formato_amount;

@@ -16,6 +16,7 @@ use App\ExpensesDetail;
 use App\HeaderVoucher;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use App\Inventory;
+use App\InventoryHistories;
 use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
@@ -249,7 +250,7 @@ class PDF2Controller extends Controller
                     $retorno = $global->discount_inventory($id_quotation);
 
                     if($retorno != 'exito'){
-                       return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
+                        return redirect('quotations/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
                     }
                    
 
@@ -566,7 +567,7 @@ class PDF2Controller extends Controller
                 
                 
                 
-                $quotation->date_delivery_note = $date;
+                $quotation->date_order = $date;
                 $quotation->save();
 
                 if(isset($coin) && ($coin != 'bolivares')){
@@ -809,7 +810,7 @@ class PDF2Controller extends Controller
              if(isset($expense)){
                
                 $inventories_expenses = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                           ->join('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
+                                                           ->rightJoin('expenses_details', 'inventories.id', '=', 'expenses_details.id_inventory')
                                                            ->where('expenses_details.id_expense',$expense->id)
                                                            ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',
@@ -939,16 +940,29 @@ class PDF2Controller extends Controller
       
         $pdf_inventory = App::make('dompdf.wrapper');
 
-        $inventories = Inventory::on(Auth::user()->database_name)->where('status','1')->orderBy('id','desc')->get();
+        //$inventories = Inventory::on(Auth::user()->database_name)->where('status','1')->orderBy('id','desc')->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
-        /*foreach($inventories as $inventario){
 
-            $inventories->amount = $inventario;
-            $inventories->amount = consul_prod_invt($id_inventary,$sucursal = 'Matriz');
+        $inventories = InventoryHistories::on(Auth::user()->database_name)
+        ->join('inventories','inventories.id','inventory_histories.id_product')
+        ->join('products','products.id','inventories.product_id')
+      
+                    
+        ->where(function ($query){
+            $query->where('products.type','MERCANCIA')
+                ->orWhere('products.type','COMBO');
+        })
+       
+       ->where('inventory_histories.status','A')
+       ->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+       ->orderBy('inventory_histories.id' ,'DESC')
+       ->get();     
         
-        } */
+        
+        $inventories = $inventories->unique('id');
 
+        $inventories = $inventories->sortBydesc('amount_real');
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 

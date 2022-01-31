@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('balanceingresos.store') }}">
+                <form id="formPost" method="POST" action="{{ route('balanceingresos.store') }}">
                     @csrf
 
                 <div class="card-header text-center h4">
@@ -34,6 +34,25 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div class="col-sm-1">
+                                <button type="submit" class="btn btn-primary ">
+                                    Buscar
+                                 </button>
+                            </div>
+                            <div class="col-sm-3  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
+                        </div> 
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 <select class="form-control" name="level" id="level">
                                 @if (isset($level))
@@ -68,11 +87,7 @@
                                     <option value="dolares">Dólares</option>
                                 </select>
                             </div>
-                            <div class="col-sm-1">
-                            <button type="submit" class="btn btn-primary ">
-                                Buscar
-                             </button>
-                            </div>
+                           
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
@@ -86,5 +101,20 @@
     </div>
 </div>
 
+
+@endsection
+
+@section('javascript')
+
+    <script>
+   
+    function exportToExcel(){
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('export_reports.ingresos') }}";
+        document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
+    }
+
+    </script> 
 
 @endsection

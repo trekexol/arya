@@ -7,7 +7,6 @@ use App\ComboProduct;
 use App\ExpensePayment;
 use App\ExpensesDetail;
 use App\Inventory;
-use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use App\UserAccess;
@@ -299,8 +298,7 @@ class GlobalController extends Controller
 
     public function discount_inventory($id_quotation)
     {
-           /* 
-           //Primero Revisa que todos los productos tengan inventario suficiente
+            /*Primero Revisa que todos los productos tengan inventario suficiente*/
             $no_hay_cantidad_suficiente = DB::connection(Auth::user()->database_name)->table('inventories')
                                     ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
                                     ->join('products', 'products.id','=','inventories.product_id')
@@ -319,7 +317,7 @@ class GlobalController extends Controller
                 return "no_hay_cantidad_suficiente";
             }
 
-            //Luego, descuenta del Inventario
+            /*Luego, descuenta del Inventario*/
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
             ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
             ->where('quotation_products.id_quotation',$id_quotation)
@@ -359,19 +357,9 @@ class GlobalController extends Controller
                 return 'El Inventario de la cotizacion no existe!';
                 }
 
-            } */
-            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+            }
 
-            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-            ->where('id_quotation', '=', $id_quotation)->get();
-
-            foreach($quotation_products as $det_products){
-
-            $transaction = new GlobalController;
-            $msg = $transaction->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$det_products->id_quotation,$det_products->id_inventory_histories,$det_products->id);
-
-            } 
-
+            return "exito";
 
     }
 
@@ -591,6 +579,7 @@ class GlobalController extends Controller
         $dia = date('1');
         return date('Y-m-').'01';
     }  
+
 
 
     function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
@@ -839,6 +828,5 @@ class GlobalController extends Controller
     return $msg;
     
     } // fin de funcion transaccion
-    
    
 }
