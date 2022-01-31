@@ -548,13 +548,9 @@ class FacturarController extends Controller
     }
 
 
-    public function storefactura(Request $request)
+public function storefactura(Request $request)
     {
-        
-        //dd($request);
         $data = request()->validate([
-            
-        
         
         ]);
 
