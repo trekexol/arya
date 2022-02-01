@@ -502,8 +502,9 @@ class QuotationController extends Controller
         
         $value_return = $global->check_amount($quotation->id,$var->id_inventory,$amount);
 
+        
         if($value_return != 'exito'){
-                return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
+                return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger($value_return);
         }
 
         

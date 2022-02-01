@@ -372,8 +372,9 @@ class GlobalController extends Controller
                 ->select('products.*')
                 ->first(); 
 
+        
         //si es un servicio no se chequea que posea inventario, ni tampoco el combo, el combo se revisa sus componentes si tienen inventario
-        if(isset($inventories_quotations) && (($inventories_quotations->type == "MERCANCIA"))){
+        if(isset($inventories_quotations) && ((($inventories_quotations->type == "MERCANCIA")) || (($inventories_quotations->type == "COMBO")))){
             $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
 
             $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
@@ -381,6 +382,14 @@ class GlobalController extends Controller
                             ->where('id_inventory',$id_inventory)
                             ->sum('amount');
 
+            //validacion de los combos que estan en cero, y se valide sus componentes individuales
+            if(isset($inventories_quotations) && ($inventories_quotations->type == "COMBO") && ($inventory->amount == 0)){
+                $value_return = $this->check_combo_by_zero($id_quotation,$inventories_quotations,$amount_new);
+
+                if($value_return != "exito"){
+                    return $value_return;
+                }
+            }
 
             if ($sum_amount <> $amount_new) {
                 $total_in_quotation = $amount_new;
@@ -391,16 +400,23 @@ class GlobalController extends Controller
             if ($inventory->amount >= $total_in_quotation){
                 return "exito";
             }else{
-                return "no_hay_cantidad_suficiente";
+                return "El producto ".$inventories_quotations->description." no tiene inventario suficiente";
             } 
 
         }else{
             return "exito";
         }
-        
-
-        
     
+    }
+
+    public function check_combo_by_zero($id_quotation,$inventories_quotations,$amount_new){
+
+        $relation_combo = ComboProduct::on(Auth::user()->database_name)->where($inventories_quotations->id)->get();
+
+        foreach($relation_combo as $relation){
+            $this->check_amount($id_quotation,$inventories_quotations->id,$amount_new * $relation->amount_per_product);
+        }
+
     }
 
     public function add_payment($quotation,$id_account,$payment_type,$amount,$bcv){
