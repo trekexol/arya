@@ -30,7 +30,7 @@
 
 <body>
 
-  <br><br><br>
+  <br>
 
 <table style="width: 100%;">
   @if (isset($company->franqueo_postal))
