@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Account;
 use App\Combo;
 use App\ComboProduct;
@@ -20,6 +21,9 @@ use Illuminate\Support\Facades\Auth;
 class InventoryController extends Controller
 {
  
+       
+    public $modulo = "Reportes";
+
     public function __construct(){
 
        $this->middleware('auth');
@@ -72,27 +76,34 @@ class InventoryController extends Controller
 
         $inventories = $inventories->sortBydesc('amount_real');
 */
-    $global = new GlobalController; 
+        $global = new GlobalController; 
 
-    foreach ($inventories as $inventorie) {
-        
-        $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+        foreach ($inventories as $inventorie) {
+            
+            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
 
-    }
+        }
 
 
        return view('admin.inventories.index',compact('inventories'));
    }
 
 
-   public function indexmovements()
+   public function indexmovements($date_frist = 'todo',$date_end = 'todo')
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
-       
+       $coin = 'bolivares'; 
 
        $global = new GlobalController();
-       
+
+       if($date_frist == 'todo'){
+        $date_frist = $global->data_first_month_day();
+        }
+
+       if($date_end == 'todo'){
+        $date_end =  $global->data_last_month_day();
+       }   
         //$inventories = InventoryHistories::on(Auth::user()->database_name)
         $inventories = Inventory::on(Auth::user()->database_name)
         //->join('inventories','inventories.id','inventory_histories.id_product')
@@ -109,9 +120,18 @@ class InventoryController extends Controller
             ->get();  
 
        
-       return view('admin.inventories.indexmovement',compact('inventories'));
+       return view('admin.inventories.indexmovement',compact('inventories','coin'));
    }
 
+
+   public function movements_pdf($coin,$date,$type) {
+
+    $coin = 'bolivares';       
+    $pdf = App::make('dompdf.wrapper');
+    $pdf = $pdf->loadView('admin.reports.movements',compact('coin'));
+    return $pdf->stream();  
+
+   }
    /**
     * Show the form for creating a new resource.
     *

@@ -111,13 +111,17 @@
                                 <select class="form-control" name="id_inventories" id="id_inventories">
                                     @foreach ($inventories as $var) {
 
-                                        @if($id_inventory == $var->id_inventory) {
-                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
-                                        @else
-                                        <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                        @if(isset($id_inventory))
+                                            @if($id_inventory == $var->id_inventory)
+                                            <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                            @else
+                                            <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                            @endif
+                                        @else 
+                                            <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
 
                                         @endif
-                                    }
+
                                     @endforeach  
                                 </select>
                             </div>
@@ -130,7 +134,7 @@
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
 
-                            <iframe class="embed-responsive-item" src="" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'bolivares',$date_end ?? '',$type ?? 'todo'])}}" allowfullscreen></iframe>
                             
                             </div>                                      
                         
