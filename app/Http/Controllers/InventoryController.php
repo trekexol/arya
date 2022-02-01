@@ -105,7 +105,7 @@ class InventoryController extends Controller
        
   //     ->orderBy('inventory_histories.id' ,'DESC')
             ->where('products.status',1)
-            ->select('inventories.id as id_inventory','inventories.*','products.*')  
+            ->select('inventories.id as id_inventory','products.*')  
             ->get();  
 
        
