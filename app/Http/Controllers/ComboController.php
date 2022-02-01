@@ -397,14 +397,16 @@ class ComboController extends Controller
    
     public function updatePrice($id_combo,$price,$price_buy)
     {
-        $combo = Product::on(Auth::user()->database_name)->findOrFail($id_combo);
+        if(isset($price) && ($price > 0) && isset($price_buy) && ($price_buy > 0))
+        {
+            $combo = Product::on(Auth::user()->database_name)->findOrFail($id_combo);
 
-        $combo->price = $price;
+            $combo->price = $price;
 
-        $combo->price_buy = $price_buy;
+            $combo->price_buy = $price_buy;
 
-        $combo->save();
-
+            $combo->save();
+        }
     }
   
      /**
