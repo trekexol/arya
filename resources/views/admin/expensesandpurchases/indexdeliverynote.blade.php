@@ -24,7 +24,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Notas de Entrega</h2>
+          <h2>Orden de Compra</h2>
       </div>
       
     </div>

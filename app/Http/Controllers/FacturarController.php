@@ -568,11 +568,7 @@ class FacturarController extends Controller
 
     public function storefactura(Request $request)
     {
-        
-        //dd($request);
         $data = request()->validate([
-            
-        
         
         ]);
 
@@ -1461,8 +1457,17 @@ class FacturarController extends Controller
         {
             $global = new GlobalController();
 
+            $comboController = new ComboController();
+
             if(empty($quotation->date_billing) && empty($quotation->date_delivery_note) && empty($quotation->date_order)){
-                
+
+                //$value_return_combo = $comboController->validate_combo_discount($quotation->id);
+                $value_return_all = $global->check_all_products_after_facturar($quotation->id);
+
+                if($value_return_all != "exito"){
+                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($value_return_all);
+                }
+
                 $retorno = $global->discount_inventory($quotation->id);
             
                 if($retorno != "exito"){
@@ -1483,8 +1488,6 @@ class FacturarController extends Controller
                 $header_voucher->status =  "1";
             
                 $header_voucher->save();
-
-                
 
                 
             if($validate_boolean1 == true){

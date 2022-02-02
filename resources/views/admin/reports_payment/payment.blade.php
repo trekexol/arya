@@ -48,8 +48,8 @@
   ?>
     <table style="width: 100%;">
       <tr>
-        <th style="text-align: center; width:10%;">N°</th>
-        <th style="text-align: center; width:10%;">Fecha</th>
+        <th style="text-align: center; width:7%;">N°</th>
+        <th style="text-align: center; width:8%;">Fecha</th>
         <th style="text-align: center; width:15%;">Tipo Pago</th>
         <th style="text-align: center; width:20%;">Cuenta</th>
         <th style="text-align: center; width:20%;">Referencia</th>

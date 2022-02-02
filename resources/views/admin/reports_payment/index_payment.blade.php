@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reportspayment.store_payment') }}">
+                <form id="formPost" method="POST" action="{{ route('reportspayment.store_payment') }}">
                     @csrf
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
@@ -40,7 +40,28 @@
                                 @enderror
                             </div>
                           
-                            <div class="col-sm-2">
+                           
+                            <div class="col-sm-1">
+                            <button type="submit" class="btn btn-primary ">
+                                Buscar
+                             </button>
+                            </div>
+                            <div class="col-sm-2  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-2 offset-sm-1">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
                                         <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
@@ -53,15 +74,7 @@
                                     <option value="dolares">Dólares</option>
                                 </select>
                             </div>
-                            <div class="col-sm-1">
-                            <button type="submit" class="btn btn-primary ">
-                                Buscar
-                             </button>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-sm-2 offset-sm-1">
+                            <div class="col-sm-2 ">
                                 <select class="form-control" name="type" id="type">
                                     @if (isset($client))
                                         <option value="todo">Todo</option>
@@ -99,8 +112,9 @@
                             <div id="client_label3" class="form-group col-sm-1">
                                 <a id="route_select" href="{{ route('reportspayment.select_client') }}" title="Seleccionar"><i class="fa fa-eye"></i></a>  
                             </div>
+                            
                         </div>
-                       
+                        
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{ route('reportspayment.payment_pdf',[$coin ?? 'bolivares',$date_begin ?? $datenow,$date_end ?? $datenow,$typeperson ?? 'ninguno',$client->id ?? $provider->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
@@ -149,7 +163,12 @@
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
 
-    
+    function exportToExcel(){
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('export_reports.payment') }}";
+        document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
+    }
     
     let client  = "<?php echo $client->name ?? 0 ?>";  
     let vendor  = "<?php echo $vendor->name ?? 0 ?>"; 

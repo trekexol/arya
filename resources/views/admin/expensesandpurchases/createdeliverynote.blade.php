@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Cerrar e Imprimir la Nota de Entrega </h3></div>
+                <div class="card-header" ><h3>Cerrar e Imprimir la Orden de Compra</h3></div>
                 
                 <div class="card-body" >
                         <div class="form-group row">

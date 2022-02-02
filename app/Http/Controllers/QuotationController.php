@@ -527,11 +527,12 @@ class QuotationController extends Controller
         $cost = str_replace(',', '.', str_replace('.', '',request('cost')));
 
         $global = new GlobalController();
-        
-        $value_return = $global->check_amount($quotation->id,$var->id_inventory,$amount);
 
+        $value_return = $global->check_product($quotation->id,$var->id_inventory,$amount);
+
+        
         if($value_return != 'exito'){
-                return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
+                return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger($value_return);
         }
 
         
@@ -732,7 +733,7 @@ class QuotationController extends Controller
         
             $global = new GlobalController();
 
-            $value_return = $global->check_amount($var->id_quotation,$var->id_inventory,$var->amount);
+            $value_return = $global->check_product($var->id_quotation,$var->id_inventory,$var->amount);
 
 
             $islr = request('islr');

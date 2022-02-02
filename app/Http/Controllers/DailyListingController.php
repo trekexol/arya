@@ -163,7 +163,9 @@ class DailyListingController extends Controller
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-            ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+            ->whereRaw(
+                "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
+               [$date_begin, $date_end])
             ->whereIn('header_vouchers.id', function($query) use ($id_account){
                 $query->select('id_header_voucher')
                 ->from('detail_vouchers')
@@ -182,15 +184,16 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->sum('detail_vouchers.debe');
 
+            
             $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->sum('detail_vouchers.haber');       
             //-----------------------------------------------
         }else{
@@ -210,17 +213,17 @@ class DailyListingController extends Controller
             ,'header_vouchers.description as header_description')
             ->orderBy('detail_vouchers.id','asc')->get();
 
-            $total_debe =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(d.debe/d.tasa) AS debe
-            FROM accounts a
-            INNER JOIN detail_vouchers d 
-                ON d.id_account = a.id
-            INNER JOIN header_vouchers h 
-                ON h.id = d.id_header_voucher
-            WHERE h.date < ? AND
-            a.id = ? AND
-            d.status = ?'
-            , [$date_begin,$id_account,'C']);
-            
+            $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
+                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                        ->where('detail_vouchers.id_account',$id_account)
+                        ->whereIn('detail_vouchers.status', ['C'])
+                        ->whereRaw(
+                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
+                        [$date_begin, $date_end])
+                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
+
+           
             if(isset($total_debe[0]->debe)){
                 $detailvouchers_saldo_debe = $total_debe[0]->debe;
             }else{
@@ -253,7 +256,11 @@ class DailyListingController extends Controller
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
 
+        
         if(isset($coin) && $coin !="bolivares"){
+            if(empty($account->rate) || ($account->rate == 0)){
+                $account->rate = 1;
+            }
             $account->balance_previus = $account->balance_previus / $account->rate;
         }
 

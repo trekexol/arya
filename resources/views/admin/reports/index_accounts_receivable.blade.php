@@ -136,9 +136,10 @@
 
     
     function exportToExcel(){
-
+        var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.accountsreceivable') }}";
         document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
     }
 
     let client  = "<?php echo $client->name ?? 0 ?>";  
