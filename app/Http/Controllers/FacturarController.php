@@ -1443,10 +1443,11 @@ class FacturarController extends Controller
 
             if(empty($quotation->date_billing) && empty($quotation->date_delivery_note) && empty($quotation->date_order)){
 
-                $value_return_combo = $comboController->validate_combo_discount($quotation->id);
+                //$value_return_combo = $comboController->validate_combo_discount($quotation->id);
+                $value_return_all = $global->check_all_products_after_facturar($quotation->id);
 
-                if($value_return_combo != "exito"){
-                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($value_return_combo);
+                if($value_return_all != "exito"){
+                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($value_return_all);
                 }
 
                 $retorno = $global->discount_inventory($quotation->id);
