@@ -67,6 +67,8 @@
                                    $typearray[] = array('aju_nota','Ajuste de Nota');
                                    $typearray[] = array('rev_nota','Reverso de Nota');
                                    $typearray[] = array('rev_venta','Reverso de Venta');
+                                   $typearray[] = array('entrada','Entrada de Inventario');
+                                   $typearray[] = array('salida','Salida de Inventario');
                                    ?>
 
                                    @if (isset($type)) 

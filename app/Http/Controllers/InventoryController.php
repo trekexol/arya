@@ -223,7 +223,7 @@ class InventoryController extends Controller
         ->where('id','=',$inventorie->id_quotation)
         ->select('number_delivery_note')
         ->get()->last(); 
-    
+
 
         $branch = DB::connection(Auth::user()->database_name)
         ->table('branches')
@@ -232,15 +232,40 @@ class InventoryController extends Controller
         ->get()->last();         
 
         if (!empty($invoice)) {
+
         $inventorie->invoice = $invoice->number_invoice;
+
         } else {
-        $inventorie->invoice = '';    
+
+
+            if ($inventorie->id_expense == 0) {
+                
+                if ($inventorie->type == 'venta' || $inventorie->type == 'rev_venta'){ 
+                $inventorie->invoice = $inventorie->id_quotation;  
+                } else {
+                $inventorie->invoice = '';       
+                }
+            } else {
+
+                $inventorie->invoice = '';   
+            }
+        
         }
         
         if (!empty($note)) {
         $inventorie->note = $note->number_delivery_note; 
         } else {
-        $inventorie->note = ''; 
+            if ($inventorie->id_expense == 0) {
+                
+                if ($inventorie->type == 'nota' || $inventorie->type == 'rev_nota' || $inventorie->type == 'aju_nota'){ 
+                $inventorie->note =  $inventorie->id_quotation;  
+                } else {
+                $inventorie->note = '';       
+                }
+            } else {
+
+                $inventorie->note= '';   
+            }
         }
         if (!empty($branch)) {
         $inventorie->branch = $branch->description;
