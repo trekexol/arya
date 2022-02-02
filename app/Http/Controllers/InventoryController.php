@@ -70,13 +70,6 @@ class InventoryController extends Controller
         ->select('inventories.id as id_inventory','inventories.*','products.*')  
         ->get();     
         
-  /*      
-        $inventories = $inventories->unique('id');
-
-        $inventories = $inventories->sortBydesc('amount_real');
-*/
-        $global = new GlobalController; 
-
         foreach ($inventories as $inventorie) {
             
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
