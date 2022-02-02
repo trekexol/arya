@@ -769,7 +769,7 @@ class QuotationController extends Controller
                 ->where('id', '=',  $var->id)
                 ->get(); // Conteo de Productos para incluiro en el historial de inventario
                 foreach($quotation_products as $det_products){ // guardado historial de inventario 
-                $global->transaction_inv('aju_nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,null,'Matriz','Matriz',$var->quotations['number_delivery_note'],$det_products->id_inventory_histories,$det_products->id);
+                $global->transaction_inv('aju_nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,null,1,1,0,$det_products->id_inventory_histories,$det_products->id,$var->id_quotation);
                 }
             }
 
@@ -976,7 +976,7 @@ class QuotationController extends Controller
                 ->get(); // Conteo de Productos para incluiro en el historial de inventario
                                
                 foreach($quotation_products as $det_products){ // guardado historial de inventario 
-                $global->transaction_inv('rev_venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id,$quotation->number_invoice);
+                $global->transaction_inv('rev_venta',$det_products->id_inventory,'rev_venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
                 }
 
 

@@ -38,7 +38,7 @@
         </div>
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('inventories.storemovements') }}">
+                <form method="POST" action="{{ route('reports.storemovements') }}">
                     @csrf
 
       
@@ -68,9 +68,21 @@
                                    $typearray[] = array('rev_nota','Reverso de Nota');
                                    $typearray[] = array('rev_venta','Reverso de Venta');
                                    ?>
-                                   @for ($q=0;$q<count($typearray);$q++)
-                                    <option value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
-                                   @endfor  
+
+                                   @if (isset($type)) 
+                                        @for ($q=0;$q<count($typearray);$q++)
+                                                @if ($type == $typearray[$q][0])
+                                                <option selected value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
+                                                @else
+                                                <option value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
+                                                @endif
+                                        @endfor  
+                                    @else
+                                        @for ($q=0;$q<count($typearray);$q++)      
+                  
+                                            <option value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
+                                        @endfor 
+                                    @endif
                                     
                                 </select>
                             </div>
@@ -97,45 +109,48 @@
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                       
+                                        <option selected value="dolares">Dolares</option>
+                                        <option  value="bolivares">Bolívares</option>
                                     @else
-                                        <option disabled selected value="bolivares">Bolívares</option>
+                                        <option selected value="dolares">Dolares</option>
+                                        <option  value="bolivares">Bolívares</option>
                                     @endif
                                     
-                                    <option  value="bolivares">Bolívares</option>
-                                    <option value="dolares">Dólares</option>
+
                                 </select>
                             </div>
                             <div class="col-sm-4">
                                 <select class="form-control" name="id_inventories" id="id_inventories">
-                                    @foreach ($inventories as $var) {
-
-                                        @if(isset($id_inventory))
-                                            @if($id_inventory == $var->id_inventory)
-                                            <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                    
+                             
+                                            @if (isset($id_inventory)) 
+                                                   <option value="todos">Todos</option>
+                                                    @foreach ($inventories as $var) {
+                                                        @if($id_inventory == $var->id_inventory)
+                                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                        @else
+                                                       <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                       @endif
+                                                    @endforeach      
                                             @else
-                                            <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                    <option selected value="todos">Todos</option>     
+                                                    @foreach ($inventories as $var) {
+                                                    <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                    @endforeach                                    
+
                                             @endif
-                                        @else 
-                                            <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
-
-                                        @endif
-
-                                    @endforeach  
                                 </select>
                             </div>
                             <div class="col-sm-1">
                                 <button type="submit" class="btn btn-primary ">
-                                    Buscar
+                                    Buscar 
                                  </button>
                                 </div>
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-
-                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'bolivares'])}}" allowfullscreen></iframe>
-                            
+                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory])}}" allowfullscreen></iframe>
                             </div>                                      
                         
                         </div>

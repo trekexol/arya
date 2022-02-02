@@ -340,7 +340,7 @@ class PDF2Controller extends Controller
                    
                 
                 foreach($quotation_products as $det_products){ // guardado historial de inventario 
-                $global->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,'Matriz','Matriz',$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
+                $global->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
                 }
 
    
@@ -757,6 +757,16 @@ class PDF2Controller extends Controller
                 $quotation->date_delivery_note = $date_delivery;
                 $quotation->save();
 
+                $global = new GlobalController();
+
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+                   
+                
+                foreach($quotation_products as $det_products){ // guardado historial de inventario 
+                $global->transaction_inv('nota',$det_products->id_inventory,'nota',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
+                }
+                
                
                 if(isset($coin) && ($coin != 'bolivares')){
                     $quotation->amount =  $quotation->amount / ($rate ?? 1);

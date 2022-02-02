@@ -36,7 +36,7 @@
     <th style="text-align: center; width:9%;">Fecha</th>
     <th style="text-align: center; width:5%;">ID Prod</th>
     <th style="text-align: center; width:7%;">Codigo</th>
-    <th style="text-align: center; width:9%;">Descripción</th>
+    <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; width:5%;">Tipo</th>
     <th style="text-align: center; width:7%;">Precio</th>
     <th style="text-align: center; width:5%;">Cantidad</th>
@@ -55,8 +55,8 @@
           <td style="text-align: center; font-weight: normal;">{{ $inventory->price}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->amount}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->amount_real}}</td>
-          <td style="text-align: center; font-weight: normal;">{{ $inventory->number_invoice}}</td>
-          <td style="text-align: center; font-weight: normal;">{{ $inventory->number_invoice}}</td>
+          <td style="text-align: center; font-weight: normal;">{{ $inventory->invoice}}</td>
+          <td style="text-align: center; font-weight: normal;">{{ $inventory->note}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->branch}}</td>
         </tr>
       @endforeach

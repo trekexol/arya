@@ -1,5 +1,5 @@
 <?php
-
+ /* 
 namespace App\Http\Controllers\Reports;
 
 use App;
@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Auth;
 
 class ShoppingController extends Controller
 {
-    public function index_shopping()
-    {
+    public function index_inventory() 
+    {  // index_shopping()
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
@@ -26,11 +26,11 @@ class ShoppingController extends Controller
         
         $datebeginyear = $date->firstOfYear()->format('Y-m-d');
 
-        return view('admin.reports.shopping.index_shopping',compact('datebeginyear','datenow'));
+        return view('admin.reports.inventory.index_inventory_histories',compact('datebeginyear','datenow'));
       
     }
 
-    public function store_shopping(Request $request)
+  public function store_shopping(Request $request)
     {
         
         $date_begin = request('date_begin');
@@ -101,5 +101,5 @@ class ShoppingController extends Controller
         $pdf = $pdf->loadView('admin.reports.shopping.shopping',compact('coin','rate','shoppings','datenow','date_begin','date_end'))->setPaper('a4', 'landscape');
         return $pdf->stream();
                  
-    }
+    } */
 }

@@ -583,9 +583,9 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_inventary,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
-        if ($sucursal == 'Matriz') {
+        if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
@@ -595,6 +595,7 @@ class GlobalController extends Controller
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
+            ->where('branch','=',$sucursal)
             ->select('amount_real')
             ->get()->last();
         }
@@ -611,22 +612,23 @@ class GlobalController extends Controller
     }
     
     
-    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$invoice = 0){
+    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
     
        // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
-            if ($branch == 'Matriz') { // todo
+            if ($branch == 1) { // todas las sucurssales
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
                 ->select('*')
                 ->get()->last();
-            } else { // sucursal
+            } else { // sucursal especifica
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
+                ->where('id_branch','=',$branch)
                 ->select('*')
                 ->get()->last();	
             }
@@ -753,19 +755,18 @@ class GlobalController extends Controller
                             
 
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                            'date' => $date,
                             'id_product' => $id_inventary,
-                            'description' => $description,
+                            'id_user' => $user->id,
+                            'id_branch' => $branch,
+                            'id_centro_costo' => $branch,
+                            'id_quotation' => $quotation,
+                            'id_expense' => $expense,
+                            'date' => $date,
                             'type' => $type,
                             'price' => $price,
                             'amount' => $amount,
                             'amount_real' => $transaccion,
-                            'status' => 'A',
-                            'branch' => $branch,
-                            'centro_cost' => $centro_cost,
-                            'number_invoice' => $invoice,
-                            'number_delivery_note' => $delivery_note,
-                            'user' => $user->id]);
+                            'status' => 'A']);
                             
                             $id_last = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
