@@ -738,7 +738,7 @@ class Report2Controller extends Controller
                                     ->whereRaw(
                                         "(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
-                                    ->orderBy('date_billing','desc')->get();
+                                    ->orderBy('number_invoice','asc')->get();
 
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');
@@ -765,6 +765,7 @@ class Report2Controller extends Controller
                                     ->whereRaw(
                                         "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
+                                    ->where('status','C')
                                     ->orderBy('date','desc')->get();
 
 

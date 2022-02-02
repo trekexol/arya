@@ -29,7 +29,7 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-   /*public function index()
+   public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
@@ -46,7 +46,9 @@ class InventoryController extends Controller
         ->get();
         
        return view('admin.inventories.index',compact('inventories'));
-   } */
+   }
+
+/*
    public function index()
    {
        $user       =   auth()->user();
@@ -86,7 +88,7 @@ class InventoryController extends Controller
 
        return view('admin.inventories.index',compact('inventories'));
    }
-
+*/
 
    public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
    {

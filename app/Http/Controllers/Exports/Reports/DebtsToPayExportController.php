@@ -100,7 +100,7 @@ class DebtsToPayExportController extends Controller
         }
         
        
-        return view('export_excel.debtstopay',compact('coin','quotations','datenow','date_end'));
+        return view('export_excel.debtstopay',compact('date_consult','period','coin','expenses','datenow','date_end'));
                  
     }
 }

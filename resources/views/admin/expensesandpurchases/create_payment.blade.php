@@ -34,7 +34,18 @@
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
                     <input type="hidden" id="id_islr_concept_credit" name="id_islr_concept_credit" value="0" readonly>
 
+                        <div class="form-group row">
+                            <label for="date_payment" class="col-md-2 col-form-label text-md-right">Fecha de Cotización:</label>
+                            <div class="col-md-4">
+                                <input id="date_payment" type="date" class="form-control @error('date_payment') is-invalid @enderror" name="date_payment" value="{{ $expense->date ?? $datenow }}" required autocomplete="date_payment">
 
+                                @error('date_payment')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
                             <div class="col-md-4">
@@ -247,8 +258,8 @@
                         <input type="hidden" id="total_retiene_iva" name="total_retiene_iva" value="0" readonly>
                         <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{ $total_retiene_islr ?? 0 }}" readonly>
 
-                        
-
+                        <input type="hidden" id="date_payment_form" name="date_payment_form" value="{{$expense->date}}" readonly>
+                       
 
                         <div class="form-group row" id="formulario1" >
                             <label id="label_amount_pays" for="amount_pays" class="col-md-2 col-form-label text-md-right">Forma de Pago:</label>
@@ -978,9 +989,13 @@
                 }
                 
             }        
-                
-              
-       
+
+
+            $("#date_payment").on('change',function(){
+                 document.getElementById("date_payment_form").value = document.getElementById("date_payment").value;
+            });
+
+
             $("#iva").on('change',function(){
                 //calculate();
 

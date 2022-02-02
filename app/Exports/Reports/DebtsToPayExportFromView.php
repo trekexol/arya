@@ -20,12 +20,9 @@ class DebtsToPayExportFromView implements FromView
     public function view(): View
     {
         $report = new DebtsToPayExportController();
-         
         
-        return $report->debtstopay_pdf(
-            $this->request->coin ?? "bolivares",$this->request->date_end,
-            $this->request->typeinvoice,$this->request->type,
-            $this->request->id_client ?? $this->request->id_vendor ?? null);
+        return $report->debtstopay_pdf($this->request->coin ?? "bolivares",$this->request->date_end,
+                                        $this->request->id_provider ?? null);
     }
 
     
