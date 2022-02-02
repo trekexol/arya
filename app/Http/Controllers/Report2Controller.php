@@ -765,6 +765,7 @@ class Report2Controller extends Controller
                                     ->whereRaw(
                                         "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
+                                    ->where('status','C')
                                     ->orderBy('date','desc')->get();
 
 
