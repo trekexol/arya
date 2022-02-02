@@ -29,24 +29,7 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-   /*public function index()
-   {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
-        $inventories = Inventory::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')
-        ->where(function ($query){
-            $query->where('products.type','MERCANCIA')
-                ->orWhere('products.type','COMBO');
-        })
-        ->orderBy('products.description' ,'ASC')
-        ->where('products.status',1)
-        ->select('inventories.id as id_inventory','inventories.*','products.*')
-        ->get();
-        
-       return view('admin.inventories.index',compact('inventories'));
-   } */
+
    public function index()
    {
        $user       =   auth()->user();
