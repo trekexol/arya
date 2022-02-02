@@ -855,6 +855,8 @@ class ExpensesAndPurchaseController extends Controller
         $sin_formato_total_pay = request('total_pay_form');
         $total_pay_form = request('total_pay_form');
 
+        $date_payment = request('date_payment_form');
+
 
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
@@ -1682,7 +1684,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 $header_voucher->description = "Pago de Bienes o servicios.";
-                $header_voucher->date = $datenow;
+                $header_voucher->date = $date_payment ?? $datenow;
                 
             
                 $header_voucher->status =  "1";
@@ -1861,7 +1863,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                     $header_voucher->description = "Compras de Bienes o servicios.";
-                    $header_voucher->date = $datenow;
+                    $header_voucher->date = $date_payment ?? $datenow;
                     
                 
                     $header_voucher->status =  "1";
@@ -1877,8 +1879,6 @@ class ExpensesAndPurchaseController extends Controller
                             $this->add_movement($bcv,$header_voucher->id,$account->id,$expense->id,$user_id,$var->price * $var->amount,0);
                         }
                     }
-                        
-                    
     
                     //Credito Fiscal IVA por Pagar
     
@@ -1899,7 +1899,7 @@ class ExpensesAndPurchaseController extends Controller
                 }
                 
                 /*Modifica la cotizacion */
-                    $expense->date_payment = $datenow;
+                    $expense->date_payment = $date_payment ?? $datenow;
 
                     $expense->iva_percentage = $iva_percentage;
 
@@ -2005,6 +2005,8 @@ class ExpensesAndPurchaseController extends Controller
 
         $coin = request('coin');
 
+        $date_payment = request('date_payment');
+
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
 
         if($coin != 'bolivares'){
@@ -2049,7 +2051,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
         $header_voucher->description = "Compras de Bienes o servicios.";
-        $header_voucher->date = $datenow;
+        $header_voucher->date = $date_payment ?? $datenow;
         
     
         $header_voucher->status =  "1";
