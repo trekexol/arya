@@ -45,7 +45,7 @@
     <th style="text-align: center; ">Serie</th>
     <th style="text-align: center; ">Monto</th>
     <th style="text-align: center; ">Base Imponible</th>
-    <th style="text-align: center; ">Excento</th>
+    <th style="text-align: center; ">Exento</th>
     <th style="text-align: center; ">Ret.Iva</th>
     <th style="text-align: center; ">Ret.Islr</th>
     <th style="text-align: center; ">IVA</th>
@@ -55,15 +55,42 @@
         $total_base_imponible = 0;
         $c = 0;
         $total_exento = 0;
+        $total_base_imponible = 0;
+        $total_amount = 0;
+        $total_amount_exento = 0;
+        $total_retencion_iva = 0;
+        $total_retencion_islr = 0;
+        $total_anticipo = 0;
+        $total_amount_iva = 0;
+        $total_amount_with_iva = 0;
   ?>
+  
   @foreach ($expenses as $expense)
     <?php
       
       if(isset($coin) && $coin == 'bolivares'){
         $total_base_imponible += $expense->base_imponible;
+        $total_amount += $expense->amount;
+        $total_amount_exento += $a_total[$c][0] ?? 0;
+        $total_retencion_iva += $expense->retencion_iva;
+        $total_retencion_islr += $expense->retencion_islr;
+        $total_anticipo += $expense->anticipo;
+        $total_amount_iva += $expense->amount_iva;
+        $total_amount_with_iva += $expense->amount_with_iva;
       }else{
         $total_base_imponible += $expense->base_imponible / ($expense->rate ?? 1);
+        $total_amount += $expense->amount / ($expense->rate ?? 1);
+        $total_amount_exento += ($a_total[$c][0] ?? 0) / ($expense->rate ?? 1);
+        $total_retencion_iva += $expense->retencion_iva / ($expense->rate ?? 1);
+        $total_retencion_islr += $expense->retencion_islr / ($expense->rate ?? 1);
+        $total_anticipo += $expense->anticipo / ($expense->rate ?? 1);
+        $total_amount_iva += $expense->amount_iva / ($expense->rate ?? 1);
+        $total_amount_with_iva += $expense->amount_with_iva / ($expense->rate ?? 1);
       }
+
+        
+        
+        
         
     ?>
     <tr>
@@ -105,8 +132,21 @@
 
     ?>
   @endforeach 
-
   
+  <tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_retencion_islr, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_with_iva, 2, ',', '.') }}</th>
+  </tr> 
 </table>
 
 <h5 style="color: black; text-align: center">Total Exento: {{ number_format(($total_exento ?? 0), 2, ',', '.') }} / Total Compras y Créditos: {{ number_format(($total_base_imponible ?? 0), 2, ',', '.') }} </h5>
