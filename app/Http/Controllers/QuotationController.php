@@ -499,8 +499,8 @@ class QuotationController extends Controller
         $cost = str_replace(',', '.', str_replace('.', '',request('cost')));
 
         $global = new GlobalController();
-        
-        $value_return = $global->check_amount($quotation->id,$var->id_inventory,$amount);
+
+        $value_return = $global->check_product($quotation->id,$var->id_inventory,$amount);
 
         
         if($value_return != 'exito'){
@@ -705,7 +705,7 @@ class QuotationController extends Controller
         
             $global = new GlobalController();
 
-            $value_return = $global->check_amount($var->id_quotation,$var->id_inventory,$var->amount);
+            $value_return = $global->check_product($var->id_quotation,$var->id_inventory,$var->amount);
 
 
             $islr = request('islr');
