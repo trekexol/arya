@@ -217,7 +217,7 @@ class DailyListingController extends Controller
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('detail_vouchers.id_account',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->whereRaw(
                          "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
                         [$date_begin, $date_end])
