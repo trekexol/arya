@@ -9,6 +9,7 @@ use App\ExpensesDetail;
 use App\Inventory;
 use App\QuotationPayment;
 use App\QuotationProduct;
+use Carbon\Carbon;
 use App\UserAccess;
 use Illuminate\Http\Request;
 
@@ -661,9 +662,9 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_inventary,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
-        if ($sucursal == 'Matriz') {
+        if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
@@ -673,6 +674,7 @@ class GlobalController extends Controller
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
+            ->where('branch','=',$sucursal)
             ->select('amount_real')
             ->get()->last();
         }
@@ -689,22 +691,23 @@ class GlobalController extends Controller
     }
     
     
-    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0,$id){
+    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
     
        // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
-            if ($branch == 'Matriz') { // todo
+            if ($branch == 1) { // todas las sucurssales
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
                 ->select('*')
                 ->get()->last();
-            } else { // sucursal
+            } else { // sucursal especifica
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
+                ->where('id_branch','=',$branch)
                 ->select('*')
                 ->get()->last();	
             }
@@ -719,8 +722,18 @@ class GlobalController extends Controller
     
                 }
     
-            $datev = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+
+            if ($date == null) {
+
+            $date = Carbon::now();
+            $date = $date->format('Y-m-d'); 
             
+            } else {
+
+            $date = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+            
+            }
+
             $transaccion = 0;
             $agregar = 'true';
     
@@ -742,13 +755,9 @@ class GlobalController extends Controller
                         
                             if (!empty($inventories_quotations_hist)) {
                                 
-                                
-                                    if ($inventories_quotations_hist->amount == $amount) {
+                                    $amount = 0;
                                     $transaccion = $amount_real;
-                                    } else {
-                                    $transaccion = $amount_real-$amount;	
-                                    }
-                                
+                                    $description = 'De Nota a Factura'; 
                             }
     
                     } else {
@@ -782,20 +791,16 @@ class GlobalController extends Controller
                                     $agregar = 'false';   
                                 } else {
 
-                                    if ($inventories_quotations_hist->amount > $amount) {
-                                        $transaccion =  $amount_real+$amount;	
-                                        $agregar = 'nota_rev';                                 
-                                    }  
-
-                                    if ($inventories_quotations_hist->amount < $amount) {
-                                        $transaccion = $amount_real-$amount;	
-                                        $agregar = 'true';                                   
-                                    }  
-
+                                    $transaccion = ($amount_real+$inventories_quotations_hist->amount)-$amount;	
+                                    $agregar = 'true'; 
+                                    $type = 'aju_nota';                                    
+                                
                                 }
     
                                 
-                            } 
+                            } else {
+                                $transaccion = $amount_real-$amount;  
+                            }
     
                         } else {
                                 $transaccion = $amount_real-$amount; 
@@ -827,23 +832,20 @@ class GlobalController extends Controller
                     
                         if ($agregar != 'false') {
                             
-                            if ($agregar == 'nota_rev') {
-                                $type = 'aju_nota';  
-                            }
 
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                            'date' => $date,
                             'id_product' => $id_inventary,
-                            'description' => $description,
+                            'id_user' => $user->id,
+                            'id_branch' => $branch,
+                            'id_centro_costo' => $branch,
+                            'id_quotation' => $quotation,
+                            'id_expense' => $expense,
+                            'date' => $date,
                             'type' => $type,
                             'price' => $price,
                             'amount' => $amount,
                             'amount_real' => $transaccion,
-                            'status' => 'A',
-                            'branch' => $branch,
-                            'centro_cost' => $centro_cost,
-                            'number_invoice' => $number_fac_note,
-                            'user' => $user->id]);
+                            'status' => 'A']);
                             
                             $id_last = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')

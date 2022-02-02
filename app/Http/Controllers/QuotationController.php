@@ -14,6 +14,7 @@ use App\HistorialQuotation;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\InventoryHistories;
 use App\Multipayment;
 use App\Product;
 use App\Quotation;
@@ -289,7 +290,7 @@ class QuotationController extends Controller
 
         $services = null;
 
-        $inventories = DB::connection(Auth::user()->database_name)->table('inventories')
+        /*$inventories = DB::connection(Auth::user()->database_name)->table('inventories')
             ->join('products', 'products.id', '=', 'inventories.product_id')
             ->where(function ($query){
                 $query->where('products.type','MERCANCIA')
@@ -298,8 +299,35 @@ class QuotationController extends Controller
             ->where('products.status',1)
             ->select('products.*','inventories.amount as amount','inventories.id as id_inventory')
             ->orderBy('products.code_comercial','desc')
-            ->get();
-        
+            ->get();*/
+            $services = null;
+
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+     
+            $global = new GlobalController();
+            
+            $inventories = InventoryHistories::on(Auth::user()->database_name)
+            ->join('inventories','inventories.id','inventory_histories.id_product')
+            ->join('products','products.id','inventories.product_id')
+           
+                         
+            ->where(function ($query){
+                 $query->where('products.type','MERCANCIA')
+                     ->orWhere('products.type','COMBO');
+                     //->orWhere('products.type','SERVICIOS');
+            })
+ 
+            ->where('inventory_histories.status','A')
+            ->select('inventories.id as id_inventory','inventory_histories.amount_real as amount','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+            ->orderBy('inventory_histories.id','DESC')
+            ->get();     
+             
+             
+            $inventories = $inventories->unique('id');
+     
+            $inventories = $inventories->sortBydesc('amount');
+            
         $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
         $bcv_quotation_product = $quotation->bcv;
@@ -734,11 +762,24 @@ class QuotationController extends Controller
                 $this->recalculateQuotation($var->id_quotation);
             }
 
+            $global = new GlobalController();
+            
+            if(isset($var->quotations['date_delivery_note'])) {
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $var->id_quotation)
+                ->where('id', '=',  $var->id)
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
+                foreach($quotation_products as $det_products){ // guardado historial de inventario 
+                $global->transaction_inv('aju_nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,null,1,1,0,$det_products->id_inventory_histories,$det_products->id,$var->id_quotation);
+                }
+            }
+
             $historial_quotation = new HistorialQuotationController();
 
             $historial_quotation->registerAction($var,"quotation_product","Actualizó el Producto: ".$var->inventories['code']."/ 
             Precio Viejo: ".number_format($price_old, 2, ',', '.')." Cantidad: ".$amount_old."/ Precio Nuevo: ".number_format($var->price, 2, ',', '.')." Cantidad: ".$var->amount);
         
+            
             return redirect('/quotations/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }
@@ -931,6 +972,14 @@ class QuotationController extends Controller
                 $quotation->save();
 
 
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $id_quotation)
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
+                               
+                foreach($quotation_products as $det_products){ // guardado historial de inventario 
+                $global->transaction_inv('rev_venta',$det_products->id_inventory,'rev_venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+                }
+
 
                 //Crear un nuevo anticipo con el monto registrado en la cotizacion
                 if((isset($quotation->anticipo))&& ($quotation->anticipo != 0)){
@@ -946,6 +995,7 @@ class QuotationController extends Controller
 
                 $historial_quotation->registerAction($quotation,"quotation","Se Reversó la Factura");
             }
+
         }else{
             
             return redirect('/quotations/facturado/'.$quotation->id.'/bolivares/'.$exist_multipayment->id_header.'');

@@ -294,8 +294,16 @@ Route::group(["prefix"=>'inventories'],function(){
 
     Route::post('storedecreaseinventory','InventoryController@store_decrease_inventory')->name('inventories.store_decrease_inventory');
     Route::get('createdecreaseinventory/{id_inventario}','InventoryController@create_decrease_inventory')->name('inventories.create_decrease_inventory');
+  
+    /*no va
+    Route::get('accounts_receivable_note/{typepersone}/{id_client_or_vendor?}','ReportDeliveryNoteController@index_accounts_receivable_note')->name('reports.accounts_receivable_note'); // dacson (report note delivery)
+    Route::post('storeaccounts_receivable_note','ReportDeliveryNoteController@store_accounts_receivable_note')->name('reports.store_accounts_receivable_note'); // dacson (report note delivery)
+    Route::get('accounts_receivable_note_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryNoteController@accounts_receivable_note_pdf')->name('reports.accounts_receivable_note_pdf');
+    */
     Route::get('movements','InventoryController@indexmovements')->name('inventories.movement');
-
+    Route::post('storemovements','InventoryController@storemovements')->name('reports.storemovements');
+    //Route::get('movements_pdf/{coin}/{date_end}/{date_frist}/{id_inventory}/{type}/{number_invoice}/{number_note}','InventoryController@movements_pdf')->name('inventories.movement_pdf');
+    Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}','InventoryController@movements_pdf')->name('reports.movements_pdf');
 });
 
 Route::group(["prefix"=>'modelos'],function(){

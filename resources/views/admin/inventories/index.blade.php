@@ -34,9 +34,6 @@
             <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
                 
                 <a class="dropdown-item" onclick="pdfinventory();" style="color: rgb(4, 119, 252)"> <i class="fas fa-download fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Inventario Actual</strong></a>
-                <br>
-                <a class="dropdown-item" href="" style="color: rgb(4, 119, 252)"> <i class="fas fa-file-export fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Historial del Inventario</strong></a>
-                
             </div>
         </div>
      

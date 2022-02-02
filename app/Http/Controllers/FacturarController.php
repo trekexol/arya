@@ -476,7 +476,25 @@ class FacturarController extends Controller
                 ->where('id_quotation', '=', $quotation->id)
                 ->update(['status' => 'C']);
 
+                if(!isset($quotation->number_delivery_note)){
+                    $quotation->number_delivery_note = 0;    
+                } else {
+
+                    if(empty($quotation->number_delivery_note) || $quotation->number_delivery_note == null) {
+                        $quotation->number_delivery_note = 0;
+                    }
+                }
+             
+        $global = new GlobalController; 
         
+        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+        ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+        foreach($quotation_products as $det_products){ // guardado historial de inventario
+            
+        $global->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+        }  
        
         /*Busqueda de Cuentas*/
 
@@ -1647,6 +1665,29 @@ class FacturarController extends Controller
                         $quotation->number_invoice = 1;
                     }
                 }
+                 
+
+                if(!isset($quotation->number_delivery_note)){
+                    $quotation->number_delivery_note = 0;    
+                } else {
+
+                    if(empty($quotation->number_delivery_note) || $quotation->number_delivery_note == null) {
+                        $quotation->number_delivery_note = 0;
+                    }
+                }
+            
+                $global = new GlobalController;                                                
+        
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $quotation->id)->get();
+        
+                foreach($quotation_products as $det_products){
+    
+                $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+                }  
+        
+
             }
 
             /*Modifica la cotizacion */
@@ -1747,13 +1788,15 @@ class FacturarController extends Controller
                 }
                 /*----------- */
             }
-             
+
+            
+            $global = new GlobalController;                                                
+        
             //Aqui pasa los quotation_products a status C de Cobrado
             DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
                                                         ->update(['status' => 'C']);
-
-            $global = new GlobalController;                                                
+    
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);
             
             /*------------------------------------------------- */
