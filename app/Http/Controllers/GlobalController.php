@@ -399,18 +399,20 @@ class GlobalController extends Controller
             $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
                             ->where('id_quotation',$id_quotation)
                             ->where('id_inventory',$inventories_quotations->id)
+                            ->where("status",'1')
                             ->sum('amount');
 
-            
+            $comboController = new ComboController();
 
+            $suma_en_combos = 0;
+
+            $suma_en_combos = $comboController->check_exist_combo_in_quotation($id_quotation,$inventory->product_id);
          
-            if ($sum_amount <> $amount_new) {
-                $total_in_quotation = $amount_new;
-            } else {
-                $total_in_quotation = $sum_amount;
-            }
             
-            if ($inventory->amount >= $total_in_quotation){
+            $total_in_quotation = $sum_amount + $amount_new;
+         
+           
+            if ($inventory->amount >= ($total_in_quotation + $suma_en_combos)){
                 return "exito";
             }else{
                 return "El producto ".$inventories_quotations->description." no tiene inventario suficiente";
@@ -450,6 +452,36 @@ class GlobalController extends Controller
         }
         
     }
+
+
+    public function check_all_products_after_facturar($id_quotation){
+
+        $all_products_quotation = DB::connection(Auth::user()->database_name)->table('inventories')
+                                    ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
+                                    ->join('products', 'products.id','=','inventories.product_id')
+                                    ->where('quotation_products.id_quotation',$id_quotation)
+                                    ->where('quotation_products.status','1')
+                                    ->where(function ($query){
+                                        $query->where('products.type','MERCANCIA');
+                                        $query->orWhere('products.type','COMBO');
+                                    })
+                                    ->select('inventories.code as code','inventories.id as id_inventory','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                                    'quotation_products.amount as amount_quotation')
+                                    ->get(); 
+
+       
+        foreach($all_products_quotation as $product){
+            $value_return = $this->check_product($id_quotation,$product->id_inventory,0);
+
+            if($value_return != "exito"){
+                return $value_return;
+            }
+        }
+
+        return "exito";
+
+    }
+
 
     public function add_payment($quotation,$id_account,$payment_type,$amount,$bcv){
         $var = new QuotationPayment();

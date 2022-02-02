@@ -114,23 +114,34 @@ class ComboController extends Controller
 
 
 
-    public function check_exist_combo_in_quotation($id_quotation,$id_inventory){
+    public function check_exist_combo_in_quotation($id_quotation,$id_product){
         $combos = DB::connection(Auth::user()->database_name)->table('inventories')
                 ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
                 ->join('products', 'products.id','=','inventories.product_id')
-                ->join('combo_products', 'combo_products.id_product','=','products.id')
                 ->where('quotation_products.id_quotation','=',$id_quotation)
-                ->where('inventories.amount',0)
                 ->where('quotation_products.status','1')
                 ->where(function ($query){
                     $query->where('products.type','COMBO');
                 })
-                ->select('combo_products.id_combo','combo_products.id_product','inventories.id as id_inventory','inventories.code as code','inventories.amount as amount','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                ->select('products.id as id_combo','inventories.id as id_inventory','inventories.code as code','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
                 'quotation_products.amount as amount_quotation')
                 ->get(); 
 
+        $total_producto_en_combos = 0;
+       //revisa primero todos los combos de esa cotizacion, luego revisa cuales tienen anadido el producto que se busca y va sumando cuantos productos van, de ultimo saca la cuenta a ver el total
         if(isset($combos) && count($combos) > 0){    
-            
+            foreach($combos as $combo){
+                $combo_searchs = ComboProduct::on(Auth::user()->database_name)->where("id_combo",$combo->id_combo)->get();
+
+                foreach($combo_searchs as $combo_search){
+                    if($combo_search->id_product == $id_product){
+                        $total_producto_en_combos +=  $combo->amount_quotation * $combo_search->amount_per_product;
+                    }
+                }
+            }
+            return $total_producto_en_combos;
+        }else{
+            return 0;
         }
     }
  
