@@ -288,6 +288,15 @@ class InventoryController extends Controller
        
         $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
 
+        $global = new GlobalController; 
+
+
+            
+        $inventory->amount = $global->consul_prod_invt($id_inventory);
+
+    
+
+
         $company = Company::on(Auth::user()->database_name)->find(1);
         //Si la taza es automatica
         if($company->tiporate_id == 1){
@@ -413,7 +422,7 @@ class InventoryController extends Controller
             $counterpart = request('Subcontrapartida');           
 
             $global = new GlobalController; 
-            $global->transaction_inv('entrada',$id_inventory,'Entrada de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,'Matriz','Matriz',0,0,0,0,0);
+            $global->transaction_inv('entrada',$id_inventory,'Entrada de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
 
             if(isset($counterpart) && $counterpart != 'Seleccionar'){
                 
@@ -510,7 +519,7 @@ class InventoryController extends Controller
                 $datenow = $date->format('Y-m-d');   
 
                 $global = new GlobalController; 
-                $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,'Matriz','Matriz',0,0,0,0,0);
+                $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
 
                 $header_voucher  = new HeaderVoucher();
 
