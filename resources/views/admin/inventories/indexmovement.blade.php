@@ -146,7 +146,7 @@
                             </div>
                             <div class="col-sm-1">
                                 <button type="submit" class="btn btn-primary ">
-                                    Buscar 
+                                    Buscar:
                                  </button>
                                 </div>
                         </div>
