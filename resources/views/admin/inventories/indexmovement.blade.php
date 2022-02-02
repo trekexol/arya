@@ -134,7 +134,7 @@
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
 
-                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'bolivares',$date_end ?? '',$type ?? 'todo'])}}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'bolivares'])}}" allowfullscreen></iframe>
                             
                             </div>                                      
                         

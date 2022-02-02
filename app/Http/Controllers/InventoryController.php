@@ -57,19 +57,18 @@ class InventoryController extends Controller
         //$inventories = InventoryHistories::on(Auth::user()->database_name)
         $inventories = Inventory::on(Auth::user()->database_name)
         //->join('inventories','inventories.id','inventory_histories.id_product')
-        ->join('products','products.id','inventories.product_id')
-             
+        ->join('products','products.id','inventories.product_id')     
         ->where(function ($query){
             $query->where('products.type','MERCANCIA')
                 ->orWhere('products.type','COMBO');
         })
-       
-   //    ->where('inventory_histories.status','A')
- //      ->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
-  //     ->orderBy('inventory_histories.id' ,'DESC')
-  ->where('products.status',1)
-  ->select('inventories.id as id_inventory','inventories.*','products.*')  
-  ->get();     
+
+         //->where('inventory_histories.status','A')
+         //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+         //->orderBy('inventory_histories.id' ,'DESC')
+        ->where('products.status',1)
+        ->select('inventories.id as id_inventory','inventories.*','products.*')  
+        ->get();     
         
   /*      
         $inventories = $inventories->unique('id');
@@ -124,11 +123,43 @@ class InventoryController extends Controller
    }
 
 
-   public function movements_pdf($coin,$date,$type) {
+   public function movements_pdf($coin,$date_frist = '2021-11-01',$date_end = 'todo') {
 
     $coin = 'bolivares';       
     $pdf = App::make('dompdf.wrapper');
-    $pdf = $pdf->loadView('admin.reports.movements',compact('coin'));
+
+    $global = new GlobalController();
+
+    
+       
+       if($date_frist == 'todo'){
+        $date_frist = $global->data_first_month_day();
+        }
+
+       if($date_end == 'todo'){
+        $date_end =  $global->data_last_month_day();
+       } 
+
+
+    $inventories = InventoryHistories::on(Auth::user()->database_name)
+    ->join('inventories','inventories.id','inventory_histories.id_product')     
+    ->join('products','products.id','inventories.product_id')
+    ->where('inventory_histories.date','>=',$date_frist)
+    ->where('inventory_histories.date','<=',$date_end)
+     //->where('inventory_histories.status','A')
+     //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+    ->orderBy('inventory_histories.id' ,'DESC')
+    ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
+    ->get();     
+
+/*      
+    $inventories = $inventories->unique('id');
+
+    $inventories = $inventories->sortBydesc('amount_real');
+*/
+
+
+    $pdf = $pdf->loadView('admin.reports.movements',compact('coin','inventories'));
     return $pdf->stream();  
 
    }
