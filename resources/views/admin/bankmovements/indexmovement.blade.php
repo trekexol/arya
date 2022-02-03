@@ -47,7 +47,7 @@
                                     @else
                                         @foreach ($detailvouchers as $var)
                                         <tr>
-                                        <td>{{$var->header_date ?? ''}}</td>
+                                        <td>{{ date('d-m-Y', strtotime( $var->header_date ?? '')) }}</td>
                                         <td class="text-center">{{$var->id_header_voucher ?? ''}}</td>
                                         <td>{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
                                         <td>{{$var->account_description ?? ''}}</td>

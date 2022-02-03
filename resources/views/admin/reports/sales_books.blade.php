@@ -51,6 +51,7 @@
     <th style="text-align: center; ">Anticipo</th>
     <th style="text-align: center; ">IVA</th>
     <th style="text-align: center; ">Total</th>
+    <th style="text-align: center; ">Status</th>
   </tr> 
   <?php
     $total_base_imponible = 0;
@@ -72,6 +73,14 @@
         $total_anticipo += $quotation->anticipo;
         $total_amount_iva += $quotation->amount_iva;
         $total_amount_with_iva += $quotation->amount_with_iva;
+
+        if($quotation->status == 'C'){
+          $status = "Activa";
+        }else if($quotation->status == 'X'){
+          $status = "Inactiva";
+        }else{
+          $status = "por revisar";
+        }
       ?>
     <tr>
       
@@ -90,6 +99,7 @@
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->anticipo ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_iva ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: center; font-weight: normal;">{{ $status }}</td>
       @else
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount / $quotation->bcv), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->base_imponible / $quotation->bcv), 2, ',', '.') }}</td>
@@ -99,6 +109,7 @@
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->anticipo / $quotation->bcv), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_iva / $quotation->bcv), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva / $quotation->bcv), 2, ',', '.') }}</td>
+        <td style="text-align: center; font-weight: normal;">{{ $status }}</td>
       @endif
      
     </tr> 
@@ -118,6 +129,7 @@
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_anticipo, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_with_iva, 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
   </tr> 
 </table>
 

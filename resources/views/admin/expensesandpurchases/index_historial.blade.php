@@ -106,7 +106,7 @@
                             </td>
                             <td class="text-center">{{$expensesandpurchase->serie ?? ''}}</td>
                             <td class="text-center">{{$expensesandpurchase->providers['razon_social'] ?? ''}}</td>
-                            <td class="text-center">{{$expensesandpurchase->date}}</td>
+                            <td class="text-center">{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }} </td>
                             <td class="text-right">{{number_format($expensesandpurchase->amount, 2, ',', '.')}}</td>
                             <td class="text-right">{{number_format($expensesandpurchase->amount_iva, 2, ',', '.')}}</td>
                             <td class="text-right">{{number_format($expensesandpurchase->amount_with_iva, 2, ',', '.')}}</td>
