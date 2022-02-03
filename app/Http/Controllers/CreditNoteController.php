@@ -487,12 +487,7 @@ class CreditNoteController extends Controller
         if(isset($creditnote->date_delivery_note) || isset($creditnote->date_billing)){
             $this->recalculatecreditnote($creditnote->id);
         }
-<<<<<<< HEAD
  
-=======
-
-
->>>>>>> carlos
         return redirect('creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
     }
    
