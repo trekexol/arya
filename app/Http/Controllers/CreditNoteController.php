@@ -658,22 +658,14 @@ class CreditNoteController extends Controller
             }else{
                 $var->exento = true;
             }
-<<<<<<< HEAD
 
-            if($value_return != 'exito'){
+           /* if($value_return != 'exito'){
                 return redirect('creditnotes/creditnoteproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario! ');
-=======
->>>>>>> carlos
 
-            }
+            }*/
           
             $var->save();
-<<<<<<< HEAD
    
-=======
-
-          
->>>>>>> carlos
             return redirect('/creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }
