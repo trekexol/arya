@@ -218,14 +218,13 @@ class DailyListingController extends Controller
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('detail_vouchers.id_account',$id_account)
                         ->whereIn('detail_vouchers.status', ['C'])
-                        ->whereRaw(
-                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
-                        [$date_begin, $date_end])
+                        ->where('header_vouchers.date','<' ,$date_begin)
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
 
            
-            if(isset($total_debe[0]->debe)){
-                $detailvouchers_saldo_debe = $total_debe[0]->debe;
+           
+            if(isset($total_debe->debe)){
+                $detailvouchers_saldo_debe = $total_debe->debe;
             }else{
                 $detailvouchers_saldo_debe = 0;
             }
