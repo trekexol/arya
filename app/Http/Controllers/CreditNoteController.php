@@ -488,7 +488,6 @@ class CreditNoteController extends Controller
             $this->recalculatecreditnote($creditnote->id);
         }
 
-
         return redirect('creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
     }
    
@@ -661,10 +660,10 @@ class CreditNoteController extends Controller
             }
 
             
-          
             $var->save();
 
           
+
             return redirect('/creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }

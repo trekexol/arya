@@ -62,8 +62,6 @@ class ReportDeliveryNoteController extends Controller
                     $id_client_or_vendor = 'todo';
                }
               
-
-
             return view('admin.reports.index_accounts_receivable_note',compact('typepersone','client','vendor','date_end','date_frist','typeinvoice','id_client_or_vendor'));
             
         } else{
