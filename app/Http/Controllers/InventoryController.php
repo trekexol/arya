@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 class InventoryController extends Controller
 {
  
-       
     public $modulo = "Reportes";
 
     public function __construct(){
@@ -29,56 +28,25 @@ class InventoryController extends Controller
        $this->middleware('auth');
    }
 
-   public function index()
-   {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
-        $inventories = Inventory::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')
-        ->where(function ($query){
-            $query->where('products.type','MERCANCIA')
-                ->orWhere('products.type','COMBO');
-        })
-        ->orderBy('products.description' ,'ASC')
-        ->where('products.status',1)
-        ->select('inventories.id as id_inventory','inventories.*','products.*')
-        ->get();
-        
-       return view('admin.inventories.index',compact('inventories'));
-   }
 
-/*
    public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
-       $global = new GlobalController();
-       
-        //$inventories = InventoryHistories::on(Auth::user()->database_name)
+        $global = new GlobalController();
         $inventories = Inventory::on(Auth::user()->database_name)
-        //->join('inventories','inventories.id','inventory_histories.id_product')
         ->join('products','products.id','inventories.product_id')     
         ->where(function ($query){
             $query->where('products.type','MERCANCIA')
                 ->orWhere('products.type','COMBO');
         })
 
-         //->where('inventory_histories.status','A')
-         //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
-         //->orderBy('inventory_histories.id' ,'DESC')
+
         ->where('products.status',1)
         ->select('inventories.id as id_inventory','inventories.*','products.*')  
         ->get();     
         
-  /*      
-        $inventories = $inventories->unique('id');
-
-        $inventories = $inventories->sortBydesc('amount_real');
-*/
-        $global = new GlobalController; 
-
         foreach ($inventories as $inventorie) {
             
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
@@ -88,7 +56,8 @@ class InventoryController extends Controller
 
        return view('admin.inventories.index',compact('inventories'));
    }
-*/
+
+
 
    public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
    {
