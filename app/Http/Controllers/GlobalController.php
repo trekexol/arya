@@ -394,7 +394,7 @@ class GlobalController extends Controller
     {
         
         //si es un servicio no se chequea que posea inventario, ni tampoco el combo, el combo se revisa sus componentes si tienen inventario
-        if(isset($inventories_quotations) && ((($inventories_quotations->type == "MERCANCIA")) || (($inventories_quotations->type == "COMBO")))){
+       /* if(isset($inventories_quotations) && ((($inventories_quotations->type == "MERCANCIA")) || (($inventories_quotations->type == "COMBO")))){
             $inventory = Inventory::on(Auth::user()->database_name)->find($inventories_quotations->id);
 
             $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
@@ -419,9 +419,9 @@ class GlobalController extends Controller
                 return "El producto ".$inventories_quotations->description." no tiene inventario suficiente";
             } 
 
-        }else{
+        }else{*/
             return "exito";
-        }
+     //   }
     
     }
 
