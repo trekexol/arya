@@ -9,6 +9,7 @@ use App\ExpensesDetail;
 use App\Inventory;
 use App\QuotationPayment;
 use App\QuotationProduct;
+use Carbon\Carbon;
 use App\UserAccess;
 use Illuminate\Http\Request;
 
@@ -296,108 +297,123 @@ class GlobalController extends Controller
             
     }
 
+   
     public function discount_inventory($id_quotation)
     {
-            /*Primero Revisa que todos los productos tengan inventario suficiente*/
-            $no_hay_cantidad_suficiente = DB::connection(Auth::user()->database_name)->table('inventories')
-                                    ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
-                                    ->join('products', 'products.id','=','inventories.product_id')
-                                    ->where('quotation_products.id_quotation','=',$id_quotation)
-                                    ->where('quotation_products.amount','<','inventories.amount')
-                                    ->where('quotation_products.status','1')
-                                    ->where(function ($query){
-                                        $query->where('products.type','MERCANCIA')
-                                            ->orWhere('products.type','COMBO');
-                                    })
-                                    ->select('inventories.code as code','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
-                                    'quotation_products.amount as amount_quotation')
-                                    ->first(); 
-        
-            if(isset($no_hay_cantidad_suficiente)){
-                return "no_hay_cantidad_suficiente";
-            }
+        /*Primero Revisa que todos los productos tengan inventario suficiente*/
+        $no_hay_cantidad_suficiente = DB::connection(Auth::user()->database_name)->table('inventories')
+                                ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
+                                ->join('products', 'products.id','=','inventories.product_id')
+                                ->where('quotation_products.id_quotation','=',$id_quotation)
+                                ->where('quotation_products.amount','<','inventories.amount')
+                                ->where('quotation_products.status','1')
+                                ->where(function ($query){
+                                    $query->where('products.type','MERCANCIA');
+                                })
+                                ->select('inventories.code as code','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                                'quotation_products.amount as amount_quotation')
+                                ->first(); 
+    
+        if(isset($no_hay_cantidad_suficiente)){
+            return "no_hay_cantidad_suficiente";
+        }
 
-            /*Luego, descuenta del Inventario*/
-            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-            ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
-            ->where('quotation_products.id_quotation',$id_quotation)
-            ->where('quotation_products.status','1')
-            ->select('products.*','quotation_products.id as id_quotation','quotation_products.discount as discount',
-            'quotation_products.amount as amount_quotation')
-            ->get(); 
+        /*Luego, descuenta del Inventario*/
+        $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
+        ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+        ->where('quotation_products.id_quotation',$id_quotation)
+        ->where('quotation_products.status','1')
+        ->select('products.*','quotation_products.id as id_quotation','quotation_products.discount as discount',
+        'quotation_products.amount as amount_quotation')
+        ->get(); 
 
-            foreach($inventories_quotations as $inventories_quotation){
+        foreach($inventories_quotations as $inventories_quotation){
 
-                $quotation_product = QuotationProduct::on(Auth::user()->database_name)->findOrFail($inventories_quotation->id_quotation);
+            $quotation_product = QuotationProduct::on(Auth::user()->database_name)->findOrFail($inventories_quotation->id_quotation);
 
-                if(isset($quotation_product)){
-                    if(($inventories_quotation->type == 'MERCANCIA') || ($inventories_quotation->type == 'COMBO')){
-                        $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($quotation_product->id_inventory);
-
-                        if(isset($inventory)){
-                            //REVISO QUE SEA MAYOR EL MONTO DEL INVENTARIO Y LUEGO DESCUENTO
-                            if($inventory->amount >= $quotation_product->amount){
-                                $inventory->amount -= $quotation_product->amount;
-                                $inventory->save();
-                                if($inventories_quotation->type == 'COMBO'){
-                                    $global = new GlobalController;
-                                    $global->discountCombo($inventory,$quotation_product->amount);
-                                }
-                            }else{
-                                return 'El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!';
-                            }
+            if(isset($quotation_product))
+            {
+                $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($quotation_product->id_inventory);
+                if(isset($inventory)){
+                    if(($inventories_quotation->type == 'MERCANCIA') || (($inventories_quotation->type == 'COMBO')) && ($inventory-> amount > 0))
+                    {
+                        //REVISO QUE SEA MAYOR EL MONTO DEL INVENTARIO Y LUEGO DESCUENTO
+                        if($inventory->amount >= $quotation_product->amount){
+                            $inventory->amount -= $quotation_product->amount;
+                            $inventory->save();
+                            
                         }else{
-                            return 'El Inventario no existe!';
+                            return 'El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!';
                         }
+                    }else if(($inventories_quotation->type == 'COMBO') && ($inventory-> amount == 0)){
+                        $global = new GlobalController;
+                        $global->discountCombo($inventory,$quotation_product->amount);
                     }
-                    //CAMBIAMOS EL ESTADO PARA SABER QUE ESE PRODUCTO YA SE COBRO Y SE RESTO DEL INVENTARIO
-                    $quotation_product->status = 'C';  
-                    $quotation_product->save();
-                }else{
-                return 'El Inventario de la cotizacion no existe!';
-                }
-
+                    
+            }else{
+                return 'El Inventario no existe!';
+            }
+                //CAMBIAMOS EL ESTADO PARA SABER QUE ESE PRODUCTO YA SE COBRO Y SE RESTO DEL INVENTARIO
+                $quotation_product->status = 'C';  
+                $quotation_product->save();
+            }else{
+            return 'El Inventario de la cotizacion no existe!';
             }
 
-            return "exito";
+        }
+
+        return "exito";
 
     }
 
-    public function check_amount($id_quotation,$id_inventory,$amount_new)
-    {
+    public function check_product($id_quotation,$id_inventory,$amount_new){
+        
         $inventories_quotations = DB::connection(Auth::user()->database_name)
-                ->table('products')
-                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                ->where('inventories.id',$id_inventory)
-                ->select('products.*')
-                ->first(); 
+        ->table('products')
+        ->join('inventories', 'products.id', '=', 'inventories.product_id')
+        ->where('inventories.id',$id_inventory)
+        ->select('products.*','inventories.amount as amount_inventory')
+        ->first(); 
 
+        if(isset($inventories_quotations) && ($inventories_quotations->type == "MERCANCIA"))
+        {
+            return $this->check_amount($id_quotation,$inventories_quotations,$amount_new);
+
+        }else if(isset($inventories_quotations) && ($inventories_quotations->type == "COMBO") && ($inventories_quotations->amount_inventory == 0))
+        {
+            return $this->check_combo_by_zero($id_quotation,$inventories_quotations,$amount_new);
+
+        }else if(isset($inventories_quotations) && ($inventories_quotations->type == "COMBO") ){
+
+            return $this->check_amount($id_quotation,$inventories_quotations,$amount_new);
+
+        }
+
+    }
+    public function check_amount($id_quotation,$inventories_quotations,$amount_new)
+    {
         
         //si es un servicio no se chequea que posea inventario, ni tampoco el combo, el combo se revisa sus componentes si tienen inventario
         if(isset($inventories_quotations) && ((($inventories_quotations->type == "MERCANCIA")) || (($inventories_quotations->type == "COMBO")))){
-            $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
+            $inventory = Inventory::on(Auth::user()->database_name)->find($inventories_quotations->id);
 
             $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
                             ->where('id_quotation',$id_quotation)
-                            ->where('id_inventory',$id_inventory)
+                            ->where('id_inventory',$inventories_quotations->id)
+                            ->where("status",'1')
                             ->sum('amount');
 
-            //validacion de los combos que estan en cero, y se valide sus componentes individuales
-            if(isset($inventories_quotations) && ($inventories_quotations->type == "COMBO") && ($inventory->amount == 0)){
-                $value_return = $this->check_combo_by_zero($id_quotation,$inventories_quotations,$amount_new);
+            $comboController = new ComboController();
 
-                if($value_return != "exito"){
-                    return $value_return;
-                }
-            }
+            $suma_en_combos = 0;
 
-            if ($sum_amount <> $amount_new) {
-                $total_in_quotation = $amount_new;
-            } else {
-                $total_in_quotation = $sum_amount;
-            }
+            $suma_en_combos = $comboController->check_exist_combo_in_quotation($id_quotation,$inventory->product_id);
+         
             
-            if ($inventory->amount >= $total_in_quotation){
+            $total_in_quotation = $sum_amount + $amount_new;
+         
+           
+            if ($inventory->amount >= ($total_in_quotation + $suma_en_combos)){
                 return "exito";
             }else{
                 return "El producto ".$inventories_quotations->description." no tiene inventario suficiente";
@@ -411,13 +427,62 @@ class GlobalController extends Controller
 
     public function check_combo_by_zero($id_quotation,$inventories_quotations,$amount_new){
 
-        $relation_combo = ComboProduct::on(Auth::user()->database_name)->where($inventories_quotations->id)->get();
+        
+        $relation_combo = ComboProduct::on(Auth::user()->database_name)->where("id_combo",$inventories_quotations->id)->get();
 
-        foreach($relation_combo as $relation){
-            $this->check_amount($id_quotation,$inventories_quotations->id,$amount_new * $relation->amount_per_product);
+        
+        if(isset($relation_combo) && (count($relation_combo) > 0)){
+            
+            foreach($relation_combo as $relation){
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                                                                    ->table('products')
+                                                                    ->where('id',$relation->id_product)
+                                                                    ->select('products.*')
+                                                                    ->first(); 
+
+                $value_return = $this->check_amount($id_quotation,$inventories_quotations,$amount_new * $relation->amount_per_product);
+                
+                if($value_return != "exito"){
+                    return "El producto ".$inventories_quotations->description." del combo no tiene inventario suficiente";
+                }
+            }
+            return "exito";
+        }else{
+           
+            return "El combo no tiene Productos Asociados";
+        }
+        
+    }
+
+
+    public function check_all_products_after_facturar($id_quotation){
+
+        $all_products_quotation = DB::connection(Auth::user()->database_name)->table('inventories')
+                                    ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
+                                    ->join('products', 'products.id','=','inventories.product_id')
+                                    ->where('quotation_products.id_quotation',$id_quotation)
+                                    ->where('quotation_products.status','1')
+                                    ->where(function ($query){
+                                        $query->where('products.type','MERCANCIA');
+                                        $query->orWhere('products.type','COMBO');
+                                    })
+                                    ->select('inventories.code as code','inventories.id as id_inventory','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                                    'quotation_products.amount as amount_quotation')
+                                    ->get(); 
+
+       
+        foreach($all_products_quotation as $product){
+            $value_return = $this->check_product($id_quotation,$product->id_inventory,0);
+
+            if($value_return != "exito"){
+                return $value_return;
+            }
         }
 
+        return "exito";
+
     }
+
 
     public function add_payment($quotation,$id_account,$payment_type,$amount,$bcv){
         $var = new QuotationPayment();
@@ -471,7 +536,7 @@ class GlobalController extends Controller
                     ->join('products','products.id','combo_products.id_product')
                     ->join('inventories','inventories.product_id','products.id')
                     ->where('combo_products.id_combo',$inventory->product_id)
-                    ->update(['inventories.amount' => DB::raw('inventories.amount + (combo_products.amount_per_product *'.$amount_discount.')')]);
+                    ->update(['inventories.amount' => DB::raw('inventories.amount - (combo_products.amount_per_product *'.$amount_discount.')')]);
 
 
     }
@@ -597,9 +662,9 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_inventary,$sucursal = 'Matriz'){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_inventary,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
-        if ($sucursal == 'Matriz') {
+        if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
@@ -609,6 +674,7 @@ class GlobalController extends Controller
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_inventary)
+            ->where('branch','=',$sucursal)
             ->select('amount_real')
             ->get()->last();
         }
@@ -625,22 +691,23 @@ class GlobalController extends Controller
     }
     
     
-    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 'Matriz',$centro_cost = 'Matriz',$number_fac_note = 0,$id_historial_inv = 0,$id){
+    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
     
        // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
-            if ($branch == 'Matriz') { // todo
+            if ($branch == 1) { // todas las sucurssales
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
                 ->select('*')
                 ->get()->last();
-            } else { // sucursal
+            } else { // sucursal especifica
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_inventary)
+                ->where('id_branch','=',$branch)
                 ->select('*')
                 ->get()->last();	
             }
@@ -655,8 +722,18 @@ class GlobalController extends Controller
     
                 }
     
-            $datev = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+
+            if ($date == null) {
+
+            $date = Carbon::now();
+            $date = $date->format('Y-m-d'); 
             
+            } else {
+
+            $date = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+            
+            }
+
             $transaccion = 0;
             $agregar = 'true';
     
@@ -678,13 +755,9 @@ class GlobalController extends Controller
                         
                             if (!empty($inventories_quotations_hist)) {
                                 
-                                
-                                    if ($inventories_quotations_hist->amount == $amount) {
+                                    $amount = 0;
                                     $transaccion = $amount_real;
-                                    } else {
-                                    $transaccion = $amount_real-$amount;	
-                                    }
-                                
+                                    $description = 'De Nota a Factura'; 
                             }
     
                     } else {
@@ -718,20 +791,16 @@ class GlobalController extends Controller
                                     $agregar = 'false';   
                                 } else {
 
-                                    if ($inventories_quotations_hist->amount > $amount) {
-                                        $transaccion =  $amount_real+$amount;	
-                                        $agregar = 'nota_rev';                                 
-                                    }  
-
-                                    if ($inventories_quotations_hist->amount < $amount) {
-                                        $transaccion = $amount_real-$amount;	
-                                        $agregar = 'true';                                   
-                                    }  
-
+                                    $transaccion = ($amount_real+$inventories_quotations_hist->amount)-$amount;	
+                                    $agregar = 'true'; 
+                                    $type = 'aju_nota';                                    
+                                
                                 }
     
                                 
-                            } 
+                            } else {
+                                $transaccion = $amount_real-$amount;  
+                            }
     
                         } else {
                                 $transaccion = $amount_real-$amount; 
@@ -763,23 +832,20 @@ class GlobalController extends Controller
                     
                         if ($agregar != 'false') {
                             
-                            if ($agregar == 'nota_rev') {
-                                $type = 'aju_nota';  
-                            }
 
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                            'date' => $date,
                             'id_product' => $id_inventary,
-                            'description' => $description,
+                            'id_user' => $user->id,
+                            'id_branch' => $branch,
+                            'id_centro_costo' => $branch,
+                            'id_quotation' => $quotation,
+                            'id_expense' => $expense,
+                            'date' => $date,
                             'type' => $type,
                             'price' => $price,
                             'amount' => $amount,
                             'amount_real' => $transaccion,
-                            'status' => 'A',
-                            'branch' => $branch,
-                            'centro_cost' => $centro_cost,
-                            'number_invoice' => $number_fac_note,
-                            'user' => $user->id]);
+                            'status' => 'A']);
                             
                             $id_last = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')

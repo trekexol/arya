@@ -16,6 +16,7 @@ use App\UnitOfMeasure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Foreach_;
 
 class ComboController extends Controller
@@ -80,6 +81,68 @@ class ComboController extends Controller
         }
 
         
+    }
+
+    public function validate_combo_discount($id_quotation){
+        $combos = DB::connection(Auth::user()->database_name)->table('inventories')
+                        ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
+                        ->join('products', 'products.id','=','inventories.product_id')
+                        ->where('quotation_products.id_quotation','=',$id_quotation)
+                        ->where('inventories.amount',0)
+                        ->where('quotation_products.status','1')
+                        ->where(function ($query){
+                            $query->where('products.type','COMBO');
+                        })
+                        ->select('inventories.id as id_inventory','inventories.code as code','inventories.amount as amount','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                        'quotation_products.amount as amount_quotation')
+                        ->get(); 
+
+        $global = new GlobalController();
+
+        if(isset($combos) && count($combos) > 0){
+            foreach($combos as $combo){
+                $return_value = $global->check_product($id_quotation,$combo->id_inventory,$combo->amount_quotation);
+
+                if($return_value != "exito"){
+                    return $return_value;
+                }
+            }
+            return "exito";
+        }
+        return "exito";
+    }
+
+
+
+    public function check_exist_combo_in_quotation($id_quotation,$id_product){
+        $combos = DB::connection(Auth::user()->database_name)->table('inventories')
+                ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
+                ->join('products', 'products.id','=','inventories.product_id')
+                ->where('quotation_products.id_quotation','=',$id_quotation)
+                ->where('quotation_products.status','1')
+                ->where(function ($query){
+                    $query->where('products.type','COMBO');
+                })
+                ->select('products.id as id_combo','inventories.id as id_inventory','inventories.code as code','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
+                'quotation_products.amount as amount_quotation')
+                ->get(); 
+
+        $total_producto_en_combos = 0;
+       //revisa primero todos los combos de esa cotizacion, luego revisa cuales tienen anadido el producto que se busca y va sumando cuantos productos van, de ultimo saca la cuenta a ver el total
+        if(isset($combos) && count($combos) > 0){    
+            foreach($combos as $combo){
+                $combo_searchs = ComboProduct::on(Auth::user()->database_name)->where("id_combo",$combo->id_combo)->get();
+
+                foreach($combo_searchs as $combo_search){
+                    if($combo_search->id_product == $id_product){
+                        $total_producto_en_combos +=  $combo->amount_quotation * $combo_search->amount_per_product;
+                    }
+                }
+            }
+            return $total_producto_en_combos;
+        }else{
+            return 0;
+        }
     }
  
     /**

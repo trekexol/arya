@@ -75,7 +75,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="cantidad" class="col-md-2 col-form-label text-md-right">Unidades a Ingresar</label>
+                            <label for="cantidad" class="col-md-2 col-form-label text-md-right">Cantidad a descontar</label>
                             <div class="col-md-4">
                                 <input id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new">
 

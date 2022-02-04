@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Account;
 use App\Combo;
 use App\ComboProduct;
@@ -20,89 +21,241 @@ use Illuminate\Support\Facades\Auth;
 class InventoryController extends Controller
 {
  
+    public $modulo = "Reportes";
+
     public function __construct(){
 
        $this->middleware('auth');
    }
 
+
    public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
-       
+
+        $global = new GlobalController();
         $inventories = Inventory::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')
+        ->join('products','products.id','inventories.product_id')     
         ->where(function ($query){
             $query->where('products.type','MERCANCIA')
                 ->orWhere('products.type','COMBO');
         })
-        ->orderBy('products.description' ,'ASC')
+
+
         ->where('products.status',1)
-        ->select('inventories.id as id_inventory','inventories.*','products.*')
-        ->get();
+        ->select('inventories.id as id_inventory','inventories.*','products.*')  
+        ->get();     
         
+        foreach ($inventories as $inventorie) {
+            
+            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+
+        }
+
+
        return view('admin.inventories.index',compact('inventories'));
    }
 
-/*
-   public function index()
+
+
+   public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
        $global = new GlobalController();
-       
-        $inventories = InventoryHistories::on(Auth::user()->database_name)
-        ->join('inventories','inventories.id','inventory_histories.id_product')
+
+       if($date_frist == 'todo'){
+        $date_frist = $global->data_first_month_day();
+        }
+
+       if($date_end == 'todo'){
+        $date_end =  $global->data_last_month_day();
+       }   
+        //$inventories = InventoryHistories::on(Auth::user()->database_name)
+        $inventories = Inventory::on(Auth::user()->database_name)
+        //->join('inventories','inventories.id','inventory_histories.id_product')
         ->join('products','products.id','inventories.product_id')
-      
-                    
+             
         ->where(function ($query){
             $query->where('products.type','MERCANCIA')
                 ->orWhere('products.type','COMBO');
         })
        
-       ->where('inventory_histories.status','A')
-       ->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
-       ->orderBy('inventory_histories.id' ,'DESC')
-       ->get();     
-        
-        
-        $inventories = $inventories->unique('id');
+  //     ->orderBy('inventory_histories.id' ,'DESC')
+            ->where('products.status',1)
+            ->select('inventories.id as id_inventory','products.*')  
+            ->get();  
 
-        $inventories = $inventories->sortBydesc('amount_real');
-
-
-       return view('admin.inventories.index',compact('inventories'));
+       
+       return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
    }
+
+   public function storemovements(Request $request)
+   {
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        $date_end = request('date_end');
+        $date_frist = request('date_begin');
+        $type = request('type');
+        $coin = request('coin');
+        $id_inventory = request('id_inventories');
+        $global = new GlobalController();
+        
+   
+
+        if($date_frist == 'todo'){
+            $date_frist = $global->data_first_month_day();
+            }
+
+        if($date_end == 'todo'){
+            $date_end =  $global->data_last_month_day();
+        }   
+
+        //$inventories = InventoryHistories::on(Auth::user()->database_name)
+        $inventories = Inventory::on(Auth::user()->database_name)
+        ->join('products','products.id','inventories.product_id')
+               ->where(function ($query){
+            $query->where('products.type','MERCANCIA')
+                ->orWhere('products.type','COMBO');
+        })
+  //     ->orderBy('inventory_histories.id' ,'DESC')
+            ->where('products.status',1)
+            ->select('inventories.id as id_inventory','products.*')  
+            ->get();  
+       
+        return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
+    }
+
+
+   public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') {
+ 
+    $pdf = App::make('dompdf.wrapper');
+
+    $global = new GlobalController();
+
+    
+       
+       if($date_frist == 'todo'){
+        $date_frist = $global->data_first_month_day();
+        }
+
+       if($date_end == 'todo'){
+        $date_end =  $global->data_last_month_day();
+       } 
+            
+       if ($type == 'todo') {
+            $cond = '!=';
+            $type = '';
+        
+        } else {
+            $cond = '=';
+            
+        }
+
+
+        if($id_inventory == 'todos') {
+            $cond2 = '!=';
+            $id_inventory = 'r';
+        
+        } else {
+            $cond2 = '=';
+            
+        }
+
+     
+
+    $inventories = InventoryHistories::on(Auth::user()->database_name)
+    ->join('inventories','inventories.id','inventory_histories.id_product')     
+    ->join('products','products.id','inventories.product_id')
+    ->where('inventory_histories.date','>=',$date_frist)
+    ->where('inventory_histories.date','<=',$date_end)
+    ->where('inventory_histories.type',$cond,$type)
+    ->where('inventory_histories.id_product',$cond2,$id_inventory)
+
+     //->where('inventory_histories.status','A')
+     //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+    ->orderBy('inventory_histories.id' ,'ASC')
+    ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
+    ->get();     
+
+
+    foreach ($inventories as $inventorie) {
+        
+        $invoice = DB::connection(Auth::user()->database_name)
+        ->table('quotations')
+        ->where('id','=',$inventorie->id_quotation)
+        ->select('number_invoice')
+        ->get()->last(); 
+
+        $note = DB::connection(Auth::user()->database_name)
+        ->table('quotations')
+        ->where('id','=',$inventorie->id_quotation)
+        ->select('number_delivery_note')
+        ->get()->last(); 
+
+
+        $branch = DB::connection(Auth::user()->database_name)
+        ->table('branches')
+        ->where('id','=',$inventorie->id_branch)
+        ->select('description')
+        ->get()->last();         
+
+        if (!empty($invoice)) {
+
+        $inventorie->invoice = $invoice->number_invoice;
+
+        } else {
+
+
+            if ($inventorie->id_expense == 0) {
+                
+                if ($inventorie->type == 'venta' || $inventorie->type == 'rev_venta'){ 
+                $inventorie->invoice = $inventorie->id_quotation;  
+                } else {
+                $inventorie->invoice = '';       
+                }
+            } else {
+
+                $inventorie->invoice = '';   
+            }
+        
+        }
+        
+        if (!empty($note)) {
+        $inventorie->note = $note->number_delivery_note; 
+        } else {
+            if ($inventorie->id_expense == 0) {
+                
+                if ($inventorie->type == 'nota' || $inventorie->type == 'rev_nota' || $inventorie->type == 'aju_nota'){ 
+                $inventorie->note =  $inventorie->id_quotation;  
+                } else {
+                $inventorie->note = '';       
+                }
+            } else {
+
+                $inventorie->note= '';   
+            }
+        }
+        if (!empty($branch)) {
+        $inventorie->branch = $branch->description;
+        } else {
+            $inventorie->branch = '';
+        }
+    }
+
+/*      
+    $inventories = $inventories->unique('id');
+
+    $inventories = $inventories->sortBydesc('amount_real');
 */
 
-   public function indexmovements()
-   {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
 
-        $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                        ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
-                                                        ->join('quotations', 'quotations.id', '=', 'quotation_products.id_quotation')
-                                                        ->where('quotations.date_billing','<>',null)
-                                                        ->orwhere('quotations.date_delivery_note','<>',null)
-                                                        ->select('products.*','quotation_products.discount as discount',
-                                                        'quotation_products.amount as amount_quotation',
-                                                        'quotation_products.id_quotation as id_quotation',
-                                                        'quotations.date_billing as date_billing',
-                                                        'quotations.date_delivery_note as date_delivery_note',
-                                                        'quotations.id as id_quotation','quotations.coin as coin_quotation',
-                                                        'inventories.amount as amount_inventory'
-                                                        )
-                                                        ->orderBy('quotations.id','desc')
-                                                        ->get(); 
+    $pdf = $pdf->loadView('admin.reports.movements',compact('coin','inventories'));
+    return $pdf->stream();  
 
-       
-       return view('admin.inventories.indexmovement',compact('inventories_quotations'));
    }
-
    /**
     * Show the form for creating a new resource.
     *
@@ -130,6 +283,15 @@ class InventoryController extends Controller
 
        
         $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
+
+        $global = new GlobalController; 
+
+
+            
+        $inventory->amount = $global->consul_prod_invt($id_inventory);
+
+    
+
 
         $company = Company::on(Auth::user()->database_name)->find(1);
         //Si la taza es automatica
@@ -249,11 +411,15 @@ class InventoryController extends Controller
             
             $inventory->save();
 
+
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
 
-            $counterpart = request('Subcontrapartida');
-            
+            $counterpart = request('Subcontrapartida');           
+
+            $global = new GlobalController; 
+            $global->transaction_inv('entrada',$id_inventory,'Entrada de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
+
             if(isset($counterpart) && $counterpart != 'Seleccionar'){
                 
                 $header_voucher  = new HeaderVoucher();
@@ -348,12 +514,14 @@ class InventoryController extends Controller
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');   
 
-                /*$header_voucher  = new HeaderVoucher();
+                $global = new GlobalController; 
+                $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
+
+                $header_voucher  = new HeaderVoucher();
 
                 $header_voucher->description = "Disminucion de Inventario";
                 $header_voucher->date = $datenow;
                 
-            
                 $header_voucher->status =  "1";
             
                 $header_voucher->save();
@@ -363,7 +531,6 @@ class InventoryController extends Controller
                 }else{
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
-    
 
                 //$account = request('account');
                 $account_mecancia_para_venta = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',3)->where('code_four',1)->where('code_five',1)->first();  
@@ -374,7 +541,7 @@ class InventoryController extends Controller
                 $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
 
                 $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
-                                    $id_user,$total,0);*/
+                                    $id_user,$total,0);
             
                 return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->products['description'].' Exitosamente!');
             

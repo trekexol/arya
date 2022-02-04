@@ -476,7 +476,25 @@ class FacturarController extends Controller
                 ->where('id_quotation', '=', $quotation->id)
                 ->update(['status' => 'C']);
 
+                if(!isset($quotation->number_delivery_note)){
+                    $quotation->number_delivery_note = 0;    
+                } else {
+
+                    if(empty($quotation->number_delivery_note) || $quotation->number_delivery_note == null) {
+                        $quotation->number_delivery_note = 0;
+                    }
+                }
+             
+        $global = new GlobalController; 
         
+        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+        ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+        foreach($quotation_products as $det_products){ // guardado historial de inventario
+            
+        $global->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+        }  
        
         /*Busqueda de Cuentas*/
 
@@ -548,7 +566,7 @@ class FacturarController extends Controller
     }
 
 
-public function storefactura(Request $request)
+    public function storefactura(Request $request)
     {
         $data = request()->validate([
         
@@ -1439,8 +1457,17 @@ public function storefactura(Request $request)
         {
             $global = new GlobalController();
 
+            $comboController = new ComboController();
+
             if(empty($quotation->date_billing) && empty($quotation->date_delivery_note) && empty($quotation->date_order)){
-                
+
+                //$value_return_combo = $comboController->validate_combo_discount($quotation->id);
+                $value_return_all = $global->check_all_products_after_facturar($quotation->id);
+
+                if($value_return_all != "exito"){
+                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger($value_return_all);
+                }
+
                 $retorno = $global->discount_inventory($quotation->id);
             
                 if($retorno != "exito"){
@@ -1461,8 +1488,6 @@ public function storefactura(Request $request)
                 $header_voucher->status =  "1";
             
                 $header_voucher->save();
-
-                
 
                 
             if($validate_boolean1 == true){
@@ -1640,6 +1665,29 @@ public function storefactura(Request $request)
                         $quotation->number_invoice = 1;
                     }
                 }
+                 
+
+                if(!isset($quotation->number_delivery_note)){
+                    $quotation->number_delivery_note = 0;    
+                } else {
+
+                    if(empty($quotation->number_delivery_note) || $quotation->number_delivery_note == null) {
+                        $quotation->number_delivery_note = 0;
+                    }
+                }
+            
+                $global = new GlobalController;                                                
+        
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $quotation->id)->get();
+        
+                foreach($quotation_products as $det_products){
+    
+                $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+                }  
+        
+
             }
 
             /*Modifica la cotizacion */
@@ -1740,13 +1788,15 @@ public function storefactura(Request $request)
                 }
                 /*----------- */
             }
-             
+
+            
+            $global = new GlobalController;                                                
+        
             //Aqui pasa los quotation_products a status C de Cobrado
             DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
                                                         ->update(['status' => 'C']);
-
-            $global = new GlobalController;                                                
+    
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);
             
             /*------------------------------------------------- */

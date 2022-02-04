@@ -487,12 +487,7 @@ class CreditNoteController extends Controller
         if(isset($creditnote->date_delivery_note) || isset($creditnote->date_billing)){
             $this->recalculatecreditnote($creditnote->id);
         }
-<<<<<<< HEAD
- 
-=======
 
-
->>>>>>> carlos
         return redirect('creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
     }
    
@@ -663,22 +658,12 @@ class CreditNoteController extends Controller
             }else{
                 $var->exento = true;
             }
-<<<<<<< HEAD
 
-            if($value_return != 'exito'){
-                return redirect('creditnotes/creditnoteproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario! ');
-=======
->>>>>>> carlos
-
-            }
-          
+            
             $var->save();
-<<<<<<< HEAD
-   
-=======
 
           
->>>>>>> carlos
+
             return redirect('/creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }
