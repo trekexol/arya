@@ -65,14 +65,6 @@
   ?>
   @foreach ($quotations as $quotation)
       <?php
-        $total_base_imponible += $quotation->base_imponible;
-        $total_amount += $quotation->amount;
-        $total_amount_exento += $quotation->amount_exento;
-        $total_retencion_iva += $quotation->retencion_iva;
-        $total_retencion_islr += $quotation->retencion_islr;
-        $total_anticipo += $quotation->anticipo;
-        $total_amount_iva += $quotation->amount_iva;
-        $total_amount_with_iva += $quotation->amount_with_iva;
 
         if($quotation->status == 'C'){
           $status = "Activa";
@@ -89,14 +81,6 @@
         }else if($quotation->status == 'X'){
           $status = "Inactiva";
         
-          $total_base_imponible -= $quotation->base_imponible;
-        $total_amount -= $quotation->amount;
-        $total_amount_exento -= $quotation->amount_exento;
-        $total_retencion_iva -= $quotation->retencion_iva;
-        $total_retencion_islr -= $quotation->retencion_islr;
-        $total_anticipo -= $quotation->anticipo;
-        $total_amount_iva -= $quotation->amount_iva;
-        $total_amount_with_iva -= $quotation->amount_with_iva;
 
         }else{
           $status = "por revisar";
