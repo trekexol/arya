@@ -734,7 +734,7 @@ class Report2Controller extends Controller
         $period = $date->format('Y'); 
         $quotations = Quotation::on(Auth::user()->database_name)
                                     ->where('date_billing','<>',null)
-                                    ->whereIn('status',['C','X'])
+                                    ->whereIn('status',['C','X','P'])
                                     ->whereRaw(
                                         "(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
