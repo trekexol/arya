@@ -77,7 +77,7 @@
                             <td>{{$expensesandpurchase->invoice}}</td>
                             <td>{{$expensesandpurchase->serie}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
-                            <td>{{$expensesandpurchase->date}}</td>
+                            <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
                             <td>
                                 <a href="#" class="delete" data-id-expense={{$expensesandpurchase->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                             </td>    

@@ -63,7 +63,7 @@
                 @if (isset($multipayments_detail))
                     @foreach ($multipayments_detail as $key => $var)
                     <tr>
-                    <td class="text-center font-weight-bold">{{$var->headers['date']}}</td>
+                    <td class="text-center font-weight-bold">{{ date('d-m-Y', strtotime( $var->headers['date'] ?? ''))  }}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
                     <td class="text-center font-weight-bold">{{$var->id_header_voucher}}</td>
                     <td class="font-weight-bold">{{$var->headers['description']}} fact(@foreach ($expenses as $expense) {{$expense->id_expense}}, @endforeach) / {{$var->accounts['description']}}</td>

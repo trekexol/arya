@@ -389,6 +389,8 @@ class GlobalController extends Controller
 
         }
 
+        return "exito";
+
     }
     public function check_amount($id_quotation,$inventories_quotations,$amount_new)
     {
