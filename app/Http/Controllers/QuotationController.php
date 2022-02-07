@@ -530,7 +530,7 @@ class QuotationController extends Controller
 
         $value_return = $global->check_product($quotation->id,$var->id_inventory,$amount);
 
-        
+       
         if($value_return != 'exito'){
                 return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger($value_return);
         }
