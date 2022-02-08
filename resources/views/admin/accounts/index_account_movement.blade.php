@@ -53,7 +53,12 @@
 
                     
                     @if(isset($var->id_invoice))
-                        <td>Factura</td>
+                        @if (isset($var->quotations['number_invoice']))
+                            <td>Factura</td>
+                        @elseif(isset($var->quotations['number_delivery_note']))
+                            <td>Nota de Entrega</td>
+                        @endif
+                        
                         <td>
                         <a href="{{ route('accounts.header_movements',[$var->id_header_voucher,'header_voucher',$account->id]) }}" title="Crear">{{ $var->id_header_voucher }}</a>
                         </td>
