@@ -21,7 +21,7 @@ class InventoriesMovementExportController extends Controller
 {
     public function exportExcel(Request $request) 
     {
-       dd($request);
+      
         $export = new InventoriesMovementExportFromView($request);
 
         $export->setter($request);
