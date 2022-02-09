@@ -1683,7 +1683,7 @@ class FacturarController extends Controller
         
                 foreach($quotation_products as $det_products){
     
-                $global->transaction_inv('compra',$det_products->id_inventory,'compra',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+                $global->transaction_inv('rev_nota',$det_products->id_inventory,'reverso_nota',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
         
                 }  
         
