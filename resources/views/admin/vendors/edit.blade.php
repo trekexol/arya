@@ -43,7 +43,7 @@
                                
 
                         <div class="form-group row">
-                            <label for="code" class="col-md-2 col-form-label text-md-right">Código</label>
+                            <label for="code" class="col-md-2 col-form-label text-md-right">Código de Vendedor (Opcional)</label>
 
                             <div class="col-md-4">
                                 <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $var->code }}" autocomplete="code" autofocus>
@@ -279,7 +279,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="especification" class="col-md-2 col-form-label text-md-right">Especificación</label>
+                            <label for="especification" class="col-md-2 col-form-label text-md-right">Especificación (Opcional)</label>
 
                             <div class="col-md-4">
                                 <input id="especification" type="text" class="form-control @error('especification') is-invalid @enderror" name="especification" value="{{ $var->especification ?? 'N/A'}}"  autocomplete="especification">

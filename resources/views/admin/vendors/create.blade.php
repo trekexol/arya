@@ -29,7 +29,7 @@
                     <form method="POST" action="{{ route('vendors.store') }}" enctype="multipart/form-data">
                         @csrf
                        
-                        <input type="text" class="form-control" name="user_id" value="{{ Auth::user()->id }}" readonly>
+                        <input type="hidden" class="form-control" name="user_id" value="{{ Auth::user()->id }}" readonly>
                                
 
                         <div class="form-group row">
