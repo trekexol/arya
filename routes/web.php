@@ -1052,4 +1052,5 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('ingresos','Exports\Reports\IngresosEgresosExportController@exportExcel')->name('export_reports.ingresos');
     Route::post('salesbook','Exports\Reports\SalesBookExportController@exportExcel')->name('export_reports.sales_book');
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
+    Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
 });
