@@ -88,7 +88,7 @@
                                     
                                 </select>
                             </div>
-                            <div class="col-sm-2  dropdown mb-4">
+                            <div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                     aria-expanded="false">

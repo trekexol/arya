@@ -1931,7 +1931,9 @@ class ExpensesAndPurchaseController extends Controller
 
                 
                 /*aumentamos el inventario*/
-                    $retorno = $this->increase_inventory($expense->id);
+                    $retorno = $this->increase_inventory($expense->id,$expense->date);
+
+
 
                     if($retorno != "exito"){
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'');
@@ -2095,7 +2097,7 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function increase_inventory($id_expense)
+    public function increase_inventory($id_expense,$date)
     {
        
         
@@ -2113,6 +2115,7 @@ class ExpensesAndPurchaseController extends Controller
                         if(($inventory->products['type'] == 'MERCANCIA') || ($inventory->products['type'] == 'COMBO')){
                             $inventory->amount += $var->amount;
                             $inventory->save();
+
                         }
                         
                     }else{
