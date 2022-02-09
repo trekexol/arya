@@ -267,9 +267,10 @@ class ExpensesAndPurchaseController extends Controller
             $expense_details =  DB::connection(Auth::user()->database_name)->select('SELECT SUM(amount * price) AS total
                                 FROM expenses_details
                                 WHERE id_expense = ? AND
-                                islr = 1 
+                                islr = 1 AND
+                                status = ?
                                 '
-                                , [$expense->id]);
+                                , [$expense->id,'C']);
                 
 
             $total_islr_details = $expense_details[0]->total;
