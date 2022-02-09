@@ -832,7 +832,7 @@ class GlobalController extends Controller
     
                         $user       =   auth()->user();
                     
-                        if ($agregar != 'false') {
+                        if ($agregar == 'true') {
                             
 
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([

@@ -148,9 +148,14 @@ class DeliveryNoteController extends Controller
 
     public function reversar_delivery_note(Request $request)
     { 
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+
         $id_quotation = $request->id_quotation_modal;
+
         
-        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+        
+       $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
         QuotationProduct::on(Auth::user()->database_name)
                         ->join('inventories','inventories.id','quotation_products.id_inventory')
@@ -161,6 +166,18 @@ class DeliveryNoteController extends Controller
     
         $quotation->status = 'X';
         $quotation->save();
+        
+        $global = new GlobalController;                                                
+        
+        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+        ->where('id_quotation', '=', $quotation->id)->get();
+
+        foreach($quotation_products as $det_products){
+
+        $global->transaction_inv('rev_nota',$det_products->id_inventory,'reverso',$det_products->amount,$det_products->price,$datenow,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$id_quotation);
+
+        }  
+
 
         $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)
         ->update(['status' => 'X']);
@@ -170,7 +187,7 @@ class DeliveryNoteController extends Controller
         $historial_quotation->registerAction($quotation,"quotation","Se eliminó la Nota de Entrega");
        
         return redirect('quotations/indexnotasdeentrega')->withSuccess('Reverso de Nota de Entrega Exitoso!');
-
+        
     }
 
 
