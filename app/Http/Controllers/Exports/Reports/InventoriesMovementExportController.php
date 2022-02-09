@@ -9,7 +9,7 @@ use App;
 use App\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Exports\Reports\SalesBookExportFromView;
+use App\Exports\Reports\InventoriesMovementExportFromView;
 use App\Http\Controllers\GlobalController;
 use App\Provider;
 use App\Quotation;
