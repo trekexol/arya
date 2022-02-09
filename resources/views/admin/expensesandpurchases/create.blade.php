@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-lg font-weight-bold">Registro de Gastos y Compras</div>
+                <div class="card-header text-lg font-weight-bold">Registro de Gastos y Compras g</div>
 
                 <div class="card-body">
 
