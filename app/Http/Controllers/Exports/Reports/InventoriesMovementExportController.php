@@ -21,9 +21,7 @@ class InventoriesMovementExportController extends Controller
 {
     public function exportExcel(Request $request) 
     {
-       
-      
-
+       dd($request);
         $export = new InventoriesMovementExportFromView($request);
 
         $export->setter($request);
@@ -33,7 +31,7 @@ class InventoriesMovementExportController extends Controller
         return Excel::download($export, 'historial_inventario.xlsx');
     }
 
-    public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') 
+    public function movements_pdf($coin,$date_frist,$date_end,$type,$id_inventory) 
    {
     
         $pdf = App::make('dompdf.wrapper');
@@ -84,8 +82,8 @@ class InventoriesMovementExportController extends Controller
         ->orderBy('inventory_histories.id' ,'ASC')
         ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
         ->get();     
-
-
+        //$coin,$date_frist,$date_end,$type,$id_inventory
+       
         foreach ($inventories as $inventorie) {
             
             $invoice = DB::connection(Auth::user()->database_name)
