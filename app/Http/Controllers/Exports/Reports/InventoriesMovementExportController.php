@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Exports\Reports\InventoriesMovementExportFromView;
 use App\Http\Controllers\GlobalController;
 use App\Provider;
-use App\Quotation;
+use App\InventoryHistories;
 use App\Vendor;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -150,10 +150,9 @@ class InventoriesMovementExportController extends Controller
             }
     }
 
+    return view('export_excel.movements',compact('coin','inventories'));
+            
 
-
-    $pdf = $pdf->loadView('admin.reports.movements',compact('coin','inventories'));
-    return $pdf->stream();  
-
+   
    }
 }
