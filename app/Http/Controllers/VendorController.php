@@ -56,7 +56,6 @@ class VendorController extends Controller
        $comisions   = ComisionType::on(Auth::user()->database_name)->get();
        $employees   = Employee::on(Auth::user()->database_name)->get();
 
-       
 
        return view('admin.vendors.create',compact('estados','municipios','parroquias','comisions','employees'));
    }
@@ -74,18 +73,11 @@ class VendorController extends Controller
         
         'Parroquia'         =>'required',
         'comision_id'         =>'required',
-        'employee_id'         =>'required',
         'user_id'         =>'required',
-
-
-        'code'         =>'required',
         'cedula_rif'         =>'required',
         'name'         =>'required',
         'surname'         =>'required',
-        'email'         =>'required',
-        'phone'         =>'required',
-       
-        'comision'         =>'required',
+        'comision'         =>'required'
       
        
     ]);
@@ -178,24 +170,11 @@ class VendorController extends Controller
         
         'Parroquia'         =>'required',
         'comision_id'         =>'required',
-        'employee_id'         =>'required',
         'user_id'         =>'required',
-
-
-        'code'         =>'required',
         'cedula_rif'         =>'required',
         'name'         =>'required',
-        'surname'         =>'required',
-        'email'         =>'required',
-        'phone'         =>'required',
-        'phone2'         =>'required',
         'comision'         =>'required',
-        'instagram'         =>'required',
-        'facebook'         =>'required',
-        'twitter'         =>'required',
-        'especification'         =>'required',
-        'observation'         =>'required',
-        'status'         =>'required',
+        'status'         =>'required'
        
     ]);
 

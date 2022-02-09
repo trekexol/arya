@@ -46,7 +46,7 @@
                             <label for="code" class="col-md-2 col-form-label text-md-right">Código</label>
 
                             <div class="col-md-4">
-                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $var->code }}" required autocomplete="code" autofocus>
+                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $var->code }}" autocomplete="code" autofocus>
 
                                 @error('code')
                                     <span class="invalid-feedback" role="alert">
@@ -83,7 +83,7 @@
                             <label for="surname" class="col-md-2 col-form-label text-md-right">Apellido</label>
 
                             <div class="col-md-4">
-                                <input id="surname" type="text" class="form-control @error('surname') is-invalid @enderror" name="surname" value="{{ $var->surname }}" required autocomplete="surname">
+                                <input id="surname" type="text" class="form-control @error('surname') is-invalid @enderror" name="surname" value="{{ $var->surname }}" autocomplete="surname">
 
                                 @error('surname')
                                     <span class="invalid-feedback" role="alert">
@@ -96,7 +96,7 @@
                             <label for="email" class="col-md-2 col-form-label text-md-right">Correo Electrónico</label>
 
                             <div class="col-md-4">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $var->email }}" required autocomplete="email">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $var->email }}" autocomplete="email">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -107,7 +107,7 @@
                             <label for="comision" class="col-md-2 col-form-label text-md-right">Comisión</label>
 
                             <div class="col-md-4">
-                                <input id="comision" type="text" class="form-control @error('comision') is-invalid @enderror" name="comision" value="{{ $var->comision }}" required autocomplete="comision">
+                                <input id="comision" type="text" class="form-control @error('comision') is-invalid @enderror" name="comision" value="{{ $var->comision ?? 0 }}" autocomplete="comision">
 
                                 @error('comision')
                                     <span class="invalid-feedback" role="alert">
@@ -138,19 +138,20 @@
                            
                             <label for="employee" class="col-md-2 col-form-label text-md-right">Empleado</label>
                             <div class="col-md-4">
-                                <select id="employee_id" name="employee_id" class="form-control" required>
-                                    @foreach($employees as $employee)
-                                        @if ( $var->employee_id == $employee->id   )
-                                            <option  selected style="backgroud-color:blue;" value="{{ $employee->id }}"><strong>{{ $employee->nombres }}</strong></option>
-                                        @endif
+                                @if (count($employees) == 0)
+                                <select class="form-control" id="employee_id" name="employee_id">
+                                    <option selected value="0">Ninguno</option>
+                                
+                                    </select>
+                                
+                                @else
+                              
+                                    <select class="form-control" id="employee_id" name="employee_id">
+                                    @foreach($employees as $var)
+                                        <option value="{{ $var->id }}">{{ $var->nombres }}</option>
                                     @endforeach
-                                    <option class="hidden" disabled data-color="#A0522D" value="-1">------------------</option>
-                                    @foreach($employees as $employee)
-                                        <option value="{{ $employee['id'] }}" >
-                                            {{ $employee['nombres'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                    </select>   
+                                @endif
                             </div> 
                         </div>
 
@@ -158,7 +159,7 @@
                             <label for="phone" class="col-md-2 col-form-label text-md-right">Teléfono</label>
 
                             <div class="col-md-4">
-                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ $var->phone }}" required autocomplete="phone">
+                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ $var->phone }}" autocomplete="phone">
 
                                 @error('phone')
                                     <span class="invalid-feedback" role="alert">
@@ -169,7 +170,7 @@
                             <label for="phone2" class="col-md-2 col-form-label text-md-right">Teléfono 2</label>
 
                             <div class="col-md-4">
-                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ $var->phone2 }}" required autocomplete="phone2">
+                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ $var->phone2 }}" autocomplete="phone2">
 
                                 @error('phone2')
                                     <span class="invalid-feedback" role="alert">
@@ -246,7 +247,7 @@
                             <label for="instagram" class="col-md-2 col-form-label text-md-right">Instagram</label>
 
                             <div class="col-md-4">
-                                <input id="instagram" type="text" class="form-control @error('instagram') is-invalid @enderror" name="instagram" value="{{ $var->instagram }}"  autocomplete="instagram">
+                                <input id="instagram" type="text" class="form-control @error('instagram') is-invalid @enderror" name="instagram" value="{{ $var->instagram ?? 'N/A' }}"  autocomplete="instagram">
 
                                 @error('instagram')
                                     <span class="invalid-feedback" role="alert">
@@ -257,7 +258,7 @@
                             <label for="facebook" class="col-md-2 col-form-label text-md-right">Facebook</label>
 
                             <div class="col-md-4">
-                                <input id="facebook" type="text" class="form-control @error('facebook') is-invalid @enderror" name="facebook" value="{{ $var->facebook }}"  autocomplete="facebook">
+                                <input id="facebook" type="text" class="form-control @error('facebook') is-invalid @enderror" name="facebook" value="{{ $var->facebook ?? 'N/A'}}"  autocomplete="facebook">
 
                                 @error('facebook')
                                     <span class="invalid-feedback" role="alert">
@@ -270,7 +271,7 @@
                             <label for="twitter" class="col-md-2 col-form-label text-md-right">Twitter</label>
 
                             <div class="col-md-4">
-                                <input id="twitter" type="text" class="form-control @error('twitter') is-invalid @enderror" name="twitter" value="{{ $var->twitter }}"  autocomplete="twitter">
+                                <input id="twitter" type="text" class="form-control @error('twitter') is-invalid @enderror" name="twitter" value="{{ $var->twitter ?? 'N/A'}}"  autocomplete="twitter">
 
                                 @error('twitter')
                                     <span class="invalid-feedback" role="alert">
@@ -281,7 +282,7 @@
                             <label for="especification" class="col-md-2 col-form-label text-md-right">Especificación</label>
 
                             <div class="col-md-4">
-                                <input id="especification" type="text" class="form-control @error('especification') is-invalid @enderror" name="especification" value="{{ $var->especification }}"  autocomplete="especification">
+                                <input id="especification" type="text" class="form-control @error('especification') is-invalid @enderror" name="especification" value="{{ $var->especification ?? 'N/A'}}"  autocomplete="especification">
 
                                 @error('especification')
                                     <span class="invalid-feedback" role="alert">
