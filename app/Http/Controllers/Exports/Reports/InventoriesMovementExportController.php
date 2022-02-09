@@ -35,7 +35,7 @@ class InventoriesMovementExportController extends Controller
 
     public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') 
    {
- 
+    
         $pdf = App::make('dompdf.wrapper');
 
         $global = new GlobalController();
@@ -149,6 +149,7 @@ class InventoriesMovementExportController extends Controller
                 $inventorie->branch = '';
             }
     }
+  
 
     return view('export_excel.movements',compact('coin','inventories'));
             
