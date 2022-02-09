@@ -38,7 +38,7 @@
         </div>
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.storemovements') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.storemovements') }}">
                     @csrf
 
       
@@ -88,7 +88,18 @@
                                     
                                 </select>
                             </div>
-
+                            <div class="col-sm-2  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
                             
                         </div>
 
@@ -173,6 +184,12 @@
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
         
+        function exportToExcel(){
+            var old_action = document.getElementById("formPost").action;
+            document.getElementById("formPost").action = "{{ route('export_reports.inventoriesmovement') }}";
+            document.getElementById("formPost").submit();
+            document.getElementById("formPost").action = old_action;
+        }
         
         /*$("#product").on('change',function(){
             
