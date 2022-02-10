@@ -83,13 +83,13 @@ class InventoryController extends Controller
                 ->orWhere('products.type','COMBO');
         })
        
-  //     ->orderBy('inventory_histories.id' ,'DESC')
+ 
             ->where('products.status',1)
             ->select('inventories.id as id_inventory','products.*')  
             ->get();  
 
        
-       return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
+         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
    }
 
    public function storemovements(Request $request)
@@ -120,7 +120,7 @@ class InventoryController extends Controller
             $query->where('products.type','MERCANCIA')
                 ->orWhere('products.type','COMBO');
         })
-  //     ->orderBy('inventory_histories.id' ,'DESC')
+ 
             ->where('products.status',1)
             ->select('inventories.id as id_inventory','products.*')  
             ->get();  
@@ -129,7 +129,8 @@ class InventoryController extends Controller
     }
 
 
-   public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') 
+   
+    public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') 
    {
  
         $pdf = App::make('dompdf.wrapper');
@@ -174,9 +175,6 @@ class InventoryController extends Controller
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
         ->where('inventory_histories.id_product',$cond2,$id_inventory)
-
-        //->where('inventory_histories.status','A')
-        //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
         ->orderBy('inventory_histories.id' ,'ASC')
         ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
         ->get();     
@@ -184,24 +182,29 @@ class InventoryController extends Controller
 
         foreach ($inventories as $inventorie) {
             
-            $invoice = DB::connection(Auth::user()->database_name)
-            ->table('quotations')
-            ->where('id','=',$inventorie->id_quotation)
-            ->select('number_invoice')
-            ->get()->last(); 
+            if ($type == 'venta' || $type == 'nota' || $type == 'rev_venta' || $type == 'rev_nota') {
+                $invoice = DB::connection(Auth::user()->database_name)
+                ->table('quotations')
+                ->where('id','=',$inventorie->id_quotation)
+                ->select('number_invoice')
+                ->get()->last(); 
 
-            $note = DB::connection(Auth::user()->database_name)
-            ->table('quotations')
-            ->where('id','=',$inventorie->id_quotation)
-            ->select('number_delivery_note')
-            ->get()->last(); 
+                $note = DB::connection(Auth::user()->database_name)
+                ->table('quotations')
+                ->where('id','=',$inventorie->id_quotation)
+                ->select('number_delivery_note')
+                ->get()->last(); 
+            }
+            
 
 
-            $branch = DB::connection(Auth::user()->database_name)
-            ->table('branches')
-            ->where('id','=',$inventorie->id_branch)
-            ->select('description')
-            ->get()->last();         
+
+                $branch = DB::connection(Auth::user()->database_name)
+                ->table('branches')
+                ->where('id','=',$inventorie->id_branch)
+                ->select('description')
+                ->get()->last();         
+            
 
             if (!empty($invoice)) {
 
@@ -217,6 +220,7 @@ class InventoryController extends Controller
                     } else {
                     $inventorie->invoice = '';       
                     }
+                    
                 } else {
 
                     $inventorie->invoice = '';   

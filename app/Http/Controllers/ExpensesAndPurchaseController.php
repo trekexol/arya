@@ -663,11 +663,34 @@ class ExpensesAndPurchaseController extends Controller
         }else{
             $type = 'SERVICIO';
         }
-            $inventories     = Inventory::on(Auth::user()->database_name)
+            /*$inventories     = Inventory::on(Auth::user()->database_name)
                                     ->join('products','products.id','inventories.product_id')
                                     ->where('products.type','LIKE',$type)
                                     ->select('inventories.*','products.price_buy','products.description','products.photo_product','products.money')
-                                    ->get();
+                                    ->get();*/
+
+                                    $user       =   auth()->user();
+                                    $users_role =   $user->role_id;
+                             
+                                     $global = new GlobalController();
+                                     $inventories = Inventory::on(Auth::user()->database_name)
+                                     ->join('products','products.id','inventories.product_id')     
+                                     ->where(function ($query){
+                                         $query->where('products.type','MERCANCIA')
+                                             ->orWhere('products.type','COMBO');
+                                     })
+                             
+                             
+                                     ->where('products.status',1)
+                                     ->select('inventories.id as id_inventory','inventories.*','products.*')  
+                                     ->get();     
+                                     
+                                     foreach ($inventories as $inventorie) {
+                                         
+                                         $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+                             
+                                     }
+
         
             return view('admin.expensesandpurchases.selectinventary',compact('type','coin','inventories','id_expense'));
     }
@@ -2049,6 +2072,18 @@ class ExpensesAndPurchaseController extends Controller
 
         $expense->save();
 
+
+        $global = new GlobalController; 
+        
+        $quotation_products = DB::connection(Auth::user()->database_name)->table('expenses_details')
+        ->where('id_expense', '=', $id_expense)->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+        foreach($quotation_products as $det_products){ // guardando historial de inventario
+            
+        $global->transaction_inv('compra',$det_products->id_inventory,'compra_n',$det_products->amount,$det_products->price,$datenow,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
+        
+        } 
+
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
 
@@ -2123,7 +2158,7 @@ class ExpensesAndPurchaseController extends Controller
                     
                             foreach($quotation_products as $det_products){ // guardado historial de inventario
                                 
-                            $global->transaction_inv('compra',$det_products->id_inventory,'pruebacompra',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$det_products->id_expense);
+                            $global->transaction_inv('compra',$det_products->id_inventory,'compra_n',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
                             
                             } 
 
@@ -2521,35 +2556,6 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-  /*  public function reversar_expense($id_expense)
-    { 
-        if(isset($id_expense)){
-
-            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense); 
-            
-            $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$expense->id)
-            ->update(['status' => 'X']);
-
-            
-            $global = new GlobalController();
-            $global->deleteAllProductsExpense($expense->id);
-
-            ExpensePayment::on(Auth::user()->database_name)
-                            ->where('id_expense',$expense->id)
-                            ->update(['status' => 'X']);
-
-            $expense->status = 'X';
-            $expense->save();
-            
-            $historial_expense = new HistorialExpenseController();
-
-            $historial_expense->registerAction($expense,"expense","Se Reversó la Compra");
-
-            return redirect('expensesandpurchases/indexhistorial')->withSuccess('Reverso de Compra Exitosa!');
-        }else{
-            return redirect('expensesandpurchases/indexhistorial')->withDanger('No se pudo reversar la Compra');
-        }
-    }*/
 
     public function reversar_expense($id_expense)
     { 
@@ -2581,7 +2587,15 @@ class ExpensesAndPurchaseController extends Controller
                 $expense->status = 'X';
                 $expense->save();
 
-
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('expenses_details')
+                ->where('id_expense', '=', $expense->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+        
+                foreach($quotation_products as $det_products){ // guardando historial de inventario
+                    
+                $global->transaction_inv('rev_compra',$det_products->id_inventory,'compra_reverso',$det_products->amount,$det_products->price,$datenow,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
+                
+                } 
+        
 
                 //Crear un nuevo anticipo con el monto registrado en la cotizacion
                 if((isset($expense->anticipo))&& ($expense->anticipo != 0)){
