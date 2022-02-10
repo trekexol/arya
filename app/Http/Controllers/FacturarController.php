@@ -492,7 +492,7 @@ class FacturarController extends Controller
 
         foreach($quotation_products as $det_products){ // guardado historial de inventario
             
-        $global->transaction_inv('venta',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        $global->transaction_inv('venta',$det_products->id_inventory,'venta_n',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
         
         }  
        
@@ -1683,7 +1683,7 @@ class FacturarController extends Controller
         
                 foreach($quotation_products as $det_products){
     
-                $global->transaction_inv('rev_nota',$det_products->id_inventory,'reverso_nota',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+                $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
         
                 }  
         

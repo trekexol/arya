@@ -743,7 +743,26 @@ class GlobalController extends Controller
     
                 switch ($type) {
                     case 'compra':
-                    $transaccion = $amount_real+$amount;
+                        if ($id_historial_inv != 0) {
+    
+                            $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->where('id','=',$id_historial_inv)
+                            ->select('id','amount')
+                            ->get()->last();  
+                            
+                                if (!empty($inventories_quotations_hist)) {
+                                    
+                                        $amount = 0;
+                                        $transaccion = $amount_real;
+                                        $agregar = 'false';   
+                                }
+        
+                        } else {
+                            $transaccion = $amount_real+$amount;
+                        }   
+                        
+
                     break;
                     case 'venta':
     
@@ -819,6 +838,9 @@ class GlobalController extends Controller
     
                     $transaccion = $amount_real+$amount;
     
+                    break;  
+                    case 'rev_compra':
+                    $transaccion = $amount_real-$amount;
                     break;  
     
                 }
