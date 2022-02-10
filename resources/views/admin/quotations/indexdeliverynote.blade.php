@@ -43,7 +43,7 @@
           <h2>Notas de Entrega</h2>
       </div>
       <div class="col-md-6">
-        <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
+        <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Nota de Entrega</a>
       </div>
     </div>
   </div>
