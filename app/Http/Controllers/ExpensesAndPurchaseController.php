@@ -677,7 +677,8 @@ class ExpensesAndPurchaseController extends Controller
                                      ->join('products','products.id','inventories.product_id')     
                                      ->where(function ($query){
                                          $query->where('products.type','MERCANCIA')
-                                             ->orWhere('products.type','COMBO');
+                                             ->orWhere('products.type','COMBO')
+                                             ->orWhere('products.type','SERVICIO');
                                      })
                              
                              

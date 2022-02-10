@@ -268,7 +268,7 @@
                     <a class="collapse-item" href="{{ route('reports.sales_books') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-blue-400"></i><strong>Libro de Ventas</strong></a> 
                     <a class="collapse-item" href="{{ route('reports.purchases_book') }}" > <i class="fas fa-bookmark fa-sm fa-fw mr-2 text-blue-400"></i><strong>Libro de Compras</strong></a>                       
                     <a class="collapse-item" href="{{ route('reports.operating_margin') }}" > <i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-blue-400"></i><strong>Margen Operativo</strong></a>                       
-                    <a class="collapse-item" href="{{ route('reports.inventory') }}" > <i class="fas fa-boxes fa-sm fa-fw mr-2 text-blue-400"></i><strong>Inventario</strong></a>                         
+                    <a class="collapse-item" href="{{ route('inventories') }}" > <i class="fas fa-boxes fa-sm fa-fw mr-2 text-blue-400"></i><strong>Inventario</strong></a>                         
                     
                     <a  class="collapse-header text-danger" href="#">Otros</a> 
 
@@ -276,7 +276,7 @@
                     <a class="collapse-item" href="{{ route('reports.sales_books') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-blue-400"></i><strong>Libro de Ventas</strong></a>
                     <a class="collapse-item" href="{{ route('reports.purchases_book') }}" > <i class="fas fa-bookmark fa-sm fa-fw mr-2 text-blue-400"></i><strong>Libro de Compras</strong></a>
                     <a class="collapse-item" href="{{ route('reports.operating_margin') }}" > <i class="fas fa-chart-bar fa-sm fa-fw mr-2 text-blue-400"></i><strong>Margen Operativo</strong></a>
-                    <a class="collapse-item" href="{{ route('reports.inventory') }}" > <i class="fas fa-boxes fa-sm fa-fw mr-2 text-blue-400"></i><strong>Inventario</strong></a>
+                    <a class="collapse-item" href="{{ route('inventories') }}" > <i class="fas fa-boxes fa-sm fa-fw mr-2 text-blue-400"></i><strong>Inventario</strong></a>
 
                     <a  class="collapse-header text-danger" href="#">Otros</a>
                     <a class="collapse-item" href="{{ route('reports.sales')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Ventas</strong></a>
