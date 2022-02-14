@@ -31,6 +31,11 @@
 <body>
 
   <br><br>
+  @if ($company->format_header_lines_med > 0) 
+    @for ($i = 0; $i < $company->format_header_lines_med; $i++)
+    <br>
+    @endfor
+  @endif
 
 <table style="width: 100%;">
   @if (isset($company->franqueo_postal))
