@@ -39,7 +39,9 @@ class Product extends Model
         return $this->belongsTo('App\QuotationProduct', 'id_inventory');   
     }
 
-
+    public function accounts(){
+        return $this->belongsTo('App\Account','id_account');
+    }
   
 
 }
