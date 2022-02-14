@@ -21,8 +21,8 @@ class CreateInventoryHistoriesTable extends Migration
             $table->unsignedBigInteger('id_branch')->nullable();
             //centro de costo es la sucursal que va a pagar la factura o el inventario
             $table->unsignedBigInteger('id_centro_costo')->nullable();
-            $table->unsignedBigInteger('id_quotation')->nullable();
-            $table->unsignedBigInteger('id_expense')->nullable();
+            $table->unsignedBigInteger('id_quotation_product')->nullable();
+            $table->unsignedBigInteger('id_expense_detail')->nullable();
 
             $table->date('date');
             $table->string('type',20);
@@ -33,8 +33,8 @@ class CreateInventoryHistoriesTable extends Migration
             $table->string('status',1);
 
             
-            $table->foreign('id_quotation')->references('id_quotations')->on('quotation_products');
-            $table->foreign('id_expense')->references('id_expense')->on('expenses_details');
+            $table->foreign('id_quotation_product')->references('id')->on('quotation_products');
+            $table->foreign('id_expense_detail')->references('id')->on('expenses_details');
             $table->foreign('id_centro_costo')->references('id')->on('branches');
             $table->foreign('id_branch')->references('id')->on('branches');
             $table->foreign('id_user')->references('id')->on('users');
