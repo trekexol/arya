@@ -208,15 +208,30 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <label for="photo_product" class="col-md-2 col-form-label text-md-right">Foto del Producto</label>
-        
+                                    <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
+                        
                                     <div class="col-md-4">
-                                        <input type="image" src="" alt="" width="48" height="48">
-                                        @error('photo_product')
+                                    <select id="id_account"  name="id_account" class="form-control" required>
+                                        @if (isset($product->id_account))
+                                        <option value="actual">
+                                            {{ $product->accounts['description'] ?? ''}}
+                                        </option>
+                                        @else
+
+                                        @endif
+                                        <option value="">Seleccione una Cuenta</option>
+                                        @foreach($accounts as $account)
+                                            <option value="{{ $account->id }}">
+                                                {{ $account->description }}
+                                            </option>
+                                        @endforeach
+                                        </select>
+
+                                        @if ($errors->has('account_id'))
                                             <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
+                                                <strong>{{ $errors->first('account_id') }}</strong>
                                             </span>
-                                        @enderror
+                                        @endif
                                     </div>
                                 </div>
                                

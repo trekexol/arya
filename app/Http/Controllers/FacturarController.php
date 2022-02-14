@@ -8,6 +8,7 @@ use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
 use App\Client;
+use App\Http\Controllers\Calculations\FacturaCalculationController;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use Illuminate\Http\Request;
@@ -572,9 +573,13 @@ class FacturarController extends Controller
         
         ]);
 
+        
+        
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
 
         $quotation_status = $quotation->status;
+
+       
 
         if($quotation->status == 'C' ){
             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta factura fue procesada!');
@@ -1764,26 +1769,39 @@ class FacturarController extends Controller
                 }
                 
                 //Mercancia para la Venta
-                $validation_factura = new FacturaValidationController($quotation);
+               /* $validation_factura = new FacturaValidationController($quotation);
 
-                $return_validation_factura = $validation_factura->validate_movement_mercancia();
+                $return_validation_factura = $validation_factura->validate_movement_mercancia();*/
 
-                if($return_validation_factura == true){
+                
+                if(empty($quotation->date_delivery_note)){
                     if($price_cost_total != 0){
 
-                        $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Mercancia para la Venta')->first();
+                        //BUSCA EL TOTAL DEL COSTO DE MERCANCIA POR PRODUCTO
+                        $facturaCalculation = new FacturaCalculationController($quotation);
 
-                        if(isset($account_cuentas_por_cobrar)){
-                            $this->add_movement($bcv,$header_voucher->id,$account_mercancia_venta->id,$quotation->id,$user_id,0,$price_cost_total);
-                        }
-
-                        //Costo de Mercancia
+                        $accounts_for_movements = $facturaCalculation->calculateTotalForAccount($quotation->id);
 
                         $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancía')->first();
 
-                        if(isset($account_cuentas_por_cobrar)){
-                            $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$price_cost_total,0);
+
+                        foreach($accounts_for_movements as $movement){
+
+                            $movement->total = $movement->total * $quotation->bcv;
+
+                            if(isset($account_cuentas_por_cobrar)){
+                                $this->add_movement($bcv,$header_voucher->id,$movement->id_account,$quotation->id,$user_id,0,$movement->total);
+                            }
+
+                            //Costo de Mercancia
+                            if(isset($account_cuentas_por_cobrar)){
+                                $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$movement->total,0);
+                            }
                         }
+                       
+                        
+
+                        
                     }
                 }
                 /*----------- */

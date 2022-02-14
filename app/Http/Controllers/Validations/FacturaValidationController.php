@@ -24,7 +24,7 @@ class FacturaValidationController extends Controller
         //VALIDA QUE NO SE HAYA CREADO YA UN MOVIMIENTO DE MERCANCIA PARA LA VENTA EN LA FACTURA, PARA NO REPETIR EL MOVIMIENTO EN NOTAS DE ENTREGA, PEDIDOS Y FACTURAS
        
         if(isset($this->quotation)){
-            $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Mercancia para la Venta')->first();
+            $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancía')->first();
 
             $details = DetailVoucher::on(Auth::user()->database_name)
                         ->where('id_invoice',$this->quotation->id)
@@ -40,6 +40,7 @@ class FacturaValidationController extends Controller
                 return true;
             }
         }
-
    }
+
+   
 }

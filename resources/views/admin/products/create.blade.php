@@ -183,16 +183,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="photo_product" class="col-md-2 col-form-label text-md-right">Foto del Producto</label>
-
-                            <div class="col-md-4">
-                                <input type="image" src="" alt="" width="48" height="48">
-                                @error('photo_product')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                            
                         </div>
                        
                         <div class="form-group row">
@@ -228,8 +219,24 @@
                                     </span>
                                 @enderror
                             </div>
-                            
-                            
+                            <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
+                        
+                            <div class="col-md-4">
+                            <select id="id_account"  name="id_account" class="form-control" required>
+                                <option value="">Seleccione una Cuenta</option>
+                                @foreach($accounts as $account)
+                                    <option value="{{ $account->id }}">
+                                        {{ $account->description }}
+                                    </option>
+                                @endforeach
+                                </select>
+
+                                @if ($errors->has('account_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('account_id') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                         <p id="valueInput"></p> 
                         <br>
