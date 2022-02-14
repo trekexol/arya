@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\Inventory;
 use App\Product;
 use App\Segment;
@@ -45,7 +46,15 @@ class ProductController extends Controller
      
         $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
-        return view('admin.products.create',compact('segments','subsegments','unitofmeasures'));
+        $accounts = Account::on(Auth::user()->database_name)->select('id','description')
+                                ->where('code_one',1)
+                                ->where('code_two', 1)
+                                ->where('code_three', 3)
+                                ->where('code_four',1)
+                                ->where('code_five', '<>',0)
+                                ->get();
+
+        return view('admin.products.create',compact('segments','subsegments','unitofmeasures','accounts'));
    }
 
    /**
@@ -122,6 +131,10 @@ class ProductController extends Controller
             $var->islr = true;
         }
 
+        if($request->id_account != null ){
+            $var->id_account = $request->id_account;
+        }
+
         $var->special_impuesto = $valor_sin_formato_special_impuesto;
         $var->status =  1;
     
@@ -171,9 +184,15 @@ class ProductController extends Controller
      
         $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
-        //dd($product->subsegment_id);
+        $accounts = Account::on(Auth::user()->database_name)->select('id','description')
+                                ->where('code_one',1)
+                                ->where('code_two', 1)
+                                ->where('code_three', 3)
+                                ->where('code_four',1)
+                                ->where('code_five', '<>',0)
+                                ->get();
        
-        return view('admin.products.edit',compact('threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures'));
+        return view('admin.products.edit',compact('accounts','threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures'));
   
    }
 
@@ -271,8 +290,11 @@ class ProductController extends Controller
     }else{
         $var->islr = "1";
     }
-   
 
+    if($request->id_account != null && ($request->id_account != 'actual')){
+        $var->id_account = $request->id_account;
+    }
+   
     if(request('status') == null){
         $var->status = $vars_status;
     }else{

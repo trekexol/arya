@@ -395,6 +395,7 @@ class InventoryController extends Controller
 
             $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($id_inventory);
 
+
             if($inventory->products['type'] == 'COMBO'){
                 $global = new GlobalController;
                 $global->aumentCombo($inventory,$valor_sin_formato_amount_new);
@@ -436,11 +437,7 @@ class InventoryController extends Controller
                 }
     
                 
-    
-               //$account = request('account');
-                $account_mecancia_para_venta = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',3)->where('code_four',1)->where('code_five',1)->first();  
-    
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_mecancia_para_venta->id,
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->products['id_account'],
                                     $id_user,$total,0);
     
                 
@@ -528,10 +525,8 @@ class InventoryController extends Controller
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
 
-                //$account = request('account');
-                $account_mecancia_para_venta = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',3)->where('code_four',1)->where('code_five',1)->first();  
-
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_mecancia_para_venta->id,
+               
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->products['id_account'],
                                     $id_user,0,$total);
 
                 $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
