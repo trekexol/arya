@@ -35,6 +35,7 @@ class CreateCompaniesTable extends Migration
             $table->string('pie_pagina',20)->nullable();
             $table->string('status',1);
             $table->bigInteger('format_header_lines')->default(0);
+            $table->bigInteger('format_header_lines_med')->default(0);
             $table->timestamps();
 
 
