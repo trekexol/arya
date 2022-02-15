@@ -401,23 +401,23 @@ Route::group(["prefix"=>'detailvouchers'],function(){
 
 Route::group(["prefix"=>'quotations'],function(){
     Route::get('/','QuotationController@index')->name('quotations');
-    Route::get('register/{id_quotation}/{coin}','QuotationController@create')->name('quotations.create');
+    Route::get('register/{id_quotation}/{coin}/{type?}','QuotationController@create')->name('quotations.create');
     Route::post('store','QuotationController@store')->name('quotations.store');
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
     Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
 
-    Route::get('registerquotation','QuotationController@createquotation')->name('quotations.createquotation');
+    Route::get('registerquotation/{type?}','QuotationController@createquotation')->name('quotations.createquotation');
 
-    Route::get('registerquotation/{id_client}','QuotationController@createquotationclient')->name('quotations.createquotationclient');
-    Route::get('selectclient','QuotationController@selectclient')->name('quotations.selectclient');
+    Route::get('registerquotationclient/{id_client}/{type?}','QuotationController@createquotationclient')->name('quotations.createquotationclient');
+    Route::get('selectclient/{type?}','QuotationController@selectclient')->name('quotations.selectclient');
 
-    Route::get('registerquotation/{id_client}/{id_vendor}','QuotationController@createquotationvendor')->name('quotations.createquotationvendor');
-    Route::get('selectvendor/{id_client}','QuotationController@selectvendor')->name('quotations.selectvendor');
+    Route::get('registerquotationvendor/{id_client}/{id_vendor}/{type?}','QuotationController@createquotationvendor')->name('quotations.createquotationvendor');
+    Route::get('selectvendor/{id_client}/{type?}','QuotationController@selectvendor')->name('quotations.selectvendor');
 
 
-    Route::get('selectproduct/{id_quotation}/{coin}/{type}','QuotationController@selectproduct')->name('quotations.selectproduct');
-    Route::get('registerproduct/{id_quotation}/{coin}/{id_product}','QuotationController@createproduct')->name('quotations.createproduct');
+    Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','QuotationController@selectproduct')->name('quotations.selectproduct');
+    Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','QuotationController@createproduct')->name('quotations.createproduct');
 
 
     Route::post('storeproduct','QuotationController@storeproduct')->name('quotations.storeproduct');
@@ -551,6 +551,8 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('deliverynoteexpense/{id_expense}/{coin}/{iva}/{date}','PDF2Controller@deliverynote_expense')->name('pdf.deliverynote_expense');
 
     Route::get('order/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@order')->name('pdf.order');
+
+    Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
 
 });
 

@@ -47,7 +47,7 @@
                         @foreach ($clients as $client)
                             <tr>
                                 <td >
-                                    <a href="{{ route('quotations.createquotationclient',$client->id) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
+                                    <a href="{{ route('quotations.createquotationclient',[$client->id,$type ?? null]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                 <td >{{$client->name}}</td>
                                 <td >{{$client->name_ref}}</td>

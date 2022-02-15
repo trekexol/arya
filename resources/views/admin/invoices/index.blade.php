@@ -45,17 +45,20 @@
       <div class="col-md-2">
           <h2>Facturas</h2>
       </div>
-      <div class="col-md-2">
-        <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-hand-holding-usd"></i>
-            </span>
-            <span class="text">Cobros</span>
-        </a>
-    </div>
-      <div class="col-md-6">
-        <button type="submit" title="Agregar" id="btncobrar" class="btn btn-primary  float-md-right" >Cobrar Facturas</a>
-      </div>
+        <div class="col-md-2">
+            <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </span>
+                <span class="text">Cobros</span>
+            </a>
+        </div>
+        <div class="col-sm-6">
+            <a href="{{ route('quotations.createquotation',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Registrar Factura</a>
+          </div>
+        <div class="col-sm-6">
+            <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobrar Facturas</button>
+        </div>
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -197,6 +200,9 @@
         function buttom(){
             
             $("#btncobrar").show();
+
+            $("#btnRegistrar").hide();
+            
         }
     </script>
 @endsection
