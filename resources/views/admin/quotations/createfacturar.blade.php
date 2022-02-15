@@ -265,7 +265,7 @@
                                 
                                 <div class="col-md-2">
                                 </div>
-                                <div class="col-md-3">
+                                <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
                                         Guardar Factura
                                     </button>
@@ -889,6 +889,9 @@
             }
         });
 
+        if("{{$quotation->total_factura}}" == 0){
+            $("#divGuardar").hide();
+        }
 
         $(document).ready(function () {
             $("#credit").mask('0000', { reverse: true });

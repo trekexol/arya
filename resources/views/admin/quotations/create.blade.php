@@ -25,14 +25,14 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de Cotización</h3></div>
+                <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}}</h3></div>
 
                 <div class="card-body" >
                    
                        
                        
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de Cotización:</label>
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}:</label>
                             <div class="col-md-4">
                                 <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}" readonly required autocomplete="date_quotation">
     
@@ -113,7 +113,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> Cotización:</h6></label>
+                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> {{$type ?? 'Cotización'}}:</h6></label>
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="totallabel" id="total"><h3></h3></label>
                             </div>
@@ -127,11 +127,10 @@
                             <input id="bcv" type="hidden" class="form-control @error('bcv') is-invalid @enderror" name="bcv" value="{{ $bcv ?? $bcv_quotation_product }}" readonly required autocomplete="bcv">
                             <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" readonly required autocomplete="id_user">
                        
+                            <input id="type_quotation" type="hidden" class="form-control @error('type_quotation') is-invalid @enderror" name="type_quotation" value="{{ $type ?? null}}" readonly required autocomplete="type_quotation">
+                            
                         
                         <div class="form-group row" id="formcoin">
-
-                            
-
                             <label id="coinlabel" for="coin" class="col-md-1 col-form-label text-md-right">Moneda:</label>
 
                             <div class="col-md-2">
@@ -177,7 +176,7 @@
                                         
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>  
                                     
-                                            <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos']) }}" title="Productos"><i class="fa fa-eye"></i></a>  
+                                        <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                                         
                                     </div>
                                     
@@ -373,15 +372,15 @@
                             </div>
                             <div class="form-group row mb-0">
                                
-                                    <div class="col-md-4">
-                                        @if($suma == 0)
-                                            <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
-                                        @else
-                                            <a onclick="deliveryNoteSend()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar"> Nota de Entrega</a>  
-                                        @endif
-                                    </div>
+                                <div id="divDeliveryNote" class="col-sm-4">
+                                    @if($suma == 0)
+                                        <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
+                                    @else
+                                        <a onclick="deliveryNoteSend()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar"> Nota de Entrega</a>  
+                                    @endif
+                                </div>
                           
-                                <div class="col-md-4">
+                                <div id="divFacturar" class="col-sm-4">
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
                                         @if (empty($quotation->date_order))
@@ -395,7 +394,18 @@
                                         @endif
                                     @endif
                                 </div>
-                               
+                                <div id="divOpciones" class="col-sm-3 dropdown mb-4">
+                                    <button class="btn btn-dark" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                        aria-expanded="false">
+                                        <i class="fas fa-bars"></i>
+                                        Opciones 
+                                    </button>
+                                    <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
+                                        <a href="{{ route('pdf.quotation',[$quotation->id,$coin]) }}" class="dropdown-item bg-light text-black h5">Imprimir Cotización</a> 
+                                    </div> 
+                                </div> 
+                          
                             </div>
                             
                 </div>
@@ -438,7 +448,16 @@
 @section('quotation_create')
     
     <script>
-     
+        var type_quotation = "{{$type ?? null}}";
+
+        if(type_quotation == 'factura'){
+            $("#divDeliveryNote").hide();
+            $("#btnorder").hide();
+            $("#divOpciones").hide();
+            document.getElementById("divFacturar").classList.add('offset-sm-1');
+
+        }
+
         $(document).ready(function () {
             $("#discount_product").mask('000', { reverse: true });
             
@@ -623,22 +642,22 @@
             let reference_id = document.getElementById("code").value; 
             if(reference_id != ""){
                 $.ajax({
-                url:"{{ route('quotations.listinventory') }}" + '/' + reference_id,
+                url:"{{ route('quotations.listinventory','') }}" + '/' + reference_id,
                 beforSend:()=>{
                     alert('consultando datos');
                 },
                 success:(response)=>{
-                
+                    
                     if(response.length > 0){
                         response.forEach((item, index, object)=>{
                             let {id,description,date} = item;
-                          
-                           window.location = "{{route('quotations.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
+                            
+                           window.location = "{{route('quotations.createproduct', [$quotation->id,$coin,'',''])}}"+"/"+id+"/"+"{{$type ?? null}}";
                            
                         });
                     }else{
 
-                          window.location = "{{route('quotations.create', [$quotation->id,$coin,''])}}";
+                          window.location = "{{route('quotations.create', [$quotation->id,$coin,''])}}"+"/{{$type ?? null}}";
                        //alert('No se Encontro este numero de Referencia');
                     }
                    

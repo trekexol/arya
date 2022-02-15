@@ -91,6 +91,56 @@ class PDF2Controller extends Controller
 
         
     }
+    
+    function printQuotation($id_quotation,$coin = null)
+    {
+      
+
+        $pdf = App::make('dompdf.wrapper');
+
+        
+        $quotation = null;
+            
+        if(isset($id_quotation)){
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+        
+                                
+        }else{
+            return redirect('/quotations')->withDanger('No se encontro la cotizacion');
+        } 
+
+        if(isset($quotation)){
+
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
+                                                        ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                                                        ->where('quotation_products.id_quotation',$quotation->id)
+                                                        ->where('quotation_products.status','1')
+                                                        ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                                                        'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                                                        ,'quotation_products.retiene_islr as retiene_islr_quotation')
+                                                        ->get(); 
+
+            
+            if($coin == 'bolivares'){
+                $bcv = null;
+                
+            }else{
+                $bcv = $quotation->bcv;
+            }
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            
+            // $lineas_cabecera = $company->format_header_line;
+
+            $pdf = $pdf->loadView('pdf.quotation',compact('company','quotation','inventories_quotations','bcv','coin'));
+            return $pdf->stream();
+    
+        }else{
+            return redirect('/quotations')->withDanger('La cotizacion no existe');
+        } 
+        
+    }
+    
     function imprimirFactura_media($id_quotation,$coin = null)
     {
       

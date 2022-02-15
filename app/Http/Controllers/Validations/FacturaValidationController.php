@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Validations;
 use App\DetailVoucher;
 use App\Http\Controllers\Controller;
 use App\Account;
+use App\Quotation;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -42,5 +43,20 @@ class FacturaValidationController extends Controller
         }
    }
 
+   public function validateNumberInvoice(){
+
+        $last_number = Quotation::on(Auth::user()->database_name)
+        ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
+
+        //Asigno un numero incrementando en 1
+        if(empty($this->quotation->number_invoice)){
+            if(isset($last_number)){
+                $this->quotation->number_invoice = $last_number->number_invoice + 1;
+            }else{
+                $this->quotation->number_invoice = 1;
+            }
+        }
+        return $this->quotation;
+   }
    
 }

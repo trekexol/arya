@@ -13,6 +13,7 @@ use App\HeaderVoucher;
 use App\HistorialQuotation;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
+use App\Http\Controllers\Validations\FacturaValidationController;
 use App\Inventory;
 use App\InventoryHistories;
 use App\Multipayment;
@@ -66,20 +67,21 @@ class QuotationController extends Controller
     * @return \Illuminate\Http\Response
     */
     
-    public function createquotation()
+    public function createquotation($type = null)
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
 
-        return view('admin.quotations.createquotation',compact('datenow','transports'));
+        return view('admin.quotations.createquotation',compact('datenow','transports','type'));
     }
 
-    public function createquotationclient($id_client)
+    public function createquotationclient($id_client,$type = null)
     {
         $client = null;
-                
+
+            
         if(isset($id_client)){
             $client = Client::on(Auth::user()->database_name)->find($id_client);
         }
@@ -92,14 +94,15 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');    
 
-            return view('admin.quotations.createquotation',compact('client','datenow','transports'));
+            
+            return view('admin.quotations.createquotation',compact('client','datenow','transports','type'));
 
         }else{
             return redirect('/quotations')->withDanger('El Cliente no existe');
         } 
     }
 
-    public function createquotationvendor($id_client,$id_vendor)
+    public function createquotationvendor($id_client,$id_vendor,$type = null)
     {
         $client = null;
                 
@@ -122,7 +125,7 @@ class QuotationController extends Controller
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');    
 
-                return view('admin.quotations.createquotation',compact('client','vendor','datenow','transports'));
+                return view('admin.quotations.createquotation',compact('client','vendor','datenow','transports','type'));
 
             }else{
                 return redirect('/quotations')->withDanger('El Vendedor no existe');
@@ -135,7 +138,7 @@ class QuotationController extends Controller
 
 
 
-    public function create($id_quotation,$coin)
+    public function create($id_quotation,$coin,$type = null)
     {
         
         if($this->userAccess->validate_user_access($this->modulo)){
@@ -184,7 +187,7 @@ class QuotationController extends Controller
                 }
                 
         
-                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product'));
+                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type'));
             }else{
                 return redirect('/quotations')->withDanger('No es posible ver esta cotizacion');
             } 
@@ -219,7 +222,7 @@ class QuotationController extends Controller
     }
 
 
-    public function createproduct($id_quotation,$coin,$id_inventory)
+    public function createproduct($id_quotation,$coin,$id_inventory,$type = null)
     {
         $quotation = null;
                 
@@ -274,7 +277,7 @@ class QuotationController extends Controller
                         $bcv = null;
                     }
                    
-                    return view('admin.quotations.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin'));
+                    return view('admin.quotations.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin','type'));
 
                 }else{
                     return redirect('/quotations')->withDanger('El Producto no existe');
@@ -285,7 +288,7 @@ class QuotationController extends Controller
 
     }
 
-    public function selectproduct($id_quotation,$coin,$type)
+    public function selectproduct($id_quotation,$coin,$type,$type_quotation = null)
     {
 
         $services = null;
@@ -352,56 +355,53 @@ class QuotationController extends Controller
             ->orderBy('products.code_comercial','desc')
             ->get();
             
-            return view('admin.quotations.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product'));
+            return view('admin.quotations.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product','type_quotation'));
         }
     
-        return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product'));
+        return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product','type_quotation'));
     }
 
 
     public function createvendor($id_product,$id_vendor)
     {
-
-            $vendor = null;
-            
-            if(isset($id_vendor)){
-                $vendor = vendor::on(Auth::user()->database_name)->find($id_vendor);
-            }
-
-            $clients     = Client::on(Auth::user()->database_name)->get();
+        $vendor = null;
         
-            $vendors     = Vendor::on(Auth::user()->database_name)->get();
+        if(isset($id_vendor)){
+            $vendor = vendor::on(Auth::user()->database_name)->find($id_vendor);
+        }
 
-            $transports     = Transport::on(Auth::user()->database_name)->get();
+        $clients     = Client::on(Auth::user()->database_name)->get();
+    
+        $vendors     = Vendor::on(Auth::user()->database_name)->get();
 
-            $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');    
+        $transports     = Transport::on(Auth::user()->database_name)->get();
 
-            return view('admin.quotations.create',compact('clients','vendors','datenow','transports','vendor'));
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+
+        return view('admin.quotations.create',compact('clients','vendors','datenow','transports','vendor'));
     }
 
-    public function selectvendor($id_client)
+    public function selectvendor($id_client,$type = null)
     {
-            if($id_client != -1){
+        if($id_client != -1){
 
-                $vendors     = vendor::on(Auth::user()->database_name)->get();
+            $vendors     = vendor::on(Auth::user()->database_name)->get();
+    
+            return view('admin.quotations.selectvendor',compact('vendors','id_client','type'));
 
-                
-        
-                return view('admin.quotations.selectvendor',compact('vendors','id_client'));
-
-            }else{
-                return redirect('/quotations/registerquotation')->withDanger('Seleccione un Cliente primero');
-            }
-
+        }else{
+            return redirect('/quotations/registerquotation')->withDanger('Seleccione un Cliente primero');
+        }
         
     }
 
-    public function selectclient()
+    public function selectclient($type = null)
     {
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
     
-        return view('admin.quotations.selectclient',compact('clients'));
+        return view('admin.quotations.selectclient',compact('clients','type'));
     }
     
 
@@ -427,10 +427,24 @@ class QuotationController extends Controller
                 $var = new Quotation();
                 $var->setConnection(Auth::user()->database_name);
 
+                $validateFactura = new FacturaValidationController($var);
+
                 $var->id_client = $id_client;
                 $var->id_vendor = $id_vendor;
 
                 $id_transport = request('id_transport');
+
+                $type = request('type');
+
+                if(empty($type)){
+                    $type = '';
+                }else if($type == 'factura'){
+                    $var->date_billing = request('date_quotation');
+                    $var = $validateFactura->validateNumberInvoice();
+                }
+
+               
+
                 if($id_transport != '-1'){
                     $var->id_transport = request('id_transport');
                 }
@@ -465,7 +479,7 @@ class QuotationController extends Controller
                 $historial_quotation->registerAction($var,"quotation","Creó Cotización");
 
 
-                return redirect('quotations/register/'.$var->id.'/bolivares');
+                return redirect('quotations/register/'.$var->id.'/bolivares/'.$type);
 
             
         }else{
@@ -566,8 +580,14 @@ class QuotationController extends Controller
 
         $historial_quotation->registerAction($var,"quotation_product","Registró un Producto");
 
+        $type_quotation = request('type_quotation');
 
-        return redirect('quotations/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
+        if(empty($type_quotation)){
+            $type_quotation = '';
+        }
+
+
+        return redirect('quotations/register/'.$var->id_quotation.'/'.$coin.'/'.$type_quotation)->withSuccess('Producto agregado Exitosamente!');
     }
    
     public function edit($id)
