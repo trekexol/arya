@@ -148,7 +148,7 @@
 <?php
   $iva = ($quotation->base_imponible * 16)/100;
 
-  $total_all = $total + $iva;
+  $total_all = $total + $iva - ($quotation->anticipo ?? 0);
 
 ?>
 
