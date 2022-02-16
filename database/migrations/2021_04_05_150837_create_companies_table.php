@@ -36,6 +36,7 @@ class CreateCompaniesTable extends Migration
             $table->string('status',1);
             $table->bigInteger('format_header_lines')->default(0);
             $table->bigInteger('format_header_lines_med')->default(0);
+            $table->string('message_from_email',250)->nullable();
             $table->timestamps();
 
 

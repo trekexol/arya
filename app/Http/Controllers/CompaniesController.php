@@ -106,6 +106,7 @@ class CompaniesController extends Controller
 
         $companies->status          = '1';
         $companies->pie_pagina     = request('pie_pagina');
+        $companies->message_from_email     = request('message_from_email');
 
         $companies->save();
 
@@ -134,6 +135,7 @@ class CompaniesController extends Controller
         $companies->status          = '1';
 
         $companies->pie_pagina     = request('pie_pagina');
+        $companies->message_from_email     = request('message_from_email');
 
         $companies->save();
         

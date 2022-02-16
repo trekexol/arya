@@ -1056,3 +1056,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
 });
+
+Route::group(["prefix"=>'mails'],function(){
+    Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
+});

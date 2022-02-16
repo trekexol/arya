@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Quotation extends Model
 {
     public function clients(){
-        return $this->belongsTo('App\Permission\Models\Client','id_client');
+        return $this->belongsTo('App\Client','id_client');
     }
     public function vendors(){
         return $this->belongsTo('App\Permission\Models\Vendor','id_vendor');
