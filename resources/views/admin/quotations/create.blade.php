@@ -403,6 +403,7 @@
                                     </button>
                                     <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
                                         <a href="{{ route('pdf.quotation',[$quotation->id,$coin]) }}" class="dropdown-item bg-light text-black h5">Imprimir Cotización</a> 
+                                        <a href="#" data-toggle="modal" data-target="#emailModal" class="dropdown-item bg-light text-black h5">Enviar Cotización por Correo</a> 
                                     </div> 
                                 </div> 
                           
@@ -437,6 +438,35 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-danger fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enviar Cotización por Correo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('mails.quotation',[$quotation->id,$coin]) }}" method="post">
+                @csrf
+                @method('POST')
+                <h5 class="text-center">Email:</h5>
+                <input id="email_modal" type="text" class="form-control @error('email_modal') is-invalid @enderror" name="email_modal" value="{{ $quotation->clients['email'] ?? '' }}" required autocomplete="email_modal">
+                <br>
+                <h5 class="text-center">Mensaje:</h5>
+                <input id="message_modal" type="text" class="form-control @error('message_modal') is-invalid @enderror" name="message_modal" value="{{ $company->message_from_email ?? '' }}" required autocomplete="message_modal">
+                       
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Enviar Correo</button> 
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
             </form>
         </div>
