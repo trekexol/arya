@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Mail;
 
 
 use App;
+use App\Anticipo;
 use App\Company;
 use App\Http\Controllers\Controller;
 use App\Mail\QuotationMail;
 use App\Quotation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -38,17 +40,6 @@ class QuotationMailController extends Controller
     {  
     
         $pdf = App::make('dompdf.wrapper');
-
-        
-        $quotation = null;
-            
-        if(isset($id_quotation)){
-            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
-        
-                                
-        }else{
-            return redirect('/quotations')->withDanger('No se encontro la cotizacion');
-        } 
 
         if(isset($quotation)){
             $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
