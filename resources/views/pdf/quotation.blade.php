@@ -110,6 +110,10 @@
     <th style="text-align: center; width: 100%;">Productos</th>
   </tr> 
 </table>
+<?php 
+
+  $total = 0;
+?>
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; ">Código</th>
@@ -126,6 +130,8 @@
       $total_less_percentage = ($var->price * $var->amount_quotation) - $percentage;
 
       $total_less_percentage = $total_less_percentage / ($bcv ?? 1);
+
+      $total += $total_less_percentage;
       ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
@@ -140,24 +146,17 @@
 
 
 <?php
-  $iva = ($quotation->base_imponible * $quotation->iva_percentage)/100;
+  $iva = ($quotation->base_imponible * 16)/100;
 
-  //$total = $quotation->sub_total_factura + $iva - $quotation->anticipo;
+  $total_all = $total + $iva;
 
-  $total = $quotation->amount_with_iva;
-
-  //$total_petro = ($total - $quotation->anticipo) / $company->rate_petro;
-
-  //$iva = $iva / ($bcv ?? 1);
-
-  $total_coin = $total / ($bcv ?? 1);
 ?>
 
 <table style="width: 100%;">
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Sub Total</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total, '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
   </tr> 
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
@@ -194,7 +193,7 @@
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL </th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total_all , '1', 2), 2, ',', '.') }}</th>
   </tr> 
   @if (isset($coin) && ($coin != 'bolivares'))
   <tr>
