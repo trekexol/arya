@@ -338,7 +338,7 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],  
-        'demo' => [
+        'mancent' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('MANCENT_HOST', '127.0.0.1'),
