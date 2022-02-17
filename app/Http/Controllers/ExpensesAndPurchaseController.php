@@ -41,6 +41,7 @@ class ExpensesAndPurchaseController extends Controller
    public function index()
    {
         if($this->userAccess->validate_user_access($this->modulo)){
+          
             $user       =   auth()->user();
             $users_role =   $user->role_id;
             
