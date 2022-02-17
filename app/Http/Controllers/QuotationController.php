@@ -187,7 +187,7 @@ class QuotationController extends Controller
                 }
                 
         
-                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type'));
+                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company'));
             }else{
                 return redirect('/quotations')->withDanger('No es posible ver esta cotizacion');
             } 
