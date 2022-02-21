@@ -574,6 +574,11 @@ class AccountController extends Controller
         $last_detail_activate = DetailVoucher::on(Auth::user()->database_name)->where('status', 'C')->orderBy('id', 'desc')->first();
         $last_detail_desactivate = DetailVoucher::on(Auth::user()->database_name)->where('status', 'F')->orderBy('id', 'desc')->first();
 
+
+        $first_detail_activate = DetailVoucher::on(Auth::user()->database_name)
+        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+        ->where('detail_vouchers.status', 'C')->orderBy('header_vouchers.date', 'asc')->first();
+
         
         //Verifica que existan movimientos con los cuales hacer el cierre
         if(isset($last_detail_activate)){
@@ -592,7 +597,7 @@ class AccountController extends Controller
 
                     $var->id_account =  $account->id;
                     $var->period =  $datenow;
-                    $var->date_begin = $last_detail_activate->created_at->format('Y-m-d');
+                    $var->date_begin = $first_detail_activate->created_at->format('Y-m-d');
                     $var->date_end = $datenow2;
 
                     $var->balance_previous = $account->balance_previus;
@@ -601,11 +606,11 @@ class AccountController extends Controller
                        
 
                         //if($account->level == 5){
-                            $var->rate =  $this->tasa_calculada($account);
+                            //$var->rate =  $this->tasa_calculada($account);
                         /*}else{
                             $var->rate =  $account->rate;
                         }*/
-                       
+                        $var->rate =  $account->rate;
                         
                         if($account->code_one <= 3){
                             $var->balance_current = $account->balance_previus + $account->debe - $account->haber;

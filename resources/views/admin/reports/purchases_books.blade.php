@@ -29,8 +29,9 @@
     <tr>
       <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
       </th>
-      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->code_rif ?? ''}} </h4></th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
     </tr> 
+    
   </table>
   <h4 style="color: black; text-align: center">LIBRO DE COMPRAS</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $datenow ?? '' }} / Fecha desde: {{ $date_begin ?? '' }} Fecha Hasta: {{ $date_end ?? '' }}</h5>
@@ -151,5 +152,78 @@
 
 <h5 style="color: black; text-align: center">Total Exento: {{ number_format(($total_exento ?? 0), 2, ',', '.') }} / Total Compras y Créditos: {{ number_format(($total_base_imponible ?? 0), 2, ',', '.') }} </h5>
 
+<table ALIGN="right" style="width: 50%;">
+  <tr>
+    <th style="text-align: center; ">Resumen Compras del periodo {{ $date_begin ?? '' }} hasta: {{ $date_end ?? '' }}</th>
+    <th style="text-align: center; "></th>
+    <th style="text-align: center; ">%</th>
+    <th style="text-align: center; "></th>
+    <th style="text-align: center; ">Retenciones</th>
+  </tr> 
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Compras Internas No Gravadas</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Menos: Notas de Credito del Mes</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras  Internas No Gravadas</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras Exportación</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras  Internas solo Alicuota General</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras  Internas solo Alicuota General</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras  Internas solo Alicuota General mas Adicional</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Compras  Internas solo Alicuota Reducida</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total compras y Creditos Fiscales</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  
+</table>
 </body>
 </html>

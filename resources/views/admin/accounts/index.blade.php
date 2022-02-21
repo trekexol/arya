@@ -140,11 +140,20 @@
                         <tr>
                             <td style="text-align:left; color:black; font-weight: bold;">{{$account->code_one}}{{ ($account->code_two == 0) ? '' : '.'.$account->code_two }}{{ ($account->code_three == 0) ? '' : '.'.$account->code_three }}{{ ($account->code_four == 0) ? '' : '.'.$account->code_four }}{{ ($account->code_five == 0) ? '' : '.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT) }}</td>
                             <td style="text-align:right; color:black;">
-                                @if(isset($account->coin))
-                                    <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                @if ($account->level == 5)
+                                    @if(isset($account->coin))
+                                        <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                    @else
+                                        <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                    @endif
                                 @else
-                                    <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
-                               @endif
+                                    @if(isset($account->coin))
+                                        <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                    @else
+                                        <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                    @endif
+                                @endif
+                              
                             </td>
                             <td style="text-align:right; color:black; ">{{$account->level}}</td>
                             <td style="text-align:right; color:black; ">{{$account->type}}</td>
@@ -316,11 +325,19 @@
                     <tr>
                         <td style="text-align:left; color:black; font-weight: bold;">{{$account->code_one}}{{ ($account->code_two == 0) ? '' : '.'.$account->code_two }}{{ ($account->code_three == 0) ? '' : '.'.$account->code_three }}{{ ($account->code_four == 0) ? '' : '.'.$account->code_four }}{{ ($account->code_five == 0) ? '' : '.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT) }}</td>
                         <td style="text-align:right; color:black;">
-                            @if(isset($account->coin))
-                                <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                            @if ($account->level == 5)
+                                @if(isset($account->coin))
+                                    <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                @else
+                                    <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                @endif
                             @else
-                                <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
-                           @endif
+                                @if(isset($account->coin))
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                @else
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                @endif
+                            @endif
                         </td>
                         <td style="text-align:right; color:black; ">{{$account->level}}</td>
                         <td style="text-align:right; color:black; ">{{$account->type}}</td>
