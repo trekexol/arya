@@ -126,7 +126,8 @@
                             <td class="text-center font-weight-bold">
                                 <a href="{{ route('expensesandpurchases.create_payment_after',[$expensesandpurchase->id,$expensesandpurchase->coin]) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Pagar</a>
                             </td>
-                            <td>
+                            <td> 
+                                <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,'bolivares']) }}" title="Editar"><i class="fa fa-edit"></i></a>                         
                                 <input type="checkbox" name="check{{ $expensesandpurchase->id }}" value="{{ $expensesandpurchase->id }}" onclick="buttom();" id="flexCheckChecked">    
                             </td>
                             @endif
