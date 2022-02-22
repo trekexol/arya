@@ -2549,11 +2549,11 @@ class ExpensesAndPurchaseController extends Controller
         
             $var->save();
 
-            $validation = new ExpenseDetailValidationController();
+            /*$validation = new ExpenseDetailValidationController();
 
             $var->price = $price_old;
             $var->amount = $amount_old;
-            $validation->updateMovement($var);
+            $validation->updateMovement($var);*/
 
             $historial_expense = new HistorialExpenseController();
 
