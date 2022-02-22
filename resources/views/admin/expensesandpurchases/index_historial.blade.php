@@ -79,7 +79,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
-                
+                <th>N°</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
@@ -98,7 +98,7 @@
                 @else  
                     @foreach ($expensesandpurchases as $expensesandpurchase)
                         <tr>
-                           
+                           <td>{{$expensesandpurchase->id ?? ''}}</td>
                             <td class="text-center">
                                 <a href="{{ route('expensesandpurchases.create_expense_voucher',[$expensesandpurchase->id,$expensesandpurchase->coin ?? 'bolivares']) }}" title="Ver Detalle" class="text-center text-dark font-weight-bold">
                                     {{$expensesandpurchase->invoice ?? ''}}
