@@ -189,25 +189,25 @@ class ReportPaymentController extends Controller
         }
 
         foreach($quotation_payments as $quotation){
-
+            
             $quotation->payment_type = $global->asignar_payment_type($quotation->payment_type);
            
 
             if ($typeperson == 'Cliente' || $typeperson == 'Vendedor') {
             
             $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
-            ->where('id_quotation', '=',$quotation->id_quotation)
+            ->where('id_quotation', '=',$quotation->id)
             ->select('id_account')->get();
             } else {
 
                 if ($typeperson == 'Proveedor'){
                      $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
-                    ->where('id_expense', '=',$quotation->id_quotation) 
+                    ->where('id_expense', '=',$quotation->id) 
                     ->select('id_account')->get();
                 } else {
                      $anticiposs = DB::connection(Auth::user()->database_name)->table('anticipos')
-                     ->where('id_quotation', '=',$quotation->id_quotation) 
-                    ->orwhere('id_expense', '=',$quotation->id_quotation)->get();
+                     ->where('id_quotation', '=',$quotation->id) 
+                    ->orwhere('id_expense', '=',$quotation->id)->get();
                    
                     
                    // $anticiposs ='nin';
