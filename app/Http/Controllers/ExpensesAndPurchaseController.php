@@ -84,7 +84,7 @@ class ExpensesAndPurchaseController extends Controller
        $users_role =   $user->role_id;
        
            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
-           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)->where('status','C')->get();
+           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)->whereIn('status',['C','F'])->get();
 
             $multipayments_detail = null;
             $expenses = null;
