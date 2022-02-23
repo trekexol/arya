@@ -790,7 +790,7 @@ class ReportDeliveryNoteController extends Controller
                     $id_client_or_vendor = 'todo';
                }
               
-            return view('admin.reports.index_accounts_receivable_note',compact('typepersone','client','vendor','date_end','date_frist','typeinvoice','id_client_or_vendor'));
+            return view('admin.reports.index_accounts_receivable_note_det',compact('typepersone','client','vendor','date_end','date_frist','typeinvoice','id_client_or_vendor'));
             
         } else{
           
@@ -841,7 +841,7 @@ class ReportDeliveryNoteController extends Controller
             $vendor = null;            
         }
 
-        return view('admin.reports.index_accounts_receivable_note',compact('coin','typeinvoice','date_end','client','vendor','typepersone','date_frist','id_client_or_vendor'));
+        return view('admin.reports.index_accounts_receivable_note_det',compact('coin','typeinvoice','date_end','client','vendor','typepersone','date_frist','id_client_or_vendor'));
     }
 
    
@@ -853,14 +853,9 @@ class ReportDeliveryNoteController extends Controller
         $quotations = null;
         
         $date = Carbon::now();
-       // $datenow = $date->format('d-m-Y'); 
-        
+
         $global = new GlobalController();
-        
-       /* if (empty($date_frist) || $date_frist == null){
-            $date_frist = $global->data_first_month_day();   
-        } */
-        
+
 
         $date_consult = $date_end;
     
@@ -901,23 +896,23 @@ class ReportDeliveryNoteController extends Controller
                 }
                    
                 
-               if($typeinvoice == 'facturas'){ // nota a factura pendiente por cobrar cliente bs
-                    $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
-                     ->leftjoin('clients', 'clients.id','=','quotations.id_client')
-                    ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
-                    ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
-                    ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
-                    ->where('quotations.date_delivery_note','>=',$date_frist)
-                    ->where('quotations.date_delivery_note','<=',$date_consult)
-                    ->where('quotations.number_invoice','<>',null)
-                    ->where('quotations.number_delivery_note','<>',null)
-                    ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
-                    ->get();
-                } 
+                if($typeinvoice == 'facturas'){ // nota a factura pendiente por cobrar cliente bs
+                        $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
+                        ->leftjoin('clients', 'clients.id','=','quotations.id_client')
+                        ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
+                        ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
+                        ->whereIn('quotations.status',['P'])
+                        ->where('quotations.date_billing','<>',null)
+                        ->where('quotations.date_delivery_note','>=',$date_frist)
+                        ->where('quotations.date_delivery_note','<=',$date_consult)
+                        ->where('quotations.number_invoice','<>',null)
+                        ->where('quotations.number_delivery_note','<>',null)
+                        ->where('quotations.id_client',$id_client_or_vendor)
+                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                        ->orderBy('quotations.date_billing','desc')
+                        ->get();
+                    } 
                 
                 if($typeinvoice == 'facturasc'){ // facturas cobradas cliente bs
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
@@ -1271,6 +1266,7 @@ class ReportDeliveryNoteController extends Controller
                                         ->get();
                 }
             }  
+              
             
         }
         
@@ -1468,12 +1464,12 @@ class ReportDeliveryNoteController extends Controller
 
         }
         
-        $pdf = $pdf->loadView('admin.reports.accounts_receivable_note',compact('coin','quotations','date_end','date_frist','typepersone','id_client_or_vendor'));
+        $pdf = $pdf->loadView('admin.reports.accounts_receivable_note_det',compact('coin','quotations','date_end','date_frist','typepersone','id_client_or_vendor'));
         return $pdf->stream();
                  
     }
 
-
+//nota detalle -------------------------------------
 
 
     public function select_client_note()

@@ -83,6 +83,14 @@
         $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
       }
     
+
+
+      $quotations_product = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('quotation_products.id_quotation',$quotation->id)
+            ->select('quotation_products.*')  
+            ->get();     
+
+
     ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_delivery_note}}</th>
@@ -116,6 +124,61 @@
           <th style="text-align: right; font-weight: normal;">${{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
           <th style="text-align: right; font-weight: normal;">${{ number_format($por_cobrar, 2, ',', '.') }}</th>
         @endif 
+        
+        @if(!empty($quotations_product))
+
+          @foreach ($quotations_product as $quotations_products)
+
+             <?php
+
+             
+              $id_product = DB::connection(Auth::user()->database_name)
+                    ->table('inventories')
+                    ->where('id',$quotations_products->id_inventory)
+                    ->select('product_id')
+                    ->get()->first();
+
+              $name_product = DB::connection(Auth::user()->database_name)
+                    ->table('products')
+                    ->where('id',$id_product->product_id)
+                    ->select('description','code_comercial')
+                    ->get()->first();
+
+             ?>
+
+          
+            <tr>
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;">{{$name_product->code_comercial ?? ''}}</th>
+              <th style="text-align: center; font-weight: normal;">{{$name_product->description ?? ''}}</th>
+              <th style="text-align: center; font-weight: normal;">{{$quotations_products->amount ?? ''}}</th>
+              @if(isset($coin) && $coin == 'bolivares'){
+              <th style="text-align: right; font-weight: normal;">{{$quotations_products->price ?? ''}}</th>
+              @endif
+              @if(isset($coin) && $coin == 'dolares'){
+              <th style="text-align: right; font-weight: normal;">${{ number_format(($quotations_products->price/$quotations_products->rate ?? 0), 2, ',', '.')}}</th>
+              @endif  
+              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
+            </tr>
+          
+
+
+
+          @endforeach
+            
+
+        @endif
+
+
+
+
+
+
 
    
     </tr> 
