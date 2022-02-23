@@ -257,6 +257,7 @@
                     <a class="collapse-item" href="{{ route('reports.accounts_receivable','index')}}" > <i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-black-400"></i><strong>Cuentas por Cobrar</strong></a>
                     <a class="collapse-item" href="{{ route('reports.debtstopay')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-black-400"></i><strong>Cuentas por Pagar</strong></a>
                     <a class="collapse-item" href="{{ route('reports.accounts_receivable_note','todo','todo')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-black-400"></i><strong>Notas de Entrega</strong></a>
+                    <a class="collapse-item" href="{{ route('reports.accounts_receivable_note_det','todo','todo')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-black-400"></i><strong>Notas de Entrega Det</strong></a>
                     <a class="collapse-item" href="{{ route('reports.bankmovements')}}" > <i class="fas fa-money-bill-wave fa-sm fa-fw mr-2 text-black-400"></i><strong>Movimientos<br> <div style="text-indent: 22px;">Bancarios</div></strong></a>
                     <a class="collapse-item" href="{{ route('reportspayment.payments','index')}}" > <i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-black-400"></i><strong>Pagos Realizados</strong></a>
                     
