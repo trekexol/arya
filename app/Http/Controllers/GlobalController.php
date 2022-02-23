@@ -767,7 +767,6 @@ class GlobalController extends Controller
                     case 'venta':
     
                     if ($id_historial_inv != 0) {
-    
                         $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
                         ->table('inventory_histories')
                         ->where('id','=',$id_historial_inv)
@@ -784,7 +783,6 @@ class GlobalController extends Controller
                     } else {
                     $transaccion = $amount_real-$amount;
                     }    
-    
                     break;          
                     case 'entrada':
                     $transaccion = $amount_real+$amount;
@@ -835,9 +833,7 @@ class GlobalController extends Controller
                         $transaccion = $amount_real+$amount;
                     break;  
                     case 'rev_venta':
-    
                     $transaccion = $amount_real+$amount;
-    
                     break;  
                     case 'rev_compra':
                     $transaccion = $amount_real-$amount;
@@ -884,38 +880,27 @@ class GlobalController extends Controller
     
                         switch ($type) {
                             case 'compra':
-    
                             $msg = 'La Compra fue registrada con exito';
                             break;
-                            case 'venta':
-    
+                            case 'venta';
                             $msg = 'La Venta fue registrada con exito';
-                            
                             break;
                             case 'nota':
-                            
                             $msg = 'exito';//'La Nota fue registrada con exito';
                             break;  
-    
                             case 'rev_nota':
-                            
                             $msg = 'Reverso de Nota exitoso';
                             break;   
                             case 'aju_nota':
-                            
-                                $msg = 'Eliminacion de producto de la Nota exitoso';
-                                break;      
+                             $msg = 'Eliminacion de producto de la Nota exitoso';
+                            break;      
                             case 'rev_venta':
-                        
                             $msg = 'Reverso de Factura exitoso';
-                            
                             break;                                           
                             case 'entrada':
-                            
                             $msg = 'Agregado a inventario exitosamente';
                             break;
                             case 'salida':
-                            
                             $msg = 'Salida de inventario exitoso';
                             break;
                             default:
@@ -924,10 +909,37 @@ class GlobalController extends Controller
                         }
                     }
     
-    
-    
             } else { // condicion cantidad
-            $msg = "La cantidad de la oprecion debe ser mayor a cero";
+                if($type == 'creado') {
+                    
+                    $user       =   auth()->user();
+
+                    $id_inventary = DB::connection(Auth::user()->database_name)
+                    ->table('inventories')
+                    ->select('id')
+                    ->get()->last(); 
+
+                     DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                    'id_product' => $id_inventary->id,
+                    'id_user' => $user->id,
+                    'id_branch' => 1,
+                    'id_centro_costo' => 1,
+                    'id_quotation' => 0,
+                    'id_expense' => 0,
+                    'date' => $date,
+                    'type' => $type,
+                    'price' => $price,
+                    'amount' => 0,
+                    'amount_real' => 0,
+                    'status' => 'A']);
+
+                    $msg = "Producto Creado";
+            
+                } else {
+
+                    $msg = "La cantidad de la oprecion debe ser mayor a cero";
+                }
+
             }
     
     return $msg;

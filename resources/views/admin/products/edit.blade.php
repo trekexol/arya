@@ -145,13 +145,17 @@
                                         <select class="form-control" id="type" name="type" title="type">
                                             @if($product->type == "MERCANCIA")
                                                 <option value="MERCANCIA">Mercancía</option>
-                                            @else
-                                                <option value="SERVICIO">Servicio</option>
+                                            @elseif($product->type == "MATERIAP")
+                                            <option value="MATERIAP">Materia Prima</option> 
+                                            @elseif($product->type == "SERVICIO")
+                                            <option value="SERVICIO">Servicio</option>
                                             @endif
+                                           
                                             <option value="nulo">----------------</option>
                                             
                                             <div class="dropdown">
                                                 <option value="MERCANCIA">Mercancía</option>
+                                                <option value="MATERIAP">Materia Prima</option> 
                                                 <option value="SERVICIO">Servicio</option>
                                             </div>
                                             
@@ -195,6 +199,29 @@
                                     </div>
                                 </div>
         
+                                <div class="form-group row">
+                                    <label for="lote" class="col-md-2 col-form-label text-md-right">Lote</label>
+        
+                                    <div class="col-md-4">
+                                        <input id="lote" type="text" class="form-control @error('lote') is-invalid @enderror" name="lote" value="{{ old('lote') }}" autocomplete="lote">
+        
+                                        @error('lote')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <label for="fecha_vencimiento" class="col-md-2 col-form-label text-md-right">Fecha de Vencimiento</label>
+                                    <div class="col-md-4">
+                                        <input id="fecha_vencimiento" type="text" class="form-control @error('fecha_vencimiento') is-invalid @enderror" name="fecha_vencimiento" value="{{ old('fecha_vencimiento') }}" autocomplete="fecha_vencimiento">
+        
+                                        @error('fecha_vencimiento')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>                    
+                                </div>
                                 
                                 <div class="form-group row">
                                     <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
@@ -208,7 +235,7 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
+                                    <label for="account" class="col-md-2 col-form-label text-md-right">Cuenta Asociada:</label>
                         
                                     <div class="col-md-4">
                                     <select id="id_account"  name="id_account" class="form-control" required>

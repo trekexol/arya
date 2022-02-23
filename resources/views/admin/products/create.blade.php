@@ -36,6 +36,7 @@
                             <div class="col-md-4">
                             <select class="form-control" name="type" id="type">
                                 <option value="MERCANCIA">Mercancía</option>
+                                <option value="MATERIAP">Materia Prima</option>
                                 <option value="SERVICIO">Servicio</option>
                             </select>
                             </div>
@@ -149,7 +150,7 @@
                             <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
 
                             <div class="col-md-4">
-                                <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" required autocomplete="price">
+                                <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ 0 ?? old('price') }}" required autocomplete="price">
 
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -160,7 +161,7 @@
                             <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio Compra</label>
 
                             <div class="col-md-4">
-                                <input id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ old('price_buy') }}" required autocomplete="price_buy">
+                                <input id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ 0 ?? old('price_buy') }}" required autocomplete="price_buy">
 
                                 @error('price_buy')
                                     <span class="invalid-feedback" role="alert">
@@ -170,12 +171,38 @@
                             </div>
                         </div>
 
+
+
+                        <div class="form-group row">
+                            <label for="lote" class="col-md-2 col-form-label text-md-right">Lote</label>
+
+                            <div class="col-md-4">
+                                <input id="lote" type="text" class="form-control @error('lote') is-invalid @enderror" name="lote" value="{{ old('lote') }}" autocomplete="lote">
+
+                                @error('lote')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="fecha_vencimiento" class="col-md-2 col-form-label text-md-right">Fecha de Vencimiento</label>
+                            <div class="col-md-4">
+                                <input id="fecha_vencimiento" type="text" class="form-control @error('fecha_vencimiento') is-invalid @enderror" name="fecha_vencimiento" value="{{ old('fecha_vencimiento') }}" autocomplete="fecha_vencimiento" placeholder="00-00-2022">
+
+                                @error('fecha_vencimiento')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>                    
+                        </div>
+
                         
                         <div class="form-group row">
                             <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
 
                             <div class="col-md-4">
-                                <input id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ old('cost_average') }}" required autocomplete="cost_average">
+                                <input id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ 0 ?? old('cost_average') }}" required autocomplete="cost_average">
 
                                 @error('cost_average')
                                     <span class="invalid-feedback" role="alert">
@@ -211,7 +238,7 @@
                             <label for="special_impuesto" class="col-md-2 col-form-label text-md-right">Impuesto Especial</label>
 
                             <div class="col-md-4">
-                                <input id="special_impuesto" type="text" class="form-control @error('special_impuesto') is-invalid @enderror" name="special_impuesto" value="{{ old('special_impuesto') }}" required autocomplete="special_impuesto">
+                                <input id="special_impuesto" type="text" class="form-control @error('special_impuesto') is-invalid @enderror" name="special_impuesto" value="{{ 0 ?? old('special_impuesto') }}" required autocomplete="special_impuesto">
 
                                 @error('special_impuesto')
                                     <span class="invalid-feedback" role="alert">
@@ -219,7 +246,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
+                            <label for="account" class="col-md-2 col-form-label text-md-right">Asociar a Cuenta:</label>
                         
                             <div class="col-md-4">
                             <select id="id_account"  name="id_account" class="form-control" required>
