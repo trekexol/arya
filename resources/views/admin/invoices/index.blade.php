@@ -104,7 +104,7 @@
                 @else  
                     @foreach ($quotations as $quotation)
                     <?php 
-                        $amount_bcv = 0;
+                        $amount_bcv = 1;
                         $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
                         $diferencia_en_dias = 0;
                         $validator_date = '';
