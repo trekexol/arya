@@ -919,12 +919,18 @@ class GlobalController extends Controller
                     ->select('id')
                     ->get()->last(); 
 
+                    $id_product = DB::connection(Auth::user()->database_name)
+                    ->table('products')
+                    ->select('id')
+                    ->get()->last(); 
+
+
                      DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
                     'id_product' => $id_inventary->id,
                     'id_user' => $user->id,
                     'id_branch' => 1,
                     'id_centro_costo' => 1,
-                    'id_quotation_product' => 0,
+                    'id_quotation_product' => $id_product->id,
                     'id_expense_detail' => 0,
                     'date' => $date,
                     'type' => $type,

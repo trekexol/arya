@@ -167,7 +167,7 @@ class ProductController extends Controller
         
         $global = new GlobalController; 
         
-        dd($global->transaction_inv('creado',0,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0));
+        $global->transaction_inv('creado',0,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0);
         
         return redirect('/products')->withSuccess('Registro Exitoso!');
     }
