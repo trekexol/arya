@@ -283,13 +283,13 @@
 @section('javascript')
     <script>
             
-            $("#segment").on('change',function(){
-                var segment_id = $(this).val();
-                $("#subsegment").val("");
-               
-                // alert(segment_id);
-                getSubsegment(segment_id);
-            });
+        $("#segment").on('change',function(){
+            var segment_id = $(this).val();
+            $("#subsegment").val("");
+            
+            // alert(segment_id);
+            getSubsegment(segment_id);
+        });
 
         function getSubsegment(segment_id){
             // alert(`../subsegment/list/${segment_id}`);

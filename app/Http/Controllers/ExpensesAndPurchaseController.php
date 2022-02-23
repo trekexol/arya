@@ -2509,11 +2509,10 @@ class ExpensesAndPurchaseController extends Controller
             ]);
             
             $var = ExpensesDetail::on(Auth::user()->database_name)->findOrFail($id);
+            $validation = new ExpenseDetailValidationController();
 
             $price_old = $var->price;
             $amount_old = $var->amount;
-
-            
 
             $coin = request('coin');
 
@@ -2534,11 +2533,16 @@ class ExpensesAndPurchaseController extends Controller
             $var->amount = $valor_sin_formato_amount;
 
             $exento = request('exento');
+
             if($exento == null){
-                $var->exento = false;
+                $exento = 0;
             }else{
-                $var->exento = true;
+                $exento = 1;
             }
+
+            $validation->validateChangeExento($var,$exento);
+            
+            $var->exento = $exento;
 
             $islr = request('islr');
             if($islr == null){
@@ -2549,11 +2553,12 @@ class ExpensesAndPurchaseController extends Controller
         
             $var->save();
 
-            /*$validation = new ExpenseDetailValidationController();
+           
 
-            $var->price = $price_old;
-            $var->amount = $amount_old;
-            $validation->updateMovement($var);*/
+            $var->price_old = $price_old;
+            $var->amount_old = $amount_old;
+
+            $validation->updateMovement($var);
 
             $historial_expense = new HistorialExpenseController();
 
@@ -2773,8 +2778,6 @@ class ExpensesAndPurchaseController extends Controller
         $coin = request('coin_modal');
         
         $detail_old = ExpensesDetail::on(Auth::user()->database_name)->find($id_detail); 
-
-        
         
         if(isset($detail_old) && $detail_old->status == "C"){
             ExpensesDetail::on(Auth::user()->database_name)
@@ -2789,6 +2792,12 @@ class ExpensesAndPurchaseController extends Controller
         }else{
             $detail_old->delete(); 
         }
+
+        $validation = new ExpenseDetailValidationController();
+
+        $validation->deleteMovement($detail_old);
+
+       
 
         $historial_expense = new HistorialExpenseController();
 
