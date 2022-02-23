@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Inventory;
+use App\InventoryHistories;
+use Carbon\Carbon;
 use App\Product;
 use App\Segment;
 use App\Subsegment;
@@ -71,19 +73,12 @@ class ProductController extends Controller
         
             'segment'         =>'required',
             'unit_of_measure_id'         =>'required',
-
-
             'type'         =>'required',
             'description'         =>'required',
-        
             'price'         =>'required',
             'price_buy'         =>'required',
-            'cost_average'         =>'required',
-
-            'money'         =>'required',
+            'money'         =>'required'
         
-            'special_impuesto'         =>'required',
-            
         
         ]);
 
@@ -136,8 +131,9 @@ class ProductController extends Controller
         }
 
         $var->special_impuesto = $valor_sin_formato_special_impuesto;
+        $var->lote= request('lote');
+        $var->date_expirate= request('fecha_vencimiento');
         $var->status =  1;
-    
         $var->save();
 
         $inventory = new Inventory();
@@ -148,9 +144,31 @@ class ProductController extends Controller
         $inventory->code = $var->code_comercial;
         $inventory->amount = 0;
         $inventory->status = 1;
-
         $inventory->save();
 
+        $date = Carbon::now();
+        $date = $date->format('Y-m-d'); 
+
+        /*$inventory_histories = new InventoryHistories();
+        $inventory_histories->setConnection(Auth::user()->database_name);    
+        $inventory_histories->id_product = $var->id;
+        $inventory_histories->id_user = $var->id_user;
+        $inventory_histories->id_branch = 1;
+        $inventory_histories->id_centro_costo = 1;
+        $inventory_histories->id_quotation = 0;
+        $inventory_histories->id_expense = 0;
+        $inventory_histories->date = $date;
+        $inventory_histories->type = 'entrada';
+        $inventory_histories->price = 0;
+        $inventory_histories->amount = 0;
+        $inventory_histories->amount_real = 0;
+        $inventory_histories->status = 'A';
+        $inventory_histories->save(); */
+        
+        $global = new GlobalController; 
+        
+        dd($global->transaction_inv('creado',0,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0));
+        
         return redirect('/products')->withSuccess('Registro Exitoso!');
     }
 

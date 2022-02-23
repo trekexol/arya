@@ -22,7 +22,6 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('unit_of_measure_id')->nullable();
             $table->unsignedBigInteger('id_account')->nullable();
             $table->unsignedBigInteger('id_user');
-
             $table->string('code_comercial',30)->unique();
             $table->string('type',15);
             $table->string('description',150);
