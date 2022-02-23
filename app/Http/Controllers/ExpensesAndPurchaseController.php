@@ -22,8 +22,10 @@ use App\Anticipo;
 use App\Company;
 use App\Http\Controllers\Historial\HistorialExpenseController;
 use App\Http\Controllers\UserAccess\UserAccessController;
+use App\Http\Controllers\Validations\ExpenseDetailValidationController;
 use App\IslrConcept;
 use Illuminate\Support\Facades\Auth;
+
 
 class ExpensesAndPurchaseController extends Controller
 {
@@ -84,7 +86,7 @@ class ExpensesAndPurchaseController extends Controller
        $users_role =   $user->role_id;
        
            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
-           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)->where('status','C')->get();
+           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)->whereIn('status',['C','F'])->get();
 
             $multipayments_detail = null;
             $expenses = null;
@@ -2511,6 +2513,8 @@ class ExpensesAndPurchaseController extends Controller
             $price_old = $var->price;
             $amount_old = $var->amount;
 
+            
+
             $coin = request('coin');
 
             $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
@@ -2544,6 +2548,12 @@ class ExpensesAndPurchaseController extends Controller
             }
         
             $var->save();
+
+            /*$validation = new ExpenseDetailValidationController();
+
+            $var->price = $price_old;
+            $var->amount = $amount_old;
+            $validation->updateMovement($var);*/
 
             $historial_expense = new HistorialExpenseController();
 

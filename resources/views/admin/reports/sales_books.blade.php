@@ -29,7 +29,7 @@
     <tr>
       <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
       </th>
-      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->code_rif ?? ''}} </h4></th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
     </tr> 
   </table>
   <h4 style="color: black; text-align: center">LIBRO DE VENTAS</h4>
@@ -144,6 +144,102 @@
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_with_iva, 2, ',', '.') }}</th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
   </tr> 
+</table>
+<br><br>
+
+ 
+<table ALIGN="right" style="width: 50%;">
+  <tr>
+    <th style="text-align: center; ">Resumen del periodo {{ $date_begin ?? '' }} hasta: {{ $date_end ?? '' }}</th>
+    <th style="text-align: center; "></th>
+    <th style="text-align: center; ">%</th>
+    <th style="text-align: center; "></th>
+    <th style="text-align: center; ">Retenciones</th>
+  </tr> 
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ventas Internas No Gravadas</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Notas de Credito  No Gravadas</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ventas Exportación</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ventas   Internas solo Alicuota General 16%</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ventas  Internas solo Alicuota General mas Adicional </td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ventas  Internas solo Alicuota Reducida</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total de  Ventas y Debitos Fiscales</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Ajustes a los Débitos Fiscales de Períodos Anteriores:</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Notas de Crédito Gravadas Alicuota General 16%</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Notas de Crédito y Debito Gravadas </td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total Ajustes Débitos Fiscales de Períodos Anteriores:</td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
+  <tr>
+    <td style="text-align: right; font-weight: normal;">Total de Ventas y Débitos Fiscales Alicuota General </td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+    <td style="text-align: right; font-weight: normal;"></td>
+  </tr>
 </table>
 
 </body>

@@ -96,7 +96,6 @@ class CalculationWithCController extends Controller
                                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -108,24 +107,45 @@ class CalculationWithCController extends Controller
                                        
                                         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
                                         ->where('accounts.code_four', $account->code_four)
                                         ->where('accounts.code_five', $account->code_five)
                                         ->where('detail_vouchers.status','C')
-                    
-                                        
                                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();   
+
+                                        $total_debe_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                        ->where('accounts.code_one', $account->code_one)
+                                        ->where('accounts.code_two', $account->code_two)
+                                        ->where('accounts.code_three', $account->code_three)
+                                        ->where('accounts.code_four', $account->code_four)
+                                        ->where('accounts.code_five', $account->code_five)
+                                        ->where('detail_vouchers.status','C')
+                                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe/detail_vouchers.tasa) as total'))->first();
+                                        
+                                       
+                                        $total_haber_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                        ->where('accounts.code_one', $account->code_one)
+                                        ->where('accounts.code_two', $account->code_two)
+                                        ->where('accounts.code_three', $account->code_three)
+                                        ->where('accounts.code_four', $account->code_four)
+                                        ->where('accounts.code_five', $account->code_five)
+                                        ->where('detail_vouchers.status','C')
+                                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber/detail_vouchers.tasa) as total'))->first();   
 
                                         
                                         /*---------------------------------------------------*/
 
-                                
+                                       
+                                       
 
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
+                                        $account->dolar_debe = $total_debe_dolar->total;
+                                        $account->dolar_haber = $total_haber_dolar->total;
 
                                         
                                     }
@@ -138,7 +158,6 @@ class CalculationWithCController extends Controller
                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -150,7 +169,6 @@ class CalculationWithCController extends Controller
             
                                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -167,13 +185,32 @@ class CalculationWithCController extends Controller
                                                                 ->where('accounts.code_four', $account->code_four)
                                                                 ->sum('balance_previus');   
                                             /*---------------------------------------------------*/
-
+                                            $total_debe_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                            ->where('accounts.code_one', $account->code_one)
+                                            ->where('accounts.code_two', $account->code_two)
+                                            ->where('accounts.code_three', $account->code_three)
+                                            ->where('accounts.code_four', $account->code_four)
+                                            ->where('detail_vouchers.status','C')
+                                            ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe/detail_vouchers.tasa) as total'))->first();
+                                            
+                                           
+                                            $total_haber_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                            ->where('accounts.code_one', $account->code_one)
+                                            ->where('accounts.code_two', $account->code_two)
+                                            ->where('accounts.code_three', $account->code_three)
+                                            ->where('accounts.code_four', $account->code_four)
+                                            ->where('detail_vouchers.status','C')
+                                            ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber/detail_vouchers.tasa) as total'))->first();   
                                 
 
                                             $account->debe = $total_debe->total;
                                             $account->haber = $total_haber->total;
                                             $account->balance_previus = $total_balance;
 
+                                            $account->dolar_debe = $total_debe_dolar->total;
+                                            $account->dolar_haber = $total_haber_dolar->total;
                                         }
                                     }                          
 
@@ -186,7 +223,6 @@ class CalculationWithCController extends Controller
                                     /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */ 
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -197,7 +233,6 @@ class CalculationWithCController extends Controller
                 
                                         $total_haber =  DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -211,13 +246,30 @@ class CalculationWithCController extends Controller
                                                         ->where('accounts.code_three', $account->code_three)
                                                         ->sum('balance_previus');   
                                     /*---------------------------------------------------*/                               
-            
+                                    $total_debe_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                    ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                    ->where('accounts.code_one', $account->code_one)
+                                    ->where('accounts.code_two', $account->code_two)
+                                    ->where('accounts.code_three', $account->code_three)
+                                    ->where('detail_vouchers.status','C')
+                                    ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe/detail_vouchers.tasa) as total'))->first();
+                                    
+                                   
+                                    $total_haber_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                    ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                    ->where('accounts.code_one', $account->code_one)
+                                    ->where('accounts.code_two', $account->code_two)
+                                    ->where('accounts.code_three', $account->code_three)
+                                    ->where('detail_vouchers.status','C')
+                                    ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber/detail_vouchers.tasa) as total'))->first();   
                                     
             
                                     $account->debe = $total_debe->total;
                                     $account->haber = $total_haber->total;      
                                     $account->balance_previus = $total_balance;
                                 
+                                    $account->dolar_debe = $total_debe_dolar->total;
+                                    $account->dolar_haber = $total_haber_dolar->total;
                                 }
                                 }
                 }else{
@@ -228,7 +280,6 @@ class CalculationWithCController extends Controller
                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                   
                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -238,7 +289,6 @@ class CalculationWithCController extends Controller
                         
                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -249,11 +299,29 @@ class CalculationWithCController extends Controller
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->sum('balance_previus'); 
+
                         /*---------------------------------------------------*/
+                        $total_debe_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                        ->where('accounts.code_one', $account->code_one)
+                                        ->where('accounts.code_two', $account->code_two)
+                                        ->where('detail_vouchers.status','C')
+                                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe/detail_vouchers.tasa) as total'))->first();
+                                        
+                                       
+                        $total_haber_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                                        ->where('accounts.code_one', $account->code_one)
+                                        ->where('accounts.code_two', $account->code_two)
+                                        ->where('detail_vouchers.status','C')
+                                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber/detail_vouchers.tasa) as total'))->first();   
                         
                         $account->debe = $total_debe->total;
                         $account->haber = $total_haber->total;
                         $account->balance_previus = $total_balance;
+                        
+                        $account->dolar_debe = $total_debe_dolar->total;
+                        $account->dolar_haber = $total_haber_dolar->total;
                     }                                       
                 }
             }else{
@@ -266,7 +334,6 @@ class CalculationWithCController extends Controller
             }else{
                 $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             
@@ -276,7 +343,6 @@ class CalculationWithCController extends Controller
 
                 $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             
@@ -285,11 +351,26 @@ class CalculationWithCController extends Controller
                                             ->where('accounts.code_one', $account->code_one)
                                             ->sum('balance_previus'); 
                 /*---------------------------------------------------*/
+                $total_debe_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                ->where('accounts.code_one', $account->code_one)
+                ->where('detail_vouchers.status','C')
+                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe/detail_vouchers.tasa) as total'))->first();
+                
+               
+                $total_haber_dolar = DB::connection(Auth::user()->database_name)->table('accounts')
+                ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
+                ->where('accounts.code_one', $account->code_one)
+                ->where('detail_vouchers.status','C')
+                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber/detail_vouchers.tasa) as total'))->first();
                                            
 
                 $account->debe = $total_debe->total;
                 $account->haber = $total_haber->total;           
                 $account->balance_previus = $total_balance;
+                
+                $account->dolar_debe = $total_debe_dolar->total;
+                $account->dolar_haber = $total_haber_dolar->total;
                 
             }
             }
@@ -331,7 +412,6 @@ class CalculationWithCController extends Controller
                                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -345,7 +425,6 @@ class CalculationWithCController extends Controller
 
                                         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -375,7 +454,6 @@ class CalculationWithCController extends Controller
                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -386,7 +464,6 @@ class CalculationWithCController extends Controller
             
                                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -421,7 +498,6 @@ class CalculationWithCController extends Controller
                                     /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */ 
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -431,7 +507,6 @@ class CalculationWithCController extends Controller
                 
                                         $total_haber =  DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -462,7 +537,6 @@ class CalculationWithCController extends Controller
                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                   
                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -472,7 +546,6 @@ class CalculationWithCController extends Controller
                         
                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -500,7 +573,6 @@ class CalculationWithCController extends Controller
             }else{
                 $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             
@@ -508,7 +580,6 @@ class CalculationWithCController extends Controller
 
                 $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             
@@ -560,7 +631,6 @@ class CalculationWithCController extends Controller
                                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -573,7 +643,6 @@ class CalculationWithCController extends Controller
 
                                         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -606,7 +675,6 @@ class CalculationWithCController extends Controller
                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -616,7 +684,6 @@ class CalculationWithCController extends Controller
             
                                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -650,7 +717,6 @@ class CalculationWithCController extends Controller
                                     /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */ 
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -659,7 +725,6 @@ class CalculationWithCController extends Controller
                 
                                         $total_haber =  DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -689,7 +754,6 @@ class CalculationWithCController extends Controller
                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                   
                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -698,7 +762,6 @@ class CalculationWithCController extends Controller
                         
                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -725,7 +788,6 @@ class CalculationWithCController extends Controller
             }else{
                 $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(debe) as total'))->first();
@@ -734,7 +796,6 @@ class CalculationWithCController extends Controller
 
                 $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();
@@ -784,7 +845,6 @@ class CalculationWithCController extends Controller
                                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -797,7 +857,6 @@ class CalculationWithCController extends Controller
 
                                         $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
                                         ->where('accounts.code_two', $account->code_two)
                                         ->where('accounts.code_three', $account->code_three)
@@ -831,7 +890,6 @@ class CalculationWithCController extends Controller
                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -841,7 +899,6 @@ class CalculationWithCController extends Controller
             
                                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                 ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                                 ->where('accounts.code_one', $account->code_one)
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
@@ -875,7 +932,6 @@ class CalculationWithCController extends Controller
                                     /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */ 
                                         $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -884,7 +940,6 @@ class CalculationWithCController extends Controller
                 
                                         $total_haber =  DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
@@ -914,7 +969,6 @@ class CalculationWithCController extends Controller
                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                   
                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -923,7 +977,6 @@ class CalculationWithCController extends Controller
                         
                             $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
                                                             ->where('detail_vouchers.status','C')
@@ -950,14 +1003,12 @@ class CalculationWithCController extends Controller
             }else{
                 $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as total'))->first();
 
                 $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
                                             ->where('detail_vouchers.status','C')
                                             ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as total'))->first();
@@ -1082,7 +1133,7 @@ class CalculationWithCController extends Controller
          $var->debe = $total_debe->total;
          $var->haber = $total_haber->total;    
          //asi cuadra el balance
-         $var->balance_previus = 0;   
+         //$var->balance_previus = 0;   
   
           return $var;
   
@@ -1174,7 +1225,7 @@ class CalculationWithCController extends Controller
          $var->debe = $total_debe->total;
          $var->haber = $total_haber->total;    
          //asi cuadra el balance
-         $var->balance_previus = 0;   
+        //$var->balance_previus = 0;   
   
           return $var;
   
