@@ -860,6 +860,11 @@ Route::group(["prefix"=>'reports'],function(){
     Route::post('storeaccounts_receivable_note','ReportDeliveryNoteController@store_accounts_receivable_note')->name('reports.store_accounts_receivable_note'); // dacson (report note delivery)
     Route::get('accounts_receivable_note_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryNoteController@accounts_receivable_note_pdf')->name('reports.accounts_receivable_note_pdf');
 
+    Route::get('accounts_receivable_note_det/{typepersone}/{id_client_or_vendor?}','ReportDeliveryNoteController@index_accounts_receivable_note_det')->name('reports.accounts_receivable_note_det'); // dacson (report note delivery)
+    Route::post('storeaccounts_receivable_note_det','ReportDeliveryNoteController@store_accounts_receivable_note_det')->name('reports.store_accounts_receivable_note_det'); // dacson (report note delivery)
+    Route::get('accounts_receivable_note_det_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryNoteController@accounts_receivable_note_det_pdf')->name('reports.accounts_receivable_note_det_pdf');
+
+
 });
 
 
