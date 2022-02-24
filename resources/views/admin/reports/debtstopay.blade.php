@@ -27,7 +27,7 @@
 <body>
 
   <br>
-  <h2 style="color: black; text-align: center">CUENTAS POR PAGAR</h2>
+  <h2 style="color: black; text-align: center">CUENTAS POR PAGAR II</h2>
   <br>
   <h2 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h2>
    
@@ -40,6 +40,7 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; ">Fecha</th>
+    <th style="text-align: center; ">ID</th>
     <th style="text-align: center; ">N° Factura</th>
     <th style="text-align: center; ">Razon Rocial</th>
     <th style="text-align: center; ">N° Serie</th>
@@ -63,6 +64,7 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $expense->date ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->id ?? ''}}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $expense->invoice ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->name_provider ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->serie ?? ''}}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_with_iva ?? 0), 2, ',', '.') }}</th>
@@ -72,6 +74,7 @@
   @endforeach 
   @endif
   <tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>

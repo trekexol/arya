@@ -469,8 +469,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.amount','<>',null)
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
                                     ->where('expenses_and_purchases.id_provider',$id_provider)
-                                    ->select('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                                    ->groupBy('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -480,8 +480,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.amount','<>',null)
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
                                     ->where('expenses_and_purchases.id_provider',$id_provider)
-                                    ->select('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
-                                    ->groupBy('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->get();
             }
            
@@ -493,8 +493,8 @@ class Report2Controller extends Controller
                                     ->whereIn('expenses_and_purchases.status',[1,'P'])
                                     ->where('expenses_and_purchases.amount','<>',null)
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
-                                    ->select('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                                    ->groupBy('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -503,8 +503,8 @@ class Report2Controller extends Controller
                                     ->whereIn('expenses_and_purchases.status',[1,'P'])
                                     ->where('expenses_and_purchases.amount','<>',null)
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
-                                    ->select('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
-                                    ->groupBy('expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->get();
             }
         }

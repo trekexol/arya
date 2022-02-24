@@ -157,10 +157,10 @@
               <th style="text-align: center; font-weight: normal;">{{$name_product->description ?? ''}}</th>
               <th style="text-align: center; font-weight: normal;">{{$quotations_products->amount ?? ''}}</th>
               @if(isset($coin) && $coin == 'bolivares'){
-              <th style="text-align: right; font-weight: normal;">{{number_format(($quotations_products->price ?? 0), 2, ',', '.')}}</th>
+              <th style="text-align: right; font-weight: normal;">{{number_format(($quotations_products->amount * $quotations_products->price ?? 0), 2, ',', '.')}}</th>
               @endif
               @if(isset($coin) && $coin == 'dolares'){
-              <th style="text-align: right; font-weight: normal;">${{ number_format(($quotations_products->price/$quotations_products->rate ?? 0), 2, ',', '.')}}</th>
+              <th style="text-align: right; font-weight: normal;">${{ number_format((($quotations_products->amount * $quotations_products->price)/$quotations_products->rate ?? 0), 2, ',', '.')}}</th>
               @endif  
               <th style="text-align: center; font-weight: normal;"></th>
               <th style="text-align: center; font-weight: normal;"></th>
