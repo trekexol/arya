@@ -149,8 +149,8 @@
           
             <tr>
               <th style="text-align: center; font-weight: normal;"></th>
-              <th style="text-align: center; font-weight: normal;"></th>
-              <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->number_delivery_note}}</th>
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice}}</th>
               <th style="text-align: center; font-weight: normal;"></th>
               <th style="text-align: center; font-weight: normal;"></th>
               <th style="text-align: center; font-weight: normal;">{{$name_product->code_comercial ?? ''}}</th>
