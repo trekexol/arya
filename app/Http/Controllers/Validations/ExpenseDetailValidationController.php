@@ -5,208 +5,173 @@ namespace App\Http\Controllers\Validations;
 use App\DetailVoucher;
 use App\ExpensesAndPurchase;
 use App\ExpensesDetail;
+use App\HeaderVoucher;
 use App\Http\Controllers\Controller;
+use App\Permission\Models\Account;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ExpenseDetailValidationController extends Controller
 {
-    public function updateMovement($expense_detail){
 
-        
-        $amount_old = $expense_detail->price_old * $expense_detail->amount_old;
 
-        $amount_new = $expense_detail->price * $expense_detail->amount;
-        
-        $difference_cuentas_por_pagar = 0;
-        $difference_amount = 0;
+    public function calculateExpenseModify($id_expense){
 
-        if($expense_detail->exento == false){
+        if(isset($id_expense)){
+            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+
+            $this->deleteExpenseMovements($expense);
             
-            $movement = $this->checkMovement($expense_detail,$amount_old);
-            $movement_iva = $this->checkMovementIva($expense_detail);
+            $this->updateExpenseTotal($expense);
+
+            $this->updateExpenseMovements($expense);
             
         }else{
-            $movement = $this->checkMovement($expense_detail,$amount_old);
-            $movement_iva = null;
-        }
+            return redirect('/expensesandpurchases')->withDanger('El Pago no existe');
+        } 
 
-       
-        if(isset($movement)){
-            
-            $detail = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement->id);
-            $difference_cuentas_por_pagar = $amount_new - $detail->debe;
-            $difference_amount = $amount_new - $detail->debe;
-            $detail->debe = $amount_new;
-            $detail->save();
-        }
-        
-        if(isset($movement_iva)){
-          
-            $amount_iva_old = bcdiv(($amount_old * $expense_detail->expenses['iva_percentage']) / 100, '1', 2);
-
-            $amount_iva_new = bcdiv(($amount_new * $expense_detail->expenses['iva_percentage']) / 100, '1', 2);
-          
-            $detail_iva = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement_iva->id);
-
-            $amount_iva_debe_new = $detail_iva->debe - $amount_iva_old + $amount_iva_new;
-
-            $difference_cuentas_por_pagar += $amount_iva_debe_new - $detail_iva->debe;
-
-            $detail_iva->debe = $amount_iva_debe_new;
-
-            $detail_iva->save();
-
-        }
-
-        if($difference_cuentas_por_pagar != 0){
-            $movement_cuentas_por_pagar = $this->checkMovementCuentaPorPagar($expense_detail);
-
-            $detail_cuentas_por_pagar = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement_cuentas_por_pagar->id);
-
-            $detail_cuentas_por_pagar->haber += $difference_cuentas_por_pagar;
-
-            $detail_cuentas_por_pagar->save();
-
-            $this->updateAmountExpense($expense_detail,$difference_amount,$amount_iva_debe_new);
-        }
-
-        
     }
 
-    public function deleteMovement($expense_detail){
+    public function updateExpenseTotal($expense){
 
-        $amount = $expense_detail->price * $expense_detail->amount;
+        $expense_details = DB::connection(Auth::user()->database_name)->table('expenses_details')
+                    ->where('id_expense',$expense->id)
+                    ->get();
 
-        $difference_cuentas_por_pagar = 0;
-
-        if($expense_detail->exento == false){
-            
-            $movement = $this->checkMovement($expense_detail,$amount);
-            $movement_iva = $this->checkMovementIva($expense_detail);
-            
-        }else{
-            $movement = $this->checkMovement($expense_detail,$amount);
-            $movement_iva = null;
-        }
-
-        if(isset($movement)){
-            
-            $detail = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement->id);
-            $difference_cuentas_por_pagar -= $amount;
-            $detail->delete();
-        }
+        $total= 0;
+        $base_imponible= 0;
         
-        if(isset($movement_iva)){
-          
-            $amount_iva_old = bcdiv(($amount * $expense_detail->expenses['iva_percentage']) / 100, '1', 2);
-          
-            $detail_iva = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement_iva->id);
+        $retiene_iva = 0;
 
-            $amount_iva_debe_new = $detail_iva->debe - $amount_iva_old;
+        $total_retiene_iva = 0;
+        $total_retiene_islr = 0;
 
-            $difference_cuentas_por_pagar += $amount_iva_debe_new - $detail_iva->debe;
+        foreach($expense_details as $var)
+        {
+            $total += ($var->price * $var->amount);
+            
+            if($var->exento == 0){
+                $base_imponible += ($var->price * $var->amount); 
+            }
 
-            $detail_iva->debe = $amount_iva_debe_new;
-            if($detail_iva->debe == 0){
-                $detail_iva->delete();
-            }else{
-                $detail_iva->save();
+            if($var->islr == 1){
+                $total_retiene_islr += ($var->price * $var->amount); 
             }
         }
 
-        if($difference_cuentas_por_pagar != 0){
-            $movement_cuentas_por_pagar = $this->checkMovementCuentaPorPagar($expense_detail);
+        $expense->base_imponible = $base_imponible;
+        $expense->amount = $total;
+        $expense->amount_iva = ($base_imponible * $expense->iva_percentage) /100;
+        $expense->amount_with_iva =  $expense->amount + $expense->amount_iva;
 
-            $detail_cuentas_por_pagar = DetailVoucher::on(Auth::user()->database_name)->findOrFail($movement_cuentas_por_pagar->id);
+        //$expense->retencion_islr = 
+        $expense->save();
+
+    }
+    public function updateExpenseMovements($expense){
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d'); 
+
+        $bcv = $expense->rate;
+
+        $user       =   auth()->user();
+        
+        $header_voucher  = new HeaderVoucher();
+        $header_voucher->setConnection(Auth::user()->database_name);
+
+
+        $header_voucher->description = "Compras de Bienes o servicios.";
+        $header_voucher->date = $date_payment ?? $datenow;
+        
+    
+        $header_voucher->status =  "1";
+    
+        $header_voucher->save();
+    
+        $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+        
+        foreach($expense_details as $var){
+            $account = Account::on(Auth::user()->database_name)->find($var->id_account);
             
-            $detail_cuentas_por_pagar->haber += $difference_cuentas_por_pagar;
-
-            if($detail_cuentas_por_pagar->haber == 0){
-                $detail_cuentas_por_pagar->delete();
-            }else{
-                $detail_cuentas_por_pagar->save();
+            if(isset($account)){
+                $this->add_movement($bcv,$header_voucher->id,$account->id,$expense->id,$user->id,$var->price * $var->amount,0);
             }
-            $this->updateAmountExpense($expense_detail,$amount*-1,$amount_iva_debe_new);
+        }
+
+        //Credito Fiscal IVA por Pagar
+
+        $account_credito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA (Credito Fiscal)')->first();
+            
+        if(isset($account_credito_iva_fiscal)){
+            if($expense->amount_iva != 0){
+                $this->add_movement($bcv,$header_voucher->id,$account_credito_iva_fiscal->id,$expense->id,$user->id,$expense->amount_iva,0);
+            }
+        }
+
+        //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
+        $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
+        
+        if(isset($account_cuentas_por_pagar_proveedores)){
+            if($expense->amount_with_iva != 0){
+                $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user->id,0,$expense->amount_with_iva);
+            }
         }
     }
 
-    public function checkMovement($expense_detail,$amount){
-
-        $movement = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                    ->where('id_expense',$expense_detail->id_expense)
-                    ->where('debe',$amount)
-                    ->first();
-
-        return $movement;
-    }
-
-    public function checkMovementIva($expense_detail){
-       
-        $movement = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-        ->where('id_expense',$expense_detail->id_expense)
-        ->where('id_account',70)
-        ->first();
-
-        return $movement;
-    }
-
-    public function checkMovementCuentaPorPagar($expense_detail){
-       
-        $movement = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-        ->where('id_expense',$expense_detail->id_expense)
-        ->where('id_account',174)
-        ->first();
-
-        return $movement;
-    }
-
-    public function updateAmountExpense($expense_detail,$amount,$amount_iva){
-
-        $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($expense_detail->id_expense);
+    public function deleteExpenseMovements($expense){
 
         if(isset($expense)){
-            if($expense_detail->exento == false){
-                $expense->base_imponible += $amount;
-            }
-            $expense->amount += $amount;
-            $expense->amount_iva = $amount_iva;
-            $expense->amount_with_iva = $expense->amount + $expense->amount_iva;
+            $detail = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->where('id_expense',$expense->id)
+            ->first();
     
-            $expense->save();
-        }
-    }
-
-
-    public function validateChangeExento($expense_detail,$new_exento){
-        
-       
-        if($expense_detail->exento != $new_exento){
-           
-            if($expense_detail->expenses['status'] == 'P'){
-                $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($expense_detail->id_expense);
+            DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
+            ->where('id_expense',$expense->id)
+            ->delete();
     
-                if($new_exento == 1){
-                    $expense->base_imponible -= $expense_detail->price * $expense_detail->amount;
-                }else{
-                    $expense->base_imponible += $expense_detail->price * $expense_detail->amount;
-                }
-                $expense->save();
-                return;
+            if(isset($detail)){
+                DB::connection(Auth::user()->database_name)->table('header_vouchers')
+                ->where('id',$detail->id_header_voucher)
+                ->delete();
             }
         }
-        return;
     }
 
-    public function validateDeleteExento($expense_detail){
+    public function add_movement($bcv,$id_header,$id_account,$id_expense,$id_user,$debe,$haber)
+    {
 
-        if($expense_detail->exento == 0){
-            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($expense_detail->id_expense);
+        $detail = new DetailVoucher();
+        $detail->setConnection(Auth::user()->database_name);
+
+        $detail->id_account = $id_account;
+        $detail->id_header_voucher = $id_header;
+        $detail->user_id = $id_user;
+        $detail->tasa = $bcv;
+        $detail->id_expense = $id_expense;
+
+        $detail->debe = $debe;
+        $detail->haber = $haber;
+    
+    
+        $detail->status =  "C";
+
+        /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
         
-            $expense->base_imponible -= $expense_detail->price * $expense_detail->amount;
-                
-            $expense->save();
-        }
+            $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+            if($account->status != "M"){
+                $account->status = "M";
+                $account->save();
+            }
+        
+
+        $detail->save();
+
     }
+
+
 }

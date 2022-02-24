@@ -828,6 +828,12 @@ class ExpensesAndPurchaseController extends Controller
     
         $var->save();
 
+        $validation = new ExpenseDetailValidationController();
+
+        if($var->expenses['status'] == 'P'){
+            $validation->calculateExpenseModify($var->id_expense);
+        }
+
         $historial_expense = new HistorialExpenseController();
 
         $historial_expense->registerAction($var,"expense_product","Registró un Producto o Servicio");
@@ -2540,7 +2546,6 @@ class ExpensesAndPurchaseController extends Controller
                 $exento = 1;
             }
 
-            $validation->validateChangeExento($var,$exento);
             
             $var->exento = $exento;
 
@@ -2552,19 +2557,16 @@ class ExpensesAndPurchaseController extends Controller
             }
         
             $var->save();
-
            
-
-            $var->price_old = $price_old;
-            $var->amount_old = $amount_old;
-
-            $validation->updateMovement($var);
-
-            $historial_expense = new HistorialExpenseController();
+            if($var->expenses['status'] == 'P'){
+                $validation->calculateExpenseModify($var->id_expense);
+            }
+            
+            /*$historial_expense = new HistorialExpenseController();
 
             $historial_expense->registerAction($var,"expense_product","Actualizó el Producto: ".$var->inventories['code']."/ 
             Precio Viejo: ".number_format($price_old, 2, ',', '.')." Cantidad: ".$amount_old."/ Precio Nuevo: ".number_format($var->price, 2, ',', '.')." Cantidad: ".$var->amount);
-        
+        */
             return redirect('/expensesandpurchases/register/'.$var->id_expense.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
         }
@@ -2795,9 +2797,9 @@ class ExpensesAndPurchaseController extends Controller
 
         $validation = new ExpenseDetailValidationController();
 
-        $validation->deleteMovement($detail_old);
-
-       
+        if($detail_old->expenses['status'] == 'P'){
+            $validation->calculateExpenseModify($detail_old->id_expense);
+        }
 
         $historial_expense = new HistorialExpenseController();
 
