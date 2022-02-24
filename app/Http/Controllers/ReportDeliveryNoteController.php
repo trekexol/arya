@@ -1488,6 +1488,24 @@ class ReportDeliveryNoteController extends Controller
         return view('admin.reports.selectvendor_note',compact('typepersone','vendors'));
     }
 
+
+    public function select_client_note_det()
+    {
+
+        $clients    = Client::on(Auth::user()->database_name)->get();
+        $typepersone = 'cliente';
+        return view('admin.reports.selectclient_note_det',compact('typepersone','clients'));
+    }
+
+    
+    public function select_vendor_note_det()
+    {
+        $vendors    = Vendor::on(Auth::user()->database_name)->get();
+        $typepersone = 'vendor';
+        return view('admin.reports.selectvendor_note_det',compact('typepersone','vendors'));
+    }
+
+
     public function search_bcv()
     {
         /*Buscar el indice bcv*/
