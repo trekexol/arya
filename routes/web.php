@@ -798,6 +798,9 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('select_client_note','ReportDeliveryNoteController@select_client_note')->name('reports.select_client_note'); //dacson nota de entrega
     Route::get('select_vendor_note','ReportDeliveryNoteController@select_vendor_note')->name('reports.select_vendor_note'); // dacson nota de entrega 
 
+    Route::get('select_client_note_det','ReportDeliveryNoteController@select_client_note_det')->name('reports.select_client_note_det'); //dacson nota de entrega
+    Route::get('select_vendor_note_det','ReportDeliveryNoteController@select_vendor_note_det')->name('reports.select_vendor_note_det'); // dacson nota de entrega 
+
     Route::get('debtstopay/{id_provider?}','Report2Controller@index_debtstopay')->name('reports.debtstopay');
     Route::post('storedebtstopay','Report2Controller@store_debtstopay')->name('reports.store_debtstopay');
     Route::get('debtstopaypdf/{coin}/{date_end}/{id_provider?}','Report2Controller@debtstopay_pdf')->name('reports.debtstopay_pdf');

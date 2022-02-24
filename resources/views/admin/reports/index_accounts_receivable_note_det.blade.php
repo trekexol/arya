@@ -164,14 +164,14 @@
         $("#vendor_label2").html('');
         $("#client_label2").show();
         $("#client_label3").show();
-        document.getElementById("route_select").href = "{{ route('reports.select_client_note') }}";
+        document.getElementById("route_select").href = "{{ route('reports.select_client_note_det') }}";
     }else if(vendor != 0){
         
         $("#client_label1").show();
         $("#client_label1").html('Vendedor:');
         $("#client_label2").show();
         $("#client_label3").show();
-        document.getElementById("route_select").href = "{{ route('reports.select_vendor_note') }}";
+        document.getElementById("route_select").href = "{{ route('reports.select_vendor_note_det') }}";
     }else{
         $("#client_label2").html('');
         $("#client_label2").val('');
@@ -204,7 +204,7 @@
                 $("#client_label1").html('Vendedor:');
                 $("#client_label2").show();
                 $("#client_label3").show();
-                document.getElementById("route_select").href = "{{ route('reports.select_vendor_note') }}";
+                document.getElementById("route_select").href = "{{ route('reports.select_vendor_note_det') }}";
             }
             
             if(type == 'cliente'){
@@ -215,7 +215,7 @@
                 $("#client_label1").html('Cliente:');
                 $("#client_label2").show();
                 $("#client_label3").show();
-                document.getElementById("route_select").href = "{{ route('reports.select_client_note') }}";
+                document.getElementById("route_select").href = "{{ route('reports.select_client_note_det') }}";
             }
         });
 
