@@ -196,15 +196,18 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-md-2">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="customSwitches">
-                                    <label class="custom-control-label" for="customSwitches">Tiene Crédito</label>
-                                  </div>
-                            </div>
-                            <div class="col-md-2">
-                                <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias de Crédito" autocomplete="credit"> 
-                            </div>
+                            @if ($expense->status != 'P')
+                                <div class="col-md-2">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitches">
+                                        <label class="custom-control-label" for="customSwitches">Tiene Crédito</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias de Crédito" autocomplete="credit"> 
+                                </div>
+                            @endif
+                            
                         </div>
                         <br>
                         <div class="form-group row" id="formenviarcredito">
