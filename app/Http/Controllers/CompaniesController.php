@@ -79,6 +79,9 @@ class CompaniesController extends Controller
         $razon_social           = strtoupper(request('Razon_Social'));
         $email                  = strtoupper(request('Email'));
         $direccion              = strtoupper(request('Direccion'));
+        
+        $franqueo_postal = '';
+        $franqueo_postal = request('Franqueo_Postal');
 
         $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
         
@@ -91,7 +94,7 @@ class CompaniesController extends Controller
         $companies->code_rif        = request('Codigo');
         $companies->razon_social    = $razon_social;
         $companies->phone           = request('phone');
-        $companies->franqueo_postal = request('Franqueo_Postal');
+        $companies->franqueo_postal = $franqueo_postal;
         $companies->address         = $direccion;
         $companies->tax_1           = str_replace(',', '.', str_replace('.', '', request('Impuesto')));
 
