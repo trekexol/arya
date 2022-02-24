@@ -175,7 +175,7 @@ class InvoiceController extends Controller
             
             $count ++;
         }
-
+        
         $company = Company::on(Auth::user()->database_name)->find(1);
         //Si la taza es automatica
         if($company->tiporate_id == 1){
@@ -185,6 +185,7 @@ class InvoiceController extends Controller
             //si la tasa es fija
             $bcv = $company->rate;
         }
+        
 
         
         $total_facturas->anticipo = $anticipos_sum_bolivares + ($anticipos_sum_dolares * $bcv);
@@ -1573,7 +1574,7 @@ class InvoiceController extends Controller
     public function search_bcv()
     {
         /*Buscar el indice bcv*/
-        $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
+        $urlToGet ='http://www.bcv.org.ve/bcv/contactos';
         $pageDocument = @file_get_contents($urlToGet);
         preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
 
