@@ -46,9 +46,11 @@ class DirectChargeOrderController extends Controller
 
             /*Revisa si la tasa de la empresa es automatica o fija*/
             $company = Company::on(Auth::user()->database_name)->find(1);
+            $global = new GlobalController();
+            
             //Si la taza es automatica
             if($company->tiporate_id == 1){
-                $bcv = $this->search_bcv();
+                $bcv = $global->search_bcv();
             }else{
                 //si la tasa es fija
                 $bcv = $company->rate;

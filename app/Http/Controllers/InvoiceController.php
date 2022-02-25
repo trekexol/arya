@@ -177,10 +177,12 @@ class InvoiceController extends Controller
         }
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
             //esto es para que siempre se pueda guardar la tasa en la base de datos
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -277,9 +279,11 @@ class InvoiceController extends Controller
         $coin = 'bolivares';
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+        
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;

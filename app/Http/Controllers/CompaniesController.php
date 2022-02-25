@@ -239,8 +239,9 @@ class CompaniesController extends Controller
         //validar si la peticion es asincrona
         if($request->ajax()){
             try{
+                $global = new GlobalController();
                 
-                $respuesta = $this->search_bcv();
+                $respuesta = $global->search_bcv();
                 $respuesta = number_format($respuesta, 2, ',', '.');
                 
                 return response()->json($respuesta,200);
