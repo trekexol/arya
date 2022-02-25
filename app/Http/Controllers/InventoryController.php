@@ -294,9 +294,11 @@ class InventoryController extends Controller
 
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -317,9 +319,11 @@ class InventoryController extends Controller
    {
         $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+        
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;

@@ -30,6 +30,7 @@ class CreateCompaniesTable extends Migration
             $table->unsignedBigInteger('tipoinv_id');
             $table->unsignedBigInteger('tiporate_id');
             $table->decimal('rate',64,2);
+            $table->decimal('rate_bcv',64,2)->default(0);
             $table->decimal('rate_petro',64,2);
             $table->string('foto_company',255)->nullable();
             $table->string('pie_pagina',20)->nullable();

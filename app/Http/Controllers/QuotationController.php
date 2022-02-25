@@ -164,12 +164,13 @@ class QuotationController extends Controller
                 $datenow = $date->format('Y-m-d');  
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
 
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     //esto es para que siempre se pueda guardar la tasa en la base de datos
-                    $bcv_quotation_product = $this->search_bcv();
-                    $bcv = $this->search_bcv();
+                    $bcv_quotation_product = $global->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv_quotation_product = $company->rate;
@@ -252,9 +253,10 @@ class QuotationController extends Controller
                     
                     /*Revisa si la tasa de la empresa es automatica o fija*/
                     $company = Company::on(Auth::user()->database_name)->find(1);
+                    $global = new GlobalController();
                     //Si la taza es automatica
                     if($company->tiporate_id == 1){
-                        $bcv_quotation_product = $this->search_bcv();
+                        $bcv_quotation_product = $global->search_bcv();
                     }else{
                         //si la tasa es fija
                         $bcv_quotation_product = $company->rate;
@@ -264,7 +266,7 @@ class QuotationController extends Controller
                     if(($coin == 'bolivares')){
                         
                         if($company->tiporate_id == 1){
-                            $bcv = $this->search_bcv();
+                            $bcv = $global->search_bcv();
                         }else{
                             //si la tasa es fija
                             $bcv = $company->rate;
@@ -336,9 +338,11 @@ class QuotationController extends Controller
         $bcv_quotation_product = $quotation->bcv;
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -457,9 +461,11 @@ class QuotationController extends Controller
                 $var->note = request('note');
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
+
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;
@@ -606,9 +612,11 @@ class QuotationController extends Controller
                 $inventory= Inventory::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
+                
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;

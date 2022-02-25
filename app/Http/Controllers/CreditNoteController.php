@@ -123,12 +123,13 @@ class CreditNoteController extends Controller
                 $datenow = $date->format('Y-m-d');  
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
 
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     //esto es para que siempre se pueda guardar la tasa en la base de datos
-                    $bcv_creditnote_product = $this->search_bcv();
-                    $bcv = $this->search_bcv();
+                    $bcv_creditnote_product = $global->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv_creditnote_product = $company->rate;
@@ -206,9 +207,10 @@ class CreditNoteController extends Controller
                     
                     /*Revisa si la tasa de la empresa es automatica o fija*/
                     $company = Company::on(Auth::user()->database_name)->find(1);
+                    $global = new GlobalController();
                     //Si la taza es automatica
                     if($company->tiporate_id == 1){
-                        $bcv_creditnote_product = $this->search_bcv();
+                        $bcv_creditnote_product = $global->search_bcv();
                     }else{
                         //si la tasa es fija
                         $bcv_creditnote_product = $company->rate;
@@ -217,7 +219,7 @@ class CreditNoteController extends Controller
                     if(($coin == 'bolivares')){
                         
                         if($company->tiporate_id == 1){
-                            $bcv = $this->search_bcv();
+                            $bcv = $global->search_bcv();
                         }else{
                             //si la tasa es fija
                             $bcv = $company->rate;
@@ -263,9 +265,10 @@ class CreditNoteController extends Controller
         $rate = $creditnote->rate;
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -385,9 +388,11 @@ class CreditNoteController extends Controller
                 $var->observation = request('observation');
                
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
+
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;
@@ -507,9 +512,11 @@ class CreditNoteController extends Controller
                 $inventory= Inventory::on(Auth::user()->database_name)->find($creditnote_product->id_inventory);
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
+                
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;

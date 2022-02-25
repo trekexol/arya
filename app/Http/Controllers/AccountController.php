@@ -256,9 +256,11 @@ class AccountController extends Controller
         $datenow = $date->format('Y');
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $rate = $this->search_bcv();
+            $rate = $global->search_bcv();
         }else{
             //si la tasa es fija
             $rate = $company->rate;
@@ -332,9 +334,10 @@ class AccountController extends Controller
                 $datenow = $date->format('Y');
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $rate = $this->search_bcv();
+                    $rate = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $rate = $company->rate;
@@ -504,9 +507,10 @@ class AccountController extends Controller
         $var = Account::on(Auth::user()->database_name)->find($id);
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $rate = $this->search_bcv();
+            $rate = $global->search_bcv();
         }else{
             //si la tasa es fija
             $rate = $company->rate;

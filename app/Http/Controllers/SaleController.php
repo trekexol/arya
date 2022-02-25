@@ -33,7 +33,7 @@ class SaleController extends Controller
                                 ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'),'products.type','products.price as price','inventories.code','products.money as money')
                                 ->groupBy('products.description','products.type','products.price','inventories.code','products.money')
                                 ->get(); 
-            //$bcv = $this->search_bcv();   
+            //$bcv = $global->search_bcv();   
             
             $bcv = null;
 

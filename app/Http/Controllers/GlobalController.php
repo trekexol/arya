@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Anticipo;
 use App\ComboProduct;
+use App\Company;
 use App\ExpensePayment;
 use App\ExpensesDetail;
 use App\Inventory;
@@ -626,24 +627,51 @@ class GlobalController extends Controller
 
     public function search_bcv()
     {
-        /*Buscar el indice bcv*/
-        $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
-        $pageDocument = @file_get_contents($urlToGet);
-        preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
 
-        if ($cap[0] == array()){ // VALIDAR Concidencia
-            $titulo = '0,00';
-        } else {
-            $titulo = $cap[1][4];
+        $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+
+        if(empty($company->date_consult_bcv) || ($company->date_consult_bcv != $datenow)){
+           
+            /*Buscar el indice bcv*/
+            $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
+            $pageDocument = @file_get_contents($urlToGet);
+            preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
+
+            if ($cap[0] == array()){ // VALIDAR Concidencia
+                $titulo = '0,00';
+            } else {
+                $titulo = $cap[1][4];
+            }
+
+            $bcv_con_formato = $titulo;
+            $bcv = str_replace(',', '.', str_replace('.', '',$bcv_con_formato));
+
+
+
+            $companies  = Company::on("logins")->findOrFail($company->id);
+            $companies->rate_bcv = bcdiv($bcv, '1', 2);
+            $companies->date_consult_bcv = $datenow;
+            $companies->save();
+            /*-------------------------- */
+            return bcdiv($bcv, '1', 2);
+
+        }else{
+            if($company->tiporate_id == 1){
+                if($company->rate_bcv != 0){
+                    return $company->rate_bcv;
+                }else{
+                    return 1;
+                }
+            }else{
+                if($company->rate_bcv != 0){
+                    return $company->rate;
+                }else{
+                    return 1;
+                }
+            }
         }
-
-        $bcv_con_formato = $titulo;
-        $bcv = str_replace(',', '.', str_replace('.', '',$bcv_con_formato));
-
-
-        /*-------------------------- */
-       return bcdiv($bcv, '1', 2);
-
     }
 
     public function data_last_month_day() { 

@@ -158,9 +158,10 @@ class AnticipoController extends Controller
         
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -190,9 +191,10 @@ class AnticipoController extends Controller
         
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -222,9 +224,10 @@ class AnticipoController extends Controller
         $invoices_to_pay = Quotation::on(Auth::user()->database_name)->whereIn('status',['1','P'])->where('id_client',$id_client)->get();
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -575,9 +578,10 @@ class AnticipoController extends Controller
         $datenow = $date->format('Y-m-d');    
         
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
