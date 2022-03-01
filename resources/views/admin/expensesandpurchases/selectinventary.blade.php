@@ -8,8 +8,14 @@
         <div class="col-md-10">
             @if(isset($type) && ($type == "MERCANCIA"))
                 <h2>Seleccione un Producto del Inventario</h2>
-            @else
-                <h2>Seleccione un Servicio</h2>
+            @endif
+            
+            @if(isset($type) && ($type == "MATERIAP"))
+            <h2>Seleccione un Producto Materia Prima</h2>
+            @endif
+            
+            @if(isset($type) && ($type == "SERVICIO"))
+            <h2>Seleccione un Servicio</h2>
             @endif
         </div>
         

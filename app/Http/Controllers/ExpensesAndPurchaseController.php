@@ -304,6 +304,8 @@ class ExpensesAndPurchaseController extends Controller
             $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
             $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+             
+           // dd($id_inventory);
 
             if(isset($id_inventory)){
                 $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
@@ -683,6 +685,7 @@ class ExpensesAndPurchaseController extends Controller
                                      ->where(function ($query){
                                          $query->where('products.type','MERCANCIA')
                                              ->orWhere('products.type','COMBO')
+                                             ->orWhere('products.type','MATERIAP')
                                              ->orWhere('products.type','SERVICIO');
                                      })
                              
