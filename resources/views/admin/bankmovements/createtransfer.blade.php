@@ -153,10 +153,7 @@
             $("#amount").mask('00.000.000.000.000,00', { reverse: true });
             
         });
-        $(document).ready(function () {
-            $("#reference").mask('0000000000000000', { reverse: true });
-            
-        });
+       
         $(document).ready(function () {
             $("#rate").mask('000.000.000.000.000,00', { reverse: true });
             
