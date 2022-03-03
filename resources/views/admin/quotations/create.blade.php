@@ -169,7 +169,7 @@
                                 <div class="form-row col-md-12">
                                     <div class="form-group col-md-2">
                                         <label for="description" >Código</label>
-                                        <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code ?? old('code') ?? '' }}" required autocomplete="code" onblur="searchCode()">
+                                        <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial ?? old('code') ?? '' }}" required autocomplete="code" onblur="searchCode()">
                                     </div>
                                    
                                     <div class="form-group col-md-1">
@@ -182,7 +182,7 @@
                                     
                                     <div class="form-group col-md-2">
                                         <label for="description" >Descripción</label>
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->products['description'] ?? old('description') ?? '' }}" required autocomplete="description">
+                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') ?? '' }}" required autocomplete="description">
         
                                         @error('description')
                                             <span class="invalid-feedback" role="alert">
@@ -210,7 +210,7 @@
                                         </div>
                                         @else
                                         <div class="form-check">
-                                            @if($inventory->products['exento'] == 1)
+                                            @if($inventory->exento == 1)
                                                 <input class="form-check-input" type="checkbox" name="exento" checked id="gridCheck">
                                             @else
                                                 <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
@@ -232,7 +232,7 @@
                                         </div>
                                         @else
                                             <div class="form-check">
-                                                @if($inventory->products['exento'] == 1)
+                                                @if($inventory->exento == 1)
                                                     <input class="form-check-input" type="checkbox" name="islr" checked id="gridCheck2">
                                                 @else
                                                     <input class="form-check-input" type="checkbox" name="islr" id="gridCheck2">
@@ -244,17 +244,17 @@
                                         @endif
                                     </div>
                                     <div class="form-group col-md-2">
-                                        @if(isset($inventory->products['price']) && (isset($quotation->bcv)) && ($inventory->products['money'] != 'Bs') && ($coin == 'bolivares')) 
+                                        @if(isset($inventory->price) && (isset($quotation->bcv)) && ($inventory->money != 'Bs') && ($coin == 'bolivares')) 
                                             <?php 
                                                 
-                                                $product_Bs = $inventory->products['price'] * $quotation->bcv;
+                                                $product_Bs = $inventory->price * $quotation->bcv;
                                                
                                             ?>
                                             <label for="cost" >Precio</label>
                                             <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ number_format($product_Bs, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
                                         @else
                                             <label for="cost" >Precio</label>
-                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{number_format($inventory->products['price'] ?? 0, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
+                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{number_format($inventory->price ?? 0, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
                                         @endif
 
                                         
