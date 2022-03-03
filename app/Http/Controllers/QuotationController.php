@@ -244,7 +244,7 @@ class QuotationController extends Controller
                                 ->get(); 
                 
                 if(isset($id_inventory)){
-                    $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
+                    $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
                 }
                 if(isset($inventory)){
 
@@ -332,6 +332,14 @@ class QuotationController extends Controller
             $inventories = $inventories->unique('id');
      
             $inventories = $inventories->sortBydesc('amount');
+
+            foreach ($inventories as $inventorie) {
+            
+                $inventories->amount = $global->consul_prod_invt($inventorie->id_inventory);
+    
+            }
+    
+
             
         $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
@@ -609,7 +617,7 @@ class QuotationController extends Controller
         
             if(isset($quotation_product)){
 
-                $inventory= Inventory::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
+                $inventory= Product::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
@@ -1191,7 +1199,7 @@ class QuotationController extends Controller
         if($request->ajax()){
             try{
                 
-                $respuesta = Inventory::on(Auth::user()->database_name)->select('id')->where('code',$var)->where('status',1)->get();
+                $respuesta = Product::on(Auth::user()->database_name)->select('id')->where('code',$var)->where('status',1)->get();
                 return response()->json($respuesta,200);
 
             }catch(Throwable $th){
