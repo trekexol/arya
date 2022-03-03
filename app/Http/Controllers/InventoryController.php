@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use PDO;
 
 class InventoryController extends Controller
 {
@@ -35,18 +36,18 @@ class InventoryController extends Controller
        $users_role =   $user->role_id;
 
         $global = new GlobalController();
-        $inventories = Inventory::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')     
+
+        $inventories = Product::on(Auth::user()->database_name)
         ->where(function ($query){
-            $query->where('products.type','MERCANCIA')
-                ->orWhere('products.type','COMBO');
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','COMBO')
+                ->orWhere('type','MATERIAP');
         })
 
-
         ->where('products.status',1)
-        ->select('inventories.id as id_inventory','inventories.*','products.*')  
+        ->select('products.id as id_inventory','products.*')  
         ->get();     
-        
+
         foreach ($inventories as $inventorie) {
             
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
@@ -74,20 +75,16 @@ class InventoryController extends Controller
         $date_end =  $global->data_last_month_day();
        }   
         //$inventories = InventoryHistories::on(Auth::user()->database_name)
-        $inventories = Inventory::on(Auth::user()->database_name)
-        //->join('inventories','inventories.id','inventory_histories.id_product')
-        ->join('products','products.id','inventories.product_id')
-             
+        $inventories = Product::on(Auth::user()->database_name)
         ->where(function ($query){
-            $query->where('products.type','MERCANCIA')
-                ->orWhere('products.type','COMBO');
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','COMBO')
+                ->orWhere('type','MATERIAP');
         })
-       
- 
-            ->where('products.status',1)
-            ->select('inventories.id as id_inventory','products.*')  
-            ->get();  
 
+        ->where('products.status',1)
+        ->select('products.id as id_inventory','products.*')  
+        ->get();     
        
          return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
    }
@@ -114,16 +111,16 @@ class InventoryController extends Controller
         }   
 
         //$inventories = InventoryHistories::on(Auth::user()->database_name)
-        $inventories = Inventory::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')
-               ->where(function ($query){
-            $query->where('products.type','MERCANCIA')
-                ->orWhere('products.type','COMBO');
+        $inventories = Product::on(Auth::user()->database_name)
+        ->where(function ($query){
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','COMBO')
+                ->orWhere('type','MATERIAP');
         })
- 
-            ->where('products.status',1)
-            ->select('inventories.id as id_inventory','products.*')  
-            ->get();  
+
+        ->where('products.status',1)
+        ->select('products.id as id_inventory','products.*')  
+        ->get();     
        
         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
     }
@@ -168,9 +165,8 @@ class InventoryController extends Controller
 
         
 
-        $inventories = InventoryHistories::on(Auth::user()->database_name)
-        ->join('inventories','inventories.id','inventory_histories.id_product')     
-        ->join('products','products.id','inventories.product_id')
+        $inventories = InventoryHistories::on(Auth::user()->database_name) 
+        ->join('products','products.id','inventory_histories.id_product')
         ->where('inventory_histories.date','>=',$date_frist)
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
@@ -282,19 +278,10 @@ class InventoryController extends Controller
    {
 
        
-        $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
-
+        $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
         $global = new GlobalController; 
-
-
-            
-        $inventory->amount = $global->consul_prod_invt($id_inventory);
-
-    
-
-
+        $inventory->amount = $global->consul_prod_invt($inventory->id);    
         $company = Company::on(Auth::user()->database_name)->find(1);
-        $global = new GlobalController();
 
         //Si la taza es automatica
         if($company->tiporate_id == 1){
@@ -317,9 +304,11 @@ class InventoryController extends Controller
 
    public function create_decrease_inventory($id_inventory)
    {
-        $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
-        $company = Company::on(Auth::user()->database_name)->find(1);
-        $global = new GlobalController();
+            
+    $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
+    $global = new GlobalController; 
+    $inventory->amount = $global->consul_prod_invt($inventory->id);    
+    $company = Company::on(Auth::user()->database_name)->find(1);
         
         //Si la taza es automatica
         if($company->tiporate_id == 1){
@@ -349,7 +338,8 @@ class InventoryController extends Controller
             'amount'        =>'required',
             
         ]);
-        $var = new Inventory;
+        
+        /*$var = new Inventory;
         $var->setConnection(Auth::user()->database_name);
         
         $valor_sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('amount')));
@@ -364,7 +354,7 @@ class InventoryController extends Controller
 
         $var->status = "1";
         
-        $var->save();
+        $var->save(); */
         
         return redirect('/inventories')->withSuccess('El inventario del producto: '.$var->products['description'].' fue registrado Exitosamente!');
     
@@ -384,7 +374,7 @@ class InventoryController extends Controller
             'amount'        =>'required',
             'rate'        =>'required',
             'amount_new'        =>'required',
-            'price_buy'        =>'required',
+            'price_buy'        =>'required'
             
         ]);
         
@@ -393,6 +383,7 @@ class InventoryController extends Controller
 
         $valor_sin_formato_amount_new = str_replace(',', '.', str_replace('.', '', request('amount_new')));
         $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+       
         $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '', request('price_buy')));
 
 
@@ -401,31 +392,31 @@ class InventoryController extends Controller
 
         if($valor_sin_formato_amount_new > 0){
 
-            $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($id_inventory);
+            $inventory = Product::on(Auth::user()->database_name)->findOrFail($id_inventory);
 
 
-            if($inventory->products['type'] == 'COMBO'){
+            if($inventory->type == 'COMBO'){
                 $global = new GlobalController;
                 $global->aumentCombo($inventory,$valor_sin_formato_amount_new);
             }
             
         
-            $inventory->code = request('code');
+           /* $inventory->code = request('code');
             
             $inventory->amount = $amount_old + $valor_sin_formato_amount_new;
             
-            $inventory->save();
+            $inventory->save();*/
 
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
 
-            $counterpart = request('Subcontrapartida');           
+            $counterpart = request('Subcontrapartida');
 
             $global = new GlobalController; 
-            $global->transaction_inv('entrada',$id_inventory,'Entrada de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
+            $global->transaction_inv('entrada',$inventory->id,'Entrada de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
 
-            if(isset($counterpart) && $counterpart != 'Seleccionar'){
+            if($counterpart != 'Seleccionar'){
                 
                 $header_voucher  = new HeaderVoucher();
                 $header_voucher->setConnection(Auth::user()->database_name);
@@ -438,34 +429,37 @@ class InventoryController extends Controller
             
                 $header_voucher->save();
     
-                if($inventory->products['money'] == 'Bs'){
+                if($inventory->money == 'Bs'){
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
                 }else{
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
-    
+
+                if ($inventory->id_account == null) {
+                    $inventory->id_account = 17; 
+                }
                 
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->products['id_account'],
-                                    $id_user,$total,0);
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,$id_user,$total,0);
     
-                
+                                
                 $account_counterpart = Account::on(Auth::user()->database_name)->find(request('Subcontrapartida'));            
                 //$account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
     
                 $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_counterpart->id,
                                     $id_user,0,$total);
-
+            
             }
             
-        
-            return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->products['description'].' Exitosamente!');
-    
+            return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
+                
+           
+
         }else{
-            return redirect('/inventories/createincreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
+
+           return redirect('/inventories/createincreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
 
         }
 
-    
     }
 
 
@@ -499,18 +493,18 @@ class InventoryController extends Controller
         if($valor_sin_formato_amount_new > 0){
             if($valor_sin_formato_amount_new <= $amount_old){
 
-                $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($id_inventory);
+                $inventory = Product::on(Auth::user()->database_name)->findOrFail($id_inventory);
 
-                if($inventory->products['type'] == 'COMBO'){
+                if($inventory->type == 'COMBO'){
                     $global = new GlobalController;
                     $global->discountCombo($inventory,$valor_sin_formato_amount_new);
                 }
 
-                $inventory->code = request('code');
+              /*  $inventory->code = request('code');
                 
                 $inventory->amount = $amount_old - $valor_sin_formato_amount_new;
                 
-                $inventory->save();
+                $inventory->save();*/
 
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');   
@@ -527,14 +521,17 @@ class InventoryController extends Controller
             
                 $header_voucher->save();
 
-                if($inventory->products['money'] == 'Bs'){
+                if($inventory->money == 'Bs'){
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
                 }else{
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
 
-               
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->products['id_account'],
+                if ($inventory->id_account == null) {
+                    $inventory->id_account = 17; 
+                }
+                
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
                                     $id_user,0,$total);
 
                 $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
@@ -542,10 +539,10 @@ class InventoryController extends Controller
                 $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
                                     $id_user,$total,0);
             
-                return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->products['description'].' Exitosamente!');
+                return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
             
             }else{
-                return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir no puede ser mayor a la cantidad antigua!');
+                return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir no puede ser mayor a la cantidad actual!');
 
             }
         }else{
@@ -556,6 +553,7 @@ class InventoryController extends Controller
     
     }
 
+                
 
     public function add_movement($tasa,$id_header,$id_account,$id_user,$debe,$haber){
 
@@ -573,21 +571,20 @@ class InventoryController extends Controller
 
         $detail->debe = $debe;
         $detail->haber = $haber;
-       
       
         $detail->status =  "C";
+         
+        $detail->save();
 
          /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
          
-            $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+         $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
 
-            if($account->status != "M"){
-                $account->status = "M";
-                $account->save();
-            }
-         
-    
-        $detail->save();
+         if($account->status != "M"){
+             $account->status = "M";
+             $account->save();
+         }
+
 
     }
 

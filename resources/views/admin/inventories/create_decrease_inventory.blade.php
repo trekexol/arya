@@ -44,7 +44,7 @@
                             <label for="name_product" class="col-md-2 col-form-label text-md-right">Nombre del Producto</label>
 
                             <div class="col-md-4">
-                                <input id="name_product" type="text" class="form-control @error('name_product') is-invalid @enderror" name="name_product" value="{{ $inventory->products['description'] }}" readonly required autocomplete="name_product">
+                                <input id="name_product" type="text" class="form-control @error('name_product') is-invalid @enderror" name="name_product" value="{{ $inventory->description }}" readonly required autocomplete="name_product">
 
                                 @error('name_product')
                                     <span class="invalid-feedback" role="alert">
@@ -55,7 +55,7 @@
                             <label for="code" class="col-md-2 col-form-label text-md-right">Código</label>
 
                             <div class="col-md-4">
-                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code }}" required readonly autocomplete="code">
+                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial }}" required readonly autocomplete="code">
 
                                 @error('code')
                                     <span class="invalid-feedback" role="alert">
@@ -91,7 +91,7 @@
                             <label for="price" class="col-md-2 col-form-label text-md-right">Precio de Venta</label>
 
                             <div class="col-md-4">
-                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{ number_format($inventory->products['price'], 2, ',', '.')}}" name="price" required autocomplete="price">
+                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{ number_format($inventory->price, 2, ',', '.')}}" name="price" required autocomplete="price">
 
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -103,7 +103,7 @@
 
                             @if (!empty($inventory))
                             <div class="col-md-4">
-                                @if($inventory->products['money'] == "D")
+                                @if($inventory->money == "D")
                                     <input id="money" type="text" readonly class="form-control @error('money') is-invalid @enderror" name="money" value="Dolar" required autocomplete="money">
                                 @else
                                     <input id="money" type="text" readonly class="form-control @error('money') is-invalid @enderror" name="money" value="Bolívares" required autocomplete="money">
@@ -120,7 +120,7 @@
                             <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio de Compra</label>
 
                             <div class="col-md-4">
-                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ number_format($inventory->products['price_buy'] ?? 0, 2, ',', '.')}}" name="price_buy" required autocomplete="price_buy">
+                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ number_format($inventory->price_buy ?? 0, 2, ',', '.')}}" name="price_buy" required autocomplete="price_buy">
 
                                 @error('price_buy')
                                     <span class="invalid-feedback" role="alert">

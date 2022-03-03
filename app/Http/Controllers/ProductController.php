@@ -14,6 +14,7 @@ use App\TwoSubsegment;
 use App\UnitOfMeasure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -55,6 +56,7 @@ class ProductController extends Controller
                                 ->where('code_four',1)
                                 ->where('code_five', '<>',0)
                                 ->get();
+
 
         return view('admin.products.create',compact('segments','subsegments','unitofmeasures','accounts'));
    }
@@ -136,38 +138,16 @@ class ProductController extends Controller
         $var->status =  1;
         $var->save();
 
-        $inventory = new Inventory();
-        $inventory->setConnection(Auth::user()->database_name);
-
-        $inventory->product_id = $var->id;
-        $inventory->id_user = $var->id_user;
-        $inventory->code = $var->code_comercial;
-        $inventory->amount = 0;
-        $inventory->status = 1;
-        $inventory->save();
+        $id_product = DB::connection(Auth::user()->database_name)->table('products')
+        ->select('products.*')
+        ->get()->last();  // consulta el ultimo producto creado para guardarlo en el historial
 
         $date = Carbon::now();
         $date = $date->format('Y-m-d'); 
-
-        /*$inventory_histories = new InventoryHistories();
-        $inventory_histories->setConnection(Auth::user()->database_name);    
-        $inventory_histories->id_product = $var->id;
-        $inventory_histories->id_user = $var->id_user;
-        $inventory_histories->id_branch = 1;
-        $inventory_histories->id_centro_costo = 1;
-        $inventory_histories->id_quotation = 0;
-        $inventory_histories->id_expense = 0;
-        $inventory_histories->date = $date;
-        $inventory_histories->type = 'entrada';
-        $inventory_histories->price = 0;
-        $inventory_histories->amount = 0;
-        $inventory_histories->amount_real = 0;
-        $inventory_histories->status = 'A';
-        $inventory_histories->save(); */
         
         $global = new GlobalController; 
         
-        $global->transaction_inv('creado',0,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0);
+        $global->transaction_inv('creado',$id_product->id,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0); // guardando registro en historial
         
         return redirect('/products')->withSuccess('Registro Exitoso!');
     }
@@ -192,6 +172,7 @@ class ProductController extends Controller
    public function edit($id)
    {
         $product = Product::on(Auth::user()->database_name)->find($id);
+        
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
        
         $subsegments  = Subsegment::on(Auth::user()->database_name)->where('segment_id',$product->segment_id)->orderBY('description','asc')->get();

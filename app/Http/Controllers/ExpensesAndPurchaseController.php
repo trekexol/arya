@@ -13,7 +13,8 @@ use App\MultipaymentExpense;
 use App\ExpensesAndPurchase;
 use App\ExpensesDetail;
 use App\HeaderVoucher;
-use App\Inventory;
+use App\Product;
+use App\InventoryHistories;
 use App\Provider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -288,14 +289,14 @@ class ExpensesAndPurchaseController extends Controller
 
     }
 
-    public function create_expense_detail($id_expense,$coin,$type = null,$id_inventory = null)
+    public function create_expense_detail($id_expense,$coin,$type = null,$id_product = null)
     {
         
         $expense = null;
         $provider = null;
         $expense_details = null;
-        
         $inventory = null;
+
         $accounts_inventory = null;
 
         if(isset($id_expense)){
@@ -304,10 +305,13 @@ class ExpensesAndPurchaseController extends Controller
             $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
             $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+             
+           // dd($id_inventory);
 
-            if(isset($id_inventory)){
-                $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
-                if(($inventory->products['type'] == 'MERCANCIA') || ($inventory->products['type'] == 'COMBO')){
+            if(isset($id_product)){
+                $inventory = Product::on(Auth::user()->database_name)->find($id_product);
+
+                if(($inventory->type == 'MERCANCIA') || ($inventory->type == 'COMBO') || ($inventory->type == 'MATERIAP')){
                     $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',1)
                     ->where('code_two', 1)
                     ->where('code_three', 3)
@@ -343,16 +347,21 @@ class ExpensesAndPurchaseController extends Controller
         $datenow = $date->format('Y-m-d');    
       
         if(($coin == 'bolivares') || (!isset($coin)) ){
-            if(isset($id_inventory)){
-                if( $inventory->products['money'] != 'Bs'){
-                    $inventory->products['price_buy'] = $inventory->products['price_buy'] * $expense->rate;
+ 
+            if(isset($id_product)){
+                $inventory = Product::on(Auth::user()->database_name)->find($id_product);
+
+                if( $inventory->money!= 'Bs'){
+                    $inventory->price_buy = $inventory->price_buy * $expense->rate;
                 }
             }
             $coin = 'bolivares';
         }else{
-            if(isset($id_inventory)){
-                if( $inventory->products['money'] == 'Bs'){
-                    $inventory->products['price_buy'] = $inventory->products['price_buy'] / $expense->rate;
+            if(isset($id_product)){
+                $inventory = Product::on(Auth::user()->database_name)->find($id_product);
+
+                if( $inventory->money == 'Bs'){
+                    $inventory->price_buy = $inventory->price_buy / $expense->rate;
                 }
             }
             $coin = 'dolares';
@@ -663,32 +672,36 @@ class ExpensesAndPurchaseController extends Controller
     
     public function selectinventary($id_expense,$coin,$type)
     {
-        if($type == 'mercancia'){
+        if($type == 'mercancia' || $type == 'MERCANCIA'){
             $type = 'MERCANCIA';
-        }else{
+        }
+
+        if($type == 'servicio' || $type == 'SERVICIO'){
             $type = 'SERVICIO';
         }
-            /*$inventories     = Inventory::on(Auth::user()->database_name)
-                                    ->join('products','products.id','inventories.product_id')
-                                    ->where('products.type','LIKE',$type)
-                                    ->select('inventories.*','products.price_buy','products.description','products.photo_product','products.money')
-                                    ->get();*/
+
+        if($type == 'materiap' || $type == 'MATERIAP'){
+            $type = 'MATERIAP';
+        }
+
+
 
                                     $user       =   auth()->user();
                                     $users_role =   $user->role_id;
                              
                                      $global = new GlobalController();
-                                     $inventories = Inventory::on(Auth::user()->database_name)
-                                     ->join('products','products.id','inventories.product_id')     
+                                     $inventories = Product::on(Auth::user()->database_name)
+                                    // ->join('products','products.id','inventory_histories.id_product')     
                                      ->where(function ($query){
-                                         $query->where('products.type','MERCANCIA')
-                                             ->orWhere('products.type','COMBO')
-                                             ->orWhere('products.type','SERVICIO');
+                                         $query->where('type','MERCANCIA')
+                                             ->orWhere('type','COMBO')
+                                             ->orWhere('type','MATERIAP')
+                                             ->orWhere('type','SERVICIO');
                                      })
                              
                              
                                      ->where('products.status',1)
-                                     ->select('inventories.id as id_inventory','inventories.*','products.*')  
+                                     ->select('products.id as id_inventory','products.*')  
                                      ->get();     
                                      
                                      foreach ($inventories as $inventorie) {
@@ -2095,13 +2108,12 @@ class ExpensesAndPurchaseController extends Controller
            foreach($expense_detail as $var){
             
                 if(isset($var->id_inventory)){
-                    $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($var->id_inventory);
-                    
-                    if(isset($inventory)){
+                  
+                    $product = Product::on(Auth::user()->database_name)->find($var->id_inventory);
+
+                    if(isset($product)){
                            
-                        if(($inventory->products['type'] == 'MERCANCIA') || ($inventory->products['type'] == 'COMBO')){
-                            $inventory->amount += $var->amount;
-                            $inventory->save();
+                        if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
 
                             $global = new GlobalController; 
         
@@ -2185,14 +2197,10 @@ class ExpensesAndPurchaseController extends Controller
            foreach($expense_detail as $var){
             
                 if(isset($var->id_inventory)){
-                    $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($var->id_inventory);
-                    
-                    if(isset($inventory)){
-                           
-                        if(($inventory->products['type'] == 'MERCANCIA') || ($inventory->products['type'] == 'COMBO')){
-                            $inventory->amount += $var->amount;
-                            $inventory->save();
-
+                        $product = Products::on(Auth::user()->database_name)->find($id_product);
+        
+                    if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
+  
                             $global = new GlobalController; 
         
                             $quotation_products = DB::connection(Auth::user()->database_name)->table('expenses_details')
@@ -2203,9 +2211,6 @@ class ExpensesAndPurchaseController extends Controller
                             $global->transaction_inv('compra',$det_products->id_inventory,'compra_n',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
                             
                             } 
-
-
-                        }
                         
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$id_expense.'')->withDanger('El Inventario no existe!');
@@ -2382,7 +2387,7 @@ class ExpensesAndPurchaseController extends Controller
         
             if(isset($expensesandpurchase_product)){
 
-                $inventory= Inventory::on(Auth::user()->database_name)->find($expensesandpurchase_product->id_inventory);
+                $product= Product::on(Auth::user()->database_name)->find($expensesandpurchase_product->id_inventory);
 
                 return view('admin.expensesandpurchases.edit_product',compact('expensesandpurchase_product','inventory'));
             }else{

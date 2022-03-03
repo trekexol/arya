@@ -34,15 +34,15 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; width:9%;">Fecha</th>
-    <th style="text-align: center; width:5%;">ID Prod</th>
-    <th style="text-align: center; width:7%;">Codigo</th>
+    <th style="text-align: center; width:5%;">ID</th>
+    <th style="text-align: center; width:7%;">Código.C.</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; width:5%;">Tipo</th>
-    <th style="text-align: center; width:7%;">Precio</th>
-    <th style="text-align: center; width:5%;">Cantidad</th>
-    <th style="text-align: center; width:5%;">Cant. Actual</th>
-    <th style="text-align: center; width:5%;">Num.Fac</th>
-    <th style="text-align: center; width:5%;">Num.Nota</th>
+    <th style="text-align: center; width:7%;">Precio-Venta</th>
+    <th style="text-align: center; width:5%;">Cant.</th>
+    <th style="text-align: center; width:5%;">Cant.Actual</th>
+    <th style="text-align: center; width:5%;">Factura</th>
+    <th style="text-align: center; width:5%;">Nota</th>
     <th style="text-align: center; width:5%;">Sucursal</th>
   </tr>
     @foreach ($inventories as $inventory)
