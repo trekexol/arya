@@ -80,8 +80,8 @@ class FacturarController extends Controller
             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
                                             ->get();
 
-            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                            ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                                             ->where('quotation_products.id_quotation',$quotation->id)
                                                             ->whereIn('quotation_products.status',['1','C'])
                                                             ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
@@ -274,8 +274,8 @@ class FacturarController extends Controller
              $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
                                             ->get();
 
-            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                            ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                                             ->where('quotation_products.id_quotation',$quotation->id)
                                                             ->whereIn('quotation_products.status',['1','C'])
                                                             ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',

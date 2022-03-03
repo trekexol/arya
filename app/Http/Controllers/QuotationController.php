@@ -151,11 +151,10 @@ class QuotationController extends Controller
             if(isset($quotation) && ($quotation->status == 1)){
                 //$inventories_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                 ->where('quotation_products.id_quotation',$id_quotation)
                                 ->whereIn('quotation_products.status',['1','C'])
-                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
+                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
                                 ->get(); 
             
@@ -235,11 +234,10 @@ class QuotationController extends Controller
             //$product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $product = null;
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                 ->where('quotation_products.id_quotation',$id_quotation)
                                 ->whereIn('quotation_products.status',['1','C'])
-                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
+                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
                                 ->get(); 
                 
@@ -273,8 +271,8 @@ class QuotationController extends Controller
                         }
                     }else{
                         //Cuando mi producto esta en Bolivares, pero estoy cotizando en dolares, convierto los bs a dolares
-                        if($inventory->products['money'] == 'Bs'){
-                            $inventory->products['price'] = $inventory->products['price'] / $quotation->bcv;
+                        if($inventory->money == 'Bs'){
+                            $inventory->price = $inventory->price / $quotation->bcv;
                         }
                         $bcv = null;
                     }
@@ -331,7 +329,7 @@ class QuotationController extends Controller
              
             $inventories = $inventories->unique('id');
      
-            $inventories = $inventories->sortBydesc('amount');
+            //$inventories = $inventories->sortBydesc('amount');
 
             foreach ($inventories as $inventorie) {
             
@@ -851,14 +849,13 @@ class QuotationController extends Controller
         if(isset($quotation_product) && $quotation_product->status == "C"){
             
                 QuotationProduct::on(Auth::user()->database_name)
-                ->join('inventories','inventories.id','quotation_products.id_inventory')
-                ->join('products','products.id','inventories.product_id')
+                ->join('products','products.id','quotation_products.id_inventory')
                 ->where(function ($query){
                     $query->where('products.type','MERCANCIA')
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('quotation_products.id',$quotation_product->id)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount'), 'quotation_products.status' => 'X']);
+                ->update(['quotation_products.status' => 'X']);
                
                 $this->recalculateQuotation($quotation_product->id_quotation);
         }else{
