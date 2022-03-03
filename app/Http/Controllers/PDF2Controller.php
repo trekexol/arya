@@ -349,8 +349,8 @@ class PDF2Controller extends Controller
                 }
 
 
-                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                                                ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                                                 ->where('quotation_products.id_quotation',$quotation->id)
                                                                 ->where('quotation_products.status','C')
                                                                 ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
