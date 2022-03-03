@@ -39,7 +39,9 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
   <tr>
     <td style="font-size: x-small;">{{ $company->razon_social ?? ''}}</td>
     <td style="font-size: x-small;">{{ $company->code_rif ?? ''}}</td>
-    <td style="font-size: x-small;">{{ $expense->number_iva ?? $expense->id ?? ''}}</td>
+
+    
+    <td style="font-size: x-small;">{{ $periodo_pago.''.$mes_pago.''.str_pad($expense->number_iva, 8, "0", STR_PAD_LEFT) ?? 'Vista Previa'}}</td>
   </tr>
   
 </table>
