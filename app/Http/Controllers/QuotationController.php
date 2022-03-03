@@ -313,18 +313,18 @@ class QuotationController extends Controller
             $global = new GlobalController();
             
             $inventories = InventoryHistories::on(Auth::user()->database_name)
-            ->join('inventories','inventories.id','inventory_histories.id_product')
-            ->join('products','products.id','inventories.product_id')
+            ->join('products','products.id','inventory_histories.id_product')
            
-                         
-            ->where(function ($query){
+                
+             /*-->where(function ($query){
                  $query->where('products.type','MERCANCIA')
-                     ->orWhere('products.type','COMBO');
-                     //->orWhere('products.type','SERVICIOS');
-            })
+                // ->orWhere('products.type','MATERIAP')   
+                 ->orWhere('products.type','COMBO');
+               >orWhere('products.type','SERVICIOS');
+            }) */
  
-            ->where('inventory_histories.status','A')
-            ->select('inventories.id as id_inventory','inventory_histories.amount_real as amount','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
+           // ->where('products.status','A')
+            ->select('products.id as id_inventory','inventory_histories.*','products.*')       
             ->orderBy('inventory_histories.id','DESC')
             ->get();     
              

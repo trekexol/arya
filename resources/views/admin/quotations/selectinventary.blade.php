@@ -57,6 +57,7 @@
             <thead>
             <tr> 
                 <th class="text-center"></th>
+                <th class="text-center">ID</th>
                 <th class="text-center">SKU</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
@@ -79,6 +80,7 @@
                             <td>
                                 <a href="{{ route('quotations.createproduct',[$id_quotation,$coin,$var->id_inventory,$type_quotation ?? null]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
+                            <td>{{ $var->id }}</td>
                             <td>{{ $var->code_comercial }}</td>
                             <td>{{ $var->description}}</td>
                             <td>{{ $var->amount ?? 0}}</td>

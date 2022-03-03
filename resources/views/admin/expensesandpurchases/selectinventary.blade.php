@@ -51,7 +51,7 @@
             <thead>
             <tr> 
                 <th></th>
-                <th>Código Comercial</th>
+                <th>Código Comercial D</th>
                 <th>Descripción</th>
                 <th>Cantidad</th>
                 <th>Precio de Compra</th>
