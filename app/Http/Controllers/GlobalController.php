@@ -692,18 +692,20 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_inventary,$sucursal = 1){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_product,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
+
+        
         if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_inventary)
+            ->where('id_product','=',$id_product)
             ->select('amount_real')
             ->get()->last(); 
         } else {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
-            ->where('id_product','=',$id_inventary)
+            ->where('id_product','=',$id_product)
             ->where('branch','=',$sucursal)
             ->select('amount_real')
             ->get()->last();
@@ -721,7 +723,7 @@ class GlobalController extends Controller
     }
     
     
-    function transaction_inv($type,$id_inventary,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
+    function transaction_inv($type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
     
@@ -730,13 +732,13 @@ class GlobalController extends Controller
             if ($branch == 1) { // todas las sucurssales
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
-                ->where('id_product','=',$id_inventary)
+                ->where('id_product','=',$id_product)
                 ->select('*')
                 ->get()->last();
             } else { // sucursal especifica
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
-                ->where('id_product','=',$id_inventary)
+                ->where('id_product','=',$id_product)
                 ->where('id_branch','=',$branch)
                 ->select('*')
                 ->get()->last();	
@@ -882,7 +884,7 @@ class GlobalController extends Controller
                             
 
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                            'id_product' => $id_inventary,
+                            'id_product' => $id_product,
                             'id_user' => $user->id,
                             'id_branch' => $branch,
                             'id_centro_costo' => $branch,
@@ -942,23 +944,16 @@ class GlobalController extends Controller
                     
                     $user       =   auth()->user();
 
-                    $id_inventary = DB::connection(Auth::user()->database_name)
-                    ->table('inventories')
-                    ->select('id')
-                    ->get()->last(); 
 
-                    $id_product = DB::connection(Auth::user()->database_name)
-                    ->table('products')
-                    ->select('id')
-                    ->get()->last(); 
+
 
 
                      DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                    'id_product' => $id_inventary->id,
+                    'id_product' => $id_product,
                     'id_user' => $user->id,
                     'id_branch' => 1,
                     'id_centro_costo' => 1,
-                    'id_quotation_product' => $id_product->id,
+                    'id_quotation_product' => 0,
                     'id_expense_detail' => 0,
                     'date' => $date,
                     'type' => $type,

@@ -71,8 +71,8 @@
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
-                <th class="text-center">SKU</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Costo</th>
@@ -90,6 +90,7 @@
                 @else  
                     @foreach ($inventories as $var)
                         <tr>
+                            <td class="text-center">{{ $var->id ?? '' }}</td>
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-right">{{ number_format($var->amount ?? 0, 2, ',', '.')}}</td> 

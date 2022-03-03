@@ -223,7 +223,7 @@
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="description" >Descripción</label>
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->products['description'] ?? old('description') }}"  required autocomplete="description">
+                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') }}"  required autocomplete="description">
         
                                         @error('description')
                                             <span class="invalid-feedback" role="alert">
@@ -251,7 +251,7 @@
                                             </div>
                                         @else  
                                             <div class="form-check">
-                                                @if($inventory->products['exento'] == 1)
+                                                @if($inventory->exento == 1)
                                                     <input class="form-check-input" type="checkbox" name="exento" checked id="gridCheck">
                                                 @else
                                                     <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
@@ -272,7 +272,7 @@
                                             </div>
                                         @else  
                                             <div class="form-check">
-                                                @if($inventory->products['islr'] == 1)
+                                                @if($inventory->islr == 1)
                                                     <input class="form-check-input" type="checkbox" name="islr" checked id="gridCheck2">
                                                 @else
                                                     <input class="form-check-input" type="checkbox" name="islr" id="gridCheck2">
@@ -286,8 +286,8 @@
                                     
                                     <div class="form-group col-md-3">
                                         <label for="price" >Precio</label>
-                                        @if(isset($inventory->products['price_buy']))
-                                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->products['price_buy'], 2, ',', '.')  }}"  required autocomplete="price">
+                                        @if(isset($inventory->price_buy))
+                                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy, 2, ',', '.')  }}"  required autocomplete="price">
                                         @else
                                             <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price"  required autocomplete="price">
                                         @endif

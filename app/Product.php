@@ -30,11 +30,11 @@ class Product extends Model
     public function unitofmeasures(){
         return $this->belongsTo('App\Permission\Models\UnitOfMeasure','unit_of_measure_id');
     }
-
+/*
     public function inventory(){
         return $this->hasMany('App\Inventory');
-    }
-    
+    } 
+  */  
     public function quotation_products() {
         return $this->belongsTo('App\QuotationProduct', 'id_inventory');   
     }

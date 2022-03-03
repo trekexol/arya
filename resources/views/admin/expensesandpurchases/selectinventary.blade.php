@@ -51,7 +51,7 @@
             <thead>
             <tr> 
                 <th></th>
-                <th>SKU</th>
+                <th>Código Comercial</th>
                 <th>Descripción</th>
                 <th>Cantidad</th>
                 <th>Precio de Compra</th>
@@ -69,7 +69,7 @@
                             <td>
                                 <a href="{{ route('expensesandpurchases.create_detail',[$id_expense,$coin,$type ?? 'MERCANCIA',$var->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
-                            <td>{{ $var->code }}</td>
+                            <td>{{ $var->code_comercial }}</td>
                             <td>{{ $var->description}}</td>
                             <td style="text-align: right">{{ $var->amount }}</td> 
                             <td style="text-align: right">{{number_format($var->price_buy, 2, ',', '.')}}</td>
