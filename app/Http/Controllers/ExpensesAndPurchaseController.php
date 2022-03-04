@@ -2204,7 +2204,7 @@ class ExpensesAndPurchaseController extends Controller
            foreach($expense_detail as $var){
             
                 if(isset($var->id_inventory)){
-                        $product = Products::on(Auth::user()->database_name)->find($id_product);
+                        $product = Product::on(Auth::user()->database_name)->find($id_product);
         
                     if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
   
