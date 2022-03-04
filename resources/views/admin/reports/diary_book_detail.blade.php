@@ -43,7 +43,7 @@
       $total_debe = 0;
       $total_haber = 0;
       /*se quito el saldo inicial para que no descuadrara*/
-      $saldo_inicial =/* ($account->balance_previus ?? 0) +*/ ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+      $saldo_inicial = ($account_calculate->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
     
       $total_saldo = $saldo_inicial;
 

@@ -6,7 +6,6 @@ use App;
 use App\Account;
 use App\Company;
 use App\DetailVoucher;
-use App\Http\Controllers\Calculations\AccountCalculationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,8 +49,12 @@ class DailyListingController extends Controller
     public function store(Request $request)
     {
         $data = request()->validate([
+            
+        
             'date_begin'        =>'required',
             'date_end'  =>'required',
+           
+        
         
         ]);
         
@@ -181,7 +184,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->sum('detail_vouchers.debe');
 
             
@@ -190,7 +193,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->sum('detail_vouchers.haber');       
             //-----------------------------------------------
         }else{
@@ -214,7 +217,7 @@ class DailyListingController extends Controller
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('detail_vouchers.id_account',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->whereIn('detail_vouchers.status', ['C'])
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
 
@@ -226,48 +229,46 @@ class DailyListingController extends Controller
                 $detailvouchers_saldo_debe = 0;
             }
            
-            $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
-            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-            ->where('detail_vouchers.id_account',$id_account)
-            ->whereIn('detail_vouchers.status', ['F','C'])
-            ->where('header_vouchers.date','<' ,$date_begin)
-            ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first();
-
-            if(isset($total_debe->haber)){
-                $detailvouchers_saldo_haber = $total_haber->haber;
-            }else{
-                $detailvouchers_saldo_haber = 0;
-            }
                 
-           
+            $total_haber =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(d.haber/d.tasa) AS haber
+                FROM accounts a
+                INNER JOIN detail_vouchers d 
+                    ON d.id_account = a.id
+                INNER JOIN header_vouchers h 
+                    ON h.id = d.id_header_voucher
+                WHERE h.date < ? AND
+                a.id = ? AND
+                d.status = ?'
+                , [$date_begin,$id_account,'C']);
+                
+                if(isset($total_haber[0]->haber)){
+                    $detailvouchers_saldo_haber = $total_haber[0]->haber;
+                }else{
+                    $detailvouchers_saldo_haber = 0;
+                }
+
+               
         }
-        
+
+       
         $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
 
-        $account_calculation = new AccountCalculationController();
-
-        $account_calculado = $account_calculation->calculateBalance($account,$date_begin);
-
-       
+        
         if(isset($coin) && $coin !="bolivares"){
             if(empty($account->rate) || ($account->rate == 0)){
                 $account->rate = 1;
             }
-            $account->balance_previus = $account_calculado->balance_previous ?? $account_calculado->balance_previus / $account_calculado->rate;
+            $account->balance_previus = $account->balance_previus / $account->rate;
         }
 
-        /*el saldo previo fue quitado ya que hace que se descuadre el movimiento */
-        $saldo_anterior = /*($account_calculado->balance_previous ?? $account_calculado->balance_previus ?? 0) +*/ ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+        $saldo_anterior = ($account->balance_previus ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
         $primer_movimiento = true;
         $saldo = 0;
         $counterpart = "";
-
-       
 
         foreach($detailvouchers as $detail){
             if($detail->id_account == $id_account){

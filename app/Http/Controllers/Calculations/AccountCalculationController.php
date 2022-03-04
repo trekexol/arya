@@ -16,9 +16,6 @@ class AccountCalculationController extends Controller
        
         $cierre = DB::connection(Auth::user()->database_name)->table('account_historials')
         ->where('id_account',$account->id)
-        ->whereRaw(
-        "(DATE_FORMAT(account_historials.date_begin, '%Y-%m-%d') <= ? AND DATE_FORMAT(account_historials.date_end, '%Y-%m-%d') >= ?)", 
-        [$date_begin,$date_begin])
         ->select('*')->first();
         
         if(isset($cierre)){
