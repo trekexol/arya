@@ -6,6 +6,7 @@ use App;
 use App\Account;
 use App\Company;
 use App\DetailVoucher;
+use App\Http\Controllers\Calculations\AccountCalculationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -241,26 +242,32 @@ class DailyListingController extends Controller
                 
            
         }
-
-       
+        
         $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
 
-        
+        $account_calculation = new AccountCalculationController();
+
+        $account_calculado = $account_calculation->calculateBalance($account,$date_begin);
+
+       
         if(isset($coin) && $coin !="bolivares"){
             if(empty($account->rate) || ($account->rate == 0)){
                 $account->rate = 1;
             }
-            $account->balance_previus = $account->balance_previus / $account->rate;
+            $account->balance_previus = $account_calculado->balance_previous ?? $account_calculado->balance_previus / $account_calculado->rate;
         }
 
-        $saldo_anterior = ($account->balance_previus ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+        /*el saldo previo fue quitado ya que hace que se descuadre el movimiento */
+        $saldo_anterior = /*($account_calculado->balance_previous ?? $account_calculado->balance_previus ?? 0) +*/ ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
         $primer_movimiento = true;
         $saldo = 0;
         $counterpart = "";
+
+       
 
         foreach($detailvouchers as $detail){
             if($detail->id_account == $id_account){
