@@ -57,9 +57,9 @@
             </thead>
             
             <tbody>
-                @if (empty($products))
+                @if (empty($inventories))
                 @else  
-                    @foreach ($products as $product)
+                    @foreach ($inventories as $product)
                         <tr>
                             <td>
                             <a href="{{$product->id}}/create" title="Seleccionar Producto"><i class="fa fa-check" style="color: orange"></i></a>

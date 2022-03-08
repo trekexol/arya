@@ -713,7 +713,7 @@ class ExpensesAndPurchaseController extends Controller
                                      
                                      foreach ($inventories as $inventorie) {
                                          
-                                         $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+                                         $inventorie->amount = 11;
                              
                                      }
 

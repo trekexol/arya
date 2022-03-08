@@ -32,18 +32,19 @@ class InventoryController extends Controller
 
    public function index()
    {
+
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
         $global = new GlobalController();
-
+        
         $inventories = Product::on(Auth::user()->database_name)
         ->where(function ($query){
             $query->where('type','MERCANCIA')
                 ->orWhere('type','COMBO')
                 ->orWhere('type','MATERIAP');
         })
-
+        ->orderBy('id' ,'DESC')
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
         ->get();     
@@ -262,9 +263,31 @@ class InventoryController extends Controller
     public function selectproduct()
     {
  
-         $products    = Product::on(Auth::user()->database_name)->orderBy('description','asc')->get();
- 
-         return view('admin.inventories.selectproduct',compact('products'));
+         $user       =   auth()->user();
+         $users_role =   $user->role_id;
+  
+          $global = new GlobalController();
+  
+          $inventories = Product::on(Auth::user()->database_name)
+          ->where(function ($query){
+              $query->where('type','MERCANCIA')
+                  ->orWhere('type','COMBO')
+                  ->orWhere('type','SERVICIO')
+                  ->orWhere('type','MATERIAP');
+          })
+  
+          ->where('products.status',1)
+          ->select('products.id as id_inventory','products.*')  
+          ->get();     
+  
+          foreach ($inventories as $inventorie) {
+              
+              $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+  
+          }
+
+
+         return view('admin.inventories.selectproduct',compact('inventories'));
     }
  
    public function create($id)

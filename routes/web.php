@@ -415,7 +415,6 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::get('registerquotationvendor/{id_client}/{id_vendor}/{type?}','QuotationController@createquotationvendor')->name('quotations.createquotationvendor');
     Route::get('selectvendor/{id_client}/{type?}','QuotationController@selectvendor')->name('quotations.selectvendor');
 
-
     Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','QuotationController@selectproduct')->name('quotations.selectproduct');
     Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','QuotationController@createproduct')->name('quotations.createproduct');
 
@@ -555,6 +554,43 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
 
 });
+
+Route::group(["prefix"=>'receipt'],function(){
+    Route::get('/','ReceiptController@index')->name('receipt');
+  
+    Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt'); // Inicio de Creacion de recibo
+    Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a clientes
+
+    Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
+    Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
+
+    Route::get('registerreceiptnvendor/{id_client}/{id_vendor}/{type?}','ReceiptController@createreceiptvendor')->name('receipt.createreceiptvendor');
+    Route::get('selectvendor/{id_client}/{type?}','ReceiptController@selectvendor')->name('receipt.selectvendor');
+
+    Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','ReceiptController@selectproduct')->name('receipt.selectproduct');
+    Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproduct')->name('receipt.createproduct');
+
+    
+    Route::get('register/{id_quotation}/{coin}/{type?}','ReceiptController@create')->name('receipt.create');
+    Route::post('store','ReceiptController@store')->name('receipt.store');
+
+    
+    Route::post('storeproduct','ReceiptController@storeproduct')->name('receipt.storeproduct');
+
+
+    Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
+    Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
+    Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
+
+
+
+
+    Route::get('movementreceipt/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
+
+    //Route::post('multipayment','InvoiceController@multipayment')->name('invoices.multipayment');
+   // Route::post('storemultipayment','InvoiceController@storemultipayment')->name('invoices.storemultipayment');
+
+ });
 
 
  Route::group(["prefix"=>'tasas'],function(){
