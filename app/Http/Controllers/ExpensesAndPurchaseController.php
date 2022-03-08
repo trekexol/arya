@@ -2193,7 +2193,7 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function increase_inventory($id_expense,$dat,$id_product == null)
+    public function increase_inventory($id_expense,$date)
     {
        
         
@@ -2204,7 +2204,7 @@ class ExpensesAndPurchaseController extends Controller
            foreach($expense_detail as $var){
             
                 if(isset($var->id_inventory)){
-                        $product = Product::on(Auth::user()->database_name)->find($id_product);
+                        $product = Product::on(Auth::user()->database_name)->find($var->id_product);
         
                     if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
   
