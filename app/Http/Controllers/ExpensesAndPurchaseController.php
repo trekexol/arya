@@ -698,7 +698,7 @@ class ExpensesAndPurchaseController extends Controller
                              
                                      $global = new GlobalController();
                                      $inventories = Product::on(Auth::user()->database_name)
-                                    // ->join('products','products.id','inventory_histories.id_product')     
+                                   
                                      ->where(function ($query){
                                          $query->where('type','MERCANCIA')
                                              ->orWhere('type','COMBO')
@@ -2193,7 +2193,7 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function increase_inventory($id_expense,$date)
+    public function increase_inventory($id_expense,$dat,$id_product == null)
     {
        
         
