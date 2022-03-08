@@ -57,7 +57,8 @@
             <thead>
             <tr> 
                 <th class="text-center"></th>
-                <th class="text-center">SKU</th>
+                <th>ID</th>
+                <th>Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Precio Bs</th>
@@ -79,6 +80,7 @@
                             <td>
                                 <a href="{{ route('creditnotes.createproduct',[$id_creditnote,$coin,$var->id_inventory]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
+                            <td>{{ $var->id }}</td>
                             <td>{{ $var->code_comercial }}</td>
                             <td>{{ $var->description}}</td>
                             <td>{{ $var->amount ?? 0}}</td>

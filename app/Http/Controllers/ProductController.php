@@ -138,6 +138,7 @@ class ProductController extends Controller
         $var->status =  1;
         $var->save();
 
+
         $id_product = DB::connection(Auth::user()->database_name)->table('products')
         ->select('products.*')
         ->get()->last();  // consulta el ultimo producto creado para guardarlo en el historial
@@ -149,6 +150,18 @@ class ProductController extends Controller
         
         $global->transaction_inv('creado',$id_product->id,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0); // guardando registro en historial
         
+
+        $inventory = new Inventory();
+        $inventory->setConnection(Auth::user()->database_name);
+
+        $inventory->product_id = $id_product->id;
+        $inventory->id_user = $var->id_user;
+        $inventory->code = $var->code_comercial;
+        $inventory->amount = 0;
+        $inventory->status = 1;
+        $inventory->save();
+
+
         return redirect('/products')->withSuccess('Registro Exitoso!');
     }
 

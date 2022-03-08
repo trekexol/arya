@@ -293,16 +293,6 @@ class QuotationController extends Controller
 
         $services = null;
 
-        /*$inventories = DB::connection(Auth::user()->database_name)->table('inventories')
-            ->join('products', 'products.id', '=', 'inventories.product_id')
-            ->where(function ($query){
-                $query->where('products.type','MERCANCIA')
-                    ->orWhere('products.type','COMBO');
-            })
-            ->where('products.status',1)
-            ->select('products.*','inventories.amount as amount','inventories.id as id_inventory')
-            ->orderBy('products.code_comercial','desc')
-            ->get();*/
             $services = null;
 
             $user       =   auth()->user();
@@ -310,32 +300,24 @@ class QuotationController extends Controller
      
             $global = new GlobalController();
             
-            $inventories = InventoryHistories::on(Auth::user()->database_name)
-            ->join('products','products.id','inventory_histories.id_product')
-           
-                
-             /*-->where(function ($query){
-                 $query->where('products.type','MERCANCIA')
-                // ->orWhere('products.type','MATERIAP')   
-                 ->orWhere('products.type','COMBO');
-               >orWhere('products.type','SERVICIOS');
-            }) */
- 
-           // ->where('products.status','A')
-            ->select('products.id as id_inventory','inventory_histories.*','products.*')       
-            ->orderBy('inventory_histories.id','DESC')
+            $inventories = Product::on(Auth::user()->database_name)
+            ->where(function ($query){
+                $query->where('type','MERCANCIA')
+                    ->orWhere('type','COMBO')
+                    ->orWhere('type','SERVICIO')
+                    ->orWhere('type','MATERIAP');
+            })
+    
+            ->where('products.status',1)
+            ->select('products.id as id_inventory','products.*')  
             ->get();     
-             
-             
-            $inventories = $inventories->unique('id');
-     
-            //$inventories = $inventories->sortBydesc('amount');
-
+    
             foreach ($inventories as $inventorie) {
-            
-                $inventories->amount = $global->consul_prod_invt($inventorie->id_inventory);
+                
+                $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
     
             }
+  
     
 
             

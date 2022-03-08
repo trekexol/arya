@@ -58,7 +58,7 @@
             <tr> 
                 <th class="text-center"></th>
                 <th class="text-center">ID</th>
-                <th class="text-center">SKU</th>
+                <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Precio Bs</th>
