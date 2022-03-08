@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Anticipo;
 use App\ComboProduct;
 use App\Company;
+use App\Product;
 use App\ExpensePayment;
 use App\ExpensesDetail;
 use App\Inventory;
@@ -299,29 +300,13 @@ class GlobalController extends Controller
     }
 
    
-    public function discount_inventory($id_quotation)
+    public function discount_inventory($id_quotation,$sucursal = 1)
     {
-        /*Primero Revisa que todos los productos tengan inventario suficiente*/
-        $no_hay_cantidad_suficiente = DB::connection(Auth::user()->database_name)->table('inventories')
-                                ->join('quotation_products', 'quotation_products.id_inventory','=','inventories.id')
-                                ->join('products', 'products.id','=','inventories.product_id')
-                                ->where('quotation_products.id_quotation','=',$id_quotation)
-                                ->where('quotation_products.amount','<','inventories.amount')
-                                ->where('quotation_products.status','1')
-                                ->where(function ($query){
-                                    $query->where('products.type','MERCANCIA');
-                                })
-                                ->select('inventories.code as code','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
-                                'quotation_products.amount as amount_quotation')
-                                ->first(); 
-    
-        if(isset($no_hay_cantidad_suficiente)){
-            return "no_hay_cantidad_suficiente";
-        }
+
 
         /*Luego, descuenta del Inventario*/
-        $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-        ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+        $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+        ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
         ->where('quotation_products.id_quotation',$id_quotation)
         ->where('quotation_products.status','1')
         ->select('products.*','quotation_products.id as id_quotation','quotation_products.discount as discount',
@@ -334,14 +319,15 @@ class GlobalController extends Controller
 
             if(isset($quotation_product))
             {
-                $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($quotation_product->id_inventory);
+                $inventory = Product::on(Auth::user()->database_name)->findOrFail($quotation_product->id_inventory);
                 if(isset($inventory)){
                     if(($inventories_quotation->type == 'MERCANCIA') || (($inventories_quotation->type == 'COMBO')) && ($inventory-> amount > 0))
                     {
                         //REVISO QUE SEA MAYOR EL MONTO DEL INVENTARIO Y LUEGO DESCUENTO
+                        $global = new GlobalController;
+                        $inventory->amount = $global->consul_prod_invt($inventory->id);   
+                        
                         if($inventory->amount >= $quotation_product->amount){
-                            $inventory->amount -= $quotation_product->amount;
-                            $inventory->save();
                             
                         }else{
                             return 'El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!';
@@ -743,28 +729,26 @@ class GlobalController extends Controller
                 ->select('*')
                 ->get()->last();	
             }
-    
-    
+
                 if (empty($inventories_quotations)) {
                     $msg = 'El Producto no tiene inventario o no existe.';
                     $amount_real = 0;
                 } else {
                     
                     $amount_real = $inventories_quotations->amount_real;
-    
+
                 }
-    
 
-            if ($date == null) {
+                if ($date == null) {
 
-            $date = Carbon::now();
-            $date = $date->format('Y-m-d'); 
-            
-            } else {
+                $date = Carbon::now();
+                $date = $date->format('Y-m-d'); 
+                
+                } else {
 
-            $date = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
-            
-            }
+                $date = date("Y-m-d",strtotime($date)); // validando date y convirtiendo a formato de la base de datos Y-m-d
+                
+                }
 
             $transaccion = 0;
             $agregar = 'true';
