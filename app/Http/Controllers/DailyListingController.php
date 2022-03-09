@@ -6,6 +6,7 @@ use App;
 use App\Account;
 use App\Company;
 use App\DetailVoucher;
+use App\Http\Controllers\Calculations\AccountCalculationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -124,16 +125,10 @@ class DailyListingController extends Controller
             ,'header_vouchers.id as id_header'
             ,'header_vouchers.description as header_description')->get();
         }
-
-        
-
-        
         
         $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
-
-        
 
         $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
                                 ,'datenow','date_begin','date_end'));
@@ -184,7 +179,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['C'])
+                        ->whereIn('detail_vouchers.status', ['F','C'])
                         ->sum('detail_vouchers.debe');
 
             
@@ -193,7 +188,7 @@ class DailyListingController extends Controller
                         ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['C'])
+                        ->whereIn('detail_vouchers.status', ['F','C'])
                         ->sum('detail_vouchers.haber');       
             //-----------------------------------------------
         }else{
@@ -217,7 +212,7 @@ class DailyListingController extends Controller
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                         ->where('detail_vouchers.id_account',$id_account)
-                        ->whereIn('detail_vouchers.status', ['C'])
+                        ->whereIn('detail_vouchers.status', ['F','C'])
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
 
@@ -238,8 +233,9 @@ class DailyListingController extends Controller
                     ON h.id = d.id_header_voucher
                 WHERE h.date < ? AND
                 a.id = ? AND
-                d.status = ?'
-                , [$date_begin,$id_account,'C']);
+                (d.status = ? OR
+                d.status = ?)'
+                , [$date_begin,$id_account,'C','F']);
                 
                 if(isset($total_haber[0]->haber)){
                     $detailvouchers_saldo_haber = $total_haber[0]->haber;
@@ -257,15 +253,19 @@ class DailyListingController extends Controller
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
 
+        $account_calculate = new AccountCalculationController();
+
+        $account_historial = $account_calculate->calculateBalance($account,$date_begin);
+
         
         if(isset($coin) && $coin !="bolivares"){
-            if(empty($account->rate) || ($account->rate == 0)){
-                $account->rate = 1;
+            if(empty($account_historial->rate) || ($account_historial->rate == 0)){
+                $account_historial->rate = 1;
             }
-            $account->balance_previus = $account->balance_previus / $account->rate;
+            $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
         }
 
-        $saldo_anterior = ($account->balance_previus ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+        $saldo_anterior = ($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
         $primer_movimiento = true;
         $saldo = 0;
         $counterpart = "";
