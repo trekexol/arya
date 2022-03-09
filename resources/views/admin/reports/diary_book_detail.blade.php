@@ -34,6 +34,7 @@
   <h4 style="color: black; text-align: center;">LISTADO MOVIMIENTO DE CUENTAS</h4>
   <h5 style="color: black; text-align: center;">Código de Cuenta: {{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</h5>
   <h5 style="color: black; text-align: center;">Cuenta: {{ $account->description ?? ''}}</h5>
+  <h5 style="color: black; text-align: center;">Periodo: {{ $date_begin ?? ''}} hasta {{ $date_end ?? ''}}</h5>
   
  
   <h5 style="color: black; text-align: right;">Saldo actual a la fecha: {{ number_format($saldo ?? 0, 2, ',', '.')}}</h5>
@@ -43,7 +44,7 @@
       $total_debe = 0;
       $total_haber = 0;
       /*se quito el saldo inicial para que no descuadrara*/
-      $saldo_inicial = ($account_calculate->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+      $saldo_inicial = ($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
     
       $total_saldo = $saldo_inicial;
 
@@ -70,7 +71,7 @@
             
           ?>
           <tr>
-            <td style="text-align: center;">{{ $detail->date ?? ''}}</td>
+            <td style="text-align: center;">{{ date_format(date_create($detail->date),"d-m-Y") ?? ''}}</td>
             <td style="text-align: center;">{{ $detail->id_header ?? ''}}</td>
             <td style="text-align: left;">{{ $detail->header_description ?? ''}} / {{ $detail->account_counterpart ?? '' }}</td>
 

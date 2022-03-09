@@ -18,6 +18,7 @@ class AccountCalculationController extends Controller
         ->where('id_account',$account->id)
         ->select('*')->first();
         
+        
         if(isset($cierre)){
             return $cierre;
         }else{
