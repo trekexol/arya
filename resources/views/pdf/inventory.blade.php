@@ -25,13 +25,13 @@
 
 <body>
 
-
- <br><br>
-  <h4 style="color: black">Empresa: {{ $company->razon_social ?? ''}}</h4>
-  <br>
-  <h4 style="color: black">Rif: {{ $company->code_rif ?? ''}}</h4>
-
-  <br>
+  <table>
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
+      </th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
+    </tr> 
+  </table>
   <h2 style="color: black; text-align: center">Inventario</h2>
   <br>
   <h2 style="color: black; text-align: center">Fecha de Emisión: {{ $datenow }}</h2>
