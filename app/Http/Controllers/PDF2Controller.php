@@ -1122,7 +1122,7 @@ class PDF2Controller extends Controller
         $datenow = $date->format('Y-m-d'); 
 
         $inventories = InventoryHistories::on(Auth::user()->database_name)
-        ->join('products','products.id','inventories.product_id')
+        ->join('products','products.id','inventory_histories.id_product')
       
                     
         ->where(function ($query){
