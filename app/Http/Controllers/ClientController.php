@@ -86,6 +86,7 @@ class ClientController extends Controller
     $users->phone1 = request('phone1');
     $users->phone2 = request('phone2');
     $users->email = request('email');
+    $users->aliquot = request('aliquot');
     $users->personcontact = request('personcontact');
     
     $users->days_credit = request('days_credit');
@@ -186,6 +187,8 @@ class ClientController extends Controller
     $users->phone1 = request('phone1');
     $users->phone2 = request('phone2');
     $users->email = request('email');
+    $users->aliquot = request('aliquot');
+    $users->id_cost_center = request('id_cost_center');
     $users->personcontact = request('personcontact');   
     $users->days_credit = request('days_credit');
 

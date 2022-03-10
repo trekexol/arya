@@ -93,14 +93,24 @@ class ReceiptController extends Controller
 
 
 
-    public function createreceiptclients($type = null) // generando recibo clientes
+    public function createreceiptclients($id_client = null,$type = null) // generando recibo clientes
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
+       
+        if ($id_client != null) {
+            $client =  Client::on(Auth::user()->database_name)->find($id_client);
+            $invoices_to_pay = Quotation::on(Auth::user()->database_name)->whereIn('status',['P'])->where('id_client',$id_client)->get();
+        
+        } else {
+            $client = null;
+            $invoices_to_pay = null;
+        }
 
-        return view('admin.receipt.createreceipt',compact('datenow','transports','type'));
+
+        return view('admin.receipt.createreceiptclients',compact('datenow','transports','type','client','invoices_to_pay'));
     }
 
 
@@ -113,6 +123,16 @@ class ReceiptController extends Controller
         return view('admin.receipt.selectclient',compact('clients','type'));
     }
     
+    public function selectclientfactura($type = null)
+    {
+        $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
+    
+        return view('admin.receipt.selectclientfactura',compact('clients','type'));
+    }
+    
+
+
 
     public function createreceiptvendor($id_client,$id_vendor,$type = null)
     {
