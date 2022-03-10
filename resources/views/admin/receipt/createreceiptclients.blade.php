@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Recibo de Cobro</div>
+                <div class="card-header text-center font-weight-bold h3">Generar Recibos de Clientes</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('receipt.store') }}" enctype="multipart/form-data">
@@ -34,7 +34,55 @@
                         <input id="id_vendor" type="hidden" class="form-control @error('id_vendor') is-invalid @enderror" name="id_vendor" value="{{ $vendor->id ?? $client->id_vendor ?? null  }}" required autocomplete="id_vendor">
                         <input id="type" type="hidden" class="form-control @error('type') is-invalid @enderror" name="type" value="{{ $type ?? null  }}" required autocomplete="type">
                        
-                        
+                        <div class="form-group row">
+                           
+                            
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Cliente de Factura General</label>
+                            <div class="col-md-3">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
+    
+                                @error('client')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="{{ route('receipt.selectclientfactura',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                            </div>
+                        </div>           
+
+
+                        @if (isset($invoices_to_pay) && (count($invoices_to_pay)>0))
+                        <div class="form-group row">
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Factura</label>
+                            <div class="col-md-8">
+                                <select  id="id_invoice"  name="id_invoice" class="form-control" width="20">
+                                    
+                                    @foreach($invoices_to_pay as $invoice)
+                                    
+                                    <?php
+                                    $num_fac = '';
+                                    
+                                    if ($invoice->number_invoice > 0){
+                                    $num_fac = 'Factura: '.$invoice->number_invoice;
+                                    }
+                                    ?>
+                                        <option  value="{{$invoice->id}}"> {{$num_fac ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - Monto BS: {{ number_format($invoice->amount_with_iva, 2, ',', '.') ?? '0'}} - Monto USD: ${{ number_format($invoice->amount_with_iva/$invoice->bcv, 2, ',', '.') ?? '0'}} - {{ $invoice->observation ?? ''}}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+                        </div>
+                        @else
+                            @if (isset($client->id ))
+                            <label class="col-md-4 col-form-label text-md-right">El cliente no posee Facturas Pendientes</label>
+                            
+                            @endif
+
+                        @endif
+
+
 
 
 

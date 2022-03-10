@@ -564,19 +564,20 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
     Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
 
+    Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
+    
     Route::get('registerreceiptnvendor/{id_client}/{id_vendor}/{type?}','ReceiptController@createreceiptvendor')->name('receipt.createreceiptvendor');
     Route::get('selectvendor/{id_client}/{type?}','ReceiptController@selectvendor')->name('receipt.selectvendor');
 
     Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','ReceiptController@selectproduct')->name('receipt.selectproduct');
     Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproduct')->name('receipt.createproduct');
-
     
     Route::get('register/{id_quotation}/{coin}/{type?}','ReceiptController@create')->name('receipt.create');
-    Route::post('store','ReceiptController@store')->name('receipt.store');
 
+    Route::post('store','ReceiptController@store')->name('receipt.store');
+    Route::post('storeclients','ReceiptController@storeclients')->name('receipt.storeclients');
     
     Route::post('storeproduct','ReceiptController@storeproduct')->name('receipt.storeproduct');
-
 
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');

@@ -210,6 +210,18 @@
                               @enderror
                               </div>
 
+                              <label for="aliquot" class="col-md-2 col-form-label text-md-right">% Alicuota</label>
+
+                              <div class="col-md-4">
+                                  <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="{{ $var->aliquot ?? old('aliquot') }}" required autocomplete="aliquot">
+  
+                                  @error('aliquot')
+                                      <span class="invalid-feedback" role="alert">
+                                          <strong>{{ $message }}</strong>
+                                      </span>
+                                  @enderror
+                              </div>   
+
                         </div>
 
                         <div class="form-group row">

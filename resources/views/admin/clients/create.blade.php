@@ -1,3 +1,4 @@
+
 @extends('admin.layouts.dashboard')
 
 @section('content')
@@ -41,7 +42,7 @@
                                         <option value="E-">E-</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ old('cedula_rif') }}" required autocomplete="cedula_rif">
     
                                     @error('cedula_rif')
@@ -92,7 +93,7 @@
                         <div class="form-group row">
                             <label for="country" class="col-md-2 col-form-label text-md-right">Pais</label>
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <input id="country" type="text" class="form-control @error('country') is-invalid @enderror" name="country" value="Venezuela" required autocomplete="country">
 
 
@@ -105,7 +106,7 @@
 
                             <label for="city" class="col-md-2 col-form-label text-md-right">Ciudad</label>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input id="city" type="text" class="form-control @error('city') is-invalid @enderror" name="city" value="{{ old('city') }}" required autocomplete="city">
 
                                 @error('city')
@@ -172,11 +173,10 @@
                             <div class="form-check">
                                 <input class="form-check-input position-static" type="checkbox" id="has_credit" name="has_credit" onclick="calc();" value="option1" aria-label="...">
                               </div>
-                              
                               <label id="days_credit_label" for="days_credit_label" class="col-md-2 col-form-label text-md-right">Dias de Crédito</label>
 
                               <div class="col-md-2">
-                                  <input id="days_credit" type="text" class="form-control @error('days_credit') is-invalid @enderror" name="days_credit" value="{{ old('days_credit') }}"  autocomplete="days_credit">
+                                  <input id="days_credit" type="text" class="form-control @error('days_credit') is-invalid @enderror" name="days_credit" value="{{ 0 ?? old('days_credit') }}"  autocomplete="days_credit">
   
                                   @error('days_credit')
                                       <span class="invalid-feedback" role="alert">
@@ -185,6 +185,7 @@
                                   @enderror
                               </div>
                         </div>
+                              
 
                         <div class="form-group row">
                             <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
@@ -198,7 +199,18 @@
                                     </span>
                                 @enderror
                             </div>
-                              
+
+                            <label for="aliquot" class="col-md-2 col-form-label text-md-right">% Alicuota</label>
+
+                            <div class="col-md-4">
+                                <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="{{ old('aliquot') }}" required autocomplete="aliquot">
+
+                                @error('aliquot')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>    
                              
                         </div>
 
@@ -228,7 +240,22 @@
                               </div>
                         </div>
                         
-
+                        <div class="form-group row">
+                            <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
+                                
+                            <div class="col-sm-3">
+                                <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
+                                    <option value="">Ninguno</option>
+                                    @if(!empty($branches))
+                                        @foreach ($branches as $var)
+                                            <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                        @endforeach
+                                        
+                                    @endif
+                                
+                                </select>
+                            </div>
+                        </div>
                        
 
                        

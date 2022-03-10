@@ -288,7 +288,8 @@ class ProductController extends Controller
     $var->photo_product = request('photo_product');
 
     $var->money = request('money');
-
+    $var->lote= request('lote');
+    $var->date_expirate= request('fecha_vencimiento');
 
     $var->special_impuesto = $valor_sin_formato_special_impuesto;
 
