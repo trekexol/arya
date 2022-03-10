@@ -203,7 +203,7 @@
                                     <label for="lote" class="col-md-2 col-form-label text-md-right">Lote</label>
         
                                     <div class="col-md-4">
-                                        <input id="lote" type="text" class="form-control @error('lote') is-invalid @enderror" name="lote" value="{{ old('lote') }}" autocomplete="lote">
+                                        <input id="lote" type="text" class="form-control @error('lote') is-invalid @enderror" name="lote" value="{{ $product->lote ?? old('lote') }}" autocomplete="lote">
         
                                         @error('lote')
                                             <span class="invalid-feedback" role="alert">
@@ -213,7 +213,7 @@
                                     </div>
                                     <label for="fecha_vencimiento" class="col-md-2 col-form-label text-md-right">Fecha de Vencimiento</label>
                                     <div class="col-md-4">
-                                        <input id="fecha_vencimiento" type="text" class="form-control @error('fecha_vencimiento') is-invalid @enderror" name="fecha_vencimiento" value="{{ old('fecha_vencimiento') }}" autocomplete="fecha_vencimiento">
+                                        <input id="fecha_vencimiento" type="text" class="form-control @error('fecha_vencimiento') is-invalid @enderror" name="fecha_vencimiento" value="{{ $product->date_expirate ?? old('fecha_vencimiento') }}" autocomplete="fecha_vencimiento">
         
                                         @error('fecha_vencimiento')
                                             <span class="invalid-feedback" role="alert">
