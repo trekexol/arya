@@ -109,7 +109,7 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
     <td style="font-size: x-small; text-align: center;">{{ $datenow ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->id ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
-    <td style="font-size: x-small; text-align: right;">{{ number_format(($total+$expense->amount_iva ?? 0), 2, '.', ',')}}</td>
+    <td style="font-size: x-small; text-align: right;">{{} number_format(bcdiv(($expense->amount ?? 0) + ($expense->amount_iva ?? 0), '1', 2), 2, ',', '.')}}</td>
     <td style="font-size: x-small; text-align: right;"></td> 
     <td style="font-size: x-small; text-align: right;">{{ number_format($expense->base_imponible ?? 0, 2, '.', ',') }}</td>
     <td style="font-size: x-small; text-align: right;">{{ number_format($expense->iva_percentage ?? 0, 2, '.', ',')}}</td>
