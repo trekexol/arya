@@ -7,6 +7,8 @@ use App\Anticipo;
 use App\Client;
 use App\Vendor;
 use App\Company;
+use App\Branch;
+use App\Product;
 use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Http\Controllers\UserAccess\UserAccessController;
@@ -99,7 +101,11 @@ class ReceiptController extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
-       
+        $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
+        $services = Product::on(Auth::user()->database_name)
+        ->where('type','=','SERVICIO')
+        ->orderBy('description','desc')->get();
+
         if ($id_client != null) {
             $client =  Client::on(Auth::user()->database_name)->find($id_client);
             $invoices_to_pay = Quotation::on(Auth::user()->database_name)->whereIn('status',['P'])->where('id_client',$id_client)->get();
@@ -110,7 +116,7 @@ class ReceiptController extends Controller
         }
 
 
-        return view('admin.receipt.createreceiptclients',compact('datenow','transports','type','client','invoices_to_pay'));
+        return view('admin.receipt.createreceiptclients',compact('datenow','transports','type','client','invoices_to_pay','branches','services'));
     }
 
 
@@ -132,55 +138,6 @@ class ReceiptController extends Controller
     }
     
 
-
-
-    public function createreceiptvendor($id_client,$id_vendor,$type = null)
-    {
-        $client = null;
-                
-        if(isset($id_client)){
-            $client = Client::on(Auth::user()->database_name)->find($id_client);
-        }
-        if(isset($client)){
-
-            $vendor = null;
-                
-            if(isset($id_vendor)){
-                $vendor = Vendor::on(Auth::user()->database_name)->find($id_vendor);
-            }
-            if(isset($vendor)){
-
-                /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
-
-                $transports     = Transport::on(Auth::user()->database_name)->get();
-
-                $date = Carbon::now();
-                $datenow = $date->format('Y-m-d');    
-
-                return view('admin.receipt.createreceipt',compact('client','vendor','datenow','transports','type'));
-
-            }else{
-                return redirect('/receipt')->withDanger('El Vendedor no existe');
-            } 
-
-        }else{
-            return redirect('/receipt')->withDanger('El Cliente no existe');
-        } 
-    }
-
-    public function selectvendor($id_client,$type = null)
-    {
-        if($id_client != -1){
-
-            $vendors     = vendor::on(Auth::user()->database_name)->get();
-    
-            return view('admin.receipt.selectvendor',compact('vendors','id_client','type'));
-
-        }else{
-            return redirect('/receipt')->withDanger('Seleccione un Cliente primero');
-        }
-        
-    }
 
 
     public function create($id_quotation,$coin,$type = null) // creando recibo de cobro agregar items
@@ -246,7 +203,7 @@ class ReceiptController extends Controller
 
 
 
-public function store(Request $request)
+public function store(Request $request) // Guardar recibo solo
     {
     
         $data = request()->validate([
@@ -262,7 +219,7 @@ public function store(Request $request)
         $id_client = request('id_client');
         $id_vendor = request('id_vendor');
 
-        
+     
         if($id_client != '-1'){
             
                 $var = new Quotation();
@@ -330,6 +287,170 @@ public function store(Request $request)
 
         
     }
+
+
+
+    public function storeclients(Request $request) // Generar recibo de Clientes
+    {
+    
+        $data = request()->validate([
+            
+        
+            'id_client'         =>'required',
+            'id_invoice'        =>'required',
+            'service'           =>'required'
+  
+        
+        ]);
+
+        $id_client = request('id_client');
+        $id_invoice = request('id_invoice');
+        $id_cost_center = request('id_cost_center');
+        $id_service = request('service');
+
+        $clients = Client::on(Auth::user()->database_name)
+        ->where('id_cost_center','=',$id_cost_center)->get();
+
+        //Buscar Factura original
+        $quotations = Quotation::on(Auth::user()->database_name)
+        ->orderBy('number_invoice' ,'desc')
+        ->where('date_billing','<>',null)
+        ->where('id','=',$id_invoice)
+        ->select('quotations.*')
+        ->get();
+
+
+        //dd($quotations[0]['number_invoice']);
+
+      /*  $quotations[0]['number_invoice'];
+        $quotations[0]['number_delivery_note'];
+        $quotations[0]['number_order'];
+        $quotations[0]['id_client'];
+        $quotations[0]['id_vendor'];
+        $quotations[0]['id_transport'];
+        $quotations[0]['id_user'];
+        $quotations[0]['serie'];
+        $quotations[0]['date_quotation'];
+        $quotations[0]['date_billing'];
+        $quotations[0]['date_delivery_note'];
+        $quotations[0]['date_order'];
+        $quotations[0]['anticipo'];
+        $quotations[0]['iva_percentage'];
+        $quotations[0]['observation'];
+        $quotations[0]['note'];
+        $quotations[0]['credit_days'];
+        $quotations[0]['coin'];
+        $quotations[0]['bcv'];
+        $quotations[0]['retencion_iva'];
+        $quotations[0]['retencion_islr'];
+        $quotations[0]['base_imponible'];
+        $quotations[0]['amount_exento'];
+        $quotations[0]['amount'];
+        $quotations[0]['amount_iva'];
+        $quotations[0]['amount_with_iva'];
+        $quotations[0]['status'];
+        $quotations[0]['created_at'];
+        $quotations[0]['updated_at'];*/
+ 
+        
+        if(!empty($quotations) & $id_client != '-1'){  
+               
+            
+            foreach ($clients as $client) {
+
+                $global = new GlobalController();
+                
+                $var = new Quotation(); //inicio factrua cabecera /////////////////////////
+
+                $var->setConnection(Auth::user()->database_name);
+
+                $validateFactura = new FacturaValidationController($var);
+
+                $var->id_client = $client->id;
+                //$var->id_vendor = $id_vendor;
+                $id_transport = $quotations[0]['id_transport'];
+                $type = 'factura';
+                $var->date_billing = $quotations[0]['date_billing'];
+                $var = $validateFactura->validateNumberInvoice();
+                $var->id_transport = $quotations[0]['id_transport'];
+                $var->number_invoice = $quotations[0]['number_invoice'];
+                $var->id_user = $quotations[0]['id_user'];
+                $var->serie = $quotations[0]['serie'];
+                $var->date_quotation = $quotations[0]['date_quotation'];
+                $var->observation = $quotations[0]['observation'];
+                $var->note = 'cabecera 2';
+                $var->bcv = $quotations[0]['bcv'];
+                $var->coin = 'bolivares';
+
+                /*$quotations[0]['base_imponible'];
+                $quotations[0]['amount_exento'];
+                $quotations[0]['amount'];
+                $quotations[0]['amount_iva'];
+                $quotations[0]['amount_with_iva'];
+                */
+                $var->status = $quotations[0]['status'];
+            
+                $var->save();
+                
+                $id_quotation = DB::connection(Auth::user()->database_name)
+                ->table('quotations')
+                ->where('number_invoice','=',$quotations[0]['number_invoice'])
+                ->select('id')
+                ->get()->last(); 
+
+              /*  $historial_quotation = new HistorialQuotationController();
+
+                $historial_quotation->registerAction($var,"quotation","Creó Cotización");
+              */
+             
+                // Guardar detalle de factura//////////////////////////////
+
+                $quotation = new QuotationProduct(); //inicio factrua cabecera /////////////////////////
+
+                $quotation->setConnection(Auth::user()->database_name);
+                /*
+                id_quotation 
+                $quotation->id_inventory 
+                $quotation->amount
+                discount
+                $quotation->price
+                $quotation->rate
+                retiene_iva
+                retiene_islr
+                status
+                id_inventory_histories
+                created_at
+                updated_at*/
+                $quotation->id_quotation = $id_quotation->id;
+                $quotation->id_inventory = $id_service;
+                $quotation->amount = 1;
+
+                //$montofactura = $quotations[0]['amount_with_iva'];
+                //$alicuota_cliente = $quotations[0]['amount_with_iva'];
+
+                $quotation->price = 0;
+                $quotation->discount = 0;
+                $quotation->retiene_iva = 0;
+                $quotation->retiene_islr = 0;
+                $quotation->rate = $quotations[0]['bcv'];
+                $quotation->status = 'C';
+                $quotation->id_inventory_histories = 0;
+                $quotation->save();
+
+            }
+//////////////////////////////
+
+
+            return redirect('receipt');
+
+            
+        }else{
+             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Cliente');
+        } 
+
+        
+    }
+
 
 
 
