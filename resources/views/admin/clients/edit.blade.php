@@ -220,8 +220,31 @@
                                           <strong>{{ $message }}</strong>
                                       </span>
                                   @enderror
-                              </div>   
-
+                              </div>  
+                              
+                              
+                                <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
+                                    
+                                <div class="col-sm-3">
+                                    <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
+                                        <option value="">Ninguno</option>
+                                       
+                                       
+                                        @if(!empty($branches))
+                                            @foreach ($branches as $varb)
+                                                @if ($var->id_cost_center == $varb->id)
+                                                <option selected value="{{ $varb->id }}">{{ $varb->description }}</option>
+                                                @else
+                                                <option value="{{ $varb->id }}">{{ $varb->description }}</option>
+                                                @endif
+    
+                                            @endforeach
+                                            
+                                        @endif
+                                    
+                                    </select>
+                                </div>
+                    
                         </div>
 
                         <div class="form-group row">
@@ -282,6 +305,11 @@
                                 </select>
                             </div>
                         </div>
+
+
+
+
+
                         <br>
                         <div class="form-group row mb-0">
                             <div class="form-group col-sm-2">

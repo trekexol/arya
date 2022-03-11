@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Branch;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Vendor;
 use Illuminate\Http\Request;
@@ -41,8 +42,9 @@ class ClientController extends Controller
    public function create()
    {
         $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
-      
-       return view('admin.clients.create',compact('vendors'));
+        $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
+
+       return view('admin.clients.create',compact('vendors','branches'));
    }
 
    /**
@@ -87,6 +89,7 @@ class ClientController extends Controller
     $users->phone2 = request('phone2');
     $users->email = request('email');
     $users->aliquot = request('aliquot');
+    $users->id_cost_center = request('id_cost_center');
     $users->personcontact = request('personcontact');
     
     $users->days_credit = request('days_credit');
@@ -136,7 +139,10 @@ class ClientController extends Controller
         
         $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
 
-        return view('admin.clients.edit',compact('var','vendors'));
+        $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
+
+
+        return view('admin.clients.edit',compact('var','vendors','branches'));
   
    }
 

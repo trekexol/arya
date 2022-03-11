@@ -233,10 +233,18 @@ class ExpensesAndPurchaseController extends Controller
                         ->select('created_at')
                         ->get()->last();     
         }
+        
+        if(isset($pago)){
 
-        $periodo_pago = substr($pago->created_at,0,4);
-        $mes_pago = substr($pago->created_at,5,2);
-    
+            $periodo_pago = substr($pago->created_at,0,4);
+            $mes_pago = substr($pago->created_at,5,2);
+        
+        } else {
+
+            $periodo_pago = '';
+            $mes_pago = '';
+        }
+
         if((isset($expense)) && ($expense->retencion_iva != 0)){
             $date = Carbon::now();
             $datenow = $date->format('d-m-Y');  
