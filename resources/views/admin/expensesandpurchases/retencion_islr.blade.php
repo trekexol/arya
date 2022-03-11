@@ -65,7 +65,7 @@
     <td style="font-size: x-small; text-align: center;">{{ $expense->number_islr ?? $expense->id ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
     <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv(($expense->amount ?? 0) + ($expense->amount_iva ?? 0), '1', 2), 2, ',', '.')}}</td>
-    <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv($total_islr_details ?? 0, '1', 2), 2, ',', '.') }}</td>
+    <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv($expense->base_imponible?? 0, '1', 2), 2, ',', '.') }}</td>
     <td style="font-size: x-small; text-align: center;">{{ number_format(bcdiv($expense->iva_percentage ?? 0, '1', 2), 2, ',', '.')}}</td>
     @if (isset($expense->islr_concepts['description']))
       <td style="font-size: x-small; text-align: right;">{{ $expense->islr_concepts['description'] ?? ''}} - {{ $expense->islr_concepts['value'] ?? ''}} %</td>   

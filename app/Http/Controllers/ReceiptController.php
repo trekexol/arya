@@ -382,6 +382,7 @@ public function store(Request $request) // Guardar recibo solo
                 $var->bcv = $quotations[0]['bcv'];
                 $var->coin = 'bolivares';
 
+                
                 /*$quotations[0]['base_imponible'];
                 $quotations[0]['amount_exento'];
                 $quotations[0]['amount'];
@@ -425,10 +426,10 @@ public function store(Request $request) // Guardar recibo solo
                 $quotation->id_inventory = $id_service;
                 $quotation->amount = 1;
 
-                //$montofactura = $quotations[0]['amount_with_iva'];
-                //$alicuota_cliente = $quotations[0]['amount_with_iva'];
+                $montofactura = $quotations[0]['amount_with_iva'];
+                $alicuota_cliente = $client->aliquot;;
 
-                $quotation->price = 0;
+                $quotation->price = ($montofactura*$alicuota_cliente)/100;
                 $quotation->discount = 0;
                 $quotation->retiene_iva = 0;
                 $quotation->retiene_islr = 0;
