@@ -1596,6 +1596,7 @@ class FacturarController extends Controller
             }
 
             $date_begin = request('date-begin-form');
+
             $quotation->date_billing = $date_begin;
 
             /*Anticipos*/

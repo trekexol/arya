@@ -283,7 +283,7 @@
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
 
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$datenow ?? null}}" readonly>
+                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? null}}" readonly>
 
                         <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
 
