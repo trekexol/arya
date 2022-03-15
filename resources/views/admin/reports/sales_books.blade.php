@@ -37,7 +37,7 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
     </tr> 
   </table>
-  <h4 style="color: black; text-align: center">LIBRO DE VENTAS II</h4>
+  <h4 style="color: black; text-align: center">LIBRO DE VENTAS</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $datenow ?? '' }} / Fecha desde: {{ $date_begin ?? '' }} Fecha Hasta: {{ $date_end ?? '' }}</h5>
    
  
@@ -85,8 +85,14 @@
 
         }else if($quotation->status == 'X'){
           $status = "Inactiva";
-        
-
+          $quotation->amount = 0;
+          $quotation->base_imponible = 0;
+          $quotation->amount_exento = 0;
+          $quotation->retencion_iva = 0;
+          $quotation->retencion_islr = 0;
+          $quotation->bcv = 1;
+          $quotation->amount_iva = 0;
+          $quotation->amount_with_iva = 0;
         }else{
           $status = "por revisar";
 
