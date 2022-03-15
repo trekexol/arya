@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App;
 use App\Account;
 use App\Anticipo;
 use App\Client;
@@ -452,6 +452,40 @@ public function store(Request $request) // Guardar recibo solo
         
     }
 
+
+    public function createreceiptfacturado($id_quotation,$coin,$reverso = null)
+    {
+         $quotation = null;
+             
+         if(isset($id_quotation)){
+             $quotation = Quotation::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+                                 
+         }
+ 
+         if(isset($quotation)){
+                // $product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+                $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+     
+             $date = Carbon::now();
+             $datenow = $date->format('Y-m-d');    
+
+             if(isset($coin)){
+                if($coin == 'bolivares'){
+                   $bcv = null;
+                }else{
+                    $bcv = $quotation->bcv;
+                    $quotation->anticipo = $quotation->anticipo;
+                }
+            }else{
+               $bcv = null;
+            }
+             
+             return view('admin.receipt.createreceiptfacturado',compact('quotation','payment_quotations', 'datenow','bcv','coin','reverso'));
+            }else{
+             return redirect('/receipt')->withDanger('La Recibo no existe');
+         } 
+         
+    }
 
 
 
@@ -2079,6 +2113,95 @@ public function store(Request $request) // Guardar recibo solo
         }
     }
  
+
+
+    function imprimirFactura($id_quotation,$coin = null)
+    {
+      
+
+        $pdf = App::make('dompdf.wrapper');
+
+        
+             $quotation = null;
+                 
+             if(isset($id_quotation)){
+                 $quotation = Quotation::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+              
+                                     
+             }else{
+                return redirect('/receipt')->withDanger('No llega el numero del recibo de cobro');
+                } 
+     
+             if(isset($quotation)){
+
+                $payment_quotations = QuotationPayment::on(Auth::user()->database_name)
+                                            ->where('id_quotation',$quotation->id)
+                                            ->where('status',1)
+                                            ->get();
+
+                foreach($payment_quotations as $var){
+                    $var->payment_type = $this->asignar_payment_type($var->payment_type);
+                    if($coin == 'dolares'){
+                        $var->amount = $var->amount / $var->rate;
+                    }
+                }
+
+
+                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                    ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                    ->where('quotation_products.id_quotation',$quotation->id)
+                    ->where('quotation_products.status','C')
+                    ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                    'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                    ,'quotation_products.retiene_islr as retiene_islr_quotation')
+                    ->get(); 
+
+
+                 $client = Client::on(Auth::user()->database_name) // buscar cliente
+                ->where('id','=',$quotation->id_client)
+                ->get();
+
+        
+                //Buscar Factura original
+                $quotationsorigin = Quotation::on(Auth::user()->database_name) // buscar facura original
+                ->orderBy('id' ,'asc') 
+                ->where('date_billing','<>',null)
+                ->where('number_invoice','=',$quotation->number_invoice)
+                ->select('quotations.*')
+                ->get();
+
+                $inventories_quotationso = DB::connection(Auth::user()->database_name)->table('products')
+                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->where('quotation_products.id_quotation',$quotationsorigin[0]['id'])
+                ->where('quotation_products.status','C')
+                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                ,'quotation_products.retiene_islr as retiene_islr_quotation')
+                ->get(); 
+                                                
+                
+                if($coin == 'bolivares'){
+                    $bcv = null;
+                    
+                }else{
+                    $bcv = $quotation->bcv;
+                }
+
+                $company = Company::on(Auth::user()->database_name)->find(1);
+                
+               // $lineas_cabecera = $company->format_header_line;
+
+                 $pdf = $pdf->loadView('pdf.receipt',compact('company','quotation','inventories_quotations','payment_quotations','bcv','coin','quotationsorigin','inventories_quotationso','client'));
+                 return $pdf->stream();
+         
+                }else{
+                 return redirect('/receipt')->withDanger('La recibo de cobro no existe');
+             } 
+             
+        
+
+        
+    }
 
     public function search_bcv()
     {

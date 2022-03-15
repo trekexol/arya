@@ -115,7 +115,7 @@
                                 </td>
                             @else
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
+                                    <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
                                 </td>
                             @endif
                             <td class="text-center font-weight-bold">{{$quotation->number_delivery_note ?? ''}}</td>
@@ -133,7 +133,7 @@
 
                             @if ($quotation->status == "C")
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
+                                    <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                 <td class="text-center font-weight-bold">
                                 </td>
