@@ -108,7 +108,7 @@
 @endif
 
 
-@if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2'))
+@if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2') || (Auth::user()->role_id  == '3'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
@@ -134,7 +134,7 @@
         </div>
     </li>
     @endif
-    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2'))
+    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2')  || (Auth::user()->role_id  == '3'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGastos"
             aria-expanded="true" aria-controls="collapseGastos">
@@ -206,7 +206,7 @@
             </div>
         </li>
     @endif
-    @if (Auth::user()->role_id  == '2')
+    @if (Auth::user()->role_id  == '2' || Auth::user()->role_id  == '3') <!-- reportes limitados -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"
             aria-expanded="true" aria-controls="collapseReportes">
@@ -320,7 +320,13 @@
 
     @endif
 
-
+    @if (Auth::user()->role_id  == '3')
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('inventories')}}">
+            <i class="fas fa-fw fa-boxes" ></i>
+            <span>Inventario</span></a>
+    </li>
+    @endif
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

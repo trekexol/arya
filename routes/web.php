@@ -531,6 +531,7 @@ Route::group(["prefix"=>'invoices'],function(){
 
  Route::group(["prefix"=>'pdf'],function(){
     Route::get('factura/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura')->name('pdf');
+
     Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
     
@@ -552,6 +553,8 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('order/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@order')->name('pdf.order');
 
     Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
+
+    Route::get('receipt/{id_quotation}/{coin?}','ReceiptController@imprimirfactura')->name('pdf.receipt');
 
 });
 
@@ -578,6 +581,9 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::post('storeclients','ReceiptController@storeclients')->name('receipt.storeclients');
     
     Route::post('storeproduct','ReceiptController@storeproduct')->name('receipt.storeproduct');
+
+    Route::get('receiptfacturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createreceiptfacturado')->name('receipt.createreceiptfacturado');
+
 
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');

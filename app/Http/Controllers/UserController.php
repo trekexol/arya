@@ -37,7 +37,7 @@ class UserController extends Controller
         $users_role =   $user->role_id;
         if($users_role == '1'){
            $users      =   User::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
+        }elseif($users_role == '2' || $users_role == '3'){
             return view('admin.index');
         }
 
