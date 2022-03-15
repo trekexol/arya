@@ -190,9 +190,9 @@
   </tr>
   <tr>
     <td style="text-align: left; font-weight: normal; font-style:bold;">Total Ventas   Internas solo Alicuota General 16%</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal;">{{number_format($total_base_imponible, 2, ',', '.')}}</td>
     <td style="text-align: right; font-weight: normal;">{{number_format(16, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal;">{{number_format($total_amount_iva, 2, ',', '.')}}</td>
     <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
   </tr>
   <tr>
@@ -211,10 +211,10 @@
   </tr>
   <tr>
     <td style="text-align: left; font-weight: normal; font-style:bold;">Total de  Ventas y Debitos Fiscales</td>
-    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format($total_base_imponible, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(16, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format($total_amount_iva, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format($total_retencion_iva, 2, ',', '.')}}</td>
   </tr>
   <tr>
     <td style="text-align: left; font-weight: normal;">Ajustes a los Débitos Fiscales de Períodos Anteriores:</td>
@@ -231,11 +231,11 @@
     <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
   </tr>
   <tr>
-    <td style="text-align: left; font-weight: normal;">Total Notas de Crédito y Debito Gravadas </td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: left; font-weight: normal; font-style:bold;">Total Notas de Crédito y Debito Gravadas </td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
   </tr>
   <tr>
     <td style="text-align: left; font-weight: normal;">Total Ajustes Débitos Fiscales de Períodos Anteriores:</td>
@@ -245,11 +245,11 @@
     <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
   </tr>
   <tr>
-    <td style="text-align: left; font-weight: normal;">Total de Ventas y Débitos Fiscales Alicuota General </td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
-    <td style="text-align: right; font-weight: normal;">{{number_format(0, 2, ',', '.')}}</td>
+    <td style="text-align: left; font-weight: normal; font-style:bold;">Total de Ventas y Débitos Fiscales Alicuota General </td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format($total_base_imponible, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(16, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format($total_amount_iva, 2, ',', '.')}}</td>
+    <td style="text-align: right; font-weight: normal; font-style:bold;">{{number_format(0, 2, ',', '.')}}</td>
   </tr>
 </table>
 

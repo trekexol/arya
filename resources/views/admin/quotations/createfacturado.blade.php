@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" >Facturar</div>
+                <div class="card-header" ><h3>Imprimir Factura Nº {{$quotation->number_invoice ?? ''}}</h3></div>
                 
                 <div class="card-body" >
                         
