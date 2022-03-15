@@ -203,7 +203,7 @@
                             <label for="aliquot" class="col-md-2 col-form-label text-md-right">% Alicuota</label>
 
                             <div class="col-md-4">
-                                <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="{{ old('aliquot') }}" required autocomplete="aliquot">
+                                <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="{{ old('aliquot') ?? 0 }}" autocomplete="aliquot">
 
                                 @error('aliquot')
                                     <span class="invalid-feedback" role="alert">
@@ -245,7 +245,7 @@
                                 
                             <div class="col-sm-3">
                                 <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
-                                    <option value="">Ninguno</option>
+                                    <option value="1">Ninguno</option>
                                     @if(!empty($branches))
                                         @foreach ($branches as $var)
                                             <option value="{{ $var->id }}">{{ $var->description }}</option>
