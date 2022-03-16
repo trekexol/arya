@@ -19,11 +19,12 @@ class CreateClientsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_vendor')->nullable();
             $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_cost_center');
             $table->string('type_code',2);
             $table->string('name',80);
             $table->string('name_ref',80);
             $table->string('cedula_rif',20);
-            $table->string('direction',100);
+            $table->string('direction',200);
             $table->string('city',20);
             $table->string('country',20);
             $table->string('phone1',20);
@@ -33,7 +34,8 @@ class CreateClientsTable extends Migration
             $table->integer('days_credit');
             $table->decimal('amount_max_credit', 64, 2)->nullable();
             $table->decimal('percentage_retencion_iva', 64, 2)->nullable();
-            $table->decimal('percentage_retencion_islr', 64, 2)->nullable();            
+            $table->decimal('percentage_retencion_islr', 64, 2)->nullable();
+            $table->decimal('aliquot', 64, 2)->nullable();            
             $table->string('status',1);
             $table->foreign('id_vendor')->references('id')->on('vendors');
             $table->foreign('id_user')->references('id')->on('users');

@@ -170,7 +170,7 @@
                         <div class="form-group row">
                             <label for="email" class="col-md-2 col-form-label text-md-right">Tiene Crédito</label>
 
-                            <div class="form-check">
+                              <div class="form-check">
                                 <input class="form-check-input position-static" type="checkbox" id="has_credit" name="has_credit" onclick="calc();" value="option1" aria-label="...">
                               </div>
                               <label id="days_credit_label" for="days_credit_label" class="col-md-2 col-form-label text-md-right">Dias de Crédito</label>
@@ -254,6 +254,17 @@
                                     @endif
                                 
                                 </select>
+                            </div>
+                            <label for="email" class="col-md-3 col-form-label text-md-right">Email</label>
+
+                            <div class="col-md-3">
+                                <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" placeholder="sincorreo@outlook.com" autocomplete="email">
+
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                        

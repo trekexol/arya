@@ -77,7 +77,7 @@
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr> 
-                   
+                    <th>ID</th>
                     <th>Nombre / Razón Social</th>
                     <th>Nombre Comercial</th>
                     <th>Cedula o Rif</th>
@@ -95,7 +95,7 @@
                     @else  
                         @foreach ($clients as $client)
                             <tr>
-                               
+                                <td>{{$client->id}}</td>
                                 <td>{{$client->name}}</td>
                                 <td>{{$client->name_ref}}</td>
                                 <td>{{$client->type_code}} {{$client->cedula_rif}}</td>

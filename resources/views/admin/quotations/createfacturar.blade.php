@@ -26,12 +26,13 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Facturar / Cobrar Factura Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Facturar / Cobrar Factura Nº; {{$quotation->number_invoice ?? ''}}</h3></div>
                 <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
 
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
+                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
                         <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
@@ -283,7 +284,7 @@
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
 
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? null}}" readonly>
+                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
 
                         <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
 
