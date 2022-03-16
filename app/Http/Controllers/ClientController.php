@@ -59,16 +59,11 @@ class ClientController extends Controller
         $data = request()->validate([
             'type_code'         =>'required|max:20',
             'id_user'         =>'required',
-            'name'         =>'required|max:80',
-            'name_ref'         =>'max:100',
-            'direction'         =>'required|max:100',
-            'personcontact'     =>'max:100',
-            'city'         =>'required|max:20',
-            'country'         =>'required|max:20',
-            'phone1'         =>'required|max:20',
+            'direction'         =>'required|max:200',
+            'city'         =>'required',
+            'country'         =>'required',
+            'phone1'         =>'required',
             'days_credit'         =>'required|integer',
-            
-    
            
         ]);
 
@@ -162,14 +157,12 @@ class ClientController extends Controller
     $data = request()->validate([
         'type_code'         =>'required|max:20',
         
-        'razon_social'         =>'required|max:80',
-        'namecomercial'         =>'max:100',
-        'cedula_rif'         =>'required|max:20',
-        'direction'         =>'required|max:100',
-        'personcontact'     =>'max:100',
-        'city'         =>'required|max:20',
-        'country'         =>'required|max:20',
-        'phone1'         =>'required|max:20',
+        'razon_social'         =>'required|max:100',
+        'cedula_rif'         =>'required',
+        'direction'         =>'required|max:200',
+        'city'         =>'required',
+        'country'         =>'required',
+        'phone1'         =>'required',
         'days_credit'         =>'required|integer',
         
 

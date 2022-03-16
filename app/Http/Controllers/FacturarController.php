@@ -419,10 +419,7 @@ class FacturarController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
 
-       
-        $date_begin = request('date-begin');
-
-        $quotation->date_billing = $date_begin;
+        $quotation->date_billing = request('date-begin-form');
 
         $quotation->retencion_iva =  $total_retiene_iva;
         $quotation->retencion_islr =  $total_retiene_islr;
@@ -1595,9 +1592,6 @@ class FacturarController extends Controller
     
             }
 
-            $date_begin = request('date-begin-form');
-
-            $quotation->date_billing = $date_begin;
 
             /*Anticipos*/
             
@@ -1697,8 +1691,10 @@ class FacturarController extends Controller
             }
 
             /*Modifica la cotizacion */
+            $date_begin = request('date-begin-form');
+
             $quotation->date_billing = $date_begin;
-                
+ 
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
             $quotation->amount =  $sin_formato_amount;
