@@ -1116,3 +1116,9 @@ Route::group(["prefix"=>'export_reports'],function(){
 Route::group(["prefix"=>'mails'],function(){
     Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
 });
+
+
+Route::group(["prefix"=>'test'],function(){
+    Route::get('/','TestController@index')->name('test');
+
+});
