@@ -129,11 +129,11 @@ class PaymentExpenseController extends Controller
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
         
         if($expense->status != 'X'){
-            
+           
             DetailVoucher::on(Auth::user()->database_name)
                     ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
                     ->where('detail_vouchers.id_expense',$id_expense)
-                    ->where('header_vouchers.description','LIKE','Cobro%')
+                    ->where('header_vouchers.description','LIKE','Pago%')
                     ->update(['detail_vouchers.status' => 'X','header_vouchers.status' => 'X']);
 
                     
@@ -149,7 +149,21 @@ class PaymentExpenseController extends Controller
         return redirect('payment_expenses/index')->withSuccess('Reverso de Pago Exitoso!');
     }
 
-  
+    public function deleteAllPaymentsWithId($id_expense){
+
+        $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+        
+        if($expense->status != 'X'){
+           
+            ExpensePayment::on(Auth::user()->database_name)
+                            ->where('id_expense',$expense->id)
+                            ->update(['status' => 'X']);
+
+            $expense->status = 'P';
+            $expense->save();
+        }
+        
+    }
 
     function asignar_payment_type($type){
       

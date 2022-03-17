@@ -549,8 +549,13 @@ class DetailVoucherController extends Controller
         }elseif(isset($detail->id_expense)){
             $id_delete = $detail->id_expense;
             $type_delete = "compra";
-            $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense.", seguro desea eliminarla?";
-        }
+           
+            if(substr($header->description, 0, 4) == "Pago"){
+                $message_delete = "Este movimiento posee Los Pagos de la Compra Numero ".$detail->id_expense.", seguro desea eliminar los Pagos?";
+            }else{
+                $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense.", seguro desea eliminarla?";
+            }
+            }
     }
  
     if($id_delete == 0){
@@ -564,10 +569,13 @@ class DetailVoucherController extends Controller
 
    public function disable(Request $request){
 
-   
+    
         $id_header = $request->id_header_modal;
         $id_delete = $request->id_modal;
         $type_modal = $request->type_modal;
+
+        $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id_header);
+
 
         if(isset($type_modal) && ($type_modal == "anticipo")){
             $anticipo = new AnticipoController();
@@ -578,7 +586,14 @@ class DetailVoucherController extends Controller
             $this->destroy($id_header);
         }else if(isset($type_modal) && ($type_modal == "compra")){
             $expense = new ExpensesAndPurchaseController();
-            $expense->reversar_expense_with_id($id_delete);
+            
+            if(substr($header->description, 0, 4) == "Pago"){
+                $expense_payment = new PaymentExpenseController();
+                $expense_payment->deleteAllPaymentsWithId($id_delete);
+            }else{
+                $expense->reversar_expense_with_id($id_delete);
+            }
+
             $this->destroy($id_header);
         }
 
@@ -589,7 +604,7 @@ class DetailVoucherController extends Controller
 
    public function deleteDetail(Request $request)
     {
-       
+      
         $detail = DetailVoucher::on(Auth::user()->database_name)->find(request('id_detail_modal')); 
 
         $coin = request('coin_modal');
