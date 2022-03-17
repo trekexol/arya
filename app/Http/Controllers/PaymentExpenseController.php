@@ -149,7 +149,21 @@ class PaymentExpenseController extends Controller
         return redirect('payment_expenses/index')->withSuccess('Reverso de Pago Exitoso!');
     }
 
-  
+    public function deleteAllPaymentsWithId($id_expense){
+
+        $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+        
+        if($expense->status != 'X'){
+           
+            ExpensePayment::on(Auth::user()->database_name)
+                            ->where('id_expense',$expense->id)
+                            ->update(['status' => 'X']);
+
+            $expense->status = 'P';
+            $expense->save();
+        }
+        
+    }
 
     function asignar_payment_type($type){
       
