@@ -283,9 +283,7 @@
                 @csrf   
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
-
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
-
+                        <input type="hidden" id="date-begin-form2" name="date-begin-form2" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
                         <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
 
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
@@ -904,8 +902,13 @@
         });
 
         $("#date-begin").on('change',function(){
-            document.getElementById("date-begin-form").value = $(this).val();
-           
+           /* document.getElementById("date-begin-form").value = $(this).val();
+            $("#date-begin-form").val($(this).val());*/
+            var inputNombre = document.getElementById("date-begin-form");
+               inputNombre.value = $(this).val();
+         
+            var inputNombre2 = document.getElementById("date-begin-form2");
+               inputNombre2.value = $(this).val();
         });
 
         $("#date-payment").on('change',function(){

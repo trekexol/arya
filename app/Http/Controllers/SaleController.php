@@ -33,8 +33,6 @@ class SaleController extends Controller
                                 ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'),'products.type','products.price as price','inventories.code','products.money as money')
                                 ->groupBy('products.description','products.type','products.price','inventories.code','products.money')
                                 ->get(); 
-            //$bcv = $global->search_bcv();   
-            
             $bcv = null;
 
     
@@ -45,30 +43,6 @@ class SaleController extends Controller
     }
 
 
-
-
-
-    public function search_bcv()
-    {
-        /*Buscar el indice bcv*/
-        $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
-        $pageDocument = @file_get_contents($urlToGet);
-        preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
-
-        if ($cap[0] == array()){ // VALIDAR Concidencia
-            $titulo = '0,00';
-        } else {
-            $titulo = $cap[1][4];
-        }
-
-        $bcv_con_formato = $titulo;
-        $bcv = str_replace(',', '.', str_replace('.', '',$bcv_con_formato));
-
-
-        /*-------------------------- */
-       return bcdiv($bcv, '1', 2);
-
-    }
 
  
 }
