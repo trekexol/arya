@@ -210,20 +210,6 @@ body{
     <td style="text-align: right;  width: 21%; border-bottom-color: white;">Base Imponible</td>
     <td style="text-align: right;  width: 21%;">{{ number_format(bcdiv($quotation->base_imponible , '1', 2), 2, ',', '.') }}</td>
   </tr>
-  @if ($quotation->retencion_iva != 0)
-    <tr>
-      <td style="text-align: left;  width: 38%; border-bottom-color: white; border-right-color: white;"></td>
-      <td style="text-align: right;  width: 21%; border-bottom-color: white;">Retención de Iva</td>
-      <td style="text-align: right;  width: 21%;">{{ number_format(bcdiv($quotation->retencion_iva , '1', 2), 2, ',', '.') }}</td>
-    </tr> 
-  @endif 
-  @if ($quotation->retencion_islr != 0)
-    <tr>
-      <td style="text-align: left;  width: 38%; border-bottom-color: white; border-right-color: white;"></td>
-      <td style="text-align: right;  width: 21%; border-bottom-color: white;">Retención de ISLR</td>
-      <td style="text-align: right;  width: 21%;">{{ number_format(bcdiv($quotation->retencion_islr , '1', 2), 2, ',', '.') }}</td>
-    </tr> 
-  @endif 
   <tr>
     <td style="text-align: left;  width: 38%; border-bottom-color: white; border-right-color: white;"></td>
     <td style="text-align: right;  width: 21%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</td>
