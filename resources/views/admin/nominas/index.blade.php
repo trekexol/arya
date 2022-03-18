@@ -109,8 +109,8 @@
                             <a href="{{route('nominas.calculate',$nomina->id) }}" title="Calcular Nomina"><i class="fa fa-calculator"></i></a>  
                             <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>  
                             <a href="{{route('nominas.edit',$nomina->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                            <a href="#" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
-                            <a href="#" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
+                            <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
+                            <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
                        </td>
                     @endif
                     </tr>
