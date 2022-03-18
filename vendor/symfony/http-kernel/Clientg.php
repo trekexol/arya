@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @deprecated since Symfony 4.3, use HttpKernelBrowser instead.
  */
-class Client extends AbstractBrowser
+class Clientg extends AbstractBrowser
 {
     protected $kernel;
     private $catchExceptions = true;
