@@ -5,10 +5,10 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Cobro</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
       </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('clients') }}" role="tab" aria-controls="profile" aria-selected="false">Clientes</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('clients') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('anticipos') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Clientes</a>
@@ -25,7 +25,8 @@
     <!-- Page Heading -->
     <div class="row py-lg-4">
       <div class="col-md-4">
-          <h2>Recibos de Cobro</h2>
+          <h2>Recibos de Condominio</h2>
+        
       </div>
         <div class="col-sm-2">
             <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
@@ -36,7 +37,7 @@
             </a>
         </div>
          <div class="col-sm-2">
-            <a href="{{ route('receipt.createreceipt',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Registrar Recibo</a>
+            <a href="{{ route('receipt.createreceipt',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Registrar Gasto de Condomino</a>
           </div>
           <div class="col-sm-3">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Clientes</a>

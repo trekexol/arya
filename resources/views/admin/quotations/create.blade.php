@@ -153,7 +153,7 @@
                                 @enderror
                             </div>
                             <a href="#" onclick="refreshrate()" title="actualizar tasa"><i class="fa fa-redo-alt"></i></a>  
-                            <label  class="col-md-2 col-form-label text-md-right h6">Tasa actual:</label>
+                            <label  class="col-md-2 col-form-label text-md-right h6">Tasa BCV actual:</label>
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="tasaactual" id="tasaacutal">{{ number_format(bcdiv(($bcv), '1', 2), 2, ',', '.')}}</label>
                             </div>
