@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.store_accounts_receivable_note') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.store_accounts_receivable_note') }}">
                     @csrf
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
@@ -45,6 +45,18 @@
                                     @endif
                                 </select>
                             </div>
+                            <div class="col-sm-2  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
                             @if ($typepersone == 'cliente' && isset($client->id))
                             <label id="client_label1" for="clients" class="col-sm-2">Cliente:</label>
                             <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-2">{{ $client->name }} {{ $client->surname }}</label>
@@ -153,7 +165,13 @@
         "order": [],
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
-    
+    function exportToExcel(){
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('export_reports.account_receivable_note') }}";
+        document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
+    }
+
     let client  = "<?php echo $client->name ?? 0 ?>";  
     let vendor  = "<?php echo $vendor->name ?? 0 ?>"; 
 

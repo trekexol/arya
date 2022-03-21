@@ -974,6 +974,7 @@ Route::group(["prefix"=>'export'],function(){
 
     Route::post('productsupdatepriceimport','ExcelController@import_product_update_price')->name('import_product_update_price');
 
+   
   });
 
   Route::group(["prefix"=>'orders'],function(){
@@ -1108,6 +1109,8 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('salesbook','Exports\Reports\SalesBookExportController@exportExcel')->name('export_reports.sales_book');
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
+    Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');
+    
 });
 
 Route::group(["prefix"=>'mails'],function(){
