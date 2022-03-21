@@ -11,6 +11,7 @@
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
                 <input type="hidden" name="id_vendor" value="{{$vendor->id ?? null}}" readonly>
 
+                <input type="hidden" name="coin_form" id="coin_form" value="{{$coin ?? "bolivares"}}" readonly>
 
                 <div class="card-header text-center h4">
                         Notas de Entrega
@@ -166,6 +167,7 @@
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
     function exportToExcel(){
+        document.getElementById("coin_form").value = document.getElementById("coin").value;
         var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.account_receivable_note') }}";
         document.getElementById("formPost").submit();

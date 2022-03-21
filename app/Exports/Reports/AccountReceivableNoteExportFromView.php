@@ -22,7 +22,7 @@ class AccountReceivableNoteExportFromView implements FromView
         $report = new AccountReceivableNoteExportController();
         
         return $report->accounts_receivable_note_pdf(
-            $this->request->coin ?? "bolivares",$this->request->date_end,$this->request->typeinvoice
+            $this->request->coin_form ?? "bolivares",$this->request->date_end,$this->request->typeinvoice
             ,$this->request->type,$this->request->id_client ?? $this->request->id_vendor,$this->request->date_begin);
     
     }
