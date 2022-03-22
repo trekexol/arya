@@ -56,13 +56,25 @@
         //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
 
         $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
-        $total_por_cobrar += $por_cobrar;
-        $total_por_facturar += $quotation->amount_with_iva;
+         
+        if ($quotation->status == 'X') {
+          $total_por_cobrar += 0;
+          $total_por_facturar += 0;
+        } else {
+          $total_por_cobrar += $por_cobrar;
+          $total_por_facturar += $quotation->amount_with_iva;       
+        }
       }else{
         $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
         $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
-        $total_por_cobrar += $por_cobrar;
-        $total_por_facturar += $quotation->amount_with_iva;
+         
+        if ($quotation->status == 'X') {
+          $total_por_cobrar += 0;
+          $total_por_facturar += 0;
+        } else {
+          $total_por_cobrar += $por_cobrar;
+          $total_por_facturar += $quotation->amount_with_iva;       
+        }
       }
 
       $tipo = '';
