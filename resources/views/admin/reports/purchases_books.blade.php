@@ -43,6 +43,7 @@
     <th style="text-align: center; " width="7%">Fecha</th>
     <th style="text-align: center; ">Rif</th>
     <th style="text-align: center; ">Razón Social</th>
+    <th style="text-align: center; ">Factura</th>
     <th style="text-align: center; ">Serie</th>
     <th style="text-align: center; ">Monto</th>
     <th style="text-align: center; ">Base Imponible</th>
@@ -101,6 +102,7 @@
       
       <td style="text-align: center; font-weight: normal;">{{ $expense->providers['code_provider'] ?? '' }}</td>
       <td style="text-align: center; font-weight: normal;">{{ $expense->providers['razon_social'] ?? '' }}</td>
+      <td style="text-align: center; font-weight: normal;">{{ $expense->invoice ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $expense->serie ?? ''}}</td>
       @if (isset($coin) && ($coin == 'bolivares'))
         <td style="text-align: right; font-weight: normal;">{{ number_format($expense->amount ?? 0, 2, ',', '.') }}</td>
@@ -135,6 +137,7 @@
   @endforeach 
   
   <tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
