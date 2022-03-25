@@ -105,7 +105,7 @@
                                     @else
                                         <label for="rate" id="rate_label" class="col-md-4 col-form-label text-md-right">Tasa del Dia</label>                           
                                         <div class="col-md-4">
-                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ $rate }}" autocomplete="rate">
+                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($rate, 2, ',', '.') }}" autocomplete="rate">
             
                                             @error('rate')
                                                 <span class="invalid-feedback" role="alert">
@@ -123,9 +123,9 @@
                                 <br>
                                 <div class="form-group row mb-0">
                                     <div class="col-md-6 offset-md-4">
-                                       <!-- <button type="submit" class="btn btn-primary">
+                                       <button type="submit" class="btn btn-primary">
                                            Actualizar Cuenta
-                                        </button>-->
+                                        </button>
                                         <a href="{{ route('accounts') }}" name="danger" type="button" class="btn btn-danger">Cancelar</a>
                                     </div>
                                     
