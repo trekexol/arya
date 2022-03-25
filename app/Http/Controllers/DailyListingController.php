@@ -35,6 +35,7 @@ class DailyListingController extends Controller
                             ->where('code_three','<>',0)
                             ->where('code_four','<>',0)
                             ->where('code_five', '<>',0)
+                            ->orderBy('description','asc')
                             ->get();
                             
 
