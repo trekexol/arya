@@ -172,7 +172,7 @@
         </div>
     </li>
     @endif
-    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2')  || (Auth::user()->role_id  == '3'))
+    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2')  || (Auth::user()->role_id  == '3')  || (Auth::user()->role_id  == '10'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGastos"
             aria-expanded="true" aria-controls="collapseGastos">
@@ -262,7 +262,7 @@
         </div>
     </li>
     @endif
-    @if (Auth::user()->role_id  == '1')
+    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '10'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseImpuestos"
             aria-expanded="true" aria-controls="collapseImpuestos">
