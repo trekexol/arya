@@ -17,7 +17,7 @@ class AccountReceivableNoteExportController extends Controller
 {
     public function exportExcel(Request $request) 
     {
-      
+       
         $export = new AccountReceivableNoteExportFromView($request);
 
         $export->setter($request);

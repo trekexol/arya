@@ -56,9 +56,9 @@
         
                                     <div class="col-md-4">
                                         @if(isset($var->coin))
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0) / ($var->rate ?? 1), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0) / ($var->rate ?? 1), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @else
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @endif
                                     
                                         @error('balance_previus')
@@ -123,9 +123,9 @@
                                 <br>
                                 <div class="form-group row mb-0">
                                     <div class="col-md-6 offset-md-4">
-                                        <button type="submit" class="btn btn-primary">
+                                       <!-- <button type="submit" class="btn btn-primary">
                                            Actualizar Cuenta
-                                        </button>
+                                        </button>-->
                                         <a href="{{ route('accounts') }}" name="danger" type="button" class="btn btn-danger">Cancelar</a>
                                     </div>
                                     

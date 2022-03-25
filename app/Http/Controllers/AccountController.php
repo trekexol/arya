@@ -549,15 +549,13 @@ class AccountController extends Controller
             //Dolares
             $var->coin = request('coin');
             //Guardo el monto de los dolares multiplicados por la tasa para que sea en bolivares
-            $var->balance_previus = $sin_formato_balance_previus * $sin_formato_rate;
+            //$var->balance_previus = $sin_formato_balance_previus * $sin_formato_rate;
         }else{
             //Bolivares
             $var->coin = null;
-            $var->balance_previus = $sin_formato_balance_previus;
+           // $var->balance_previus = $sin_formato_balance_previus;
         }
         $var->rate = $sin_formato_rate;
-
-        
     
         $var->save();
 
