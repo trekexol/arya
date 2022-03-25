@@ -2,7 +2,7 @@
 
 @section('content')
 
-
+@if (Auth::user()->role_id  == '1')
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
@@ -18,10 +18,24 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('owners') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('anticipos') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
     </li>
   </ul>
+  @endif
 
+
+  @if (Auth::user()->role_id  == '11')
+  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
+      </li>
+
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos</a>
+    </li>
+  </ul>
+  @endif
 
 
 <form method="POST" action="{{ route('invoices.multipayment') }}" enctype="multipart/form-data" >
@@ -35,6 +49,7 @@
           <h2>Recibos de Condominio</h2>
         
       </div>
+      @if (Auth::user()->role_id  == '1')
         <div class="col-sm-3">
             <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
                 <span class="icon text-white-50">
@@ -43,12 +58,16 @@
                 <span class="text">Cobros de Recibos</span>
             </a>
         </div>
+       
           <div class="col-sm-4">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
           </div>
-        <div class="col-sm-2">
+          <div class="col-sm-2">
             <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobros de Recibos</button>
-        </div>
+         </div>
+
+        @endif
+
     </div>
   </div>
   <!-- /.container-fluid -->
