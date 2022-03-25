@@ -559,13 +559,24 @@ Route::group(["prefix"=>'invoices'],function(){
 });
 
 Route::group(["prefix"=>'receipt'],function(){
+
     Route::get('/','ReceiptController@index')->name('receipt');
-  
+    Route::get('receipt','ReceiptController@indexr')->name('receiptr');
+    
+
     Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt'); // Inicio de Creacion de recibo
     Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a clientes
 
     Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
-    Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
+    
+    Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
+
+    //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
+
+     Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
+
+    //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectowners');
+
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
     
@@ -598,7 +609,9 @@ Route::group(["prefix"=>'receipt'],function(){
    // Route::post('storemultipayment','InvoiceController@storemultipayment')->name('invoices.storemultipayment');
 
  });
-
+ Route::group(["prefix"=>'receipts'],function(){
+ 
+ });
 
  Route::group(["prefix"=>'tasas'],function(){
     Route::get('/','TasaController@index')->name('tasas');
@@ -1115,5 +1128,29 @@ Route::group(["prefix"=>'mails'],function(){
 
 Route::group(["prefix"=>'test'],function(){
     Route::get('/','TestController@index')->name('test');
+
+});
+
+
+Route::group(["prefix"=>'condominiums'],function(){
+    Route::get('/','CondominiumsController@index')->name('condominiums');
+    Route::get('register','CondominiumsController@create')->name('condominiums.create');
+    Route::post('store','CondominiumsController@store')->name('condominiums.store');
+
+    Route::get('{id}/edit','CondominiumsController@edit')->name('condominiums.edit');
+    Route::delete('{id}/delete','CondominiumsController@destroy')->name('condominiums.delete');
+    Route::patch('{id}/update','CondominiumsController@update')->name('condominiums.update');
+
+});
+
+
+Route::group(["prefix"=>'owners'],function(){
+    Route::get('/','OwnersController@index')->name('owners');
+    Route::get('register','OwnersController@create')->name('owners.create');
+    Route::post('store','OwnersController@store')->name('owners.store');
+
+    Route::get('{id}/edit','OwnersController@edit')->name('owners.edit');
+    Route::delete('{id}/delete','OwnersController@destroy')->name('owners.delete');
+    Route::patch('{id}/update','OwnersController@update')->name('owners.update');
 
 });

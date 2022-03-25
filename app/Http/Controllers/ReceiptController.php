@@ -5,6 +5,8 @@ use App;
 use App\Account;
 use App\Anticipo;
 use App\Client;
+use App\Condominiums;
+use App\Owners;
 use App\Vendor;
 use App\Company;
 use App\Branch;
@@ -12,11 +14,11 @@ use App\Product;
 use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Http\Controllers\UserAccess\UserAccessController;
-use App\Http\Controllers\Validations\FacturaValidationController;
+use App\Http\Controllers\Validations\ReceiptValidationController;
 use App\Inventory;
-use App\Quotation;
-use App\QuotationPayment;
-use App\QuotationProduct;
+use App\Receipts;
+use App\ReceiptPayment;
+use App\ReceiptProduct;
 use App\Transport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,12 +47,34 @@ class ReceiptController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
            
-            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+            $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                             ->where('date_billing','<>',null)
+                                            ->where('type','=','F')
                                             ->get();
             
     
             return view('admin.receipt.index',compact('quotations','datenow'));
+        }else{
+            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+        }
+    }
+
+
+ 
+    public function indexr()
+    {
+        if($this->userAccess->validate_user_access($this->modulo)){
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+           
+            $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+                                            ->where('date_billing','<>',null)
+                                            ->where('type','=','R')
+                                            ->get();
+            
+    
+            return view('admin.receipt.indexr',compact('quotations','datenow'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -91,6 +115,56 @@ class ReceiptController extends Controller
         } 
     }
 
+    public function createreceiptcondominiums($id_client,$type = null) // seleccionar cliente condominio
+    {
+        $client = null;
+
+            
+        if(isset($id_client)){
+            $client = Condominiums::on(Auth::user()->database_name)->find($id_client);
+        }
+        if(isset($client)){
+
+    
+            $transports     = Transport::on(Auth::user()->database_name)->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');    
+
+            
+            return view('admin.receipt.createreceipt',compact('client','datenow','transports','type'));
+
+        }else{
+            return redirect('/receipt')->withDanger('El Condominio no existe');
+        } 
+    }
+
+
+    public function createreceiptowners($id_client,$type = null) // seleccionar cliente propietario
+    {
+        $client = null;
+
+            
+        if(isset($id_client)){
+            $client = Owners::on(Auth::user()->database_name)->find($id_client);
+        }
+        if(isset($client)){
+
+        /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
+
+            $transports     = Transport::on(Auth::user()->database_name)->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');    
+
+            
+            return view('admin.receipt.createreceipts',compact('client','datenow','transports','type'));
+
+        }else{
+            return redirect('receipt/receiptr')->withDanger('El Propietario no existe');
+        } 
+    }
+
 
 
 
@@ -103,8 +177,7 @@ class ReceiptController extends Controller
         $datenow = $date->format('Y-m-d');    
         $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
         $services = Product::on(Auth::user()->database_name)
-        ->where('type','=','SERVICIO')
-        ->orderBy('description','desc')->get();
+        ->where('type','=','SERVICIO')->get();
 
         if ($id_client != null) {
             $client =  Client::on(Auth::user()->database_name)->find($id_client);
@@ -121,15 +194,33 @@ class ReceiptController extends Controller
 
 
 
-    public function selectclient($type = null)
+    public function selectclient($type = null) // clientes
     {
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         
     
         return view('admin.receipt.selectclient',compact('clients','type'));
     }
+
+
+    public function selectcondominiums($type = null) // clientes condominios
+    {
+        $clients     = Condominiums::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
     
-    public function selectclientfactura($type = null)
+        return view('admin.receipt.selectcondominiums',compact('clients','type'));
+    }
+
+    public function selectowners($type = null) // clientes propietarios
+    {
+        $clients     = Owners::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
+    
+        return view('admin.receipt.selectowners',compact('clients','type'));
+    }
+
+    
+    public function selectclientfactura($type = null) // clientes a factura ??
     {
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         
@@ -147,7 +238,7 @@ class ReceiptController extends Controller
             $quotation = null;
                 
             if(isset($id_quotation)){
-                $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+                $quotation = Receipts::on(Auth::user()->database_name)->find($id_quotation);
             }
 
             if(isset($quotation) && ($quotation->status == 1)){
@@ -203,7 +294,7 @@ class ReceiptController extends Controller
 
 
 
-public function store(Request $request) // Guardar recibo solo
+public function store(Request $request) // Guardar recibo o factura gasto
     {
     
         $data = request()->validate([
@@ -222,10 +313,10 @@ public function store(Request $request) // Guardar recibo solo
      
         if($id_client != '-1'){
             
-                $var = new Quotation();
+                $var = new Receipts();
                 $var->setConnection(Auth::user()->database_name);
 
-                $validateFactura = new FacturaValidationController($var);
+                $validateFactura = new ReceiptValidationController($var);
 
                 $var->id_client = $id_client;
                 $var->id_vendor = $id_vendor;
@@ -270,6 +361,7 @@ public function store(Request $request) // Guardar recibo solo
                 $var->coin = 'bolivares';
         
                 $var->status =  1;
+                $var->type =  'F';
             
                 $var->save();
 
@@ -282,7 +374,7 @@ public function store(Request $request) // Guardar recibo solo
 
             
         }else{
-            return redirect('/receipt/registerreceipt')->withDanger('Debe Buscar un Cliente');
+            return redirect('/receipt/registerreceipt')->withDanger('Debe Buscar un Condominio');
         } 
 
         
@@ -308,14 +400,15 @@ public function store(Request $request) // Guardar recibo solo
         $id_cost_center = request('id_cost_center');
         $id_service = request('service');
 
-        $clients = Client::on(Auth::user()->database_name)
+        $clients = Owners::on(Auth::user()->database_name)
         ->where('id_cost_center','=',$id_cost_center)->get();
 
         //Buscar Factura original
-        $quotations = Quotation::on(Auth::user()->database_name)
+        $quotations = Receipts::on(Auth::user()->database_name)
         ->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
         ->where('id','=',$id_invoice)
+        ->where('type','=','F')
         ->select('quotations.*')
         ->get();
 
@@ -360,11 +453,22 @@ public function store(Request $request) // Guardar recibo solo
 
                 $global = new GlobalController();
                 
-                $var = new Quotation(); //inicio factrua cabecera /////////////////////////
+                $var = new Receipts(); //inicio factrua cabecera /////////////////////////
 
                 $var->setConnection(Auth::user()->database_name);
 
-                $validateFactura = new FacturaValidationController($var);
+                //$validateFactura = new ReceiptsValidationController($var);
+
+                $last_number = Receipts::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->where('type','=','R')->orderBy('number_delivery_note','desc')->first();
+      
+                //Asigno un numero incrementando en 1
+                if(isset($last_number)){
+                    $var->number_delivery_note = $last_number->number_delivery_note + 1;
+                }else{
+                    $var->number_delivery_note = 1;
+                }
+
+
 
                 $var->id_client = $client->id;
                 //$var->id_vendor = $id_vendor;
@@ -382,19 +486,23 @@ public function store(Request $request) // Guardar recibo solo
                 $var->bcv = $quotations[0]['bcv'];
                 $var->coin = 'bolivares';
 
+                $var->base_imponible = 0;
+                $var->amount_exento = 0;
+                $var->amount_iva = 0;
+
+                $montofactura = $quotations[0]['amount_with_iva'];
+                $alicuota_cliente = $client->aliquot;
                 
-                /*$quotations[0]['base_imponible'];
-                $quotations[0]['amount_exento'];
-                $quotations[0]['amount'];
-                $quotations[0]['amount_iva'];
-                $quotations[0]['amount_with_iva'];
-                */
+                $var->amount_iva = ($montofactura*$alicuota_cliente)/100;;
+                $var->amount_with_iva = ($montofactura*$alicuota_cliente)/100;
+
                 $var->status = $quotations[0]['status'];
-            
+                $var->type = 'R';
+
                 $var->save();
                 
                 $id_quotation = DB::connection(Auth::user()->database_name)
-                ->table('quotations')
+                ->table('receipts')
                 ->where('number_invoice','=',$quotations[0]['number_invoice'])
                 ->select('id')
                 ->get()->last(); 
@@ -406,7 +514,7 @@ public function store(Request $request) // Guardar recibo solo
              
                 // Guardar detalle de factura//////////////////////////////
 
-                $quotation = new QuotationProduct(); //inicio factrua cabecera /////////////////////////
+                $quotation = new ReceiptProduct(); //inicio factrua cabecera /////////////////////////
 
                 $quotation->setConnection(Auth::user()->database_name);
                 /*
@@ -446,7 +554,7 @@ public function store(Request $request) // Guardar recibo solo
 
             
         }else{
-             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Cliente');
+             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Propietario');
         } 
 
         
@@ -458,13 +566,13 @@ public function store(Request $request) // Guardar recibo solo
          $quotation = null;
              
          if(isset($id_quotation)){
-             $quotation = Quotation::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+             $quotation = Receipts::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
                                  
          }
  
          if(isset($quotation)){
                 // $product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
-                $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+                $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
      
              $date = Carbon::now();
              $datenow = $date->format('Y-m-d');    
@@ -634,7 +742,7 @@ public function store(Request $request) // Guardar recibo solo
 
         
 
-        $total_facturas = new Quotation;
+        $total_facturas = new Receipts();
         $total_facturas->setConnection(Auth::user()->database_name);
 
         foreach ($array as $key => $item) 
@@ -834,7 +942,7 @@ public function store(Request $request) // Guardar recibo solo
 
                 /*-------------PAGO NUMERO 1----------------------*/
 
-                $var = new QuotationPayment();
+                $var = new ReceiptPayment();
                 $var->setConnection(Auth::user()->database_name);
 
                 $amount_pay = request('amount_pay');
@@ -943,7 +1051,7 @@ public function store(Request $request) // Guardar recibo solo
 
                 /*-------------PAGO NUMERO 2----------------------*/
 
-                $var2 = new QuotationPayment();
+                $var2 = new ReceiptPayment();
                 $var2->setConnection(Auth::user()->database_name);
 
                 $amount_pay2 = request('amount_pay2');
@@ -1053,7 +1161,7 @@ public function store(Request $request) // Guardar recibo solo
 
                     /*-------------PAGO NUMERO 3----------------------*/
 
-                    $var3 = new QuotationPayment();
+                    $var3 = new ReceiptPayment();
                     $var3->setConnection(Auth::user()->database_name);
 
                     $amount_pay3 = request('amount_pay3');
@@ -1163,7 +1271,7 @@ public function store(Request $request) // Guardar recibo solo
 
                     /*-------------PAGO NUMERO 4----------------------*/
 
-                    $var4 = new QuotationPayment();
+                    $var4 = new ReceiptPayment();
                     $var4->setConnection(Auth::user()->database_name);
 
                     $amount_pay4 = request('amount_pay4');
@@ -1273,7 +1381,7 @@ public function store(Request $request) // Guardar recibo solo
 
                 /*-------------PAGO NUMERO 5----------------------*/
 
-                $var5 = new QuotationPayment();
+                $var5 = new ReceiptPayment();
                 $var5->setConnection(Auth::user()->database_name);
 
                 $amount_pay5 = request('amount_pay5');
@@ -1384,7 +1492,7 @@ public function store(Request $request) // Guardar recibo solo
 
                 /*-------------PAGO NUMERO 6----------------------*/
 
-                $var6 = new QuotationPayment();
+                $var6 = new ReceiptPayment();
                 $var6->setConnection(Auth::user()->database_name);
 
                 $amount_pay6 = request('amount_pay6');
@@ -1495,7 +1603,7 @@ public function store(Request $request) // Guardar recibo solo
 
                 /*-------------PAGO NUMERO 7----------------------*/
 
-                $var7 = new QuotationPayment();
+                $var7 = new ReceiptPayment();
                 $var7->setConnection(Auth::user()->database_name);
 
                 $amount_pay7 = request('amount_pay7');
@@ -1620,7 +1728,7 @@ public function store(Request $request) // Guardar recibo solo
                 
             }
             
-            $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+            $quotation = Receipts::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
             $bcv = $quotation->bcv;
             $coin = $quotation->coin;
@@ -2007,12 +2115,12 @@ public function store(Request $request) // Guardar recibo solo
 
         $coin = 'bolivares';
         if(isset($id_quotation)){
-            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+            $quotation = Receipts::on(Auth::user()->database_name)->find($id_quotation);
         }
 
         if(isset($quotation)){
                                                            
-            $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+            $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
 
             
 
@@ -2093,7 +2201,7 @@ public function store(Request $request) // Guardar recibo solo
             $quotation->base_imponible = $base_imponible;
            
            /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
-            $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
+            $client = Condominiums::on(Auth::user()->database_name)->find($quotation->id_client);
 
            
            if($client->percentage_retencion_islr != 0){
@@ -2125,7 +2233,7 @@ public function store(Request $request) // Guardar recibo solo
              $quotation = null;
                  
              if(isset($id_quotation)){
-                 $quotation = Quotation::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+                 $quotation = Receipts::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
               
                                      
              }else{
@@ -2134,7 +2242,7 @@ public function store(Request $request) // Guardar recibo solo
      
              if(isset($quotation)){
 
-                $payment_quotations = QuotationPayment::on(Auth::user()->database_name)
+                $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)
                                             ->where('id_quotation',$quotation->id)
                                             ->where('status',1)
                                             ->get();
@@ -2157,13 +2265,13 @@ public function store(Request $request) // Guardar recibo solo
                     ->get(); 
 
 
-                 $client = Client::on(Auth::user()->database_name) // buscar cliente
+                 $client = Condominiums::on(Auth::user()->database_name) // buscar cliente
                 ->where('id','=',$quotation->id_client)
                 ->get();
 
         
                 //Buscar Factura original
-                $quotationsorigin = Quotation::on(Auth::user()->database_name) // buscar facura original
+                $quotationsorigin = Receipts::on(Auth::user()->database_name) // buscar facura original
                 ->orderBy('id' ,'asc') 
                 ->where('date_billing','<>',null)
                 ->where('number_invoice','=',$quotation->number_invoice)

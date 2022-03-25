@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de Recibo de Cobro</h3></div>
+                <div class="card-header" ><h3>Registro de Factura Gasto de Condominio</h3></div>
 
                 <div class="card-body" >
                    
@@ -42,7 +42,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
+                            <label for="client" class="col-md-2 col-form-label text-md-right">Condominio:</label>
                             <div class="col-md-4">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly required autocomplete="client">
                                 @error('client')

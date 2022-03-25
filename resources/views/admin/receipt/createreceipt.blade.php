@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Recibo de Cobro</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Factura Gasto de Condominio</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('receipt.store') }}" enctype="multipart/form-data">
@@ -64,7 +64,7 @@
                         <div class="form-group row">
                            
                             
-                            <label for="clients" class="col-md-2 col-form-label text-md-right">Cliente</label>
+                            <label for="clients" class="col-md-2 col-form-label text-md-right">Condominio</label>
                             <div class="col-md-3">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
     
@@ -75,7 +75,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-1">
-                                <a href="{{ route('receipt.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                                <a href="{{ route('receipt.selectcondominiums',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
@@ -93,22 +93,7 @@
                         </div>
 
                         
-                        <div class="form-group row">
-                           <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
-                            <div class="col-md-3">
-                                <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }}" readonly required autocomplete="id_vendor">
 
-                                    @error('id_vendor')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                            </div>
-                            <div class="form-group col-md-1">
-                                <a href="{{ route('receipt.selectvendor',[$client->id ?? -1,$type]) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
-                            </div>
-                           
-                        </div>
                        
                        
                         <div class="form-group row">

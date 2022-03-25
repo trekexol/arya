@@ -5,10 +5,10 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
       </li>
 
     <li class="nav-item" role="presentation">
@@ -32,7 +32,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-4">
       <div class="col-md-4">
-          <h2>Facturas Gastos de Condominio</h2>
+          <h2>Recibos de Condominio</h2>
         
       </div>
         <div class="col-sm-3">
@@ -40,11 +40,11 @@
                 <span class="icon text-white-50">
                     <i class="fas fa-hand-holding-usd"></i>
                 </span>
-                <span class="text">Cobros de Factura</span>
+                <span class="text">Cobros de Recibos</span>
             </a>
         </div>
-         <div class="col-sm-4">
-            <a href="{{ route('receipt.createreceipt',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Registrar Factura Gasto de Condomino</a>
+          <div class="col-sm-4">
+            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
           </div>
         <div class="col-sm-2">
             <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobros de Recibos</button>

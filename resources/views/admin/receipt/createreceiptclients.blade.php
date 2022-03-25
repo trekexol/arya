@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Generar Recibos de Clientes</div>
+                <div class="card-header text-center font-weight-bold h3">Generar Recibos de Condominio</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('receipt.storeclients') }}" enctype="multipart/form-data">
@@ -35,7 +35,7 @@
                         <div class="form-group row">
                            
                             
-                            <label for="clients" class="col-md-3 col-form-label text-md-right">Cliente de Factura General</label>
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Cliente del Gasto de Condominio</label>
                             <div class="col-md-3">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
     
@@ -69,7 +69,7 @@
 
                         
                         <div class="form-group row">
-                            <label for="clients" class="col-md-3 col-form-label text-md-right">Factura</label>
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Factura de gasto de Condominio</label>
                             <div class="col-md-8">
                                
                                 @if (isset($invoices_to_pay) && (count($invoices_to_pay)>0))
@@ -102,9 +102,9 @@
 
 
                         <div class="form-group row">
-                            <label for="service" class="col-md-3 col-form-label text-md-right">Cargo a Clientes</label>
+                            <label for="service" class="col-md-3 col-form-label text-md-right">Cargo a Propietarios</label>
                             <div class="col-md-8">
-                                @if(count($services) > 1) 
+                                @if(count($services) >= 1) 
                                 <select  id="service"  name="service" class="form-control" width="20" required>
                                        
                                         @foreach($services as $service)
