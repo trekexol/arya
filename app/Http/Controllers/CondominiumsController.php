@@ -23,15 +23,11 @@ class CondominiumsController extends Controller
 
    public function index()
    {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user= auth()->user();
-
+   
             $clients = Condominiums::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
             
             return view('admin.condominiums.index',compact('clients'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+ 
    }
 
    /**

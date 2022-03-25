@@ -23,15 +23,10 @@ class OwnersController extends Controller
 
    public function index()
    {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user= auth()->user();
 
-            $clients = Owners::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
-            
+            $clients = Owners::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get(); 
             return view('admin.owners.index',compact('clients'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+   
    }
 
    /**

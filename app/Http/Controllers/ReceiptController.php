@@ -42,7 +42,6 @@ class ReceiptController extends Controller
  
     public function index()
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
@@ -54,16 +53,13 @@ class ReceiptController extends Controller
             
     
             return view('admin.receipt.index',compact('quotations','datenow'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+
     }
 
 
  
     public function indexr()
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
@@ -75,9 +71,7 @@ class ReceiptController extends Controller
             
     
             return view('admin.receipt.indexr',compact('quotations','datenow'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+
     }
 
     public function createreceipt($type = null) // crando recibo
@@ -234,7 +228,6 @@ class ReceiptController extends Controller
     public function create($id_quotation,$coin,$type = null) // creando recibo de cobro agregar items
     {
         
-        if($this->userAccess->validate_user_access($this->modulo)){
             $quotation = null;
                 
             if(isset($id_quotation)){
@@ -285,9 +278,7 @@ class ReceiptController extends Controller
                 return redirect('/receipt')->withDanger('No es posible ver esta cotizacion');
             } 
             
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+    
 
     }
 
