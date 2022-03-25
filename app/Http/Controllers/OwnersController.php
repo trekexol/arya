@@ -103,7 +103,7 @@ class OwnersController extends Controller
    
     $users->save();
 
-    return redirect('/clients')->withSuccess('Registro Exitoso!');
+    return redirect('/owners')->withSuccess('Registro Exitoso!');
     }
 
    /**

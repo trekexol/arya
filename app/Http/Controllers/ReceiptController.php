@@ -175,7 +175,7 @@ class ReceiptController extends Controller
 
         if ($id_client != null) {
             $client =  Client::on(Auth::user()->database_name)->find($id_client);
-            $invoices_to_pay = Quotation::on(Auth::user()->database_name)->whereIn('status',['P'])->where('id_client',$id_client)->get();
+            $invoices_to_pay = Receipts::on(Auth::user()->database_name)->whereIn('status',['P'])->where('id_client',$id_client)->get();
         
         } else {
             $client = null;
@@ -235,7 +235,6 @@ class ReceiptController extends Controller
             }
 
             if(isset($quotation) && ($quotation->status == 1)){
-                //$inventories_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                 ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                 ->where('quotation_products.id_quotation',$id_quotation)
@@ -562,7 +561,6 @@ public function store(Request $request) // Guardar recibo o factura gasto
          }
  
          if(isset($quotation)){
-                // $product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
      
              $date = Carbon::now();
@@ -603,7 +601,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
         ]);
 
         
-        $var = new QuotationProduct();
+        $var = new ReceiptProduct();
         $var->setConnection(Auth::user()->database_name);
 
         $var->id_quotation = request('id_quotation');
@@ -626,7 +624,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
         $coin = request('coin');
 
-        $quotation = Quotation::on(Auth::user()->database_name)->find($var->id_quotation);
+        $quotation = Receipts::on(Auth::user()->database_name)->find($var->id_quotation);
 
         $var->rate = $quotation->bcv;
 
@@ -696,7 +694,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
-            $quotation = Quotation::on(Auth::user()->database_name)->find($id_invoice);
+            $quotation = Receipts::on(Auth::user()->database_name)->find($id_invoice);
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
                                             ->where('id_invoice',$id_invoice)
                                             ->where('status','C')
@@ -1912,7 +1910,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
         foreach($facturas_a_procesar as $factura){
             
-            $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($factura);
+            $quotation = Receipts::on(Auth::user()->database_name)->findOrFail($factura);
             
             $payment = $global->add_payment($quotation,$id_account,3,$quotation->amount_with_iva,$bcv);
 
@@ -1924,7 +1922,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
     
     public function procesar_quotation($id_quotation,$total_pay)
     {
-        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+        $quotation = Receipts::on(Auth::user()->database_name)->findOrFail($id_quotation);
         
         /*descontamos el inventario, si existe la fecha de nota de entrega, significa que ya hemos descontado del inventario, por ende no descontamos de nuevo*/
         if(!isset($quotation->date_delivery_note) && !isset($quotation->date_order)){
@@ -2029,7 +2027,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
             foreach($inventories_quotations as $inventories_quotation){
 
-                $quotation_product = QuotationProduct::on(Auth::user()->database_name)->findOrFail($inventories_quotation->id_quotation);
+                $quotation_product = ReceiptProduct::on(Auth::user()->database_name)->findOrFail($inventories_quotation->id_quotation);
 
                 if(isset($quotation_product)){
                 $inventory = Inventory::on(Auth::user()->database_name)->findOrFail($quotation_product->id_inventory);
