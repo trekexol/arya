@@ -35,7 +35,7 @@
                         <div class="form-group row">
                            
                             
-                            <label for="clients" class="col-md-3 col-form-label text-md-right">Cliente del Gasto de Condominio</label>
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Condominio</label>
                             <div class="col-md-3">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
     
@@ -69,7 +69,7 @@
 
                         
                         <div class="form-group row">
-                            <label for="clients" class="col-md-3 col-form-label text-md-right">Factura de gasto de Condominio</label>
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Gasto de Condominio</label>
                             <div class="col-md-8">
                                
                                 @if (isset($invoices_to_pay) && (count($invoices_to_pay)>0))

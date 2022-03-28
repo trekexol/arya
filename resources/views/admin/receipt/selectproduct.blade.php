@@ -57,7 +57,7 @@
                     @foreach ($inventories as $product)
                         <tr>
                             <td>
-                                <a href="{{ route('quotations.createproduct',[$id_quotation,$coin,$product->id,$type_quotation ?? null]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                <a href="{{ route('receipt.createproduct',[$id_quotation,$coin,$product->id,$type_quotation ?? null]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                              </td>
                             <td>{{$product->description}}</td>
                             <td>{{$product->segments['description']}}</td>

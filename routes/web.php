@@ -535,7 +535,6 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
     
-
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
     Route::get('facturamedia/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura_media')->name('pdf.media');
@@ -554,7 +553,7 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
 
-    Route::get('receipt/{id_quotation}/{coin?}','ReceiptController@imprimirfactura')->name('pdf.receipt');
+
 
 });
 
@@ -572,11 +571,8 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
 
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
-
      Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
-
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectowners');
-
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
     
@@ -595,12 +591,46 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('receiptfacturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createreceiptfacturado')->name('receipt.createreceiptfacturado');
 
+    Route::get('receiptproduct/{id}/{coin}/edit','ReceiptController@editquotationproduct')->name('receipt.productedit');
+
+    Route::patch('productupdate/{id}/update','ReceiptController@updatequotationproduct')->name('receipt.productupdate');
+    Route::delete('deleteproduct','ReceiptController@deleteProduct')->name('receipt.deleteProduct');
+
+    Route::get('facturar/{id_quotation}/{coin}','ReceiptController@createfacturar')->name('receipt.createfacturar');
+    
+    Route::post('storefacturacredit','ReceiptController@storefacturacredit')->name('receipt.storefacturacredit');
+     
+    Route::post('storefactura','ReceiptController@storefactura')->name('receipt.storefactura');
+    Route::get('facturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createfacturado')->name('receipt.createfacturado');
+    Route::get('reversarquotationmultipayment/{id}/{id_header?}','ReceiptController@reversar_quotation_multipayment')->name('receipt.reversar_quotation_multipayment');
+    Route::delete('reversarquotation','ReceiptController@reversar_quotation')->name('receipt.reversarQuotation');
+ 
+    Route::get('factura/{id_quotation}/{coin?}','ReceiptController@imprimirfactura')->name('pdf.receiptfac');
+    Route::get('facturamedia/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_media')->name('pdf.receiptfacmedia');
+    Route::get('factura_maq/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_maq')->name('pdf.receiptfacmaq');
+    
+    Route::get('movementinvoice/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
+
+    /*
+
+    Route::get('listinventory/{var?}','QuotationController@listinventory')->name('quotations.listinventory');
+    Route::get('notadeentrega/{id_quotation}/{coin}','DeliveryNoteController@createdeliverynote')->name('quotations.createdeliverynote');
+    Route::get('indexnotasdeentrega/','DeliveryNoteController@index')->name('quotations.indexdeliverynote');
+    Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');
+    Route::patch('productupdate/{id}/update','QuotationController@updatequotationproduct')->name('quotations.productupdate');
+
+    Route::get('facturarafter/{id_quotation}/{coin}','FacturarController@createfacturar_after')->name('quotations.createfacturar_after');
+    Route::get('refreshrate/{id_quotation}/{coin}/{rate}','QuotationController@refreshrate')->name('quotations.refreshrate');
+    Route::delete('deleteproduct','QuotationController@deleteProduct')->name('quotations.deleteProduct');
+    Route::delete('deletequotation','QuotationController@deleteQuotation')->name('quotations.deleteQuotation');
+    Route::delete('reversarquotation','QuotationController@reversar_quotation')->name('quotations.reversarQuotation');
+    Route::get('reversarquotationmultipayment/{id}/{id_header?}','QuotationController@reversar_quotation_multipayment')->name('quotations.reversar_quotation_multipayment');
+    Route::delete('reversardeliverynote','DeliveryNoteController@reversar_delivery_note')->name('quotations.reversar_delivery_note'); */
+
 
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
     Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
-
-
 
 
     Route::get('movementreceipt/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');

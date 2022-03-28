@@ -176,7 +176,7 @@
                                         
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>  
                                     
-                                        <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
+                                        <a href="{{ route('receipt.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                                         
                                     </div>
                                     
@@ -344,7 +344,7 @@
                                                     
                                                 ?>
                                                     <td style="text-align: right">
-                                                        <a href="{{ route('quotations.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                                        <a href="{{ route('receipt.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                                                         <a href="#" class="delete" data-id={{$var->quotation_products_id}} data-description={{$var->description}} data-id-quotation={{$quotation->id}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                                     </td>
                                             
@@ -388,7 +388,7 @@
                                         @endif  
                                         
                                     @else
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
+                                        <a href="{{ route('receipt.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
                                         @if (empty($quotation->date_order))
                                             <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif
@@ -425,7 +425,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('quotations.deleteProduct') }}" method="post">
+            <form action="{{ route('receipt.deleteProduct') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <input id="id_quotation_product_modal" type="hidden" class="form-control @error('id_quotation_product_modal') is-invalid @enderror" name="id_quotation_product_modal" readonly required autocomplete="id_quotation_product_modal">

@@ -6,7 +6,7 @@
     <div class="row py-lg-2">
        
         <div class="col-md-6">
-            <h2>Seleccione un Cliente de la Factura</h2>
+            <h2>Seleccione un Condominio</h2>
         </div>
         
     
