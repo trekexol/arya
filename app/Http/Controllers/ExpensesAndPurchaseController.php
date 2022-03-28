@@ -332,7 +332,11 @@ class ExpensesAndPurchaseController extends Controller
                     ->where('code_three', 3)
                     ->where('code_four',1)
                     ->where('code_five', '<>',0)
+<<<<<<< Updated upstream
                     ->orderBy('description','ASC')
+=======
+                    ->orderBy('description','asc')
+>>>>>>> Stashed changes
                     ->get();
                 }else{
                     $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',5)
@@ -340,7 +344,11 @@ class ExpensesAndPurchaseController extends Controller
                     ->where('code_three', '<>',0)
                     ->where('code_four', '<>',0)
                     ->where('code_five', '<>',0)
+<<<<<<< Updated upstream
                     ->orderBy('description','ASC')
+=======
+                    ->orderBy('description','asc')
+>>>>>>> Stashed changes
                     ->get();
                 }
                 
@@ -466,14 +474,19 @@ class ExpensesAndPurchaseController extends Controller
                         ->where('code_four', 2)
                         ->where('code_five', '<>',0)
                         ->where('description','not like', 'Punto de Venta%')
+                        ->orderBy('description','asc')
                         ->get();
+
             $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                         ->where('code_two', 1)
                         ->where('code_three', 1)
                         ->where('code_four', 1)
                         ->where('code_five', '<>',0)
+                        ->orderBy('description','asc')
                         ->get();
+
             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+                        ->orderBy('description','asc')            
                         ->get();
           
              $total= 0;
@@ -596,14 +609,17 @@ class ExpensesAndPurchaseController extends Controller
                         ->where('code_four', 2)
                         ->where('code_five', '<>',0)
                         ->where('description','not like', 'Punto de Venta%')
+                        ->orderBy('description','asc')
                         ->get();
             $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                         ->where('code_two', 1)
                         ->where('code_three', 1)
                         ->where('code_four', 1)
                         ->where('code_five', '<>',0)
+                        ->orderBy('description','asc')
                         ->get();
-            $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+            $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')            
+                        ->orderBy('description','asc')
                         ->get();
           
              $total= 0;
@@ -703,29 +719,29 @@ class ExpensesAndPurchaseController extends Controller
 
 
 
-                                    $user       =   auth()->user();
-                                    $users_role =   $user->role_id;
-                             
-                                     $global = new GlobalController();
-                                     $inventories = Product::on(Auth::user()->database_name)
-                                   
-                                     ->where(function ($query){
-                                         $query->where('type','MERCANCIA')
-                                             ->orWhere('type','COMBO')
-                                             ->orWhere('type','MATERIAP')
-                                             ->orWhere('type','SERVICIO');
-                                     })
-                             
-                             
-                                     ->where('products.status',1)
-                                     ->select('products.id as id_inventory','products.*')  
-                                     ->get();     
-                                     
-                                     foreach ($inventories as $inventorie) {
-                                         
-                                         $inventorie->amount = 11;
-                             
-                                     }
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+    
+            $global = new GlobalController();
+            $inventories = Product::on(Auth::user()->database_name)
+        
+            ->where(function ($query){
+                $query->where('type','MERCANCIA')
+                    ->orWhere('type','COMBO')
+                    ->orWhere('type','MATERIAP')
+                    ->orWhere('type','SERVICIO');
+            })
+    
+    
+            ->where('products.status',1)
+            ->select('products.id as id_inventory','products.*')  
+            ->get();     
+            
+            foreach ($inventories as $inventorie) {
+                
+                $inventorie->amount = 11;
+    
+            }
 
         
             return view('admin.expensesandpurchases.selectinventary',compact('type','coin','inventories','id_expense'));
@@ -2827,6 +2843,7 @@ class ExpensesAndPurchaseController extends Controller
                                                                         ->where('code_three', 3)
                                                                         ->where('code_four',1)
                                                                         ->where('code_five', '<>',0)
+                                                                        ->orderBy('description','asc')
                                                                         ->get();
                 }
                 
@@ -2836,7 +2853,9 @@ class ExpensesAndPurchaseController extends Controller
                                                                 ->where('code_two', '<>',0)
                                                                 ->where('code_three', '<>',0)
                                                                 ->where('code_four', '<>',0)
-                                                                ->where('code_five', '<>',0)->get();
+                                                                ->where('code_five', '<>',0)
+                                                                ->orderBy('description','asc')
+                                                                ->get();
                     return response()->json($respuesta,200);
                 }
                 if($type == 4){
@@ -2845,7 +2864,9 @@ class ExpensesAndPurchaseController extends Controller
                                         ->where('code_two', '<>',0)
                                         ->where('code_three', '<>',0)
                                         ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)->get();
+                                        ->where('code_five', '<>',0)
+                                        ->orderBy('description','asc')
+                                        ->get();
                     return response()->json($respuesta,200);
                 }
                 if($type == 5){
@@ -2854,7 +2875,9 @@ class ExpensesAndPurchaseController extends Controller
                                         ->where('code_two', '<>',0)
                                         ->where('code_three', '<>',0)
                                         ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)->get();
+                                        ->where('code_five', '<>',0)
+                                        ->orderBy('description','asc')
+                                        ->get();
                     return response()->json($respuesta,200);
                 }
                 if($type == 6){
@@ -2863,7 +2886,9 @@ class ExpensesAndPurchaseController extends Controller
                                         ->where('code_two', '<>',0)
                                         ->where('code_three', '<>',0)
                                         ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)->get();
+                                        ->where('code_five', '<>',0)
+                                        ->orderBy('description','asc')
+                                        ->get();
                     return response()->json($respuesta,200);
                 }
                 if($type == 7){
@@ -2872,7 +2897,9 @@ class ExpensesAndPurchaseController extends Controller
                                         ->where('code_two', '<>',0)
                                         ->where('code_three', '<>',0)
                                         ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)->get();
+                                        ->where('code_five', '<>',0)
+                                        ->orderBy('description','asc')
+                                        ->get();
                     return response()->json($respuesta,200);
                 }
                 
