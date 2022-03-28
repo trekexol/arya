@@ -332,11 +332,7 @@ class ExpensesAndPurchaseController extends Controller
                     ->where('code_three', 3)
                     ->where('code_four',1)
                     ->where('code_five', '<>',0)
-<<<<<<< Updated upstream
-                    ->orderBy('description','ASC')
-=======
                     ->orderBy('description','asc')
->>>>>>> Stashed changes
                     ->get();
                 }else{
                     $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',5)
@@ -344,11 +340,7 @@ class ExpensesAndPurchaseController extends Controller
                     ->where('code_three', '<>',0)
                     ->where('code_four', '<>',0)
                     ->where('code_five', '<>',0)
-<<<<<<< Updated upstream
-                    ->orderBy('description','ASC')
-=======
                     ->orderBy('description','asc')
->>>>>>> Stashed changes
                     ->get();
                 }
                 
