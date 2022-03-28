@@ -107,7 +107,7 @@
 
 @endif
 
-@if (Auth::user()->id_company  == '16' & (Auth::user()->role_id  == '1'))
+@if (Auth::user()->id_company  == '9' & (Auth::user()->role_id  == '1'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">
@@ -129,7 +129,7 @@
     </li>
     @endif
 
-    @if ((Auth::user()->id_company  == '16') & (Auth::user()->role_id  == '11'))
+    @if ((Auth::user()->id_company  == '9') & (Auth::user()->role_id  == '11'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">

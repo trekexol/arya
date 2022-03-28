@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" >Facturar</div>
+                <div class="card-header" ><h3>Imprimir Relación Nº {{$quotation->number_invoice ?? ''}}</h3></div>
                 
                 <div class="card-body" >
                         
@@ -202,7 +202,7 @@
                         <div class="form-group row">
                            
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Factura</a>  
+                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Relación de Gasto</a>  
                             </div>
                             
                             <div class="col-sm-3  dropdown mb-4">
@@ -214,10 +214,10 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Media Carta</a>  
-                                    <a href="#" onclick="pdf_maq();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Imprimir Matricial Carta</a> 
+                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Ver Relación de Gasto Media Carta</a>  
+                                    <a href="#" onclick="pdf_maq();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Ver Relación de Gasto Matricial Carta</a> 
 
-                                    <a href="#" class="dropdown-item bg-light delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar</a> 
+                                    <a href="#" class="dropdown-item bg-light delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Relación de Gasto</a> 
                                 </div>
                             </div> 
                            
@@ -254,7 +254,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <a href="{{ route('quotations.reversar_quotation_multipayment',[$quotation->id,$reverso ?? null]) }}" type="submit" class="btn btn-danger">Eliminar</a>
+                <a href="{{ route('receipt.reversar_quotation_multipayment',[$quotation->id,$reverso ?? null]) }}" type="submit" class="btn btn-danger">Eliminar</a>
             </div>
             
         </div>
@@ -271,7 +271,7 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('quotations.reversarQuotation') }}" method="post">
+            <form action="{{ route('receipt.reversarQuotation') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <div class="modal-body">
@@ -306,7 +306,7 @@
 
             $("#coin").on('change',function(){
                 coin = $(this).val();
-                window.location = "{{route('quotations.createfacturado', [$quotation->id,''])}}"+"/"+coin;
+                window.location = "{{route('receipt.createfacturado', [$quotation->id,''])}}"+"/"+coin;
             });
 
             $(document).on('click','.delete',function(){

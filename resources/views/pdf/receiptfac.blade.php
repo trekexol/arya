@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  
-<title>Factura</title>
+<title>Relación</title>
 <style>
   table, td, th {
     border: 1px solid black;
@@ -29,7 +29,7 @@
     <br>
     @endfor
   @endif
-<h4 style="color: black"> FACTURA NRO: {{ str_pad($quotation->number_invoice ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
+<h4 style="color: black"> RELACIÓN DE GASTO NRO: {{ str_pad($quotation->number_invoice ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
 
  
    
@@ -37,10 +37,10 @@
 <table style="width: 60%;">
   @if (isset($company->franqueo_postal))
     @if ($company->franqueo_postal > 0)
-    <tr>
-      <th style="font-weight: normal; width: 20%;">Concesión Postal:</th>
-      <th style="font-weight: normal; width: 40%;">Nº {{ $company->franqueo_postal ?? ''}}</th>
-    </tr>
+      <tr>
+        <th style="font-weight: normal; width: 20%;">Concesión Postal:</th>
+        <th style="font-weight: normal; width: 40%;">Nº {{ $company->franqueo_postal ?? ''}}</th>
+      </tr>
     @endif
   @endif
   
