@@ -544,13 +544,18 @@ class Report2Controller extends Controller
                         ,'header_vouchers.description as header_description'
                         ,'header_vouchers.id as id_header'
                         ,'header_vouchers.date as date')
+                ->whereRaw(
+                            "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
+                            [$date_begin, $date_end])
+                ->whereIn('detail_vouchers.status', ['F','C'])
                 ->orderBy('accounts.code_one','asc')
                 ->orderBy('accounts.code_two','asc')
                 ->orderBy('accounts.code_three','asc')
                 ->orderBy('accounts.code_four','asc')
                 ->orderBy('accounts.code_five','asc')
                 ->get();
-        
+                
+       
         $pdf = $pdf->loadView('admin.reports.ledger',compact('company','datenow','details','date_begin','date_end'));
         return $pdf->stream();
                  
