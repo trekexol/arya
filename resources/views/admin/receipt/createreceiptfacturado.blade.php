@@ -26,12 +26,12 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" >Facturar</div>
+                <div class="card-header" >Relación Gasto de Condominio</div>
                 
                 <div class="card-body" >
                         
                     <div class="form-group row">
-                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Factura:</label>
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº:</label>
                         <div class="col-md-4">
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
                         </div>
@@ -51,7 +51,7 @@
               
                     
                     <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Cliente: </label>
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Condominio: </label>
                             <div class="col-md-4">
                                 <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $quotation->clients['name']  ?? '' }}" readonly>
 
@@ -73,7 +73,7 @@
                             
                         </div>
                         <div class="form-group row">
-                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
+                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($quotation->amount / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
     
@@ -202,7 +202,7 @@
                         <div class="form-group row">
                            
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Factura</a>  
+                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimirm Relación de Gasto</a>  
                             </div>
                             
                             <div class="col-sm-3  dropdown mb-4">
@@ -221,9 +221,9 @@
                                 </div>
                             </div> 
                            
-                            <div class="col-md-3">
-                                <a href="{{ route('receipt.movement',[$quotation->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
-                            </div>
+                            <!-- <div class="col-md-3">
+                                <a href="{{ ''/*route('receipt.movement',[$quotation->id,$coin])*/ }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                            </div> -->
                            
                             <div class="col-md-2">
                                 <a href="{{ route('receipt') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Listado</a>  
@@ -249,7 +249,7 @@
            
                 <h5 class="text-center">Esta factura fue pagada con multipago, al reversarla, reversará todas las facturas 
                     realizadas en el multipago.</h5>
-                <h5 class="text-center">Seguro quiere reversar todas las facturas?</h5>
+                <h5 class="text-center">Seguro quiere reversar todas?</h5>
                 
             </div>
             <div class="modal-footer">
@@ -266,16 +266,16 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Eliminar Factura</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('quotations.reversarQuotation') }}" method="post">
+            <form action="{{ route('receipt.reversarQuotation') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <div class="modal-body">
-                    <h5 class="text-center">Seguro quiere reversar la factura?</h5>
+                    <h5 class="text-center">Seguro quiere reversar?</h5>
                     <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
                     
                 </div>

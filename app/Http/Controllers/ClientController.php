@@ -59,7 +59,7 @@ class ClientController extends Controller
         $data = request()->validate([
             'type_code'         =>'required|max:20',
             'id_user'         =>'required',
-            'direction'         =>'required|max:200',
+            'direction'         =>'required|max:300',
             'city'         =>'required',
             'country'         =>'required',
             'phone1'         =>'required',
@@ -159,7 +159,7 @@ class ClientController extends Controller
         
         'razon_social'         =>'required|max:100',
         'cedula_rif'         =>'required',
-        'direction'         =>'required|max:200',
+        'direction'         =>'required|max:300',
         'city'         =>'required',
         'country'         =>'required',
         'phone1'         =>'required',

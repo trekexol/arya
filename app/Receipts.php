@@ -10,6 +10,10 @@ class Receipts extends Model
         return $this->belongsTo('App\Condominiums','id_client');
     }
 
+    public function owners(){
+        return $this->belongsTo('App\Owners','id_client');
+    }
+
     public function receipt_product() {
         return $this->hasMany('App\receiptProduct');   
     }

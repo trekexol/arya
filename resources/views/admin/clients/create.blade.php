@@ -77,7 +77,7 @@
                                 @enderror
                             </div>
 
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
+                            <label for="namecomerc" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
 
                             <div class="col-md-4">
                                 <input id="namecomercial" type="text" class="form-control @error('namecomercial') is-invalid @enderror" name="namecomercial" value="{{ old('namecomercial') }}" autocomplete="namecomercial">

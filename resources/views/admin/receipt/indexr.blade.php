@@ -96,7 +96,7 @@
             <tr> 
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
-                <th class="text-center">Nota</th>
+                <th class="text-center">Relación</th>
                 <th class="text-center">Ctrl/Serie</th>
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Vendedor</th>
@@ -135,16 +135,16 @@
                         <tr>
                             <td class="text-center font-weight-bold" style="width:11%;">{{date_format(date_create($quotation->date_billing),"d-m-Y") ?? ''}} </td>
                             @if ($quotation->status == "X")
-                                <td class="text-center font-weight-bold">{{ $quotation->number_invoice }}
+                                <td class="text-center font-weight-bold">{{ $quotation->number_delivery_note }}
                                 </td>
                             @else
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
+                                    <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_delivery_note }}</a>
                                 </td>
                             @endif
-                            <td class="text-center font-weight-bold">{{$quotation->number_delivery_note ?? ''}}</td>
+                            <td class="text-center font-weight-bold">{{$quotation->number_invoice ?? ''}}</td>
                             <td class="text-center font-weight-bold" style="width:11%;">{{$quotation->serie ?? ''}}</td>
-                            <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
+                            <td class="text-center font-weight-bold">{{$quotation->owners['name'] ?? ''}}  </td>
                             <td class="text-center font-weight-bold">{{$quotation->vendors['name'] ?? ''}} {{$quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
@@ -169,11 +169,11 @@
                             @else
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
                                 @else
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
                                 <td>

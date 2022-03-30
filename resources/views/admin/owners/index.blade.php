@@ -101,7 +101,7 @@
 
                                 
                                 <td>
-                                    <a href="clients/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                    <a href="owners/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 </td>
                             </tr>     
                         @endforeach   

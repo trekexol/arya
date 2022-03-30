@@ -221,10 +221,13 @@
                                 </div>
                             </div> 
                            
-                            <div class="col-md-3">
-                                <a href="{{ route('receipt.movement',[$quotation->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
-                            </div>
-                           
+
+                                                      
+                            <!-- <div class="col-md-3">
+                                <a href="{{ ''/*route('receipt.movement',[$quotation->id,$coin])*/ }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                            </div> -->
+
+
                             <div class="col-md-2">
                                 <a href="{{ route('receipt') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Listado</a>  
                             </div>
