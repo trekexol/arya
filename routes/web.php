@@ -610,6 +610,8 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('factura_maq/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_maq')->name('pdf.receiptfacmaq');
     
     Route::get('movementinvoice/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
+   
+    Route::get('facturarafter/{id_quotation}/{coin}','ReceiptController@createfacturar_after')->name('receipt.createfacturar_after');
 
     /*
 

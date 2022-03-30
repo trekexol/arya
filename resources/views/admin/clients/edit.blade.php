@@ -83,7 +83,7 @@
                                 @enderror
                             </div>
 
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección f</label>
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
 
                             <div class="col-md-4">
                                 <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $var->direction }}" required autocomplete="direction">

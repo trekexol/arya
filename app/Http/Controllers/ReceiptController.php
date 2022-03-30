@@ -289,10 +289,9 @@ class ReceiptController extends Controller
 
 
 
-public function store(Request $request) // Guardar recibo o factura gasto
+public function store(Request $request) // Empezar a Crear Factura 
     {
        
-        dd ('msage store');
 
         $data = request()->validate([
             
@@ -379,183 +378,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
 
 
-    public function storeclients(Request $request) // Generar recibo de Clientes
-    {
-    
-        $data = request()->validate([
-            
-        
-            'id_client'         =>'required',
-            'id_invoice'        =>'required',
-            'service'           =>'required'
-  
-        
-        ]);
-
-        $id_client = request('id_client');
-        $id_invoice = request('id_invoice');
-        $id_cost_center = request('id_cost_center');
-        $id_service = request('service');
-
-        $clients = Owners::on(Auth::user()->database_name)
-        ->where('id_cost_center','=',$id_cost_center)->get();
-
-        //Buscar Factura original
-        $quotations = Receipts::on(Auth::user()->database_name)
-        ->orderBy('number_invoice' ,'desc')
-        ->where('date_billing','<>',null)
-        ->where('id','=',$id_invoice)
-        ->where('type','=','F')
-        ->select('quotations.*')
-        ->get();
-
-
-        //dd($quotations[0]['number_invoice']);
-
-      /*  $quotations[0]['number_invoice'];
-        $quotations[0]['number_delivery_note'];
-        $quotations[0]['number_order'];
-        $quotations[0]['id_client'];
-        $quotations[0]['id_vendor'];
-        $quotations[0]['id_transport'];
-        $quotations[0]['id_user'];
-        $quotations[0]['serie'];
-        $quotations[0]['date_quotation'];
-        $quotations[0]['date_billing'];
-        $quotations[0]['date_delivery_note'];
-        $quotations[0]['date_order'];
-        $quotations[0]['anticipo'];
-        $quotations[0]['iva_percentage'];
-        $quotations[0]['observation'];
-        $quotations[0]['note'];
-        $quotations[0]['credit_days'];
-        $quotations[0]['coin'];
-        $quotations[0]['bcv'];
-        $quotations[0]['retencion_iva'];
-        $quotations[0]['retencion_islr'];
-        $quotations[0]['base_imponible'];
-        $quotations[0]['amount_exento'];
-        $quotations[0]['amount'];
-        $quotations[0]['amount_iva'];
-        $quotations[0]['amount_with_iva'];
-        $quotations[0]['status'];
-        $quotations[0]['created_at'];
-        $quotations[0]['updated_at'];*/
- 
-        
-        if(!empty($quotations) & $id_client != '-1'){  
-               
-            
-            foreach ($clients as $client) {
-
-                $global = new GlobalController();
-                
-                $var = new Receipts(); //inicio factrua cabecera /////////////////////////
-
-                $var->setConnection(Auth::user()->database_name);
-
-                //$validateFactura = new ReceiptsValidationController($var);
-
-                $last_number = Receipts::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->where('type','=','R')->orderBy('number_delivery_note','desc')->first();
-      
-                //Asigno un numero incrementando en 1
-                if(isset($last_number)){
-                    $var->number_delivery_note = $last_number->number_delivery_note + 1;
-                }else{
-                    $var->number_delivery_note = 1;
-                }
-
-
-
-                $var->id_client = $client->id;
-                //$var->id_vendor = $id_vendor;
-                $id_transport = $quotations[0]['id_transport'];
-                $type = 'factura';
-                $var->date_billing = $quotations[0]['date_billing'];
-                $var = $validateFactura->validateNumberInvoice();
-                $var->id_transport = $quotations[0]['id_transport'];
-                $var->number_invoice = $quotations[0]['number_invoice'];
-                $var->id_user = $quotations[0]['id_user'];
-                $var->serie = $quotations[0]['serie'];
-                $var->date_quotation = $quotations[0]['date_quotation'];
-                $var->observation = $quotations[0]['observation'];
-                $var->note = 'cabecera 2';
-                $var->bcv = $quotations[0]['bcv'];
-                $var->coin = 'bolivares';
-
-                $var->base_imponible = 0;
-                $var->amount_exento = 0;
-                $var->amount_iva = 0;
-
-                $montofactura = $quotations[0]['amount_with_iva'];
-                $alicuota_cliente = $client->aliquot;
-                
-                $var->amount_iva = ($montofactura*$alicuota_cliente)/100;;
-                $var->amount_with_iva = ($montofactura*$alicuota_cliente)/100;
-
-                $var->status = $quotations[0]['status'];
-                $var->type = 'R';
-
-                $var->save();
-                
-                $id_quotation = DB::connection(Auth::user()->database_name)
-                ->table('receipts')
-                ->where('number_invoice','=',$quotations[0]['number_invoice'])
-                ->select('id')
-                ->get()->last(); 
-
-              /*  $historial_quotation = new HistorialQuotationController();
-
-                $historial_quotation->registerAction($var,"quotation","Creó Cotización");
-              */
-             
-                // Guardar detalle de factura//////////////////////////////
-
-                $quotation = new ReceiptProduct(); //inicio factrua cabecera /////////////////////////
-
-                $quotation->setConnection(Auth::user()->database_name);
-                /*
-                id_quotation 
-                $quotation->id_inventory 
-                $quotation->amount
-                discount
-                $quotation->price
-                $quotation->rate
-                retiene_iva
-                retiene_islr
-                status
-                id_inventory_histories
-                created_at
-                updated_at*/
-                $quotation->id_quotation = $id_quotation->id;
-                $quotation->id_inventory = $id_service;
-                $quotation->amount = 1;
-
-                $montofactura = $quotations[0]['amount_with_iva'];
-                $alicuota_cliente = $client->aliquot;;
-
-                $quotation->price = ($montofactura*$alicuota_cliente)/100;
-                $quotation->discount = 0;
-                $quotation->retiene_iva = 0;
-                $quotation->retiene_islr = 0;
-                $quotation->rate = $quotations[0]['bcv'];
-                $quotation->status = 'C';
-                $quotation->id_inventory_histories = 0;
-                $quotation->save();
-
-            }
-//////////////////////////////
-
-
-            return redirect('receipt');
-
-            
-        }else{
-             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Propietario');
-        } 
-
-        
-    }
+   
 
 
     public function createreceiptfacturado($id_quotation,$coin,$reverso = null)
@@ -695,6 +518,140 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
 
 
+    public function storeclients(Request $request) // Generar recibo de propietarios
+    {
+    
+        $data = request()->validate([
+            
+        
+            'id_client'         =>'required',
+            'id_invoice'        =>'required',
+            'service'           =>'required'
+  
+        
+        ]);
+
+        $id_client = request('id_client');
+        $id_invoice = request('id_invoice');
+        $id_cost_center = request('id_cost_center');
+        $id_service = request('service');
+
+        $clients = Owners::on(Auth::user()->database_name) // propietario del condominio
+        ->where('id_cost_center','=',$id_cost_center)->get();
+
+        //Buscar Factura original
+        $quotations = Receipts::on(Auth::user()->database_name)
+        ->orderBy('number_invoice' ,'desc')
+        ->where('id','=',$id_invoice)
+        ->where('type','=','F')
+        ->select('receipts.*')
+        ->get();
+
+
+        //dd($quotations[0]['number_invoice']);
+
+
+        
+        if(!empty($quotations) & $id_client != '-1'){  
+               
+            
+            foreach ($clients as $client) {
+
+                $global = new GlobalController();
+                
+                $var = new Receipts(); //inicio recibo cabecera /////////////////////////
+
+                $var->setConnection(Auth::user()->database_name);
+
+                $last_number = Receipts::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->where('type','=','R')->orderBy('number_delivery_note','desc')->first();
+      
+                //Asigno un numero incrementando en 1
+                if(isset($last_number)){
+                    $var->number_delivery_note = $last_number->number_delivery_note + 1;
+                }else{
+                    $var->number_delivery_note = 1;
+                }
+
+
+
+                $var->id_client = $client->id;
+                //$var->id_vendor = $id_vendor;
+                $id_transport = $quotations[0]['id_transport'];
+                $type = 'factura';
+                $var->date_billing = $quotations[0]['date_billing'];
+                $var->id_transport = $quotations[0]['id_transport'];
+                $var->number_invoice = $quotations[0]['number_invoice'];
+                $var->id_user = $quotations[0]['id_user'];
+                $var->serie = $quotations[0]['serie'];
+                $var->date_quotation = $quotations[0]['date_quotation'];
+                $var->observation = $quotations[0]['observation'];
+                $var->note = 'note recibo';
+                $var->bcv = $quotations[0]['bcv'];
+                $var->coin = 'bolivares';
+
+                $var->base_imponible = 0;
+                $var->amount_exento = 0;
+                $var->amount_iva = 0;
+
+                $montofactura = $quotations[0]['amount_with_iva'];
+                $alicuota_cliente = $client->aliquot;
+                
+                $var->amount_iva = ($montofactura*$alicuota_cliente)/100;;
+                $var->amount_with_iva = ($montofactura*$alicuota_cliente)/100;
+
+                $var->status = $quotations[0]['status'];
+                $var->type = 'R';
+
+                $var->save();
+                
+                $id_quotation = DB::connection(Auth::user()->database_name)
+                ->table('receipts')
+                ->where('number_delivery_note','=',$quotations[0]['number_invoice'])
+                ->select('id')
+                ->get()->last(); 
+
+              /*  $historial_quotation = new HistorialQuotationController();
+
+                $historial_quotation->registerAction($var,"quotation","Creó Cotización");
+              */
+             
+                // Guardar detalle de factura//////////////////////////////
+
+                $quotation = new ReceiptProduct(); //inicio recibo detalle /////////////////////////
+
+                $quotation->setConnection(Auth::user()->database_name);
+
+                $quotation->id_quotation = $id_quotation->id;
+                $quotation->id_inventory = $id_service;
+                $quotation->amount = 1;
+
+                $montofactura = $quotations[0]['amount_with_iva'];
+                $alicuota_cliente = $client->aliquot;
+
+                $quotation->price = ($montofactura*$alicuota_cliente)/100;
+                $quotation->discount = 0;
+                $quotation->retiene_iva = 0;
+                $quotation->retiene_islr = 0;
+                $quotation->rate = $quotations[0]['bcv'];
+                $quotation->status = 'C';
+                $quotation->id_inventory_histories = 0;
+                $quotation->save();
+
+            }
+//////////////////////////////
+
+
+            return redirect('receipt');
+
+            
+        }else{
+             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Propietario');
+        } 
+
+        
+    }
+
+
     public function multipayment(Request $request)
     {
         $quotation = null;
@@ -806,7 +763,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
         $total_facturas->amount_with_iva -= $total_facturas->anticipo;
          
         if(empty($facturas_a_procesar)){
-            return redirect('invoices')->withDanger('Debe seleccionar facturar para Pagar!');
+            return redirect('receipt')->withDanger('Debe seleccionar facturar para Pagar!');
        }
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
@@ -1935,7 +1892,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
         $multipayment->save();
     }
 
-    public function add_movement($bcv,$id_header,$id_account,$id_user,$debe,$haber)
+    public function add_movement($bcv,$id_header,$id_account,$id_user,$debe,$haber,$id_quotation = null)
     {
 
         $detail = new DetailVoucher();
@@ -2344,7 +2301,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
         $quotation->credit_days = $credit;
 
         //P de por pagar
-        $quotation->status = 'P';
+        //$quotation->status = 'P';
 
         $last_number = Receipts::on(Auth::user()->database_name)
         ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
@@ -2375,7 +2332,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
         DB::connection(Auth::user()->database_name)->table('receipt_products')
                 ->where('id_quotation', '=', $quotation->id)
-                ->update(['status' => 'C','id_invoice' => $quotation->number_invoice]);
+                ->update(['status' => 'C']);
 
                 if(!isset($quotation->number_delivery_note)){
                     $quotation->number_delivery_note = 0;    
@@ -2404,14 +2361,15 @@ public function store(Request $request) // Guardar recibo o factura gasto
         $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
     
         if(isset($account_cuentas_por_cobrar)){
-            $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,$sin_formato_grand_total,0);
-        }
+            $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$user_id,$sin_formato_grand_total,0,$quotation->id);
+        }          
+
 
         if($total_mercancia != 0){
             $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Bienes')->first();
 
             if(isset($account_subsegmento)){
-                $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_mercancia);
+                $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$user_id,0,$total_mercancia,$quotation->id);
             }
         }
         
@@ -2419,7 +2377,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
             $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
 
             if(isset($account_subsegmento)){
-                $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_servicios);
+                $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$user_id,0,$total_servicios,$quotation->id);
             }
         }
 
@@ -2430,51 +2388,24 @@ public function store(Request $request) // Guardar recibo o factura gasto
         if($sin_formato_amount_iva != 0){
            
             if(isset($account_debito_iva_fiscal)){
-                $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$sin_formato_amount_iva);
+                $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$user_id,0,$sin_formato_amount_iva,$quotation->id);
             }
         }
 
-        $validation_factura = new ReceiptValidationController($quotation);
-
-        $return_validation_factura = $validation_factura->validate_movement_mercancia();
-
-        if($return_validation_factura == true){
-            //Mercancia para la Venta
-            if((isset($price_cost_total)) && ($price_cost_total != 0)){
-                $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Mercancia para la Venta')->first();
-
-                if(isset( $account_mercancia_venta)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_mercancia_venta->id,$quotation->id,$user_id,0,$price_cost_total);
-                }
-
-                //Costo de Mercancia
-
-                $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancia')->first();
-
-                if(isset($account_costo_mercancia)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$price_cost_total,0);
-                }
-            }
-        }
        
         
         /*$historial_quotation = new HistorialQuotationController();
         $historial_quotation->registerAction($quotation,"quotation","Cotizactión convertida a Factura a Crédito");
         */  
        
+       
+    
         return redirect('receipt/facturado/'.$quotation->id.'/'.$quotation->coin.'')->withSuccess('Relación de Gasto Guardada con Exito!');
     }
 
 
     public function storefactura(Request $request)
     {
-        
-        dd ('msage storefactura');
-
-        $data = request()->validate([
-        
-        ]);
-
         
         
         $quotation = Receipts::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
@@ -3519,7 +3450,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                 }
                 
                 if(isset($account_anticipo_cliente)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_anticipo_cliente->id,$quotation->id,$user_id,$quotation->anticipo,0);
+                    $this->add_movement($bcv,$header_voucher->id,$account_anticipo_cliente->id,$user_id,$quotation->anticipo,0,$quotation->id);
                     $global->add_payment($quotation,$account_anticipo_cliente->id,3,$quotation->anticipo,$bcv);
                 }
              }else{
@@ -3532,7 +3463,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                                                         ->where('code_three',4)->where('code_four',1)->where('code_five',2)->first();  
             
                 if(isset($account_iva_retenido)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$quotation->id,$user_id,$retencion_iva,0);
+                    $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$user_id,$retencion_iva,0,$quotation->id);
                 }
             }
 
@@ -3542,7 +3473,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                                                 ->where('code_four',1)->where('code_five',4)->first();  
 
                 if(isset($account_islr_pagago)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
+                    $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$user_id,$retencion_islr,0,$quotation->id);
                 }
             }
             
@@ -3553,7 +3484,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
             $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first(); 
             
             if(isset($account_cuentas_por_cobrar)){
-                $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,0,$sin_formato_grandtotal);
+                $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$user_id,0,$sin_formato_grandtotal,$quotation->id);
             }
             
             
@@ -3634,8 +3565,11 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
             
+                
+
+                dd($sin_formato_grandtotal);
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,$sin_formato_grandtotal,0);
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$user_id,$sin_formato_grandtotal,0,$quotation->id);
                 }
 
                 //Ingresos por SubSegmento de Bienes
@@ -3644,7 +3578,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                     $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Bienes')->first();
 
                     if(isset($account_subsegmento)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_mercancia);
+                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$user_id,0,$total_mercancia,$quotation->id);
                     }
                 }
                 
@@ -3652,7 +3586,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                     $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
 
                     if(isset($account_subsegmento)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_servicios);
+                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$user_id,0,$total_servicios,$quotation->id);
                     }
                 }
 
@@ -3664,7 +3598,7 @@ public function store(Request $request) // Guardar recibo o factura gasto
                     $total_iva = ($base_imponible * $iva_percentage)/100;
 
                     if(isset($account_cuentas_por_cobrar)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$total_iva);
+                        $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$user_id,0,$total_iva,$quotation->id);
                     }
                 }
                 
@@ -3711,9 +3645,9 @@ public function store(Request $request) // Guardar recibo o factura gasto
             $global = new GlobalController;                                                
         
             //Aqui pasa los quotation_products a status C de Cobrado
-            DB::connection(Auth::user()->database_name)->table('quotation_products')
+           /* DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
-                                                        ->update(['status' => 'C']);
+                                                        ->update(['status' => 'C']);*/
     
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);
             
@@ -3723,7 +3657,9 @@ public function store(Request $request) // Guardar recibo o factura gasto
 
             $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
             */
-            return redirect('receipt/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
+          
+            dd($sin_formato_grandtotal);
+            //  return redirect('receipt/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
 
            
         }else{
@@ -3733,6 +3669,158 @@ public function store(Request $request) // Guardar recibo o factura gasto
         
         }
         
+    }
+
+
+    public function createfacturar_after($id_quotation,$coin)
+    {
+         $quotation = null;
+             
+         if(isset($id_quotation)){
+             $quotation = Receipts::on(Auth::user()->database_name)->find($id_quotation);
+         }
+ 
+         if(isset($quotation)){
+                                                            
+            $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+
+            $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                        ->where('id_client',$quotation->id_client)
+                                        ->where(function ($query) use ($quotation){
+                                            $query->where('id_quotation',null)
+                                                ->orWhere('id_quotation',$quotation->id);
+                                        })
+                                        ->where('coin','like','bolivares')
+                                        ->sum('amount');
+
+            $total_dolar_anticipo = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                        ->where('id_client',$quotation->id_client)
+                                        ->where(function ($query) use ($quotation){
+                                            $query->where('id_quotation',null)
+                                                ->orWhere('id_quotation',$quotation->id);
+                                        })
+                                        ->where('coin','not like','bolivares')
+                                        ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
+                                        ->get();
+
+            $anticipos_sum_dolares = 0;
+            if(isset($total_dolar_anticipo[0]->dolar)){
+                $anticipos_sum_dolares = $total_dolar_anticipo[0]->dolar;
+            }
+
+             $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 2)
+                                            ->where('code_five', '<>',0)
+                                            ->where('description','not like', 'Punto de Venta%')
+                                            ->get();
+             $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 1)
+                                            ->where('code_five', '<>',0)
+                                            ->get();
+             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+                                            ->get();
+
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                                                            ->where('receipt_products.id_quotation',$quotation->id)
+                                                            ->whereIn('receipt_products.status',['1','C'])
+                                                            ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                                                            'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                                                            ,'receipt_products.retiene_islr as retiene_islr_quotation')
+                                                            ->get(); 
+
+             $total= 0;
+             $base_imponible= 0;
+             $price_cost_total= 0;
+
+             //este es el total que se usa para guardar el monto de todos los productos que estan exentos de iva, osea retienen iva
+             $total_retiene_iva = 0;
+             $retiene_iva = 0;
+
+             $total_retiene_islr = 0;
+             $retiene_islr = 0;
+
+             foreach($inventories_quotations as $var){
+                 //Se calcula restandole el porcentaje de descuento (discount)
+                    $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
+
+                    $total += ($var->price * $var->amount_quotation) - $percentage;
+                //----------------------------- 
+
+                if($var->retiene_iva_quotation == 0){
+
+                    $base_imponible += ($var->price * $var->amount_quotation) - $percentage; 
+
+                }else{
+                    $retiene_iva += ($var->price * $var->amount_quotation) - $percentage; 
+                }
+
+                if($var->retiene_islr_quotation == 1){
+
+                    $retiene_islr += ($var->price * $var->amount_quotation) - $percentage; 
+
+                }
+
+                //me suma todos los precios de costo de los productos
+                 if($var->money == 'Bs'){
+                    $price_cost_total += $var->price_buy * $var->amount_quotation;
+                }else{
+                    $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
+                }
+             }
+
+             $quotation->total_factura = $total;
+             $quotation->base_imponible = $base_imponible;
+            
+             $date = Carbon::now();
+             $datenow = $date->format('Y-m-d');    
+             $anticipos_sum = 0;
+             if(isset($coin)){
+                 if($coin == 'bolivares'){
+                    $bcv = null;
+                    //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
+                    $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                 }else{
+                    $bcv = $quotation->bcv;
+                     //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
+                    $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                 }
+             }else{
+                $bcv = null;
+             }
+             
+
+            /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
+             $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
+
+                /*if($client->percentage_retencion_iva != 0){
+                    $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
+                }*/
+
+            
+                
+                if($client->percentage_retencion_islr != 0){
+                    $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
+                }
+
+            /*-------------- */
+
+            $is_after = false;
+     
+             return view('admin.receipt.createfacturar',compact('price_cost_total','coin','quotation'
+                        ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
+                        ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
+         }else{
+             
+             return redirect('/receipt')->withDanger('La Relación de gasto no existe');
+         } 
+         
     }
 
     
@@ -4665,6 +4753,44 @@ public function store(Request $request) // Guardar recibo o factura gasto
              return redirect('/receipt')->withDanger('El recibo no existe');
          } 
          
+    }
+
+
+    function asignar_payment_type($type){
+      
+        if($type == 1){
+            return "Cheque";
+        }
+        if($type == 2){
+            return "Contado";
+        }
+        if($type == 3){
+            return "Contra Anticipo";
+        }
+        if($type == 4){
+            return "Crédito";
+        }
+        if($type == 5){
+            return "Depósito Bancario";
+        }
+        if($type == 6){
+            return "Efectivo";
+        }
+        if($type == 7){
+            return "Indeterminado";
+        }
+        if($type == 8){
+            return "Tarjeta Coorporativa";
+        }
+        if($type == 9){
+            return "Tarjeta de Crédito";
+        }
+        if($type == 10){
+            return "Tarjeta de Débito";
+        }
+        if($type == 11){
+            return "Transferencia";
+        }
     }
 
 
