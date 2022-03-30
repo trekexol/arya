@@ -318,6 +318,18 @@ class Report2Controller extends Controller
         return view('admin.reports.index_debtstopay',compact('date_end','provider','coin'));
     }
 
+    public function store_ledger(Request $request)
+    {
+        
+        $date_begin = request('date_begin');
+        $date_end = request('date_end');
+        
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');  
+        
+        return view('admin.reports.index_ledger',compact('date_begin','date_end','datenow'));
+    }
+
     public function store_accounts(Request $request)
     {
         

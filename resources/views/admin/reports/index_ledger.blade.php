@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('balancegenerals.store') }}">
+                <form method="POST" action="{{ route('reports.store_ledger') }}">
                     @csrf
 
                 <div class="card-header text-center h4">
@@ -45,7 +45,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.ledger_pdf',[$datebeginyear ?? $datenow,$date_end ?? $datenow]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.ledger_pdf',[$date_begin ?? $datebeginyear ?? $datenow,$date_end ?? $datenow]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
