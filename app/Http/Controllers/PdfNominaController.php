@@ -6,6 +6,7 @@ use App;
 use App\Employee;
 use App\Nomina;
 use App\NominaCalculation;
+use App\NominaConcept;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -215,9 +216,10 @@ class PdfNominaController extends Controller
  
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
+
         if(isset($nomina)){
             $nomina_calculation_asignacion = NominaCalculation::on(Auth::user()->database_name)
-                                                    ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina')
+                                                    ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
                                                     ->join('employees','employees.id','nomina_calculations.id_employee')
                                                     ->where('nomina_concepts.sign','A')
                                                     ->where('id_nomina',$nomina->id)
@@ -225,16 +227,15 @@ class PdfNominaController extends Controller
                                                     ->groupBy('employees.nombres','employees.apellidos')
                                                     ->get();           
             $nomina_calculation_deduccion = NominaCalculation::on(Auth::user()->database_name)
-                                                    ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina')
+                                                    ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
                                                     ->join('employees','employees.id','nomina_calculations.id_employee')
-                                                    ->where('nomina_concepts.sign','D')
                                                     ->where('id_nomina',$nomina->id)
+                                                    ->where('nomina_concepts.sign','D')
                                                     ->select('employees.nombres','employees.apellidos',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_deduccion'))
                                                     ->groupBy('employees.nombres','employees.apellidos')
                                                     ->get();           
 
-            dd($nomina_calculation_deduccion);
-            
+           
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
         } 

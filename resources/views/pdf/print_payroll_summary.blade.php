@@ -52,7 +52,6 @@
    
     @for ($i = 0; $i < count($nomina_calculation_asignacion); $i++)
       <?php
-        $total += ($nomina_calculation_asignacion[$i]->total_asignacion ?? 0) - ($nomina_calculation_asignacion[$i]->total_deduccion ?? 0);
         $total_asignacion += $nomina_calculation_asignacion[$i]->total_asignacion ?? 0;
         $total_deduccion += $nomina_calculation_deduccion[$i]->total_deduccion ?? 0;
       ?>
@@ -64,6 +63,9 @@
           <td style="text-align: center;"></td>
         </tr>
     @endfor
+    <?php
+      $total += $total_asignacion - $total_deduccion;
+    ?>
     <tr>
       <td style="text-align: center;"> </td>
       <td style="text-align: center;">{{ number_format(bcdiv($total_asignacion, '1', 2) , 2, ',', '.')}}</td>
