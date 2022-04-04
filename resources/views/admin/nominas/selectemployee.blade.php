@@ -56,11 +56,7 @@
                 <th class="text-center">Nombres</th>
                 <th class="text-center">Apellidos</th>
                 <th class="text-center">Celular</th>
-                <th class="text-center">Fecha Ingreso</th>
-                <th class="text-center">Fecha Egreso</th>
-                <th class="text-center">Dirección</th>
                 <th class="text-center">Monto de Pago</th>
-                <th class="text-center">Correo Electronico</th>
                
                 <th></th>
             </tr>
@@ -75,12 +71,7 @@
                             <td class="text-center">{{$employee->nombres}}</td>
                             <td class="text-center">{{$employee->apellidos}}</td>
                             <td class="text-center">{{$employee->telefono1}}</td>
-
-                            <td class="text-center">{{$employee->fecha_ingreso}}</td>
-                            <td class="text-center">{{$employee->fecha_egreso}}</td>
-                            <td class="text-center">{{$employee->direccion}}</td>
                             <td class="text-center">{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
-                            <td class="text-center">{{$employee->email}}</td>
                             
                            
                             <td class="text-center">
