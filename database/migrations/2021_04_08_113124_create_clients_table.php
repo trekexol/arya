@@ -19,7 +19,7 @@ class CreateClientsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_vendor')->nullable();
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_cost_center');
+            $table->unsignedBigInteger('id_cost_center')->nullable();
             $table->string('type_code',2);
             $table->string('name',80);
             $table->string('name_ref',80);
