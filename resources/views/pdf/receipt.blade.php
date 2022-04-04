@@ -292,7 +292,11 @@
 <table style="width: 100%;">
   
   @if(isset($quotationp))
-        @foreach ($inventories_quotationsp as $varp)
+  <?php
+  $total_less_percentagep = 0;
+  ?>     
+  
+  @foreach ($inventories_quotationsp as $varp)
         <?php
         $percentagep = 0;
         $total_less_percentagep = 0;
@@ -300,9 +304,9 @@
 
         $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
 
-        $total_less_percentagep = ($varp->price * $varp->amount_quotation) - $percentagep;
+        $total_less_percentagepn = $quotation->amount_with_iva;
 
-        $total_less_percentagep = $total_less_percentagep / ($bcv ?? 1);
+        $total_less_percentagep += $quotation->amount_with_iva;
 
 
 
@@ -317,12 +321,12 @@
   <tr style=" border-top-color: white;">
     <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">MONTO TOTAL Bs.</th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-top-color: white;">{{ number_format(bcdiv($total_less_percentagep , '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr style=" border-top-color: white;">
     <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;"> Tasa de cambio B.C.V: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs. a la fecha {{date_format(date_create($quotation->date_billing),"d-m-Y")}}</th>
     <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">MONTO TOTAL USD</th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white;">{{ number_format(bcdiv($total/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-top-color: white;">${{ number_format(bcdiv($total_less_percentagep/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
   </tr> 
 
 

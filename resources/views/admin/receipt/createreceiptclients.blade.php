@@ -49,20 +49,7 @@
                                 <a href="{{ route('receipt.selectclientfactura',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
 
-                            <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
-                                
-                            <div class="col-sm-3">
-                                <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center" required>
-                                    <option value="">Seleccione</option>
-                                    @if(!empty($branches))
-                                        @foreach ($branches as $var)
-                                            <option value="{{ $var->id }}">{{ $var->description }}</option>
-                                        @endforeach
-                                        
-                                    @endif
-                                
-                                </select>
-                            </div>
+                           
 
                         </div>           
 
@@ -99,35 +86,6 @@
 
                             </div>
                         </div>
-
-
-                        <div class="form-group row">
-                            <label for="service" class="col-md-3 col-form-label text-md-right">Cargo a Propietarios</label>
-                            <div class="col-md-8">
-                                @if(count($services) >= 1) 
-                                <select  id="service"  name="service" class="form-control" width="20" required>
-                                       
-                                        @foreach($services as $service)
-                            
-                                            <option  value="{{$service->id}}">  {{ $service->description ?? ''}} </option>
-                                        @endforeach
-
-                                </select>
-                                @else
-                                <label class="col-md-11 col-form-label text-md-left">Debe crear un producto tipo servicio para generar el cargo del recibo al cliente.</label>         
-                                @endif
-                                @error('service')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            </div>
-                        </div>
-
-
-
-
-                        <br>
                        
                         <div class="form-group row">
                             <div class="col-sm-3 offset-sm-4">
