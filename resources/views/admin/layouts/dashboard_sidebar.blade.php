@@ -79,7 +79,7 @@
             
             <a class="collapse-item" href="{{ route('users')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Usuarios</strong></strong></a>
             
-            @if ((Auth::user()->id_company  != '16'))
+            @if ((Auth::user()->id_company  != '9'))
             <a class="collapse-item" href="{{ route('branches')}}" > <i class="fas fa-code-branch fa-sm fa-fw mr-2 text-blue-400"></i><strong>Sucursales</strong></a>
             <a class="collapse-item" href="{{ route('positions')}}" > <i class="fas fa-user-plus fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cargos</strong></a>
             <a class="collapse-item" href="{{ route('academiclevels')}}" > <i class="fas fa-graduation-cap fa-sm fa-fw mr-2 text-blue-400"></i><strong>Niveles Académicos</strong></a>
@@ -109,7 +109,7 @@
 
 @endif
 
-@if (Auth::user()->id_company  == '16' & (Auth::user()->role_id  == '1'))
+@if (Auth::user()->id_company  == '9' & (Auth::user()->role_id  == '1'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">
@@ -131,7 +131,7 @@
     </li>
     @endif
 
-    @if ((Auth::user()->id_company  == '16') & (Auth::user()->role_id  == '11'))
+    @if ((Auth::user()->id_company  == '9') & (Auth::user()->role_id  == '11'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">

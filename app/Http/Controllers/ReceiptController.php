@@ -4685,15 +4685,16 @@ public function storeclients(Request $request) // Generar recibo multiple de pro
     
         'id_client'         =>'required',
         'id_invoice'        =>'required',
-        'service'           =>'required'
 
     
     ]);
 
     $id_client = request('id_client');
     $id_invoice = request('id_invoice');
-    $id_cost_center = request('id_cost_center');
-    $id_service = request('service');
+    $id_cost_center = request('id_client');
+    $id_service = 4;
+
+    
 
     $clients = Owners::on(Auth::user()->database_name) // propietario del condominio
     ->where('id_cost_center','=',$id_cost_center)->get();
