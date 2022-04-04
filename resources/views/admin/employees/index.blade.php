@@ -59,7 +59,7 @@
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
                             <td>
                                 <a href="employees/{{$employee->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                                <a href="#" data-toggle="modal" data-target="#deleteModal" data-employeeid="{{$employee->id }}"><i class="fa fa-trash-alt"></i></a>
+                                <a href="#" class="delete" data-id-employee={{$employee->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                             </td>
                         </tr>     
                     @endforeach   
@@ -71,27 +71,33 @@
 </div>
 @if (empty($employee->id)) 
 @else
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">¿Estás segura de que quieres eliminar esto?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-        </button>
-        </div>
-        <div class="modal-body">Seleccione "eliminar" si realmente desea eliminar este Militante.</div>
-        <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <form method="POST" action="/employees/{{ $employee->id }}">
-            @method('DELETE')
-            @csrf
-            <input type="hidden" id="employee_id" name="employee_id" value="">
-            <a class="btn btn-primary"  onclick="$(this).closest('form').submit();">Confirmar</a>
-        </form>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('employees.delete') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <input id="id_employee_modal" type="hidden" class="form-control @error('id_employee_modal') is-invalid @enderror" name="id_employee_modal" readonly required autocomplete="id_employee_modal">
+                       
+                <h5 class="text-center">Seguro que desea eliminar?</h5>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
         </div>
     </div>
-</div>
+  </div>
 @endif
 
     
@@ -103,24 +109,13 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+
+    $(document).on('click','.delete',function(){
+         
+         let id_employee = $(this).attr('data-id-employee');
+
+         $('#id_employee_modal').val(id_employee);
+
+    });
     </script> 
-@endsection
-@section('js_modal_employees')
-    <script>
-        $('#deleteModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var employee_id = button.data('employeeid') // Extract info from data-* attributes
-        // console.log(post_id)
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        modal.find('.modal-footer #employee_id').val(employee_id)
-        });
-        $(document).ready(function() {
-            $('#example').DataTable( {
-                "order": [[ 5, "desc" ]]
-            } );
-        } );
-   
-    </script>
 @endsection

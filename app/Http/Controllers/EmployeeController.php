@@ -12,7 +12,8 @@ use App\Parroquia;              //IMPORTANTE NOMBRE DE LA CLASE
 
 use App\Position;                 
 use App\SalaryType;              
-use App\Profession;        
+use App\Profession;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;      
 
 
@@ -27,7 +28,7 @@ class EmployeeController extends Controller
    public function index()
    {
        $user= auth()->user();
-       $employees = Employee::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
+       $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id' ,'DESC')->get();
       
        return view('admin.employees.index',compact('employees'));
    }
@@ -258,8 +259,26 @@ class EmployeeController extends Controller
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-   public function destroy($id)
+   public function destroy(Request $request)
    {
-       //
+        $employee = Employee::on(Auth::user()->database_name)->findOrFail($request->id_employee_modal);
+
+        if(isset($employee)){
+            $employee->status = 'X';
+
+            if(empty($employee->fecha_egreso)){
+                $date = Carbon::now();
+                $datenow = $date->format('Y-m-d'); 
+                $employee->fecha_egreso = $datenow;
+            }
+
+            $employee->save();
+
+            return redirect('/employees')->withSuccess('Eliminacion Exitosa!');
+
+        }else{
+
+            return redirect('/employees')->withDanger('No se encontro el empleado!');
+        }
    }
 }

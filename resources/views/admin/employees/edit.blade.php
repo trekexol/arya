@@ -354,10 +354,13 @@
                                 
                                 <br>
                                 <div class="form-group row mb-0">
-                                    <div class="col-md-6 offset-md-4">
+                                    <div class="col-sm-3 offset-sm-3">
                                         <button type="submit" class="btn btn-primary">
                                            Actualizar Empleado
                                         </button>
+                                    </div>
+                                    <div class="form-group col-sm-2">
+                                        <a href="{{ route('employees') }}" name="danger" type="button" class="btn btn-danger btn-block">Regresar</a>
                                     </div>
                                 </div>
                             </form>

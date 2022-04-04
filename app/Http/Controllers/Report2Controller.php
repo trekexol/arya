@@ -243,7 +243,7 @@ class Report2Controller extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
         
-        $employees = Employee::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('created_at','asc')->first();
 
         $date_begin = Carbon::parse($employees->created_at);
         $datebeginyear = $date_begin->format('Y-m-d');
@@ -1037,6 +1037,7 @@ class Report2Controller extends Controller
 
         if(isset($name)){
             $employees = Employee::on(Auth::user()->database_name)
+            ->where('status','NOT LIKE','X')
             ->where('nombres','LIKE',$name.'%')
             ->whereRaw(
                 "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
@@ -1044,6 +1045,7 @@ class Report2Controller extends Controller
             ->orderBy('nombres','asc')->get();
         }else{
             $employees = Employee::on(Auth::user()->database_name)
+            ->where('status','NOT LIKE','X')
             ->whereRaw(
                 "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
