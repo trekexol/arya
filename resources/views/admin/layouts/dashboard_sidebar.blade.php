@@ -76,8 +76,10 @@
     <div id="collapseAdminitracion" class="collapse" aria-labelledby="headingAdminitracion" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
 
-
+            
             <a class="collapse-item" href="{{ route('users')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Usuarios</strong></strong></a>
+            
+            @if ((Auth::user()->id_company  != '16'))
             <a class="collapse-item" href="{{ route('branches')}}" > <i class="fas fa-code-branch fa-sm fa-fw mr-2 text-blue-400"></i><strong>Sucursales</strong></a>
             <a class="collapse-item" href="{{ route('positions')}}" > <i class="fas fa-user-plus fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cargos</strong></a>
             <a class="collapse-item" href="{{ route('academiclevels')}}" > <i class="fas fa-graduation-cap fa-sm fa-fw mr-2 text-blue-400"></i><strong>Niveles Académicos</strong></a>
@@ -100,14 +102,14 @@
             <a class="collapse-item" href="{{ route('inventarytypes') }}" > <i class="fas fa-boxes fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de<br> <div style="text-indent: 22px;">Inventario</div></strong></a>
             <a class="collapse-item" href="{{ route('ratetypes') }}" > <i class="fas fa-donate fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de Tasas</strong></a>
             <a class="collapse-item" href="{{ route('nominaformulas') }}" > <i class="fas fa-calculator fa-sm fa-fw mr-2 text-blue-400"></i><strong>Formulas de Nómina</strong></a>
-
+            @endif
         </div>
     </div>
 </li>
 
 @endif
 
-@if (Auth::user()->id_company  == '9' & (Auth::user()->role_id  == '1'))
+@if (Auth::user()->id_company  == '16' & (Auth::user()->role_id  == '1'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">
@@ -116,12 +118,12 @@
         </a>
         <div id="collapgastoscon" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{route('receipt')}}" > <i class="fas fa-file-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Facturas Gastos de Condominio</strong></a>
+                <a class="collapse-item" href="{{route('receipt')}}" > <i class="fas fa-file-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Relación Gastos de Condominio</strong></a>
                 <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Recibos de Condominio</strong></a>
-                <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros de Recibos</strong></a>
+               <!-- <a class="collapse-item" href="{{''/*route('receiptr')*/}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros de Recibos</strong></a>-->
                 <a class="collapse-item" href="{{route('condominiums')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Condominios</strong></a>
                 <a class="collapse-item" href="{{route('owners')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Propietarios</strong></a>
-                <a class="collapse-item" href="{{route('receipt')}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>
+<!--<a class="collapse-item" href="{{''/*route('receiptr')*/}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>-->
                 <a class="collapse-item" href="{{ route('products')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
                 <a class="collapse-item" href="{{route('receipt')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Resumen y estados de cuentas</strong></a>
             </div>
@@ -129,7 +131,7 @@
     </li>
     @endif
 
-    @if ((Auth::user()->id_company  == '9') & (Auth::user()->role_id  == '11'))
+    @if ((Auth::user()->id_company  == '16') & (Auth::user()->role_id  == '11'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
             aria-expanded="true" aria-controls="collapgastoscon">
@@ -139,8 +141,8 @@
         <div id="collapgastoscon" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Recibos de Condominio</strong></a>
-                <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros de Recibos</strong></a>
-                <a class="collapse-item" href="{{route('receiptr')}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>
+                <!-- <a class="collapse-item" href="{{''/*route('receiptr')*/}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros de Recibos</strong></a>-->
+                <!--<a class="collapse-item" href="{{''/*route('receiptr')*/}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>-->
                 <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Resumen y estados de cuentas</strong></a>
             </div>
         </div>
