@@ -42,13 +42,8 @@
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Celular</th>
-                <th>Fecha Ingreso</th>
-                <th>Fecha Egreso</th>
-                <th>Dirección</th>
                 <th>Monto de Pago</th>
-                <th>Correo Electronico</th>
-               
-                <th>Tools</th>
+                <th></th>
             </tr>
             </thead>
             
@@ -61,14 +56,7 @@
                             <td>{{$employee->nombres}}</td>
                             <td>{{$employee->apellidos}}</td>
                             <td>{{$employee->telefono1}}</td>
-
-                            <td>{{$employee->fecha_ingreso}}</td>
-                            <td>{{$employee->fecha_egreso}}</td>
-                            <td>{{$employee->direccion}}</td>
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
-                            <td>{{$employee->email}}</td>
-                            
-                           
                             <td>
                                 <a href="employees/{{$employee->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 <a href="#" data-toggle="modal" data-target="#deleteModal" data-employeeid="{{$employee->id }}"><i class="fa fa-trash-alt"></i></a>

@@ -109,7 +109,7 @@
                                     <label for="code_employee" class="col-md-2 col-form-label text-md-right">Código de Empleado (Opcional)</label>
         
                                     <div class="col-md-4">
-                                        <input id="code_employee" type="text" class="form-control @error('code_employee') is-invalid @enderror" name="code_employee" value="{{ $var->code_employee }}" required autocomplete="code_employee">
+                                        <input id="code_employee" type="text" class="form-control @error('code_employee') is-invalid @enderror" name="code_employee" value="{{ $var->code_employee }}" autocomplete="code_employee">
         
                                         @error('code_employee')
                                             <span class="invalid-feedback" role="alert">
@@ -283,7 +283,7 @@
                                     <label for="monto_pago" class="col-md-2 col-form-label text-md-right">Monto Pago</label>
         
                                     <div class="col-md-4">
-                                        <input id="monto_pago" type="number" class="form-control @error('monto_pago') is-invalid @enderror" name="monto_pago" value="{{ $var->monto_pago }}" placeholder="Ej: 19.55" required autocomplete="monto_pago">
+                                        <input id="monto_pago" type="text" class="form-control @error('monto_pago') is-invalid @enderror" name="monto_pago" value="{{ number_format($var->monto_pago, 2, ',', '.')}}"  required autocomplete="monto_pago">
         
                                         @error('monto_pago')
                                             <span class="invalid-feedback" role="alert">
@@ -323,7 +323,7 @@
                                     <label for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo</label>
         
                                     <div class="col-md-4">
-                                        <input id="centro_costo" type="text" class="form-control @error('centro_costo') is-invalid @enderror" name="centro_costo" value="{{ $var->centro_cos }}" required autocomplete="centro_costo">
+                                        <input id="centro_costo" type="text" class="form-control @error('centro_costo') is-invalid @enderror" name="centro_costo" value="{{ $var->centro_cos }}" autocomplete="centro_costo">
         
                                         @error('centro_costo')
                                             <span class="invalid-feedback" role="alert">
@@ -374,6 +374,11 @@
         soloAlfaNumerico('code_employee');
         soloAlfaNumerico('direccion');
     });
+
+    $(document).ready(function () {
+            $("#monto_pago").mask('000.000.000.000.000.000,00', { reverse: true });
+            
+        });
     </script>
 @endsection
                 @section('javascript_edit')

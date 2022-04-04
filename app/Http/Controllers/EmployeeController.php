@@ -190,8 +190,6 @@ class EmployeeController extends Controller
         'apellidos'         =>'required|max:160',
         'id_empleado'         =>'required',
         'telefono1'         =>'required',
-        'email'         =>'required|max:255|unique:users,email',
-
         'amount_utilities'         =>'required|max:2',
         
         'fecha_ingreso'         =>'required',
@@ -207,18 +205,7 @@ class EmployeeController extends Controller
         
         'salarytype_id'         =>'required',
        
-        
-
-        
         'monto_pago'         =>'required',
-        
-        
-
-        'acumulado_prestaciones'         =>'required',
-        'acumulado_utilidades'         =>'required',
-        'status'         =>'required',
-        'centro_costo'         =>'required',
-        
        
     ]);
 
@@ -246,7 +233,7 @@ class EmployeeController extends Controller
    
     $users->fecha_nacimiento = request('fecha_nacimiento');
     $users->direccion = request('direccion');
-    $users->monto_pago = request('monto_pago');
+    $users->monto_pago = str_replace(',', '.', str_replace('.', '', request('monto_pago')));
 
     $users->salary_types_id = request('salarytype_id');
 
@@ -256,7 +243,8 @@ class EmployeeController extends Controller
     $users->acumulado_prestaciones = request('acumulado_prestaciones');
     $users->acumulado_utilidades = request('acumulado_utilidades');
     $users->status =  request('status');
-    $users->centro_cos = request('centro_costo');
+    
+    //$users->centro_cos = request('centro_costo');
 
     $users->save();
 
