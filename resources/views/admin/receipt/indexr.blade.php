@@ -107,6 +107,7 @@
                 <th class="text-center">Monto</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
+                <th class="text-center"></th>-
                <!-- <th class="text-center"></th> -->
             </tr>
             </thead>
@@ -182,6 +183,11 @@
                                 <!--<td>
                                     <input type="checkbox" name="check{{ /*$quotation->id*/'' }}" value="{{ '' /*$quotation->id*/ }}" onclick="buttom();" id="flexCheckChecked">    
                                 </td> -->
+
+                                  
+                                <td>
+                                   <a href="{{''}}" title="Enviar Correo"><i class="fa fa-envelope"></i></a>  
+                                </td> 
                             @endif
                             
                         </tr>     
