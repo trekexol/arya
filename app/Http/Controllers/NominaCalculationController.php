@@ -93,7 +93,7 @@ class NominaCalculationController extends Controller
 
         $var  = NominaCalculation::on(Auth::user()->database_name)->find($id);
 
-        $employees = Employee::on(Auth::user()->database_name)->where('profession_id',$var->id_profession)->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$var->id_profession)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');

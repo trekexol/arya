@@ -18,7 +18,7 @@ class PdfNominaController extends Controller
 
     public function create_recibo_vacaciones()
     {
-        $employees = Employee::on(Auth::user()->database_name)->orderBY('nombres','asc')->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -33,7 +33,7 @@ class PdfNominaController extends Controller
 
     public function create_recibo_prestaciones()
     {
-        $employees = Employee::on(Auth::user()->database_name)->orderBY('nombres','asc')->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -43,7 +43,7 @@ class PdfNominaController extends Controller
 
     public function create_recibo_utilidades()
     {
-        $employees = Employee::on(Auth::user()->database_name)->orderBY('nombres','asc')->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
         $date = Carbon::now(); 
         $datenow = $date->format('Y-m-d');
@@ -56,7 +56,7 @@ class PdfNominaController extends Controller
 
     public function create_recibo_liquidacion_auto()
     {
-        $employees = Employee::on(Auth::user()->database_name)->orderBY('nombres','asc')->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
         $date = Carbon::now(); 
         $datenow = $date->format('Y-m-d');
@@ -132,7 +132,7 @@ class PdfNominaController extends Controller
 
             $employee->date_begin = request('date_begin');
            
-            $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('id_profession',$employee->profession_id)
+            $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('id_profession',$employee->profession_id)
                                                 ->latest()->first();
 
             if(isset($ultima_nomina)){
@@ -316,7 +316,7 @@ class PdfNominaController extends Controller
             $employee->otras_deducciones = $sin_formato_otras_deducciones;
 
 
-            $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('id_profession',$employee->profession_id)
+            $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('id_profession',$employee->profession_id)
                                     ->latest()->first();
 
             $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();     

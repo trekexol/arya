@@ -54,7 +54,7 @@ class VendorController extends Controller
        $parroquias  = Parroquia::on(Auth::user()->database_name)->get();
      
        $comisions   = ComisionType::on(Auth::user()->database_name)->get();
-       $employees   = Employee::on(Auth::user()->database_name)->get();
+       $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
 
 
        return view('admin.vendors.create',compact('estados','municipios','parroquias','comisions','employees'));
@@ -145,7 +145,7 @@ class VendorController extends Controller
       
 
         $comisions   = ComisionType::on(Auth::user()->database_name)->get();
-        $employees   = Employee::on(Auth::user()->database_name)->get();
+        $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
        
         return view('admin.vendors.edit',compact('var','estados','municipios','parroquias','comisions','employees'));
   

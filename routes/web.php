@@ -105,7 +105,7 @@ Route::group(["prefix"=>'employees'],function(){
     Route::post('store', 'EmployeeController@store')->name('employees.store');
 
     Route::get('{id}/edit','EmployeeController@edit')->name('employees.edit');
-    Route::delete('{id}/delete','EmployeeController@destroy')->name('employees.delete');
+    Route::delete('delete','EmployeeController@destroy')->name('employees.delete');
     Route::patch('{id}/update','EmployeeController@update')->name('employees.update');
 
 });
@@ -484,7 +484,7 @@ Route::group(["prefix"=>'nominas'],function(){
     Route::get('register','NominaController@create')->name('nominas.create');
     Route::post('store','NominaController@store')->name('nominas.store');
     Route::get('{id}/edit','NominaController@edit')->name('nominas.edit');
-    Route::delete('{id}/delete','NominaController@destroy')->name('nominas.delete');
+    Route::delete('delete','NominaController@destroy')->name('nominas.delete');
     Route::patch('{id}/update','NominaController@update')->name('nominas.update');
 
     Route::get('selectemployee/{id}','NominaController@selectemployee')->name('nominas.selectemployee');

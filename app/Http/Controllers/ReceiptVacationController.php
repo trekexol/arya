@@ -39,7 +39,7 @@ class ReceiptVacationController extends Controller
     public function indexemployees()
     {
 
-        $employees = Employee::on(Auth::user()->database_name)->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
 
         return view('admin.receiptvacations.indexemployees',compact('employees'));
     }

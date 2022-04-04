@@ -29,7 +29,7 @@ class NominaController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         if($users_role == '1'){
-           $nominas      =   Nomina::on(Auth::user()->database_name)->orderBy('id', 'desc')->get();
+           $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id', 'desc')->get();
         }elseif($users_role == '2'){
             return view('admin.index');
         }
@@ -54,7 +54,7 @@ class NominaController extends Controller
 
         $var  = Nomina::on(Auth::user()->database_name)->find($id);
 
-        $employees = Employee::on(Auth::user()->database_name)->where('profession_id',$var->id_profession)->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$var->id_profession)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -69,7 +69,7 @@ class NominaController extends Controller
 
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
         
-        $employees = Employee::on(Auth::user()->database_name)->where('profession_id',$nomina->id_profession)->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$nomina->id_profession)->get();
 
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
@@ -446,5 +446,21 @@ class NominaController extends Controller
 
     }
 
+    public function destroy(Request $request)
+   {
+        $nomina = Nomina::on(Auth::user()->database_name)->findOrFail($request->id_nomina_modal);
+
+        if(isset($nomina)){
+            $nomina->status = 'X';
+
+            $nomina->save();
+
+            return redirect('/nominas')->withSuccess('Eliminacion Exitosa!');
+
+        }else{
+
+            return redirect('/nominas')->withDanger('No se encontro el empleado!');
+        }
+   }
 
 }
