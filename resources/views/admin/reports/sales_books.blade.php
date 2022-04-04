@@ -232,15 +232,15 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-bottom-color: white; border-right-color: black;"></th>
-    <th style="text-align: right; font-weight: normal; border-right-color: black; border-left-color: black;">{{ number_format($total_amount, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; border-color: black; border-left: 1px;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold; border-right-color: black; border-left-color: black;">{{ number_format($total_amount, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;font-style:bold;  border-color: black; border-left: 1px;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
   </tr> 
 </table>
@@ -253,9 +253,58 @@
   </tr> 
 </table> 
 
+
+<?php
+
+$ano = substr($date_end, 6, 4);
+$mes = substr($date_end, 3, 2);
+
+if($mes == '01'){
+            $nro_mes    = "01";
+            $mes_nombre = "ENERO";
+        }elseif($mes == '02'){
+            $nro_mes    = "02";
+            $mes_nombre = "FEBRERO";
+        }elseif($mes == '03'){
+            $nro_mes    = "03";
+            $mes_nombre = "MARZO";
+        }elseif($mes == '04'){
+            $nro_mes    = "04";
+            $mes_nombre = "ABRIL";
+        }elseif($mes == '05'){
+            $nro_mes    = "05";
+            $mes_nombre = "MAYO";
+        }elseif($mes == '06'){
+            $nro_mes    = "06";
+            $mes_nombre = "JUNIO";
+        }elseif($mes == '07'){
+            $nro_mes    = "07";
+            $mes_nombre = "JULIO";
+        }elseif($mes == '08'){
+            $nro_mes    = "08";
+            $mes_nombre = "AGOSTO";
+        }elseif($mes == '09'){
+            $nro_mes    = "09";
+            $mes_nombre = "SEPTIEMBRE";
+        }elseif ($mes == '10'){
+            $nro_mes    = "10";
+            $mes_nombre = "OCTUBRE";
+        }elseif ($mes == '11'){
+            $nro_mes    = "11";
+            $mes_nombre = "NOVIEMBRE";
+        }else {
+            $nro_mes    = "12";
+            $mes_nombre = "DICIEMBRE";
+        }
+
+?>
+
+
+
+
 <table ALIGN="right" style="width: 60%;">
   <tr>
-    <th style="text-align: center; ">Resumen del periodo {{ $date_begin ?? '' }} hasta: {{ $date_end ?? '' }}</th>
+    <th style="text-align: center; ">Resumen del periodo {{$mes_nombre}} {{$ano}}  / {{ $date_begin ?? '' }} - {{ $date_end ?? '' }}</th>
     <th style="text-align: center; "></th>
     <th style="text-align: center; ">%</th>
     <th style="text-align: center; "></th>

@@ -609,10 +609,16 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('facturamedia/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_media')->name('pdf.receiptfacmedia');
     Route::get('factura_maq/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_maq')->name('pdf.receiptfacmaq');
     
+    Route::get('recibo/{id_quotation}/{coin?}','ReceiptController@imprimirecibo')->name('pdf.receipt');
+
     Route::get('movementinvoice/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
    
     Route::get('facturarafter/{id_quotation}/{coin}','ReceiptController@createfacturar_after')->name('receipt.createfacturar_after');
 
+    
+    Route::get('facturaraftereceipt/{id_quotation}/{coin}','ReceiptController@createfacturar_aftereceipt')->name('receipt.createfacturar_aftereceipt');
+    //Route::get('facturar/{id_quotation}/{coin}','ReceiptController@createfacturar')->name('receipt.createfacturar');
+    
     /*
 
     Route::get('listinventory/{var?}','QuotationController@listinventory')->name('quotations.listinventory');

@@ -50,17 +50,20 @@
         
       </div>
       @if (Auth::user()->role_id  == '1')
-        <div class="col-sm-3">
-            <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
+        <!--<div class="col-sm-3">
+            <a href="{{ '' /*route('payments')*/ }}" class="btn btn-info btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-hand-holding-usd"></i>
                 </span>
                 <span class="text">Cobros de Recibos</span>
             </a>
-        </div>
+        </div> -->
        
           <div class="col-sm-4">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
+          </div>
+          <div class="col-sm-4">
+            <a href="{{ '' }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Corro Masivo</a>
           </div>
           <div class="col-sm-2">
             <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobros de Recibos</button>
@@ -104,7 +107,7 @@
                 <th class="text-center">Monto</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
-                <th class="text-center"></th>
+               <!-- <th class="text-center"></th> -->
             </tr>
             </thead>
             
@@ -169,16 +172,16 @@
                             @else
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
                                 @else
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
-                                <td>
-                                    <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">    
-                                </td>
+                                <!--<td>
+                                    <input type="checkbox" name="check{{ /*$quotation->id*/'' }}" value="{{ '' /*$quotation->id*/ }}" onclick="buttom();" id="flexCheckChecked">    
+                                </td> -->
                             @endif
                             
                         </tr>     

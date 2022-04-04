@@ -26,8 +26,11 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
+                @if($quotation->type == 'F')
                 <div class="card-header" >Relación Gasto de Condominio</div>
-                
+                @else
+                <div class="card-header" >Recibo de Condominio</div>
+                @endif
                 <div class="card-body" >
                         
                     <div class="form-group row">
@@ -38,7 +41,7 @@
 
                         <label for="date_quotation" class="col-md-2 col-form-label text-md-right">CI/Rif: </label>
                         <div class="col-md-3">
-                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->clients['cedula_rif']  ?? '' }}" readonly required autocomplete="date_quotation">
+                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->cedula_rif  ?? '' }}" readonly required autocomplete="date_quotation">
     
                             @error('date_quotation')
                                 <span class="invalid-feedback" role="alert">
@@ -51,9 +54,11 @@
               
                     
                     <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Condominio: </label>
+                        
+                        @if($quotation->type == 'F')
+                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Condominio: </label>
                             <div class="col-md-4">
-                                <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $quotation->clients['name']  ?? '' }}" readonly>
+                                <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $client->name ?? '' }}" readonly>
 
                                 @error('date_quotation')
                                     <span class="invalid-feedback" role="alert">
@@ -61,6 +66,21 @@
                                     </span>
                                 @enderror
                             </div>
+                        @else
+                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Propietario: </label>
+                        <div class="col-md-4">
+                            <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $client->name ?? '' }}" readonly>
+
+                            @error('date_quotation')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        @endif
+
+
+
                             <label for="client" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
                             <div class="col-md-3">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="client">
@@ -202,7 +222,11 @@
                         <div class="form-group row">
                            
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimirm Relación de Gasto</a>  
+                                @if($quotation->type == 'F')
+                                <a onclick="pdf('F');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Relación de Gasto</a>  
+                                @else
+                                <a onclick="pdf('R');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Recibo de Condominio</a>  
+                                @endif
                             </div>
                             
                             <div class="col-sm-3  dropdown mb-4">
@@ -214,9 +238,12 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
+                                    @if($quotation->type == 'F')
                                     <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Media Carta</a>  
                                     <a href="#" onclick="pdf_maq();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Imprimir Matricial Carta</a> 
-
+                                    @else
+                                    
+                                    @endif
                                     <a href="#" class="dropdown-item bg-light delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar</a> 
                                 </div>
                             </div> 
@@ -224,10 +251,7 @@
                             <!-- <div class="col-md-3">
                                 <a href="{{ ''/*route('receipt.movement',[$quotation->id,$coin])*/ }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div> -->
-                           
-                            <div class="col-md-2">
-                                <a href="{{ route('receipt') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Listado</a>  
-                            </div>
+
                         </div>
                         
                     </form>    
@@ -314,10 +338,13 @@
 
                 $('#id_quotation_modal').val(id_quotation);
             });
-            function pdf() {
+            function pdf(type) {
                 
+                if (type == 'F') {
                 var nuevaVentana= window.open("{{ route('pdf.receiptfac',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-        
+                } else {
+                var nuevaVentana= window.open("{{ route('pdf.receipt',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");    
+                }        
             }
             function pdf_media() {
                 

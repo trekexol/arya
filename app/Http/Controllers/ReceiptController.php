@@ -164,7 +164,7 @@ class ReceiptController extends Controller
 
 
 
-    public function createreceiptclients($id_client = null,$type = null) // generando recibo clientes
+    public function createreceiptclients($id_client = null,$type = null) // generando recibos pantalla crear
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
@@ -176,7 +176,7 @@ class ReceiptController extends Controller
 
         if ($id_client != null) {
             $client =  Condominiums::on(Auth::user()->database_name)->find($id_client);
-            $invoices_to_pay = Receipts::on(Auth::user()->database_name)->whereIn('status',['P'])->where('id_client',$id_client)->get();
+            $invoices_to_pay = Receipts::on(Auth::user()->database_name)->whereIn('status',['P'])->where('type','F')->where('id_client',$id_client)->get();
         
         } else {
             $client = null;
@@ -390,6 +390,20 @@ public function store(Request $request) // Empezar a Crear Factura
                                  
          }
  
+         if ($quotation->type == 'F'){
+            $client = Condominiums::on(Auth::user()->database_name) // buscar condominio
+            ->where('id','=',$quotation->id_client)
+            ->select('condominiums.*')
+            ->get()->first();
+            
+         } else {
+            $client = Owners::on(Auth::user()->database_name) // buscar propietario
+            ->where('id','=',$quotation->id_client)
+            ->select('owners.*')
+            ->get()->first();
+         }
+        
+        
          if(isset($quotation)){
                 $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
      
@@ -407,9 +421,11 @@ public function store(Request $request) // Empezar a Crear Factura
                $bcv = null;
             }
              
-             return view('admin.receipt.createreceiptfacturado',compact('quotation','payment_quotations', 'datenow','bcv','coin','reverso'));
+             return view('admin.receipt.createreceiptfacturado',compact('quotation','payment_quotations', 'datenow','bcv','coin','reverso','client'));
+        
             }else{
-             return redirect('/receipt')->withDanger('La Recibo no existe');
+            
+                return redirect('/receipt')->withDanger('La Recibo no existe');
          } 
          
     }
@@ -514,141 +530,6 @@ public function store(Request $request) // Empezar a Crear Factura
 
 
         return redirect('receipt/register/'.$var->id_quotation.'/'.$coin.'/'.$type_quotation)->withSuccess('Producto agregado Exitosamente!');
-    }
-
-
-
-    public function storeclients(Request $request) // Generar recibo de propietarios
-    {
-    
-        $data = request()->validate([
-            
-        
-            'id_client'         =>'required',
-            'id_invoice'        =>'required',
-            'service'           =>'required'
-  
-        
-        ]);
-
-        $id_client = request('id_client');
-        $id_invoice = request('id_invoice');
-        $id_cost_center = request('id_cost_center');
-        $id_service = request('service');
-
-        $clients = Owners::on(Auth::user()->database_name) // propietario del condominio
-        ->where('id_cost_center','=',$id_cost_center)->get();
-
-        //Buscar Factura original
-        $quotations = Receipts::on(Auth::user()->database_name)
-        ->orderBy('number_invoice' ,'desc')
-        ->where('id','=',$id_invoice)
-        ->where('type','=','F')
-        ->select('receipts.*')
-        ->get();
-
-
-        //dd($quotations[0]['number_invoice']);
-
-
-        
-        if(!empty($quotations) & $id_client != '-1'){  
-               
-            
-            foreach ($clients as $client) {
-
-                $global = new GlobalController();
-                
-                $var = new Receipts(); //inicio recibo cabecera /////////////////////////
-
-                $var->setConnection(Auth::user()->database_name);
-
-                $last_number = Receipts::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->where('type','=','R')->orderBy('number_delivery_note','desc')->first();
-      
-                //Asigno un numero incrementando en 1
-                if(isset($last_number)){
-                    $var->number_delivery_note = $last_number->number_delivery_note + 1;
-                }else{
-                    $var->number_delivery_note = 1;
-                }
-
-
-
-                $var->id_client = $client->id;
-                //$var->id_vendor = $id_vendor;
-                $id_transport = $quotations[0]['id_transport'];
-                $type = 'factura';
-                $var->date_billing = $quotations[0]['date_billing'];
-                $var->id_transport = $quotations[0]['id_transport'];
-                $var->number_invoice = $quotations[0]['number_invoice'];
-                $var->id_user = $quotations[0]['id_user'];
-                $var->serie = $quotations[0]['serie'];
-                $var->date_quotation = $quotations[0]['date_quotation'];
-                $var->observation = $quotations[0]['observation'];
-                $var->note = 'note recibo';
-                $var->bcv = $quotations[0]['bcv'];
-                $var->coin = 'bolivares';
-
-                $var->base_imponible = 0;
-                $var->amount_exento = 0;
-                $var->amount_iva = 0;
-
-                $montofactura = $quotations[0]['amount_with_iva'];
-                $alicuota_cliente = $client->aliquot;
-                
-                $var->amount_iva = ($montofactura*$alicuota_cliente)/100;;
-                $var->amount_with_iva = ($montofactura*$alicuota_cliente)/100;
-
-                $var->status = $quotations[0]['status'];
-                $var->type = 'R';
-
-                $var->save();
-                
-                $id_quotation = DB::connection(Auth::user()->database_name)
-                ->table('receipts')
-                ->where('number_delivery_note','=',$quotations[0]['number_invoice'])
-                ->select('id')
-                ->get()->last(); 
-
-              /*  $historial_quotation = new HistorialQuotationController();
-
-                $historial_quotation->registerAction($var,"quotation","Creó Cotización");
-              */
-             
-                // Guardar detalle de factura//////////////////////////////
-
-                $quotation = new ReceiptProduct(); //inicio recibo detalle /////////////////////////
-
-                $quotation->setConnection(Auth::user()->database_name);
-
-                $quotation->id_quotation = $id_quotation->id;
-                $quotation->id_inventory = $id_service;
-                $quotation->amount = 1;
-
-                $montofactura = $quotations[0]['amount_with_iva'];
-                $alicuota_cliente = $client->aliquot;
-
-                $quotation->price = ($montofactura*$alicuota_cliente)/100;
-                $quotation->discount = 0;
-                $quotation->retiene_iva = 0;
-                $quotation->retiene_islr = 0;
-                $quotation->rate = $quotations[0]['bcv'];
-                $quotation->status = 'C';
-                $quotation->id_inventory_histories = 0;
-                $quotation->save();
-
-            }
-//////////////////////////////
-
-
-            return redirect('receipt');
-
-            
-        }else{
-             return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Propietario');
-        } 
-
-        
     }
 
 
@@ -2143,8 +2024,7 @@ public function store(Request $request) // Empezar a Crear Factura
     }
  
 
-/*
-    function imprimirFactura($id_quotation,$coin = null) /// recibo de condominio
+    function imprimirecibo($id_quotation,$coin = null) /// recibo de condominio
     {
       
 
@@ -2158,7 +2038,7 @@ public function store(Request $request) // Empezar a Crear Factura
               
                                      
              }else{
-                return redirect('/receipt')->withDanger('No llega el numero del recibo de cobro');
+                return redirect('/receipt/receipt')->withDanger('No llega el numero del recibo de condominio');
                 } 
      
              if(isset($quotation)){
@@ -2186,17 +2066,18 @@ public function store(Request $request) // Empezar a Crear Factura
                     ->get(); 
 
 
-                 $client = Condominiums::on(Auth::user()->database_name) // buscar cliente
+                 $client = owners::on(Auth::user()->database_name) // buscar cliente
                 ->where('id','=',$quotation->id_client)
-                ->get();
+                ->select('owners.*')
+                ->get()->first();
 
-        
                 //Buscar Factura original
                 $quotationsorigin = Receipts::on(Auth::user()->database_name) // buscar facura original
                 ->orderBy('id' ,'asc') 
                 ->where('date_billing','<>',null)
+                ->where('type','=','F')
                 ->where('number_invoice','=',$quotation->number_invoice)
-                ->select('quotations.*')
+                ->select('receipts.*')
                 ->get();
 
                 $inventories_quotationso = DB::connection(Auth::user()->database_name)->table('products')
@@ -2206,7 +2087,43 @@ public function store(Request $request) // Empezar a Crear Factura
                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                 'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
                 ,'receipt_products.retiene_islr as retiene_islr_quotation')
-                ->get(); 
+                ->get();
+                
+                
+                //Buscar recibos que debe
+                $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
+                ->orderBy('id' ,'asc') 
+                ->where('date_billing','<>',null)
+                ->where('type','=','R')
+                ->where('status','=','P')
+                ->where('id_client','=',$client->id)
+                ->select('receipts.*')
+                ->get();
+
+
+                $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products')
+                ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                ->where('receipt_products.id_quotation',$quotationp[0]['id'])
+                ->where('receipt_products.status','C')
+                ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                ,'receipt_products.retiene_islr as retiene_islr_quotation', )
+                ->get();
+
+
+
+                foreach ($inventories_quotationsp as $varp) {
+                    $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
+                    ->orderBy('id' ,'asc') 
+                    ->where('date_billing','<>',null)
+                    ->where('type','=','R')
+                    ->where('status','=','P')
+                    ->where('id','=',$varp->id_quotation)
+                    ->select('number_delivery_note','date_billing')
+                    ->get()->first();
+                    $varp->number_delivery_note = $quotationpn->number_delivery_note;
+                    $varp->date_billing = $quotationpn->date_billing;
+                }
                                                 
                 
                 if($coin == 'bolivares'){
@@ -2220,17 +2137,17 @@ public function store(Request $request) // Empezar a Crear Factura
                 
                // $lineas_cabecera = $company->format_header_line;
 
-                 $pdf = $pdf->loadView('pdf.receipt',compact('company','quotation','inventories_quotations','payment_quotations','bcv','coin','quotationsorigin','inventories_quotationso','client'));
-                 return $pdf->stream();
+                $pdf = $pdf->loadView('pdf.receipt',compact('company','quotation','inventories_quotations','payment_quotations','bcv','coin','quotationsorigin','inventories_quotationso','client','quotationp','inventories_quotationsp'));
+                return $pdf->stream();
          
                 }else{
-                 return redirect('/receipt')->withDanger('La recibo de cobro no existe');
+                 return redirect('/receipt/receipt')->withDanger('La recibo de condominio no existe');
              } 
              
         
 
         
-    } */
+    }
 
     public function storefacturacredit(Request $request)
     {
@@ -2301,10 +2218,10 @@ public function store(Request $request) // Empezar a Crear Factura
         $quotation->credit_days = $credit;
 
         //P de por pagar
-        //$quotation->status = 'P';
+        $quotation->status = 'P';
 
         $last_number = Receipts::on(Auth::user()->database_name)
-        ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
+        ->where('number_invoice','<>',NULL)->where('type','=','F')->orderBy('number_invoice','desc')->first();
  
         //Asigno un numero incrementando en 1
         if(empty($quotation->number_invoice)){
@@ -2326,12 +2243,13 @@ public function store(Request $request) // Empezar a Crear Factura
         $header_voucher->description = "Ventas de Bienes o servicios.";
         $header_voucher->date = $date_payment;
             
-        $header_voucher->status =  "1";
+        $header_voucher->status =  "P";
     
         $header_voucher->save();
 
         DB::connection(Auth::user()->database_name)->table('receipt_products')
                 ->where('id_quotation', '=', $quotation->id)
+                ->where('status', '!=', 'X')
                 ->update(['status' => 'C']);
 
                 if(!isset($quotation->number_delivery_note)){
@@ -3797,7 +3715,7 @@ public function store(Request $request) // Empezar a Crear Factura
              
 
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
-             $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
+             $client = Condominiums::on(Auth::user()->database_name)->find($quotation->id_client);
 
                 /*if($client->percentage_retencion_iva != 0){
                     $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
@@ -4474,7 +4392,8 @@ public function store(Request $request) // Empezar a Crear Factura
 
     public function deleteProduct(Request $request)
     {
-        
+
+
         $quotation_product = ReceiptProduct::on(Auth::user()->database_name)->find(request('id_quotation_product_modal')); 
         
         if(isset($quotation_product) && $quotation_product->status == "C"){
@@ -4499,7 +4418,7 @@ public function store(Request $request) // Empezar a Crear Factura
 
        // $historial_quotation->registerAction($quotation_product,"receipt_product","Se eliminó un Producto");
 
-        return redirect('/receipt/register/'.request('id_quotation_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa!!');
+     return redirect('/receipt/register/'.request('id_quotation_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa!!');
         
     }
 
@@ -4754,6 +4673,300 @@ public function store(Request $request) // Empezar a Crear Factura
          } 
          
     }
+
+
+//RECIBOS.////////////////////////////////////////////////////////////
+
+public function storeclients(Request $request) // Generar recibo multiple de propietarios
+{
+
+    $data = request()->validate([
+        
+    
+        'id_client'         =>'required',
+        'id_invoice'        =>'required',
+        'service'           =>'required'
+
+    
+    ]);
+
+    $id_client = request('id_client');
+    $id_invoice = request('id_invoice');
+    $id_cost_center = request('id_cost_center');
+    $id_service = request('service');
+
+    $clients = Owners::on(Auth::user()->database_name) // propietario del condominio
+    ->where('id_cost_center','=',$id_cost_center)->get();
+
+    //Buscar Factura original
+    $quotations = Receipts::on(Auth::user()->database_name)
+    ->orderBy('number_invoice' ,'desc')
+    ->where('id','=',$id_invoice)
+    ->where('type','=','F')
+    ->select('receipts.*')
+    ->get();
+
+
+    //dd($quotations[0]['number_invoice']);
+
+
+    
+    if(!empty($quotations) & $id_client != '-1'){  
+           
+        
+        foreach ($clients as $client) {
+
+            $global = new GlobalController();
+            
+            $var = new Receipts(); //inicio recibo cabecera /////////////////////////
+
+            $var->setConnection(Auth::user()->database_name);
+
+            $last_number = Receipts::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->where('type','=','R')->orderBy('number_delivery_note','desc')->first();
+  
+            //Asigno un numero incrementando en 1
+            if(isset($last_number)){
+                $var->number_delivery_note = $last_number->number_delivery_note + 1;
+            }else{
+                $var->number_delivery_note = 1;
+            }
+
+
+
+            $var->id_client = $client->id;
+            //$var->id_vendor = $id_vendor;
+            $id_transport = $quotations[0]['id_transport'];
+            $type = 'factura';
+            $var->date_billing = $quotations[0]['date_billing'];
+            $var->id_transport = $quotations[0]['id_transport'];
+            $var->number_invoice = $quotations[0]['number_invoice'];
+            $var->id_user = $quotations[0]['id_user'];
+            $var->serie = $quotations[0]['serie'];
+            $var->date_quotation = $quotations[0]['date_quotation'];
+            $var->observation = $quotations[0]['observation'];
+            $var->note = 'note recibo';
+            $var->bcv = $quotations[0]['bcv'];
+            $var->coin = 'bolivares';
+
+            $var->base_imponible = 0;
+            
+            $montofactura = $quotations[0]['amount_with_iva'];
+            $alicuota_cliente = $client->aliquot;
+            $var->amount_exento = ($montofactura*$alicuota_cliente)/100;
+            $var->amount_iva = 0;
+            $alicuota_cliente = $client->aliquot;
+            
+            $var->amount_iva = 0;
+            $var->amount = ($montofactura*$alicuota_cliente)/100;
+            $var->amount_with_iva = ($montofactura*$alicuota_cliente)/100;
+
+            $var->status = $quotations[0]['status'];
+            $var->type = 'R';
+
+            $var->save();
+            
+            $id_quotation = DB::connection(Auth::user()->database_name)
+            ->table('receipts')
+            ->where('number_invoice','=',$quotations[0]['number_invoice'])
+            ->where('type','=','R')
+            ->where('status','=',$quotations[0]['status'])
+            ->select('id')
+            ->get()->last(); 
+
+          /*  $historial_quotation = new HistorialQuotationController();
+
+            $historial_quotation->registerAction($var,"quotation","Creó Cotización");
+          */
+         
+            // Guardar detalle de factura//////////////////////////////
+
+            $quotation = new ReceiptProduct(); //inicio recibo detalle /////////////////////////
+
+            $quotation->setConnection(Auth::user()->database_name);
+
+            $quotation->id_quotation = $id_quotation->id;
+            $quotation->id_inventory = $id_service;
+            $quotation->amount = 1;
+
+            $montofactura = $quotations[0]['amount_with_iva'];
+            $alicuota_cliente = $client->aliquot;
+
+            $quotation->price = ($montofactura*$alicuota_cliente)/100;
+            $quotation->discount = 0;
+            $quotation->retiene_iva = 1;
+            $quotation->retiene_islr = 0;
+            $quotation->rate = $quotations[0]['bcv'];
+            $quotation->status = 'C';
+            $quotation->id_inventory_histories = 0;
+            $quotation->save();
+
+        }
+//////////////////////////////
+
+
+        return redirect('receipt/receipt');
+
+        
+    }else{
+         return redirect('/receipt/registerreceiptclients/'.$type)->withDanger('Debe Buscar un Propietario');
+    } 
+
+    
+}
+
+public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando recibo de condominio
+    {
+         $quotation = null;
+             
+         if(isset($id_quotation)){
+             $quotation = Receipts::on(Auth::user()->database_name)->find($id_quotation);
+         }
+         
+         
+         $client = Owners::on(Auth::user()->database_name)->find($quotation->id_client); // buscar propietario
+
+   
+         if(isset($quotation)){
+                                                            
+            $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+
+            $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                        ->where('id_client',$client->id)
+                                        ->where(function ($query) use ($quotation){
+                                            $query->where('id_quotation',null)
+                                                ->orWhere('id_quotation',$quotation->id);
+                                        })
+                                        ->where('coin','like','bolivares')
+                                        ->sum('amount');
+
+            $total_dolar_anticipo = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                        ->where('id_client',$client->id)
+                                        ->where(function ($query) use ($quotation){
+                                            $query->where('id_quotation',null)
+                                                ->orWhere('id_quotation',$quotation->id);
+                                        })
+                                        ->where('coin','not like','bolivares')
+                                        ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
+                                        ->get();
+
+            $anticipos_sum_dolares = 0;
+            if(isset($total_dolar_anticipo[0]->dolar)){
+                $anticipos_sum_dolares = $total_dolar_anticipo[0]->dolar;
+            }
+
+             $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 2)
+                                            ->where('code_five', '<>',0)
+                                            ->where('description','not like', 'Punto de Venta%')
+                                            ->get();
+             $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 1)
+                                            ->where('code_five', '<>',0)
+                                            ->get();
+             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+                                            ->get();
+
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                                                            ->where('receipt_products.id_quotation',$quotation->id)
+                                                            ->whereIn('receipt_products.status',['1','C'])
+                                                            ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                                                            'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                                                            ,'receipt_products.retiene_islr as retiene_islr_quotation')
+                                                            ->get(); 
+
+             $total= 0;
+             $base_imponible= 0;
+             $price_cost_total= 0;
+
+             //este es el total que se usa para guardar el monto de todos los productos que estan exentos de iva, osea retienen iva
+             $total_retiene_iva = 0;
+             $retiene_iva = 0;
+
+             $total_retiene_islr = 0;
+             $retiene_islr = 0;
+
+             foreach($inventories_quotations as $var){
+                 //Se calcula restandole el porcentaje de descuento (discount)
+                    $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
+
+                    $total += ($var->price * $var->amount_quotation) - $percentage;
+                //----------------------------- 
+
+                if($var->retiene_iva_quotation == 0){
+
+                    $base_imponible += ($var->price * $var->amount_quotation) - $percentage; 
+
+                }else{
+                    $retiene_iva += ($var->price * $var->amount_quotation) - $percentage; 
+                }
+
+                if($var->retiene_islr_quotation == 1){
+
+                    $retiene_islr += ($var->price * $var->amount_quotation) - $percentage; 
+
+                }
+
+                //me suma todos los precios de costo de los productos
+                 if($var->money == 'Bs'){
+                    $price_cost_total += $var->price_buy * $var->amount_quotation;
+                }else{
+                    $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
+                }
+             }
+
+             $quotation->total_factura = $total;
+             $quotation->base_imponible = $base_imponible;
+            
+             $date = Carbon::now();
+             $datenow = $date->format('Y-m-d');    
+             $anticipos_sum = 0;
+             if(isset($coin)){
+                 if($coin == 'bolivares'){
+                    $bcv = null;
+                    //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
+                    $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                 }else{
+                    $bcv = $quotation->bcv;
+                     //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
+                    $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                 }
+             }else{
+                $bcv = null;
+             }
+             
+
+            /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
+
+                /*if($client->percentage_retencion_iva != 0){
+                    $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
+                }
+
+                if($client->percentage_retencion_islr != 0){
+                    $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
+                }*/
+
+            /*-------------- */
+
+            $is_after = false;
+    
+             return view('admin.receipt.createfacturar',compact('price_cost_total','coin','quotation'
+                        ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
+                        ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
+         }else{
+             
+             return redirect('receipt/receipt')->withDanger('El Recibo no existe');
+         } 
+         
+    }
+
+
 
 
     function asignar_payment_type($type){
