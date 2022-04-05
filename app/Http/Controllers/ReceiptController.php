@@ -3843,7 +3843,7 @@ public function store(Request $request) // Empezar a Crear Factura
             return redirect('/receipt/facturado/'.$quotation->id.'/bolivares/'.$exist_multipayment->id_header.'');
         }
        
-        return redirect('invoices')->withSuccess('Reverso de Factura Exitosa!');
+        return redirect('receipt')->withSuccess('Reverso de Gasto Exitoso!');
 
     }
 

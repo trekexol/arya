@@ -22,33 +22,77 @@
 </head>
 
 <body>
-  
-  <br><br><br>
+  <table id="top">
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" width="93" height="60" class="d-inline-block align-top" alt="">
+      </th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr> 
+  </table>
   @if ($company->format_header_lines > 0) 
     @for ($i = 0; $i < $company->format_header_lines; $i++)
     <br>
     @endfor
   @endif
-<h4 style="color: black"> RECIBO DE CONDOMINIO NRO: {{ str_pad($quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
 
- 
-   
- 
+
+  <?php
+
+  $ano = substr(date_format(date_create($quotation->date_billing),"d-m-Y"), 6, 4);
+  $mes = substr(date_format(date_create($quotation->date_billing),"d-m-Y"), 3, 2);
+  
+          if($mes == '01'){
+              $nro_mes    = "01";
+              $mes_nombre = "ENERO";
+          }elseif($mes == '02'){
+              $nro_mes    = "02";
+              $mes_nombre = "FEBRERO";
+          }elseif($mes == '03'){
+              $nro_mes    = "03";
+              $mes_nombre = "MARZO";
+          }elseif($mes == '04'){
+              $nro_mes    = "04";
+              $mes_nombre = "ABRIL";
+          }elseif($mes == '05'){
+              $nro_mes    = "05";
+              $mes_nombre = "MAYO";
+          }elseif($mes == '06'){
+              $nro_mes    = "06";
+              $mes_nombre = "JUNIO";
+          }elseif($mes == '07'){
+              $nro_mes    = "07";
+              $mes_nombre = "JULIO";
+          }elseif($mes == '08'){
+              $nro_mes    = "08";
+              $mes_nombre = "AGOSTO";
+          }elseif($mes == '09'){
+              $nro_mes    = "09";
+              $mes_nombre = "SEPTIEMBRE";
+          }elseif ($mes == '10'){
+              $nro_mes    = "10";
+              $mes_nombre = "OCTUBRE";
+          }elseif ($mes == '11'){
+              $nro_mes    = "11";
+              $mes_nombre = "NOVIEMBRE";
+          }else {
+              $nro_mes    = "12";
+              $mes_nombre = "DICIEMBRE";
+          }
+  
+  ?>
+
+
+<h4 style="align:center; text-align: center; color: black"> RECIBO DE CONDOMINIO NRO: {{ str_pad($quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
+<h4 style="align:center; text-align: center; color: black"> Mes de  {{ $mes_nombre ?? ''}}</h4>
+
 <table style="width: 60%;">
-  @if (isset($company->franqueo_postal))
-  <tr>
-    <th style="font-weight: normal; width: 20%;">Concesión Postal:</th>
-    <th style="font-weight: normal; width: 40%;">Nº {{ $company->franqueo_postal ?? ''}}</th>
-  </tr>
-  @endif
   
   <tr>
     @if (isset($quotation->credit_days))
-      <td style="width: 20%;">Fecha de Emisión:</td>
-      <td style="width: 40%;"> {{ date_format(date_create($quotation->date_billing),"d-m-Y") }} | Dias de Crédito: {{ $quotation->credit_days }}</td>
+      <td style="width: 20%; border-color: white;">Fecha de Emisión:</td>
+      <td style="width: 40%; border-color: white;"> {{ date_format(date_create($quotation->date_billing),"d-m-Y") }} | Dias de Crédito: {{ $quotation->credit_days }}</td>
     @else
-      <td style="width: 20%;">Fecha de Emisión:</td>
-      <td style="width: 40%;">{{ date_format(date_create($quotation->date_billing),"d-m-Y")}}</td>
+      <td style="width: 20%; border-color: white;">Fecha de Emisión:</td>
+      <td style="width: 40%; border-color: white;">{{ date_format(date_create($quotation->date_billing),"d-m-Y")}}</td>
     @endif
     
   </tr>
@@ -56,42 +100,19 @@
 </table>
 
 
-
-
 <table style="width: 100%;">
   <tr>
-    <th style="font-weight: normal; font-size: medium;">Nombre / Razón Social: &nbsp;  {{ $client->name}}</th>
-    
-   
-  </tr>
-  <tr>
-    <td>Domicilio Fiscal: &nbsp;  {{ $client->direction }}
-    </td>
-    
-    
-  </tr>
-  
-</table>
-
-
-
-
-<table style="width: 100%;">
-  <tr>
+    <th style="text-align: center; width: 40%;">Propietario</th>
+    <th style="text-align: center;">ID Propietario</th>
+    <th style="text-align: center;">Apartamento / Local:</th>
     <th style="text-align: center;">Teléfono</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
-    <th style="text-align: center;">Nota de Entrega</th>
-    <th style="text-align: center;">Transp./Tipo Entrega</th>
-   
+    
   </tr>
   <tr>
+    <td style="text-align: center;">{{ $client->name}}</td>
+    <td style="text-align: center;">{{ $client->cedula_rif ?? '' }}</td>
+    <td style="text-align: center;">{{ str_pad($client->direction , 3, "0", STR_PAD_LEFT)}}</td>
     <td style="text-align: center;">{{ $client->phone1 ?? '' }}</td>
-    <td style="text-align: center;">{{ $client->type_code ?? ''}} {{ $client->cedula_rif ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->serie ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->number_delivery_note ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
-    
     
   </tr>
   
@@ -99,27 +120,24 @@
 
 <table style="width: 100%;">
   <tr>
-  <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; {{ $quotation->observation }} </th>
+  <th style="font-weight: normal; font-size: medium; border-color: white;">Observaciones: &nbsp; {{ $quotation->observation }} </th>
 </tr>
   
 </table>
       <br>
       <table style="width: 100%;">
         <tr>
-          <th style="text-align: center; width: 100%;">Relación de Gasto Nº {{ $quotationsorigin[0]['number_invoice'] }} Fecha de Emision: {{ date_format(date_create($quotationsorigin[0]['date_billing']),"d-m-Y") }}</th>
+          <th style="text-align: center; width: 100%; border-color: white;">Relación de Gasto {{ ''/*$quotationsorigin[0]['number_invoice']*/ }} Fecha: {{ date_format(date_create($quotationsorigin[0]['date_billing']),"d-m-Y") }}</th>
         </tr> 
       </table>
 
       <table style="width: 100%;">
         <tr>
-          <th style="text-align: center; ">Código</th>
+          <th style="text-align: center; width:3%">Código</th>
           <th style="text-align: center; ">Descripción</th>
-          <th style="text-align: center; ">Cantidad</th>
-          <th style="text-align: center; ">Lote</th>
-          <th style="text-align: center; ">Fecha Venc</th> 
-          <th style="text-align: center; ">P.V.J.</th>
-          <th style="text-align: center; ">Desc</th>
-          <th style="text-align: center; ">Total</th>
+          <th style="text-align: center; width:2%">Cantidad</th>
+          <th style="text-align: center; width:20%">Total Bs.</th>
+          <th style="text-align: center; width:20%">Total USD</th>
         </tr> 
         @foreach ($inventories_quotationso as $varo)
             <?php
@@ -127,22 +145,13 @@
       
             $total_less_percentage = ($varo->price * $varo->amount_quotation) - $percentage;
       
-            $total_less_percentage = $total_less_percentage / ($bcv ?? 1);
             ?>
           <tr>
             <th style="text-align: center; font-weight: normal;">{{ $varo->code_comercial }}</th>
             <th style="text-align: center; font-weight: normal;">{{ $varo->description }}</th>
             <th style="text-align: center; font-weight: normal;">{{ number_format($varo->amount_quotation, 0, '', '.') }}</th>
-      
-            <th style="text-align: center; font-weight: normal;">{{ $varo->lote }}</th>
-      
-       
-            <th style="text-align: center; font-weight: normal;">{{ $varo->date_expirate}}</th>
-      
-      
-            <th style="text-align: center; font-weight: normal;">{{ number_format($varo->price / ($bcv ?? 1), 2, ',', '.')  }}</th>
-            <th style="text-align: center; font-weight: normal;">{{ $varo->discount }}%</th>
             <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
+            <th style="text-align: right; font-weight: normal;">${{ number_format($total_less_percentage / $quotationsorigin[0]['bcv'], 2, ',', '.') }}</th>
           </tr> 
         @endforeach 
       </table>
@@ -162,62 +171,29 @@
     ?>
     
     <table style="width: 100%;">
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Sub Total</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotationsorigin[0]['amount'] / ($bcv ?? 1), '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
-      </tr> 
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Base Imponible</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotationsorigin[0]['base_imponible'] , '1', 2), 2, ',', '.') }}</th>
-      </tr>
-      @if ($quotationsorigin[0]['retencion_iva'] != 0)
-        <tr>
-          <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-          <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Retención de Iva</th>
-          <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotationsorigin[0]['retencion_iva'] , '1', 2), 2, ',', '.') }}</th>
-        </tr> 
-      @endif 
-      @if ($quotationsorigin[0]['retencion_islr'] != 0)
-        <tr>
-          <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-          <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Retención de ISLR</th>
-          <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotationsorigin[0]['retencion_islr'] , '1', 2), 2, ',', '.') }}</th>
-        </tr> 
-      @endif 
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">I.V.A.{{ $quotationsorigin[0]['iva_percentage'] }}%</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($iva, '1', 2), 2, ',', '.') }}</th>
-      </tr> 
-      @if ($quotationsorigin[0]['anticipo'] != 0)
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Anticipo</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotationsorigin[0]['anticipo'] , '1', 2), 2, ',', '.') }}</th>
-      </tr> 
-      @endif
-     
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL BS.</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
-      </tr> 
 
       <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: black; border-right-color: white; font-size: small;">
-        <!--<th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: black; border-right-color: white; font-size: small;"> Tasa de cambio B.C.V: {{ ''/*number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.')*/ }} Bs. a la fecha {{''/*date_format(date_create($quotation->date_billing),"d-m-Y")*/}}</th> -->
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: black; font-size: small;">MONTO TOTAL USD</th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: black; font-size: small;">${{ number_format(bcdiv($total/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
+        <th style="text-align: center; border-color: white; font-weight: normal; width:2%;"></th>
+        <th style="text-align: center; border-color: white; font-weight: normal;"></th>
+        <th style="text-align: right; border-color: white; font-weight: normal width:3%;"></th>
+        <th style="text-align: right; border-color: white; width:20%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
+        <th style="text-align: right; border-color: white; width:20%;">${{ number_format(bcdiv($total/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
       </tr> 
-      
-
-      
+    
+    
     </table>
-
-
 <br>
+
+<?php
+  
+  $total = $quotation->amount_with_iva;
+  $total_coin = $total / ($bcv ?? 1);
+  $conteo_recibos_pendientes = 0;
+  $monto_recibos_acumulado = 0;
+  $conteo_recibos_acumulados = 0;
+?>
+
+
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; width: 100%;">Total a pagar del Propietario</th>
@@ -225,13 +201,12 @@
 </table>
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; ">Código</th>
+    <th style="text-align: center; width:3%;">Código</th>
     <th style="text-align: center; ">Descripción</th>
-    <th style="text-align: center; ">Cantidad</th>
-    <th style="text-align: center; ">Alicuota</th> 
-    <th style="text-align: center; ">P.V.J.</th>
-    <th style="text-align: center; ">Desc</th>
-    <th style="text-align: center; ">Total</th>
+    <th style="text-align: center; width:2%;">Cantidad</th>
+    <th style="text-align: center; width:2%;">Alicuota</th> 
+    <th style="text-align: center; ">Total Bs.</th>
+    <th style="text-align: center; ">Total USD</th>
   </tr> 
   @foreach ($inventories_quotations as $var)
       <?php
@@ -244,92 +219,60 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal; width:2%;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $client->aliquot}}%</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->price / ($bcv ?? 1), 2, ',', '.')  }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">${{ number_format($total_less_percentage/$quotationsorigin[0]['bcv'], 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
-</table>
 
-
-<?php
-  $iva = ($quotation->base_imponible * $quotation->iva_percentage)/100;
-
-  //$total = $quotation->sub_total_factura + $iva - $quotation->anticipo;
-
-  $total = $quotation->amount_with_iva;
-
-  //$total_petro = ($total - $quotation->anticipo) / $company->rate_petro;
-
-  //$iva = $iva / ($bcv ?? 1);
-
-  $total_coin = $total / ($bcv ?? 1);
-?>
-
-<table style="width: 100%;">
-  
-  
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL BS.</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total_less_percentage , '1', 2), 2, ',', '.') }}</th>
-  </tr> 
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;"> Tasa de cambio B.C.V: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs. a la fecha {{date_format(date_create($quotation->date_billing),"d-m-Y")}}</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: black; border-right-color: black; font-size: small;">MONTO TOTAL USD</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: black; border-right-color: black; font-size: small;">${{ number_format(bcdiv($total_less_percentage/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
-  </tr>
-
-</table>
-<br>
-<table style="width: 100%;">
-  <tr>
-    <th style="text-align: center; width: 100%;">Resumen y Estado de Cuenta</th>
-  </tr>
-</table>
-<table style="width: 100%;">
-  
   @if(isset($quotationp))
   <?php
   $total_less_percentagep = 0;
+  $total_less_percentagen = 0;
   ?>     
   
   @foreach ($inventories_quotationsp as $varp)
         <?php
         $percentagep = 0;
-        $total_less_percentagep = 0;
-        $total_less_percentagep = 0;
-
+      
+        $conteo_recibos_pendientes++;
         $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
 
         $total_less_percentagepn = $quotation->amount_with_iva;
 
         $total_less_percentagep += $quotation->amount_with_iva;
-
-
-
         ?>
-      <tr>
-        <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;">Recibo Nº {{ $varp->number_delivery_note }} Fecha {{ date_format(date_create($varp->date_billing),"d-m-Y") }}</th>
-        <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;"></th>
-        <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">{{ number_format($total_less_percentagep, 2, ',', '.') }}</th>
-      </tr> 
       @endforeach 
   @endif
-  <tr style=" border-top-color: white;">
-    <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">MONTO TOTAL Bs.</th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white;">{{ number_format(bcdiv($total_less_percentagep , '1', 2), 2, ',', '.') }}</th>
+
+  <tr>
+    <th style="text-align: center; font-weight: normal;"></th>
+    <th style="text-align: center; font-weight: normal;">Total de Recibos Pendientes</th>
+    <th style="text-align: center; font-weight: normal;">{{'('.$conteo_recibos_pendientes.')'}}</th>
+    <th style="text-align: center; font-weight: normal;"></th>
+    <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;"> {{ number_format($total_less_percentagep, 2, ',', '.') ?? '0,00'}}</th>
+    <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">${{ number_format($total_less_percentagep/$quotationsorigin[0]['bcv'], 2, ',', '.') ?? '0,00'}}</th>
   </tr> 
-  <tr style=" border-top-color: white;">
-    <th style="text-align: left; font-weight: normal; width: 38%; border-color: white; border-left-color: black; border-bottom-color: black; font-size: small;"> Tasa de cambio B.C.V: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs. a la fecha {{date_format(date_create($quotation->date_billing),"d-m-Y")}}</th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white; border-bottom-color: black;">MONTO TOTAL USD</th>
-    <th style="text-align: right; font-weight: normal; border-top-color: white;">${{ number_format(bcdiv($total_less_percentagep/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
+
+  <tr>
+    <th style="text-align: center; border-color: white; font-weight: normal; width:3%;"></th>
+    <th style="text-align: center; border-color: white; font-weight: normal; "></th>
+    <th style="text-align: center; border-color: white; font-weight: normal; width:2%;"></th>
+    <th style="text-align: center; border-color: white; font-weight: normal; width:2%;"></th>
+    <th style="text-align: right; border-color: white;">{{ number_format($total_less_percentage+$total_less_percentagep, 2, ',', '.') }}</th>
+    <th style="text-align: right; border-color: white;">${{ number_format(($total+$total_less_percentagep)/$quotationsorigin[0]['bcv'], 2, ',', '.') }}</th>
   </tr> 
 
 
 </table>
+
+
+<table style="width: 100%; margin-top: -22px;">
+  <tr>
+    <td style="border-color: white;">Tasa de cambio B.C.V: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs. a la fecha {{date_format(date_create($quotation->date_billing),"d-m-Y")}}</td>
+  </tr>
+</table>
+
 </body>
 </html>
