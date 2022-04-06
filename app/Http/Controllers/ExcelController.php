@@ -81,25 +81,81 @@ class ExcelController extends Controller
         return Excel::download($export, 'plantilla_clientes.xlsx');
     }
 
-    public function export_product() 
+   /* public function export_product() // producto
     {
          $products = Product::on(Auth::user()->database_name)
-         ->join('inventories','inventories.product_id','=','products.id')
-         ->select('products.id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
-         'code_comercial','type','description','price','price_buy','cost_average','photo_product','money',
-         'exento','islr','inventories.amount','products.status')
+         ->where('status','1')
+         ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
+         'code_comercial','type','description','price','price_buy','money',
+         'exento','islr','special_impuesto as amount')
          ->get();
+
+         $global = new GlobalController(); 
+
+         foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
+            
+            $buscar_num = $global->consul_prod_invt($product->id);
+
+            if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
+            
+             $product->amount = '0.00';
+
+            } else {
+                $product->amount = $buscar_num;  
+            }
+
+         }
 
         
          $export = new ExpensesExport([
              ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
-              ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','costo_promedio','foto','moneda_d_o_bs',
-              'exento_1_o_0','islr_1_o_0','Cantidad en Inventario','status'],
+              ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','moneda_d_o_bs',
+              'exento_1_o_0','islr_1_o_0','Cantidad_Actual'],
+              $products
+        ]);
+        
+        return Excel::download($export, 'guia_productos.xlsx');
+    }*/
+    
+
+    public function export_product() // inventario 
+    {
+         $products = Product::on(Auth::user()->database_name)
+         ->where('status','1')
+         ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
+         'code_comercial','type','description','price','price_buy','money',
+         'exento','islr','special_impuesto as amount')
+         ->get();
+
+         $global = new GlobalController(); 
+
+         foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
+            
+            $buscar_num = $global->consul_prod_invt($product->id);
+
+            if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
+            
+             $product->amount = '0.00';
+
+            } else {
+                $product->amount = $buscar_num;  
+            }
+
+         }
+
+        
+         $export = new ExpensesExport([
+             ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
+              ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','moneda_d_o_bs',
+              'exento_1_o_0','islr_1_o_0','cantidad_actual'],
               $products
         ]);
         
         return Excel::download($export, 'guia_productos.xlsx');
     }
+
+
+
 
     public function export($id) 
    {
@@ -204,7 +260,7 @@ class ExcelController extends Controller
         $total_amount_for_import = 0;
        
         foreach ($rows[0] as $row) {
-            $total_amount_for_import += $row['precio_compra'] * $row['cantidad_en_inventario'];
+            $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
         }
 
         $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();
@@ -234,23 +290,34 @@ class ExcelController extends Controller
     
             $file = $request->file('file');
             
-            Excel::import(new ProductImport, $file);
+            $dd = Excel::import(new ProductImport, $file);
 
-            Excel::import(new InventoryImport, $file);
-    
-            $movement = new MovementProductImportController();
-    
+            dd($dd);
+            //Excel::import(new InventoryImport, $file);
+
+            /*$movement = new MovementProductImportController();
             $movement->add_movement($subcontrapartida,$amount,$rate);
             
             return redirect('products')->with('success', 'Archivo importado con Exito!');
-
+*/
        }else{
             return redirect('products')->with('danger', 'Debe seleccionar una cuenta de pago');
        }
        
    }
 
-   public function import_product_update_price(Request $request) 
+   /*public function import_product_update_price(Request $request) //producto
+   {
+       
+       $file = $request->file('file');
+       
+       Excel::import(new ProductUpdatePriceImport, $file);
+       
+       return redirect('products')->with('success', 'Se han actualizado los precios Correctamente');
+   } */
+
+
+   public function import_product_update_price(Request $request) // INVENTARIO
    {
        
        $file = $request->file('file');
@@ -259,5 +326,7 @@ class ExcelController extends Controller
        
        return redirect('products')->with('success', 'Se han actualizado los precios Correctamente');
    }
+
+
 
 }

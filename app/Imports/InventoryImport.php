@@ -13,6 +13,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Support\Facades\Auth;
 
+
 class InventoryImport implements ToModel,WithHeadingRow, SkipsOnError
 {
     use Importable;
@@ -26,18 +27,19 @@ class InventoryImport implements ToModel,WithHeadingRow, SkipsOnError
         $user       =   auth()->user();
         $date = Carbon::now();
 
-        $inventory = new Inventory([
+       $inventory = new Inventory([
             'id'                => $row['id'],
             'product_id'        => $row['id'],
             'id_user'           => $user->id,
             'code'              => $row['codigo_comercial'], 
-            'amount'            => $row['cantidad_en_inventario'],
+            'amount'            => $row['cantidad_actual'],
             'status'            => 1,
             'created_at'        => $date,
             'updated_at'        => $date,
             
         ]);
-                
+
+             
         $inventory->setConnection(Auth::user()->database_name);
 
         return $inventory;
