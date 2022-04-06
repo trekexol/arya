@@ -725,7 +725,6 @@ class GlobalController extends Controller
     function consul_prod_invt($id_product,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
 
-        
         if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
@@ -742,11 +741,21 @@ class GlobalController extends Controller
         }
     
         if (empty($inventories_quotations)) {
-        $amount_real = 0;
+        $amount_real =0;
         } else {
             
-            $amount_real = 0;
+            //$amount_real = 888;
+             
+            if ($inventories_quotations->amount_real > 0) {
+
             $amount_real = $inventories_quotations->amount_real;
+
+            } else {
+            
+            $amount_real = 0;  
+            
+            }
+        
         }
     
         return $amount_real;

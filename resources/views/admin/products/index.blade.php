@@ -31,14 +31,15 @@
               Opciones 
           </button>
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla</a> 
+              <h6>Importación Masiva Productos e Inventario</h6>
+              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Excel</a> 
               <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
                 @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
               </form>
               <br>
-              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Productos</a> 
-              <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> 
+              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Excel</a> 
+             <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
           </div> 
       </div> 
 
