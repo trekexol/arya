@@ -134,8 +134,14 @@
                                 </button>
                             </div>
                             <div class="col-sm-2">
+                                @if ($type == "Nota de Entrega")
+                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
+                                @elseif ($type == "factura")
+                                <a href="{{ route('invoices') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
+                                @else
                                 <a href="{{ route('quotations') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                            </div>
+                                @endif
+                             </div>
                         </div>
                         </form>      
                            

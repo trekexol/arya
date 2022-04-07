@@ -111,7 +111,7 @@
                             <td class="text-center font-weight-bold">USD</td>
                             @endif
                             <td class="text-center">
-                                <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin,"Nota de Entrega"])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                             </td>                        
