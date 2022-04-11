@@ -290,16 +290,14 @@ class ExcelController extends Controller
     
             $file = $request->file('file');
             
-            $dd = Excel::import(new ProductImport, $file);
+            Excel::import(new ProductImport, $file);
+            Excel::import(new InventoryImport, $file);
 
-            dd($dd);
-            //Excel::import(new InventoryImport, $file);
-
-            /*$movement = new MovementProductImportController();
+            $movement = new MovementProductImportController();
             $movement->add_movement($subcontrapartida,$amount,$rate);
             
             return redirect('products')->with('success', 'Archivo importado con Exito!');
-*/
+
        }else{
             return redirect('products')->with('danger', 'Debe seleccionar una cuenta de pago');
        }

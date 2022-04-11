@@ -39,7 +39,7 @@
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
                         </div>
 
-                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">CI/Rif: </label>
+                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Apartamento: </label>
                         <div class="col-md-3">
                             <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->cedula_rif  ?? '' }}" readonly required autocomplete="date_quotation">
     
@@ -103,6 +103,7 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div style="display: none;">
                             <label for="base_imponible" class="col-md-2 col-form-label text-md-right">Base Imponible:</label>
                             <div class="col-md-3">
                                 <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($quotation->base_imponible / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
@@ -113,8 +114,9 @@
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="form-group row">
+                        </div>
+                <div style="display: none;">
+                         <div class="form-group row" >
                             <label for="iva_amounts" class="col-md-2 col-form-label text-md-right">Monto de Iva:</label>
                             <div class="col-md-4">
                                 <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($quotation->amount_iva / ($bcv ?? 1), 2, ',', '.') ?? 0 }}"  readonly required autocomplete="iva_amount"> 
@@ -137,6 +139,7 @@
                                 @enderror
                             </div>
                         </div>
+                    </div>        
                         <div class="form-group row">
                             <label for="grand_totals" class="col-md-2 col-form-label text-md-right">Total General:</label>
                             <div class="col-md-4">
@@ -148,6 +151,7 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div style="display: none;">
                             <label for="note" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
 
                             <div class="col-md-3">
@@ -160,8 +164,9 @@
                                 @enderror
                             </div>
                         </div>
+                        </div>
                         
-                        
+                        <div style="display: none;">
                         <div class="form-group row">
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             <div class="col-md-4">
@@ -173,12 +178,14 @@
                                     </span>
                                 @enderror
                             </div>
+                           
                             <label for="iva" class="col-md-2 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
                             <select class="form-control" name="iva" id="iva">
                                 <option value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
                             </select>
                             </div>
+                        </div>
                         </div>
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Pagar:</label>

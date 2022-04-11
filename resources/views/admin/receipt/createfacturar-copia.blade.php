@@ -65,15 +65,7 @@
                         </div>
 
                         <div class="form-group row">
-
-
-                            @if($quotation->type == 'F')
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
-                            @else
-                            <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
-                            @endif
-            
-                            
                             <div class="col-md-4">
                                 <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $client->cedula_rif }}" readonly required autocomplete="cedula_rif">
 
@@ -106,20 +98,10 @@
                                     </span>
                                 @enderror
                             </div>
-                        <div style="display: none;">    
-                            <label for="base_imponible" class="col-md-2 col-form-label text-md-right">Base Imponible:</label>
-                            <div class="col-md-3">
-                                <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($quotation->base_imponible  , 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
-                                @error('base_imponible')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div> 
+
                         </div>
-  
-                        <div class="form-group row" style="display: none;">
+
+                        <div class="form-group row">
                             <label for="porc_retencion_iva" class="col-md-4 col-form-label text-md-right">Porcentaje Retención Iva:</label>
                             <div class="col-md-2">
                                 <input id="porc_retencion_iva" type="text" class="form-control @error('porc_retencion_iva') is-invalid @enderror" value="{{ $client->percentage_retencion_iva ?? 0 }}" readonly name="porc_retencion_iva" autocomplete="porc_retencion_iva">
@@ -141,29 +123,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group row" style="display: none;">
-                            <label for="iva_amount" class="col-md-2 col-form-label text-md-right">Monto de Iva</label>
-                            <div class="col-md-4">
-                                <input id="iva_amount" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount"  readonly required autocomplete="iva_amount"> 
-                                
-                                @error('iva_amount')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retencion IVA:</label>
-
-                            <div class="col-md-3">
-                                <input id="iva_retencion" type="text" class="form-control @error('iva_retencion') is-invalid @enderror" name="iva_retencion" readonly required autocomplete="iva_retencion">
-
-                                @error('iva_retencion')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+              
                         <div class="form-group row">
                             <label for="grand_totals" class="col-md-2 col-form-label text-md-right">Total General</label>
                             <div class="col-md-4">
@@ -175,19 +135,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div style="display: none;">
-                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
-
-                            <div class="col-md-3">
-                                <input id="islr_retencion" type="text" class="form-control @error('islr_retencion') is-invalid @enderror" name="islr_retencion" value="{{ number_format($total_retiene_islr , 2, ',', '.') }}" readonly required autocomplete="islr_retencion">
-
-                                @error('islr_retencion')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                           
                         </div>
                         
                         
@@ -218,20 +166,8 @@
                             <div class="col-md-1">
                                 <a href="{{ route('anticipos.selectanticipo',[$quotation->id_client,$coin,$quotation->id]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                             </div>
-                            <div style="display: none;">
-                                <label for="iva" class="col-md-1 col-form-label text-md-right">IVA:</label>
-                                <div class="col-md-2">
-                                    <select class="form-control" name="iva" id="iva">
-                                        @if(isset($quotation->iva_percentage))
-                                            <option value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
-                                        @else
-                                            <option value="16">16%</option>
-                                            <option value="12">12%</option>
-                                        @endif
-                                        
-                                    </select>
-                                </div>
-                           </div>
+                           
+                            
                             <div class="col-md-2">
                                 <select class="form-control" name="coin" id="coin">
                                     <option value="bolivares">Bolívares</option>
@@ -281,7 +217,7 @@
                                 </div>
                                 <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
-                                        Guardar Factura
+                                        Guardar Relación
                                     </button>
                                 </div>
                                 <div class="col-md-2">

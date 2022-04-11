@@ -5,7 +5,7 @@
 @if (Auth::user()->role_id  == '1')
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Relación Gastos de Condominio</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
@@ -98,13 +98,13 @@
             <thead>
             <tr> 
                 <th class="text-center">Fecha</th>
-                <th class="text-center">Nº</th>
+                <th class="text-center">Nº Recibo</th>
                 <th class="text-center">Relación</th>
                 <th class="text-center">Ctrl/Serie</th>
-                <th class="text-center">Cliente</th>
+                <th class="text-center">Propietario</th>
                 <th class="text-center">Vendedor</th>
-                <th class="text-center">REF</th>
-                <th class="text-center">Monto</th>
+                <th class="text-center">Monto USD</th>
+                <th class="text-center">Monto Bs.</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>-

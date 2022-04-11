@@ -62,12 +62,12 @@
 
 <table style="width: 100%;">
   <tr>
-    <th style="font-weight: normal; font-size: medium;">Nombre / Razón Social: &nbsp;  {{ $quotation->clients['name'] }}</th>
+    <th style="font-weight: normal; font-size: medium;">Condominio: &nbsp;  {{ $quotation->clients['name'] }}</th>
     
    
   </tr>
   <tr>
-    <td>Domicilio Fiscal: &nbsp;  {{ $quotation->clients['direction'] }}
+    <td>Dirección: &nbsp;  {{ $quotation->clients['direction'] }}
     </td>
     
     
@@ -83,16 +83,12 @@
     <th style="text-align: center;">Teléfono</th>
     <th style="text-align: center;">RIF/CI</th>
     <th style="text-align: center;">N° Control / Serie</th>
-    <th style="text-align: center;">Nota de Entrega</th>
-    <th style="text-align: center;">Transp./Tipo Entrega</th>
    
   </tr>
   <tr>
     <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->number_delivery_note ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
     
     
   </tr>
@@ -151,9 +147,7 @@
     <th style="text-align: center; ">Código</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Cantidad</th>
-    <th style="text-align: center; ">Lote</th>
-    <th style="text-align: center; ">Fecha Venc</th> 
-    <th style="text-align: center; ">P.V.J.</th>
+    <th style="text-align: center; ">P.V.P.</th>
     <th style="text-align: center; ">Desc</th>
     <th style="text-align: center; ">Total</th>
   </tr> 
@@ -199,21 +193,6 @@
 ?>
 
 <table style="width: 100%;">
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Sub Total</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
-  </tr> 
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Base Imponible</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->base_imponible , '1', 2), 2, ',', '.') }}</th>
-  </tr>
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($iva, '1', 2), 2, ',', '.') }}</th>
-  </tr> 
   @if ($quotation->anticipo != 0)
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>

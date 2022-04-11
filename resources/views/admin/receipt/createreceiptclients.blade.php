@@ -68,17 +68,17 @@
                                     $num_fac = '';
                                     
                                     if ($invoice->number_invoice > 0){
-                                    $num_fac = 'Factura: '.$invoice->number_invoice;
+                                    $num_fac = 'Relación de Gasto: '.$invoice->number_invoice;
                                     }
                                     ?>
-                                        <option  value="{{$invoice->id}}"> {{$num_fac ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - Monto: {{ number_format($invoice->amount_with_iva, 2, ',', '.') ?? '0'}}Bs. - ${{ number_format($invoice->amount_with_iva/$invoice->bcv, 2, ',', '.') ?? '0'}} - {{ $invoice->observation ?? ''}}</option>
+                                        <option  value="{{$invoice->id}}"> {{$num_fac ?? ''}} - {{ $invoice->serie ?? ''}} - Monto: {{ number_format($invoice->amount_with_iva, 2, ',', '.') ?? '0'}}Bs. - ${{ number_format($invoice->amount_with_iva/$invoice->bcv, 2, ',', '.') ?? '0'}} - {{ $invoice->observation ?? ''}}</option>
                                     @endforeach
 
                                 </select>
                                 @else
                                 @if (isset($client->id ))
                                 
-                                <label class="col-md-8 col-form-label text-md-left">El cliente no posee Facturas Pendientes</label>
+                                <label class="col-md-8 col-form-label text-md-left">El Condominio no posee Relaciones Pendientes</label>
                                 
                                 @endif
     

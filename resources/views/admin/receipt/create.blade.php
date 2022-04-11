@@ -32,7 +32,7 @@
                        
                        
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}:</label>
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de Relación de Gasto:</label>
                             <div class="col-md-4">
                                 <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}" readonly required autocomplete="date_quotation">
     
@@ -113,7 +113,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> {{$type ?? 'Cotización'}}:</h6></label>
+                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de Gasto</h6></label>
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="totallabel" id="total"><h3></h3></label>
                             </div>
@@ -382,13 +382,13 @@
                           
                                 <div id="divFacturar" class="col-sm-4">
                                     @if($suma == 0)
-                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
+                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>
                                         @if (empty($quotation->date_order))
                                             <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif  
                                         
                                     @else
-                                        <a href="{{ route('receipt.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
+                                        <a href="{{ route('receipt.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>  
                                         @if (empty($quotation->date_order))
                                             <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif

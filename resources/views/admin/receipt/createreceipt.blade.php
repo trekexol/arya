@@ -36,7 +36,7 @@
                        
                         
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}</label>
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha</label>
                             <div class="col-md-3">
                                 <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $datenow }}" required autocomplete="date_quotation">
     
