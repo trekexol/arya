@@ -1182,3 +1182,13 @@ Route::group(["prefix"=>'owners'],function(){
     Route::patch('{id}/update','OwnersController@update')->name('owners.update');
 
 });
+
+Route::group(["prefix"=>'vendor_commissions'],function(){
+    Route::get('menu/{typeperson}/{id_client?}','Reports\VendorCommissionController@index')->name('vendor_commissions.index');
+    Route::post('store','Reports\VendorCommissionController@store')->name('vendor_commissions.store');
+    Route::get('pdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
+
+    Route::get('selectclient','Reports\VendorCommissionController@selectClient')->name('vendor_commissions.selectClient');
+    Route::get('selectvendor','Reports\VendorCommissionController@selectVendor')->name('vendor_commissions.selectVendor');
+});
+

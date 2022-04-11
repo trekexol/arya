@@ -4,9 +4,12 @@
 
 <div class="container-fluid">
     <div class="row py-lg-2">
+       
         <div class="col-md-6">
             <h2>Seleccione un Cliente</h2>
         </div>
+        
+    
     </div>
 </div>
 
@@ -43,7 +46,7 @@
                         @foreach ($clients as $client)
                             <tr>
                                 <td >
-                                    <a href="{{ route('reports.accounts_receivable',['Cliente',$client->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
+                                    <a href="{{ route('vendor_commissions.index',['Cliente',$client->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                 <td >{{$client->name}}</td>
                                 <td >{{$client->cedula_rif}}</td>
