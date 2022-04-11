@@ -5,7 +5,7 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Relación de Gastos de Condominio</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
@@ -77,13 +77,12 @@
             <tr> 
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
-                <th class="text-center">Nota</th>
-                <th class="text-center">Ctrl/Serie</th>
-                <th class="text-center">Cliente</th>
-                <th class="text-center">Vendedor</th>
-                <th class="text-center">REF</th>
-                <th class="text-center">Monto</th>
                 <th class="text-center"></th>
+                <th class="text-center">Ctrl/Serie</th>
+                <th class="text-center">Condominio</th>
+                <th class="text-center">Monto USD</th>
+                <th class="text-center">Monto Bs.</th>
+                <th class="text-center">Moneda</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
             </tr>
@@ -126,7 +125,6 @@
                             <td class="text-center font-weight-bold">{{$quotation->number_delivery_note ?? ''}}</td>
                             <td class="text-center font-weight-bold" style="width:11%;">{{$quotation->serie ?? ''}}</td>
                             <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
-                            <td class="text-center font-weight-bold">{{$quotation->vendors['name'] ?? ''}} {{$quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
                             @if ($quotation->coin == 'bolivares')

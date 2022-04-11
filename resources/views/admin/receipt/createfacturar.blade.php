@@ -88,7 +88,7 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
+                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Relación:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($quotation->total_factura  , 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
     
@@ -268,7 +268,7 @@
                                 </div>
                                 <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
-                                        Guardar Factura
+                                        Guardar Relación
                                     </button>
                                 </div>
                                 <div class="col-md-2">

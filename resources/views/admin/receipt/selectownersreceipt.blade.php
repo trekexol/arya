@@ -28,7 +28,6 @@
                 <thead>
                 <tr> 
                     <th></th>
-                   
                     <th>ID Propietario</th>
                     <th>Propietario</th>
                     <th>Apartamento</th>
@@ -45,7 +44,7 @@
                         @foreach ($clients as $client)
                             <tr>
                                 <td >
-                                    <a href="{{ route('receipt.createreceiptclient',[$client->id,$type ?? null]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
+                                    <a href="{{ route('receipt.accounts_receivable_receipt',['Cliente',$client->id,$type ?? null]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                <td >{{$client->cedula_rif}}</td>
                                <td >{{$client->name}}</td>

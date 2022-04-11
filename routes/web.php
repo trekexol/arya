@@ -571,8 +571,8 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
 
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
-     Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
-    //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectowners');
+    Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
+    Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
     
@@ -614,37 +614,22 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('movementinvoice/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
    
     Route::get('facturarafter/{id_quotation}/{coin}','ReceiptController@createfacturar_after')->name('receipt.createfacturar_after');
-
-    
     Route::get('facturaraftereceipt/{id_quotation}/{coin}','ReceiptController@createfacturar_aftereceipt')->name('receipt.createfacturar_aftereceipt');
-    //Route::get('facturar/{id_quotation}/{coin}','ReceiptController@createfacturar')->name('receipt.createfacturar');
-    
-    /*
 
-    Route::get('listinventory/{var?}','QuotationController@listinventory')->name('quotations.listinventory');
-    Route::get('notadeentrega/{id_quotation}/{coin}','DeliveryNoteController@createdeliverynote')->name('quotations.createdeliverynote');
-    Route::get('indexnotasdeentrega/','DeliveryNoteController@index')->name('quotations.indexdeliverynote');
-    Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');
-    Route::patch('productupdate/{id}/update','QuotationController@updatequotationproduct')->name('quotations.productupdate');
-
-    Route::get('facturarafter/{id_quotation}/{coin}','FacturarController@createfacturar_after')->name('quotations.createfacturar_after');
-    Route::get('refreshrate/{id_quotation}/{coin}/{rate}','QuotationController@refreshrate')->name('quotations.refreshrate');
-    Route::delete('deleteproduct','QuotationController@deleteProduct')->name('quotations.deleteProduct');
-    Route::delete('deletequotation','QuotationController@deleteQuotation')->name('quotations.deleteQuotation');
-    Route::delete('reversarquotation','QuotationController@reversar_quotation')->name('quotations.reversarQuotation');
-    Route::get('reversarquotationmultipayment/{id}/{id_header?}','QuotationController@reversar_quotation_multipayment')->name('quotations.reversar_quotation_multipayment');
-    Route::delete('reversardeliverynote','DeliveryNoteController@reversar_delivery_note')->name('quotations.reversar_delivery_note'); */
-
-
-    Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
+   /* Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
-    Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
-
+    Route::patch('{id}/update','QuotationController@update')->name('quotations.update'); */
 
     Route::get('movementreceipt/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
 
-    //Route::post('multipayment','InvoiceController@multipayment')->name('invoices.multipayment');
-   // Route::post('storemultipayment','InvoiceController@storemultipayment')->name('invoices.storemultipayment');
+    Route::get('accountsreceivable/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable')->name('receipt.accounts_receivable');
+    Route::post('storeaccounts_receivable','ReceiptController@store_accounts_receivable')->name('receipt.store_accounts_receivable');
+    Route::get('accounts_receivablepdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf')->name('receipt.accounts_receivable_pdf');
+
+    Route::get('accountsreceivable_receipt/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable_receipt')->name('receipt.accounts_receivable_receipt');
+    Route::post('storeaccounts_receivable_receipt','ReceiptController@store_accounts_receivable_receipt')->name('receipt.store_accounts_receivable_receipt');
+    Route::get('accounts_receivablepdf_receipt/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt')->name('receipt.accounts_receivable_pdf_receipt');
+
 
  });
  Route::group(["prefix"=>'receipts'],function(){
