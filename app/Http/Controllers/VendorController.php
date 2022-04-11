@@ -92,7 +92,7 @@ class VendorController extends Controller
     $var->user_id = request('user_id');
 
     $var->code = request('code');
-    $var->cedula_rif = request('cedula_rif');
+    $var->cedula_rif = $request->type_code.request('cedula_rif');
     $var->name = request('name');
     $var->surname = request('surname');
 
@@ -111,6 +111,9 @@ class VendorController extends Controller
     $var->twitter = request('twitter');
     $var->especification = request('especification');
     $var->observation = request('observation');
+
+    $var->direction = request('direction');
+    
     $var->status =  1;
   
     $var->save();
@@ -137,7 +140,7 @@ class VendorController extends Controller
     */
    public function edit($id)
    {
-        $var = vendor::on(Auth::user()->database_name)->find($id);
+        $vendor = vendor::on(Auth::user()->database_name)->find($id);
         
         $estados            = Estado::on(Auth::user()->database_name)->get();
         $municipios         = Municipio::on(Auth::user()->database_name)->get();
@@ -146,8 +149,9 @@ class VendorController extends Controller
 
         $comisions   = ComisionType::on(Auth::user()->database_name)->get();
         $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
-       
-        return view('admin.vendors.edit',compact('var','estados','municipios','parroquias','comisions','employees'));
+
+      
+        return view('admin.vendors.edit',compact('vendor','estados','municipios','parroquias','comisions','employees'));
   
    }
 
@@ -163,8 +167,6 @@ class VendorController extends Controller
     $vars =  Vendor::on(Auth::user()->database_name)->find($id);
 
     $vars_status = $vars->status;
-  
-    
    
     $data = request()->validate([
         
@@ -173,6 +175,7 @@ class VendorController extends Controller
         'user_id'         =>'required',
         'cedula_rif'         =>'required',
         'name'         =>'required',
+        'phone'         =>'required',
         'comision'         =>'required',
         'status'         =>'required'
        
@@ -186,7 +189,7 @@ class VendorController extends Controller
     $var->user_id = request('user_id');
 
     $var->code = request('code');
-    $var->cedula_rif = request('cedula_rif');
+    $var->cedula_rif = $request->type_code.request('cedula_rif');
     $var->name = request('name');
     $var->surname = request('surname');
 
@@ -202,6 +205,8 @@ class VendorController extends Controller
     $var->twitter = request('twitter');
     $var->especification = request('especification');
     $var->observation = request('observation');
+
+    $var->direction = request('direction');
 
     if(request('status') == null){
         $var->status = $vars_status;

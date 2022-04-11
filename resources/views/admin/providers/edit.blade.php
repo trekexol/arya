@@ -270,7 +270,7 @@
 @section('validacion')
     <script>    
 	$(function(){
-        soloAlfaNumerico('code_provider');
+      
         soloAlfaNumerico('razon_social');
         soloLetras('country');
         soloLetras('city');

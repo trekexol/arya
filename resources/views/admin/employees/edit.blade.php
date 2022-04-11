@@ -67,9 +67,43 @@
                                
                                 <div class="form-group row">
                                     <label for="id_empleado" class="col-md-2 col-form-label text-md-right">Cédula</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="id_empleado" type="text" class="form-control @error('id_empleado') is-invalid @enderror" name="id_empleado" value="{{ $var->id_empleado  }}" required autocomplete="id_empleado">
+                                    <div class="col-md-1 col-sm-1">
+                                        <select id="type_code" name="type_code" class="select2_single form-control">
+                                            @if ($var->id_empleado[0] == 'V')
+                                                <option selected value="V-">V-</option>
+                                                <option value="">----------</option>
+                                            @endif
+                                            @if ($var->id_empleado[0] == 'E')
+                                                <option selected value="E-">E-</option>
+                                                <option value="">----------</option>
+                                            @endif
+                                            @if ($var->id_empleado[0] == 'J')
+                                                <option selected value="J-">J-</option>
+                                                <option value="">----------</option>
+                                            @endif
+                                            @if ($var->id_empleado[0] == 'G')
+                                                <option selected value="G-">G-</option>
+                                                <option value="">----------</option>
+                                            @endif
+                                            <option value="V-">V-</option>
+                                            <option value="E-">E-</option>
+                                            <option value="J-">J-</option>
+                                            <option value="G-">G-</option>
+                                        </select>
+                                    </div>
+                                    @php
+                                        if(substr($var->id_empleado, 0, 2) == 'V-'){
+                                            $code_filter = substr($var->id_empleado,2);
+                                        }if(substr($var->id_empleado, 0, 2) == 'E-'){
+                                            $code_filter = substr($var->id_empleado,2);
+                                        }if(substr($var->id_empleado, 0, 2) == 'J-'){
+                                            $code_filter = substr($var->id_empleado,2);
+                                        }if(substr($var->id_empleado, 0, 2) == 'G-'){
+                                            $code_filter = substr($var->id_empleado,2);
+                                        }
+                                    @endphp
+                                    <div class="col-md-3">
+                                        <input id="id_empleado" type="text" class="form-control @error('id_empleado') is-invalid @enderror" name="id_empleado" value="{{ $code_filter ?? $var->id_empleado  }}" required autocomplete="id_empleado">
         
                                         @error('id_empleado')
                                             <span class="invalid-feedback" role="alert">
@@ -372,8 +406,6 @@
 	$(function(){
         soloLetras('nombres');
         soloLetras('apellidos');
-        soloNumeros('telefono1');
-        soloNumeros('telefono2');
         soloAlfaNumerico('code_employee');
         soloAlfaNumerico('direccion');
     });
@@ -382,6 +414,11 @@
             $("#monto_pago").mask('000.000.000.000.000.000,00', { reverse: true });
             
         });
+        $(document).ready(function () {
+            $("#telefono1").mask('0000 000-0000', { reverse: true });
+            
+        }); 
+       
     </script>
 @endsection
                 @section('javascript_edit')
