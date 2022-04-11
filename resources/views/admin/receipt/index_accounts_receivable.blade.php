@@ -35,17 +35,71 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div class="col-sm-2 offset-sm-1">
+                                <select class="form-control" name="type" id="type">
+                                    @if (isset($client))
+                                        <option value="todo">Todo</option>
+                                        <option selected value="cliente">Por Condominio</option>
+
+                                    @elseif (isset($vendor))
+                                        <option value="todo">Todo</option>
+                                        <option value="cliente">Por Condominio</option>
+                                    @else
+                                        <option selected value="todo">Todo</option>
+                                        <option value="cliente">Por Condominio</option>
+                                    @endif
+                                </select>
+                            </div>
                             @if (isset($client))
-                                <label id="client_label1" for="clients" class="col-sm-1 text-md-right">Condominio:</label>
-                                <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
-                            @endif
-                            @if (isset($vendor))
-                                <label id="vendor_label2" name="id_vendor" value="{{ $vendor->id }}" for="vendors" class="col-sm-3">{{ $vendor->name }}</label>
-                            @endif
+                            <label id="client_label1" for="clients" class="col-sm-2 text-md-right">Conodominio:</label>
+                            <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
+                        @endif
+                        @if (isset($vendor))
+                            <label id="vendor_label2" name="id_vendor" value="{{ $vendor->id }}" for="vendors" class="col-sm-3">{{ $vendor->name }}</label>
+                        @endif
                             
                             <div id="client_label3" class="form-group col-sm-1">
-                                <a id="route_select" href="{{ route('receipt.selectcondominiums') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                                <a id="route_select" href="{{ route('receipt.selectcondominiumsreceipt') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
+                           
+                            <!--<div class="col-sm-3  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> -->
+                        </div> 
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-4">
+                                <select class="form-control" name="typeinvoice" id="typeinvoice">
+                                    @if (isset($typeinvoice))
+                                        @if ($typeinvoice == 'notas')
+                                            <option selected value="notas">Cobradas</option>
+                                        @elseif($typeinvoice == 'facturas')
+                                            <option selected value="facturas">Relaciones de Gasto</option>
+                                        @else
+                                            <option selected value="todo">Todas</option>
+                                        @endif
+                                        <option disabled value="todo">-----------------</option>
+                                        <option value="todo">odas</option>
+                                        <option value="notas">Cobradas</option>
+                                        <option value="facturas">Relaciones de Gasto</option>
+                                    @else
+                                        <option selected value="todo">Todas</option>
+                                        <option value="notas">Cobradas</option>
+                                        <option value="facturas">Relaciones de Gasto</option>
+                                    @endif
+                                </select>
+                            </div>
+
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
@@ -63,59 +117,6 @@
                                 <button type="submit" class="btn btn-primary ">
                                     Buscar
                                 </button>
-                            </div>
-                            <div class="col-sm-3  dropdown mb-4">
-                                <button class="btn btn-success" type="button"
-                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
-                                    aria-expanded="false">
-                                    <i class="fas fa-bars"></i>
-                                    Exportaciones
-                                </button>
-                                <div class="dropdown-menu animated--fade-in"
-                                    aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
-                                </div>
-                            </div> 
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-sm-2 offset-sm-1">
-                                <select class="form-control" name="type" id="type">
-                                    @if (isset($client))
-                                        <option value="todo">Todo</option>
-                                        <option selected value="cliente">Por Condominio</option>
-                                        <option value="vendor">Por Vendedor</option>
-                                    @elseif (isset($vendor))
-                                        <option value="todo">Todo</option>
-                                        <option value="cliente">Por Condominio</option>
-                                        <option selected value="vendor">Por Vendedor</option>
-                                    @else
-                                        <option selected value="todo">Todo</option>
-                                        <option value="cliente">Por Condominio</option>
-                                        <option value="vendor">Por Vendedor</option>
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
-                                <select class="form-control" name="typeinvoice" id="typeinvoice">
-                                    @if (isset($typeinvoice))
-                                        @if ($typeinvoice == 'notas')
-                                            <option selected value="notas">Notas de Entrega</option>
-                                        @elseif($typeinvoice == 'facturas')
-                                            <option selected value="facturas">Facturas</option>
-                                        @else
-                                            <option selected value="todo">Facturas y Notas de Entrega</option>
-                                        @endif
-                                        <option disabled value="todo">-----------------</option>
-                                        <option value="todo">Facturas y Notas de Entrega</option>
-                                        <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
-                                    @else
-                                        <option selected value="todo">Facturas y Notas de Entrega</option>
-                                        <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
-                                    @endif
-                                </select>
                             </div>
                         </div>
                     </form>

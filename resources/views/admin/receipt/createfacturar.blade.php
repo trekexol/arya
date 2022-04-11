@@ -26,7 +26,11 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
+                @if($quotation->type == 'F')
                 <div class="card-header" ><h3>Registrar Relación de Gastos: {{$quotation->number_invoice ?? ''}}</h3></div>
+                @else
+                <div class="card-header" ><h3>Registrar Recibo de Condominio: {{$quotation->number_delivery_note ?? ''}}</h3></div>
+                @endif
                 <form method="POST" action="{{ route('receipt.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -355,16 +359,7 @@
                             <div class="col-md-3">
                                     <select  id="payment_type" required name="payment_type" class="form-control">
                                         <option selected value="">Tipo de Pago 1</option>
-                                        <option value="1">Cheque</option>
-                                        <option value="2">Contado</option>
-                                        
-                                        
-                                        <option value="5">Depósito Bancario</option>
                                         <option value="6">Efectivo</option>
-                                        <option value="7">Indeterminado</option>
-                                        
-                                        <option value="9">Tarjeta de Crédito</option>
-                                        <option value="10">Tarjeta de Débito</option>
                                         <option value="11">Transferencia</option>
                                     </select>
                                 </div>
@@ -425,16 +420,7 @@
                                 <div class="col-md-3">
                                     <select  id="payment_type2" name="payment_type2" class="form-control">
                                         <option selected value="0">Tipo de Pago 2</option>
-                                        <option value="1">Cheque</option>
-                                        <option value="2">Contado</option>
-                                        
-                                        
-                                        <option value="5">Depósito Bancario</option>
                                         <option value="6">Efectivo</option>
-                                        <option value="7">Indeterminado</option>
-                                    
-                                        <option value="9">Tarjeta de Crédito</option>
-                                        <option value="10">Tarjeta de Débito</option>
                                         <option value="11">Transferencia</option>
                                     </select>
                                 </div>
@@ -497,17 +483,8 @@
                             <div class="col-md-3">
                                 <select  id="payment_type3"  name="payment_type3" class="form-control">
                                     <option selected value="0">Tipo de Pago 3</option>
-                                    <option value="1">Cheque</option>
-                                    <option value="2">Contado</option>
-                                    
-                                    
-                                    <option value="5">Depósito Bancario</option>
-                                    <option value="6">Efectivo</option>
-                                    <option value="7">Indeterminado</option>
-                                    
-                                    <option value="9">Tarjeta de Crédito</option>
-                                    <option value="10">Tarjeta de Débito</option>
-                                    <option value="11">Transferencia</option>
+                                                                     <option value="6">Efectivo</option>
+                                                                     <option value="11">Transferencia</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -568,17 +545,8 @@
                             <div class="col-md-3">
                                 <select  id="payment_type4"  name="payment_type4" class="form-control">
                                     <option selected value="0">Tipo de Pago 4</option>
-                                    <option value="1">Cheque</option>
-                                    <option value="2">Contado</option>
-                                    
-                                    
-                                    <option value="5">Depósito Bancario</option>
-                                    <option value="6">Efectivo</option>
-                                    <option value="7">Indeterminado</option>
-                                    
-                                    <option value="9">Tarjeta de Crédito</option>
-                                    <option value="10">Tarjeta de Débito</option>
-                                    <option value="11">Transferencia</option>
+                                                                     <option value="6">Efectivo</option>
+                                                                     <option value="11">Transferencia</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -639,16 +607,7 @@
                             <div class="col-md-3">
                                 <select  id="payment_type5"  name="payment_type5" class="form-control">
                                     <option selected value="0">Tipo de Pago 5</option>
-                                    <option value="1">Cheque</option>
-                                    <option value="2">Contado</option>
-                                    
-                                    
-                                    <option value="5">Depósito Bancario</option>
                                     <option value="6">Efectivo</option>
-                                    <option value="7">Indeterminado</option>
-                                
-                                    <option value="9">Tarjeta de Crédito</option>
-                                    <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
                             </div>
@@ -710,17 +669,8 @@
                             <div class="col-md-3">
                                 <select  id="payment_type6"  name="payment_type6" class="form-control">
                                     <option selected value="0">Tipo de Pago 6</option>
-                                    <option value="1">Cheque</option>
-                                    <option value="2">Contado</option>
-                                    
-                                    
-                                    <option value="5">Depósito Bancario</option>
-                                    <option value="6">Efectivo</option>
-                                    <option value="7">Indeterminado</option>
-                                    
-                                    <option value="9">Tarjeta de Crédito</option>
-                                    <option value="10">Tarjeta de Débito</option>
-                                    <option value="11">Transferencia</option>
+                                                                     <option value="6">Efectivo</option>
+                                                                     <option value="11">Transferencia</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -781,17 +731,8 @@
                             <div class="col-md-3">
                                 <select  id="payment_type7"  name="payment_type7" class="form-control">
                                     <option selected value="0">Tipo de Pago 7</option>
-                                    <option value="1">Cheque</option>
-                                    <option value="2">Contado</option>
-                                    
-                                    
-                                    <option value="5">Depósito Bancario</option>
-                                    <option value="6">Efectivo</option>
-                                    <option value="7">Indeterminado</option>
-                                    
-                                    <option value="9">Tarjeta de Crédito</option>
-                                    <option value="10">Tarjeta de Débito</option>
-                                    <option value="11">Transferencia</option>
+                                                                     <option value="6">Efectivo</option>
+                                                                     <option value="11">Transferencia</option>
                                 </select>
                             </div>
                             <div class="col-md-3">

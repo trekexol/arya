@@ -62,12 +62,12 @@
 
 <table style="width: 100%;">
   <tr>
-    <th style="font-weight: normal; font-size: medium;">Condominio: &nbsp;  {{ $quotation->clients['name'] }}</th>
+    <th style="font-weight: normal; font-size: medium;">Condominio: &nbsp;  {{ $client->name }}</th>
     
    
   </tr>
   <tr>
-    <td>Dirección: &nbsp;  {{ $quotation->clients['direction'] }}
+    <td>Dirección: &nbsp;  {{ $client->direction}}
     </td>
     
     
@@ -86,8 +86,8 @@
    
   </tr>
   <tr>
-    <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
+    <td style="text-align: center;">{{ $client->phone1 ?? '' }}</td>
+    <td style="text-align: center;">{{ $client->type_code?? ''}} {{ $client->cedula_rif ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie ?? '' }}</td>
     
     
@@ -163,13 +163,6 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
-
-      <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
-
- 
-      <th style="text-align: center; font-weight: normal;">{{ $var->date_expirate}}</th>
-
-
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price / ($bcv ?? 1), 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>

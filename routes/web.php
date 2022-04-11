@@ -572,6 +572,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
     Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
+    Route::get('selectcondominiumsreceipt/{type?}','ReceiptController@selectcondominiumsreceipt')->name('receipt.selectcondominiumsreceipt');
     Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');

@@ -26,19 +26,32 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Imprimir Relación Nº {{$quotation->number_invoice ?? ''}}</h3></div>
                 
+                @if($quotation->type == 'F')                  
+                <div class="card-header" ><h3>Imprimir Relación Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                @else               
+                <div class="card-header" ><h3>Imprimir Recibo Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                @endif
                 <div class="card-body" >
                         
                     <div class="form-group row">
-                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Factura:</label>
+                        
+                        @if($quotation->type == 'F')                  
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Relación:</label>
+                        @else               
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Recibo:</label>
+                        @endif
+
                         <div class="col-md-4">
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
                         </div>
-
-                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">CI/Rif: </label>
+                        @if($quotation->type == 'F')
+                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
+                        @else
+                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
+                        @endif
                         <div class="col-md-3">
-                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->clients['cedula_rif']  ?? '' }}" readonly required autocomplete="date_quotation">
+                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->cedula_rif  ?? '' }}" readonly required autocomplete="date_quotation">
     
                             @error('date_quotation')
                                 <span class="invalid-feedback" role="alert">
@@ -51,9 +64,16 @@
               
                     
                     <div class="form-group row">
+                            
+                          
+                            @if($quotation->type == 'F')
                             <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Cliente: </label>
+                            @else
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Propietario: </label>
+                            @endif
+
                             <div class="col-md-4">
-                                <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $quotation->clients['name']  ?? '' }}" readonly>
+                                <input id="name_cliente" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="name_cliente" value="{{ $client->name ?? '' }}" readonly>
 
                                 @error('date_quotation')
                                     <span class="invalid-feedback" role="alert">
@@ -72,7 +92,7 @@
                             </div>
                             
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: none;">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($quotation->amount / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
@@ -83,6 +103,7 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div >
                             <label for="base_imponible" class="col-md-2 col-form-label text-md-right">Base Imponible:</label>
                             <div class="col-md-3">
                                 <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($quotation->base_imponible / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
@@ -92,9 +113,10 @@
                                     </span>
                                 @enderror
                             </div>
+                            </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: none;">
                             <label for="iva_amounts" class="col-md-2 col-form-label text-md-right">Monto de Iva:</label>
                             <div class="col-md-4">
                                 <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($quotation->amount_iva / ($bcv ?? 1), 2, ',', '.') ?? 0 }}"  readonly required autocomplete="iva_amount"> 
@@ -128,21 +150,23 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
+                            <div style="display: none;">
+                                <label for="note" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
 
-                            <div class="col-md-3">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ number_format($quotation->retencion_islr / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="note">
+                                <div class="col-md-3">
+                                    <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ number_format($quotation->retencion_islr / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="note">
 
-                                @error('note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('note')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                         
                         
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: none;">
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             <div class="col-md-4">
                                 <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($quotation->anticipo / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="anticipo"> 
@@ -250,9 +274,9 @@
             </div>
             <div class="modal-body">
            
-                <h5 class="text-center">Esta factura fue pagada con multipago, al reversarla, reversará todas las facturas 
+                <h5 class="text-center">Esta Relación de Gasto fue pagada con multipago, al reversarla, reversará todas las facturas 
                     realizadas en el multipago.</h5>
-                <h5 class="text-center">Seguro quiere reversar todas las facturas?</h5>
+                <h5 class="text-center">Seguro quiere reversar todas las Relaciones de Gasto?</h5>
                 
             </div>
             <div class="modal-footer">
@@ -269,7 +293,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Eliminar Factura</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Reversar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -278,13 +302,13 @@
                 @csrf
                 @method('DELETE')
                 <div class="modal-body">
-                    <h5 class="text-center">Seguro quiere reversar la factura?</h5>
+                    <h5 class="text-center">Seguro quiere reversar la relación?</h5>
                     <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
                     
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <button type="submit" class="btn btn-danger">Reversar</button>
                 </div>
             </form>
         </div>

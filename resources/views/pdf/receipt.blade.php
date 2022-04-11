@@ -81,7 +81,7 @@
   ?>
 
 
-<h4 style="align:center; text-align: center; color: black"> RECIBO DE CONDOMINIO NRO: {{ str_pad($quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
+<h4 style="align:center; text-align: center; color: black"> RECIBO DE CONDOMINIO NRO: {{ str_pad($quotation->number_delivery_note, 6, "0", STR_PAD_LEFT)}}</h4>
 <h4 style="align:center; text-align: center; color: black"> Mes de  {{ $mes_nombre ?? ''}}</h4>
 
 <table style="width: 60%;">
@@ -273,6 +273,25 @@
     <td style="border-color: white;">Tasa de cambio B.C.V: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs. a la fecha {{date_format(date_create($quotation->date_billing),"d-m-Y")}}</td>
   </tr>
 </table>
+<br>
+<div style="width: 100%; border-color: black; border-width:1px; border-style:solid">
+<table style="width: 100%; border-color: black;">
+
+<?php
+$nota = "Favor realizar pagos a Nombre de:";
+$nota2 ="CONDOMINIO RESIDENCIAS HELENA";
+$nota3 ="Rif.: J-31059826-6";
+$nota4 ="Banco Banesco Cuenta #01340420874203018846";
+
+?>
+
+    <tr style="border-color: white;"><td style="border-color: white;">{{$nota}}</td></tr>
+    <tr style="border-color: white;"><td style="border-color: white;">{{$nota2}}</td></tr>
+    <tr style="border-color: white;"><td style="border-color: white;">{{$nota3}}</td></tr>
+    <tr style="border-color: white;"><td style="border-color: white;">{{$nota4}}</td></tr>
+
+</table>
+
 
 </body>
 </html>
