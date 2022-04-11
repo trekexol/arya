@@ -17,9 +17,9 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('owners') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
     </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
-    </li>
+   <!-- <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ ''/*route('receiptr')*/ }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
+    </li>-->
   </ul>
   @endif
 
@@ -50,24 +50,15 @@
         
       </div>
       @if (Auth::user()->role_id  == '1')
-        <!--<div class="col-sm-3">
-            <a href="{{ '' /*route('payments')*/ }}" class="btn btn-info btn-icon-split">
-                <span class="icon text-white-50">
-                    <i class="fas fa-hand-holding-usd"></i>
-                </span>
-                <span class="text">Cobros de Recibos</span>
-            </a>
-        </div> -->
+
        
           <div class="col-sm-4">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
           </div>
           <div class="col-sm-4">
-            <a href="{{ '' }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Corro Masivo</a>
+            <a href="{{ '' }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Correo Masivo</a>
           </div>
-          <div class="col-sm-2">
-            <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobros de Recibos</button>
-         </div>
+
 
         @endif
 
@@ -107,7 +98,7 @@
                 <th class="text-center">Monto Bs.</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
-                <th class="text-center"></th>-
+                <th class="text-center"></th>
                <!-- <th class="text-center"></th> -->
             </tr>
             </thead>
@@ -163,7 +154,8 @@
                                 <td class="text-center font-weight-bold">
                                     <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
-                                <td class="text-center font-weight-bold">
+                                 <td>
+                                    <input type="checkbox" name="check3" value="{{ $quotation->id }}"" onclick="buttom();" id="flexCheckChecked">    
                                 </td>
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
@@ -180,9 +172,7 @@
                                         <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
-                                <!--<td>
-                                    <input type="checkbox" name="check{{ /*$quotation->id*/'' }}" value="{{ '' /*$quotation->id*/ }}" onclick="buttom();" id="flexCheckChecked">    
-                                </td> -->
+  
 
                                   
                                 <td>

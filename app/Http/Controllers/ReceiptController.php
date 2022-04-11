@@ -2090,7 +2090,7 @@ public function store(Request $request) // Empezar a Crear Factura
 
                 $inventories_quotationso = DB::connection(Auth::user()->database_name)->table('products')
                 ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
-                ->where('receipt_products.id_quotation',$quotationsorigin[0]['id'])
+                ->where('receipt_products.id_quotation',$quotation->id)
                 ->where('receipt_products.status','=','C')
                 ->orwhere('receipt_products.status','=','1')
                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
@@ -2112,7 +2112,7 @@ public function store(Request $request) // Empezar a Crear Factura
 
                 $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products')
                 ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
-                ->where('receipt_products.id_quotation',$quotationp[0]['id'])
+                ->where('receipt_products.id_quotation',$quotation->id)
                 ->where('receipt_products.status','=','C')
                 ->orwhere('receipt_products.status','=','1')
                 ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
