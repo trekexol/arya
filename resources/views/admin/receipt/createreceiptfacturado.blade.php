@@ -32,14 +32,27 @@
                 <div class="card-header" >Recibo de Condominio</div>
                 @endif
                 <div class="card-body" >
-                        
+                   
+                    @if($quotation->type == 'R')   
+                   <div class="form-group row">
+                    <label for="total_factura" class="col-md-2 col-form-label text-md-right">Recibo Nº:</label>
+                    <div class="col-md-4">
+                        <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_delivery_note}}" readonly>
+                    </div> 
+                   </div>                        
+                   @endif
                     <div class="form-group row">
-                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº:</label>
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Relación Nº:</label>
                         <div class="col-md-4">
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
                         </div>
 
-                        <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Apartamento: </label>
+                        @if($quotation->type == 'F')
+                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
+                        @else
+                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
+                        @endif
+        
                         <div class="col-md-3">
                             <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->cedula_rif  ?? '' }}" readonly required autocomplete="date_quotation">
     
@@ -255,10 +268,13 @@
                                 </div>
                             </div> 
                            
+
                             <!-- <div class="col-md-3">
                                 <a href="{{ ''/*route('receipt.movement',[$quotation->id,$coin])*/ }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div> -->
-
+                            <div class="col-md-2">
+                                <a href="{{ route('receiptr') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Listado</a>  
+                            </div>
                         </div>
                         
                     </form>    
@@ -337,7 +353,7 @@
 
             $("#coin").on('change',function(){
                 coin = $(this).val();
-                window.location = "{{route('quotations.createfacturado', [$quotation->id,''])}}"+"/"+coin;
+                window.location = "{{route('receipt.createfacturado', [$quotation->id,''])}}"+"/"+coin;
             });
 
             $(document).on('click','.delete',function(){
