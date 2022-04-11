@@ -992,7 +992,7 @@ class PDF2Controller extends Controller
                                                            ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',
                                                            'expenses_details.amount as amount_expense','expenses_details.exento as retiene_iva_expense'
-                                                           ,'expenses_details.islr as retiene_islr_expense')
+                                                           ,'expenses_details.islr as retiene_islr_expense','expenses_details.description as description_expense')
                                                            ->get(); 
 
 

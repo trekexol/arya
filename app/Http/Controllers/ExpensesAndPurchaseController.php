@@ -24,6 +24,7 @@ use App\Company;
 use App\Http\Controllers\Historial\HistorialExpenseController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Http\Controllers\Validations\ExpenseDetailValidationController;
+use App\Inventory;
 use App\IslrConcept;
 use Illuminate\Support\Facades\Auth;
 
@@ -2405,8 +2406,13 @@ class ExpensesAndPurchaseController extends Controller
 
         if(isset($expense_detail)){
 
-            $inventory= Inventory::on(Auth::user()->database_name)->find($expense_detail->id_inventory);
-
+            if(isset($expense_detail->id_inventory))
+            {
+                $inventory = Inventory::on(Auth::user()->database_name)->find($expense_detail->id_inventory);
+            }else{
+                $inventory = null;
+            }
+            
             if($coin != 'bolivares'){
                 $rate = $expense_detail->rate;
             }
