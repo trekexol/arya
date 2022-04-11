@@ -17,9 +17,9 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('owners') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
     </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
-    </li>
+    <!--<li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ ''/*route('receiptr')*/ }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
+    </li>-->
   </ul>
 
 
