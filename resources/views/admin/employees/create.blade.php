@@ -57,8 +57,15 @@
                        
                         <div class="form-group row">
                             <label for="id_empleado" class="col-md-2 col-form-label text-md-right">Cédula</label>
-
-                            <div class="col-md-4">
+                            <div class="col-md-1 col-sm-1">
+                                <select id="type_code" name="type_code" class="select2_single form-control">
+                                    <option value="V-">V-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="J-">J-</option>
+                                    <option value="G-">G-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <input id="id_empleado" type="text" class="form-control @error('id_empleado') is-invalid @enderror" name="id_empleado" value="{{ old('id_empleado') }}" required autocomplete="id_empleado">
 
                                 @error('id_empleado')
