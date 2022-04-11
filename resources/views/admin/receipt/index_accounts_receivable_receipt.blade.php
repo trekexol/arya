@@ -24,7 +24,7 @@
 
                 <div class="card-body">
                         <div class="form-group row">
-                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Hasta:</label>
 
                             <div class="col-sm-3">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
@@ -35,8 +35,24 @@
                                     </span>
                                 @enderror
                             </div>
+                          
+                                <div class="col-sp-2 offset-sp-1">
+                                    <select class="form-control" name="type" id="type">
+                                        @if (isset($client))
+                                            <option value="todo">Todo</option>
+                                            <option selected value="cliente">Por Propietario</option>
+                                        @elseif (isset($vendor))
+                                            <option value="todo">Todo</option>
+                                            <option value="cliente">Por Propietario</option>
+                                        @else
+                                            <option selected value="todo">Todo</option>
+                                            <option value="cliente">Por Propietario</option>
+                                        @endif
+                                    </select>
+                                </div>
+                         
                             @if (isset($client))
-                                <label id="client_label1" for="clients" class="col-sm-1 text-md-right">Propietario:</label>
+                                <label id="client_label1" for="clients" class="col-sm-2 text-md-right">Propietario:</label>
                                 <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
                             @endif
                             @if (isset($vendor))
@@ -46,24 +62,7 @@
                             <div id="client_label3" class="form-group col-sm-1">
                                 <a id="route_select" href="{{ route('receipt.selectownersreceipt') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
                             </div>
-                            <div class="col-sm-2">
-                                <select class="form-control" name="coin" id="coin">
-                                    @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
-                                    @else
-                                        <option disabled selected value="bolivares">Moneda</option>
-                                    @endif
-                                    
-                                    <option  value="bolivares">Bolívares</option>
-                                    <option value="dolares">Dólares</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-1">
-                                <button type="submit" class="btn btn-primary ">
-                                    Buscar
-                                </button>
-                            </div>
+
                             <!--<div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
@@ -79,21 +78,8 @@
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-sm-2 offset-sm-1">
-                                <select class="form-control" name="type" id="type">
-                                    @if (isset($client))
-                                        <option value="todo">Todo</option>
-                                        <option selected value="cliente">Por Propietario</option>
-                                    @elseif (isset($vendor))
-                                        <option value="todo">Todo</option>
-                                        <option value="cliente">Por Propietario</option>
-                                    @else
-                                        <option selected value="todo">Todo</option>
-                                        <option value="cliente">Por Propietario</option>
-                                    @endif
-                                </select>
-                            </div>
-                            <div class="col-sm-4">
+
+                            <div class="col-sm-3">
                                 <select class="form-control" name="typeinvoice" id="typeinvoice">
                                     @if (isset($typeinvoice))
                                         @if ($typeinvoice == 'notas')
@@ -105,14 +91,32 @@
                                         @endif
                                         <option disabled value="todo">-----------------</option>
                                         <option value="todo">Todos</option>
-                                        <option value="notas">Cobradas</option>
+                                        <option value="notas">Cobrados</option>
                                         <option value="facturas">Recibos de Condominio</option>
                                     @else
                                         <option selected value="todo">Todos</option>
-                                        <option value="notas">Cobradas</option>
+                                        <option value="notas">Cobrados</option>
                                         <option value="facturas">Recibos de Condominio</option>
                                     @endif
                                 </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <select class="form-control" name="coin" id="coin">
+                                    @if(isset($coin))
+                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
+                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                    @else
+                                        <option disabled selected value="bolivares">Moneda</option>
+                                    @endif
+                                    
+                                    <option  value="bolivares">Bolívares</option>
+                                    <option value="dolares">Dólares</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-primary ">
+                                    Buscar
+                                </button>
                             </div>
                         </div>
                     </form>

@@ -30,8 +30,8 @@
                     <th></th>
                     <th>ID Propietario</th>
                     <th>Propietario</th>
-                    <th>Apartamento</th>
-                    <th>Ciudad</th>
+                    <th>ID Apart.</th>
+                    <th>Apartamento/Local</th>
                     <th>Telefono</th>
                     <th>Telefono 2</th>
                     
@@ -48,8 +48,8 @@
                                </td>
                                <td >{{$client->cedula_rif}}</td>
                                <td >{{$client->name}}</td>
+                               <td >{{$client->personcontact}}</td>
                                 <td >{{$client->direction}}</td>
-                                <td >{{$client->city}}</td>
                                 <td >{{$client->phone1}}</td>
                                 <td >{{$client->phone2}}</td>
                                 

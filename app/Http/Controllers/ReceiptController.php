@@ -2111,21 +2111,23 @@ public function store(Request $request) // Empezar a Crear Factura
                 ->get();
 
 
-
+            if(empty($inventories_quotationsp)){
                 foreach ($inventories_quotationsp as $varp) {
                     $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
                     ->orderBy('id' ,'asc') 
                     ->where('date_billing','<>',null)
                     ->where('type','=','R')
                     ->where('status','=','P')
-                    ->where('id','=',$varp->id_quotation)
+                    ->where('id_client','=',$client)
+                    ->where('id','<>',$varp->id_quotation)
                     ->select('number_delivery_note','date_billing')
                     ->get()->first();
                     $varp->number_delivery_note = $quotationpn->number_delivery_note;
                     $varp->date_billing = $quotationpn->date_billing;
                 }
-                                                
-                
+            } 
+
+
                 if($coin == 'bolivares'){
                     $bcv = null;
                     
@@ -5354,7 +5356,7 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
 
         if($type != 'todo'){
             if(isset($id_client)){
-                $client    = Condominiums::on(Auth::user()->database_name)->find($id_client);
+                $client    = Owners::on(Auth::user()->database_name)->find($id_client);
                 $typeperson = 'Cliente';
                 $id_client_or_vendor = $id_client;
             }

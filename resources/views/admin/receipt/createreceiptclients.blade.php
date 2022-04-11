@@ -78,7 +78,7 @@
                                 @else
                                 @if (isset($client->id ))
                                 
-                                <label class="col-md-8 col-form-label text-md-left">El cliente no posee Facturas Pendientes</label>
+                                <label class="col-md-8 col-form-label text-md-left">El Condominio no posee Relaciones Pendientes</label>
                                 
                                 @endif
     
