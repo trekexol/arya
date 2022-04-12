@@ -1194,7 +1194,7 @@ Route::group(["prefix"=>'vendor_commissions'],function(){
 });
 
 Route::group(["prefix"=>'vendor_list'],function(){
-    Route::get('index','Report2Controller@indexVendor')->name('vendor_list.index');
-    Route::post('store','Report2Controller@storeVendor')->name('vendor_list.store');
-    Route::get('pdf/{date_begin}/{date_end}/{name?}','Report2Controller@pdfVendor')->name('vendor_list.pdf');
+    Route::get('index','Report2Controller@index_vendor')->name('vendor_list.index');
+    Route::post('store','Report2Controller@store_vendors')->name('vendor_list.store');
+    Route::get('pdf/{date_begin}/{date_end}/{name?}','Report2Controller@vendors_pdf')->name('vendor_list.pdf');
 });

@@ -5,11 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.store_clients') }}">
+                <form method="POST" action="{{ route('vendor_list.store') }}">
                     @csrf
 
                 <div class="card-header text-center h4">
-                    Clientes
+                    Vendedores
                 </div>
 
                 <div class="card-body">
@@ -53,7 +53,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.clients_pdf',[$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('vendor_list.pdf',[$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>

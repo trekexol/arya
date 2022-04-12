@@ -266,10 +266,10 @@
                                         </option>
                                     @endforeach </select>
                             </div>
-                            <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
+                          <!--  <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" id="direction" name="direction" value="{{ $vendor->direction }}" >
-                            </div>
+                            </div>-->
                         </div>
 
 

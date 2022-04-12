@@ -112,7 +112,7 @@ class VendorController extends Controller
     $var->especification = request('especification');
     $var->observation = request('observation');
 
-    $var->direction = request('direction');
+   // $var->direction = request('direction');
     
     $var->status =  1;
   
@@ -206,7 +206,7 @@ class VendorController extends Controller
     $var->especification = request('especification');
     $var->observation = request('observation');
 
-    $var->direction = request('direction');
+   // $var->direction = request('direction');
 
     if(request('status') == null){
         $var->status = $vars_status;
