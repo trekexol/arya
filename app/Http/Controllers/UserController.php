@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Branch;
 use App\Modulo;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,9 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.users.create');
+        $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+     
+        return view('admin.users.create',compact('branches'));
     }
 
     public function createAssignModules($id_user)
@@ -88,6 +91,7 @@ class UserController extends Controller
         $user_login->email       = request('email');
         $user_login->password    = Hash::make(request('password'));
         $user_login->role_id     = request('roles_id');
+        $user_login->id_branch   = request('id_branch');
         $user_login->status      = request('status');
         
         $user_login->id_user_register    = $user_conected->id;
@@ -104,6 +108,7 @@ class UserController extends Controller
         $user->email       = request('email');
         $user->password    = Hash::make(request('password'));
         $user->role_id     = request('roles_id');
+        $user->id_branch   = request('id_branch');
         $user->status      = request('status');
         $user->id_user_register    = $user_conected->id;
 
@@ -165,7 +170,9 @@ class UserController extends Controller
         if($user_conected->role_id != '1'){
             return redirect('/users')->withDanger('Debes ser Administrador!');
         }else{
-            return view('admin.users.edit',compact('user','roles'));
+            $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+     
+            return view('admin.users.edit',compact('user','roles','branches'));
         }
 
         
@@ -205,6 +212,7 @@ class UserController extends Controller
         $user->name         = request('name');
         $user->email        = request('email');
         $user->password     = $password;
+        $user->id_branch        = request('id_branch');
 
         if(request('Roles') == null){
             $user->role_id = $user_rol;
@@ -232,6 +240,8 @@ class UserController extends Controller
         $user->name         = request('name');
         $user->email        = request('email');
         $user->password     = $password;
+
+        $user->id_branch        = request('id_branch');
 
         if(request('Roles') == null){
             $user->role_id = $user_rol;

@@ -84,6 +84,26 @@
                                     </div>
                                     
                                 </div>
+                                 <div class="form-group row">
+                                    <div class="col-sm-2">
+                                        <label for="xcedula">Sucursal:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="id_branch" name="id_branch">
+                                        @isset($user->id_branch)
+                                            <option value="{{$user->id_branch}}">{{ $user->branches['description'] ?? '' }}</option>
+                                            <option value="">----------------</option>
+                                        @else
+                                            <option value="">Seleccionar</option>
+                                        @endisset
+                                        @isset($branches)
+                                            @foreach($branches as $branch)
+                                                <option value="{{$branch->id}}">{{ $branch->description ?? '' }}</option>
+                                            @endforeach
+                                        @endisset
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <div class="col-sm-2">
                                         <label for="xcedula">Status:</label>
@@ -134,10 +154,10 @@
                                 </div>
                             <br>
                                 <div class="form-group row">
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-sm-3 offset-sm-2">
                                         <button type="submit" class="btn btn-success btn-block"><i class="fa fa-send-o"></i>Registrar</button>
                                     </div>
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-sm-2">
                                         <a href="{{ route('users') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
                                     </div>
                                 </div>
