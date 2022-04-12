@@ -204,13 +204,32 @@ class Report2Controller extends Controller
         $datenow = $date->format('Y-m-d');    
         
         $clients = Client::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
-
-        $date_begin = Carbon::parse($clients->created_at);
+        
+       
+        $date_begin = Carbon::parse($clients->created_at ?? $date->firstOfYear()->format('Y-m-d'));
         $datebeginyear = $date_begin->format('Y-m-d');
 
         //$datebeginyear = $date->firstOfYear()->format('Y-m-d');
 
         return view('admin.reports.index_clients',compact('datebeginyear','datenow'));
+      
+    }
+
+    public function indexVendor()
+    {
+        
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+        
+        $vendors = Vendor::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
+
+        $date_begin = Carbon::parse($vendors->created_at ?? $date->firstOfYear()->format('Y-m-d'));
+        $datebeginyear = $date_begin->format('Y-m-d');
+
+        return view('admin.reports.index_vendors',compact('datebeginyear','datenow'));
       
     }
 
