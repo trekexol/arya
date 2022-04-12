@@ -129,7 +129,7 @@
 
       $total_less_percentage = ($var->price * $var->amount_quotation) - $percentage;
 
-      $total_less_percentage = $total_less_percentage / ($bcv ?? 1);
+      $total_less_percentage = $total_less_percentage;
 
       $total += $total_less_percentage;
       ?>
@@ -137,7 +137,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->price / ($bcv ?? 1), 2, ',', '.')  }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
@@ -199,7 +199,7 @@
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">MONTO TOTAL {{($coin == 'bolivares') ? '' : ' USD'}}</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">{{($coin == 'bolivares') ? '' : '$'}}{{ number_format(bcdiv($total_coin , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">{{($coin == 'bolivares') ? '' : '$'}}{{ number_format(bcdiv($total_coin ?? 0 , '1', 2), 2, ',', '.') }}</th>
   </tr> 
   @endif
   
