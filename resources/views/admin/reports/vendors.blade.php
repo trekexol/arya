@@ -32,8 +32,9 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->code_rif ?? ''}} </h4></th>
     </tr> 
   </table>
-  <h4 style="color: black; text-align: center">Clientes</h4>
+  <h4 style="color: black; text-align: center">Vendedores</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $datenow ?? '' }} / Fecha desde: {{ $date_begin ?? '' }} Fecha Hasta: {{ $date_end ?? '' }}</h5>
+   
  
   <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
     <thead>
@@ -50,19 +51,19 @@
     </thead>
     
     <tbody>
-        @if (empty($clients))
+        @if (empty($vendors))
         @else  
         <?php $cont =1; ?>
-            @foreach ($clients as $client)
+            @foreach ($vendors as $vendor)
                 <tr>
                   <td style="text-align: center; align: center;">{{$cont}}</td>
-                    <td style="text-align: center; align: center;">{{$client->name}}</td>
-                    <td style="text-align: center; align: center;">{{$client->type_code}} {{$client->cedula_rif}}</td>
-                    <td style="text-align: left; align: left;">{{$client->direction}}</td>
-                    <td style="text-align: center; align: center;">{{$client->phone1}}</td>
-                    <td style="text-align: center; align: center;">{{$client->days_credit}}</td>
-                    @if (isset($client->vendors['name']))
-                        <td style="text-align: center; align: center;">{{$client->vendors['name']}} {{$client->vendors['surname']}}</td>
+                    <td style="text-align: center; align: center;">{{$vendor->name}}</td>
+                    <td style="text-align: center; align: center;">{{$vendor->type_code}} {{$vendor->cedula_rif}}</td>
+                    <td style="text-align: left; align: left;">{{$vendor->direction}}</td>
+                    <td style="text-align: center; align: center;">{{$vendor->phone1}}</td>
+                    <td style="text-align: center; align: center;">{{$vendor->days_credit}}</td>
+                    @if (isset($vendor->vendors['name']))
+                        <td style="text-align: center; align: center;">{{$vendor->vendors['name']}} {{$vendor->vendors['surname']}}</td>
                     @else
                         <td style="text-align: center; align: center;"></td>
                     @endif

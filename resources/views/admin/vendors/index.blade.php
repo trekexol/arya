@@ -76,6 +76,7 @@
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Cédula o Rif</th>
+                <th>Comisión</th>
                 <th>Correo Electrónico</th>
                 <th>Teléfono</th>
                 <th></th>
@@ -91,10 +92,9 @@
                             <td>{{$vendor->name}}</td>
                             <td>{{$vendor->surname}}</td>
                             <td>{{$vendor->cedula_rif}}</td>
+                            <td>{{$vendor->comision}}%</td>
                             <td>{{$vendor->email}}</td>
                             <td>{{$vendor->phone}}</td>
-                           
-                         
                             <td>
                                 <a href="vendors/{{$vendor->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                              </td>
