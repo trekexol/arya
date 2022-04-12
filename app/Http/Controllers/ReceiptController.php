@@ -4742,7 +4742,29 @@ public function store(Request $request) // Empezar a Crear Factura
          
     }
 
+    public function anticipos_bolivares_to_dolars($quotation)
+    {
+        
+        $anticipos_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+        ->where('id_client',$quotation->id_client)
+        ->where(function ($query) use ($quotation){
+            $query->where('id_quotation',null)
+                ->orWhere('id_quotation',$quotation->id);
+        })
+        ->where('coin','like','bolivares')
+        ->get();
 
+        $total_dolar = 0;
+
+        if(isset($anticipos_bolivares)){
+            foreach($anticipos_bolivares as $anticipo){
+                $total_dolar += bcdiv(($anticipo->amount / $anticipo->rate), '1', 2);
+            }
+        }
+        
+
+        return $total_dolar;
+    }
 //RECIBOS.////////////////////////////////////////////////////////////
 
 public function storeclients(Request $request) // Generar recibo multiple de propietarios

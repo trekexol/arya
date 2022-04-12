@@ -400,7 +400,7 @@ Route::group(["prefix"=>'detailvouchers'],function(){
 });
 
 Route::group(["prefix"=>'quotations'],function(){
-    Route::get('/','QuotationController@index')->name('quotations');
+    Route::get('index/{coin?}','QuotationController@index')->name('quotations');
     Route::get('register/{id_quotation}/{coin}/{type?}','QuotationController@create')->name('quotations.create');
     Route::post('store','QuotationController@store')->name('quotations.store');
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
@@ -1152,6 +1152,7 @@ Route::group(["prefix"=>'export_reports'],function(){
 
 Route::group(["prefix"=>'mails'],function(){
     Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
+    Route::post('quotationindex/{coin}','Mail\QuotationMailController@sendQuotationIndex')->name('mails.quotationIndex');
 });
 
 

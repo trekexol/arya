@@ -189,7 +189,7 @@ class PDFController extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
@@ -322,7 +322,7 @@ class PDFController extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
@@ -455,7 +455,7 @@ class PDFController extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
