@@ -43,10 +43,9 @@
        <th style="text-align: center; align: center;">N</th>  
        <th style="text-align: center; align: center;">Nombre</th>
         <th style="text-align: center; align: center;">Cedula o Rif</th>
-        <th style="text-align: left; align: left;">Dirección</th>
+        <th style="text-align: center; align: center;">Comisión</th>
         <th style="text-align: center; align: center;">Telefono</th>
-        <th style="text-align: center; align: center;">D.Crédito</th>
-        <th style="text-align: center; align: center;">Vendedor</th>
+        <th style="text-align: center; align: center;">Correo</th>
     </tr>
     </thead>
     
@@ -58,15 +57,11 @@
                 <tr>
                   <td style="text-align: center; align: center;">{{$cont}}</td>
                     <td style="text-align: center; align: center;">{{$vendor->name}}</td>
-                    <td style="text-align: center; align: center;">{{$vendor->type_code}} {{$vendor->cedula_rif}}</td>
-                    <td style="text-align: left; align: left;">{{$vendor->direction}}</td>
-                    <td style="text-align: center; align: center;">{{$vendor->phone1}}</td>
-                    <td style="text-align: center; align: center;">{{$vendor->days_credit}}</td>
-                    @if (isset($vendor->vendors['name']))
-                        <td style="text-align: center; align: center;">{{$vendor->vendors['name']}} {{$vendor->vendors['surname']}}</td>
-                    @else
-                        <td style="text-align: center; align: center;"></td>
-                    @endif
+                    <td style="text-align: center; align: center;">{{$vendor->cedula_rif}}</td>
+                    <td style="text-align: center; align: center;">{{ number_format(($vendor->comision ?? 0), 2, ',', '.') }} %</td>
+                    <td style="text-align: center; align: center;">{{$vendor->phone}}</td>
+                    <td style="text-align: center; align: center;">{{$vendor->email}}</td>
+                  
                 </tr>     
                 <?php $cont ++;?> 
             @endforeach   
