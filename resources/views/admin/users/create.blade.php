@@ -61,7 +61,20 @@
                             </div>
                         </div>
 
+                       
                         <div class="form-group row">
+                            <label for="rol" class="col-md-3 col-form-label text-md-right">Sucursal</label>
+                            <div class="col-md-4">
+                                <select class="form-control" id="id_branch" name="id_branch">
+                                @isset($branches)
+                                    @foreach($branches as $branch)
+                                        <option value="{{$branch->id}}">{{ $branch->description ?? '' }}</option>
+                                    @endforeach
+                                @endisset
+                                </select>
+                            </div>
+                        </div>
+                         <div class="form-group row">
                             <label for="rol" class="col-md-3 col-form-label text-md-right">Rol</label>
 
                             <div class="col-md-3">
