@@ -53,7 +53,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display:none;">
+                            
                             <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
@@ -65,6 +66,7 @@
                                     </span>
                                 @enderror
                             </div>
+                      
                             <label for="vendor" class="col-md-3 col-form-label text-md-right">Vendedor:</label>
                             <div class="col-md-4">
                                 <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }}" readonly required autocomplete="vendor">
@@ -78,6 +80,7 @@
                         
                         
                         <div class="form-group row">
+                            <div style="display:none;">
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte/ Tipo de Entrega:</label>
                             <div class="col-md-4">
                                 <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly required autocomplete="transport"> 
@@ -88,6 +91,7 @@
                                     </span>
                                 @enderror
                             </div>
+                        </div>
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
                             <div class="col-md-4">

@@ -278,6 +278,23 @@ Route::group(["prefix"=>'products'],function(){
 
 });
 
+Route::group(["prefix"=>'productsreceipt'],function(){
+    Route::get('/','ProductreceiptController@index')->name('productsreceipt');
+    Route::get('register','ProductreceiptController@create')->name('productsreceipt.create');
+    Route::post('store','ProductreceiptController@store')->name('productsreceipt.store');
+
+    Route::get('{id}/edit','ProductreceiptController@edit')->name('productsreceipt.edit');
+    Route::delete('delete','ProductreceiptController@destroy')->name('productsreceipt.delete');
+    Route::patch('{id}/update','ProductreceiptController@update')->name('productsreceipt.update');
+/*
+    Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list2subsegment')->name('products.list2subsegment');
+    Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list')->name('products.listtwosubsegment');
+    Route::get('listthreesubsegment/{id_subsegment}','ThreeSubSegmentController@list')->name('products.listthreesubsegment');
+    */
+});
+
+
+
 Route::group(["prefix"=>'inventories'],function(){
     Route::get('/','InventoryController@index')->name('inventories');
     Route::get('selectproduct','InventoryController@selectproduct')->name('inventories.select');

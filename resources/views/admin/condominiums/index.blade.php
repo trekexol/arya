@@ -6,7 +6,10 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('productsreceipt') }}" role="tab" aria-controls="home" aria-selected="true">Productos/Servicios</a>
+      </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Relación de Gastos de Condominio</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>

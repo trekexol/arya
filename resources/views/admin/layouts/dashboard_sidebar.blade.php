@@ -125,7 +125,7 @@
                 <a class="collapse-item" href="{{route('condominiums')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Condominios</strong></a>
                 <a class="collapse-item" href="{{route('owners')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Propietarios</strong></a>
 <!--<a class="collapse-item" href="{{''/*route('receiptr')*/}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>-->
-                <a class="collapse-item" href="{{ route('products')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
+                <a class="collapse-item" href="{{ route('productsreceipt')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
                 <a class="collapse-item" href="{{ route('receipt.accounts_receivable','index')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Resumen y Estados de Cuentas</strong></a>
             </div>
         </div>
