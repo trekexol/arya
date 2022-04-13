@@ -75,6 +75,7 @@
                 <th class="text-center" style="width:11%;">Fecha</th>
                 <th class="text-center">N°</th>
                 <th class="text-center">Cliente</th>
+                <th class="text-center">Pedido</th>
                 <th class="text-center">Vendedor</th>
                 <th class="text-center">REF</th>
                 <th class="text-center">Monto</th>
@@ -90,16 +91,25 @@
             <tbody>
                 @if (empty($quotations))
                 @else  
+                    <?php   
+                    $cont = 0;
+                    ?>
+
                     @foreach ($quotations as $quotation)
                     <?php 
                     $amount_bcv = 0;
                     $amount_bcv = $quotation->amount_with_iva / ($quotation->bcv ?? 1);
+                    
                     ?>
                     
                       <tr>
                             <td class="text-center">{{ date_format(date_create($quotation->date_delivery_note),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
+
+                            <!--<td class="text-center">{{ /*$quotation->number_pedido ?? */''}}</td>-->
+                            <td class="text-center"> <input id="pedido{{$cont}}" data-pedido="pedido{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedido" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"></td>
+
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">{{number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
@@ -116,7 +126,10 @@
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                             </td>                        
                         
-                        </tr>     
+                        </tr>    
+                        <?php   
+                        $cont++;
+                        ?> 
                     @endforeach   
                 @endif
             </tbody>
@@ -162,7 +175,16 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
-    
+    $(document).on('change','.pedido',function(){
+         
+         let id_quotation = $(this).attr('data-quotation');
+         let id_pedido = $(this).attr('data-pedido');
+         var valinput = $('#'+id_pedido).val();
+           
+         alert(valinput);
+
+     });
+
 
     
     $(document).on('click','.delete',function(){
@@ -171,6 +193,14 @@
  
          $('#id_quotation_modal').val(id_quotation);
      });
+     
+     $(document).on('click','.delete',function(){
+         
+         let id_quotation = $(this).attr('data-id-quotation');
+ 
+         $('#id_quotation_modal').val(id_quotation);
+     });
+
     </script> 
 
 @endsection
