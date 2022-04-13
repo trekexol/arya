@@ -31,9 +31,10 @@
                         @csrf()
                         
                         <div class="form-group row">
-                            <label for="type_code" class="col-md-2 col-form-label text-md-right">Código, Cédula / Rif:</label>
+                            <label for="type_code" class="col-md-2 col-form-label text-md-right">Código/ID:</label>
     
-                                <div class="col-md-1">
+                            <div style="display:none;">    
+                            <div class="col-md-1">
                                     <select class="form-control" name="type_code" id="type_code">
                                         <option value="{{ $var->type_code }}">{{ $var->type_code }}</option>
                                         <option value="nulo" disabled>----------------</option>
@@ -43,6 +44,7 @@
                                         <option value="E-">E-</option>
                                     </select>
                                 </div>
+                            </div>
                                 <div class="col-md-2">
                                     <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $var->cedula_rif }}" required autocomplete="cedula_rif">
     
@@ -52,7 +54,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            <label for="razon_social" class="col-md-3 col-form-label text-md-right">Nombre / Razón Social</label>
+                            <label for="razon_social" class="col-md-3 col-form-label text-md-right">Nombre</label>
 
                             <div class="col-md-4">
                                 <input id="razon_social" type="text" class="form-control @error('razon_social') is-invalid @enderror" name="razon_social" value="{{ $var->name }}" required autocomplete="razon_social">
@@ -70,7 +72,7 @@
                        
                         <div class="form-group row">
 
-
+                            <div style="display:none;">
                             <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
 
                             <div class="col-md-4">
@@ -82,8 +84,9 @@
                                     </span>
                                 @enderror
                             </div>
+                          </div>
 
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección f</label>
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
 
                             <div class="col-md-4">
                                 <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $var->direction }}" required autocomplete="direction">
@@ -137,7 +140,7 @@
                             <label for="phone2" class="col-md-2 col-form-label text-md-right">Teléfono 2</label>
 
                             <div class="col-md-4">
-                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ $var->phone2 }}" required autocomplete="phone2">
+                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ $var->phone2 }}" autocomplete="phone2">
 
                                 @error('phone2')
                                     <span class="invalid-feedback" role="alert">
@@ -159,6 +162,7 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div style="display:none;">
                             <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
 
                             <div class="col-md-4">
@@ -170,11 +174,13 @@
                                     </span>
                                 @enderror
                             </div>
+
+                        </div>
                         </div>
 
 
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display:none;">
                             <label for="email" class="col-md-2 col-form-label text-md-right">Tiene Crédito</label>
 
                             <div class="form-check">
@@ -223,7 +229,7 @@
                               </div>  
                               
                               
-                                <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
+                                <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Condominio:</label>
                                     
                                 <div class="col-sm-3">
                                     <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
@@ -247,7 +253,7 @@
                     
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display:none;">
                             <label for="retencion_iva" class="col-md-2 col-form-label text-md-right">Retención <br>de Iva</label>
 
                             <div class="col-md-4">
@@ -273,6 +279,7 @@
                               </div>
                         </div>
                         <div class="form-group row">
+                            <div style="display:none;">
                             <label for="vendor" class="col-md-2 col-form-label text-md-right">Vendedor:</label>
 
                             <div class="col-md-3">
@@ -285,6 +292,7 @@
                               
                             </select>
                             </div>
+                        </div>
                               
                             <label for="segmento" class="col-md-2 col-form-label text-md-right">Status</label>
                             <div class="col-md-4">

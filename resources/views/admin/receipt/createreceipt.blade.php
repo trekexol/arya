@@ -46,6 +46,7 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div style="display:none;">
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
@@ -57,7 +58,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+                        </div>
                             
                         </div>
 
@@ -77,6 +78,8 @@
                             <div class="form-group col-md-1">
                                 <a href="{{ route('receipt.selectcondominiums',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
+                           
+                            <div style="display:none;">
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
                             <div class="col-md-3">
@@ -89,7 +92,7 @@
 
                             </select>
                             </div> 
-                           
+                        </div>   
                         </div>
 
                         

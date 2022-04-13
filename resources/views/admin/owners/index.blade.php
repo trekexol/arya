@@ -6,18 +6,21 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas Gastos de Condominio</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('productsreceipt') }}" role="tab" aria-controls="home" aria-selected="true">Productos/Servicios</a>
       </li>
-
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('condominiums') }}" role="tab" aria-controls="profile" aria-selected="false">Condominios</a>
-    </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('owners') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
-    </li>
+          <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt') }}" role="tab" aria-controls="profile" aria-selected="false">Relación de Gastos de Condominio</a>
+      </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
+        </li>
+  
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('condominiums') }}" role="tab" aria-controls="profile" aria-selected="false">Condominios</a>
+      </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('owners') }}" role="tab" aria-controls="profile" aria-selected="false">Propietarios</a>
+      </li>
     <!--<li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ ''/*route('receiptr')*/ }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Propietarios</a>
     </li>-->
@@ -71,8 +74,6 @@
                     <th>ID Propietario</th>
                     <th>Apartamento</th>
                     <th>Telefono</th>
-                  
-                    <th>Vendedor</th>
                     
                     <th></th>
                 </tr>
@@ -85,17 +86,10 @@
                             <tr>
                                 <td>{{$client->id}}</td>
                                 <td>{{$client->name}}</td>
-                                <td>{{$client->type_code}} {{$client->cedula_rif}}</td>
+                                <td>{{$client->cedula_rif}}</td>
                                 <td>{{$client->direction}}</td>
                                 <td>{{$client->phone1}}</td>
                                
-
-                                @if (isset($client->vendors['name']))
-                                    <td>{{$client->vendors['name']}}</td>
-                                @else
-                                    <td></td>
-                                @endif
-                                
 
                                 
                                 <td>
