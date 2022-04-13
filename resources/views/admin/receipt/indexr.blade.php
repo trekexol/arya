@@ -34,9 +34,6 @@
         <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
       </li>
 
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('receiptr') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos</a>
-    </li>
   </ul>
   @endif
 

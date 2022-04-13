@@ -61,14 +61,28 @@ class ReceiptController extends Controller
  
     public function indexr()
     {
-
+      
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
-           
-            $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-                                            ->where('date_billing','<>',null)
-                                            ->where('type','=','R')
-                                            ->get();
+      
+            if (Auth::user()->role_id  == '11'){
+
+                $email = Auth::user()->email;
+                $owner = Owners::on(Auth::user()->database_name)->where('email','=',$email)->get()->first();
+
+                $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+                                                ->where('date_billing','<>',null)
+                                                ->where('id_client','=',$owner->id)
+                                                ->where('type','=','R')
+                                                ->get();
+             }else{
+    
+                $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+                ->where('date_billing','<>',null)
+                ->where('type','=','R')
+                ->get(); 
+             }
+
             
     
             return view('admin.receipt.indexr',compact('quotations','datenow'));
