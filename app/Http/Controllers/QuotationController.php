@@ -43,7 +43,7 @@ class QuotationController extends Controller
       
    }
 
-   public function index()
+   public function index($coin = null)
    {
         
         if($this->userAccess->validate_user_access($this->modulo)){
@@ -53,7 +53,9 @@ class QuotationController extends Controller
             ->where('date_order','=',null)
             ->get();
 
-            return view('admin.quotations.index',compact('quotations'));
+            $company = Company::on(Auth::user()->database_name)->find(1);
+
+            return view('admin.quotations.index',compact('quotations','company','coin'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -98,7 +100,7 @@ class QuotationController extends Controller
             return view('admin.quotations.createquotation',compact('client','datenow','transports','type'));
 
         }else{
-            return redirect('/quotations')->withDanger('El Cliente no existe');
+            return redirect('/quotations/index')->withDanger('El Cliente no existe');
         } 
     }
 
@@ -128,11 +130,11 @@ class QuotationController extends Controller
                 return view('admin.quotations.createquotation',compact('client','vendor','datenow','transports','type'));
 
             }else{
-                return redirect('/quotations')->withDanger('El Vendedor no existe');
+                return redirect('/quotations/index')->withDanger('El Vendedor no existe');
             } 
 
         }else{
-            return redirect('/quotations')->withDanger('El Cliente no existe');
+            return redirect('/quotations/index')->withDanger('El Cliente no existe');
         } 
     }
 
@@ -189,7 +191,7 @@ class QuotationController extends Controller
         
                 return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company'));
             }else{
-                return redirect('/quotations')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/quotations/index')->withDanger('No es posible ver esta cotizacion');
             } 
             
         }else{
@@ -257,10 +259,10 @@ class QuotationController extends Controller
                     return view('admin.quotations.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin','type'));
 
                 }else{
-                    return redirect('/quotations')->withDanger('El Producto no existe');
+                    return redirect('/quotations/index')->withDanger('El Producto no existe');
                 } 
         }else{
-            return redirect('/quotations')->withDanger('La cotizacion no existe');
+            return redirect('/quotations/index')->withDanger('La cotizacion no existe');
         } 
 
     }
@@ -599,7 +601,7 @@ class QuotationController extends Controller
 
                 return view('admin.quotations.edit_product',compact('rate','coin','quotation_product','inventory','bcv'));
             }else{
-                return redirect('/quotations')->withDanger('No se Encontro el Producto!');
+                return redirect('/quotations/index')->withDanger('No se Encontro el Producto!');
             }
         
         
@@ -683,7 +685,7 @@ class QuotationController extends Controller
         $historial_quotation->registerAction($var,"quotation","Actualizó la Cotización");
 
 
-        return redirect('/quotations')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/quotations/index')->withSuccess('Actualizacion Exitosa!');
     }
 
 
@@ -838,7 +840,7 @@ class QuotationController extends Controller
         if(isset($id_quotation)){
              $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
         }else{
-            return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+            return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
         } 
  
          if(isset($quotation)){
@@ -922,7 +924,7 @@ class QuotationController extends Controller
 
         $historial_quotation->registerAction($quotation,"quotation","Se eliminó la cotización");
 
-        return redirect('/quotations')->withDanger('Eliminacion exitosa!!');
+        return redirect('/quotations/index')->withDanger('Eliminacion exitosa!!');
         
     }
 

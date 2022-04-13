@@ -5,16 +5,16 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form id="formPost" method="POST" action="{{ route('reports.store_accounts_receivable') }}">
+                <form id="formPost" method="POST" action="{{ route('vendor_commissions.store') }}">
                     @csrf
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
                 <input type="hidden" name="id_vendor" value="{{$vendor->id ?? null}}" readonly>
 
                 <div class="card-header text-center h4">
-                        Cuentas por Cobrar
+                    Reporte Comisión de Vendedores
                 </div>
-
+                
                 <div class="card-body">
                         <div class="form-group row">
                             <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
@@ -37,7 +37,7 @@
                             @endif
                             
                             <div id="client_label3" class="form-group col-sm-1">
-                                <a id="route_select" href="{{ route('reports.select_client') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                                <a id="route_select" href="{{ route('vendor_commissions.selectClient') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
@@ -57,18 +57,7 @@
                                     Buscar
                                 </button>
                             </div>
-                            <div class="col-sm-3  dropdown mb-4">
-                                <button class="btn btn-success" type="button"
-                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
-                                    aria-expanded="false">
-                                    <i class="fas fa-bars"></i>
-                                    Exportaciones
-                                </button>
-                                <div class="dropdown-menu animated--fade-in"
-                                    aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
-                                </div>
-                            </div> 
+                           
                         </div>
 
                         <div class="form-group row">
@@ -110,10 +99,22 @@
                                     @endif
                                 </select>
                             </div>
+                            <div class="col-sm-3  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('vendor_commissions.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
@@ -136,10 +137,10 @@
 
     
     function exportToExcel(){
-        var old_action = document.getElementById("formPost").action;
+       /* var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.accountsreceivable') }}";
         document.getElementById("formPost").submit();
-        document.getElementById("formPost").action = old_action;
+        document.getElementById("formPost").action = old_action;*/
     }
 
     let client  = "<?php echo $client->name ?? 0 ?>";  
@@ -168,12 +169,12 @@
                 $("#client_label2").hide();
                 $("#client_label3").hide();
             }else if(type == 'vendor'){
-                document.getElementById("route_select").href = "{{ route('reports.select_vendor') }}";
+                document.getElementById("route_select").href = "{{ route('vendor_commissions.selectVendor') }}";
                 $("#client_label1").show();
                 $("#client_label2").show();
                 $("#client_label3").show();
             }else{
-                document.getElementById("route_select").href = "{{ route('reports.select_client') }}";
+                document.getElementById("route_select").href = "{{ route('vendor_commissions.selectClient') }}";
                 $("#client_label1").show();
                 $("#client_label2").show();
                 $("#client_label3").show();
@@ -181,10 +182,10 @@
         });
 
     </script> 
+
     @isset($vendor)
         <script>
-            document.getElementById("route_select").href = "{{ route('reports.select_vendor') }}";
+            document.getElementById("route_select").href = "{{ route('vendor_commissions.selectVendor') }}";
         </script>
     @endisset
-
 @endsection

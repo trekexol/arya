@@ -90,19 +90,19 @@ class EmployeeController extends Controller
         
        
     ]);
-
+    
     $users = new Employee();
     $users->setConnection(Auth::user()->database_name);
     
     $users->nombres = request('nombres');
     $users->apellidos = request('apellidos');
-
+    $users->code_employee = request('code_employee');
     $users->position_id = request('position_id');
     $users->salary_types_id = request('salary_types_id');
     $users->profession_id = request('profession_id');
 
 
-    $users->code_employee = request('code_employee');
+    $users->id_empleado = $request->type_code.request('id_empleado');
     $users->amount_utilities = request('amount_utilities');
 
 
@@ -110,7 +110,6 @@ class EmployeeController extends Controller
     $users->municipio_id = request('Municipio');
     $users->parroquia_id = request('Parroquia');
 
-    $users->id_empleado = request('id_empleado');
     $users->fecha_ingreso = request('fecha_ingreso');
    
     $users->fecha_nacimiento = request('fecha_nacimiento');
@@ -134,6 +133,8 @@ class EmployeeController extends Controller
     $users->status =  1;
     $users->branch_id = request('centro_costo');
 
+    
+   
     $users->save();
 
     return redirect('/employees')->withSuccess('Registro Exitoso!');
@@ -229,7 +230,7 @@ class EmployeeController extends Controller
     $users->municipio_id = request('Municipio');
     $users->parroquia_id = request('Parroquia');
 
-    $users->id_empleado = request('id_empleado');
+    $users->id_empleado = $request->type_code.request('id_empleado');
     $users->fecha_ingreso = request('fecha_ingreso');
    
     $users->fecha_nacimiento = request('fecha_nacimiento');

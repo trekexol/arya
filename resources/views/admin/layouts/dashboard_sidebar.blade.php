@@ -295,6 +295,7 @@
                     <a class="collapse-item" href="{{ route('reports.clients')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i><strong>Clientes</strong></a>
                     <a class="collapse-item" href="{{ route('reports.providers')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i><strong>Proveedores</strong></a>
                     <a class="collapse-item" href="{{ route('reports.employees')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
+                    <a class="collapse-item" href="{{ route('vendor_list.index')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Vendedores</strong></a>
 
                     <a  class="collapse-header text-danger" href="{{ route('accounts') }}">Cuentas</a>
                     <a class="collapse-item" href="{{ route('reports.accounts')}}" > <i class="fas fa-list-ul fa-sm fa-fw mr-2 text-black-400"></i><strong>Listado de Cuentas</strong></a>
@@ -304,6 +305,7 @@
                     <a class="collapse-item" href="{{ route('reports.accounts_receivable_note_det','todo','todo')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-black-400"></i><strong>Notas de Entrega Det</strong></a>
                     <a class="collapse-item" href="{{ route('reports.bankmovements')}}" > <i class="fas fa-money-bill-wave fa-sm fa-fw mr-2 text-black-400"></i><strong>Movimientos<br> <div style="text-indent: 22px;">Bancarios</div></strong></a>
                     <a class="collapse-item" href="{{ route('reportspayment.payments','index')}}" > <i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-black-400"></i><strong>Pagos Realizados</strong></a>
+                    <a class="collapse-item" href="{{ route('vendor_commissions.index','index')}}" > <i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-black-400"></i><strong>Comisión de Vendedores</strong></a>
                     
                     <a  class="collapse-header text-danger" href="{{ route('accounts') }}">Contabilidad</a>
                     <a class="collapse-item" href="{{ route('balancegenerals') }}" > <i class="fas fa-clipboard-check fa-sm fa-fw mr-2 text-blue-400"></i><strong>Balance General</strong></a>

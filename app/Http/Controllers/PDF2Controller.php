@@ -107,7 +107,7 @@ class PDF2Controller extends Controller
         
                                 
         }else{
-            return redirect('/quotations')->withDanger('No se encontro la cotizacion');
+            return redirect('/quotations/index')->withDanger('No se encontro la cotizacion');
         } 
 
         if(isset($quotation)){
@@ -245,9 +245,33 @@ class PDF2Controller extends Controller
             return $pdf->stream();
     
         }else{
-            return redirect('/quotations')->withDanger('La cotizacion no existe');
+            return redirect('/quotations/index')->withDanger('La cotizacion no existe');
         } 
         
+    }
+
+    public function anticipos_bolivares_to_dolars($quotation)
+    {
+        
+        $anticipos_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+        ->where('id_client',$quotation->id_client)
+        ->where(function ($query) use ($quotation){
+            $query->where('id_quotation',null)
+                ->orWhere('id_quotation',$quotation->id);
+        })
+        ->where('coin','like','bolivares')
+        ->get();
+
+        $total_dolar = 0;
+
+        if(isset($anticipos_bolivares)){
+            foreach($anticipos_bolivares as $anticipo){
+                $total_dolar += bcdiv(($anticipo->amount / $anticipo->rate), '1', 2);
+            }
+        }
+        
+
+        return $total_dolar;
     }
     
     function imprimirFactura_media($id_quotation,$coin = null)
@@ -421,7 +445,7 @@ class PDF2Controller extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
@@ -667,7 +691,7 @@ class PDF2Controller extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
@@ -826,7 +850,7 @@ class PDF2Controller extends Controller
                  
                                      
             }else{
-                return redirect('/quotations')->withDanger('No llega el numero de la cotizacion');
+                return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
             } 
      
              if(isset($quotation)){
@@ -992,7 +1016,7 @@ class PDF2Controller extends Controller
                                                            ->where('expenses_details.status',['1','C'])
                                                            ->select('products.*','expenses_details.price as price','expenses_details.rate as rate',
                                                            'expenses_details.amount as amount_expense','expenses_details.exento as retiene_iva_expense'
-                                                           ,'expenses_details.islr as retiene_islr_expense')
+                                                           ,'expenses_details.islr as retiene_islr_expense','expenses_details.description as description_expense')
                                                            ->get(); 
 
 

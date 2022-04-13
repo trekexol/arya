@@ -141,7 +141,7 @@ class DeliveryNoteController extends Controller
      
              return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr'));
          }else{
-             return redirect('/quotations')->withDanger('La cotizacion no existe');
+             return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
          
     }

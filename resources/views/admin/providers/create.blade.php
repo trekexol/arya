@@ -31,10 +31,16 @@
 
                         <div class="form-group row">
                             <label for="code_provider" class="col-md-2 col-form-label text-md-right">Código de Proveedor</label>
-
-                            <div class="col-md-4">
+                            <div class="col-md-1 col-sm-1">
+                                <select id="type_code" name="type_code" class="select2_single form-control">
+                                    <option value="V-">V-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="J-">J-</option>
+                                    <option value="G-">G-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <input id="code_provider" type="text" class="form-control @error('code_provider') is-invalid @enderror" name="code_provider" value="{{ old('code_provider') }}" required autocomplete="code_provider" autofocus>
-
                                 @error('code_provider')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -248,7 +254,6 @@
         });
 
         $(function(){
-            soloAlfaNumerico('code_provider');
             soloAlfaNumerico('razon_social');
             soloLetras('country');
             soloLetras('city');

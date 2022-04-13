@@ -38,9 +38,22 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-      <div class="col-md-6">
+      <div class="col-md-4">
           <h2>Cotizaciones</h2>
       </div>
+      <div class="col-sm-2">
+        <select class="form-control" name="coin" id="coin">
+            @if(isset($coin))
+                <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
+                <option disabled  value="{{ $coin }}">-----------</option>
+            @else
+                <option disabled selected value="bolivares">Moneda</option>
+            @endif
+            
+            <option  value="bolivares">Bolívares</option>
+            <option value="dolares">Dólares</option>
+        </select>
+    </div>
       <div class="col-md-6">
         <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
@@ -87,7 +100,9 @@
                     @foreach ($quotations as $quotation)
                         <tr>
                             <td>
-                            <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                                <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                                <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
                             </td>
                             <td class="text-center">{{$quotation->serie ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
@@ -132,7 +147,37 @@
       </div>
   </div>
 </div>
-  
+<div class="modal modal-danger fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enviar Cotización por Correo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('mails.quotationIndex',[$coin ?? 'bolivares']) }}" method="post">
+                @csrf
+                @method('POST')
+
+                <input id="id_quotation_send_modal" type="hidden" class="form-control @error('id_quotation_send_modal') is-invalid @enderror" name="id_quotation_send_modal" readonly required autocomplete="id_quotation_send_modal">
+               
+                <h5 class="text-center">Email:</h5>
+                <input id="email_modal" type="text" class="form-control @error('email_modal') is-invalid @enderror" name="email_modal" value="{{ $quotation->clients['email'] ?? '' }}" required autocomplete="email_modal">
+                <br>
+                <h5 class="text-center">Mensaje:</h5>
+                <input id="message_modal" type="text" class="form-control @error('message_modal') is-invalid @enderror" name="message_modal" value="{{ $company->message_from_email ?? '' }}" required autocomplete="message_modal">
+                       
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Enviar Correo</button> 
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('javascript')
@@ -144,8 +189,19 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
-    
 
+    $(document).on('click','.send',function(){
+         
+        let id_quotation_send = $(this).attr('data-id-quotation-send');
+
+        $('#id_quotation_send_modal').val(id_quotation_send);
+     });
+
+    $("#coin").on('change',function(){
+        
+        var coin = $(this).val();
+        window.location = "{{route('quotations', '')}}"+"/"+coin;
+    });
 
     $(document).on('click','.delete',function(){
          

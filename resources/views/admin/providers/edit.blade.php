@@ -31,10 +31,44 @@
                         @csrf()
                         
                         <div class="form-group row">
-                            <label for="code_provider" class="col-sm-2 col-form-label text-md-right">Código de Proveedor</label>
-
-                            <div class="col-sm-4">
-                                <input id="code_provider" type="text" class="form-control @error('code_provider') is-invalid @enderror" name="code_provider" value="{{ $var->code_provider }}" required autocomplete="code_provider" autofocus>
+                            <label for="code_provider" class="col-sm-2 col-form-label text-md-right">Código de Proveedor </label>
+                            <div class="col-md-1 col-sm-1">
+                                <select id="type_code" name="type_code" class="select2_single form-control">
+                                    @if ($var->code_provider[0] == 'V')
+                                        <option selected value="V-">V-</option>
+                                        <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'E')
+                                        <option selected value="E-">E-</option>
+                                        <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'J')
+                                        <option selected value="J-">J-</option>
+                                        <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'G')
+                                        <option selected value="G-">G-</option>
+                                        <option value="">----------</option>
+                                    @endif
+                                    <option value="V-">V-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="J-">J-</option>
+                                    <option value="G-">G-</option>
+                                </select>
+                            </div>
+                            @php
+                                if(substr($var->code_provider, 0, 2) == 'V-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'E-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'J-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'G-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }
+                            @endphp
+                            <div class="col-sm-3">
+                                <input id="code_provider" type="text" class="form-control @error('code_provider') is-invalid @enderror" name="code_provider" value="{{ $code_filter ?? $var->code_provider }}" required autocomplete="code_provider" autofocus>
 
                                 @error('code_provider')
                                     <span class="invalid-feedback" role="alert">
@@ -236,7 +270,7 @@
 @section('validacion')
     <script>    
 	$(function(){
-        soloAlfaNumerico('code_provider');
+      
         soloAlfaNumerico('razon_social');
         soloLetras('country');
         soloLetras('city');

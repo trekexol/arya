@@ -36,9 +36,27 @@ class QuotationMailController extends Controller
 
     }
 
+    public function sendQuotationIndex(Request $request,$coin){
+        
+        $quotation = Quotation::on(Auth::user()->database_name)->find($request->id_quotation_send_modal);
+        
+        $pdf = $this->pdfQuotation($quotation,$coin);
+
+        $company = Company::on(Auth::user()->database_name)->find(1);
+
+        $email_to_send = $request->email_modal;
+
+        $company->message_from_email = $request->message_modal;
+
+        Mail::to($email_to_send)->send(new QuotationMail($quotation,$pdf,$company));
+
+        return redirect('/quotations/index/'.$coin.'')->withSuccess('La cotizacion se ha enviado por Correo Exitosamente!');
+
+    }
+
     public function pdfQuotation($quotation,$coin)
     {  
-    
+        
         $pdf = App::make('dompdf.wrapper');
 
         if(isset($quotation)){
@@ -77,6 +95,8 @@ class QuotationMailController extends Controller
                                                         'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                         ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                         ->get(); 
+
+           
             $total= 0;
             $base_imponible= 0;
             $price_cost_total= 0;
@@ -174,5 +194,29 @@ class QuotationMailController extends Controller
           
             return $pdf->output();
         }
+    }
+
+    public function anticipos_bolivares_to_dolars($quotation)
+    {
+        
+        $anticipos_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+        ->where('id_client',$quotation->id_client)
+        ->where(function ($query) use ($quotation){
+            $query->where('id_quotation',null)
+                ->orWhere('id_quotation',$quotation->id);
+        })
+        ->where('coin','like','bolivares')
+        ->get();
+
+        $total_dolar = 0;
+
+        if(isset($anticipos_bolivares)){
+            foreach($anticipos_bolivares as $anticipo){
+                $total_dolar += bcdiv(($anticipo->amount / $anticipo->rate), '1', 2);
+            }
+        }
+        
+
+        return $total_dolar;
     }
 }

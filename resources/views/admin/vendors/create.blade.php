@@ -45,8 +45,15 @@
                                 @enderror
                             </div>
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Cédula o Rif</label>
-
-                            <div class="col-md-4">
+                            <div class="col-md-1 col-sm-1">
+                                <select id="type_code" name="type_code" class="select2_single form-control">
+                                    <option value="V-">V-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="J-">J-</option>
+                                    <option value="G-">G-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
                                 <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ old('cedula_rif') }}" required autocomplete="cedula_rif">
 
                                 @error('cedula_rif')
@@ -213,12 +220,12 @@
                             </div>
                         
                        
-                            <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
+                           <!-- <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
                             
                             <div class="col-md-4">
                                 
-                                <input type="text" class="form-control" id="direccion" name="direccion" required value="{{ old('direccion')}}" placeholder="Ej: La Paz">
-                            </div>
+                                <input type="text" class="form-control" id="direction" name="direction" required value="{{ old('direction')}}" >
+                            </div>-->
                         </div>
                       
 

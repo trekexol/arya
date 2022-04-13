@@ -400,7 +400,7 @@ Route::group(["prefix"=>'detailvouchers'],function(){
 });
 
 Route::group(["prefix"=>'quotations'],function(){
-    Route::get('/','QuotationController@index')->name('quotations');
+    Route::get('index/{coin?}','QuotationController@index')->name('quotations');
     Route::get('register/{id_quotation}/{coin}/{type?}','QuotationController@create')->name('quotations.create');
     Route::post('store','QuotationController@store')->name('quotations.store');
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
@@ -1153,6 +1153,7 @@ Route::group(["prefix"=>'export_reports'],function(){
 Route::group(["prefix"=>'mails'],function(){
     Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
     Route::post('receipt/{id_quotation}/{coin}','Mail\ReceiptMailController@sendreceipt')->name('mails.receipt');
+    Route::post('quotationindex/{coin}','Mail\QuotationMailController@sendQuotationIndex')->name('mails.quotationIndex');
 });
 
 
@@ -1183,4 +1184,19 @@ Route::group(["prefix"=>'owners'],function(){
     Route::delete('{id}/delete','OwnersController@destroy')->name('owners.delete');
     Route::patch('{id}/update','OwnersController@update')->name('owners.update');
 
+});
+
+Route::group(["prefix"=>'vendor_commissions'],function(){
+    Route::get('menu/{typeperson}/{id_client?}','Reports\VendorCommissionController@index')->name('vendor_commissions.index');
+    Route::post('store','Reports\VendorCommissionController@store')->name('vendor_commissions.store');
+    Route::get('pdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
+
+    Route::get('selectclient','Reports\VendorCommissionController@selectClient')->name('vendor_commissions.selectClient');
+    Route::get('selectvendor','Reports\VendorCommissionController@selectVendor')->name('vendor_commissions.selectVendor');
+});
+
+Route::group(["prefix"=>'vendor_list'],function(){
+    Route::get('index','Report2Controller@index_vendor')->name('vendor_list.index');
+    Route::post('store','Report2Controller@store_vendors')->name('vendor_list.store');
+    Route::get('pdf/{date_begin}/{date_end}/{name?}','Report2Controller@vendors_pdf')->name('vendor_list.pdf');
 });
