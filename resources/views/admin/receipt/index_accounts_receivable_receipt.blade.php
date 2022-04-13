@@ -3,9 +3,11 @@
 @section('content')
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    @if(Auth::user()->role_id  != '11')
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Relación de Gastos</a>
     </li>
+    @endif
     <li class="nav-item" role="presentation">
         <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Recibos de Condominio</a>
       </li>
@@ -35,7 +37,7 @@
                                     </span>
                                 @enderror
                             </div>
-                          
+                            @if(Auth::user()->role_id  != '11')
                                 <div class="col-sp-2 offset-sp-1">
                                     <select class="form-control" name="type" id="type">
                                         @if (isset($client))
@@ -62,7 +64,7 @@
                             <div id="client_label3" class="form-group col-sm-1">
                                 <a id="route_select" href="{{ route('receipt.selectownersreceipt') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
                             </div>
-
+                           @endif
                             <!--<div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
