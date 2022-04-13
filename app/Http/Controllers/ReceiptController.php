@@ -188,6 +188,30 @@ class ReceiptController extends Controller
     }
 
 
+    public function envioreceiptclients($id_client = null,$type = null) // generando recibos pantalla crear
+    {
+        $transports     = Transport::on(Auth::user()->database_name)->get();
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+        $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
+        $services = Product::on(Auth::user()->database_name)
+        ->where('type','=','SERVICIO')->get();
+
+        if ($id_client != null) {
+            $client =  Condominiums::on(Auth::user()->database_name)->find($id_client);
+            $invoices_to_pay = Receipts::on(Auth::user()->database_name)->whereIn('status',['P'])->where('type','F')->where('id_client',$id_client)->get();
+        
+        } else {
+            $client = null;
+            $invoices_to_pay = null;
+        }
+
+
+        return view('admin.receipt.envioreceiptclients',compact('datenow','transports','type','client','invoices_to_pay','branches','services'));
+    }
+
+
 
     public function selectclient($type = null) // clientes
     {

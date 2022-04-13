@@ -56,7 +56,7 @@
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
           </div>
           <div class="col-sm-4">
-            <a href="{{ '' }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Correo Masivo</a>
+            <a href="{{ route('receipt.envioreceiptclients') }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Correo Masivo</a>
           </div>
 
 
