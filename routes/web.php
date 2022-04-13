@@ -1147,11 +1147,12 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
     Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');
-    
+   
 });
 
 Route::group(["prefix"=>'mails'],function(){
     Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
+    Route::post('receipt/{id_quotation}/{coin}','Mail\ReceiptMailController@sendreceipt')->name('mails.receipt');
 });
 
 

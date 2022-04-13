@@ -176,7 +176,8 @@
 
                                   
                                 <td>
-                                   <a href="{{''}}" title="Enviar Correo"><i class="fa fa-envelope"></i></a>  
+                                    <a href="#" title="Enviar Correo" data-rute="{{ route('mails.receipt',[$quotation->id,$quotation->coin]) }}" data-email="{{$quotation->owners['email'] ?? ''}}" data-msg="Recibo de Condomino Fecha {{ date_format(date_create($quotation->date_billing),"d-m-Y") ?? '' }}" data-toggle="modal" data-target="#emailModal" class="buttonemail"><i class="fa fa-envelope"></i></a> 
+                                
                                 </td> 
                             @endif
                             
@@ -191,6 +192,38 @@
     </div>
 </div>
 </form>
+
+<div class="modal modal-danger fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enviar Recibo por Correo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form id="envemail" action="" method="post">
+                @csrf
+                @method('POST')
+                <h5 class="text-center">Email:</h5>
+                <input id="caprute" type="hidden" value="">
+                <input id="email_modal" type="text" class="form-control @error('email_modal') is-invalid @enderror" name="email_modal" value="" required autocomplete="email_modal">
+                <br>
+                <h5 class="text-center">Mensaje:</h5>
+                <input id="message_modal" type="text" class="form-control @error('message_modal') is-invalid @enderror" name="message_modal" value="" required autocomplete="message_modal">
+                       
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Enviar Correo</button> 
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 @section('javascript')
     <script>
@@ -212,5 +245,20 @@
             $("#btnRegistrar").hide();
             
         }
+
+        
+        $(document).on('click','.buttonemail',function(){
+         let email = $(this).attr('data-email');
+         let msg = $(this).attr('data-msg');
+         let rute = $(this).attr('data-rute');
+          
+         $('#email_modal').val(email);
+         $('#message_modal').val(msg);
+         $("#envemail").attr("action",rute);  
+         $("#caprute").val(rute);       
+        });
+
+
     </script>
 @endsection
+
