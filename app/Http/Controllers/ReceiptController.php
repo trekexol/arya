@@ -254,7 +254,14 @@ class ReceiptController extends Controller
         return view('admin.receipt.selectclientfactura',compact('clients','type'));
     }
     
-
+    public function selectclientemail($type = null) // clientes a factura ??
+    {
+        $clients     = Condominiums::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
+    
+        return view('admin.receipt.selectclientemail',compact('clients','type'));
+    }
+    
 
 
     public function create($id_quotation,$coin,$type = null) // crando factura de gasto
