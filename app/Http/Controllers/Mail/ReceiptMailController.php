@@ -43,8 +43,6 @@ class ReceiptMailController extends Controller
     
         $pdf = App::make('dompdf.wrapper');
 
-
-
         if(isset($quotation)){
 
            $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)
