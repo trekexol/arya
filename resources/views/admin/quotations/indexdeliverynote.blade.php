@@ -108,7 +108,7 @@
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
 
                             <!--<td class="text-center">{{ /*$quotation->number_pedido ?? */''}}</td>-->
-                            <td class="text-center"> <input id="pedido{{$cont}}" data-pedido="pedido{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedido" name="pedido{{$cont}}" value="{{$quotation->number_pedido}}"></td>
+                            <td class="text-center"> <input id="pedido{{$cont}}" data-pedido="pedido{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedido" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"></td>
 
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
