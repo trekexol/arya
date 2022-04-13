@@ -8,6 +8,8 @@ use App\Anticipo;
 use App\Company;
 use App\Http\Controllers\Controller;
 use App\Mail\ReceiptMail;
+use App\Owners;
+use App\ReceiptPayment;
 use App\Receipts;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class ReceiptMailController extends Controller
 
         Mail::to($email_to_send)->send(new ReceiptMail($quotation,$pdf,$company));
 
-        return redirect('/receipt/receipt/'.$quotation->id.'/'.$coin)->withSuccess('El Recibo se ha enviado por Correo Exitosamente!');
+        return redirect('receipt/'.$quotation->id.'/'.$coin)->withSuccess('El Recibo se ha enviado por Correo Exitosamente!');
 
     }
 
@@ -41,16 +43,7 @@ class ReceiptMailController extends Controller
     
         $pdf = App::make('dompdf.wrapper');
 
-        
-        $quotation = null;
-            
-        if(isset($id_quotation)){
-            $quotation = Receipts::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
-         
-                                
-        }else{
-           return redirect('/receipt/receipt')->withDanger('No llega el numero del recibo de condominio');
-           } 
+
 
         if(isset($quotation)){
 
@@ -154,11 +147,10 @@ class ReceiptMailController extends Controller
           // $lineas_cabecera = $company->format_header_line;
 
            $pdf = $pdf->loadView('pdf.receipt',compact('company','quotation','inventories_quotations','payment_quotations','bcv','coin','quotationsorigin','inventories_quotationso','client','quotationp','inventories_quotationsp'));
+
            return $pdf->output();
-    
-           }else{
-            return redirect('/receipt/receipt')->withDanger('La recibo de condominio no existe');
-        } 
+        }
+ 
     }
     
-    }
+}
