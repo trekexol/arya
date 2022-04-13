@@ -144,7 +144,7 @@
                 <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Recibos de Condominio</strong></a>
                 <!-- <a class="collapse-item" href="{{''/*route('receiptr')*/}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros de Recibos</strong></a>-->
                 <!--<a class="collapse-item" href="{{''/*route('receiptr')*/}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos/Abonos Propietarios</strong></a>-->
-                <a class="collapse-item" href="{{route('receiptr')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Resumen y estados de cuentas</strong></a>
+                <a class="collapse-item" href="{{route('receipt.accounts_receivable_receipt','index')}}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Resumen y estados de cuentas</strong></a>
             </div>
         </div>
     </li>
