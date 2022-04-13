@@ -576,6 +576,7 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
+    Route::get('selectclientemail/{type?}','ReceiptController@selectclientemail')->name('receipt.selectclientemail');
     
     Route::get('registerreceiptnvendor/{id_client}/{id_vendor}/{type?}','ReceiptController@createreceiptvendor')->name('receipt.createreceiptvendor');
     Route::get('selectvendor/{id_client}/{type?}','ReceiptController@selectvendor')->name('receipt.selectvendor');
@@ -1155,6 +1156,7 @@ Route::group(["prefix"=>'export_reports'],function(){
 Route::group(["prefix"=>'mails'],function(){
     Route::post('quotation/{id_quotation}/{coin}','Mail\QuotationMailController@sendQuotation')->name('mails.quotation');
     Route::post('receipt/{id_quotation}/{coin}','Mail\ReceiptMailController@sendreceipt')->name('mails.receipt');
+    Route::post('receiptmasive','Mail\ReceiptMailController@sendreceiptmasive')->name('mails.receiptmasive');
     Route::post('quotationindex/{coin}','Mail\QuotationMailController@sendQuotationIndex')->name('mails.quotationIndex');
 });
 

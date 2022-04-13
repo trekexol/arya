@@ -26,7 +26,7 @@
                 <div class="card-header text-center font-weight-bold h3">Enviar Recibos de Condominio</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('receipt.storeclients') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('mails.receiptmasive') }}" enctype="multipart/form-data">
                         @csrf
                        
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
@@ -46,7 +46,7 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-1">
-                                <a href="{{ route('receipt.selectclientfactura',$type) }}" title="Seleccionar"><i class="fa fa-eye"></i></a>  
+                                <a href="{{ route('receipt.selectclientemail',$type) }}" title="Seleccionar"><i class="fa fa-eye"></i></a>  
                             </div>
 
                            
@@ -86,6 +86,13 @@
 
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="clients" class="col-md-3 col-form-label text-md-right">Mensaje:</label>
+                            <div class="col-md-8">    
+                                <input id="message_modal" type="text" class="col-md-6 form-control @error('message_modal') is-invalid @enderror" name="message_modal" value="" required autocomplete="message_modal">
+                            </div> 
+                        </div>
+
                        
                         <div class="form-group row">
                             <div class="col-sm-3 offset-sm-4">
