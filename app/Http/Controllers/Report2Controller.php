@@ -204,13 +204,32 @@ class Report2Controller extends Controller
         $datenow = $date->format('Y-m-d');    
         
         $clients = Client::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
-
-        $date_begin = Carbon::parse($clients->created_at);
+        
+       
+        $date_begin = Carbon::parse($clients->created_at ?? $date->firstOfYear()->format('Y-m-d'));
         $datebeginyear = $date_begin->format('Y-m-d');
 
         //$datebeginyear = $date->firstOfYear()->format('Y-m-d');
 
         return view('admin.reports.index_clients',compact('datebeginyear','datenow'));
+      
+    }
+
+    public function index_vendor()
+    {
+        
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');    
+        
+        $vendors = Vendor::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
+
+        $date_begin = Carbon::parse($vendors->created_at ?? $date->firstOfYear()->format('Y-m-d'));
+        $datebeginyear = $date_begin->format('Y-m-d');
+
+        return view('admin.reports.index_vendors',compact('datebeginyear','datenow'));
       
     }
 
@@ -423,6 +442,16 @@ class Report2Controller extends Controller
         $name = request('name');
         
         return view('admin.reports.index_clients',compact('name','date_begin','date_end'));
+    }
+
+    public function store_vendors(Request $request)
+    {
+        
+        $date_begin = request('date_begin');
+        $date_end = request('date_end');
+        $name = request('name');
+        
+        return view('admin.reports.index_vendors',compact('name','date_begin','date_end'));
     }
 
     public function store_providers(Request $request)
@@ -987,6 +1016,43 @@ class Report2Controller extends Controller
                  
     }
 
+    function vendors_pdf($date_begin,$date_end,$name = null)
+    {
+        
+        $pdf = App::make('dompdf.wrapper');
+
+        $date = Carbon::now();
+        $datenow = $date->format('d-m-Y'); 
+        $period = $date->format('Y'); 
+
+
+        if(isset($name)){
+            $vendors = Vendor::on(Auth::user()->database_name)
+            ->where('name','LIKE',$name.'%')
+            ->whereRaw(
+                "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+            ->orderBy('name','asc')->get();
+        }else{
+            $vendors = Vendor::on(Auth::user()->database_name)
+            ->whereRaw(
+                "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+            ->orderBy('name','asc')->get();
+        }
+        
+
+        $date_begin = Carbon::parse($date_begin);
+        $date_begin = $date_begin->format('d-m-Y');
+
+        $date_end = Carbon::parse($date_end);
+        $date_end = $date_end->format('d-m-Y');
+
+       
+        $pdf = $pdf->loadView('admin.reports.vendors',compact('vendors','datenow','date_begin','date_end'))->setPaper('a4', 'landscape');
+        return $pdf->stream();
+                 
+    }
     function providers_pdf($date_begin,$date_end,$name = null)
     {
         

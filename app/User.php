@@ -55,4 +55,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Municipio','municipio_id');
     }
+    public function branches()
+    {
+        return $this->belongsTo('App\Branch','id_branch');
+    }
 }

@@ -70,7 +70,7 @@ class ProviderController extends Controller
     $users->setConnection(Auth::user()->database_name);
 
     
-    $users->code_provider = request('code_provider');
+    $users->code_provider = $request->type_code.request('code_provider');
     $users->razon_social = request('razon_social');
     $users->direction = request('direction');
     $users->city = request('city');
@@ -125,8 +125,6 @@ class ProviderController extends Controller
    {
         $var = Provider::on(Auth::user()->database_name)->find($id);
         
-     
-      
 
         return view('admin.providers.edit',compact('var'));
   
@@ -169,7 +167,7 @@ class ProviderController extends Controller
 
     
    
-    $users->code_provider = request('code_provider');
+    $users->code_provider = $request->type_code.request('code_provider');
     $users->razon_social = request('razon_social');
     $users->direction = request('direction');
     $users->city = request('city');

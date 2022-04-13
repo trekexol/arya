@@ -40,7 +40,7 @@
                 <th>Id</th>
                 <th>Usuario</th>
                 <th>Email</th>
-               
+                <th>Sucursal</th>
                 @if (Auth::user()->role_id  == '1' )
                     <th>Rol</th>
                     <th>Status</th>
@@ -59,6 +59,7 @@
                     <td>{{$user->id}}</td>
                     <td>{!!$user->name!!}</td>
                     <td>{!!$user->email!!}</td>
+                    <td>{!!$user->branches['description'] ?? ''!!}</td>
                     @if (Auth::user()->role_id  == '1')
                     <td>{{ $user->roles['description']}}</td>
                         @if($user->status == 1)

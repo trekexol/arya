@@ -192,7 +192,7 @@ class FacturarController extends Controller
                         ,'datenow','bcv','anticipos_sum','total_retiene_islr','is_after'
                         ,'total_mercancia','total_servicios','client','retiene_iva'));
          }else{
-             return redirect('/quotations')->withDanger('La cotizacion no existe');
+             return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
          
     }
@@ -367,7 +367,7 @@ class FacturarController extends Controller
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
          }else{
-             return redirect('/quotations')->withDanger('La cotizacion no existe');
+             return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
          
     }

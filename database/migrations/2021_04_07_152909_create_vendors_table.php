@@ -32,6 +32,7 @@ class CreateVendorsTable extends Migration
             $table->string('twitter',100)->nullable();
             $table->string('especification',150)->nullable();
             $table->string('observation',150)->nullable();
+            $table->string('direction',150)->nullable();
            
             $table->string('status',1);
             

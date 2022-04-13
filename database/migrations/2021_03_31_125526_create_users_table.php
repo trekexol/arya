@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('role_id');
             $table->unsignedBigInteger('id_user_register')->nullable();
+            $table->unsignedBigInteger('id_branch')->nullable();
             $table->string('name',50);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -27,6 +28,7 @@ class CreateUsersTable extends Migration
 
             $table->foreign('role_id')->references('id')->on('roles');
             $table->foreign('id_user_register')->references('id')->on('users');
+            $table->foreign('id_branch')->references('id')->on('branches');
         });
     }
 
