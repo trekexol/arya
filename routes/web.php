@@ -630,6 +630,8 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('accountsreceivable_receipt/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable_receipt')->name('receipt.accounts_receivable_receipt');
     Route::post('storeaccounts_receivable_receipt','ReceiptController@store_accounts_receivable_receipt')->name('receipt.store_accounts_receivable_receipt');
     Route::get('accounts_receivablepdf_receipt/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt')->name('receipt.accounts_receivable_pdf_receipt');
+    
+    Route::get('envioreceiptclients/{type?}','ReceiptController@envioreceiptclients')->name('receipt.envioreceiptclients'); // opcion generar recibo a clientes
 
 
  });

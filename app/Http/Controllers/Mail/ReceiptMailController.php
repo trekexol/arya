@@ -34,7 +34,7 @@ class ReceiptMailController extends Controller
 
         Mail::to($email_to_send)->send(new ReceiptMail($quotation,$pdf,$company));
 
-        return redirect('receipt/'.$quotation->id.'/'.$coin)->withSuccess('El Recibo se ha enviado por Correo Exitosamente!');
+        return redirect('/receipt/receipt')->withSuccess('El Recibo se ha enviado por Correo Exitosamente!');
 
     }
 
