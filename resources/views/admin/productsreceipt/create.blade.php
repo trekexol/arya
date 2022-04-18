@@ -236,7 +236,7 @@
                             <label for="exento" class="col-md-2 col-form-label text-md-right">exento</label>
                             
                             <div class="form-check">
-                                <input class="form-check-input position-static" type="checkbox" id="exento" name="exento" value="1" aria-label="...">
+                                <input checked class="form-check-input position-static" type="checkbox" id="exento" name="exento" value="1" aria-label="...">
                             </div>
                             <div style="display:none;">
                             <label for="islr" class="col-md-1 col-form-label text-md-right">Islr</label>
