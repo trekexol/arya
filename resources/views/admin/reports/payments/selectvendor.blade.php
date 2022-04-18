@@ -53,7 +53,7 @@
                     @foreach ($vendors as $vendor)
                         <tr>
                             <td>
-                                <a href="{{ route('vendor_commissions.index',['Vendedor',$vendor->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
+                                <a href="{{ route('report_payments.index',['Vendedor',$vendor->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                             </td>
                             <td>{{$vendor->cedula_rif}}</td>
                             <td>{{$vendor->name}}</td>
