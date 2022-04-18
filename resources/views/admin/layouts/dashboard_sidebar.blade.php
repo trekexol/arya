@@ -79,8 +79,12 @@
             
             <a class="collapse-item" href="{{ route('users')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Usuarios</strong></strong></a>
             
-           
+            @if ((Auth::user()->id_company  == '16'))
+            <a class="collapse-item" href="{{ route('branches')}}" > <i class="fas fa-code-branch fa-sm fa-fw mr-2 text-blue-400"></i><strong>Condominios</strong></a>
+            @else
             <a class="collapse-item" href="{{ route('branches')}}" > <i class="fas fa-code-branch fa-sm fa-fw mr-2 text-blue-400"></i><strong>Sucursales</strong></a>
+            @endif
+
             @if ((Auth::user()->id_company  != '16'))
             <a class="collapse-item" href="{{ route('positions')}}" > <i class="fas fa-user-plus fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cargos</strong></a>
             <a class="collapse-item" href="{{ route('academiclevels')}}" > <i class="fas fa-graduation-cap fa-sm fa-fw mr-2 text-blue-400"></i><strong>Niveles Académicos</strong></a>
