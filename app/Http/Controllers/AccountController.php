@@ -163,6 +163,8 @@ class AccountController extends Controller
           
         }
 
+
+
         
         $total_saldo_anterior = $total_saldo_anterior1 + $total_saldo_anterior2 + $total_saldo_anterior3;
 
