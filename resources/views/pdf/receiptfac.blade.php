@@ -63,42 +63,17 @@
 <table style="width: 100%;">
   <tr>
     <th style="font-weight: normal; font-size: medium;">Condominio: &nbsp;  {{ $client->name }}</th>
-    
-   
-  </tr>
-  <tr>
-    <td>Dirección: &nbsp;  {{ $client->direction}}
-    </td>
-    
-    
-  </tr>
-  
-</table>
-
-
-
-
-<table style="width: 100%;">
-  <tr>
-    <th style="text-align: center;">Teléfono</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
-   
-  </tr>
-  <tr>
-    <td style="text-align: center;">{{ $client->phone1 ?? '' }}</td>
-    <td style="text-align: center;">{{ $client->type_code?? ''}} {{ $client->cedula_rif ?? '' }}</td>
-    <td style="text-align: center;">{{ $quotation->serie ?? '' }}</td>
-    
-    
-  </tr>
-  
+    <th style="font-weight: normal; font-size: medium;">RIF/CI: &nbsp; {{ $client->type_code ?? ''}} {{ $client->cedula_rif ?? '' }}</th>
 </table>
 
 <table style="width: 100%;">
-  <tr>
-  <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; {{ $quotation->observation }} </th>
-</tr>
+    <tr>
+    <th style="font-weight: normal; font-size: medium;">Dirección: &nbsp;  {{ $client->direction}}</th>
+    </tr>
+    <tr>
+    <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; {{ $quotation->observation }} </th>
+   
+  </tr>
   
 </table>
   @if (!empty($payment_quotations))
@@ -151,6 +126,10 @@
     <th style="text-align: center; ">Desc</th>
     <th style="text-align: center; ">Total</th>
   </tr> 
+  <?php
+  $total_less_percentage_t = 0;
+  $total_coin = 0;
+  ?>
   @foreach ($inventories_quotations as $var)
       <?php
       $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
@@ -167,22 +146,30 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
+    <?php
+    $total_less_percentage_t += $total_less_percentage;
+    
+    ?>
+
   @endforeach 
 </table>
 
 
 <?php
-  $iva = ($quotation->base_imponible * $quotation->iva_percentage)/100;
+      //$iva = ($quotationsorigin[0]['base_imponible'] * $quotationsorigin[0]['iva_percentage'])/100;
+      $iva = 0;
+    
+      //$total = $quotationsorigin->sub_total_factura + $iva - $quotationsorigin->anticipo;
+    
+      //$total = $quotationsorigin[0]['amount_with_iva'];
+      $total = $total_less_percentage_t;
+    
+      //$total_petro = ($total - $quotationsorigin->anticipo) / $company->rate_petro;
+    
+      //$iva = $iva / ($bcv ?? 1);
+    
+      $total_coin = $total_less_percentage_t / ($quotation->bcv ?? 1);
 
-  //$total = $quotation->sub_total_factura + $iva - $quotation->anticipo;
-
-  $total = $quotation->amount_with_iva;
-
-  //$total_petro = ($total - $quotation->anticipo) / $company->rate_petro;
-
-  //$iva = $iva / ($bcv ?? 1);
-
-  $total_coin = $total / ($bcv ?? 1);
 ?>
 
 <table style="width: 100%;">
@@ -199,13 +186,13 @@
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL BS</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
   </tr> 
-  @if (isset($coin) && ($coin != 'bolivares'))
+
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">MONTO TOTAL {{($coin == 'bolivares') ? '' : ' USD'}}</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">{{($coin == 'bolivares') ? '' : '$'}}{{ number_format(bcdiv($total_coin , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">MONTO TOTAL USD</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">${{ number_format(bcdiv($total_coin , '1', 2), 2, ',', '.') }}</th>
   </tr> 
-  @endif
+
   
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: black; border-right-color: white;" ></th>
