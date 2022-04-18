@@ -293,13 +293,13 @@ class ReceiptMailController extends Controller
                         $varp->date_billing = $quotationpn->date_billing;
                     }
                 } else {
-                    $inventories_quotationsp = 0;
+                    $inventories_quotationsp = null;
                 }
 
 
             } else {
                 
-                $inventories_quotationsp = 0;
+                $inventories_quotationsp = null;
 
 
             }

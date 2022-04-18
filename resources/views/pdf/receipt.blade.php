@@ -242,7 +242,7 @@
   $total_less_percentagep = 0;
   $total_less_percentagen = 0;
   ?>     
-      @if ($inventories_quotationsp != 0) 
+      @if ($inventories_quotationsp != null) 
         @foreach ($inventories_quotationsp as $varp)
           <?php
           $percentagep = 0;
