@@ -72,7 +72,44 @@ class ReceiptMailController extends Controller
 
     }
 
+    function asignar_payment_type($type){
+      
+        if($type == 1){
+            return "Cheque";
+        }
+        if($type == 2){
+            return "Contado";
+        }
+        if($type == 3){
+            return "Contra Anticipo";
+        }
+        if($type == 4){
+            return "Crédito";
+        }
+        if($type == 5){
+            return "Depósito Bancario";
+        }
+        if($type == 6){
+            return "Efectivo";
+        }
+        if($type == 7){
+            return "Indeterminado";
+        }
+        if($type == 8){
+            return "Tarjeta Coorporativa";
+        }
+        if($type == 9){
+            return "Tarjeta de Crédito";
+        }
+        if($type == 10){
+            return "Tarjeta de Débito";
+        }
+        if($type == 11){
+            return "Transferencia";
+        }
+    }
 
+    
     public function pdfQuotation($quotation,$coin)
     {  
     
