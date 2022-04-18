@@ -70,7 +70,7 @@
                        
                         <div class="form-group row">
 
-
+                            <div style="display: none;">
                             <label for="direction" class="col-md-2 col-form-label text-md-right">Nombre Comercial</label>
 
                             <div class="col-md-4">
@@ -82,6 +82,7 @@
                                     </span>
                                 @enderror
                             </div>
+                        </div> 
 
                             <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección f</label>
 
@@ -159,6 +160,8 @@
                                     </span>
                                 @enderror
                             </div>
+
+                            <div style="display: none;">
                             <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
 
                             <div class="col-md-4">
@@ -171,10 +174,11 @@
                                 @enderror
                             </div>
                         </div>
+                        </div>
 
 
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: none;">
                             <label for="email" class="col-md-2 col-form-label text-md-right">Tiene Crédito</label>
 
                             <div class="form-check">
@@ -222,10 +226,11 @@
                                   @enderror
                               </div>  
                               
-                              
+                              <div style="display: none;">
                                 <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
                                     
                                 <div class="col-sm-3">
+                                  
                                     <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
                                         <option value="1">Ninguno</option>
                                        
@@ -244,10 +249,10 @@
                                     
                                     </select>
                                 </div>
-                    
+                            </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row" style="display: none;">
                             <label for="retencion_iva" class="col-md-2 col-form-label text-md-right">Retención <br>de Iva</label>
 
                             <div class="col-md-4">
@@ -272,6 +277,8 @@
                                   @enderror
                               </div>
                         </div>
+
+                        <div style="display: none;">
                         <div class="form-group row">
                             <label for="vendor" class="col-md-2 col-form-label text-md-right">Vendedor:</label>
 
@@ -285,7 +292,7 @@
                               
                             </select>
                             </div>
-                              
+                        </div>      
                             <label for="segmento" class="col-md-2 col-form-label text-md-right">Status</label>
                             <div class="col-md-4">
                                 <select class="form-control" id="status" name="status" title="status">
