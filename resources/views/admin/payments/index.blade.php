@@ -38,17 +38,25 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-      <div class="col-md-2">
-          <h2>Cobros</h2>
-      </div>
-      <div class="col-md-2">
-        <a href="{{ route('invoices')}}" class="btn btn-info btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-file-alt"></i>
-            </span>
-            <span class="text">Facturas</span>
-        </a>
-    </div>
+        <div class="col-md-2">
+            <h2>Cobros</h2>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ route('invoices')}}" class="btn btn-info btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-alt"></i>
+                </span>
+                <span class="text">Facturas</span>
+            </a>
+        </div>
+        <div class="col-md-2 offset-sm-1">
+            <a href="{{ route('report_payments.index','todos')}}" class="btn btn-info btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-print"></i>
+                </span>
+                <span class="text">Reporte</span>
+            </a>
+        </div>
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -78,9 +86,12 @@
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
                 <th class="text-center">Nº Factura</th>
+                <th class="text-center">Cliente</th>
                 <th class="text-center">Referencia</th>
                 <th class="text-center">Tipo de Pago</th>
+                <th class="text-center">Cuenta</th>
                 <th class="text-center">Monto</th>
+                <th class="text-center">$</th>
                 <th class="text-center" width="5%"></th>
             </tr>
             </thead>
@@ -96,10 +107,12 @@
                                 <a href="{{ route('payments.movement',$payment_quotation->id_quotation ?? -1) }}" title="Ver Movimiento" class="font-weight-bold text-dark">{{ $payment_quotation->id }}</a>
                             </td>
                             <td class="text-center font-weight-bold">{{$payment_quotation->number_invoice ?? ''}}</td>
-                            
+                            <td class="text-center font-weight-bold">{{$payment_quotation->name_client ?? ''}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_quotation->reference}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_quotation->type}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_quotation->description_account ?? ''}}</td>
                             <td class="text-right font-weight-bold">{{number_format($payment_quotation->amount, 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">{{number_format(bcdiv(($payment_quotation->amount / $payment_quotation->rate), '1', 2), 2, ',', '.')}}$</td>
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_quotation->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#"  class="delete" title="Borrar" data-id-quotation={{$payment_quotation->id_quotation ?? -1}} data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-danger"></i></a>                        

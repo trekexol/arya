@@ -56,9 +56,9 @@
         
                                     <div class="col-md-4">
                                         @if(isset($var->coin))
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0) / ($var->rate ?? 1), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) / ($var->rate ?? 1) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @else
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(($var->balance_previus ?? 0), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @endif
                                     
                                         @error('balance_previus')
@@ -93,7 +93,7 @@
                                     @if (isset($var->rate) && ($var->rate != 0))
                                         <label for="rate" id="rate_label" class="col-md-4 col-form-label text-md-right">Tasa Guardada de la Cuenta</label>
                                         <div class="col-md-4">
-                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ $var->rate }}" autocomplete="rate">
+                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($var->rate, '1', 2), 2, ',', '.') }}" disabled autocomplete="rate">
             
                                             @error('rate')
                                                 <span class="invalid-feedback" role="alert">
@@ -105,7 +105,7 @@
                                     @else
                                         <label for="rate" id="rate_label" class="col-md-4 col-form-label text-md-right">Tasa del Dia</label>                           
                                         <div class="col-md-4">
-                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($rate, 2, ',', '.') }}" autocomplete="rate">
+                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($rate, '1', 2), 2, ',', '.') }}" disabled autocomplete="rate">
             
                                             @error('rate')
                                                 <span class="invalid-feedback" role="alert">
@@ -114,7 +114,7 @@
                                             @enderror
                                         </div>   
                                     @endif
-                                    <label for="rate" id="rate_label" class="col-md-2 col-form-label text-md-right">Tasa del Dia {{ number_format($rate, 2, ',', '.') }}</label>                           
+                                    <label for="rate" id="rate_label" class="col-md-2 col-form-label text-md-right">Tasa del Dia {{ number_format(bcdiv($rate, '1', 2), 2, ',', '.') }}</label>                           
                                     
                                     
                                 </div>
