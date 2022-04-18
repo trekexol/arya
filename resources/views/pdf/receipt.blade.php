@@ -127,7 +127,7 @@
       <br>
       <table style="width: 100%;">
         <tr>
-          <th style="text-align: center; width: 100%; border-color: white;">Relación de Gasto {{ ''/*$quotationsorigin[0]['number_invoice']*/ }} Fecha: {{ date_format(date_create($quotationsorigin[0]['date_billing']),"d-m-Y") }}</th>
+          <th style="text-align: center; width: 100%; border-color: white;">Relación de Gasto {{ $quotationsorigin[0]['number_invoice'] }}</th>
         </tr> 
       </table>
 
@@ -139,6 +139,12 @@
           <th style="text-align: center; width:20%">Total Bs.</th>
           <th style="text-align: center; width:20%">Total USD</th>
         </tr> 
+        <?php
+        $total_less_percentage_t = 0;
+        $total_coin = 0;
+
+        ?>
+
         @foreach ($inventories_quotationso as $varo)
             <?php
             $percentage = (($varo->price * $varo->amount_quotation) * $varo->discount)/100;
@@ -153,21 +159,27 @@
             <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
             <th style="text-align: right; font-weight: normal;">${{ number_format($total_less_percentage / $quotationsorigin[0]['bcv'], 2, ',', '.') }}</th>
           </tr> 
-        @endforeach 
+          <?php
+           $total_less_percentage_t += $total_less_percentage;
+           
+           ?>
+          @endforeach 
       </table>
 
       <?php
-      $iva = ($quotationsorigin[0]['base_imponible'] * $quotationsorigin[0]['iva_percentage'])/100;
+      //$iva = ($quotationsorigin[0]['base_imponible'] * $quotationsorigin[0]['iva_percentage'])/100;
+      $iva = 0;
     
       //$total = $quotationsorigin->sub_total_factura + $iva - $quotationsorigin->anticipo;
     
-      $total = $quotationsorigin[0]['amount_with_iva'];
+      //$total = $quotationsorigin[0]['amount_with_iva'];
+      $total = $total_less_percentage_t;
     
       //$total_petro = ($total - $quotationsorigin->anticipo) / $company->rate_petro;
     
       //$iva = $iva / ($bcv ?? 1);
     
-      $total_coin = $total / ($bcv ?? 1);
+      $total_coin = $total_less_percentage_t / ($quotationsorigin[0]['bcv'] ?? 1);
     ?>
     
     <table style="width: 100%;">
@@ -177,7 +189,7 @@
         <th style="text-align: center; border-color: white; font-weight: normal;"></th>
         <th style="text-align: right; border-color: white; font-weight: normal width:3%;"></th>
         <th style="text-align: right; border-color: white; width:20%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
-        <th style="text-align: right; border-color: white; width:20%;">${{ number_format(bcdiv($total/$quotationsorigin[0]['bcv'] , '1', 2), 2, ',', '.') }}</th>
+        <th style="text-align: right; border-color: white; width:20%;">${{ number_format(bcdiv($total_coin, '1', 2), 2, ',', '.') }}</th>
       </tr> 
     
     
@@ -187,7 +199,6 @@
 <?php
   
   $total = $quotation->amount_with_iva;
-  $total_coin = $total / ($bcv ?? 1);
   $conteo_recibos_pendientes = 0;
   $monto_recibos_acumulado = 0;
   $conteo_recibos_acumulados = 0;
@@ -231,19 +242,20 @@
   $total_less_percentagep = 0;
   $total_less_percentagen = 0;
   ?>     
-  
-  @foreach ($inventories_quotationsp as $varp)
-        <?php
-        $percentagep = 0;
-      
-        $conteo_recibos_pendientes++;
-        $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
+      @if ($inventories_quotationsp != 0) 
+        @foreach ($inventories_quotationsp as $varp)
+          <?php
+          $percentagep = 0;
+        
+          $conteo_recibos_pendientes++;
+          $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
 
-        $total_less_percentagepn = $quotation->amount_with_iva;
+          $total_less_percentagepn = $quotation->amount_with_iva;
 
-        $total_less_percentagep += $quotation->amount_with_iva;
-        ?>
-      @endforeach 
+          $total_less_percentagep += $quotation->amount_with_iva;
+          ?>
+        @endforeach 
+      @endif  
   @endif
 
   <tr>
