@@ -250,43 +250,59 @@ class ReceiptMailController extends Controller
            ->get();
            
            
-           //Buscar recibos que debe
-           $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
-           ->orderBy('id' ,'asc') 
-           ->where('date_billing','<>',null)
-           ->where('type','=','R')
-           ->where('status','=','P')
-           ->where('id_client','=',$client->id)
-           ->select('receipts.*')
-           ->get();
+ //Buscar recibos que debe
+ $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
+ ->orderBy('id' ,'asc') 
+ ->where('date_billing','<>',null)
+ ->where('type','=','R')
+ ->where('status','=','P')
+ ->where('id','!=',$quotation->id)
+ ->where('receipts.id_client','=',$client->id)
+ ->select('receipts.*')
+ ->get();
 
 
-           $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products')
-           ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
-           ->where('receipt_products.id_quotation',$quotation->id)
-           ->where('receipt_products.status','=','C')
-           ->orwhere('receipt_products.status','=','1')
-           ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
-           'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
-           ,'receipt_products.retiene_islr as retiene_islr_quotation', )
-           ->get();
+ if (isset($quotationp)) {
+ 
+                foreach ($quotationp as $quotationtpp) {
+
+                    $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products') // productos recibo pendiente
+                    ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                    ->where('receipt_products.id_quotation',$quotationtpp->id)
+                    ->where('receipt_products.status','=','C')
+                    ->orwhere('receipt_products.status','=','1')
+                    ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                    'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                    ,'receipt_products.retiene_islr as retiene_islr_quotation', )
+                    ->get();
+
+                }
 
 
-       if(empty($inventories_quotationsp)){
-           foreach ($inventories_quotationsp as $varp) {
-               $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
-               ->orderBy('id' ,'asc') 
-               ->where('date_billing','<>',null)
-               ->where('type','=','R')
-               ->where('status','=','P')
-               ->where('id_client','=',$client)
-               ->where('id','<>',$varp->id_quotation)
-               ->select('number_delivery_note','date_billing')
-               ->get()->first();
-               $varp->number_delivery_note = $quotationpn->number_delivery_note;
-               $varp->date_billing = $quotationpn->date_billing;
-           }
-       } 
+                if(isset($inventories_quotationsp)){
+                    foreach ($inventories_quotationsp as $varp) {
+                        $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
+                        ->orderBy('id' ,'asc') 
+                        ->where('date_billing','<>',null)
+                        ->where('type','=','R')
+                        ->where('status','=','P')
+                        ->where('receipts.id_client','=',$client)
+                        ->select('number_delivery_note','date_billing')
+                        ->get()->first();
+                        $varp->number_delivery_note = $quotationpn->number_delivery_note;
+                        $varp->date_billing = $quotationpn->date_billing;
+                    }
+                } else {
+                    $inventories_quotationsp = 0;
+                }
+
+
+            } else {
+                
+                $inventories_quotationsp = 0;
+
+
+            }
 
 
            if($coin == 'bolivares'){
