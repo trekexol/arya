@@ -561,6 +561,10 @@ $(document).ready(function () {
     $("#amount_pay7").mask('000.000.000.000.000,00', { reverse: true });
 });
 
+$(document).ready(function () {
+    $("#amount_dolar").mask('000.000.000.000.000,00', { reverse: true });
+});
+
 
 $(document).ready(function () {
     $("#credit_days").mask('00000000', { reverse: true });

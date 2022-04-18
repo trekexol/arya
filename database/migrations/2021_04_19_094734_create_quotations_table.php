@@ -41,13 +41,14 @@ class CreateQuotationsTable extends Migration
 
             $table->decimal('retencion_iva',64,4)->nullable();
             $table->decimal('retencion_islr',64,4)->nullable();
+            $table->integer('IGTF_percentage')->nullable();
+            $table->decimal('IGTF_amount',64,4)->nullable();
             $table->decimal('base_imponible',64,4)->nullable();
             $table->decimal('amount_exento',64,4)->nullable();
             $table->decimal('amount',64,4)->nullable();
             $table->decimal('amount_iva',64,4)->nullable();
             $table->decimal('amount_with_iva',64,4)->nullable();
             
-
 
 
            

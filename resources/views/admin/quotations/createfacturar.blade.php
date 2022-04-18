@@ -180,7 +180,6 @@
                         
                         
                         <div class="form-group row">
-
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             @if (empty($anticipos_sum))
                                 <div class="col-md-3">
@@ -230,8 +229,27 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            
+                        <div class="form-group row" id="IGTF_form">
+                            <label for="IGTF_total" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+                            <div class="col-md-3">
+                                <input id="IGTF_total"  type="text" class="form-control @error('IGTF_total') is-invalid @enderror" name="IGTF_total" readonly required autocomplete="IGTF_total"> 
+                        
+                                @error('IGTF_total')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="amount_dolar" class="col-md-2 col-form-label text-md-right">Total a Pagar en $:</label>
+                            <div class="col-md-2">
+                                <input id="amount_dolar" onblur="calculateTotalIGTF();" type="text" class="form-control @error('amount_dolar') is-invalid @enderror" name="amount_dolar"  required autocomplete="amount_dolar"> 
+                        
+                                @error('amount_dolar')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
              
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
@@ -247,6 +265,7 @@
                                     </span>
                                 @enderror
                             </div>
+                          
                             @if (isset($is_after) && ($is_after == true))
                                 <div class="col-md-2">
                                     <div class="custom-control custom-switch">
@@ -254,11 +273,18 @@
                                         <label class="custom-control-label" for="customSwitches">Tiene Crédito</label>
                                     </div>
                                 </div>
+                            @endif
+                            <div class="col-md-1" id="IGTF_buttom">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal">
+                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF</label>
+                                </div>
+                            </div>
+                            @if (isset($is_after) && ($is_after == true))
                                 <div class="col-md-2">
                                     <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias de Crédito" autocomplete="credit"> 
                                 </div>
                             @endif
-                            
                         </div>
                         <br>
                         @if (isset($is_after) && ($is_after == true))
@@ -339,63 +365,69 @@
                                 @enderror
                             </div>
                           
+                            <div class="col-md-2">
+                                <select  id="payment_type" required name="payment_type" class="form-control">
+                                    <option selected value="">Tipo de Pago 1</option>
+                                    <option value="1">Cheque</option>
+                                    <option value="2">Contado</option>
+                                    
+                                    
+                                    <option value="5">Depósito Bancario</option>
+                                    <option value="6">Efectivo</option>
+                                    <option value="7">Indeterminado</option>
+                                    
+                                    <option value="9">Tarjeta de Crédito</option>
+                                    <option value="10">Tarjeta de Débito</option>
+                                    <option value="11">Transferencia</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF" name="IGTF">
+                                    <label class="custom-control-label" for="customSwitchesIGTF">IGTF</label>
+                                </div>
+                            </div>
                             <div class="col-md-3">
-                                    <select  id="payment_type" required name="payment_type" class="form-control">
-                                        <option selected value="">Tipo de Pago 1</option>
-                                        <option value="1">Cheque</option>
-                                        <option value="2">Contado</option>
-                                        
-                                        
-                                        <option value="5">Depósito Bancario</option>
-                                        <option value="6">Efectivo</option>
-                                        <option value="7">Indeterminado</option>
-                                        
-                                        <option value="9">Tarjeta de Crédito</option>
-                                        <option value="10">Tarjeta de Débito</option>
-                                        <option value="11">Transferencia</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <select  id="account_bank"  name="account_bank" class="form-control">
-                                        <option selected value="0">Seleccione una Opcion</option>
-                                        @foreach($accounts_bank as $account)
-                                                <option  value="{{$account->id}}">{{ $account->description }}</option>
-                                           @endforeach
-                                       
-                                    </select>
-                                    <select  id="account_efectivo"  name="account_efectivo" class="form-control">
-                                        <option selected value="0">Seleccione una Opcion</option>
-                                        @foreach($accounts_efectivo as $account)
-                                                <option  value="{{$account->id}}">{{ $account->description }}</option>
-                                           @endforeach
-                                       
-                                    </select>
-                                    <select  id="account_punto_de_venta"  name="account_punto_de_venta" class="form-control">
-                                        <option selected value="0">Seleccione una Opcion</option>
-                                        @foreach($accounts_punto_de_venta as $account)
-                                                <option  value="{{$account->id}}">{{ $account->description }}</option>
-                                           @endforeach
-                                       
-                                    </select>
-                                    <input id="credit_days" type="text" class="form-control @error('credit_days') is-invalid @enderror" name="credit_days" placeholder="Dias de Crédito" autocomplete="credit_days"> 
-                           
-                                    @error('credit_days')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                    <br>
-                                    <input id="reference"  maxlength="40" type="text" class="form-control @error('reference') is-invalid @enderror" name="reference" placeholder="Referencia" autocomplete="reference"> 
-                           
-                                    @error('reference')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="form-group col-md-1">
-                                    <a id="btn_agregar" class="btn btn-info btn-circle" onclick="addForm()" title="Agregar"><i class="fa fa-plus"></i></a>  
-                                </div>
+                                <select  id="account_bank"  name="account_bank" class="form-control">
+                                    <option selected value="0">Seleccione una Opcion</option>
+                                    @foreach($accounts_bank as $account)
+                                            <option  value="{{$account->id}}">{{ $account->description }}</option>
+                                        @endforeach
+                                    
+                                </select>
+                                <select  id="account_efectivo"  name="account_efectivo" class="form-control">
+                                    <option selected value="0">Seleccione una Opcion</option>
+                                    @foreach($accounts_efectivo as $account)
+                                            <option  value="{{$account->id}}">{{ $account->description }}</option>
+                                        @endforeach
+                                    
+                                </select>
+                                <select  id="account_punto_de_venta"  name="account_punto_de_venta" class="form-control">
+                                    <option selected value="0">Seleccione una Opcion</option>
+                                    @foreach($accounts_punto_de_venta as $account)
+                                            <option  value="{{$account->id}}">{{ $account->description }}</option>
+                                        @endforeach
+                                    
+                                </select>
+                                <input id="credit_days" type="text" class="form-control @error('credit_days') is-invalid @enderror" name="credit_days" placeholder="Dias de Crédito" autocomplete="credit_days"> 
+                        
+                                @error('credit_days')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                <br>
+                                <input id="reference"  maxlength="40" type="text" class="form-control @error('reference') is-invalid @enderror" name="reference" placeholder="Referencia" autocomplete="reference"> 
+                        
+                                @error('reference')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a id="btn_agregar" class="btn btn-info btn-circle" onclick="addForm()" title="Agregar"><i class="fa fa-plus"></i></a>  
+                            </div>
                         </div>
                         <div id="formulario2" class="form-group row" style="display:none;">
                                 <label for="amount_pay2s" class="col-md-2 col-form-label text-md-right">Forma de Pago 2:</label>
@@ -409,7 +441,7 @@
                                     @enderror
                                 </div>
                           
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <select  id="payment_type2" name="payment_type2" class="form-control">
                                         <option selected value="0">Tipo de Pago 2</option>
                                         <option value="1">Cheque</option>
@@ -424,6 +456,12 @@
                                         <option value="10">Tarjeta de Débito</option>
                                         <option value="11">Transferencia</option>
                                     </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF2" name="IGTF2">
+                                        <label class="custom-control-label" for="customSwitchesIGTF2">IGTF</label>
+                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <select  id="account_bank2"  name="account_bank2" class="form-control">
@@ -481,7 +519,7 @@
                                 @enderror
                             </div>
                       
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select  id="payment_type3"  name="payment_type3" class="form-control">
                                     <option selected value="0">Tipo de Pago 3</option>
                                     <option value="1">Cheque</option>
@@ -496,6 +534,12 @@
                                     <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF3" name="IGTF3">
+                                    <label class="custom-control-label" for="customSwitchesIGTF3">IGTF</label>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <select  id="account_bank3"  name="account_bank3" class="form-control">
@@ -552,7 +596,7 @@
                                 @enderror
                             </div>
                       
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select  id="payment_type4"  name="payment_type4" class="form-control">
                                     <option selected value="0">Tipo de Pago 4</option>
                                     <option value="1">Cheque</option>
@@ -567,6 +611,12 @@
                                     <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF4" name="IGTF4">
+                                    <label class="custom-control-label" for="customSwitchesIGTF4">IGTF</label>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <select  id="account_bank4"  name="account_bank4" class="form-control">
@@ -623,7 +673,7 @@
                                 @enderror
                             </div>
                       
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select  id="payment_type5"  name="payment_type5" class="form-control">
                                     <option selected value="0">Tipo de Pago 5</option>
                                     <option value="1">Cheque</option>
@@ -638,6 +688,12 @@
                                     <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF5" name="IGTF5">
+                                    <label class="custom-control-label" for="customSwitchesIGTF5">IGTF</label>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <select  id="account_bank5"  name="account_bank5" class="form-control">
@@ -694,7 +750,7 @@
                                 @enderror
                             </div>
                       
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select  id="payment_type6"  name="payment_type6" class="form-control">
                                     <option selected value="0">Tipo de Pago 6</option>
                                     <option value="1">Cheque</option>
@@ -709,6 +765,12 @@
                                     <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF6" name="IGTF6">
+                                    <label class="custom-control-label" for="customSwitchesIGTF6">IGTF</label>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <select  id="account_bank6"  name="account_bank6" class="form-control">
@@ -765,7 +827,7 @@
                                 @enderror
                             </div>
                       
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <select  id="payment_type7"  name="payment_type7" class="form-control">
                                     <option selected value="0">Tipo de Pago 7</option>
                                     <option value="1">Cheque</option>
@@ -780,6 +842,12 @@
                                     <option value="10">Tarjeta de Débito</option>
                                     <option value="11">Transferencia</option>
                                 </select>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF7" name="IGTF7">
+                                    <label class="custom-control-label" for="customSwitchesIGTF7">IGTF</label>
+                                </div>
                             </div>
                             <div class="col-md-3">
                                 <select  id="account_bank7"  name="account_bank7" class="form-control">
@@ -863,9 +931,13 @@
     <script>
         $("#credit").hide();
         $("#formenviarcredito").hide();
+        $("#IGTF_form").hide();
+
+
         var switchStatus = false;
         $("#customSwitches").on('change', function() {
             if ($(this).is(':checked')) {
+                
                 switchStatus = $(this).is(':checked');
                 $("#credit").show();
                 $("#formulario1").hide();
@@ -877,6 +949,8 @@
                 $("#formulario7").hide();
                 $("#formenviarcredito").show();
                 $("#enviarpagos").hide();
+                $("#IGTF_form").hide();
+                $("#IGTF_buttom").hide();
                 number_form = 1; 
             }
             else {
@@ -885,6 +959,18 @@
                 $("#formulario1").show();
                 $("#formenviarcredito").hide();
                 $("#enviarpagos").show();
+                $("#IGTF_form").show();
+                $("#IGTF_buttom").show();
+            }
+        });
+
+        $("#customSwitchesIGTFTotal").on('change', function() {
+            if ($(this).is(':checked')) {
+                $("#IGTF_form").show();
+            }
+            else {
+            switchStatus = $(this).is(':checked');
+                $("#IGTF_form").hide();
             }
         });
 
@@ -916,7 +1002,50 @@
             
         });
 
-        
+        function calculateTotalIGTF(){
+            
+            let IGTF_percentage = "<?php echo $company->IGTF_percentage ?? 3 ?>";     
+
+            let coin = "<?php echo $coin ?? 'bolivares' ?>";     
+
+
+            let amount_dolar_form = document.getElementById("amount_dolar").value; 
+
+            var amount_dolar_format = amount_dolar_form.replace(/[$.]/g,'');
+
+            var amount_dolar = amount_dolar_format.replace(/[,]/g,'.');    
+
+           
+            let grandtotal_form = document.getElementById("grandtotal_form").value; 
+
+            var grandtotal_format = grandtotal_form.replace(/[$.]/g,'');
+
+            var grandtotal = grandtotal_format.replace(/[,]/g,'.');  
+
+
+            if(coin == 'bolivares'){
+                let quotation_bcv = "<?php echo $quotation->bcv ?? 0 ?>";  
+                var total_IGTF = ((parseFloat(amount_dolar) * parseFloat(IGTF_percentage)) / 100) * parseFloat(quotation_bcv);
+            }else{
+                var total_IGTF = (parseFloat(amount_dolar) * parseFloat(IGTF_percentage)) / 100;
+            }
+           
+
+
+            var total_with_IGTF = parseFloat(total_IGTF) + parseFloat(grandtotal);
+
+
+            
+            document.getElementById("IGTF_total").value = total_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+            document.getElementById("total_pay_form").value =  total_with_IGTF.toFixed(2);
+
+            document.getElementById("grandtotal_form").value = total_with_IGTF;
+
+            document.getElementById("total_pay").value = total_with_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2}); 
+          
+
+        }
     </script>
     <script type="text/javascript">
 

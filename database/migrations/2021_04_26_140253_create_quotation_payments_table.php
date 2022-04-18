@@ -24,6 +24,7 @@ class CreateQuotationPaymentsTable extends Migration
             $table->decimal('rate',64,2);
             $table->integer('credit_days')->nullable();
             $table->string('reference',50)->nullable();
+            $table->integer('IGTF_percentage')->nullable();
 
             $table->string('status',1);
 
