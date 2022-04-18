@@ -127,7 +127,7 @@
       <br>
       <table style="width: 100%;">
         <tr>
-          <th style="text-align: center; width: 100%; border-color: white;">Relación de Gasto {{ ''/*$quotationsorigin[0]['number_invoice']*/ }} Fecha: {{ date_format(date_create($quotationsorigin[0]['date_billing']),"d-m-Y") }}</th>
+          <th style="text-align: center; width: 100%; border-color: white;">Relación de Gasto {{ $quotationsorigin[0]['number_invoice'] }}</th>
         </tr> 
       </table>
 
@@ -231,19 +231,20 @@
   $total_less_percentagep = 0;
   $total_less_percentagen = 0;
   ?>     
-  
-  @foreach ($inventories_quotationsp as $varp)
-        <?php
-        $percentagep = 0;
-      
-        $conteo_recibos_pendientes++;
-        $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
+      @if ($inventories_quotationsp != 0) 
+        @foreach ($inventories_quotationsp as $varp)
+          <?php
+          $percentagep = 0;
+        
+          $conteo_recibos_pendientes++;
+          $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
 
-        $total_less_percentagepn = $quotation->amount_with_iva;
+          $total_less_percentagepn = $quotation->amount_with_iva;
 
-        $total_less_percentagep += $quotation->amount_with_iva;
-        ?>
-      @endforeach 
+          $total_less_percentagep += $quotation->amount_with_iva;
+          ?>
+        @endforeach 
+      @endif  
   @endif
 
   <tr>
