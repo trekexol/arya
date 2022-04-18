@@ -531,7 +531,7 @@ class FacturarController extends Controller
             }
         }
 
-        $validation_factura = new ReceiptValidationController($quotation);
+        $validation_factura = new FacturaValidationController($quotation);
 
         $return_validation_factura = $validation_factura->validate_movement_mercancia();
 
