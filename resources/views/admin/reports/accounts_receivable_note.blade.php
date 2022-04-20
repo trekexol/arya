@@ -42,6 +42,7 @@
     <th style="text-align: center; width:1%;">Ctrl/Serie</th>
     <th style="text-align: center;">Cliente</th>
     <th style="text-align: center;">Vendedor</th>
+    <th style="text-align: center;">Pedido</th>
     <th style="text-align: center;">Total</th>
     <th style="text-align: center;">Abono</th>
     <th style="text-align: center;">Por Cobrar</th>
@@ -116,7 +117,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->serie ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}} {{ $quotation->surname_vendor ?? ''}}</th>
-
+      <th style="text-align: center; font-weight: normal;">{{ $quotation->number_pedido ?? ''}}</th>
 
       @if(isset($coin) && $coin == 'bolivares'){
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
@@ -138,6 +139,7 @@
 
   <tr>
     <th style="text-align: center; font-weight: normal; border-color: white;">{{count($quotations)}} Regist.</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>

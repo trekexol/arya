@@ -63,8 +63,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -78,8 +78,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -91,15 +91,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 } 
                 
@@ -109,15 +109,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -131,8 +131,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -146,8 +146,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult )          
                                         ->where('quotations.id_client',$id_client_or_vendor)                                    
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
@@ -165,8 +165,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -181,8 +181,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -195,16 +195,16 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
                     
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 if($typeinvoice == 'facturasc'){ // facturas cobradas cliente bs
@@ -213,15 +213,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -235,9 +235,9 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_client',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }                
                 if($typeinvoice == 'todo'){ // Todas cliente $
@@ -249,8 +249,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult )          
                                         ->where('quotations.id_client',$id_client_or_vendor) 
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
@@ -269,8 +269,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -284,8 +284,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }                   
@@ -295,15 +295,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 } 
                 
@@ -313,15 +313,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -335,8 +335,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -350,8 +350,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult )          
                                         ->where('quotations.id_vendor',$id_client_or_vendor)                                    
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
@@ -369,8 +369,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -384,8 +384,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -395,16 +395,16 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
                     
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 if($typeinvoice == 'facturasc'){ // facturas cobradas id_vendor bs
@@ -413,15 +413,15 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -435,9 +435,9 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }                
                 if($typeinvoice == 'todo'){ // Todas id_vendor $
@@ -449,8 +449,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult)
                                         ->where('quotations.id_vendor',$id_client_or_vendor)
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
@@ -470,8 +470,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -485,8 +485,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.status','<>','X')
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -497,14 +497,14 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 } 
                 
@@ -514,14 +514,14 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -534,8 +534,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -548,8 +548,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.amount','<>',null)
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult )                                            
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
@@ -566,8 +566,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -580,8 +580,8 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.status','<>','X')
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }
@@ -594,14 +594,14 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['P'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 if($typeinvoice == 'facturasc'){ // facturas cobradas cliente bs
@@ -610,14 +610,14 @@ class AccountReceivableNoteExportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
                     ->whereIn('quotations.status',['C'])
-                    ->where('quotations.date_billing','<>',null)
+                    ->where('quotations.number_pedido','quotations.date_billing','<>',null)
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.number_invoice','<>',null)
                     ->where('quotations.number_delivery_note','<>',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }
                 
@@ -630,9 +630,9 @@ class AccountReceivableNoteExportController extends Controller
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
-                    ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                    ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_billing','desc')
+                    ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                    ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                    ->orderBy('quotations.number_pedido','quotations.date_billing','desc')
                     ->get();
                 }                
                 if($typeinvoice == 'todo'){ // Todas cliente $
@@ -643,8 +643,8 @@ class AccountReceivableNoteExportController extends Controller
                                         ->where('quotations.amount','<>',null)
                                         ->where('quotations.date_delivery_note','>=',$date_frist)
                                         ->where('quotations.date_delivery_note','<=',$date_consult)
-                                        ->select('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
-                                        ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
+                                        ->select('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','vendors.surname as surname_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                                        ->groupBy('quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','vendors.surname','clients.name','quotations.amount','quotations.amount_with_iva')
                                         ->orderBy('quotations.date_quotation','desc')
                                         ->get();
                 }
