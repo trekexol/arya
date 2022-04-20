@@ -1452,7 +1452,8 @@ class ReportDeliveryNoteController extends Controller
 
         }
         
-        $pdf = $pdf->loadView('admin.reports.accounts_receivable_note_det',compact('coin','quotations','date_end','date_frist','typepersone','id_client_or_vendor'));
+        $pdf = $pdf->loadView('admin.reports.accounts_receivable_note_det',compact('coin','quotations','date_end','date_frist','typepersone','id_client_or_vendor'))->setPaper('a4', 'landscape');
+       
         return $pdf->stream();
                  
     }

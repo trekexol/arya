@@ -1167,7 +1167,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
     Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');
-   
+    Route::post('accountreceivablenotedetail','Exports\Reports\AccountReceivableNoteDetailExportController@exportExcel')->name('export_reports.account_receivable_note_det');
 });
 
 Route::group(["prefix"=>'mails'],function(){
