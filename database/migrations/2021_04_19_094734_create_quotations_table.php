@@ -22,6 +22,7 @@ class CreateQuotationsTable extends Migration
             $table->bigInteger('number_invoice')->nullable();
             $table->bigInteger('number_delivery_note')->nullable();
             $table->bigInteger('number_order')->nullable();
+            $table->bigInteger('number_pedido')->nullable();
 
             $table->string('serie',30)->nullable();
             
