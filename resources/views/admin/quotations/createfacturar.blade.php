@@ -384,7 +384,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1" id="IGTF_div_form" name="IGTF_div_form">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch" > 
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF" name="IGTF">
                                     <label class="custom-control-label" for="customSwitchesIGTF">IGTF</label>
                                 </div>
@@ -1190,6 +1190,7 @@
                     $("#payment_type").hide();
                     $("#btn_agregar").hide();
                     $("#label_amount_pays").hide();
+                    $("#IGTF_div_form").hide();
                 }
             }        
                 
@@ -1306,6 +1307,7 @@
                     $("#payment_type").hide();
                     $("#btn_agregar").hide();
                     $("#label_amount_pays").hide();
+                    $("#IGTF_div_form").hide();
                 }
                
             });
