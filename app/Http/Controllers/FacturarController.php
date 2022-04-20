@@ -641,6 +641,7 @@ class FacturarController extends Controller
             $total_iva = ($base_imponible * $iva_percentage)/100;
 
         }
+        $quotation->date_billing = request('date-begin-form2');
 
         $IGTF_amount_check = 0;
         
@@ -1746,7 +1747,7 @@ class FacturarController extends Controller
 
             /*Modifica la factura*/
  
-            $quotation->date_billing = request('date-begin-form2');
+           
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
             $quotation->amount =  $sin_formato_amount;
