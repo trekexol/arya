@@ -108,7 +108,8 @@
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
 
                             <!--<td class="text-center">{{ /*$quotation->number_pedido ?? */''}}</td>-->
-                            <td class="text-center"> <input id="pedido{{$cont}}" data-pedido="pedido{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedido" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"></td>
+                                                       
+                            <td class="text-center"><input style="display:none" none; id="pedido{{$cont}}" data-pedido="{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedidoedit2" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"> <div style="display: block; cursor:pointer;" class="pedidoedit{{$cont}}"> <span data-pedido="{{$cont}}" class="pedidoedit">{{ $quotation->number_pedido ?? 0 }}</span> </div></td>
 
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
@@ -175,19 +176,32 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
-    $(document).on('change','.pedido',function(){
-         
-         let id_quotation = $(this).attr('data-quotation');
-         let id_pedido = $(this).attr('data-pedido');
-         var valinput = $('#'+id_pedido).val();
-           
-         alert(valinput);
+ 
+     $(document).on('click','.pedidoedit',function(){
+        let id_pedido = $(this).attr('data-pedido');
+        /*var valinput = $('#'+id_pedido).val();*/
+        
+       $('.pedidoedit'+id_pedido).hide();
 
-     });
+       $('#pedido'+id_pedido).show();
+       $('#pedido'+id_pedido).focus();
+    });
 
+    $(document).on('blur','.pedidoedit2',function(){
+        let id_pedido = $(this).attr('data-pedido');
+        let id_quotation = $(this).attr('data-quotation');
+        var valinput = $('#pedido'+id_pedido).val();
+
+        var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput;
+
+        window.location.href = url;
+       /*  $('#pedido'+id_pedido).hide();
+        $('.pedidoedit'+id_pedido).show();*/
+
+    });
 
     
-    $(document).on('click','.delete',function(){
+     $(document).on('click','.delete',function(){
          
          let id_quotation = $(this).attr('data-id-quotation');
  

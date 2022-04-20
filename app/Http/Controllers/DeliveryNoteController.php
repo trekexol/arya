@@ -26,18 +26,24 @@ class DeliveryNoteController extends Controller
     }
  
 
-    public function index()
+    public function index($id_quotation = null,$number_pedido = null)
     {
         if($this->userAccess->validate_user_access($this->modulo)){
             $user       =   auth()->user();
             $users_role =   $user->role_id;
-            
+
+            if(isset($id_quotation)) {
+                $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
+                
+            }
+
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
                                     ->where('date_delivery_note','<>',null)
                                     ->where('date_billing',null)
                                     ->whereIn('status',[1,'M'])
                                     ->get();
-        
+
+
     
             return view('admin.quotations.indexdeliverynote',compact('quotations'));
         }else{
