@@ -223,6 +223,14 @@ body{
   </tr> 
   @endif
  
+  @if (isset($quotation->IGTF_amount) && $quotation->IGTF_amount != 0)
+  <tr>
+    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">IGTF</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->IGTF_amount , '1', 2), 2, ',', '.') }}</th>
+  </tr> 
+  @endif
+  
   <tr>
     <td style="text-align: left;  width: 38%; border-bottom-color: white; border-right-color: white;"></td>
     <td style="text-align: right;  width: 21%; border-bottom-color: white;">MONTO TOTAL </td>

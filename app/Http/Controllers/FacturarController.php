@@ -8,6 +8,7 @@ use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
 use App\Client;
+use App\Company;
 use App\Http\Controllers\Calculations\FacturaCalculationController;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\Validations\FacturaValidationController;
@@ -570,13 +571,13 @@ class FacturarController extends Controller
         
         ]);
 
-        
-        
+        //dd($request);
+
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
 
         $quotation_status = $quotation->status;
 
-       
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
         if($quotation->status == 'C' ){
             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta factura fue procesada!');
@@ -632,10 +633,16 @@ class FacturarController extends Controller
 
         $total_iva = 0;
 
+        $IGTF_amount = (double) request('IGTF_amount_form');
+
+        $IGTF_percentage = $company->IGTF_percentage ?? 3;
+
         if($base_imponible != 0){
             $total_iva = ($base_imponible * $iva_percentage)/100;
 
         }
+
+        $IGTF_amount_check = 0;
         
         //si el monto es menor o igual a cero, quiere decir que el anticipo cubre el total de la factura, por tanto no hay pagos
         if($sin_formato_total_pay > 0){
@@ -735,6 +742,11 @@ class FacturarController extends Controller
                             }
 
                             $var->rate = $bcv;
+
+                            if(isset($request->IGTF)){
+                                $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                $IGTF_amount_check += $var->amount;
+                            }
                             
                             $var->status =  1;
                         
@@ -850,6 +862,12 @@ class FacturarController extends Controller
                         if($coin == 'dolares'){
                             $var2->amount = $var2->amount * $bcv;
                         }
+
+                        if(isset($request->IGTF2)){
+                            $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                            $IGTF_amount_check += $var2->amount;
+                        }
+
                         $var2->rate = $bcv;
                         
                         $var2->status =  1;
@@ -966,6 +984,12 @@ class FacturarController extends Controller
                                 if($coin == 'dolares'){
                                     $var3->amount = $var3->amount * $bcv;
                                 }
+
+                                if(isset($request->IGTF3)){
+                                    $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                    $IGTF_amount_check += $var3->amount;
+                                }
+
                                 $var3->rate = $bcv;
                                 
                                 $var3->status =  1;
@@ -1082,6 +1106,12 @@ class FacturarController extends Controller
                                 if($coin == 'dolares'){
                                     $var4->amount = $var4->amount * $bcv;
                                 }
+
+                                if(isset($request->IGTF4)){
+                                    $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                    $IGTF_amount_check += $var4->amount;
+                                }
+
                                 $var4->rate = $bcv;
                                 
                                 $var4->status =  1;
@@ -1197,6 +1227,11 @@ class FacturarController extends Controller
                             
                             if($coin == 'dolares'){
                                 $var5->amount = $var5->amount * $bcv;
+                            }
+
+                            if(isset($request->IGTF5)){
+                                $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                $IGTF_amount_check += $var5->amount;
                             }
 
                             $var5->rate = $bcv;
@@ -1316,6 +1351,11 @@ class FacturarController extends Controller
                                 $var6->amount = $var6->amount * $bcv;
                             }
 
+                            if(isset($request->IGTF6)){
+                                $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                $IGTF_amount_check += $var6->amount;
+                            }
+
                             $var6->rate = $bcv;
 
                             $var6->status =  1;
@@ -1432,6 +1472,12 @@ class FacturarController extends Controller
                             if($coin == 'dolares'){
                                 $var7->amount = $var7->amount * $bcv;
                             }
+
+                            if(isset($request->IGTF7)){
+                                $var->IGTF_percentage = $company->IGTF_percentage ?? 3;
+                                $IGTF_amount_check += $var7->amount;
+                            }
+
                             $var7->rate = $bcv;
                             
                             $var7->status =  1;
@@ -1452,6 +1498,13 @@ class FacturarController extends Controller
                 /*--------------------------------------------*/
             } 
 
+        }
+
+       //validacion que verifica que el total pagado en IGTF sea igual al total a pagar de IGTF
+        if(isset($IGTF_amount)){
+            if($IGTF_amount_check != $IGTF_amount){
+                return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger("El total pagado en IGTF es diferente al total a pagar de IGTF !!");
+            }
         }
         
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
@@ -1479,19 +1532,19 @@ class FacturarController extends Controller
         
             /*---------------- */
 
-                $header_voucher  = new HeaderVoucher();
-                $header_voucher->setConnection(Auth::user()->database_name);
+            $header_voucher  = new HeaderVoucher();
+            $header_voucher->setConnection(Auth::user()->database_name);
 
 
-                $header_voucher->description = "Cobro de Bienes o servicios.";
-                $header_voucher->date = $date_payment;
-                
+            $header_voucher->description = "Cobro de Bienes o servicios.";
+            $header_voucher->date = $date_payment;
             
-                $header_voucher->status =  "1";
-            
-                $header_voucher->save();
+        
+            $header_voucher->status =  "1";
+        
+            $header_voucher->save();
 
-                
+           
             if($validate_boolean1 == true){
                 $var->created_at = $date_payment;
                 $var->save();
@@ -1501,7 +1554,7 @@ class FacturarController extends Controller
                 $historial_quotation = new HistorialQuotationController();
 
                 $historial_quotation->registerAction($var,"quotation_payment","Registro de Pago");
-                        
+
                 //LE PONEMOS STATUS C, DE COBRADO
                 $quotation->status = "C";
             }
@@ -1515,7 +1568,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var2,"quotation_payment","Registro de Pago");
                
                 $this->add_pay_movement($bcv,$payment_type2,$header_voucher->id,$var2->id_account,$quotation->id,$user_id,$var2->amount,0);
-                
+
             }
             
             if($validate_boolean3 == true){
@@ -1527,8 +1580,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var3,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type3,$header_voucher->id,$var3->id_account,$quotation->id,$user_id,$var3->amount,0);
-            
-                
+
             }
             if($validate_boolean4 == true){
                 $var4->created_at = $date_payment;
@@ -1539,7 +1591,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var4,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type4,$header_voucher->id,$var4->id_account,$quotation->id,$user_id,$var4->amount,0);
-            
+
             }
             if($validate_boolean5 == true){
                 $var5->created_at = $date_payment;
@@ -1550,7 +1602,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var5,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type5,$header_voucher->id,$var5->id_account,$quotation->id,$user_id,$var5->amount,0);
-             
+
             }
             if($validate_boolean6 == true){
                 $var6->created_at = $date_payment;
@@ -1561,7 +1613,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var6,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type6,$header_voucher->id,$var6->id_account,$quotation->id,$user_id,$var6->amount,0);
-            
+
             }
             if($validate_boolean7 == true){
                 $var7->created_at = $date_payment;
@@ -1572,7 +1624,7 @@ class FacturarController extends Controller
                 $historial_quotation->registerAction($var7,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type7,$header_voucher->id,$var7->id_account,$quotation->id,$user_id,$var7->amount,0);
-            
+
             }
             
 
@@ -1589,7 +1641,10 @@ class FacturarController extends Controller
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
 
                 $sub_total = $sub_total * $bcv;
+
+                $sub_total = $sub_total * $bcv;
     
+                $IGTF_amount = $IGTF_amount * $bcv;
             }
 
 
@@ -1641,7 +1696,6 @@ class FacturarController extends Controller
                 }
             }
             
-
          
             
             //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
@@ -1701,6 +1755,8 @@ class FacturarController extends Controller
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
+            $quotation->IGTF_amount = $IGTF_amount;
+            $quotation->IGTF_percentage = $IGTF_percentage;
             $quotation->status = "C";
             
             $quotation->save();
@@ -1762,6 +1818,19 @@ class FacturarController extends Controller
                         $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$total_iva);
                     }
                 }
+
+                $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'IGTF')->first(); 
+
+                //anadir movimiento de IGTF
+                if(isset($IGTF_amount_check) && $IGTF_amount_check != 0){
+                    if(isset($account_IGTF)){
+
+                        $amount_IGTF = ($var->amount * $var->IGTF_percentage) / 100;
+                        
+                        $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_amount_check);
+                    }
+                }
+             
                 
                 //Mercancia para la Venta
                /* $validation_factura = new FacturaValidationController($quotation);
@@ -2010,6 +2079,8 @@ class FacturarController extends Controller
                         $this->add_movement($bcv,$header_voucher,$account_contra_anticipo->id,$quotation_id,$user_id,$amount_debe,0);
                     }
                 } */
+
+                
 
     }
 
