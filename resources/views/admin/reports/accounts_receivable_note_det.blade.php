@@ -161,43 +161,42 @@
 
           
             <tr>
-              <th style="text-align: center; font-weight: normal;"></th> <!-- Fecha -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->date_delivery_note}}</th> <!-- Fecha -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_delivery_note}}</th> <!-- NE-->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice}}</th> <!-- FAC -->
-              <th style="text-align: center; font-weight: normal;"></th><!-- fecha FAC -->
-              <th style="text-align: center; font-weight: normal;"></th> <!-- Status -->
-              <th style="text-align: center; font-weight: normal;"></th><!-- Cliente -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing}}</th><!-- fecha FAC -->
+              @if ($quotation->status == 'C')<!-- Status -->
+              <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+              @endif
+              @if ($quotation->status == '1')
+              <th style="text-align: center; font-weight: normal;">NE</th>
+              @endif
+              @if ($quotation->status == 'P')
+              <th style="text-align: center; font-weight: normal;color:blue">P</th>
+              @endif
+              @if ($quotation->status == 'X')
+              <th style="text-align: center; font-weight: normal;color:red">X</th>
+              @endif <!-- Status -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th><!-- Cliente -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}} {{ $quotation->surname_vendor ?? ''}}</th><!-- Vendedor -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_pedido ?? ''}}</th><!-- Num pedido -->
               <th style="text-align: center; font-weight: normal;">{{$name_product->code_comercial ?? ''}}</th> <!-- Codigo -->
               <th style="text-align: center; font-weight: normal;">{{$name_product->description ?? ''}}</th> <!-- Producto -->
               <th style="text-align: center; font-weight: normal;">{{$quotations_products->amount ?? ''}}</th> <!-- Cantidad -->
-              @if(isset($coin) && $coin == 'bolivares'){
-              <th style="text-align: right; font-weight: normal;">{{number_format(($quotations_products->amount * $quotations_products->price ?? 0), 2, ',', '.')}}</th> <!-- Total BS -->
+              @if(isset($coin) && $coin == 'bolivares')
+              <th style="text-align: right; font-weight: normal;">{{ number_format(($quotations_products->amount * $quotations_products->price ?? 0), 2, ',', '.')}}</th> <!-- Total BS -->
+              <th style="text-align: center; font-weight: normal;"></th>
               @endif
-              @if(isset($coin) && $coin == 'dolares'){
+              @if(isset($coin) && $coin == 'dolares')
               <th style="text-align: right; font-weight: normal;">${{ number_format((($quotations_products->amount * $quotations_products->price)/$quotations_products->rate ?? 0), 2, ',', '.')}}</th> <!-- Todal USD -->
+              <th style="text-align: center; font-weight: normal;"></th>
               @endif  
               <th style="text-align: center; font-weight: normal;"></th>
-              <th style="text-align: center; font-weight: normal;"></th>
             </tr>
-          
-
-
-
           @endforeach
             
-
         @endif
-
-
-
-
-
-
-
-   
-
+        
   @endforeach 
 
 

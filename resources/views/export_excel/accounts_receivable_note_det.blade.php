@@ -159,12 +159,23 @@
 
           
             <tr>
-              <th style="text-align: center; font-weight: normal;"></th> <!-- Fecha -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->date_delivery_note}}</th> <!-- Fecha -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_delivery_note}}</th> <!-- NE-->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice}}</th> <!-- FAC -->
-              <th style="text-align: center; font-weight: normal;"></th><!-- fecha FAC -->
-              <th style="text-align: center; font-weight: normal;"></th> <!-- Status -->
-              <th style="text-align: center; font-weight: normal;"></th><!-- Cliente -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing}}</th><!-- fecha FAC -->
+              @if ($quotation->status == 'C')<!-- Status -->
+              <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+              @endif
+              @if ($quotation->status == '1')
+              <th style="text-align: center; font-weight: normal;">NE</th>
+              @endif
+              @if ($quotation->status == 'P')
+              <th style="text-align: center; font-weight: normal;color:blue">P</th>
+              @endif
+              @if ($quotation->status == 'X')
+              <th style="text-align: center; font-weight: normal;color:red">X</th>
+              @endif <!-- Status -->
+              <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th><!-- Cliente -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}} {{ $quotation->surname_vendor ?? ''}}</th><!-- Vendedor -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_pedido ?? ''}}</th><!-- Num pedido -->
               <th style="text-align: center; font-weight: normal;">{{$name_product->code_comercial ?? ''}}</th> <!-- Codigo -->
