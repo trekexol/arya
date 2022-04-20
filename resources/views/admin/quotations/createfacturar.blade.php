@@ -969,10 +969,12 @@
         $("#customSwitchesIGTFTotal").on('change', function() {
             if ($(this).is(':checked')) {
                 $("#IGTF_form").show();
+                calculateTotalIGTF();
             }
             else {
             switchStatus = $(this).is(':checked');
                 $("#IGTF_form").hide();
+                calculate();
             }
         });
 
@@ -1013,6 +1015,10 @@
 
             let amount_dolar_form = document.getElementById("amount_dolar").value; 
 
+            if (amount_dolar_form === '') {
+                amount_dolar_form = 0;
+            }
+
             var amount_dolar_format = amount_dolar_form.replace(/[$.]/g,'');
 
             var amount_dolar = amount_dolar_format.replace(/[,]/g,'.');    
@@ -1032,9 +1038,21 @@
                 var total_IGTF = (parseFloat(amount_dolar) * parseFloat(IGTF_percentage)) / 100;
             }
            
+            //calculo retencion IVA
+            let inputIva = document.getElementById("iva").value; 
+            let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
 
+            var total_iva_exento =  parseFloat(totalIvaMenos);
 
-            var total_with_IGTF = parseFloat(total_IGTF) + parseFloat(grandtotal);
+            let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
+            var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
+
+            //----------------------------
+
+            var total_islr_retencion = document.getElementById("total_retiene_islr").value;
+              
+                
+            var total_with_IGTF = parseFloat(total_IGTF) + parseFloat(grandtotal) - calc_retencion_iva - total_islr_retencion;
 
 
             

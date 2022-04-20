@@ -1819,7 +1819,7 @@ class FacturarController extends Controller
                     }
                 }
 
-                $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'IGTF')->first(); 
+                $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar IGTF')->first(); 
 
                 //anadir movimiento de IGTF
                 if(isset($IGTF_amount_check) && $IGTF_amount_check != 0){

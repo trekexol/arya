@@ -786,7 +786,23 @@ class AccountsTableSeeder extends Seeder
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
-
+        DB::table('accounts')->insert([
+            
+            'code_one' => 1,
+            'code_two' => 1,
+            'code_three' => 4,
+            'code_four' => 1,
+            'code_five' => 8,
+            'period' => 0,
+            'description' => 'Cuentas por Pagar IGTF',
+            'type' => 'Debe',
+            'level' => 5,
+            'balance_previus' => 0,
+            'status' => '1',
+            'rate' => 0,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]);
         DB::table('accounts')->insert([
             'code_one' => 1,
             'code_two' => 1,
