@@ -335,7 +335,9 @@
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
 
-                        
+                         <!--Total del pago que se va a realizar-->
+                         <input type="hidden" id="IGTF_amount_form" name="IGTF_amount_form"  readonly>
+
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -958,9 +960,9 @@
                 $("#credit").hide();
                 $("#formulario1").show();
                 $("#formenviarcredito").hide();
-                $("#enviarpagos").show();
-                $("#IGTF_form").show();
+                $("#enviarpagos").show(); 
                 $("#IGTF_buttom").show();
+             
             }
         });
 
@@ -1040,9 +1042,13 @@
 
             document.getElementById("total_pay_form").value =  total_with_IGTF.toFixed(2);
 
-            document.getElementById("grandtotal_form").value = total_with_IGTF;
+            document.getElementById("grandtotal_form").value = total_with_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+            document.getElementById("IGTF_amount_form").value =  total_IGTF.toFixed(2);
 
             document.getElementById("total_pay").value = total_with_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2}); 
+          
+            
           
 
         }

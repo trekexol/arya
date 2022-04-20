@@ -160,6 +160,31 @@
                             </select>
                             </div>
                         </div>
+                        @if (isset($quotation->IGTF_percentage) && isset($quotation->IGTF_amount))
+                        <div class="form-group row" id="IGTF_form">
+                            <label for="IGTF_total" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+                            <div class="col-md-3">
+                                <input id="IGTF_total"  type="text" class="form-control @error('IGTF_total') is-invalid @enderror" name="IGTF_total" readonly required value="{{ number_format($quotation->IGTF_amount / ($bcv ?? 1), 2, ',', '.') }}" autocomplete="IGTF_total"> 
+                        
+                                @error('IGTF_total')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="amount_dolar" class="col-md-2 col-form-label text-md-right">IGTF %:</label>
+                            <div class="col-md-2">
+                                <input id="amount_dolar"  type="text" class="form-control @error('amount_dolar') is-invalid @enderror" name="amount_dolar" value="{{ $quotation->IGTF_percentage }}%" required autocomplete="amount_dolar"> 
+                        
+                                @error('amount_dolar')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        @endif
+                       
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Pagar:</label>
                             <div class="col-md-4">
