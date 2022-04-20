@@ -130,12 +130,12 @@
       <th style="text-align: center; font-weight: normal;"></th>
       <th style="text-align: center; font-weight: normal;"></th>
       <th style="text-align: center; font-weight: normal;"></th>
-      @if(isset($coin) && $coin == 'bolivares'){
+      @if(isset($coin) && $coin == 'bolivares')
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
         @endif
-        @if(isset($coin) && $coin == 'dolares'){
+        @if(isset($coin) && $coin == 'dolares')
           <th style="text-align: right; font-weight: normal;">${{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
           <th style="text-align: right; font-weight: normal;">${{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
           <th style="text-align: right; font-weight: normal;">${{ number_format($por_cobrar, 2, ',', '.') }}</th>
@@ -170,11 +170,11 @@
               <th style="text-align: center; font-weight: normal;">{{$name_product->code_comercial ?? ''}}</th> <!-- Codigo -->
               <th style="text-align: center; font-weight: normal;">{{$name_product->description ?? ''}}</th> <!-- Producto -->
               <th style="text-align: center; font-weight: normal;">{{$quotations_products->amount ?? ''}}</th> <!-- Cantidad -->
-              @if(isset($coin) && $coin == 'bolivares'){
-              <th style="text-align: right; font-weight: normal;">{{number_format(($quotations_products->amount * $quotations_products->price ?? 0), 2, ',', '.')}}</th> <!-- Total BS -->
+              @if(isset($coin) && $coin == 'bolivares')
+              <th style="text-align: right; font-weight: normal;">{{ number_format(($quotations_products->amount * $quotations_products->price ?? 0), 2, ',', '.')}}</th> <!-- Total BS -->
               <th style="text-align: center; font-weight: normal;"></th>
               @endif
-              @if(isset($coin) && $coin == 'dolares'){
+              @if(isset($coin) && $coin == 'dolares')
               <th style="text-align: right; font-weight: normal;">${{ number_format((($quotations_products->amount * $quotations_products->price)/$quotations_products->rate ?? 0), 2, ',', '.')}}</th> <!-- Todal USD -->
               <th style="text-align: center; font-weight: normal;"></th>
               @endif  
@@ -209,16 +209,19 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;">TOTAL</th>
 
 
      
-    @if(isset($coin) && $coin == 'bolivares'){
+    @if(isset($coin) && $coin == 'bolivares')
       <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;"> Bs.</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
       @endif
-      @if(isset($coin) && $coin == 'dolares'){
+      @if(isset($coin) && $coin == 'dolares')
         <th style="text-align: right; font-weight: normal;">${{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;">USD</th>
         <th style="text-align: right; font-weight: normal;">${{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
