@@ -44,7 +44,7 @@
                                 <input id="id_provider" type="hidden" class="form-control @error('id_provider') is-invalid @enderror" name="id_provider" value="{{ $provider->id ?? $anticipo->providers['id'] ?? -1 }}" required autocomplete="id_provider">
                                
                                 <div class="form-group row">
-                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Cliente</label>
+                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Beneficiario</label>
                                     <div class="col-md-5">
                                         <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? $anticipo->clients['name'] ?? $provider->razon_social ?? $anticipo->providers['razon_social'] ?? '' }}" readonly required >
             
@@ -133,7 +133,7 @@
                                     <label for="date_begin" class="col-md-3 col-form-label text-md-right">Fecha de Inicio</label>
         
                                     <div class="col-md-5">
-                                        <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{ $datenow }}" required autocomplete="date_begin">
+                                        <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{ $anticipo->date ?? $datenow }}" required autocomplete="date_begin">
         
                                         @error('date_begin')
                                             <span class="invalid-feedback" role="alert">
