@@ -374,7 +374,7 @@ class FacturarController extends Controller
     }
     public function storefacturacredit(Request $request)
     {
-        
+        //dd($request);
         $id_quotation = request('id_quotation');
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
@@ -458,10 +458,9 @@ class FacturarController extends Controller
         $quotation->save();
 
         $date_payment = request('date-payment');
-
+        
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
-
 
         $header_voucher->description = "Ventas de Bienes o servicios.";
         $header_voucher->date = $date_payment;
@@ -470,6 +469,8 @@ class FacturarController extends Controller
         $header_voucher->status =  "1";
     
         $header_voucher->save();
+
+       
 
         DB::connection(Auth::user()->database_name)->table('quotation_products')
                 ->where('id_quotation', '=', $quotation->id)
