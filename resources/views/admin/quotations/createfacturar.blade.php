@@ -232,23 +232,13 @@
                         <div class="form-group row" id="IGTF_form">
                             <label for="IGTF_total" class="col-md-2 col-form-label text-md-right">IGTF:</label>
                             <div class="col-md-3">
-                                <input id="IGTF_total"  type="text" class="form-control @error('IGTF_total') is-invalid @enderror" name="IGTF_total" readonly required autocomplete="IGTF_total"> 
+                                <input id="IGTF_total"  type="text" class="form-control @error('IGTF_total') is-invalid @enderror" name="IGTF_total" readonly  autocomplete="IGTF_total"> 
                         
-                                @error('IGTF_total')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                             <label for="amount_dolar" class="col-md-2 col-form-label text-md-right">Total a Pagar en $:</label>
                             <div class="col-md-2">
-                                <input id="amount_dolar" onblur="calculateTotalIGTF();" type="text" class="form-control @error('amount_dolar') is-invalid @enderror" name="amount_dolar"  required autocomplete="amount_dolar"> 
+                                <input id="amount_dolar" onblur="calculateTotalIGTF();" type="text" class="form-control @error('amount_dolar') is-invalid @enderror" name="amount_dolar"  autocomplete="amount_dolar"> 
                         
-                                @error('amount_dolar')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                         </div>
              
