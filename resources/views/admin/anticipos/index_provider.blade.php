@@ -72,11 +72,12 @@
             <thead>
             <tr>
                 <th class="text-center"></th>
-                <th class="text-center">Cliente</th>
+                <th class="text-center">Proveedor</th>
                 <th class="text-center">Caja/Banco</th>
                 <th class="text-center">Fecha del Anticipo</th>
                 <th class="text-center">Referencia</th>
-                <th class="text-center">Monto</th>
+                <th class="text-center">REF</th>
+                <th class="text-center">Monto Bs.</th>
                 <th class="text-center">Moneda</th>
                <th class="text-center" width="7%"></th>
               
@@ -88,9 +89,15 @@
                 @else
                     @foreach ($anticipos as $key => $anticipo)
                     <?php 
-                        if($anticipo->coin != 'bolivares'){
+
+                        $amount_bcv = 0;
+
+                        $amount_bcv = $anticipo->amount / $anticipo->rate;
+
+
+                        /*if($anticipo->coin != 'bolivares'){
                             $anticipo->amount = $anticipo->amount / $anticipo->rate;
-                        }
+                        } */
                     ?>
                     <tr>
                         <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
@@ -103,6 +110,7 @@
                     <td class="text-center">{{$anticipo->accounts['description'] ?? ''}}</td>
                     <td class="text-center">{{$anticipo->date}}</td>
                     <td class="text-center">{{$anticipo->reference ?? ''}}</td>
+                    <td class="text-right">${{number_format($amount_bcv ?? 0, 2, ',', '.')}}</td>
                     <td class="text-right">{{number_format($anticipo->amount, 2, ',', '.')}}</td>
                     <td class="text-center">{{$anticipo->coin}}</td>
                    

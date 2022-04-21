@@ -688,11 +688,11 @@ class AnticipoController extends Controller
        
         $var->save();
 
-        $historial_anticipo = new HistorialAnticipoController();
+        /*$historial_anticipo = new HistorialAnticipoController();
 
         $historial_anticipo->registerAction($var,"quotation_product","Actualizó el Anticipo: ".$var->inventories['code']."/ 
         Monto Viejo: ".number_format($amount_old, 2, ',', '.')." Tasa: ".$rate_old."/ Monto Nuevo: ".number_format($var->amount, 2, ',', '.')." Tasa: ".$var->rate);
-    
+        */
         if(isset($var->id_client)){
             return redirect('/anticipos')->withSuccess('Actualizacion Exitosa!');
         }else{
