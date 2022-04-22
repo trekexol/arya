@@ -46,7 +46,8 @@
     <th style="text-align: center; width:1%;">Pedido</th>
     <th style="text-align: center; width:1%;">Codigo</th>
     <th style="text-align: center;">Producto</th>
-    <th style="text-align: center;">Cant.</th>
+    <th style="text-align: center; width:1%;" >Cant.</th>
+    <th style="text-align: center;">Precio</th>
     <th style="text-align: center;">Total</th>
     <th style="text-align: center;">Abono</th>
     <th style="text-align: center;">Por Cobrar</th>
@@ -133,6 +134,7 @@
       <th style="text-align: center; font-weight: normal;"></th>
       <th style="text-align: center; font-weight: normal;"></th>
       <th style="text-align: center; font-weight: normal;"></th>
+      <th style="text-align: center; font-weight: normal;"></th>
       @if(isset($coin) && $coin == 'bolivares'){
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
@@ -192,6 +194,7 @@
               <th style="text-align: center; font-weight: normal;"></th>
               @endif  
               <th style="text-align: center; font-weight: normal;"></th>
+              <th style="text-align: center; font-weight: normal;"></th>
             </tr>
           @endforeach
             
@@ -204,6 +207,7 @@
 
   <tr>
     <th style="text-align: center; font-weight: normal; border-color: white;">{{count($quotations)}} Regist.</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
