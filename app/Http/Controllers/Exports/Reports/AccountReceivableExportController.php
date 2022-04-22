@@ -46,8 +46,16 @@ class AccountReceivableExportController extends Controller
         }
         
         $period = $date->format('Y'); 
-        
 
+        if($typeperson == "client"){
+            $typeperson = "Cliente";
+        }
+
+        if($typeperson == "vendor"){
+            $typeperson = "Vendedor";
+        }
+
+     
         if(isset($typeperson) && ($typeperson == 'Cliente')){
             if(isset($coin) && $coin == 'bolivares'){
                 if(isset($typeinvoice) && ($typeinvoice == 'notas')){

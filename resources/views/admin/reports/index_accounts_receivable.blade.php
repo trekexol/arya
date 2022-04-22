@@ -10,6 +10,7 @@
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
                 <input type="hidden" name="id_vendor" value="{{$vendor->id ?? null}}" readonly>
+                <input type="hidden" name="coin_form" value="{{$coin ?? 'bolivares'}}" readonly>
 
                 <div class="card-header text-center h4">
                         Cuentas por Cobrar
@@ -17,7 +18,7 @@
 
                 <div class="card-body">
                         <div class="form-group row">
-                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta: {{$coin ??'eu'}}</label>
 
                             <div class="col-sm-3">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
@@ -57,18 +58,7 @@
                                     Buscar
                                 </button>
                             </div>
-                            <div class="col-sm-3  dropdown mb-4">
-                                <button class="btn btn-success" type="button"
-                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
-                                    aria-expanded="false">
-                                    <i class="fas fa-bars"></i>
-                                    Exportaciones
-                                </button>
-                                <div class="dropdown-menu animated--fade-in"
-                                    aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
-                                </div>
-                            </div> 
+                           
                         </div>
 
                         <div class="form-group row">
@@ -110,6 +100,18 @@
                                     @endif
                                 </select>
                             </div>
+                            <div class="col-sm-3  dropdown mb-4">
+                                <button class="btn btn-success" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Exportaciones
+                                </button>
+                                <div class="dropdown-menu animated--fade-in"
+                                    aria-labelledby="dropdownMenuButton">
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                </div>
+                            </div> 
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
