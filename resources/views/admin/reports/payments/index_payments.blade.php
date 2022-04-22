@@ -65,40 +65,20 @@
                                 <select class="form-control" name="type" id="type">
                                     @if (isset($client))
                                         <option value="todo">Todo</option>
-                                        <option selected value="cliente">Por Cliente</option>
-                                        <option value="vendor">Por Vendedor</option>
-                                    @elseif (isset($vendor))
+                                        <option selected value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
+                                    @elseif (isset($Vendedor))
                                         <option value="todo">Todo</option>
-                                        <option value="cliente">Por Cliente</option>
-                                        <option selected value="vendor">Por Vendedor</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option selected value="Vendedor">Por Vendedor</option>
                                     @else
                                         <option selected value="todo">Todo</option>
-                                        <option value="cliente">Por Cliente</option>
-                                        <option value="vendor">Por Vendedor</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
                                     @endif
                                 </select>
                             </div>
-                            <div class="col-sm-4">
-                                <select class="form-control" name="typeinvoice" id="typeinvoice">
-                                    @if (isset($typeinvoice))
-                                        @if ($typeinvoice == 'notas')
-                                            <option selected value="notas">Notas de Entrega</option>
-                                        @elseif($typeinvoice == 'facturas')
-                                            <option selected value="facturas">Facturas</option>
-                                        @else
-                                            <option selected value="todo">Facturas y Notas de Entrega</option>
-                                        @endif
-                                        <option disabled value="todo">-----------------</option>
-                                        <option value="todo">Facturas y Notas de Entrega</option>
-                                        <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
-                                    @else
-                                        <option selected value="todo">Facturas y Notas de Entrega</option>
-                                        <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
-                                    @endif
-                                </select>
-                            </div>
+                           
                             <div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
@@ -114,7 +94,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('report_payments.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('report_payments.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
@@ -137,10 +117,10 @@
 
     
     function exportToExcel(){
-       /* var old_action = document.getElementById("formPost").action;
-        document.getElementById("formPost").action = "{{ route('export_reports.accountsreceivable') }}";
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('export_reports.payment_cobro') }}";
         document.getElementById("formPost").submit();
-        document.getElementById("formPost").action = old_action;*/
+        document.getElementById("formPost").action = old_action;
     }
 
     let client  = "<?php echo $client->name ?? 0 ?>";  
