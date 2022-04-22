@@ -29,10 +29,15 @@ class PaymentExpenseController extends Controller
         $datebeginyear = $date->firstOfYear()->format('Y-m-d');
         
         $payment_expenses = ExpensePayment::on(Auth::user()->database_name)
+                                ->join('expenses_and_purchases','expenses_and_purchases.id','expense_payments.id_expense')
+                                ->join('providers','providers.id','expenses_and_purchases.id_provider')
+                                ->join('accounts','accounts.id','expense_payments.id_account')
                                 ->whereRaw(
-                                    "(DATE_FORMAT(created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(created_at, '%Y-%m-%d') <= ?)", 
+                                    "(DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') <= ?)", 
                                     [$datebeginyear, $datenow])
-                                ->where('status',1)->orderBy('created_at','desc')->get();
+                                ->where('expense_payments.status',1)
+                                ->select('expense_payments.*','providers.razon_social as razon_social','accounts.description as description_account')
+                                ->orderBy('expense_payments.created_at','desc')->get();
 
         foreach($payment_expenses as $payment_expense){
 

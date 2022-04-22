@@ -33,6 +33,7 @@
                                 <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
                             @endif
                             @if (isset($vendor))
+                                <label id="vendor_label1" for="vendors" class="col-sm-1 text-md-right">Vendedor:</label>
                                 <label id="vendor_label2" name="id_vendor" value="{{ $vendor->id }}" for="vendors" class="col-sm-3">{{ $vendor->name }}</label>
                             @endif
                             

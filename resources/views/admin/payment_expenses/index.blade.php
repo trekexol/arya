@@ -27,14 +27,22 @@
       <div class="col-md-2">
           <h2>Pagos</h2>
       </div>
-      <div class="col-md-3">
-        <a href="{{ route('expensesandpurchases.index_historial')}}" class="btn btn-info btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-file-alt"></i>
-            </span>
-            <span class="text">Gastos o Compras</span>
-        </a>
-    </div>
+        <div class="col-md-3">
+            <a href="{{ route('expensesandpurchases.index_historial')}}" class="btn btn-info btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-file-alt"></i>
+                </span>
+                <span class="text">Gastos o Compras</span>
+            </a>
+        </div>
+        <div class="col-md-2 offset-sm-1">
+            <a href="{{ route('report_payment_expenses.index','todos')}}" class="btn btn-info btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-print"></i>
+                </span>
+                <span class="text">Reporte</span>
+            </a>
+        </div>
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -63,8 +71,11 @@
             <tr> 
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
+                <th class="text-center">Nº Compra</th>
                 <th class="text-center">Referencia</th>
+                <th class="text-center">Proveedor</th>
                 <th class="text-center">Tipo de Pago</th>
+                <th class="text-center">Cuenta</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center" width="5%"></th>
             </tr>
@@ -80,9 +91,12 @@
                             <td class="text-center font-weight-bold">
                                 <a href="{{ route('payment_expenses.movement',$payment_expense->id_expense) }}" title="Ver Movimiento" class="font-weight-bold text-dark">{{ $payment_expense->id }}</a>
                             </td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->id_expense}}</td>
                             
                             <td class="text-center font-weight-bold">{{ $payment_expense->reference}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->razon_social ?? ''}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->type}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->description_account ?? ''}}</td>
                             <td class="text-right font-weight-bold">{{number_format($payment_expense->amount, 2, ',', '.')}}</td>
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_expense->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
