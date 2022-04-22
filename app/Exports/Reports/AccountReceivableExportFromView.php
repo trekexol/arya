@@ -21,7 +21,7 @@ class AccountReceivableExportFromView implements FromView
          
         
         return $report->accounts_receivable_pdf_excel(
-            $this->request->coin ?? "bolivares",$this->request->date_end,
+            $this->request->coin_form ?? "bolivares",$this->request->date_end,
             $this->request->typeinvoice,$this->request->type,
             $this->request->id_client ?? $this->request->id_vendor ?? null);
     }
