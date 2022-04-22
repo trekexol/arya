@@ -9,7 +9,9 @@
     
 </div>
 <div class="row py-lg-2">
-
+    <div class="col-sm-4 h5 ">
+        Chequear Movimientos en Desbalance
+    </div>
 <!-- Page Heading -->
 </div>
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -23,39 +25,20 @@
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th class="text-center">N°</th>
-                    <th class="text-center">Fecha</th>
-                    <th class="text-center">Descripción</th>
+                    <th class="text-center">N° Cabecera</th>
                     <th class="text-center">Debe</th>
                     <th class="text-center">Haber</th>
                 </tr>
                 </thead>
                 
                 <tbody>
-                    @if (empty($detailvouchers))
+                    @if (empty($details))
                     @else
-                        @foreach ($detailvouchers as $var)
+                        @foreach ($details as $var)
                         <tr>
-                        <td class="text-center">{{$var->id ?? ''}}</td>
-                        <td class="text-center">{{$var->date ?? ''}}</td>
-                        <td class="text-center">{{$var->description ?? ''}}</td>
-                        
-                        @if(isset($var->accounts['coin']))
-                            @if(($var->debe != 0) && ($var->tasa))
-                                <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>{{number_format($var->debe/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
-                            @else
-                                <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
-                            @endif
-                            @if($var->haber != 0 && ($var->tasa))
-                                <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}<br>{{number_format($var->haber/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
-                            @else
-                                <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
-                            @endif
-                        @else
+                            <td class="text-center"><a href="{{ route('detailvouchers.create',['bolivares',$var->id_header_voucher]) }}">{{$var->id_header_voucher ?? ''}}</a></td>
                             <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
-                        @endif
-                        
                         </tr>
                         @endforeach
                     @endif
