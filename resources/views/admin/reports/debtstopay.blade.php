@@ -27,7 +27,7 @@
 <body>
 
   <br>
-  <h2 style="color: black; text-align: center">CUENTAS POR PAGAR hh</h2>
+  <h2 style="color: black; text-align: center">CUENTAS POR PAGAR</h2>
   <br>
   <h2 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h2>
    
