@@ -550,6 +550,36 @@ class Report2Controller extends Controller
             }
         }
         
+        $anticipos = 0;
+       
+        if (isset($expenses)){
+            
+            $date_end_anti = Carbon::parse($date_end)->format('Y-m-d');
+            
+            foreach ($expenses as $expense){
+            
+            $total_anticipo = 0;
+
+            $anticipos = DB::connection(Auth::user()->database_name)->table('anticipos')
+            ->where('id_expense',$expense->id)
+            ->where('date','<=',$date_end_anti)
+            ->get();
+             
+            //dd($date_end_anti);
+
+                foreach ($anticipos as $anticiposum){
+
+                    $total_anticipo += $anticiposum->amount;
+                
+                }
+
+                    $expense->amount_anticipo = $total_anticipo;
+
+            } 
+        }
+
+
+
         $pdf = $pdf->loadView('admin.reports.debtstopay',compact('expenses','datenow','date_end','coin'));
         return $pdf->stream();
                  

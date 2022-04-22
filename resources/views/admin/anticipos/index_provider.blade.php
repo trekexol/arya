@@ -95,9 +95,9 @@
                         $amount_bcv = $anticipo->amount / $anticipo->rate;
 
 
-                        /*if($anticipo->coin != 'bolivares'){
+                        if($anticipo->coin != 'bolivares'){
                             $anticipo->amount = $anticipo->amount / $anticipo->rate;
-                        } */
+                        }
                     ?>
                     <tr>
                         <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
@@ -110,8 +110,8 @@
                     <td class="text-center">{{$anticipo->accounts['description'] ?? ''}}</td>
                     <td class="text-center">{{$anticipo->date}}</td>
                     <td class="text-center">{{$anticipo->reference ?? ''}}</td>
-                    <td class="text-right">${{number_format(bcdiv($amount_bcv,1,2) ?? 0, 2, ',', '.')}}</td>
-                    <td class="text-right">{{number_format(bcdiv($anticipo->amount,1,2), 2, ',', '.')}}</td>
+                    <td class="text-right">${{number_format($amount_bcv ?? 0, 2, ',', '.')}}</td>
+                    <td class="text-right">{{number_format($anticipo->amount, 2, ',', '.')}}</td>
                     <td class="text-center">{{$anticipo->coin}}</td>
                    
                     @if (Auth::user()->role_id  == '1')
