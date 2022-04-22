@@ -109,7 +109,7 @@
       @if(isset($coin) && $coin == 'bolivares')
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2) }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2) }}</th>
-        <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2) }}</th>
         @endif
         @if(isset($coin) && $coin == 'dolares')
           <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2) }}</th>
