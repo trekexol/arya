@@ -1229,3 +1229,7 @@ Route::group(["prefix"=>'report_payments'],function(){
     Route::get('selectclient','Reports\PaymentReportController@selectClient')->name('report_payments.selectClient');
     Route::get('selectvendor','Reports\PaymentReportController@selectVendor')->name('report_payments.selectVendor');
 });
+
+Route::group(["prefix"=>'check_movements'],function(){
+    Route::get('index','Checks\CheckMovementController@index')->name('check_movements.index');
+   });
