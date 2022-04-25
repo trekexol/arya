@@ -88,7 +88,7 @@
             @if ((Auth::user()->id_company  != '16'))
             <a class="collapse-item" href="{{ route('positions')}}" > <i class="fas fa-user-plus fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cargos</strong></a>
             <a class="collapse-item" href="{{ route('academiclevels')}}" > <i class="fas fa-graduation-cap fa-sm fa-fw mr-2 text-blue-400"></i><strong>Niveles Académicos</strong></a>
-            <a class="collapse-item" href="{{ route('professions') }}" > <i class="fas fa-user-tie fa-sm fa-fw mr-2 text-blue-400"></i><strong>Profesiones</strong></a>
+            <a class="collapse-item" href="{{ route('professions') }}" > <i class="fas fa-user-tie fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de Empleados</strong></a>
             <a class="collapse-item" href="{{ route('salarytypes') }}" > <i class="fas fa-business-time fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de Salarios</strong></a>
             <a class="collapse-item" href="{{ route('nominatypes') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de Nóminas</strong></a>
             <a class="collapse-item" href="{{ route('comisiontypes') }}" > <i class="fas fa-address-card fa-sm fa-fw mr-2 text-blue-400"></i><strong>Tipos de Comisión</strong></a>
@@ -214,6 +214,10 @@
                 <a class="collapse-item" href="{{ route('nominas') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Nóminas</strong></a>
                 <a class="collapse-item" href="{{ route('nominaconcepts') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Concepto de Nóminas</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
+                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Prestaciones</strong></a>
+                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Utilidades</strong></a>
+                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Vacaciones</strong></a>
+                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Liquidaciones</strong></a>
                 <a class="collapse-item" href="{{ route('indexbcvs') }}" > <i class="fas fa-money-bill fa-sm fa-fw mr-2 text-black-400"></i><strong>Indices BCV</strong></a>
             </div>
         </div>

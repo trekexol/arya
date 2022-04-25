@@ -10,12 +10,12 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-md-6">
-            <h2>Profesiones</h2>
+            <h2>Tipos de Empleados</h2>
         </div>
        
         @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
         <div class="col-md-6">
-            <a href="{{ route('professions.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar una Profesión</a>
+            <a href="{{ route('professions.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Tipo de Empleado</a>
          
         </div>
         @endif
@@ -34,7 +34,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de Profesiones</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado Tipos de Empleados</h6>
     </div>
    
     <div class="card-body">

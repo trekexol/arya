@@ -32,10 +32,15 @@ class CreateEmployeesTable extends Migration
             $table->double('monto_pago', 64, 2);
             $table->string('email',100);
             $table->string('telefono1',20);
+
+            $table->unsignedBigInteger('dias_acumulado_prestaciones');
+            $table->unsignedBigInteger('dias_acumulado_vacaciones');
+            $table->double('int_acumulado_prestaciones', 64, 2);
+            
             $table->double('acumulado_prestaciones', 64, 2);
             $table->double('acumulado_utilidades', 64, 2);
+
             $table->string('status',1);
-           
             $table->string('code_employee',30)->nullable();
             $table->string('amount_utilities',2);
 

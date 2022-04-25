@@ -54,7 +54,6 @@
                             </div>
                         </div>
 
-                       
                         <div class="form-group row">
                             <label for="id_empleado" class="col-md-2 col-form-label text-md-right">Cédula</label>
                             <div class="col-md-1 col-sm-1">
@@ -88,6 +87,63 @@
                         </div>
 
                         <div class="form-group row">
+                                    
+                            <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
+                        
+                            <div class="col-md-4">
+                                
+                                <input type="text" class="form-control" id="direccion" name="direccion" required value="{{ old('direccion')}}" placeholder="Agregar Ubicación">
+                            </div>
+                        
+                        
+                            <label for="estado" class="col-md-2 col-form-label text-md-right">Estado</label>
+                            
+                            <div class="col-md-4">
+                                <select id="estado"  name="estado" class="form-control" required>
+                                    <option value="">Seleccione un Estado</option>
+                                    @foreach($estados as $index => $value)
+                                        <option value="{{ $index }}" {{ old('Estado') == $index ? 'selected' : '' }}>
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+
+                                    @if ($errors->has('estado_id'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('estado_id') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="municipio" class="col-md-2 col-form-label text-md-right">Municipio</label>
+                        
+                            <div class="col-md-4">
+                                <select  id="municipio"  name="Municipio" class="form-control" required>
+                                    <option value="">Selecciona un Municipio</option>
+                                </select>
+
+                                @if ($errors->has('municpio_id'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('municpio_id') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            
+                            <label for="parroquia" class="col-md-2 col-form-label text-md-right">Parroquia</label>
+                        
+                            <div class="col-md-4">
+                                <select class="form-control" id="parroquia"  name="Parroquia" required class="form-control" value="{{ old('Parroquia')}}" >
+                                    <option value="">Selecciona un Parroquia</option>
+                                </select>
+                            </div>
+                    
+                        </div>  
+
+                       
+
+
+                        <div class="form-group row">
                             <label for="code_employee" class="col-md-2 col-form-label text-md-right">Código de Empleado (Opcional)</label>
 
                             <div class="col-md-4">
@@ -99,30 +155,22 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="amount_utilities" class="col-md-2 col-form-label text-md-right">Monto de Utilidades</label>
-                            <div class="col-md-4">
-                                <select class="form-control" name="amount_utilities" id="amount_utilities">
-                                    <option value="Ma">Máximo</option>
-                                    <option value="Mi">Minimo</option>
-                                </select>
+
+
+                                <label for="email" class="col-md-2 col-form-label text-md-right">Correo Electrónico</label>
+
+                                <div class="col-md-4">
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+    
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
+
                         </div>
 
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-2 col-form-label text-md-right">Correo Electrónico</label>
-
-                            <div class="col-md-4">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            
-                        </div>
 
                         <div class="form-group row">
                             <label for="fecha_ingreso" class="col-md-2 col-form-label text-md-right">Fecha de Ingreso</label>
@@ -160,7 +208,7 @@
                               
                             </select>
                             </div>
-                            <label for="profession" class="col-md-2 col-form-label text-md-right">Profesión</label>
+                            <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Empleado</label>
 
                             <div class="col-md-4">
                             <select class="form-control" id="profession_id" name="profession_id">
@@ -173,59 +221,6 @@
                         </div>
 
                
-                        <div class="form-group row">
-                                    
-                                        <label for="estado" class="col-md-2 col-form-label text-md-right">Estado</label>
-                                    
-                                    <div class="col-md-4">
-                                        <select id="estado"  name="estado" class="form-control" required>
-                                            <option value="">Seleccione un Estado</option>
-                                            @foreach($estados as $index => $value)
-                                                <option value="{{ $index }}" {{ old('Estado') == $index ? 'selected' : '' }}>
-                                                    {{ $value }}
-                                                </option>
-                                            @endforeach
-                                            </select>
-    
-                                            @if ($errors->has('estado_id'))
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('estado_id') }}</strong>
-                                                </span>
-                                            @endif
-                                    </div>
-                                   
-                                        <label for="municipio" class="col-md-2 col-form-label text-md-right">Municipio</label>
-                                    
-                                    <div class="col-md-4">
-                                        <select  id="municipio"  name="Municipio" class="form-control" required>
-                                            <option value="">Selecciona un Municipio</option>
-                                        </select>
-
-                                        @if ($errors->has('municpio_id'))
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $errors->first('municpio_id') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>  
-
-                                <div class="form-group row">
-                                        <label for="parroquia" class="col-md-2 col-form-label text-md-right">Parroquia</label>
-                                   
-                                    <div class="col-md-4">
-                                        <select class="form-control" id="parroquia"  name="Parroquia" required class="form-control" value="{{ old('Parroquia')}}" >
-                                            <option value="">Selecciona un Parroquia</option>
-                                        </select>
-                                    </div>
-                                
-                                   
-                                        <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
-                                    
-                                    <div class="col-md-4">
-                                        
-                                        <input type="text" class="form-control" id="direccion" name="direccion" required value="{{ old('direccion')}}" placeholder="Ej: La Paz">
-                                    </div>
-                        </div>
 
                         
                         <div class="form-group row">
@@ -243,7 +238,7 @@
                             <label for="monto_pago" class="col-md-2 col-form-label text-md-right">Monto Pago</label>
 
                             <div class="col-md-4">
-                                <input id="monto_pago" type="text" class="form-control @error('monto_pago') is-invalid @enderror" name="monto_pago" value="{{ old('monto_pago') }}" placeholder="Ej: 19.55" required autocomplete="monto_pago">
+                                <input id="monto_pago" type="text" class="form-control @error('monto_pago') is-invalid @enderror" name="monto_pago" value="{{ old('monto_pago') }}" placeholder="Ej: 0,00" required autocomplete="monto_pago">
 
                                 @error('monto_pago')
                                     <span class="invalid-feedback" role="alert">
@@ -253,12 +248,36 @@
                             </div>
                         </div>
                         
-                       
+                        <div class="form-group row">
+                            <label for="dias_pres_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Prestaciones Acum.</label>
+
+                            <div class="col-md-2">
+                                <input id="dias_pres_acumulado" type="text" class="form-control @error('dias_pres_acumulado') is-invalid @enderror" name="dias_pres_acumulado" value="{{ old('dias_pres_acumulado') ?? 0 }}"  autocomplete="dias_pres_acumulado">
+
+                                @error('dias_pres_acumulado')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="dias_vaca_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Vacaciones Acum.</label>
+
+                            <div class="col-md-2">
+                                <input id="dias_vaca_acumulado" type="text" class="form-control @error('dias_vaca_acumulado') is-invalid @enderror" name="dias_vaca_acumulado" value="{{ old('dias_vaca_acumulado') ?? 0 }}" autocomplete="dias_vaca_acumulado">
+
+                                @error('dias_vaca_acumulado')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        
                         <div class="form-group row">
                             <label for="acumulado_prestaciones" class="col-md-2 col-form-label text-md-right">Acumulado Prestaciones</label>
 
                             <div class="col-md-4">
-                                <input id="acumulado_prestaciones" type="text" class="form-control @error('acumulado_prestaciones') is-invalid @enderror" name="acumulado_prestaciones" value="{{ old('acumulado_prestaciones') }}" required autocomplete="acumulado_prestaciones">
+                                <input id="acumulado_prestaciones" type="text" class="form-control @error('acumulado_prestaciones') is-invalid @enderror" name="acumulado_prestaciones" value="{{ old('acumulado_prestaciones') ?? 0}}" autocomplete="acumulado_prestaciones">
 
                                 @error('acumulado_prestaciones')
                                     <span class="invalid-feedback" role="alert">
@@ -266,10 +285,26 @@
                                     </span>
                                 @enderror
                             </div>
+                            <label for="intereses_prest_acumulado" class="col-md-2 col-form-label text-md-right">Intereses de Prestaciones Acum.</label>
+
+                            <div class="col-md-4">
+                                <input id="intereses_prest_acumulado" type="text" class="form-control @error('intereses_prest_acumulado') is-invalid @enderror" name="intereses_prest_acumulado" value="{{ old('intereses_prest_acumulado') ?? 0 }}" autocomplete="intereses_prest_acumulado">
+
+                                @error('intereses_prest_acumulado')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+
                             <label for="acumulado_utilidades" class="col-md-2 col-form-label text-md-right">Acumulado Utilidades</label>
 
                             <div class="col-md-4">
-                                <input id="acumulado_utilidades" type="text" class="form-control @error('acumulado_utilidades') is-invalid @enderror" name="acumulado_utilidades" value="{{ old('acumulado_utilidades') }}" required autocomplete="acumulado_utilidades">
+                                <input id="acumulado_utilidades" type="text" class="form-control @error('acumulado_utilidades') is-invalid @enderror" name="acumulado_utilidades" value="{{ old('acumulado_utilidades') ?? 0 }}" autocomplete="acumulado_utilidades">
 
                                 @error('acumulado_utilidades')
                                     <span class="invalid-feedback" role="alert">
@@ -277,6 +312,13 @@
                                     </span>
                                 @enderror
                             </div>
+                            <label for="amount_utilities" class="col-md-2 col-form-label text-md-right">Monto de Utilidades</label>
+                            <div class="col-md-4">
+                                <select class="form-control" name="amount_utilities" id="amount_utilities">
+                                    <option value="Ma">Máximo</option>
+                                    <option value="Mi">Minimo</option>
+                                </select>
+                                </div>
                         </div>
                         
                         <div class="form-group row">
@@ -289,6 +331,25 @@
                                     @endforeach
                                   
                                 </select>
+                                </div>
+
+                                <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
+        
+                                <div class="col-md-4">
+                                    <select class="form-control" id="status" name="status" title="status" required>
+
+                                        <div class="dropdown">
+                                            <option selected value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                            <option value="2">Reposo</option>
+                                            <option value="3">Reposo Pre/Pos Parto</option>
+                                            <option value="4">Vacaciones</option>
+                                            <option value="5">Liquidado</option>                                            
+                                            <option value="6">De Permiso</option>
+                                            <option value="7">Año Sabatico</option>
+                                        </div>
+          
+                                    </select>
                                 </div>
                           
                         </div>

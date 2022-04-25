@@ -318,8 +318,21 @@ class PdfNominaController extends Controller
 
             $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('id_profession',$employee->profession_id)
                                     ->latest()->first();
+            
+            if(!empty($ultima_nomina)) {
+                
+                $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();     
 
-            $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();     
+            } else {
+                 
+                $ultima_nomina = null;
+                $nomina_calculation = null;
+            }                        
+            
+
+            
+
+
 
             $pdf = $pdf->loadView('pdf.liquidacion',compact('employee','datenow','ultima_nomina','nomina_calculation'));
 

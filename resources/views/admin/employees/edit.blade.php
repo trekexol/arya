@@ -138,65 +138,6 @@
                                     </div>
                                     
                                 </div>
-
-                                <div class="form-group row">
-                                    <label for="code_employee" class="col-md-2 col-form-label text-md-right">Código de Empleado (Opcional)</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="code_employee" type="text" class="form-control @error('code_employee') is-invalid @enderror" name="code_employee" value="{{ $var->code_employee }}" autocomplete="code_employee">
-        
-                                        @error('code_employee')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <label for="amount_utilities" class="col-md-2 col-form-label text-md-right">Monto de Utilidades</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" id="amount_utilities" name="amount_utilities" title="amount_utilities">
-                                            @if($var->amount_utilities == "Ma")
-                                                <option value="Ma">Máximo</option>
-                                            @else
-                                                <option value="Mi">Minimo</option>
-                                            @endif
-                                            <option value="nulo">----------------</option>
-                                            
-                                            <div class="dropdown">
-                                                <option value="Ma">Máximo</option>
-                                                <option value="Mi">Minimo</option>
-                                            </div>
-                                            
-                                               
-                                        </select>
-                                    </div>
-                                </div>
-        
-                                <div class="form-group row">
-                                    <label for="fecha_ingreso" class="col-md-2 col-form-label text-md-right">Fecha de Ingreso</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="fecha_ingreso" type="date" class="form-control @error('fecha_ingreso') is-invalid @enderror" name="fecha_ingreso" value="{{ $var->fecha_ingreso  }}" required autocomplete="fecha_ingreso">
-        
-                                        @error('fecha_ingreso')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <label for="fecha_nacimiento" class="col-md-2 col-form-label text-md-right">Fecha de Nacimiento</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="fecha_nacimiento" type="date" class="form-control @error('fecha_nacimiento') is-invalid @enderror" name="fecha_nacimiento" value="{{ $var->fecha_nacimiento }}" required autocomplete="fecha_nacimiento">
-        
-                                        @error('fecha_nacimiento')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-        
-                                 
                                 <div class="form-group row">
                                     <label for="estado" class="col-md-2 col-form-label text-md-right">Estado:</label>
                                     <div class="col-md-4">
@@ -258,6 +199,48 @@
                                         <input type="text" class="form-control" id="direccion" name="direccion" required value="{{ $var->direccion }}" placeholder="Ej: La Paz">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label for="code_employee" class="col-md-2 col-form-label text-md-right">Código de Empleado (Opcional)</label>
+        
+                                    <div class="col-md-4">
+                                        <input id="code_employee" type="text" class="form-control @error('code_employee') is-invalid @enderror" name="code_employee" value="{{ $var->code_employee }}" autocomplete="code_employee">
+        
+                                        @error('code_employee')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                </div>
+        
+                                <div class="form-group row">
+                                    <label for="fecha_ingreso" class="col-md-2 col-form-label text-md-right">Fecha de Ingreso</label>
+        
+                                    <div class="col-md-4">
+                                        <input id="fecha_ingreso" type="date" class="form-control @error('fecha_ingreso') is-invalid @enderror" name="fecha_ingreso" value="{{ $var->fecha_ingreso  }}" required autocomplete="fecha_ingreso">
+        
+                                        @error('fecha_ingreso')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <label for="fecha_nacimiento" class="col-md-2 col-form-label text-md-right">Fecha de Nacimiento</label>
+        
+                                    <div class="col-md-4">
+                                        <input id="fecha_nacimiento" type="date" class="form-control @error('fecha_nacimiento') is-invalid @enderror" name="fecha_nacimiento" value="{{ $var->fecha_nacimiento }}" required autocomplete="fecha_nacimiento">
+        
+                                        @error('fecha_nacimiento')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+        
+                                 
+                              
 
                                
                                 <div class="form-group row">
@@ -326,8 +309,33 @@
                                         @enderror
                                     </div>
                                 </div>
-                                
-                               
+                                <div class="form-group row">
+                                    <label for="dias_pres_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Prestaciones Acum.</label>
+        
+                                    <div class="col-md-2">
+                                        <input id="dias_pres_acumulado" type="text" class="form-control @error('dias_pres_acumulado') is-invalid @enderror" name="dias_pres_acumulado" value="{{ $var->dias_acumulado_prestaciones }}"  autocomplete="dias_pres_acumulado">
+        
+                                        @error('dias_pres_acumulado')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <label for="dias_vaca_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Vacaciones Acum.</label>
+        
+                                    <div class="col-md-2">
+                                        <input id="dias_vaca_acumulado" type="text" class="form-control @error('dias_vaca_acumulado') is-invalid @enderror" name="dias_vaca_acumulado" value="{{ $var->dias_acumulado_vacaciones }}" autocomplete="dias_vaca_acumulado">
+        
+                                        @error('dias_vaca_acumulado')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>                               
+
+
+
                                 <div class="form-group row">
                                     <label for="acumulado_prestaciones" class="col-md-2 col-form-label text-md-right">Acumulado Prestaciones</label>
         
@@ -340,6 +348,24 @@
                                             </span>
                                         @enderror
                                     </div>
+                                    <label for="intereses_prest_acumulado" class="col-md-2 col-form-label text-md-right">Intereses de Prestaciones Acum.</label>
+
+                                    <div class="col-md-4">
+                                        <input id="intereses_prest_acumulado" type="text" class="form-control @error('intereses_prest_acumulado') is-invalid @enderror" name="intereses_prest_acumulado" value="{{ $var->int_acumulado_prestaciones }}" autocomplete="intereses_prest_acumulado">
+        
+                                        @error('intereses_prest_acumulado')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+        
+                                </div>
+                                
+
+
+                                <div class="form-group row">
+
                                     <label for="acumulado_utilidades" class="col-md-2 col-form-label text-md-right">Acumulado Utilidades</label>
         
                                     <div class="col-md-4">
@@ -351,6 +377,26 @@
                                             </span>
                                         @enderror
                                     </div>
+                                
+                                    <label for="amount_utilities" class="col-md-2 col-form-label text-md-right">Monto de Utilidades</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="amount_utilities" name="amount_utilities" title="amount_utilities">
+                                            @if($var->amount_utilities == "Ma")
+                                                <option value="Ma">Máximo</option>
+                                            @else
+                                                <option value="Mi">Minimo</option>
+                                            @endif
+                                            <option value="nulo">----------------</option>
+                                            
+                                            <div class="dropdown">
+                                                <option value="Ma">Máximo</option>
+                                                <option value="Mi">Minimo</option>
+                                            </div>
+                                            
+                                               
+                                        </select>
+                                    </div>
+                                
                                 </div>
                                 
                                 <div class="form-group row">
@@ -369,13 +415,42 @@
         
                                     <div class="col-md-4">
                                         <select class="form-control" id="status" name="status" title="status">
+  
+                                            
+                                            <option selected value="1">Activo</option>
+                                            <option value="0">Inactivo</option>
+                                            <option value="2">Reposo</option>
+                                            <option value="3">Reposo Pre/Pos Parto</option>
+                                            <option value="4">Vacaciones</option>
+                                            <option value="5">Liquidado</option>                                            
+                                            <option value="6">De Permiso</option>
+                                            <option value="7">Año Sabatico</option>
+
                                             @if($var->status == 1)
                                                 <option value="1">Activo</option>
-                                            @else
+                                            @endif
+                                            @if($var->status == 0)
                                                 <option value="0">Inactivo</option>
                                             @endif
-                                            <option value="nulo">----------------</option>
-                                            
+                                            @if($var->status == 2)
+                                            <option value="0">Reposo</option>
+                                            @endif
+                                            @if($var->status == 3)
+                                            <option value="0">Reposo Pre/Pos Parto</option>
+                                            @endif
+                                            @if($var->status == 4)
+                                            <option value="0">Vacaciones</option>
+                                            @endif
+                                            @if($var->status == 5)
+                                            <option value="0">Liquidado</option>
+                                            @endif
+                                            @if($var->status == 6)
+                                            <option value="0">De Permiso</option>
+                                            @endif
+                                            @if($var->status == 7)
+                                            <option value="0">Año Sabatico</option>
+                                            @endif
+     
                                             <div class="dropdown">
                                                 <option value="1">Activo</option>
                                                 <option value="0">Inactivo</option>

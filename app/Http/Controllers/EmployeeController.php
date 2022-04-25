@@ -84,9 +84,7 @@ class EmployeeController extends Controller
         'direccion'         =>'required',
         'salarytype_id'         =>'required',
         'monto_pago'         =>'required',
-        'acumulado_prestaciones'         =>'required',
-        'acumulado_utilidades'         =>'required',
-        'centro_costo'         =>'required',
+        'centro_costo'         =>'required'
         
        
     ]);
@@ -128,9 +126,20 @@ class EmployeeController extends Controller
     $sin_formato_acumulado_prestaciones = str_replace(',', '.', str_replace('.', '', request('acumulado_prestaciones')));
     $sin_formato_acumulado_utilidades = str_replace(',', '.', str_replace('.', '', request('acumulado_utilidades')));
 
+
+    $users->dias_acumulado_prestaciones = request('dias_pres_acumulado');
+    $users->dias_acumulado_vacaciones = request('dias_vaca_acumulado');
+    $sin_formato_int_acumulado_prestaciones = str_replace(',', '.', str_replace('.', '', request('intereses_prest_acumulado')));
+     
+    $users->int_acumulado_prestaciones = $sin_formato_int_acumulado_prestaciones;
+
     $users->acumulado_prestaciones = $sin_formato_acumulado_prestaciones;
     $users->acumulado_utilidades = $sin_formato_acumulado_utilidades;
-    $users->status =  1;
+    $users->acumulado_prestaciones = $sin_formato_acumulado_prestaciones;
+
+
+
+    $users->status =  request('status');
     $users->branch_id = request('centro_costo');
 
     

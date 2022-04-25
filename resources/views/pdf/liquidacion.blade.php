@@ -133,9 +133,15 @@
       </tr>
       <tr>
         <td class="text-center font-weight-normal"></td>
+        @if(isset($ultima_nomina)) 
         <td class="text-center font-weight-normal">{{ $ultima_nomina->date_begin ?? '' }}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultima_nomina->date_begin)->format('Y') ?? '' }}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultima_nomina->date_begin)->format('M') ?? '' }}</td>
+        @else 
+        <td class="text-center font-weight-normal"></td>
+        <td class="text-center font-weight-normal"></td>
+        <td class="text-center font-weight-normal"></td>  
+        @endif         
       </tr>  
     </table>
 

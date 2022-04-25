@@ -77,6 +77,7 @@
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Pedido</th>
                 <th class="text-center">Vendedor</th>
+                <th class="text-center">Abono</th>
                 <th class="text-center">REF</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center" style="width:11%;">F.Cotización</th>
@@ -112,7 +113,9 @@
                             <td class="text-center"><input style="display:none" none; id="pedido{{$cont}}" data-pedido="{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedidoedit2" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"> <div style="display: block; cursor:pointer;" class="pedidoedit{{$cont}}"> <span data-pedido="{{$cont}}" class="pedidoedit">{{ $quotation->number_pedido ?? 0 }}</span> </div></td>
 
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
+                            <td class="text-center">{{number_format($quotation->amount_anticipo, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
+                            
                             <td class="text-center">{{number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
                             @if ($quotation->coin == 'bolivares')
@@ -122,9 +125,22 @@
                             <td class="text-center font-weight-bold">USD</td>
                             @endif
                             <td class="text-center">
+                                @if ($quotation->status != 'C')                                                             
+                                
                                 <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin,"Nota de Entrega"])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                  
+                                <a class="saldar" data-id-note="{{$quotation->id}}" data-pedido="{{$cont}}"  href="#" title="Seleccionar"><i class="fa fa-money-bill"></i></a>
+
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                                @else
+                                
+                                <a class="saldado" data-id-note="{{$quotation->id}}" href="#" title="Seleccionar"><i class="fa fa-money-bill" style="color: green;"></i></a>
+                                <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+                                <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                
+                                @endif
+                                
                             </td>                        
                         
                         </tr>    
@@ -200,12 +216,26 @@
 
     });
 
-    
-     $(document).on('click','.delete',function(){
+    $(document).on('click','.delete',function(){
          
          let id_quotation = $(this).attr('data-id-quotation');
  
          $('#id_quotation_modal').val(id_quotation);
+
+         window.location.href = "route('quotations.indexdeliverynote')";
+     });
+
+    
+     $(document).on('click','.saldar',function(){
+         let id_pedido = $(this).attr('data-pedido');
+         let id_quotation = $(this).attr('data-id-note');
+         var saldar = 1;
+         var valinput = '0';
+
+         var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
+
+         window.location.href = url;
+ 
      });
      
      $(document).on('click','.delete',function(){
