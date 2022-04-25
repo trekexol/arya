@@ -43,6 +43,11 @@ class DeliveryNoteController extends Controller
                 if($saldar == 1 && $saldar == '1') {
                     $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => 'C']);
                    
+                }
+                
+                if($saldar == 0 && $saldar == '0') {
+                    $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => '1']);
+                   
                 } 
             }
 

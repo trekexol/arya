@@ -128,14 +128,14 @@
                                 @if ($quotation->status != 'C')                                                             
                                 
                                 <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin,"Nota de Entrega"])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
-                                  
+                                @if($quotation->amount_anticipo >= $quotation->amount_with_iva)  
                                 <a class="saldar" data-id-note="{{$quotation->id}}" data-pedido="{{$cont}}"  href="#" title="Seleccionar"><i class="fa fa-money-bill"></i></a>
-
+                                @endif
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                                 @else
                                 
-                                <a class="saldado" data-id-note="{{$quotation->id}}" href="#" title="Seleccionar"><i class="fa fa-money-bill" style="color: green;"></i></a>
+                                <a class="saldado" data-id-note="{{$quotation->id}}" data-pedido="{{$cont}}" href="#" title="Seleccionar"><i class="fa fa-money-bill" style="color: green;"></i></a>
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                 
@@ -230,6 +230,18 @@
          let id_pedido = $(this).attr('data-pedido');
          let id_quotation = $(this).attr('data-id-note');
          var saldar = 1;
+         var valinput = '0';
+
+         var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
+
+         window.location.href = url;
+ 
+     });
+
+     $(document).on('click','.saldado',function(){
+         let id_pedido = $(this).attr('data-pedido');
+         let id_quotation = $(this).attr('data-id-note');
+         var saldar = 0;
          var valinput = '0';
 
          var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
