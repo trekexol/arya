@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header">Registro de Profesión</div>
+                <div class="card-header">Registro de Tipo de Empleado</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('professions.store') }}">
