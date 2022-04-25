@@ -26,10 +26,8 @@ class DeliveryNoteController extends Controller
     }
  
 
-    public function index($id_quotation = null,$number_pedido = null,$saldar = null)
+    public function index($id_quotation = null,$number_pedido = null)
     {
-       
-     
         if($this->userAccess->validate_user_access($this->modulo)){
             $user       =   auth()->user();
             $users_role =   $user->role_id;
@@ -38,56 +36,24 @@ class DeliveryNoteController extends Controller
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
                 
             }
-            if(isset($saldar) & $number_pedido == '0'){
 
-                if($saldar == 1 && $saldar == '1') {
-                    $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => 'C']);
-                   
-                }
-                
-                if($saldar == 0 && $saldar == '0') {
-                    $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => '1']);
-                   
-                } 
-            }
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
+                                    ->where('date_delivery_note','<>',null)
+                                    ->where('date_billing',null)
+                                    ->whereIn('status',[1,'M','C'])
+                                    ->get();
 
-        $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
-        ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
-        ->where('quotations.date_delivery_note','<>',null)
-        ->where('quotations.date_billing',null)
-        ->whereIn('quotations.status',[1,'M','C'])
-        ->select('quotations.coin','quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
-        ->groupBy('quotations.coin','quotations.number_pedido','quotations.date_billing','quotations.date_delivery_note','quotations.status','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','quotations.amount','quotations.amount_with_iva')
-        ->orderBy('quotations.number_delivery_note','desc')
-        ->get();
- 
-        
+
     
             return view('admin.quotations.indexdeliverynote',compact('quotations'));
-           
-
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
-
     }
+ 
 
-  /*  public function indexstore($id_quotation = null,$number_pedido = null,$saldar = null)
-    {
-    
-        if(isset($id_quotation)) {
-            $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
-            
-        }
-        if(isset($saldar) & $number_pedido == '0'){
 
-        if($saldar == 1 && $saldar == '1') {
-            $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => 'C']);
-            return redirect('/admin.quotations.indexdeliverynote')->withSuccess('Nota saldada');
-        } 
-        }
-        return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-    } */
+
 
     public function createdeliverynote($id_quotation,$coin)
     {   
