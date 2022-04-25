@@ -27,47 +27,41 @@
 <body>
 
   <br>
-  <h4 style="color: black; text-align: center">Reporte Cobros</h4>
+  <h4 style="color: black; text-align: center">Reporte Pagos de Compras</h4>
  
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h5>
    
   <?php 
     
     $total = 0;
-    $total_dolar = 0;
-   
   ?>
 <table style="width: 100%;">
   <tr>
     <th class="text-center">Nº</th>
-    <th class="text-center">Nº Factura</th>
+    <th class="text-center">Nº Compra</th>
 
-    <th class="text-center">{{$typeperson ?? 'Cliente'}}</th>
+    <th class="text-center">Proveedor</th>
     <th class="text-center">Referencia del Pago</th>
     <th class="text-center">Tipo de Pago</th>
     <th class="text-center">Cuenta</th>
     <th class="text-center">Monto</th>
-    <th class="text-center">Monto $</th>
   </tr> 
-  @if (isset($quotation_payments))
-      @foreach ($quotation_payments as $quotation_payment)
+  @if (isset($expense_payments))
+      @foreach ($expense_payments as $expense_payment)
         @php
-          $total += $quotation_payment->amount;
-          $total_dolar += bcdiv(($quotation_payment->amount / $quotation_payment->rate), '1', 2);
+          $total += $expense_payment->amount;
         @endphp
           <tr>
               <td class="text-center ">
-                  {{ $quotation_payment->id }}
+                  {{ $expense_payment->id }}
               </td>
-              <td class="text-center ">{{$quotation_payment->number_invoice ?? ''}}</td>
-              <td class="text-center ">{{$quotation_payment->name_client ?? ''}}</td>
-              <td class="text-center ">{{ $quotation_payment->reference ?? ''}}</td>
-              <td class="text-center ">{{ $quotation_payment->payment_type ?? ''}}</td>
-              <td class="text-center ">{{ $quotation_payment->description_account ?? ''}}</td>
-              <td style="text-align: right; font-weight: normal;">{{ number_format($quotation_payment->amount ?? 0, 2, ',', '.')}}</td>
-              <td style="text-align: right; font-weight: normal;">{{ number_format(bcdiv(($quotation_payment->amount / $quotation_payment->rate), '1', 2), 2, ',', '.')}}$</td>
+              <td class="text-center ">{{$expense_payment->id_expense ?? ''}}</td>
+              <td class="text-center ">{{$expense_payment->name_provider ?? ''}}</td>
+              <td class="text-center ">{{ $expense_payment->reference ?? ''}}</td>
+              <td class="text-center ">{{ $expense_payment->payment_type ?? ''}}</td>
+              <td class="text-center ">{{ $expense_payment->description_account ?? ''}}</td>
+              <td style="text-align: right; font-weight: normal;">{{ number_format($expense_payment->amount ?? 0, 2, ',', '.')}}</td>
              
-              
           </tr>     
       @endforeach   
   @endif
@@ -79,8 +73,7 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
     <th style="text-align: right; font-weight: normal;">{{ number_format(($total ?? 0), 2, ',', '.') }}</th> 
-    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_dolar ?? 0), 2, ',', '.') }}$</th> 
-  </tr> 
+     </tr> 
 </table>
 
 </body>

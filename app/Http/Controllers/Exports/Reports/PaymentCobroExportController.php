@@ -1,96 +1,56 @@
 <?php
 
-namespace App\Http\Controllers\Reports;
+namespace App\Http\Controllers\Exports\Reports;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 use App;
 use App\Client;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\UserAccess\UserAccessController;
-use App\Vendor;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\Reports\PaymentCobroExportFromView;
+use App\Http\Controllers\GlobalController;
+use App\Provider;
+use App\Vendor;
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
-class PaymentReportController extends Controller
+class PaymentCobroExportController extends Controller
 {
-    public $userAccess;
-    public $modulo = 'Reportes';
-
- 
-    public function __construct(){
-
-       $this->middleware('auth');
-       $this->userAccess = new UserAccessController();
-   }
-
-   
-    public function index($typeperson,$id_client_or_vendor = null)
-    {        
-      
-        $userAccess = new UserAccessController();
-
-        if($userAccess->validate_user_access($this->modulo)){
-            $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');   
-            $client = null; 
-            $vendor = null; 
-
-
-            if(isset($typeperson) && $typeperson == 'Cliente'){
-                if(isset($id_client_or_vendor)){
-                    $client    = Client::on(Auth::user()->database_name)->find($id_client_or_vendor);
-                }
-            }else if (isset($typeperson) && $typeperson == 'Vendedor'){
-                if(isset($id_client_or_vendor)){
-                    $vendor    = Vendor::on(Auth::user()->database_name)->find($id_client_or_vendor);
-                }
-            }
+    public function exportExcel(Request $request) 
+    {
+     
+        if(isset($request->id_client)){
             
-            return view('admin.reports.payments.index_payments',compact('client','datenow','typeperson','vendor'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+            $request->id_client_or_provider = $request->id_client;
+
+        }else if(isset($request->id_vendor)){
+
+            $request->id_client_or_provider = $request->id_vendor;
+
         }
+
+        $export = new PaymentCobroExportFromView($request);
+
+        $export->setter($request);
+
+        $export->view();       
+        
+        return Excel::download($export, 'Cobros.xlsx');
     }
 
-    public function store(Request $request)
+    function payment_pdf($coin,$date_begin,$date_end,$typeperson,$id_client_or_vendor = null)
     {
         
-        $date_end = request('date_end');
-        $type = request('type');
-        $id_client = request('id_client');
-        $id_vendor = request('id_vendor');
-        $coin = request('coin');
-        $client = null;
-        $vendor = null;
-        $typeperson = 'ninguno';
-
-        
-
-        if($type != 'todo'){
-            if(isset($id_client)){
-                $client    = Client::on(Auth::user()->database_name)->find($id_client);
-                $typeperson = 'Cliente';
-                $id_client_or_vendor = $id_client;
-            }
-            if(isset($id_vendor)){
-                $vendor    = Vendor::on(Auth::user()->database_name)->find($id_vendor);
-                $typeperson = 'Vendedor';
-                $id_client_or_vendor = $vendor;
-            }
-        }
-        
-        
-        return view('admin.reports.payments.index_payments',compact('coin','date_end','client','vendor','typeperson'));
-    }
-
-    function pdf($coin,$date_end,$typeperson,$id_client_or_vendor = null)
-    {
-       
         $pdf = App::make('dompdf.wrapper');
-        $quotation_payments = null;
+        $quotations = null;
         
+        $date = Carbon::now();
+        $datenow = $date->format('d-m-Y'); 
+
+        $global = new GlobalController();
+
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y'); 
         if(empty($date_end)){
@@ -155,23 +115,9 @@ class PaymentReportController extends Controller
            
         }
       
-        $pdf = $pdf->loadView('admin.reports.payments.payments',compact('coin','quotation_payments','datenow','date_end'));
-        return $pdf->stream();
+      
+        return view('export_excel.payment_cobro',compact('coin','quotation_payments','datenow','date_end'));
                  
-    }
-
-    public function selectClient()
-    { 
-        $clients    = Client::on(Auth::user()->database_name)->get();
-    
-        return view('admin.reports.payments.selectclient',compact('clients'));
-    }
-
-    public function selectVendor()
-    {
-        $vendors    = Vendor::on(Auth::user()->database_name)->get();
-    
-        return view('admin.reports.payments.selectvendor',compact('vendors'));
     }
 
     function asignar_payment_type($type){

@@ -3,12 +3,12 @@
 namespace App\Exports\Reports;
 
 
-use App\Http\Controllers\Exports\Reports\PaymentExportController;
+use App\Http\Controllers\Exports\Reports\PaymentExpenseExportController;
 use Carbon\Carbon;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-class PaymentExportFromView implements FromView
+class PaymentExpenseExportFromView implements FromView
 {
     public $request;
 
@@ -19,12 +19,12 @@ class PaymentExportFromView implements FromView
 
     public function view(): View
     {
-        $report = new PaymentExportController();
+        $report = new PaymentExpenseExportController();
 
       
         return $report->payment_pdf($this->request->coin ?? "bolivares",$this->request->date_begin,
-        $this->request->date_end,$this->request->typeperson ?? 'Todo',
-        $this->request->id_client_or_provider ?? null);
+        $this->request->date_end,$this->request->type ?? 'Todo',
+         $this->request->id_provider ?? null);
     }
 
     

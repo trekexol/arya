@@ -20,7 +20,7 @@ class PaymentExportController extends Controller
 {
     public function exportExcel(Request $request) 
     {
-       
+      
         if(isset($request->id_client)){
             
             $request->id_client_or_provider = $request->id_client;
@@ -74,8 +74,8 @@ class PaymentExportController extends Controller
         $client = null;
         $provider = null;
         $vendor = null;
-        
 
+       
         if(isset($typeperson) && ($typeperson == 'Cliente')){
            
             $quotation_payments = DB::connection(Auth::user()->database_name)->table('quotations')

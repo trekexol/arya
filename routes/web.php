@@ -1168,6 +1168,10 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
     Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');
     Route::post('accountreceivablenotedetail','Exports\Reports\AccountReceivableNoteDetailExportController@exportExcel')->name('export_reports.account_receivable_note_det');
+
+    Route::post('payment_cobro','Exports\Reports\PaymentCobroExportController@exportExcel')->name('export_reports.payment_cobro');
+    Route::post('payment_expense','Exports\Reports\PaymentExpenseExportController@exportExcel')->name('export_reports.payment_expense');
+    
 });
 
 Route::group(["prefix"=>'mails'],function(){
@@ -1225,10 +1229,17 @@ Route::group(["prefix"=>'vendor_list'],function(){
 Route::group(["prefix"=>'report_payments'],function(){
     Route::get('menu/{typeperson}/{id_client?}','Reports\PaymentReportController@index')->name('report_payments.index');
     Route::post('store','Reports\PaymentReportController@store')->name('report_payments.store');
-    Route::get('pdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\PaymentReportController@pdf')->name('report_payments.pdf');
+    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_client_or_vendor?}','Reports\PaymentReportController@pdf')->name('report_payments.pdf');
     Route::get('selectclient','Reports\PaymentReportController@selectClient')->name('report_payments.selectClient');
     Route::get('selectvendor','Reports\PaymentReportController@selectVendor')->name('report_payments.selectVendor');
 });
+
+Route::group(["prefix"=>'report_payment_expenses'],function(){
+    Route::get('menu/{typeperson}/{id_client?}','Reports\PaymentExpenseReportController@index')->name('report_payment_expenses.index');
+    Route::post('store','Reports\PaymentExpenseReportController@store')->name('report_payment_expenses.store');
+    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_provider?}','Reports\PaymentExpenseReportController@pdf')->name('report_payment_expenses.pdf');
+    Route::get('selectprovider','Reports\PaymentExpenseReportController@selectProvider')->name('report_payment_expenses.selectProvider');
+  });
 
 Route::group(["prefix"=>'check_movements'],function(){
     Route::get('index','Checks\CheckMovementController@index')->name('check_movements.index');
