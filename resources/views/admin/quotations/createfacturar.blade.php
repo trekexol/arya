@@ -899,7 +899,7 @@
                                     <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
                                     <input type="hidden" id="anticipo_form2" name="anticipo_form2">
 
-                                    <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota Contra Anticipo</a>
+                                    <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota</a>
                 
                             @endif
                         </div>
