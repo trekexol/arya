@@ -62,9 +62,7 @@
     <th class="text-center">Moneda</th>
    
 </tr>
-</thead>
 
-<tbody>
     @if (empty($anticipos))
     @else
         @foreach ($anticipos as $key => $anticipo)
@@ -125,14 +123,16 @@
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-          <th style="text-align: center; font-weight: normal; border-color: white;"></th>
          
           <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
           <th style="text-align: right; font-weight: normal;">{{ number_format(($total_dolar ?? 0), 2, ',', '.') }}$</th>
-          <th style="text-align: right; font-weight: normal;">{{ number_format(($total ?? 0), 2, ',', '.') }}</th>
+          <th style="text-align: right; font-weight: normal;">{{ number_format(($total ?? 0), 2, ',', '.') }}</th>    
+          <th style="text-align: center; font-weight: normal; border-color: white;"></th>
         </tr> 
     @endif
-</tbody>
+
 </table>
+
+
 </body>
 </html>

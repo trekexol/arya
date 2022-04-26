@@ -24,10 +24,11 @@ class AnticipoExportController extends Controller
      
         if(isset($request->id_client_or_provider)){
             
-            $request->id_client_or_provider = $request->id_client_or_provider;
+            $request->id_client_or_provider = $request->id_client ?? $request->id_provider;
 
         }
 
+       
         $export = new AnticipoExportFromView($request);
 
         $export->setter($request);
@@ -78,7 +79,7 @@ class AnticipoExportController extends Controller
                                 ->whereIn('anticipos.status',[1,'M'])
                                 ->where('anticipos.id_client',$id_client_or_provider)
                                 ->orderBy('anticipos.id','desc')
-                                ->select('anticipos.*','providers.razon_social as name')
+                                ->select('anticipos.*','clients.name as name')
                                 ->get();
             }
               
@@ -110,45 +111,10 @@ class AnticipoExportController extends Controller
                                 ->get();
         }
 
-      
-        return view('export_excel.anticipos',compact('coin','anticipos','expense_payments','datenow','date_end','typeperson'));
+        
+        return view('export_excel.anticipos',compact('coin','anticipos','datenow','date_end','typeperson'));
                  
     }
 
-    function asignar_payment_type($type){
-      
-        if($type == 1){
-            return "Cheque";
-        }
-        if($type == 2){
-            return "Contado";
-        }
-        if($type == 3){
-            return "Contra Anticipo";
-        }
-        if($type == 4){
-            return "Crédito";
-        }
-        if($type == 5){
-            return "Depósito Bancario";
-        }
-        if($type == 6){
-            return "Efectivo";
-        }
-        if($type == 7){
-            return "Indeterminado";
-        }
-        if($type == 8){
-            return "Tarjeta Coorporativa";
-        }
-        if($type == 9){
-            return "Tarjeta de Crédito";
-        }
-        if($type == 10){
-            return "Tarjeta de Débito";
-        }
-        if($type == 11){
-            return "Transferencia";
-        }
-    }
+   
 }

@@ -21,10 +21,9 @@ class AnticipoExportFromView implements FromView
     {
         $report = new AnticipoExportController();
 
-      
         return $report->anticipo_pdf($this->request->coin ?? "bolivares",
         $this->request->date_end,$this->request->type ?? 'Todo',
-        $this->request->id_client_or_provider ?? null);
+        $this->request->id_provider ?? $this->request->id_client ?? $this->request->id_client_or_provider ?? null);
     }
 
     

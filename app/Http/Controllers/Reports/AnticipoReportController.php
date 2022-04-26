@@ -163,14 +163,14 @@ class AnticipoReportController extends Controller
 
     public function selectClient()
     { 
-        $clients    = Client::on(Auth::user()->database_name)->get();
+        $clients    = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
     
         return view('admin.reports.anticipos.selectClient',compact('clients'));
     }
 
     public function selectProvider()
     {
-        $providers    = Provider::on(Auth::user()->database_name)->get();
+        $providers    = Provider::on(Auth::user()->database_name)->orderBy('razon_social','asc')->get();
     
         return view('admin.reports.anticipos.selectProvider',compact('providers'));
     }

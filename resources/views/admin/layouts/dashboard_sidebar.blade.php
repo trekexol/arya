@@ -305,7 +305,7 @@
                     <a class="collapse-item" href="{{ route('reports.providers')}}" > <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i><strong>Proveedores</strong></a>
                     <a class="collapse-item" href="{{ route('reports.employees')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
                     <a class="collapse-item" href="{{ route('vendor_list.index')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Vendedores</strong></a>
-                    <a class="collapse-item" href="{{ route('report_anticipos.index','index')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Anticipos</strong></a>
+                    <a class="collapse-item" href="{{ route('report_anticipos.index','Clientes')}}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Anticipos</strong></a>
 
                     <a  class="collapse-header text-danger" href="{{ route('accounts') }}">Cuentas</a>
                     <a class="collapse-item" href="{{ route('reports.accounts')}}" > <i class="fas fa-list-ul fa-sm fa-fw mr-2 text-black-400"></i><strong>Listado de Cuentas</strong></a>
