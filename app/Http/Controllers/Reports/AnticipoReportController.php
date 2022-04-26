@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Reports;
 
 use App;
+use App\Anticipo;
+use App\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserAccess\UserAccessController;
-use App\Client;
-use App\Vendor;
+use App\Provider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class AnticipoReportController extends Controller
    }
 
    
-    public function index($typeperson,$id_client = null)
+    public function index($typeperson,$id_client_or_provider = null)
     {        
       
         $userAccess = new UserAccessController();
@@ -35,14 +36,20 @@ class AnticipoReportController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
             $client = null; 
+            $provider = null; 
 
-            if(isset($typeperson) && $typeperson == 'Proveedor'){
-                if(isset($id_client)){
-                    $client    = Client::on(Auth::user()->database_name)->find($id_client);
+
+            if(isset($typeperson) && $typeperson == 'Cliente'){
+                if(isset($id_client_or_provider)){
+                    $client    = Client::on(Auth::user()->database_name)->find($id_client_or_provider);
+                }
+            }else if (isset($typeperson) && $typeperson == 'Proveedor'){
+                if(isset($id_client_or_provider)){
+                    $provider   = Provider::on(Auth::user()->database_name)->find($id_client_or_provider);
                 }
             }
             
-            return view('admin.reports.payments_expenses.index_payments',compact('client','datenow','typeperson'));
+            return view('admin.reports.anticipos.index_anticipos',compact('client','datenow','typeperson','provider'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -54,8 +61,10 @@ class AnticipoReportController extends Controller
         $date_end = request('date_end');
         $type = request('type');
         $id_client = request('id_client');
+        $id_provider = request('id_provider');
         $coin = request('coin');
         $client = null;
+        $provider = null;
         $typeperson = 'ninguno';
 
         
@@ -63,20 +72,25 @@ class AnticipoReportController extends Controller
         if($type != 'todo'){
             if(isset($id_client)){
                 $client    = Client::on(Auth::user()->database_name)->find($id_client);
-                $typeperson = 'Proveedor';
+                $typeperson = 'Cliente';
+                $id_client_or_provider = $id_client;
             }
-            
+            if(isset($id_provider)){
+                $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
+                $typeperson = 'Proveedor';
+                $id_client_or_provider = $provider;
+            }
         }
         
         
-        return view('admin.reports.payments_expenses.index_payments',compact('coin','date_end','client','typeperson'));
+        return view('admin.reports.anticipos.index_anticipos',compact('coin','date_end','client','provider','typeperson'));
     }
 
-    function pdf($coin,$date_end,$typeperson,$id_client = null)
+    function pdf($coin,$date_end,$typeperson,$id_client_or_provider = null)
     {
        
         $pdf = App::make('dompdf.wrapper');
-        $expense_payments = null;
+        $quotation_anticipos = null;
         
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y'); 
@@ -92,42 +106,35 @@ class AnticipoReportController extends Controller
 
        
         $period = $date->format('Y'); 
-
-      
-        if(isset($typeperson) && ($typeperson == 'Proveedor')){
-           
-            $expense_payments = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
-                                ->leftjoin('clients', 'clients.id','=','expenses_and_purchases.id_client')
-                                ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
-                                ->join('accounts', 'accounts.id','=','expense_payments.id_account')
-                                ->where('expenses_and_purchases.amount','<>',null)
-                                ->where('expenses_and_purchases.date','<=',$date_consult)
-                                ->where('expenses_and_purchases.id_client',$id_client)
-                                
-                                ->select('expense_payments.*','clients.name as name_client','accounts.description as description_account')
-                                ->orderBy('expense_payments.id','desc')
-                                ->get();
+        
+        if(isset($typeperson) && ($typeperson == 'Cliente')){
           
+            $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('status',[1,'M'])->where('id_client','<>',null)
+                                ->orderBy('id','desc')
+                                ->select('anticipos.*','clients.name')
+                                ->get();
               
+        }else if(isset($typeperson) && $typeperson == 'Proveedor'){
+
+            $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('providers', 'providers.id','=','anticipos.id_provider')
+                                ->whereIn('status',[1,'M'])->where('id_provider','<>',null)
+                                ->orderBy('id','desc')
+                                ->select('anticipos.*','providers.razon_social')
+                                ->get();
+                
         }else{
-            $expense_payments = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
-                    ->leftjoin('clients', 'clients.id','=','expenses_and_purchases.id_client')
-                    ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
-                    ->join('accounts', 'accounts.id','=','expense_payments.id_account')
-                    ->where('expenses_and_purchases.amount','<>',null)
-                    ->where('expenses_and_purchases.date','<=',$date_consult)
-                    ->select('expense_payments.*','clients.name as name_client','accounts.description as description_account')
-                    ->orderBy('expense_payments.id','desc')
-                    ->get();
+            $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->join('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('anticipos.id_client','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->get();
         }
 
-       
-        foreach($expense_payments as $var){
-            $var->payment_type = $this->asignar_payment_type($var->payment_type);
-           
-        }
-      
-        $pdf = $pdf->loadView('admin.reports.payments_expenses.payments',compact('coin','expense_payments','datenow','date_end'));
+        $pdf = $pdf->loadView('admin.reports.anticipos.anticipos',compact('coin','anticipos','datenow','date_end'));
         return $pdf->stream();
                  
     }
@@ -136,10 +143,15 @@ class AnticipoReportController extends Controller
     { 
         $clients    = Client::on(Auth::user()->database_name)->get();
     
-        return view('admin.reports.payments_expenses.selectclient',compact('clients'));
+        return view('admin.reports.anticipos.selectClient',compact('clients'));
     }
 
-   
+    public function selectProvider()
+    {
+        $providers    = Provider::on(Auth::user()->database_name)->get();
+    
+        return view('admin.reports.anticipos.selectProvider',compact('providers'));
+    }
 
     function asignar_payment_type($type){
       
