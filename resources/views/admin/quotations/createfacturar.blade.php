@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Facturar / Cobrar Factura Nº; {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Facturar / Cobrar Factura Nº {{$quotation->number_invoice ?? ''}}</h3></div>
                 <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -887,17 +887,29 @@
                         <br>
                         <div class="form-group row" id="enviarpagos">
                             <div class="col-md-2">
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary">
-                                    Guardar Factura
-                                 </button>
-                            </div>
-                            
-                            <div class="col-md-2">
+                            </div>   
+                        <div class="col-md ">
+                            <button type="submit" class="btn btn-primary">
+                                Guardar Factura
+                             </button>
+                        </div>
+                        <div class="col-md-3">     
                             @if(isset($quotation->date_delivery_note))
-                                 <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+
+                                    <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
+                                    <input type="hidden" id="anticipo_form2" name="anticipo_form2">
+
+                                    <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota Contra Anticipo</a>
+                
+                            @endif
+                        </div>
+                        <div class="col-md-5">     
+                            @if(isset($quotation->date_delivery_note))
+                             
+                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                           
                             @else
+
                                 @if (isset($is_after) && ($is_after == false))
                                     <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
                                 @else
@@ -906,8 +918,8 @@
                             @endif
                              </div>
                         </div>
-                        
-                    </form>    
+                    </form>  
+
                 </div>
             </div>
         </div>
@@ -1133,8 +1145,10 @@
                 if(inputAnticipo){
                     
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
+                    document.getElementById("anticipo_form2").value =  montoFormat_anticipo;
                 }else{
                     document.getElementById("anticipo_form").value = 0;
+                    document.getElementById("anticipo_form2").value = 0;
                 }
 
 
@@ -1252,8 +1266,10 @@
                 if(inputAnticipo){
                     
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
+                    document.getElementById("anticipo_form2").value =  montoFormat_anticipo;
                 }else{
                     document.getElementById("anticipo_form").value = 0;
+                    document.getElementById("anticipo_form2").value = 0;
                 }        
 
                 var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
@@ -1373,8 +1389,10 @@
                 if(inputAnticipo){
                     
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
+                    document.getElementById("anticipo_form2").value =  montoFormat_anticipo;
                 }else{
                     document.getElementById("anticipo_form").value = 0;
+                    document.getElementById("anticipo_form2").value = 0;
                 }
 
 
@@ -1424,6 +1442,18 @@
                 
             });
 
+
+                
+     $(document).on('click','#saldar',function(){
+
+         var id_quotation = document.getElementById("id_quotation2").value;
+         var anticipo = document.getElementById("anticipo_form2").value;
+         var totalfac = document.getElementById("total_pay").value;
+        
+         var url = "{{ route('quotation.storesaldar') }}"+"/"+id_quotation+"/"+anticipo+"/"+totalfac;
+
+         window.location.href = url;
+     });
        
     </script>
 @endsection
