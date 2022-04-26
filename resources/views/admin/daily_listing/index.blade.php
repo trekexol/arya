@@ -177,7 +177,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form method="POST" action="{{ route('daily_listing.print_diary_book_detail') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+            <form method="POST" id="formPost" action="{{ route('daily_listing.print_diary_book_detail') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
                 @csrf
             <div class="modal-body">
                 <div class="form-group row">
@@ -228,6 +228,19 @@
                     </div>
                 </div>
             </div>
+          
+                <div class="col-sm-6  dropdown mb-4">
+                    <button class="btn btn-success" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                        aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                        Exportaciones
+                    </button>
+                    <div class="dropdown-menu animated--fade-in"
+                        aria-labelledby="dropdownMenuButton">
+                        <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                    </div>
+                </div> 
                 <div class="modal-footer">
                     <div class="form-group col-md-2">
                         <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
@@ -369,6 +382,11 @@
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "Todo"]]
         });
 
-        
+    function exportToExcel(){
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('export_reports.diary_book_details') }}";
+        document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
+    }
     </script> 
 @endsection

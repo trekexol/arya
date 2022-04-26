@@ -1175,6 +1175,9 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('payment_expense','Exports\Reports\PaymentExpenseExportController@exportExcel')->name('export_reports.payment_expense');
     Route::post('anticipos','Exports\Reports\AnticipoExportController@exportExcel')->name('export_reports.anticipos');
     
+    Route::post('diarybookdetails','Exports\DailyListing\DiaryBookDetailExportController@exportExcel')->name('export_reports.diary_book_details');
+    
+    
 });
 
 Route::group(["prefix"=>'mails'],function(){
