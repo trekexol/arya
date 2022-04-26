@@ -1,20 +1,19 @@
 
-  
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  
-<title></title>
+<title>Factura</title>
 <style>
   table, td, th {
     border: 1px solid black;
-    font-size: x-small;
   }
   
   table {
     border-collapse: collapse;
-    width: 100%;
+    width: 50%;
   }
   
   th {
@@ -27,8 +26,18 @@
 <body>
 
   <br>
-  <h4 style="color: black; text-align: center">Reporte Anticipos</h4>
- 
+  
+  @if (isset($client))
+    <h4 style="color: black; text-align: center">Cobros Realizados</h4>
+    <h4 style="color: black; text-align: center">Cliente: {{ $client->name ?? '' }}</h4>
+  @elseif(isset($vendor))
+    <h4 style="color: black; text-align: center">Cobros Realizados</h4>
+    <h4 style="color: black; text-align: center">Vendedor: {{ $vendor->name ?? '' }} {{ $vendor->surname ?? '' }}</h4>
+  @elseif(isset($provider))
+    <h4 style="color: black; text-align: center">Pagos Realizados</h4>
+    <h4 style="color: black; text-align: center">Proveedor: {{ $provider->razon_social ?? '' }}</h4>
+  @endif
+  
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h5>
    
   <?php 
@@ -62,15 +71,15 @@
         <?php 
 
             $amount_bcv = 0;
-            
+
             $total += $anticipo->amount;
 
             $total_dolar += $anticipo->amount / $anticipo->rate;
-
+            
             $amount_bcv = $anticipo->amount / $anticipo->rate;
 
 
-            /*if($anticipo->coin != 'bolivares'){
+           /* if($anticipo->coin != 'bolivares'){
                 $anticipo->amount = $anticipo->amount / $anticipo->rate;
             }*/
 
@@ -100,12 +109,12 @@
             @endif
         
             <td class="text-center">{{ $anticipo->name ?? $anticipo->clients['name'] ?? ''}}<br>{{$num_fac}}</td>
-            <td style="text-align: center; font-weight: normal;">{{$anticipo->accounts['description'] ?? ''}}</td>
-            <td style="text-align: center; font-weight: normal;">{{date('d-m-Y',strtotime($anticipo->date)) ?? ''}}</td>
+            <td class="text-center">{{$anticipo->accounts['description'] ?? ''}}</td>
+            <td class="text-center">{{date('d-m-Y',strtotime($anticipo->date)) ?? ''}}</td>
             <td class="text-center">{{$anticipo->reference ?? ''}}</td>
             <td style="text-align: right; font-weight: normal;">{{number_format($amount_bcv ?? 0, 2, ',', '.')}}$</td>
             <td style="text-align: right; font-weight: normal;">{{number_format($anticipo->amount ?? 0, 2, ',', '.')}}</td>
-            <td style="text-align: center; font-weight: normal;">{{$anticipo->coin ?? ''}}</td>
+            <td class="text-center">{{$anticipo->coin ?? ''}}</td>
        
     
         </tr>
@@ -116,15 +125,14 @@
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
           <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+          <th style="text-align: center; font-weight: normal; border-color: white;"></th>
          
           <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
           <th style="text-align: right; font-weight: normal;">{{ number_format(($total_dolar ?? 0), 2, ',', '.') }}$</th>
           <th style="text-align: right; font-weight: normal;">{{ number_format(($total ?? 0), 2, ',', '.') }}</th>
-          <th style="text-align: center; font-weight: normal; border-color: white;"></th>
         </tr> 
     @endif
 </tbody>
 </table>
-
 </body>
 </html>

@@ -65,9 +65,7 @@ class AnticipoReportController extends Controller
         $coin = request('coin');
         $client = null;
         $provider = null;
-        $typeperson = 'ninguno';
-
-        
+        $typeperson = 'Cliente';
 
         if($type != 'todo'){
             if(isset($id_client)){
@@ -78,11 +76,14 @@ class AnticipoReportController extends Controller
             if(isset($id_provider)){
                 $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
                 $typeperson = 'Proveedor';
-                $id_client_or_provider = $provider;
+                $id_client_or_provider = $id_provider;
+            }
+            if($type == 'Proveedor'){
+                $typeperson = 'Proveedor';
             }
         }
-        
-        
+
+      
         return view('admin.reports.anticipos.index_anticipos',compact('coin','date_end','client','provider','typeperson'));
     }
 
@@ -108,22 +109,43 @@ class AnticipoReportController extends Controller
         $period = $date->format('Y'); 
         
         if(isset($typeperson) && ($typeperson == 'Cliente')){
-          
-            $anticipos = Anticipo::on(Auth::user()->database_name)
+            if(empty($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
                                 ->leftjoin('clients', 'clients.id','=','anticipos.id_client')
-                                ->whereIn('status',[1,'M'])->where('id_client','<>',null)
-                                ->orderBy('id','desc')
-                                ->select('anticipos.*','clients.name')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('anticipos.id_client','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','clients.name as name')
                                 ->get();
+            }
+            if(isset($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('anticipos.id_client',$id_client_or_provider)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','clients.name as name')
+                                ->get();
+            }
               
         }else if(isset($typeperson) && $typeperson == 'Proveedor'){
-
-            $anticipos = Anticipo::on(Auth::user()->database_name)
+            if(empty($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
                                 ->leftjoin('providers', 'providers.id','=','anticipos.id_provider')
-                                ->whereIn('status',[1,'M'])->where('id_provider','<>',null)
-                                ->orderBy('id','desc')
-                                ->select('anticipos.*','providers.razon_social')
+                                ->whereIn('anticipos.status',[1,'M'])->where('id_provider','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','providers.razon_social as name')
                                 ->get();
+            }
+            if(isset($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('providers', 'providers.id','=','anticipos.id_provider')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('id_provider',$id_client_or_provider)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','providers.razon_social as name')
+                                ->get();
+            }
                 
         }else{
             $anticipos = Anticipo::on(Auth::user()->database_name)
@@ -134,7 +156,7 @@ class AnticipoReportController extends Controller
                                 ->get();
         }
 
-        $pdf = $pdf->loadView('admin.reports.anticipos.anticipos',compact('coin','anticipos','datenow','date_end'));
+        $pdf = $pdf->loadView('admin.reports.anticipos.anticipos',compact('coin','anticipos','datenow','date_end','typeperson'));
         return $pdf->stream();
                  
     }

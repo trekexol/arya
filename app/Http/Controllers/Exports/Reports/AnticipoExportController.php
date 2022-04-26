@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App;
+use App\Anticipo;
 use App\Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +22,9 @@ class AnticipoExportController extends Controller
     public function exportExcel(Request $request) 
     {
      
-        if(isset($request->id_provider)){
+        if(isset($request->id_client_or_provider)){
             
-            $request->id_provider_or_provider = $request->id_provider;
+            $request->id_client_or_provider = $request->id_client_or_provider;
 
         }
 
@@ -33,10 +34,10 @@ class AnticipoExportController extends Controller
 
         $export->view();       
         
-        return Excel::download($export, 'Pagos de Compras.xlsx');
+        return Excel::download($export, 'Anticipos.xlsx');
     }
 
-    function payment_pdf($coin,$date_begin,$date_end,$typeperson,$id_provider = null)
+    function anticipo_pdf($coin,$date_end,$typeperson,$id_client_or_provider = null)
     {
         
         $pdf = App::make('dompdf.wrapper');
@@ -62,41 +63,55 @@ class AnticipoExportController extends Controller
        
         $period = $date->format('Y'); 
      
-        if(isset($typeperson) && ($typeperson == 'Proveedor')){
-           
-            $expense_payments = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
-                                ->leftjoin('providers', 'providers.id','=','expenses_and_purchases.id_provider')
-                                ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
-                                ->join('accounts', 'accounts.id','=','expense_payments.id_account')
-                                ->where('expenses_and_purchases.amount','<>',null)
-                                ->where('expenses_and_purchases.date','<=',$date_consult)
-                                ->where('expenses_and_purchases.id_provider',$id_provider)
-                                
-                                ->select('expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
-                                ->orderBy('expense_payments.id','desc')
+        if(isset($typeperson) && ($typeperson == 'Cliente')){
+            if(empty($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('anticipos.status',[1,'M'])->where('anticipos.id_client','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','clients.name as name')
                                 ->get();
-          
+            }
+            if(isset($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('anticipos.id_client',$id_client_or_provider)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','providers.razon_social as name')
+                                ->get();
+            }
               
+        }else if(isset($typeperson) && $typeperson == 'Proveedor'){
+            if(empty($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('providers', 'providers.id','=','anticipos.id_provider')
+                                ->whereIn('anticipos.status',[1,'M'])->where('id_provider','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','providers.razon_social as name')
+                                ->get();
+            }
+            if(isset($id_client_or_provider)){
+                $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->leftjoin('providers', 'providers.id','=','anticipos.id_provider')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('id_provider',$id_client_or_provider)
+                                ->orderBy('anticipos.id','desc')
+                                ->select('anticipos.*','providers.razon_social as name')
+                                ->get();
+            }
+                
         }else{
-            $expense_payments = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
-                    ->leftjoin('providers', 'providers.id','=','expenses_and_purchases.id_provider')
-                    ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
-                    ->join('accounts', 'accounts.id','=','expense_payments.id_account')
-                    ->where('expenses_and_purchases.amount','<>',null)
-                    ->where('expenses_and_purchases.date','<=',$date_consult)
-                    ->select('expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
-                    ->orderBy('expense_payments.id','desc')
-                    ->get();
+            $anticipos = Anticipo::on(Auth::user()->database_name)
+                                ->join('clients', 'clients.id','=','anticipos.id_client')
+                                ->whereIn('anticipos.status',[1,'M'])
+                                ->where('anticipos.id_client','<>',null)
+                                ->orderBy('anticipos.id','desc')
+                                ->get();
         }
 
-       
-        foreach($expense_payments as $var){
-            $var->payment_type = $this->asignar_payment_type($var->payment_type);
-           
-        }
       
-      
-        return view('export_excel.payment_expense',compact('coin','expense_payments','datenow','date_end'));
+        return view('export_excel.anticipos',compact('coin','anticipos','expense_payments','datenow','date_end','typeperson'));
                  
     }
 
