@@ -46,7 +46,7 @@
                         @foreach ($clients as $client)
                             <tr>
                                 <td >
-                                    <a href="{{ route('report_payments.index',['Cliente',$client->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
+                                    <a href="{{ route('report_anticipos.index',['Cliente',$client->id]) }}"  title="Seleccionar"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                 <td >{{$client->name}}</td>
                                 <td >{{$client->cedula_rif}}</td>

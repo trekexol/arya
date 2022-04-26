@@ -46,7 +46,7 @@
                         @foreach ($providers as $provider)
                             <tr>
                                 <td >
-                                    <a href="{{ route('report_payment_expenses.index',['Proveedor',$provider->id]) }}"  title="Seleccionar Proveedor"><i class="fa fa-check" style="color: orange"></i></a>
+                                    <a href="{{ route('report_anticipos.index',['Proveedor',$provider->id]) }}"  title="Seleccionar Proveedor"><i class="fa fa-check" style="color: orange"></i></a>
                                </td>
                                 <td >{{$provider->razon_social}}</td>
                                 <td >{{$provider->code_provider}}</td>

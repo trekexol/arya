@@ -19,7 +19,7 @@
                         <div class="form-group row">
                             <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
 
                                 @error('date_end')
@@ -30,11 +30,11 @@
                             </div>
                             @if (isset($client))
                                 <label id="client_label1" for="clients" class="col-sm-1 text-md-right">Cliente:</label>
-                                <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
+                                <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name ?? ''  }}</label>
                             @endif
                             @if (isset($provider))
-                                <label id="provider_label1" for="providers" class="col-sm-1 text-md-right">Proveedor:</label>
-                                <label id="provider_label2" name="id_provider" value="{{ $provider->id }}" for="providers" class="col-sm-3">{{ $provider->name }}</label>
+                                <label id="provider_label1" for="providers" class="col-sm-2 text-md-right">Proveedor:</label>
+                                <label id="provider_label2" name="id_provider" value="{{ $provider->id }}" for="providers" class="col-sm-3">{{ $provider->razon_social ?? '' }}</label>
                             @endif
                             
                             <div id="client_label3" class="form-group col-sm-1">
@@ -64,18 +64,25 @@
                         <div class="form-group row">
                             <div class="col-sm-2 offset-sm-1">
                                 <select class="form-control" name="type" id="type">
-                                    @if (isset($client))
-                                        <option value="todo">Todo</option>
-                                        <option selected value="Cliente">Por Cliente</option>
-                                        <option value="Proveedor">Por Proveedor</option>
-                                    @elseif (isset($provider))
-                                        <option value="todo">Todo</option>
+                                    @if (isset($typeperson))
+                                        <option selected value="{{$typeperson}}">Por {{$typeperson}}</option>
+                                        <option value="Cliente">-------------</option>
+                                        
                                         <option value="Cliente">Por Cliente</option>
-                                        <option selected value="Proveedor">Por Proveedor</option>
+                                        <option value="Proveedor">Por Proveedor</option>
                                     @else
-                                        <option selected value="todo">Todo</option>
-                                        <option value="Cliente">Por Cliente</option>
-                                        <option value="Proveedor">Por Proveedor</option>
+                                        @if (isset($client))
+                                            
+                                            <option selected value="Cliente">Por Cliente</option>
+                                            <option value="Proveedor">Por Proveedor</option>
+                                        @elseif (isset($provider))
+                                            
+                                            <option value="Cliente">Por Cliente</option>
+                                            <option selected value="Proveedor">Por Proveedor</option>
+                                        @else
+                                            <option value="Cliente">Por Cliente</option>
+                                            <option value="Proveedor">Por Proveedor</option>
+                                        @endif
                                     @endif
                                 </select>
                             </div>
@@ -95,7 +102,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('report_anticipos.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeperson ?? 'ninguno',$client->id ?? $provider->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('report_anticipos.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeperson ?? 'todo',$client->id ?? $provider->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
@@ -144,12 +151,12 @@
 
     $("#type").on('change',function(){
             type = $(this).val();
-            
+           
             if(type == 'todo'){
                 $("#client_label1").hide();
                 $("#client_label2").hide();
                 $("#client_label3").hide();
-            }else if(type == 'provider'){
+            }else if(type == 'Proveedor'){
                 document.getElementById("route_select").href = "{{ route('report_anticipos.selectProvider') }}";
                 $("#client_label1").show();
                 $("#client_label2").show();
