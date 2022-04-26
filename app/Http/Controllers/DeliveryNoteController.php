@@ -40,11 +40,11 @@ class DeliveryNoteController extends Controller
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
                                     ->where('date_delivery_note','<>',null)
                                     ->where('date_billing',null)
-                                    ->whereIn('status',[1,'M','C'])
+                                    ->whereIn('status',[1,'M'])
                                     ->get();
 
 
-    
+            
             return view('admin.quotations.indexdeliverynote',compact('quotations'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
@@ -52,6 +52,48 @@ class DeliveryNoteController extends Controller
     }
  
 
+    public function storesaldar($id=null,$anticipo=null,$totalfac)
+    {
+           
+            if (isset($anticipo)) {
+              
+                if ($anticipo >= $totalfac) { 
+        
+                $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
+                    
+            
+                $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
+                ->where('date_delivery_note','<>',null)
+                ->where('date_billing',null)
+                ->whereIn('status',[1,'M'])
+                ->get();
+
+                return view('admin.quotations.indexdeliverynote',compact('quotations'))->withSuccess('Nota Saldada Exitosamente!');
+                
+                } else {
+                  
+                    $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id);
+
+                    return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Los Anticipos no superan el monto de la factura');
+                 
+                        
+                   
+                }
+
+            } else {
+                $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
+                ->where('date_delivery_note','<>',null)
+                ->where('date_billing',null)
+                ->whereIn('status',[1,'M'])
+                ->get();
+    
+                return view('admin.quotations.indexdeliverynote',compact('quotations'))->withSuccess('Nota Saldada Exitosamente!');
+            
+
+            }
+
+
+    }  
 
 
 
