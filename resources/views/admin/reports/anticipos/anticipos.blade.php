@@ -34,6 +34,8 @@
   <?php 
     
     $total = 0;
+    $total_dolar = 0;
+   
   ?>
 <table style="width: 100%;">
   <tr>
@@ -45,9 +47,7 @@
     <th class="text-center">REF</th>
     <th class="text-center">Monto</th>
     <th class="text-center">Moneda</th>
-    @if (isset($control) && ($control == 'index'))
-        <th class="text-center"></th>
-    @endif
+   
 </tr>
 </thead>
 
@@ -99,16 +99,7 @@
             <td class="text-right">{{number_format($anticipo->amount ?? 0, 2, ',', '.')}}</td>
             <td class="text-center">{{$anticipo->coin ?? ''}}</td>
        
-        @if (Auth::user()->role_id  == '1')
-            
-            @if (isset($control) && ($control == 'index'))
-                <td>
-                    <a href="{{ route('anticipos.edit',$anticipo->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
-                    <a href="#" class="delete" data-id-anticipo={{$anticipo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                </td>
-            @endif
-            
-        @endif
+    
         </tr>
         @endforeach
     @endif

@@ -1173,6 +1173,7 @@ Route::group(["prefix"=>'export_reports'],function(){
 
     Route::post('payment_cobro','Exports\Reports\PaymentCobroExportController@exportExcel')->name('export_reports.payment_cobro');
     Route::post('payment_expense','Exports\Reports\PaymentExpenseExportController@exportExcel')->name('export_reports.payment_expense');
+    Route::post('anticipos','Exports\Reports\AnticipoExportController@exportExcel')->name('export_reports.anticipos');
     
 });
 
@@ -1246,3 +1247,11 @@ Route::group(["prefix"=>'report_payment_expenses'],function(){
 Route::group(["prefix"=>'check_movements'],function(){
     Route::get('index','Checks\CheckMovementController@index')->name('check_movements.index');
    });
+
+Route::group(["prefix"=>'report_anticipos'],function(){
+    Route::get('menu/{typeperson}/{id_client?}','Reports\AnticipoReportController@index')->name('report_anticipos.index');
+    Route::post('store','Reports\AnticipoReportController@store')->name('report_anticipos.store');
+    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_client_or_vendor?}','Reports\AnticipoReportController@pdf')->name('report_anticipos.pdf');
+    Route::get('selectclient','Reports\AnticipoReportController@selectClient')->name('report_anticipos.selectClient');
+    Route::get('selectProvider','Reports\AnticipoReportController@selectProvider')->name('report_anticipos.selectProvider');
+});
