@@ -170,17 +170,15 @@ class EmployeeController extends Controller
    {
         $var = Employee::on(Auth::user()->database_name)->find($id);
         
-        $estados            = Estado::on(Auth::user()->database_name)->get();
-        $municipios         = Municipio::on(Auth::user()->database_name)->get();
-        $parroquias         = Parroquia::on(Auth::user()->database_name)->get();
-      
-
+        $estados             = Estado::on(Auth::user()->database_name)->get();
+        $municipios          = Municipio::on(Auth::user()->database_name)->get();
+        $parroquias          = Parroquia::on(Auth::user()->database_name)->get();
         $positions           = Position::on(Auth::user()->database_name)->get();
         $salarytypes         = Salarytype::on(Auth::user()->database_name)->get();
         $professions         = Profession::on(Auth::user()->database_name)->get();
-      
+        $centro_costo        = Branch::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
-        return view('admin.employees.edit',compact('var','estados','municipios','parroquias','positions','salarytypes','professions'));
+        return view('admin.employees.edit',compact('var','estados','municipios','parroquias','positions','salarytypes','professions','centro_costo'));
   
    }
 
@@ -251,15 +249,23 @@ class EmployeeController extends Controller
 
     $users->email = request('email');
     $users->telefono1 = request('telefono1');
-    $users->acumulado_prestaciones = request('acumulado_prestaciones');
-    $users->acumulado_utilidades = request('acumulado_utilidades');
+    $users->acumulado_prestaciones = str_replace(',', '.', str_replace('.', '',request('acumulado_prestaciones')));
+    $users->acumulado_utilidades = str_replace(',', '.', str_replace('.', '',request('acumulado_utilidades')));
+
+    $users->dias_acumulado_prestaciones = request('dias_pres_acumulado');
+    $users->dias_acumulado_vacaciones = request('dias_vaca_acumulado');
+    $sin_formato_int_acumulado_prestaciones = str_replace(',', '.', str_replace('.', '', request('intereses_prest_acumulado')));
+     
+    $users->int_acumulado_prestaciones = $sin_formato_int_acumulado_prestaciones;
+
     $users->status =  request('status');
-    
-    //$users->centro_cos = request('centro_costo');
+     
+    $users->branch_id = request('centro_costo');
 
     $users->save();
-
+     
     return redirect('/employees')->withSuccess('Actualizacion Exitosa!');
+    
     }
 
 

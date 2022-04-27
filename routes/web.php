@@ -450,6 +450,8 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::get('indexnotasdeentrega/{id_quotation?}/{number_pedido?}','DeliveryNoteController@index')->name('quotations.indexdeliverynote');
    
+    Route::get('indexnotasdeentregasald/{id_quotation?}/{number_pedido?}','DeliveryNoteController@indexsald')->name('quotations.indexdeliverynotesald');
+   
     Route::get('storesaldar/{id?}/{anticipo?}/{totalfac?}','DeliveryNoteController@storesaldar')->name('quotation.storesaldar');
 
     Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');

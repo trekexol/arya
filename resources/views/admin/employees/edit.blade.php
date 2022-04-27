@@ -263,18 +263,18 @@
                                     
                                     <label for="salarytype" class="col-md-2 col-form-label text-md-right">Tipo de Salario</label>
                                     <div class="col-md-4">
-                                        <select  id="salarytype"  name="salarytype_id" class="form-control">
+                                        <select  id="salarytype_id" name="salarytype_id" class="form-control">
+
                                             @foreach($salarytypes as $salarytype)
-                                                @if ( $var->salarytype_id == $salarytype->id)
+                                                      
+                                                    @if ($var->salary_types_id == $salarytype->id)
                                                     <option selected style="backgroud-color:blue;" value="{{$salarytype->id}}"><strong>{{ $salarytype->name }}</strong></option>
-                                                @endif
+                                                    @else 
+                                                    <option style="backgroud-color:blue;" value="{{$salarytype->id}}"><strong>{{ $salarytype->name }}</strong></option>
+                                                    @endif
+
                                             @endforeach
-                                            <option class="hidden" disabled data-color="#A0522D" value="-1">------------------</option>
-                                            @foreach($salarytypes as $salarytype)
-                                                <option value="{{ $salarytype['id'] }}" >
-                                                    {{ $salarytype['name'] }}
-                                                </option>
-                                            @endforeach
+
                                         </select>
                                     </div>
                                    
@@ -400,60 +400,64 @@
                                 </div>
                                 
                                 <div class="form-group row">
-                                    <label for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="centro_costo" type="text" class="form-control @error('centro_costo') is-invalid @enderror" name="centro_costo" value="{{ $var->centro_cos }}" autocomplete="centro_costo">
-        
-                                        @error('centro_costo')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+  
+                                        <label for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo</label>
+
+                                        <div class="col-md-4">
+                                        <select class="form-control" id="centro_costo" name="centro_costo">
+                                            @foreach($centro_costo as $cent)
+                                                      
+                                                    @if ($var->branch_id == $cent->id)
+                                                    <option selected value="{{ $cent->id }}">{{ $cent->description }}</option>
+                                                    @else
+                                                    <option value="{{ $cent->id }}">{{ $cent->description }}</option>
+                                                    @endif
+                                            
+                                            @endforeach
+                                          
+                                        </select>
+                                        </div>
+
                                     <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
         
                                     <div class="col-md-4">
                                         <select class="form-control" id="status" name="status" title="status">
   
-                                            
-                                            <option selected value="1">Activo</option>
-                                            <option value="0">Inactivo</option>
-                                            <option value="2">Reposo</option>
-                                            <option value="3">Reposo Pre/Pos Parto</option>
-                                            <option value="4">Vacaciones</option>
-                                            <option value="5">Liquidado</option>                                            
-                                            <option value="6">De Permiso</option>
-                                            <option value="7">Año Sabatico</option>
-
+                                            <div class="dropdown">
                                             @if($var->status == 1)
-                                                <option value="1">Activo</option>
+                                                <option selected value="1">Activo</option>
                                             @endif
                                             @if($var->status == 0)
-                                                <option value="0">Inactivo</option>
+                                                <option selected value="0">Inactivo</option>
                                             @endif
                                             @if($var->status == 2)
-                                            <option value="0">Reposo</option>
+                                            <option selected value="2">Reposo</option>
                                             @endif
                                             @if($var->status == 3)
-                                            <option value="0">Reposo Pre/Pos Parto</option>
+                                            <option selected value="3">Reposo Pre/Pos Parto</option>
                                             @endif
                                             @if($var->status == 4)
-                                            <option value="0">Vacaciones</option>
+                                            <option selected value="4">Vacaciones</option>
                                             @endif
                                             @if($var->status == 5)
-                                            <option value="0">Liquidado</option>
+                                            <option selected value="5">Liquidado</option>
                                             @endif
                                             @if($var->status == 6)
-                                            <option value="0">De Permiso</option>
+                                            <option selected value="6">De Permiso</option>
                                             @endif
                                             @if($var->status == 7)
-                                            <option value="0">Año Sabatico</option>
+                                            <option selected value="7">Año Sabatico</option>
                                             @endif
-     
-                                            <div class="dropdown">
+                                            <option value="">---------------</option>
+                                           
                                                 <option value="1">Activo</option>
                                                 <option value="0">Inactivo</option>
+                                                <option value="2">Reposo</option>
+                                                <option value="3">Reposo Pre/Pos Parto</option>
+                                                <option value="4">Vacaciones</option>
+                                                <option value="5">Liquidado</option>                                            
+                                                <option value="6">De Permiso</option>
+                                                <option value="7">Año Sabatico</option>
                                             </div>
                                             
                                                
@@ -489,6 +493,20 @@
             $("#monto_pago").mask('000.000.000.000.000.000,00', { reverse: true });
             
         });
+        $(document).ready(function () {
+            $("#acumulado_prestaciones").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });
+        
+        $(document).ready(function () {
+            $("#intereses_prest_acumulado").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });     
+        $(document).ready(function () {
+            $("#acumulado_utilidades").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });
+
         $(document).ready(function () {
             $("#telefono1").mask('0000 000-0000', { reverse: true });
             
