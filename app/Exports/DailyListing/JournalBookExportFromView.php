@@ -3,12 +3,12 @@
 namespace App\Exports\DailyListing;
 
 
-use App\Http\Controllers\Exports\DailyListing\LedgerExportController;
+use App\Http\Controllers\Exports\DailyListing\JournalBookExportController;
 use Carbon\Carbon;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-class LedgerExportFromView implements FromView
+class JournalBookExportFromView implements FromView
 {
     public $request;
 
@@ -19,10 +19,9 @@ class LedgerExportFromView implements FromView
 
     public function view(): View
     {
-        $report = new LedgerExportController();
-
+        $report = new JournalBookExportController();
        
-        return $report->ledger_pdf($this->request->date_begin ?? null,$this->request->date_end ?? null);
+        return $report->print_journalbook($this->request ?? null);
     }
 
     

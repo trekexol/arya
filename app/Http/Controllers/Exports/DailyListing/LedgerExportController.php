@@ -30,7 +30,7 @@ class LedgerExportController extends Controller
 
         $export->view();       
         
-        return Excel::download($export, 'Libro Diario.xlsx');
+        return Excel::download($export, 'Libro Mayor.xlsx');
     }
 
     function ledger_pdf($date_begin = null,$date_end = null)

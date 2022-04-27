@@ -260,7 +260,7 @@
                 <span aria-hidden="true">×</span>
             </button>
         </div>
-        <form method="POST" action="{{ route('daily_listing.print_journalbook') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+        <form method="POST" id="formPostJournalbook" action="{{ route('daily_listing.print_journalbook') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
             @csrf
         <div class="modal-body">
             <div class="form-group row">
@@ -289,6 +289,18 @@
                     @enderror
                 </div>
             </div>
+            <div class="col-sm-6  dropdown mb-4">
+                <button class="btn btn-success" type="button"
+                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                    aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                    Exportaciones
+                </button>
+                <div class="dropdown-menu animated--fade-in"
+                    aria-labelledby="dropdownMenuButton">
+                    <a href="#" onclick="exportToExcelJournalbook();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                </div>
+            </div> 
         </div>
             <div class="modal-footer">
                 <div class="form-group col-md-2">
@@ -310,7 +322,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form method="POST" action="{{ route('daily_listing.print_journalbook') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+            <form method="POST" id="formPostJournalbookAccount" action="{{ route('daily_listing.print_journalbook') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
                 @csrf
             <div class="modal-body">
                 <div class="form-group row">
@@ -360,6 +372,18 @@
                         @enderror
                     </div>
                 </div>
+                <div class="col-sm-6  dropdown mb-4">
+                    <button class="btn btn-success" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                        aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                        Exportaciones
+                    </button>
+                    <div class="dropdown-menu animated--fade-in"
+                        aria-labelledby="dropdownMenuButton">
+                        <a href="#" onclick="exportToExcelJournalbookAccount();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                    </div>
+                </div> 
             </div>
                 <div class="modal-footer">
                     <div class="form-group col-md-2">
@@ -387,6 +411,18 @@
         document.getElementById("formPost").action = "{{ route('export_reports.diary_book_details') }}";
         document.getElementById("formPost").submit();
         document.getElementById("formPost").action = old_action;
+    }
+    function exportToExcelJournalbook(){
+        var old_action = document.getElementById("formPostJournalbook").action;
+        document.getElementById("formPostJournalbook").action = "{{ route('export_reports.journalbooks') }}";
+        document.getElementById("formPostJournalbook").submit();
+        document.getElementById("formPostJournalbook").action = old_action;
+    }
+    function exportToExcelJournalbookAccount(){
+        var old_action = document.getElementById("formPostJournalbookAccount").action;
+        document.getElementById("formPostJournalbookAccount").action = "{{ route('export_reports.journalbooks') }}";
+        document.getElementById("formPostJournalbookAccount").submit();
+        document.getElementById("formPostJournalbookAccount").action = old_action;
     }
     </script> 
 @endsection
