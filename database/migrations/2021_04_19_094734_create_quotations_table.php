@@ -23,7 +23,6 @@ class CreateQuotationsTable extends Migration
             $table->bigInteger('number_delivery_note')->nullable();
             $table->bigInteger('number_order')->nullable();
             $table->bigInteger('number_pedido')->nullable();
-            $table->bigInteger('id_branch')->nullable();
 
             $table->string('serie',30)->nullable();
             
@@ -60,7 +59,6 @@ class CreateQuotationsTable extends Migration
             $table->foreign('id_vendor')->references('id')->on('vendors');
             $table->foreign('id_transport')->references('id')->on('transports');
             $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_branch')->references('id')->on('branches');
             $table->timestamps();
         });
     }
