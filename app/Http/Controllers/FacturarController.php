@@ -580,7 +580,7 @@ class FacturarController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        if($quotation->status == 'C' ){
+        if($quotation->date_billing & $quotation->status == 'C' ){
             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta factura fue procesada!');
         }else{
             
