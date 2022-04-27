@@ -324,13 +324,13 @@
                         <div class="form-group row">
                             <label for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo</label>
 
-                            <div class="col-md-4">
-                                <select class="form-control" id="centro_costo" name="centro_costo">
-                                    @foreach($centro_costo as $var)
-                                        <option value="{{ $var->id }}">{{ $var->description }}</option>
-                                    @endforeach
-                                  
-                                </select>
+                                <div class="col-md-4">
+                                    <select class="form-control" id="centro_costo" name="centro_costo">
+                                        @foreach($centro_costo as $var)
+                                            <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                        @endforeach
+                                    
+                                    </select>
                                 </div>
 
                                 <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
@@ -383,6 +383,11 @@
             $("#acumulado_prestaciones").mask('000.000.000.000.000,00', { reverse: true });
             
         });
+        
+        $(document).ready(function () {
+            $("#intereses_prest_acumulado").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });     
         $(document).ready(function () {
             $("#acumulado_utilidades").mask('000.000.000.000.000,00', { reverse: true });
             

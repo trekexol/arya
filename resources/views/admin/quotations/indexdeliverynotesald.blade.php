@@ -40,14 +40,10 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Notas de Entrega</h2>
+          <h2>Notas de Entrega Saldadas</h2>
       </div>
-
-      <div class="col-md-3">
-        <a href="{{ route('quotations.indexdeliverynotesald',"Nota de Entrega")}}" class="btn btn-success float-md-right" role="button" aria-pressed="true">Notas Saldadas</a>
-      </div>
-      <div class="col-md-3">
-        <a href="{{ route('quotations.createquotation',"Nota de Entrega")}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Nota de Entrega</a>
+      <div class="col-md-6">
+        <a href="{{ route('quotations.indexdeliverynote')}}" class="btn btn-danger float-md-right" role="button" aria-pressed="true">Volver al Listado</a>
       </div>
     </div>
   </div>

@@ -52,6 +52,31 @@ class DeliveryNoteController extends Controller
     }
  
 
+    public function indexsald($id_quotation = null,$number_pedido = null)
+    {
+        if($this->userAccess->validate_user_access($this->modulo)){
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+
+            if(isset($id_quotation)) {
+                $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
+                
+            }
+
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
+                                    ->where('date_delivery_note','<>',null)
+                                    ->where('date_billing',null)
+                                    ->whereIn('status',['C'])
+                                    ->get();
+
+
+            
+            return view('admin.quotations.indexdeliverynotesald',compact('quotations'));
+        }else{
+            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+        }
+    }
+
     public function storesaldar($id=null,$anticipo=null,$totalfac)
     {
 
