@@ -107,21 +107,6 @@
                                 <a href="{{ route('quotations.selectvendor',[$client->id ?? -1,$type]) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
                             </div>
                            
-                            <label for="rol" class="col-md-2 col-form-label text-md-right">Sucursal</label>
-                            <div class="col-md-3">
-                                <select class="form-control" id="id_branch" name="id_branch">
-                                @isset($branches)
-                                    @if (isset($user_branch))
-                                        <option value="{{$user_branch->id}}">{{ $user_branch->description ?? '' }}</option>
-                                        <option disabled>-----------------</option>
-                                    @endif
-                                    @foreach($branches as $branch)
-                                        <option value="{{$branch->id}}">{{ $branch->description ?? '' }}</option>
-                                    @endforeach
-                                @endisset
-                                </select>
-                            </div>
-                            
                         </div>
                        
                        

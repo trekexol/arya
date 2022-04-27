@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\Anticipo;
 use App\AnticipoQuotation;
-use App\Branch;
 use App\Client;
 use App\Company;
 use App\DetailVoucher;
@@ -75,19 +74,9 @@ class QuotationController extends Controller
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');   
-        
-        $user   =   auth()->user();
+        $datenow = $date->format('Y-m-d');    
 
-        if(isset($user->id_branch)){
-            $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
-        }else{
-            $user_branch  = null;
-        }
-
-        $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
-
-        return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type'));
+        return view('admin.quotations.createquotation',compact('datenow','transports','type'));
     }
 
     public function createquotationclient($id_client,$type = null)
@@ -437,8 +426,6 @@ class QuotationController extends Controller
         
                 $var->observation = request('observation');
                 $var->note = request('note');
-
-                $var->id_branch = request('id_branch');
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
