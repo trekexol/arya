@@ -72,8 +72,10 @@
             <thead>
             <tr> 
                 
-                <th class="text-center" style="width:11%;">Fecha</th>
-                <th class="text-center">N°</th>
+                <th class="text-center">ID</th>
+                <th class="text-center" style="width:20%;">Fecha Saldada</th>
+                <th class="text-center" style="width:20%;">Fecha Nota</th>
+                <th class="text-center">Nota</th>
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Pedido</th>
                 <th class="text-center">Vendedor</th>
@@ -94,6 +96,7 @@
                 @else  
                     <?php   
                     $cont = 0;
+                    $numcont = count($quotations);
                     ?>
 
                     @foreach ($quotations as $quotation)
@@ -104,6 +107,9 @@
                     ?>
                     
                       <tr>
+                            <td class="text-center">{{$numcont}}</td>    
+                            <td class="text-center">{{ date_format(date_create($quotation->updated_at),"d-m-Y") ?? ''}}</td>
+                               
                             <td class="text-center">{{ date_format(date_create($quotation->date_delivery_note),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
@@ -137,6 +143,7 @@
                         </tr>    
                         <?php   
                         $cont++;
+                        $numcont--;
                         ?> 
                     @endforeach   
                 @endif

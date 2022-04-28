@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Facturar / Cobrar Factura Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Registrar / Cobrar Nº {{$quotation->number_invoice ?? ''}}</h3></div>
                 <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -145,7 +145,7 @@
                             <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retencion IVA:</label>
 
                             <div class="col-md-3">
-                                <input id="iva_retencion" type="text" class="form-control @error('iva_retencion') is-invalid @enderror" name="iva_retencion" readonly required autocomplete="iva_retencion">
+                                <input id="iva_retencion" type="text" class="form-control @error('iva_retencion') is-invalid @enderror" name="iva_retencion" value="{{ number_format($total_retiene_islr, 2, ',', '.') }}" readonly required autocomplete="iva_retencion">
 
                                 @error('iva_retencion')
                                     <span class="invalid-feedback" role="alert">
