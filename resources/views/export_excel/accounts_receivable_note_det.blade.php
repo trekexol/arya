@@ -60,7 +60,7 @@
 
     $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
     
-    if ($quotation->date_billing == null && $quotation->status == 'C') { // notas saldada
+    if ($quotation->status == 'C') { // notas saldada
           $por_cobrar = 0;
      }
 
@@ -77,7 +77,7 @@
     $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
     $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
     
-    if ($quotation->date_billing == null && $quotation->status == 'C') { // notas saldada
+    if ($quotation->status == 'C') { // notas saldada
           $por_cobrar = 0;
      }
 
