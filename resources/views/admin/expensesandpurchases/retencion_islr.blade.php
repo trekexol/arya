@@ -54,6 +54,7 @@
     <th style="font-size: x-small; width: 10%; text-align: center;">Fecha</th>
     <th style="font-size: x-small; width: 10%; text-align: center;">No Pago</th>
     <th style="font-size: x-small; width: 10%; text-align: center;">No Documento</th>
+    <th style="font-size: x-small; width: 10%; text-align: center;">No Ctrl/Serie</th>
     <th style="font-size: x-small; width: 10%; text-align: center;">Monto</th>
     <th style="font-size: x-small; width: 10%; text-align: center;">Cantidad Objeto de Retención</th>
     <th style="font-size: x-small; width: 5%; text-align: center;">Tarifa %</th>
@@ -63,6 +64,7 @@
   <tr>
     <td style="font-size: x-small; text-align: center;">{{ $datenow ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->number_islr ?? $expense->id ?? '' }}</td>
+    <td style="font-size: x-small; text-align: center;">{{ $expense->invoice ?? ''}}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
     <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv(($expense->amount ?? 0) + ($expense->amount_iva ?? 0), '1', 2), 2, ',', '.')}}</td>
     <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv($expense->base_imponible?? 0, '1', 2), 2, ',', '.') }}</td>
