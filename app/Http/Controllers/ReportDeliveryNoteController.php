@@ -1338,7 +1338,7 @@ class ReportDeliveryNoteController extends Controller
                     ->get();
                 }
 
-                if($typeinvoice == 'notas'){  // nota cliente bs
+                if($typeinvoice == 'saldada'){  // nota cliente bs
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
@@ -1451,7 +1451,7 @@ class ReportDeliveryNoteController extends Controller
                     ->leftjoin('clients', 'clients.id','=','quotations.id_client')
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->leftjoin('anticipos', 'anticipos.id_quotation','=','quotations.id')
-                    ->whereIn('quotations.status',[1,'P'])
+                    ->whereIn('quotations.status',['C'])
                     ->where('quotations.date_delivery_note','>=',$date_frist)
                     ->where('quotations.date_delivery_note','<=',$date_consult)
                     ->where('quotations.date_billing',null)
