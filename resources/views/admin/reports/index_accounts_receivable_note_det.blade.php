@@ -109,6 +109,8 @@
                                             <option selected value="notast">Notas de Entrega</option>
                                         @elseif($typeinvoice == 'notas')
                                             <option selected value="notas">Notas Sin Facturar</option>                                            
+                                        @elseif($typeinvoice == 'saldada')
+                                            <option selected value="saldada">Notas Saldadas</option>
                                         @elseif($typeinvoice == 'notase')
                                             <option selected value="notase">Notas Eliminadas</option>
                                         @elseif($typeinvoice == 'facturasc')
@@ -119,7 +121,8 @@
                                         <option disabled value="todo">-----------------</option>
                                         <option value="todo">Todo</option>
                                         <option value="notast">Notas de Entrega</option>
-                                        <option value="notas">Notas Sin Facturar</option> 
+                                        <option value="notas">Notas Sin Facturar</option>
+                                        <option value="saldada">Notas Saldadas</option>
                                         <option value="notase">Notas Eliminadas</option>
                                         <option value="facturasc">Notas Facturadas y Cobradas</option>
                                         <option value="facturas">Notas Facturadas Pendientes</option>
@@ -127,6 +130,7 @@
                                         <option selected value="todo">Todo</option>
                                         <option value="notast">Notas de Entrega</option>
                                         <option value="notas">Notas Sin Facturar</option> 
+                                        <option value="saldada">Notas Saldadas</option>
                                         <option value="notase">Notas Eliminadas</option>
                                         <option value="facturasc">Notas Facturadas y Cobradas</option>
                                         <option value="facturas">Notas Facturadas Pendientes</option>
