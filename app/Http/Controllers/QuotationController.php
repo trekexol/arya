@@ -134,7 +134,6 @@ class QuotationController extends Controller
                 /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
 
                 $transports     = Transport::on(Auth::user()->database_name)->get();
-
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');    
 
