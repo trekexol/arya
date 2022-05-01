@@ -160,7 +160,7 @@ class QuotationController extends Controller
                 $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
             }
 
-            if(isset($quotation) && ($quotation->status == 1)){
+            if(isset($quotation) && $quotation->date_billing == null){
                 //$inventories_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                 ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')

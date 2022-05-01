@@ -7,6 +7,7 @@ use App\DetailVoucher;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Quotation;
+use App\Anticipo;
 use App\QuotationProduct;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -52,6 +53,32 @@ class DeliveryNoteController extends Controller
     }
  
 
+    public function indexsald($id_quotation = null,$number_pedido = null)
+    {
+        if($this->userAccess->validate_user_access($this->modulo)){
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+
+            if(isset($id_quotation)) {
+                $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
+                
+            }
+
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('updated_at' ,'DESC')
+                                    ->where('date_delivery_note','<>',null)
+                                    ->where('date_billing',null)
+                                    ->whereIn('status',['C'])
+                                    
+                                    ->get();
+
+
+            
+            return view('admin.quotations.indexdeliverynotesald',compact('quotations'));
+        }else{
+            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+        }
+    }
+
     public function storesaldar($id=null,$anticipo=null,$totalfac)
     {
 
@@ -60,11 +87,12 @@ class DeliveryNoteController extends Controller
                     
                 $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
+                $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
+                 
+                $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id)->update([ 'status' => 'C' ]);
+
                 return redirect('quotations/indexnotasdeentrega')->withSuccess('Nota '.$quotation->number_delivery_note.' Saldada Exitosamente!');
-        
-
-
-
+    
     }  
 
 

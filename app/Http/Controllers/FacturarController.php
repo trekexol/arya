@@ -93,7 +93,9 @@ class FacturarController extends Controller
              $total= 0;
              $base_imponible= 0;
              $price_cost_total= 0;
-
+           
+           
+             $total_retiene_iva = 0;
              $retiene_iva = 0;
 
              $total_retiene_islr = 0;
@@ -176,7 +178,11 @@ class FacturarController extends Controller
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
              $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
 
-             
+                if($client->percentage_retencion_iva != 0){
+                    $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
+                } else {
+                    $total_retiene_iva = 0;
+                }  
                
                 if($client->percentage_retencion_islr != 0){
                     $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
@@ -190,7 +196,7 @@ class FacturarController extends Controller
             }
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
-                        ,'datenow','bcv','anticipos_sum','total_retiene_islr','is_after'
+                        ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
                         ,'total_mercancia','total_servicios','client','retiene_iva'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
@@ -350,23 +356,25 @@ class FacturarController extends Controller
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
              $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
 
-                /*if($client->percentage_retencion_iva != 0){
+                if($client->percentage_retencion_iva != 0){
                     $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
-                }*/
+                } else {
+                    $total_retiene_iva = 0;
+                }
 
             
                 
                 if($client->percentage_retencion_islr != 0){
                     $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
+                } else{
+                    $total_retiene_islr =0;
                 }
 
             /*-------------- */
 
             $is_after = false;
      
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
-                        ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
-                        ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
+             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -580,7 +588,7 @@ class FacturarController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        if($quotation->status == 'C' ){
+        if($quotation->date_billing != null && $quotation->status == 'C' ){
             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta factura fue procesada!');
         }else{
             

@@ -59,7 +59,12 @@
     //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
 
     $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
-     
+    
+    if ($quotation->status == 'C') { // notas saldada
+          $por_cobrar = 0;
+     }
+
+        
     if ($quotation->status == 'X') {
       $total_por_cobrar += 0;
       $total_por_facturar += 0;
@@ -72,13 +77,22 @@
     $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
     $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
     
+    if ($quotation->status == 'C') { // notas saldada
+          $por_cobrar = 0;
+     }
+
+
     if ($quotation->status == 'X') {
       $total_por_cobrar += 0;
       $total_por_facturar += 0;
     } else {
+
       $total_por_cobrar += $por_cobrar;
+
       $total_por_facturar += $quotation->amount_with_iva;       
     }
+
+
   }
 
   $tipo = '';
@@ -114,7 +128,11 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing}}</th>
       @if ($quotation->status == 'C')
-      <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+          @if ($quotation->date_billing == null && $quotation->status == 'C')
+          <th style="text-align: center; font-weight: normal; color:rgba(255, 217, 0, 0.774)">S</th>
+          @else
+          <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+          @endif
       @endif
       @if ($quotation->status == '1')
       <th style="text-align: center; font-weight: normal;">NE</th>
@@ -166,7 +184,11 @@
               <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice}}</th> <!-- FAC -->
               <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing}}</th><!-- fecha FAC -->
               @if ($quotation->status == 'C')<!-- Status -->
-              <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+                @if ($quotation->date_billing == null && $quotation->status == 'C')
+                <th style="text-align: center; font-weight: normal; color:rgb(129, 110, 3)">S</th>
+                @else
+                <th style="text-align: center; font-weight: normal; color:darkgreen">{{ $quotation->status}}</th>
+                @endif
               @endif
               @if ($quotation->status == '1')
               <th style="text-align: center; font-weight: normal;">NE</th>

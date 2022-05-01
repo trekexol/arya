@@ -40,14 +40,10 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Notas de Entrega</h2>
+          <h2>Notas de Entrega Saldadas</h2>
       </div>
-
-      <div class="col-md-3">
-        <a href="{{ route('quotations.indexdeliverynotesald',"Nota de Entrega")}}" class="btn btn-success float-md-right" role="button" aria-pressed="true">Notas Saldadas</a>
-      </div>
-      <div class="col-md-3">
-        <a href="{{ route('quotations.createquotation',"Nota de Entrega")}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Nota de Entrega</a>
+      <div class="col-md-6">
+        <a href="{{ route('quotations.indexdeliverynote')}}" class="btn btn-danger float-md-right" role="button" aria-pressed="true">Volver al Listado</a>
       </div>
     </div>
   </div>
@@ -76,8 +72,10 @@
             <thead>
             <tr> 
                 
-                <th class="text-center" style="width:11%;">Fecha</th>
-                <th class="text-center">N°</th>
+                <th class="text-center">ID</th>
+                <th class="text-center" style="width:20%;">Fecha Saldada</th>
+                <th class="text-center" style="width:20%;">Fecha Nota</th>
+                <th class="text-center">Nota</th>
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Pedido</th>
                 <th class="text-center">Vendedor</th>
@@ -98,6 +96,7 @@
                 @else  
                     <?php   
                     $cont = 0;
+                    $numcont = count($quotations);
                     ?>
 
                     @foreach ($quotations as $quotation)
@@ -108,6 +107,9 @@
                     ?>
                     
                       <tr>
+                            <td class="text-center">{{$numcont}}</td>    
+                            <td class="text-center">{{ date_format(date_create($quotation->updated_at),"d-m-Y") ?? ''}}</td>
+                               
                             <td class="text-center">{{ date_format(date_create($quotation->date_delivery_note),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
@@ -141,6 +143,7 @@
                         </tr>    
                         <?php   
                         $cont++;
+                        $numcont--;
                         ?> 
                     @endforeach   
                 @endif
