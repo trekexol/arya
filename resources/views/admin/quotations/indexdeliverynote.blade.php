@@ -216,40 +216,8 @@
          let id_quotation = $(this).attr('data-id-quotation');
  
          $('#id_quotation_modal').val(id_quotation);
-
-         window.location.href = "route('quotations.indexdeliverynote')";
-     });
-
-    
-    /* $(document).on('click','.saldar',function(){
-         let id_pedido = $(this).attr('data-pedido');
-         let id_quotation = $(this).attr('data-id-note');
-         var saldar = 1;
-         var valinput = '0';
-
-         var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
-
-         window.location.href = url;
  
-     });
-
-     $(document).on('click','.saldado',function(){
-         let id_pedido = $(this).attr('data-pedido');
-         let id_quotation = $(this).attr('data-id-note');
-         var saldar = 0;
-         var valinput = '0';
-
-         var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
-
-         window.location.href = url;
- 
-     }); */
-     
-     $(document).on('click','.delete',function(){
-         
-         let id_quotation = $(this).attr('data-id-quotation');
- 
-         $('#id_quotation_modal').val(id_quotation);
+        
      });
 
     </script> 

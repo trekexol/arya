@@ -27,7 +27,7 @@ class DeliveryNoteController extends Controller
     }
  
 
-    public function index($id_quotation = null,$number_pedido = null)
+    public function index($id_quotation = null,$number_pedido = null,$saldar = null)
     {
         if($this->userAccess->validate_user_access($this->modulo)){
             $user       =   auth()->user();
@@ -35,7 +35,16 @@ class DeliveryNoteController extends Controller
 
             if(isset($id_quotation)) {
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
-                
+               
+                if($saldar == '0') {
+                    $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => '1']);
+                    
+                    $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+
+                    $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id_quotation)->update([ 'status' => '1' ]);
+         
+                }
+
             }
 
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_delivery_note' ,'DESC')
@@ -87,8 +96,6 @@ class DeliveryNoteController extends Controller
                     
                 $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
-                $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
-                 
                 $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id)->update([ 'status' => 'C' ]);
 
                 return redirect('quotations/indexnotasdeentrega')->withSuccess('Nota '.$quotation->number_delivery_note.' Saldada Exitosamente!');

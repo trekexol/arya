@@ -135,7 +135,7 @@
                                 <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin,"Nota de Entrega"])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
 
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
-                                <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                                <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Quitar de la Lista"><i class="fa fa-trash text-danger"></i></a>
 
                                 
                             </td>                        
@@ -157,25 +157,28 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Des Saldar</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('quotations.reversar_delivery_note') }}" method="post">
+           
+
+           
+        <div>
                 @csrf
                 @method('DELETE')
-                <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
+                <input id="id_quotation_modal" type="hidden" class="form-control error('id_quotation_modal') is-invalid enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
                        
-                <h5 class="text-center">Seguro que desea eliminar?</h5>
+                <h5 class="text-center">Seguro desea enviar al listado de notas?</h5>
                 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-danger">Eliminar</button>
+                <button type="button" data-id-quotation={{$quotation->id}} class="btn btn-danger desaldar">Quitar Saldado</button>
             </div>
-            </form>
+        </div>
         </div>
     </div>
   </div>
@@ -220,40 +223,19 @@
  
          $('#id_quotation_modal').val(id_quotation);
 
-         window.location.href = "route('quotations.indexdeliverynote')";
      });
 
-    
-    /* $(document).on('click','.saldar',function(){
-         let id_pedido = $(this).attr('data-pedido');
-         let id_quotation = $(this).attr('data-id-note');
-         var saldar = 1;
+     $(document).on('click','.desaldar',function(){
+        
+        let id_quotation = $(this).attr('data-id-quotation');
+        var saldar = 0;
          var valinput = '0';
 
          var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
 
          window.location.href = url;
- 
-     });
-
-     $(document).on('click','.saldado',function(){
-         let id_pedido = $(this).attr('data-pedido');
-         let id_quotation = $(this).attr('data-id-note');
-         var saldar = 0;
-         var valinput = '0';
-
-         var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;
-
-         window.location.href = url;
- 
-     }); */
+    });
      
-     $(document).on('click','.delete',function(){
-         
-         let id_quotation = $(this).attr('data-id-quotation');
- 
-         $('#id_quotation_modal').val(id_quotation);
-     });
 
     </script> 
 
