@@ -176,7 +176,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" data-id-quotation={{$quotation->id}} class="btn btn-danger desaldar">Quitar Saldado</button>
+                <button type="button" data-id-quotation={{ $quotation->id ?? ''}} class="btn btn-danger desaldar">Quitar Saldado</button>
             </div>
         </div>
         </div>
