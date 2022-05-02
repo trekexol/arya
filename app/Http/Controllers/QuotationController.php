@@ -107,8 +107,18 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');    
 
+            $user   =   auth()->user();
+
+            if(isset($user->id_branch)){
+                $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
+            }else{
+                $user_branch  = null;
+            }
+    
+            $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+
             
-            return view('admin.quotations.createquotation',compact('client','datenow','transports','type'));
+            return view('admin.quotations.createquotation',compact('user_branch','branches','client','datenow','transports','type'));
 
         }else{
             return redirect('/quotations/index')->withDanger('El Cliente no existe');
@@ -134,11 +144,20 @@ class QuotationController extends Controller
                 /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
 
                 $transports     = Transport::on(Auth::user()->database_name)->get();
-
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');    
 
-                return view('admin.quotations.createquotation',compact('client','vendor','datenow','transports','type'));
+                $user   =   auth()->user();
+
+                if(isset($user->id_branch)){
+                    $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
+                }else{
+                    $user_branch  = null;
+                }
+        
+                $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+
+                return view('admin.quotations.createquotation',compact('user_branch','branches','client','vendor','datenow','transports','type'));
 
             }else{
                 return redirect('/quotations/index')->withDanger('El Vendedor no existe');
