@@ -241,8 +241,9 @@
                                     aria-labelledby="dropdownMenuButton">
                                     <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Factura Media Carta</a>  
                                     <a href="#" onclick="pdf_maq();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Imprimir Factura Matricial Carta</a> 
-
+                                    @if (Auth::user()->mod_delete  == '1')
                                     <a href="#" class="dropdown-item bg-light delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Factura</a> 
+                                    @endif
                                 </div>
                             </div> 
                            
@@ -306,7 +307,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                    <button type="submit" class="btn btn-danger">Reversar</button>
                 </div>
             </form>
         </div>
