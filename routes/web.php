@@ -424,6 +424,11 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
     Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
 
+    Route::patch('{id}/updateQuotation','QuotationController@updateQuotation')->name('quotations.updateQuotation'); 
+    Route::patch('selectclientQuotation/{id}','QuotationController@selectclientQuotation')->name('quotations.selectclientQuotation');
+    Route::get('updateClientQuotation/{id_quotation}/{id_client}/{coin}','QuotationController@updateClientQuotation')->name('quotations.updateClientQuotation'); 
+   
+
     Route::get('registerquotation/{type?}','QuotationController@createquotation')->name('quotations.createquotation');
 
     Route::get('registerquotationclient/{id_client}/{type?}','QuotationController@createquotationclient')->name('quotations.createquotationclient');
