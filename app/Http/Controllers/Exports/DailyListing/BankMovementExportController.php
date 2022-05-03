@@ -11,7 +11,7 @@ use App\Client;
 use App\Company;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Exports\DailyListing\OrderPaymentListExportFromView;
+use App\Exports\DailyListing\BankMovementExportFromView;
 use App\Http\Controllers\Calculations\AccountCalculationController;
 use App\Http\Controllers\GlobalController;
 use App\Provider;
@@ -19,21 +19,21 @@ use App\Vendor;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
-class OrderPaymentListExportController extends Controller
+class BankMovementExportController extends Controller
 {
     public function exportExcel(Request $request) 
     {
         
-        $export = new OrderPaymentListExportFromView($request);
+        $export = new BankMovementExportFromView($request);
 
         $export->setter($request);
 
         $export->view();       
         
-        return Excel::download($export, 'Ordenes de Pago.xlsx');
+        return Excel::download($export, 'Movimientos Bancarios.xlsx');
     }
 
-    public function pdfAccountOrdenDePago(Request $request)
+    public function pdfAccountBankMovement(Request $request)
     {
        $date_begin = request('date_begin');
        $date_end = request('date_end');
@@ -60,7 +60,9 @@ class OrderPaymentListExportController extends Controller
                     $query->select('id_header_voucher')
                     ->from('detail_vouchers')
                     ->where('id_account',$id_account)
-                    ->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    ->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
                 })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -78,7 +80,9 @@ class OrderPaymentListExportController extends Controller
                     $query->select('id_header_voucher')
                     ->from('detail_vouchers')
                     ->where('id_account',$id_account)
-                    ->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    ->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
                 })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -93,7 +97,9 @@ class OrderPaymentListExportController extends Controller
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                 ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
                 ->where(function ($query) {
-                    $query->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    $query->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
                     })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -108,7 +114,9 @@ class OrderPaymentListExportController extends Controller
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                 ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
                 ->where(function ($query) {
-                    $query->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    $query->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
                     })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -118,11 +126,11 @@ class OrderPaymentListExportController extends Controller
             }
        }
        
-       $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
+        $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
-       $date_end = Carbon::parse($date_end)->format('d-m-Y');
+        $date_end = Carbon::parse($date_end)->format('d-m-Y');
 
-       $titlePDF = 'Ordenes de Pago';
+        $titlePDF = 'Movimientos Bancarios';
 
       
         return view('export_excel.daily_listing.journal_book',compact('company','detailvouchers'
