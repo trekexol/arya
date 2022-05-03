@@ -502,6 +502,8 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
     
     Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
+    
+    Route::post('orderpaymentlist/pdfAccount','OrderPaymentListController@pdfAccountOrdenDePago')->name('bankmovements.pdfAccountOrdenDePago');
 
 });
 
@@ -1185,6 +1187,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('diarybookdetails','Exports\DailyListing\DiaryBookDetailExportController@exportExcel')->name('export_reports.diary_book_details');
     Route::post('ledger','Exports\DailyListing\LedgerExportController@exportExcel')->name('export_reports.ledger');
     Route::post('journalbooks','Exports\DailyListing\JournalbookExportController@exportExcel')->name('export_reports.journalbooks');
+    Route::post('orderpayments','Exports\DailyListing\OrderPaymentListExportController@exportExcel')->name('export_reports.orderpayments');
     
 });
 

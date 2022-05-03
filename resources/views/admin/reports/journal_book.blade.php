@@ -31,7 +31,7 @@
   <h5 style="color: black"> Rif: {{ $company->code_rif ?? ''}}</h5>
   <h5 style="color: black;">Fecha de Emisión: {{ $datenow }}</h5>
    
-  <h4 style="color: black; text-align: center">LIBRO DIARIO</h4>
+  <h4 style="color: black; text-align: center">{{$titlePDF ?? 'LIBRO DIARIO'}}</h4>
  
   <h5 style="color: black;">Fecha desde: {{ $date_begin ?? '' }} / hasta {{ $date_end ?? ''}}</h5>
   
@@ -86,7 +86,7 @@
       @endif
       
         <tr>
-          <td style="text-align: center;">{{ $detail->date ?? ''}}</td>
+          <td style="text-align: center;">{{ date_format(date_create($detail->date),"d-m-Y")}}</td>
           <td style="text-align: center;">{{ $detail->id_header ?? ''}}</td>
           <td style="text-align: left;">{{ $detail->account_description ?? ''}}</td>
           <td style="text-align: right;">{{ number_format($detail->debe ?? 0, 2, ',', '.')}}</td>
