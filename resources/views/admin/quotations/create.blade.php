@@ -26,15 +26,16 @@
         <div class="col-md-12" >
             <div class="card">
                 <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}}</h3></div>
-
                 <div class="card-body" >
-                   
-                       
-                       
+                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id) }}" enctype="multipart/form-data" >
+                        @method('PATCH')
+                        @csrf()
+                        <input id="coinhidden2" type="hidden" class="form-control @error('coin') is-invalid @enderror" name="coin2" value="{{ $coin ?? 'bolivares' }}" readonly autocomplete="coin">
+                           
                         <div class="form-group row">
                             <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}:</label>
                             <div class="col-md-4">
-                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}" readonly required autocomplete="date_quotation">
+                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}"  required autocomplete="date_quotation">
     
                                 @error('date_quotation')
                                     <span class="invalid-feedback" role="alert">
@@ -43,21 +44,23 @@
                                 @enderror
                             </div>
                             <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
-                            <div class="col-md-4">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly required autocomplete="client">
+                            <div class="col-md-3">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly autocomplete="client">
                                 @error('client')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
+                            <a href="#" onclick="searchClient();" title="Cambiar Cliente"><i class="fa fa-eye"></i></a>  
+                                        
                         </div>
 
                         <div class="form-group row">
                             <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="serie">
+                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $quotation->serie ?? '' }}"  autocomplete="serie">
 
                                 @error('serie')
                                     <span class="invalid-feedback" role="alert">
@@ -67,7 +70,7 @@
                             </div>
                             <label for="vendor" class="col-md-3 col-form-label text-md-right">Vendedor:</label>
                             <div class="col-md-4">
-                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }}" readonly required autocomplete="vendor">
+                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }}" readonly autocomplete="vendor">
                                 @error('vendor')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -80,7 +83,7 @@
                         <div class="form-group row">
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte/ Tipo de Entrega:</label>
                             <div class="col-md-4">
-                                <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly required autocomplete="transport"> 
+                                <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly autocomplete="transport"> 
                            
                                 @error('transport')
                                     <span class="invalid-feedback" role="alert">
@@ -91,7 +94,7 @@
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
                             <div class="col-md-4">
-                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $quotation->observation ?? old('observation') }}" readonly required autocomplete="observation">
+                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $quotation->observation ?? old('observation') }}"   autocomplete="observation">
 
                                 @error('observation')
                                     <span class="invalid-feedback" role="alert">
@@ -105,7 +108,7 @@
                             <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
 
                             <div class="col-md-4">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}" readonly required autocomplete="note">
+                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}"  autocomplete="note">
 
                                 @error('note')
                                     <span class="invalid-feedback" role="alert">
@@ -117,8 +120,10 @@
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="totallabel" id="total"><h3></h3></label>
                             </div>
-
+                            <div class="col-md-2">
+                            <button type="submit" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Actualizar</button>  
                         </div>
+                    </form>
                         <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
@@ -487,6 +492,14 @@
             document.getElementById("divFacturar").classList.add('offset-sm-1');
 
         }
+
+        function searchClient(){
+            var old_action = document.getElementById("formUpdate").action;
+            document.getElementById("formUpdate").action = "{{ route('quotations.selectclientQuotation',$quotation->id) }}";
+            document.getElementById("formUpdate").submit();
+            document.getElementById("formUpdate").action = old_action;
+        }
+
 
         $(document).ready(function () {
             $("#discount_product").mask('000', { reverse: true });

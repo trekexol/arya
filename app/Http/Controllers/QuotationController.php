@@ -397,6 +397,30 @@ class QuotationController extends Controller
         
     }
 
+    public function selectclientQuotation(Request $request,$id)
+    {
+        $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
+        $coin = $request->coin2;
+
+        $id_quotation = $id;
+
+        return view('admin.quotations.selectclientQuotation',compact('clients','id_quotation','coin'));
+    }
+
+    public function updateClientQuotation($id_quotation,$id_client,$coin)
+    {
+        $var = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+
+        $var->id_client = $id_client;
+       
+        $var->save();
+
+        return redirect('/quotations/register/'.$id_quotation.'/'.$coin.'')->withSuccess('Cliente Actualizado Con Exito !!');
+       
+    }
+
+
     public function selectclient($type = null)
     {
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
@@ -404,7 +428,6 @@ class QuotationController extends Controller
     
         return view('admin.quotations.selectclient',compact('clients','type'));
     }
-    
 
     public function store(Request $request)
     {
@@ -674,7 +697,7 @@ class QuotationController extends Controller
         $var = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
         $var->segment_id = request('segment_id');
-        $var->subsegment_id= request('sub_segment_id');
+        $var->serie = request('sub_segment_id');
         $var->unit_of_measure_id = request('unit_of_measure_id');
 
         $var->code_comercial = request('code_comercial');
@@ -721,6 +744,28 @@ class QuotationController extends Controller
     }
 
 
+    public function updateQuotation(Request $request, $id)
+    {
+      
+
+        $var = Quotation::on(Auth::user()->database_name)->findOrFail($id);
+
+        $var->date_quotation = request('date_quotation');
+        $var->serie = request('serie');
+
+        $var->observation = request('observation');
+        $var->note = request('note');
+       
+    
+        $var->save();
+
+        $historial_quotation = new HistorialQuotationController();
+
+        $historial_quotation->registerAction($var,"quotation","Actualizó la Cotización");
+
+
+        return redirect('/quotations/register/'.$var->id.'/'.$request->coin2.'')->withSuccess('Actualizacion Exitosa!');
+    }
 
         
 
