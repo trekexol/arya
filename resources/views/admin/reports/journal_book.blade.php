@@ -86,7 +86,7 @@
       @endif
       
         <tr>
-          <td style="text-align: center;">{{ $detail->date ?? ''}}</td>
+          <td style="text-align: center;">{{ date_format(date_create($detail->date),"d-m-Y")}}</td>
           <td style="text-align: center;">{{ $detail->id_header ?? ''}}</td>
           <td style="text-align: left;">{{ $detail->account_description ?? ''}}</td>
           <td style="text-align: right;">{{ number_format($detail->debe ?? 0, 2, ',', '.')}}</td>

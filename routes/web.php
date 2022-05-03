@@ -502,6 +502,8 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
     
     Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
+    
+    Route::post('orderpaymentlist/pdfAccount','OrderPaymentListController@pdfAccountOrdenDePago')->name('bankmovements.pdfAccountOrdenDePago');
 
 });
 
