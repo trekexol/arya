@@ -86,7 +86,7 @@ class OrderPaymentListController extends Controller
             return view('admin.bankmovements.indexorderpayment',compact('detailvouchers','accounts','datenow'));
 
         }else{
-            return redirect('/bankmovements')->withDanger('No existe Tiene Acceso!');
+            return redirect('/bankmovements')->withDanger('No Tiene Acceso!');
        }
    } 
 

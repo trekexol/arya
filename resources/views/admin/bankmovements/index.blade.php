@@ -10,11 +10,11 @@
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
-<div class="row justify-content-left">
-    <div class="col-md-2">
-    </div>
-    <div class="col-md-4">
-        <a href="{{ route('bankmovements.indexmovement') }}" class="btn btn-info" title="Transferencia">E Movimientos Bancarios</a>
+<div class="container-fluid">
+    <div class="row py-lg-2">
+        <div class="col-sm-4 offset-sm-2">
+            <a href="{{ route('bankmovements.indexmovement') }}" class="btn btn-info" title="Transferencia">Movimientos Bancarios</a>
+        </div>
     </div>
 </div>
 <br>
@@ -116,6 +116,7 @@
 </div>
 </div>
   
+ 
 @endsection
 
 @section('javascript')
