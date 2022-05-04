@@ -7,10 +7,10 @@
         <a class="nav-link  font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('nominas') }}" role="tab" aria-controls="home" aria-selected="true">Nóminas</a>
         </li>
         <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaconcepts') }}" role="tab" aria-controls="profile" aria-selected="false">Concepto de Nómina</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaconcepts') }}" role="tab" aria-controls="profile" aria-selected="false">Concepto de Nómina</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominabasescalc') }}" role="tab" aria-controls="profile" aria-selected="false">Bases de Cálculo</a>
+            <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominabasescalc') }}" role="tab" aria-controls="profile" aria-selected="false">Bases de Cálculo</a>
         </li>
     </ul>
 
@@ -20,7 +20,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-md-6">
-            <h2>Conceptos de Nóminas Registradas</h2>
+            <h2>Bases de Cálculos (Datos Generales)</h2>
         </div>
        
         @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
