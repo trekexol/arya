@@ -2837,8 +2837,8 @@ class ExpensesAndPurchaseController extends Controller
                     //Inventario
                     $respuesta = Account::on(Auth::user()->database_name)->select('id','description')
                                                                         ->where('code_one',1)
-                                                                        ->where('code_two', 1)
-                                                                        ->where('code_three', 3)
+                                                                        ->where('code_two', 2)
+                                                                        ->where('code_three', 1)
                                                                         ->where('code_four',1)
                                                                         ->where('code_five', '<>',0)
                                                                         ->orderBy('description','asc')
