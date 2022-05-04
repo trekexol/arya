@@ -1203,6 +1203,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('orderpayments','Exports\DailyListing\OrderPaymentListExportController@exportExcel')->name('export_reports.orderpayments');
     Route::post('bankmovements','Exports\DailyListing\BankMovementExportController@exportExcel')->name('export_reports.bankmovements');
     
+    Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
 });
 
 Route::group(["prefix"=>'mails'],function(){

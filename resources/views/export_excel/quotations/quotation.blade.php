@@ -1,20 +1,19 @@
 
-  
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  
-<title></title>
+<title>Factura</title>
 <style>
   table, td, th {
     border: 1px solid black;
-    font-size: x-small;
   }
   
   table {
     border-collapse: collapse;
-    width: 100%;
+    width: 50%;
   }
   
   th {
@@ -25,7 +24,6 @@
 </head>
 
 <body>
-
   <br>
   <h2 style="color: black; text-align: center">Cotizaciones</h2>
   <br>
@@ -50,16 +48,16 @@
       @if (empty($quotations))
       @else  
           @foreach ($quotations as $quotation)
-           
               <tr>
+                 
                   <td class="text-center">{{ $quotation->serie ?? ''}}</td>
                   <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
                   <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
                   <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
                   <td class="text-center">{{ $quotation->date_quotation ?? ''}}</td>
+                             
               </tr>     
           @endforeach   
-         
       @endif
   </tbody>
 </table>
