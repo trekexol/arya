@@ -34,7 +34,6 @@
   <?php 
     
     $total_por_pagar = 0;
-  
   ?>
 <table style="width: 100%;">
   <thead>
