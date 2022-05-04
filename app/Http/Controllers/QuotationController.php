@@ -759,15 +759,26 @@ class QuotationController extends Controller
  
         $pdf = App::make('dompdf.wrapper');
  
-        $id_account = request('id_account');
+        $id_client = request('id_client');
  
         $coin = request('coin');
         
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        $quotations = Quotation::on(Auth::user()->database_name)
-                                ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
-
+        if(isset($id_client)){
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->where('id_client',$id_client)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }else{
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }
 
         $pdf = $pdf->loadView('admin.quotations.pdfQuotations',compact('company','quotations'
         ,'datenow','date_begin','date_end'));

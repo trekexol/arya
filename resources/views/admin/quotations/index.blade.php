@@ -275,7 +275,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('export_reports.bankmovements') }}"  >
+            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('export_reports.quotations') }}"  >
                 @csrf
             <div class="modal-body">
                 <div class="form-group row">
