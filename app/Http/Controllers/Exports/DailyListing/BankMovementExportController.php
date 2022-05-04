@@ -51,18 +51,21 @@ class BankMovementExportController extends Controller
 
       
        if(isset($id_account)){
-           if(isset($coin) && $coin != 'Bolivares'){
+           if(isset($coin) && $coin != 'bolivares'){
                 $detailvouchers =  DB::connection(Auth::user()->database_name)->table('header_vouchers')
                 ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                 ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->where(function ($query) {
+                    $query->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
+                    })
                 ->whereIn('header_vouchers.id', function($query) use ($id_account){
                     $query->select('id_header_voucher')
                     ->from('detail_vouchers')
-                    ->where('id_account',$id_account)
-                    ->where('header_vouchers.description','LIKE','Deposito%')
-                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
-                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
+                    ->where('id_account',$id_account);
+                    
                 })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -76,13 +79,15 @@ class BankMovementExportController extends Controller
                 ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                 ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->where(function ($query) {
+                    $query->where('header_vouchers.description','LIKE','Deposito%')
+                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
+                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
+                    })
                 ->whereIn('header_vouchers.id', function($query) use ($id_account){
                     $query->select('id_header_voucher')
                     ->from('detail_vouchers')
-                    ->where('id_account',$id_account)
-                    ->where('header_vouchers.description','LIKE','Deposito%')
-                    ->orwhere('header_vouchers.description','LIKE','Retiro%')
-                    ->orwhere('header_vouchers.description','LIKE','Transferencia%');
+                    ->where('id_account',$id_account);
                 })
                 ->whereIn('detail_vouchers.status', ['F','C'])
                 ->select('detail_vouchers.*','header_vouchers.*'
@@ -91,7 +96,7 @@ class BankMovementExportController extends Controller
                 ,'header_vouchers.description as header_description')->get();
            }
        }else{
-            if(isset($coin) && $coin != 'Bolivares'){
+            if(isset($coin) && $coin != 'bolivares'){
                 $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
