@@ -213,7 +213,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('nominas') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Nóminas</strong></a>
                 <a class="collapse-item" href="{{ route('nominaconcepts') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Concepto de Nóminas</strong></a>
-                <a class="collapse-item" href="{{ route('nominaconcepts') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Bases de Cálculo</strong></a>
+                <a class="collapse-item" href="{{ route('nominabasescalc') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Bases de Cálculo</strong></a>
                 <a class="collapse-item" href="{{ route('indexbcvs') }}" > <i class="fas fa-money-bill fa-sm fa-fw mr-2 text-black-400"></i><strong>Indices BCV</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Prestaciones</strong></a>

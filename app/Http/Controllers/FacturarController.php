@@ -482,6 +482,7 @@ class FacturarController extends Controller
 
         DB::connection(Auth::user()->database_name)->table('quotation_products')
                 ->where('id_quotation', '=', $quotation->id)
+                ->where('status','!=','X')
                 ->update(['status' => 'C']);
 
                 if(!isset($quotation->number_delivery_note)){
@@ -496,7 +497,9 @@ class FacturarController extends Controller
         $global = new GlobalController; 
         
         $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-        ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+        ->where('id_quotation', '=', $quotation->id)
+        ->where('status','!=','X')
+        ->get(); // Conteo de Productos para incluiro en el historial de inventario
 
         foreach($quotation_products as $det_products){ // guardado historial de inventario
             
@@ -1719,7 +1722,7 @@ class FacturarController extends Controller
             if(($quotation_status != 'C') && ($quotation_status != 'P')){
 
                 if(empty($quotation->number_invoice))
-                {   //Me busco el ultimo numero en notas de entrega
+                {   //Me busco el ultimo numero en factura
                     $last_number = Quotation::on(Auth::user()->database_name)->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
 
                     //Asigno un numero incrementando en 1
@@ -1743,7 +1746,9 @@ class FacturarController extends Controller
                 $global = new GlobalController;                                                
         
                 $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                ->where('id_quotation', '=', $quotation->id)->get();
+                ->where('id_quotation', '=', $quotation->id)
+                ->where('status','!=','X')
+                ->get();
         
                 foreach($quotation_products as $det_products){
     
@@ -1887,6 +1892,7 @@ class FacturarController extends Controller
             //Aqui pasa los quotation_products a status C de Cobrado
             DB::connection(Auth::user()->database_name)->table('quotation_products')
                                                         ->where('id_quotation', '=', $quotation->id)
+                                                        ->where('status', '!=','X')
                                                         ->update(['status' => 'C']);
     
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);

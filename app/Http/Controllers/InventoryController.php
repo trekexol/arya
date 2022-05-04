@@ -135,7 +135,9 @@ class InventoryController extends Controller
 
         $global = new GlobalController();
 
-        
+        $invoice = null;
+        $note = null;
+        $expense = null;
         
         if($date_frist == 'todo'){
             $date_frist = $global->data_first_month_day();
@@ -177,74 +179,63 @@ class InventoryController extends Controller
         ->get();     
 
 
-        foreach ($inventories as $inventorie) {
+        foreach ($inventories as $inventory) {
             
-            if ($type == 'venta' || $type == 'nota' || $type == 'rev_venta' || $type == 'rev_nota') {
-                $invoice = DB::connection(Auth::user()->database_name)
-                ->table('quotations')
-                ->where('id','=',$inventorie->id_quotation)
-                ->select('number_invoice')
-                ->get()->last(); 
+
+
+                
+
+
+                if ($inventory->type == 'compra' or $inventory->type == 'rev_compra') {   
+
+                    $invoice = DB::connection(Auth::user()->database_name)
+                    ->table('expenses_and_purchases')
+                    ->where('id','=',$inventory->id_expense_detail)
+                    ->select('invoice')
+                    ->get()->last(); 
+                } else  {
+
+                    $invoice = DB::connection(Auth::user()->database_name)
+                    ->table('quotations')
+                    ->where('id','=',$inventory->id_quotation_product)
+                    ->select('number_invoice')
+                    ->get()->last(); 
+                }
+
 
                 $note = DB::connection(Auth::user()->database_name)
                 ->table('quotations')
-                ->where('id','=',$inventorie->id_quotation)
+                ->where('id','=',$inventory->id_quotation_product)
                 ->select('number_delivery_note')
                 ->get()->last(); 
-            }
-            
-
-
-
+ 
+                
                 $branch = DB::connection(Auth::user()->database_name)
                 ->table('branches')
-                ->where('id','=',$inventorie->id_branch)
+                ->where('id','=',$inventory->id_branch)
                 ->select('description')
                 ->get()->last();         
-            
+                
 
-            if (!empty($invoice)) {
-
-            $inventorie->invoice = $invoice->number_invoice;
-
-            } else {
-
-
-                if ($inventorie->id_expense == 0) {
-                    
-                    if ($inventorie->type == 'venta' || $inventorie->type == 'rev_venta'){ 
-                    $inventorie->invoice = $inventorie->id_quotation;  
-                    } else {
-                    $inventorie->invoice = '';       
-                    }
-                    
+                if (isset($invoice->number_invoice)) {
+                $inventory->invoice = $invoice->number_invoice;
+                } elseif (isset($invoice->invoice)) {
+                $inventory->invoice = $invoice->invoice;
                 } else {
-
-                    $inventorie->invoice = '';   
+                $inventory->invoice = '';   
                 }
-            
-            }
-            
-            if (!empty($note)) {
-            $inventorie->note = $note->number_delivery_note; 
-            } else {
-                if ($inventorie->id_expense == 0) {
-                    
-                    if ($inventorie->type == 'nota' || $inventorie->type == 'rev_nota' || $inventorie->type == 'aju_nota'){ 
-                    $inventorie->note =  $inventorie->id_quotation;  
-                    } else {
-                    $inventorie->note = '';       
-                    }
+                
+                if (isset($note->number_delivery_note)) {
+                $inventory->note = $note->number_delivery_note; 
                 } else {
-
-                    $inventorie->note= '';   
+                $inventory->note= '';   
                 }
-            }
-            if (!empty($branch)) {
-            $inventorie->branch = $branch->description;
-            } else {
-                $inventorie->branch = '';
-            }
+
+                if (!empty($branch)) {
+                $inventory->branch = $branch->description;
+                } else {
+                    $inventory->branch = '';
+                }
     }
 
 

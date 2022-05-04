@@ -519,7 +519,9 @@ class PDF2Controller extends Controller
                 $global = new GlobalController();
 
                 $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+                ->where('id_quotation', '=', $quotation->id)
+                ->where('status','!=','X')
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
                    
                 
                 foreach($quotation_products as $det_products){ // guardado historial de inventario 
@@ -943,7 +945,9 @@ class PDF2Controller extends Controller
                 $global = new GlobalController();
 
                 $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                ->where('id_quotation', '=', $quotation->id)->get(); // Conteo de Productos para incluiro en el historial de inventario
+                ->where('id_quotation', '=', $quotation->id)
+                ->where('status','!=','X')
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
                    
                 
                 foreach($quotation_products as $det_products){ // guardado historial de inventario 
