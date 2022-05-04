@@ -38,23 +38,36 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-      <div class="col-md-4">
+      <div class="col-sm-1">
           <h2>Cotizaciones</h2>
       </div>
-      <div class="col-sm-2">
-        <select class="form-control" name="coin" id="coin">
-            @if(isset($coin))
-                <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                <option disabled  value="{{ $coin }}">-----------</option>
-            @else
-                <option disabled selected value="bolivares">Moneda</option>
-            @endif
-            
-            <option  value="bolivares">Bolívares</option>
-            <option value="dolares">Dólares</option>
-        </select>
-    </div>
-      <div class="col-md-6">
+        <div class="col-sm-3 offset-sm-2  dropdown mb-4">
+            <button class="btn btn-success" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                aria-expanded="false">
+                <i class="fas fa-bars"></i>
+                Exportaciones
+            </button>
+            <div class="dropdown-menu animated--fade-in"
+                aria-labelledby="dropdownMenuButton">
+                <a href="#" data-toggle="modal" data-target="#PDFModalAccount" class="dropdown-item bg-light">Exportar a PDF</a>
+                <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
+            </div>
+        </div> 
+        <div class="col-sm-2">
+            <select class="form-control" name="coin" id="coin">
+                @if(isset($coin))
+                    <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
+                    <option disabled  value="{{ $coin }}">-----------</option>
+                @else
+                    <option disabled selected value="bolivares">Moneda</option>
+                @endif
+                
+                <option  value="bolivares">Bolívares</option>
+                <option value="dolares">Dólares</option>
+            </select>
+        </div>
+      <div class="col-sm-3">
         <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
     </div>
@@ -178,6 +191,152 @@
         </div>
     </div>
 </div>
+
+  
+<div class="modal fade" id="PDFModalAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('quotations.pdfQuotations') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+                @csrf
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="id_client" name="id_client" >
+                                <option value="">Selecciona un Cliente</option>
+                                @foreach($clients as $var)
+                                    <option value="{{ $var->id }}">{{ $var->name }}</option>
+                                @endforeach
+                              
+                            </select>
+                        </div>
+                </div>
+                <div class="form-group row">
+                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
+                    <div class="col-md-6">
+                        <select class="form-control" name="coin" id="coin">
+                            <option selected value="bolivares">Bolívares</option>
+                            <option value="dolares">Dolares</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
+    
+                    <div class="col-sm-6">
+                        <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
+    
+                        @error('date_begin')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
+    
+                    <div class="col-sm-6">
+                        <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
+    
+                        @error('date_end')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+              
+            </div>
+                <div class="modal-footer">
+                    <div class="form-group col-md-2">
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                    </div>
+            </form>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<div class="modal fade" id="ExcelModalAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo / Exportar a Excel</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('export_reports.bankmovements') }}"  >
+                @csrf
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="id_client" name="id_client" >
+                                <option value="">Selecciona un Cliente</option>
+                                @foreach($clients as $var)
+                                    <option value="{{ $var->id }}">{{ $var->name }}</option>
+                                @endforeach
+                              
+                            </select>
+                        </div>
+                </div>
+                <div class="form-group row">
+                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
+                    <div class="col-md-6">
+                        <select class="form-control" name="coin" id="coin">
+                            <option selected value="bolivares">Bolívares</option>
+                            <option value="dolares">Dolares</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
+    
+                    <div class="col-sm-6">
+                        <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
+    
+                        @error('date_begin')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
+    
+                    <div class="col-sm-6">
+                        <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
+    
+                        @error('date_end')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+              
+            </div>
+                <div class="modal-footer">
+                    <div class="form-group col-md-2">
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                    </div>
+            </form>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('javascript')

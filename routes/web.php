@@ -478,6 +478,7 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::delete('reversardeliverynote','DeliveryNoteController@reversar_delivery_note')->name('quotations.reversar_delivery_note');
 
+    Route::post('pdfQuotations','QuotationController@pdfQuotations')->name('quotations.pdfQuotations');
 });
 
 Route::group(["prefix"=>'bankmovements'],function(){
