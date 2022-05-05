@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\BankMovement;
 use Illuminate\Http\Request;
 
@@ -49,38 +50,146 @@ class OrderPaymentListController extends Controller
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        if($users_role == '1'){
-        /*$detailvouchers = DB::connection(Auth::user()->database_name)->select('SELECT d.*, h.description as header_description, h.reference as header_reference, h.date as header_date
-                            FROM header_vouchers h
-                            LEFT JOIN detail_vouchers d 
-                                ON d.id_header_voucher = h.id
-                            WHERE h.description LIKE ? OR
-                            h.description LIKE ? OR
-                            h.description LIKE ? 
-                            '
-                            , ['Deposito%','Retiro%','Transferencia%']);
-        */
-        $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-                            ->where('header_vouchers.status','LIKE','1')
-                            ->where(function ($query) {
-                                $query->where('header_vouchers.description','LIKE','Orden de Pago%');
-                            })
-                            
-                            ->select('detail_vouchers.*','header_vouchers.description as header_description', 
-                            'header_vouchers.reference as header_reference','header_vouchers.date as header_date',
-                            'accounts.description as account_description','accounts.code_one as account_code_one',
-                            'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
-                            'accounts.code_four as account_code_four','accounts.code_five as account_code_five')
-                            ->orderBy('header_vouchers.id','desc')
-                            ->get();
+            /*$detailvouchers = DB::connection(Auth::user()->database_name)->select('SELECT d.*, h.description as header_description, h.reference as header_reference, h.date as header_date
+                                FROM header_vouchers h
+                                LEFT JOIN detail_vouchers d 
+                                    ON d.id_header_voucher = h.id
+                                WHERE h.description LIKE ? OR
+                                h.description LIKE ? OR
+                                h.description LIKE ? 
+                                '
+                                , ['Deposito%','Retiro%','Transferencia%']);
+            */
+            $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                ->where('header_vouchers.status','LIKE','1')
+                                ->where(function ($query) {
+                                    $query->where('header_vouchers.description','LIKE','Orden de Pago%');
+                                })
+                                
+                                ->select('detail_vouchers.*','header_vouchers.description as header_description', 
+                                'header_vouchers.reference as header_reference','header_vouchers.date as header_date',
+                                'accounts.description as account_description','accounts.code_one as account_code_one',
+                                'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
+                                'accounts.code_four as account_code_four','accounts.code_five as account_code_five')
+                                ->orderBy('header_vouchers.id','desc')
+                                ->get();
 
-        //dd($detailvouchers);
+            //dd($detailvouchers);
 
-        }
+            $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
-       return view('admin.bankmovements.indexorderpayment',compact('detailvouchers'));
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d'); 
+
+            return view('admin.bankmovements.indexorderpayment',compact('detailvouchers','accounts','datenow'));
+
+        }else{
+            return redirect('/bankmovements')->withDanger('No Tiene Acceso!');
+       }
    } 
+
+  
+
+   public function pdfAccountOrdenDePago(Request $request)
+   {
+       $date_begin = request('date_begin');
+       $date_end = request('date_end');
+
+       $date = Carbon::now();
+       $datenow = $date->format('d-m-Y');
+
+       $pdf = App::make('dompdf.wrapper');
+
+       $id_account = request('id_account');
+
+       $coin = request('coin');
+       
+       $company = Company::on(Auth::user()->database_name)->find(1);
+
+       
+       if(isset($id_account)){
+            if(isset($coin) && $coin != 'Bolivares'){
+                $detailvouchers =  DB::connection(Auth::user()->database_name)->table('header_vouchers')
+                ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
+                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                    $query->select('id_header_voucher')
+                    ->from('detail_vouchers')
+                    ->where('id_account',$id_account)
+                    ->where('header_vouchers.description','LIKE','Orden de Pago%');
+                })
+                ->whereIn('detail_vouchers.status', ['F','C'])
+                ->select('detail_vouchers.*','header_vouchers.*'
+                ,'accounts.description as account_description'
+                ,'header_vouchers.id as id_header'
+                ,'header_vouchers.description as header_description'
+                ,DB::raw('(detail_vouchers.debe / detail_vouchers.tasa) as debe')
+                ,DB::raw('(detail_vouchers.haber / detail_vouchers.tasa) as haber'))->get();
+            }else{
+                $detailvouchers =  DB::connection(Auth::user()->database_name)->table('header_vouchers')
+                ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
+                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                    $query->select('id_header_voucher')
+                    ->from('detail_vouchers')
+                    ->where('id_account',$id_account)
+                    ->where('header_vouchers.description','LIKE','Orden de Pago%');
+                })
+                ->whereIn('detail_vouchers.status', ['F','C'])
+                ->select('detail_vouchers.*','header_vouchers.*'
+                ,'accounts.description as account_description'
+                ,'header_vouchers.id as id_header'
+                ,'header_vouchers.description as header_description')->get();
+            }
+       }else{
+            if(isset($coin) && $coin != 'Bolivares'){
+                $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->where(function ($query) {
+                    $query->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    })
+                ->whereIn('detail_vouchers.status', ['F','C'])
+                ->select('detail_vouchers.*','header_vouchers.*'
+                ,'accounts.description as account_description'
+                ,'header_vouchers.id as id_header'
+                ,'header_vouchers.description as header_description' 
+                ,DB::raw('(detail_vouchers.debe / detail_vouchers.tasa) as debe')
+                ,DB::raw('(detail_vouchers.haber / detail_vouchers.tasa) as haber'))->get();
+            }else{
+                $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+                ->where(function ($query) {
+                    $query->where('header_vouchers.description','LIKE','Orden de Pago%');
+                    })
+                ->whereIn('detail_vouchers.status', ['F','C'])
+                ->select('detail_vouchers.*','header_vouchers.*'
+                ,'accounts.description as account_description'
+                ,'header_vouchers.id as id_header'
+                ,'header_vouchers.description as header_description')->get();
+            }
+       }
+       
+       $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
+
+       $date_end = Carbon::parse($date_end)->format('d-m-Y');
+
+       $titlePDF = 'Ordenes de Pago';
+
+       $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
+                               ,'datenow','date_begin','date_end','titlePDF'));
+       return $pdf->stream();
+   }
+
+   
+
 
    /**
     * Show the form for creating a new resource.

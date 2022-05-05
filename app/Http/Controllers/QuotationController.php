@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Account;
 use App\Anticipo;
 use App\AnticipoQuotation;
@@ -56,7 +57,12 @@ class QuotationController extends Controller
 
             $company = Company::on(Auth::user()->database_name)->find(1);
 
-            return view('admin.quotations.index',compact('quotations','company','coin'));
+            $clients = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            return view('admin.quotations.index',compact('quotations','company','coin','clients','datenow'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -741,6 +747,43 @@ class QuotationController extends Controller
 
 
         return redirect('/quotations/index')->withSuccess('Actualizacion Exitosa!');
+    }
+
+    public function pdfQuotations(Request $request)
+    {
+        $date_begin = request('date_begin');
+        $date_end = request('date_end');
+ 
+        $date = Carbon::now();
+        $datenow = $date->format('d-m-Y');
+ 
+        $pdf = App::make('dompdf.wrapper');
+ 
+        $id_client = request('id_client');
+ 
+        $coin = request('coin');
+        
+        $company = Company::on(Auth::user()->database_name)->find(1);
+
+        if(isset($id_client)){
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->where('id_client',$id_client)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }else{
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }
+
+        $pdf = $pdf->loadView('admin.quotations.pdfQuotations',compact('company','quotations'
+        ,'datenow','date_begin','date_end'));
+
+        return $pdf->stream();
     }
 
 

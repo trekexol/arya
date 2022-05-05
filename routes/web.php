@@ -478,6 +478,7 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::delete('reversardeliverynote','DeliveryNoteController@reversar_delivery_note')->name('quotations.reversar_delivery_note');
 
+    Route::post('pdfQuotations','QuotationController@pdfQuotations')->name('quotations.pdfQuotations');
 });
 
 Route::group(["prefix"=>'bankmovements'],function(){
@@ -502,6 +503,11 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
     
     Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
+    
+    Route::post('orderpaymentlist/pdfAccount','OrderPaymentListController@pdfAccountOrdenDePago')->name('bankmovements.pdfAccountOrdenDePago');
+
+    
+    Route::post('pdfAccount','BankMovementController@pdfAccountBankMovement')->name('bankmovements.pdfAccountBankMovement');
 
 });
 
@@ -1192,8 +1198,12 @@ Route::group(["prefix"=>'export_reports'],function(){
     
     Route::post('diarybookdetails','Exports\DailyListing\DiaryBookDetailExportController@exportExcel')->name('export_reports.diary_book_details');
     Route::post('ledger','Exports\DailyListing\LedgerExportController@exportExcel')->name('export_reports.ledger');
+
     Route::post('journalbooks','Exports\DailyListing\JournalbookExportController@exportExcel')->name('export_reports.journalbooks');
+    Route::post('orderpayments','Exports\DailyListing\OrderPaymentListExportController@exportExcel')->name('export_reports.orderpayments');
+    Route::post('bankmovements','Exports\DailyListing\BankMovementExportController@exportExcel')->name('export_reports.bankmovements');
     
+    Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
 });
 
 Route::group(["prefix"=>'mails'],function(){
