@@ -28,7 +28,7 @@ class NominaBasesCalcController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
-        $nominaconcepts  =  NominaBasesCalc::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+        $nominaconcepts  =  NominaBasesCalcs::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
 
 
     
