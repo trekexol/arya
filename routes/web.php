@@ -538,12 +538,14 @@ Route::group(["prefix"=>'nominaconcepts'],function(){
 
 Route::group(["prefix"=>'nominabasescalc'],function(){
     Route::get('/','NominaBasesCalcController@index')->name('nominabasescalc');
+    Route::post('store','NominaBasesCalcController@store')->name('nominabasescalc.store');
     /*Route::get('register','NominaConceptController@create')->name('nominaconcepts.create');
-    Route::post('store','NominaConceptController@store')->name('nominaconcepts.store');
+   
     Route::get('{id}/edit','NominaConceptController@edit')->name('nominaconcepts.edit');
     Route::delete('{id}/delete','NominaConceptController@destroy')->name('nominaconcepts.delete');
     Route::patch('{id}/update','NominaConceptController@update')->name('nominaconcepts.update');*/
 });
+
 
 
 Route::group(["prefix"=>'nominacalculations'],function(){

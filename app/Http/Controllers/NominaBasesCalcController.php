@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 
-use App\NominaBasesCalc;
+use App\NominaBasesCalcs;
 
-use App\Profession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,11 +27,10 @@ class NominaBasesCalcController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
-        $nominaconcepts  =  NominaBasesCalcs::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-
+        $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
 
     
-        return view('admin.nominabasescalc.index',compact('nominabasescalc'));
+        return view('admin.nominabasescalc.index',compact('nominabases'));
       
     }
 
@@ -45,63 +43,63 @@ class NominaBasesCalcController extends Controller
 
 
         return view('admin.nominaconcepts.create',compact('datenow','formulas'));
-    }
+    } */
 
     public function store(Request $request)
     {
        
         $data = request()->validate([
-           
-            'order'         =>'required',
+           /*
             'abbreviation'  =>'required',
-            'description'   =>'required|max:60',
-            'type'          =>'required',
-            'sign'          =>'required',
+            'description'   =>'required|max:60',*/
 
-            'calculate'     =>'required',
-           
-
-            'minimum'     =>'required',
-            'maximum'     =>'required',
-            
             
            
         ]);
 
-        $users = new NominaConcept();
-        $users->setConnection(Auth::user()->database_name);
+        dd($request);
 
-        $users->order = request('order');
-        $users->abbreviation = request('abbreviation');
-        $users->description = request('description');
-        $users->type = request('type');
-       
-        $users->sign = request('sign');
-        
-        $users->calculate = request('calculate');
-        $users->id_formula_m = request('formula_m');
-        $users->id_formula_s = request('formula_s');
-        $users->id_formula_q = request('formula_q');
+        $datos = new NominaBasesCalcs();
+        $datos->setConnection(Auth::user()->database_name);
+
+        $datos->salary_min = request('salary_min');
+        $datos->salary_min_USD = request('salary_min_USD');
+        $datos->salary_max = request('salary_max');
+        $datos->salary_max_USD = request('salary_max_USD');
+        $datos->amount_cestatickets = request('amount_cestatickets');
+        $datos->days_vacations = request('days_vacations');
+        $datos->days_bond_vacations = request('days_bond_vacations');
+        $datos->days_utility_min = request('days_utility_min');
+        $datos->days_utility_max = request('days_utility_max');
+        $datos->days_social_benefits = request('days_social_benefits');
+        $datos->rate_social_benefits = request('rate_social_benefits');
+        $datos->sso = request('sso');
+        $datos->faov = request('faov');
+        $datos->pie = request('pie');
+        $datos->sso_company = request('sso_company');
+        $datos->faov_company = request('faov_company');
+        $datos->pie_company = request('pie_company');
+
 
         $valor_sin_formato_minimum = str_replace(',', '.', str_replace('.', '', request('minimum')));
         $valor_sin_formato_maximum = str_replace(',', '.', str_replace('.', '', request('maximum')));
 
 
-        $users->minimum = $valor_sin_formato_minimum;
-        $users->maximum = $valor_sin_formato_maximum;
+        $datos->minimum = $valor_sin_formato_minimum;
+        $datos->maximum = $valor_sin_formato_maximum;
 
 
-        $users->status =  "1";
+        $datos->status =  "1";
        
        
 
-        $users->save();
+        $datos->save();
 
         return redirect('/nominaconcepts')->withSuccess('Registro Exitoso!');
     }
 
 
-
+/*
     public function edit($id)
     {
 
