@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NominaBasesCalc extends Model
+class NominaBasesCalcs extends Model
 {
    /* public function nominas(){
         return $this->belongsTo('App\Permission\Models\Nomina','id_nomina');

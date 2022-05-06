@@ -177,6 +177,7 @@
                 <a class="collapse-item" href="{{route('vendors')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Vendedores</strong></a>
                 <a class="collapse-item" href="{{route('sales')}}" ><i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-blue-400"></i><strong>Ventas</strong></a>
                 <a class="collapse-item" href="{{route('anticipos')}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos Clientes</strong></a>
+                <a class="collapse-item" href="{{ route('products')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
             </div>
         </div>
     </li>
@@ -213,7 +214,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ route('nominas') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Nóminas</strong></a>
                 <a class="collapse-item" href="{{ route('nominaconcepts') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Concepto de Nóminas</strong></a>
-                <a class="collapse-item" href="{{ route('nominabasescalc') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Bases de Cálculo</strong></a>
+                <!--<a class="collapse-item" href="{{ route('nominabasescalc') }}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Bases de Cálculo</strong></a> -->
                 <a class="collapse-item" href="{{ route('indexbcvs') }}" > <i class="fas fa-money-bill fa-sm fa-fw mr-2 text-black-400"></i><strong>Indices BCV</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Prestaciones</strong></a>

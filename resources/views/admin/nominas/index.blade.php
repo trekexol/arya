@@ -9,9 +9,28 @@
         <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaconcepts') }}" role="tab" aria-controls="profile" aria-selected="false">Concepto de Nómina</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominabasescalc') }}" role="tab" aria-controls="profile" aria-selected="false">Bases de Cálculo</a>
+        </li>
     </ul>
-  <br>
-    
+<!-- container-fluid -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="row py-lg-2">
+        <div class="col-md-6">
+            <h2>Nóminas Registradas</h2>
+        </div>
+       
+        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        <div class="col-md-6">
+            <a href="{{ route('nominas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Nómina</a>
+         
+        </div>
+        @endif
+    </div>
+  </div>   
+
 <!-- container-fluid -->
 <div class="container-fluid">
 
@@ -45,27 +64,7 @@
     </div>
   </div>
 
-<!-- container-fluid -->
-<div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="row py-lg-2">
-        <div class="col-md-6">
-            <h2>Nóminas Registradas</h2>
-        </div>
-       
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
-        <div class="col-md-6">
-            <a href="{{ route('nominas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Nómina</a>
-         
-        </div>
-        @endif
-       
-            
-       
-    </div>
-
-  </div>
 
   {{-- VALIDACIONES-RESPUESTA--}}
 @include('admin.layouts.success')   {{-- SAVE --}}
