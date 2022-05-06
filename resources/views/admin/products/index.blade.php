@@ -80,7 +80,7 @@
                 <th class="text-center">Precio</th>
                 <th class="text-center">Moneda</th>
                 <th class="text-center">Foto del Producto</th>
-                <th class="text-center">Estatus.</th>
+                <th class="text-center">Estatus</th>
               
                 <th class="text-center" width="7%"></th>
             </tr>

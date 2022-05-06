@@ -99,7 +99,7 @@
 
 <script>
     $('#dataTable').dataTable( {
-      "ordering": false,
+      "ordering": true,
       "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
 } );
