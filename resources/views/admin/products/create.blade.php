@@ -246,9 +246,9 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="account" class="col-md-2 col-form-label text-md-right">Asociar a Cuenta:</label>
+                            <label id="AssociateAccount" for="account" class="col-md-2 col-form-label text-md-right">Asociar a Cuenta:</label>
                         
-                            <div class="col-md-4">
+                            <div id="AssociateAccount2" class="col-md-4">
                             <select id="id_account"  name="id_account" class="form-control" required>
                                 <option value="">Seleccione una Cuenta</option>
                                 @foreach($accounts as $account)
@@ -309,7 +309,20 @@
 
 @section('javascript')
     <script>
-            
+        $("#type").on('change',function(){
+            var type = $(this).val();
+          
+            if(type == 'SERVICIO'){
+                $("#AssociateAccount").hide();
+                $("#AssociateAccount2").hide();
+                document.getElementById("id_account").value = null;
+            }else{
+                $("#AssociateAccount").show();
+                $("#AssociateAccount2").show();
+                document.getElementById("id_account").value = null;
+            }
+        });
+
         $("#segment").on('change',function(){
             var segment_id = $(this).val();
             $("#subsegment").val("");
