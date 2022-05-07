@@ -143,8 +143,7 @@ class DailyListingController extends Controller
     {
         $id_account = request('id_account');
         $coin = request('coin');
-
-        
+       
         $date_begin = request('date_begin');
         $date_end = request('date_end');
 
@@ -155,7 +154,8 @@ class DailyListingController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        if(isset($coin) && $coin == "bolivares"){
+        if(isset($coin) && $coin == "bolivares")
+        {
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -174,6 +174,7 @@ class DailyListingController extends Controller
             ,'header_vouchers.description as header_description')
             ->orderBy('detail_vouchers.id','asc')->get();
 
+           
             //busca los saldos previos de la cuenta                    
             $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
@@ -247,7 +248,7 @@ class DailyListingController extends Controller
                
         }
 
-       
+        
         $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');

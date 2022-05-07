@@ -217,15 +217,7 @@
                             </select>
                         </div>
                 </div>
-                <div class="form-group row">
-                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" name="coin" id="coin">
-                            <option selected value="bolivares">Bolívares</option>
-                            <option value="dolares">Dolares</option>
-                        </select>
-                    </div>
-                </div>
+               
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
     
@@ -290,15 +282,7 @@
                             </select>
                         </div>
                 </div>
-                <div class="form-group row">
-                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
-                    <div class="col-md-6">
-                        <select class="form-control" name="coin" id="coin">
-                            <option selected value="bolivares">Bolívares</option>
-                            <option value="dolares">Dolares</option>
-                        </select>
-                    </div>
-                </div>
+               
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
     

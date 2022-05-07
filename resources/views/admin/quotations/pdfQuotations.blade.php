@@ -29,7 +29,7 @@
   <br>
   <h2 style="color: black; text-align: center">Cotizaciones</h2>
   <br>
-  <h2 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h2>
+  <h2 style="color: black; text-align: center">Fecha de Emisión: {{ date_format(date_create($date_end ?? $datenow ),"d-m-Y") }}</h2>
    
   <?php 
     
@@ -56,7 +56,7 @@
                   <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
                   <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
                   <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
-                  <td class="text-center">{{ $quotation->date_quotation ?? ''}}</td>
+                  <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") }}</td>
               </tr>     
           @endforeach   
          
