@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Client;
+use App\Company;
 use App\DetailVoucher;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use Illuminate\Http\Request;
@@ -40,9 +42,13 @@ class OrderController extends Controller
                                     ->where('date_delivery_note',null)
                                     ->whereIn('status',[1,'M'])
                                     ->get();
-        
-    
-            return view('admin.orders.index',compact('quotations'));
+
+            $clients = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            return view('admin.orders.index',compact('quotations','clients','datenow'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -143,6 +149,45 @@ class OrderController extends Controller
              return redirect('/orders')->withDanger('La cotizacion no existe');
          } 
          
+    }
+
+    public function pdfOrders(Request $request)
+    {
+        $date_begin = request('date_begin');
+        $date_end = request('date_end');
+ 
+        $date = Carbon::now();
+        $datenow = $date->format('d-m-Y');
+ 
+        $pdf = App::make('dompdf.wrapper');
+ 
+        $id_client = request('id_client');
+ 
+        $coin = request('coin');
+        
+        $company = Company::on(Auth::user()->database_name)->find(1);
+
+        if(isset($id_client)){
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_order' ,'DESC')
+            ->where('date_order','<>',null)
+            ->where('date_billing',null)
+            ->where('date_delivery_note',null)
+            ->whereIn('status',[1,'M'])
+            ->where('id_client',$id_client)
+            ->whereBetween('date_order', [$date_begin, $date_end])->get();
+        }else{
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_order' ,'DESC')
+            ->where('date_order','<>',null)
+            ->where('date_billing',null)
+            ->where('date_delivery_note',null)
+            ->whereIn('status',[1,'M'])
+            ->whereBetween('date_order', [$date_begin, $date_end])->get();
+        }
+
+        $pdf = $pdf->loadView('admin.orders.pdfOrders',compact('company','quotations'
+        ,'datenow','date_begin','date_end'));
+
+        return $pdf->stream();
     }
 
     public function reversar_order($id_quotation)

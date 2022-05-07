@@ -1063,6 +1063,7 @@ Route::group(["prefix"=>'export'],function(){
     Route::get('/','OrderController@index')->name('orders.index');
     Route::get('order/{id_quotation}/{coin}','OrderController@create_order')->name('orders.create_order');
     Route::get('reversarorder/{id_quotation}','OrderController@reversar_order')->name('orders.reversar_order');
+    Route::post('pdfOrders','OrderController@pdfOrders')->name('orders.pdfOrders');
   });
 
 
@@ -1206,6 +1207,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('bankmovements','Exports\DailyListing\BankMovementExportController@exportExcel')->name('export_reports.bankmovements');
     
     Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
+    Route::post('orders','Exports\Quotations\OrderExportController@exportExcel')->name('export_reports.orders');
 });
 
 Route::group(["prefix"=>'mails'],function(){
