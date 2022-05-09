@@ -325,7 +325,7 @@
                                 <button type="submit" class="btn btn-success btn-block"><i class="fa fa-send-o"></i>Actualizar</button>
                             </div>
                             <div class="form-group col-sm-2">
-                                <a href="{{ route('clients') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
+                                <a href="{{ route('condominiums') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
                             </div>
                         </div>
                     </form>

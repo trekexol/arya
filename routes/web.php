@@ -612,7 +612,7 @@ Route::group(["prefix"=>'invoices'],function(){
 Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('/','ReceiptController@index')->name('receipt');
-    Route::get('receipt','ReceiptController@indexr')->name('receiptr');
+    Route::get('receipt/{id_quotation?}/{check?}','ReceiptController@indexr')->name('receiptr');
     
 
     Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt'); // Inicio de Creacion de recibo

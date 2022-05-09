@@ -59,12 +59,16 @@ class ReceiptController extends Controller
 
 
  
-    public function indexr()
+    public function indexr($id_quotation = null,$check = null)
     {
       
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
-      
+            if (isset($id_quotation)){
+                $verified = Receipts::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['verified' => $check]);
+
+            }
+            
             if (Auth::user()->role_id  == '11'){
 
                 $email = Auth::user()->email;
@@ -82,9 +86,8 @@ class ReceiptController extends Controller
                 ->where('type','=','R')
                 ->get(); 
              }
+             
 
-            
-    
             return view('admin.receipt.indexr',compact('quotations','datenow'));
 
     }

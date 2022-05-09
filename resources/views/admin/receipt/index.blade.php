@@ -86,9 +86,8 @@
                 <th class="text-center">Condominio</th>
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs.</th>
-                <th class="text-center">Moneda</th>
                 <th class="text-center"></th>
-                <th class="text-center"></th>
+
             </tr>
             </thead>
             
@@ -131,12 +130,7 @@
                             <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
-                            @if ($quotation->coin == 'bolivares')
-                            <td class="text-center font-weight-bold">Bs</td>
-                            @endif
-                            @if ($quotation->coin == 'dolares')
-                            <td class="text-center font-weight-bold">USD</td>
-                            @endif
+
 
                             @if ($quotation->status == "C")
                                 <td class="text-center font-weight-bold">
@@ -159,9 +153,9 @@
                                         <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
-                                <td>
-                                    <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">    
-                                </td>
+                                <!--<td>
+                                    <input type="checkbox" name="check{{ ''/*$quotation->id */ }}" value="{{ ''/*$quotation->id */ }}" onclick="buttom();" id="flexCheckChecked">    
+                                </td>-->
                             @endif
                             
                         </tr>     
