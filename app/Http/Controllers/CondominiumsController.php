@@ -101,8 +101,27 @@ class CondominiumsController extends Controller
     $users->percentage_retencion_islr = $sin_formato_percentage_retencion_islr ?? 0;
    
     $users->status =  1;
-   
     $users->save();
+
+
+    $user_conected  =   auth()->user();
+    // crear sucursal
+    $branch = new Branch();
+    $branch->setConnection(Auth::user()->database_name);
+
+    $branch->company_id = 1;
+    $branch->parroquia_id = 10111;
+    $branch->description = request('name');
+    $branch->direction = request('direction');
+    $branch->phone = 0;
+    $branch->phone2 = 0;
+    $branch->person_contact = request('personcontact');
+    $branch->phone_contact = 0;
+    $branch->observation = request('cedula_rif');
+    $branch->status = 1;
+   
+    $branch->save();
+
 
     return redirect('/condominiums')->withSuccess('Registro Exitoso!');
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Employee;
 use App\NominaBasesCalcs;
 use App\BasesCalcs;
 
@@ -24,7 +24,15 @@ class NominaBasesCalcController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
     public function index()
+    {
+        $user= auth()->user();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id' ,'DESC')->get();
+       
+        return view('admin.employees.index',compact('employees'));
+    }
+   /* public function index()
     {
 
         $user       =   auth()->user();
@@ -70,7 +78,7 @@ class NominaBasesCalcController extends Controller
         $datos->save();
 
         return redirect('/nominabasescalc')->withSuccess('Datos Actualizados Exitosamente!');
-    }
+    }*/
 
 
 

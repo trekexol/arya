@@ -61,7 +61,7 @@
                     <td>{!!$user->email!!}</td>
                     <td>{!!$user->branches['description'] ?? ''!!}</td>
                     @if (Auth::user()->role_id  == '1')
-                    <td>{{ $user->roles['description']}}</td>
+                    <td>{{ $user->roles['description'] ?? ''}}</td>
                         @if($user->status == 1)
                             <td>Activo</td>
                         @else

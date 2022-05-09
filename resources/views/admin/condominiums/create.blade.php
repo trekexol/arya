@@ -137,7 +137,7 @@
                             <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
 
                             <div class="col-md-4">
-                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ old('personcontac') }}" autocomplete="personcontact">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="N/A" autocomplete="personcontact">
 
                                 @error('personcontact')
                                     <span class="invalid-feedback" role="alert">
@@ -208,10 +208,10 @@
                                 </div>
                            </div>
 
-                            <label for="aliquot" class="col-md-2 col-form-label text-md-right">% Alicuota</label>
+                            <label style="display:none;" for="aliquot" class="col-md-2 col-form-label text-md-right">% Alicuota</label>
 
-                            <div class="col-md-4">
-                                <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="{{ old('aliquot') ?? 0 }}" autocomplete="aliquot">
+                            <div class="col-md-4" style="display:none;">
+                                <input id="aliquot" type="text" class="form-control @error('aliquot') is-invalid @enderror" name="aliquot" value="0" autocomplete="aliquot">
 
                                 @error('aliquot')
                                     <span class="invalid-feedback" role="alert">
