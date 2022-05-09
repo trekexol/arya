@@ -46,7 +46,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-4">
       <div class="col-md-4">
-          <h2>Recibos de Condominio</h2>
+          <h2>Recibos de Condominio </h2>
         
       </div>
       @if (Auth::user()->role_id  == '1')
@@ -94,9 +94,8 @@
                 <th class="text-center">Propietario</th>
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs.</th>
-                <th class="text-center"></th>
-                <th class="text-center"></th>
-                <th class="text-center"></th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Verificado</th>
                <!-- <th class="text-center"></th> -->
             </tr>
             </thead>
@@ -141,19 +140,18 @@
                             
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
-                            @if ($quotation->coin == 'bolivares')
-                            <td class="text-center font-weight-bold">Bs</td>
-                            @endif
-                            @if ($quotation->coin == 'dolares')
-                            <td class="text-center font-weight-bold">USD</td>
-                            @endif
+
 
                             @if ($quotation->status == "C")
                                 <td class="text-center font-weight-bold">
                                     <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                  <td>
-                                    <input type="checkbox" name="check3" value="{{ $quotation->id }}"" onclick="buttom();" id="flexCheckChecked">    
+                                    @if ($quotation->verified == '1' & $quotation->verified == 1)
+                                    <span style="cursor: pointer;" class="verifiedh" data-input="{{$quotation->id}}"><i style="color:green" class="fa fa-check"></i><div style="display: none;"><input type="checkbox" data-input="{{$quotation->id}}" id="verified{{$quotation->id}}"  name="verified" class="verified" value="1" checked ></div></span>    
+                                    @else
+                                    <input type="checkbox" data-input="{{$quotation->id}}" id="verified{{$quotation->id}}" name="verified" class="verified" value="0">
+                                    @endif
                                 </td>
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
@@ -233,16 +231,33 @@
 
         
 
-
-        $("#btncobrar").hide();
-
-        function buttom(){
+        
+        $(document).on('change','.verified',function(){
+            let id_quotation = $(this).attr('data-input');
             
-            $("#btncobrar").show();
 
-            $("#btnRegistrar").hide();
+            if($("#verified"+id_quotation).is(':checked')) {
+                var check = 1;
+            } else {
+                var check = 0;
+            }
+
+            var url = "{{ route('receiptr') }}"+"/"+id_quotation+"/"+check;
+                window.location.href = url;
+
             
-        }
+        });
+
+        $(document).on('click','.verifiedh',function(){
+            let id_quotation = $(this).attr('data-input');
+        
+            var check = 0;
+
+            var url = "{{ route('receiptr') }}"+"/"+id_quotation+"/"+check;
+                window.location.href = url;
+
+            
+        });
 
         
         $(document).on('click','.buttonemail',function(){
