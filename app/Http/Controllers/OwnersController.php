@@ -6,8 +6,12 @@ use App\Owners;
 use App\Branch;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Vendor;
+use App\User;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class OwnersController extends Controller
 {
@@ -50,7 +54,7 @@ class OwnersController extends Controller
     */
    public function store(Request $request)
     {
-   
+  
         $data = request()->validate([
             'type_code'         =>'required|max:20',
             'id_user'         =>'required',
@@ -59,6 +63,7 @@ class OwnersController extends Controller
             'country'         =>'required',
             'phone1'         =>'required',
             'days_credit'         =>'required|integer',
+            'email'         =>'required|max:255|unique:users,email',
            
         ]);
 
@@ -102,6 +107,37 @@ class OwnersController extends Controller
     $users->status =  1;
    
     $users->save();
+
+// guardar usuario
+
+    $user_conected  =   auth()->user();
+
+    $user_login = new User();
+    $user_login->setConnection('logins');
+    $user_login->name        = request('name');
+    $user_login->email       = request('email');
+    $user_login->password    = Hash::make(2022);
+    $user_login->role_id     = 11;
+    $user_login->id_branch   = request('id_cost_center');
+    $user_login->status      = 1;
+    $user_login->id_user_register    = $user_conected->id;
+    $user_login->id_company      = $user_conected->id_company;
+    $user_login->database_name   = $user_conected->database_name;
+    $user_login->save();
+
+
+    $user = new User();
+    $user->setConnection(Auth::user()->database_name);
+    $user->id          = $user_login->id;
+    $user->name        = request('name');
+    $user->email       = request('email');
+    $user->password    = Hash::make(2022);
+    $user->role_id     = 11;
+    $user->id_branch   = request('id_branch');
+    $user->status      = 1;
+    $user->id_user_register    = $user_conected->id;
+    $user->save();
+
 
     return redirect('/owners')->withSuccess('Registro Exitoso!');
     }

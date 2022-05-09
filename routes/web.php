@@ -547,6 +547,16 @@ Route::group(["prefix"=>'nominabasescalc'],function(){
 });
 
 
+Route::group(["prefix"=>'nominaparts'],function(){
+    Route::get('/','NominaPartsController@index')->name('nominaparts');
+   /* Route::post('store','NominaBasesCalcController@store')->name('nominabasescalc.store');
+    Route::get('register','NominaConceptController@create')->name('nominaconcepts.create');
+   
+    Route::get('{id}/edit','NominaConceptController@edit')->name('nominaconcepts.edit');
+    Route::delete('{id}/delete','NominaConceptController@destroy')->name('nominaconcepts.delete');
+    Route::patch('{id}/update','NominaConceptController@update')->name('nominaconcepts.update');*/
+});
+
 
 Route::group(["prefix"=>'nominacalculations'],function(){
     Route::get('index/{id_nomina}/{id_employee}','NominaCalculationController@index')->name('nominacalculations');
