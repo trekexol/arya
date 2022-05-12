@@ -399,9 +399,9 @@ class DailyListingController extends Controller
 
                         if (isset($proveedor)) {
                         $detail->header_description .= '. '.$proveedor->razon_social;
-                        }   
+                        } 
 
-                        $detail->header_description .= '. '.$coin;
+                        $detail->header_description .= '. '.$anticipo->coin;
                    }
                     
 
