@@ -548,7 +548,7 @@ Route::group(["prefix"=>'nominabasescalc'],function(){
 
 
 Route::group(["prefix"=>'nominaparts'],function(){
-    Route::get('/','NominaPartsController@index')->name('nominaparts');
+    Route::get('{type?}','NominaPartsController@index')->name('nominaparts');
    /* Route::post('store','NominaBasesCalcController@store')->name('nominabasescalc.store');
     Route::get('register','NominaConceptController@create')->name('nominaconcepts.create');
    
@@ -604,8 +604,8 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('order/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@order')->name('pdf.order');
 
     Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
-
-
+   
+    Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
 
 });
 

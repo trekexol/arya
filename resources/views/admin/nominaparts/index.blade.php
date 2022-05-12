@@ -8,9 +8,21 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Empleados</h2>
+        @if ($type == 'prestaciones')
+        <h2>Prestaciones de Empleados</h2>
+        @endif
+        @if ($type == 'utilidades')
+        <h2>Utilidades de Empleados</h2>
+        @endif
+        @if ($type == 'vacaciones')
+        <h2>Vacaciones de Empleados</h2>
+        @endif
+        @if ($type == 'liquidacion')
+        <h2>Liquidación de Empleados</h2>
+        @endif  
+        
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" style="display: none;">
         <a href="{{ route('employees.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
       </div>
     </div>
@@ -41,9 +53,38 @@
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
-                <th>Celular</th>
-                <th>Monto de Pago</th>
+                <th>Sueldo</th>
+                @if ($type == 'prestaciones')
+                <th>Prestaciones</th>
+                <th>Intereses</th>
+                <th>Prestaciones + Int</th>
                 <th></th>
+                @endif
+                @if ($type == 'utilidades')
+                <th>Periodo</th>
+                <th>Dias</th>
+                <th>Alicuota de Utilidad</th>
+                <th>Banavih</th>
+                <th>INCES</th>
+                <th>Total Utilidades</th>
+                <th></th>
+                @endif
+                @if ($type == 'vacaciones')
+                <th>Dias de Vac. del Periodo</th>
+                <th>Dias de Vac. Disfutadas</th>
+                <th>Dias de Vac. Acumuladas</th>
+                <th></th>
+                @endif
+                @if ($type == 'liquidacion')
+                <th>Salario Diario</th>
+                <th>Salario Integral</th>
+                <th>Prestaciones Acumuladas</th>
+                <th>Prestaciones Sociales</th>
+                <th>Intereses</th>
+                <th>Total Bonificación y Vacaciones</th>
+                <th></th>
+                @endif
+
             </tr>
             </thead>
             
@@ -55,12 +96,48 @@
                             <td>{{$employee->id_empleado}}</td>
                             <td>{{$employee->nombres}}</td>
                             <td>{{$employee->apellidos}}</td>
-                            <td>{{$employee->telefono1}}</td>
+
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
+                            
+                            @if ($type == 'prestaciones')
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
                             <td>
-                                <a href="employees/{{$employee->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                                <a href="#" class="delete" data-id-employee={{$employee->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                            <a href="{{ route('pdf.prestations',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
                             </td>
+                            @endif
+                            @if ($type == 'utilidades')
+                            <td>{{' '}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>
+                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            </td>
+                            @endif
+                            @if ($type == 'vacaciones')
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>
+                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            </td>
+                            @endif
+                            @if ($type == 'liquidacion')
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>{{'0'}}</td>
+                            <td>
+                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            </td>
+                            @endif                           
+
                         </tr>     
                     @endforeach   
                 @endif
