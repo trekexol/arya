@@ -10,6 +10,7 @@ use App\Anticipo;
 use App\Client;
 use App\DetailVoucher;
 use App\Http\Controllers\Calculations\AccountCalculationController;
+use App\Provider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -319,8 +320,13 @@ class DailyListingController extends Controller
         
 
             $anticipo = Anticipo::on(Auth::user()->database_name) // buscar anticipo
-            ->where('id','=',$detail->id_anticipo)
-            ->get()->first();     
+                ->where('id','=',$detail->id_anticipo)
+                ->get()->first();  
+                
+
+   
+
+
           
 
             if (isset($quotation)) {
@@ -330,7 +336,8 @@ class DailyListingController extends Controller
                 ->where('id','=',$quotation->id_client)
                 ->get()->first();
                 
-                $detail->header_description .= '. '.$client->name;
+                $detail->header_description .= '. '.$client->name.'. '.$quotation->coin;
+                
 
             } else {
 
@@ -351,13 +358,15 @@ class DailyListingController extends Controller
                         ->where('number_invoice','=',null)
                         ->get()->first();
                         
+
+                        
                         if (isset($quotation)) {
                         $detail->header_description .= ' FAC: '.$quotation->number_invoice;
-                        $id_client = $quotation->id_client;
+                        $id_client = $quotation->id_client.'. '.$quotation->coin;
                         }
                         if (isset($quotation_delivery)) {
                         $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
-                        $id_client = $quotation_delivery->id_client;
+                        $id_client = $quotation_delivery->id_client.'. '.$quotation_delivery->coin;
                         }
 
                         $client = Client::on(Auth::user()->database_name) // buscar factura
@@ -365,14 +374,41 @@ class DailyListingController extends Controller
                         ->get()->first();
                         
                         $detail->header_description .= '. '.$client->name;
+                        
+                        
 
-                   } 
+                   } else {
+
+                        
+                        $client = Client::on(Auth::user()->database_name) // buscar factura
+                        ->where('id','=',$anticipo->id_client)
+                        ->get()->first();
+
+                        $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
+                        ->where('id','=',$anticipo->id_provider)
+                        ->get()->first();
+
+                        if (isset($client)) {
+                        $detail->header_description .= '. '.$client->name;
+                        }
+
+                        if (isset($proveedor)) {
+                        $detail->header_description .= '. '.$proveedor->razon_social;
+                        }   
+
+                        $detail->header_description .= '. '.$coin;
+                   }
                     
 
                 }
 
             }
             
+
+
+
+
+
         }
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
