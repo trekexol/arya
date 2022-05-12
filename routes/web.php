@@ -614,14 +614,11 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('/','ReceiptController@index')->name('receipt');
     Route::get('receipt/{id_quotation?}/{check?}','ReceiptController@indexr')->name('receiptr');
     
-
     Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt'); // Inicio de Creacion de recibo
     Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a clientes
-
     Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
     
     Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
-
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
     Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
     Route::get('selectcondominiumsreceipt/{type?}','ReceiptController@selectcondominiumsreceipt')->name('receipt.selectcondominiumsreceipt');
@@ -1298,3 +1295,62 @@ Route::group(["prefix"=>'report_anticipos'],function(){
     Route::get('selectclient','Reports\AnticipoReportController@selectClient')->name('report_anticipos.selectClient');
     Route::get('selectProvider','Reports\AnticipoReportController@selectProvider')->name('report_anticipos.selectProvider');
 });
+
+
+Route::group(["prefix"=>'quotationslic'],function(){
+    Route::get('/','QuotationLicController@index')->name('quotationslic');
+    Route::get('register/{id_quotation}/{coin}','QuotationLicController@create')->name('quotationslic.create');
+    Route::post('store','QuotationLicController@store')->name('quotationslic.store');
+    Route::get('{id}/edit','QuotationLicController@edit')->name('quotationslic.edit');
+    Route::delete('{id}/delete','QuotationLicController@destroy')->name('quotationslic.delete');
+    Route::patch('{id}/update','QuotationLicController@update')->name('quotationslic.update');
+    Route::get('registerquotation','QuotationLicController@createquotation')->name('quotationslic.createquotation');
+    Route::get('registerquotation/{id_client}','QuotationLicController@createquotationclient')->name('quotationslic.createquotationclient');
+    Route::get('selectclient','QuotationLicController@selectclient')->name('quotationslic.selectclient');
+    Route::get('registerquotation/{id_client}/{id_vendor}','QuotationLicController@createquotationvendor')->name('quotationslic.createquotationvendor');
+    Route::get('selectvendor/{id_client}','QuotationLicController@selectvendor')->name('quotationslic.selectvendor');
+    Route::get('selectproduct/{id_quotation}/{coin}/{type}','QuotationLicController@selectproduct')->name('quotationslic.selectproduct');
+    Route::get('registerproduct/{id_quotation}/{coin}/{id_product}','QuotationLicController@createproduct')->name('quotationslic.createproduct');
+    Route::post('storeproduct','QuotationLicController@storeproduct')->name('quotationslic.storeproduct');
+    Route::get('facturar/{id_quotation}/{coin}','FacturarLicController@createfacturar')->name('quotationslic.createfacturar');
+    Route::post('storefactura','FacturarLicController@storefactura')->name('quotationslic.storefactura');
+    Route::get('facturado/{id_quotation}/{coin}/{reverso?}','FacturarLicController@createfacturado')->name('quotationslic.createfacturado');
+    Route::get('listinventory/{var?}','QuotationLicController@listinventory')->name('quotationslic.listinventory');
+    Route::get('notadeentrega/{id_quotation}/{coin}','DeliveryNoteController@createdeliverynote')->name('quotationslic.createdeliverynote');
+    Route::get('indexnotasdeentrega/','DeliveryNoteController@index')->name('quotationslic.indexdeliverynote');
+    Route::get('quotationproduct/{id}/{coin}/edit','QuotationLicController@editquotationproduct')->name('quotationslic.productedit');
+    Route::patch('productupdate/{id}/update','QuotationLicController@updatequotationproduct')->name('quotationslic.productupdate');
+    Route::post('storefacturacredit','FacturarLicController@storefacturacredit')->name('quotationslic.storefacturacredit');
+    Route::get('facturarafter/{id_quotation}/{coin}','FacturarLicController@createfacturar_after')->name('quotationslic.createfacturar_after');
+    Route::get('refreshrate/{id_quotation}/{coin}/{rate}','QuotationLicController@refreshrate')->name('quotationslic.refreshrate');
+    Route::get('guardarcambios/{id_quotation}/{coin}/{observation?}/{note?}/{serie2?}','QuotationLicController@guardarcambios')->name('quotationslic.guardarcambios');
+    Route::delete('deleteproduct','QuotationLicController@deleteProduct')->name('quotationslic.deleteProduct');
+    Route::delete('deletequotation','QuotationLicController@deleteQuotation')->name('quotationslic.deleteQuotation');
+    Route::get('reversarquotation{id}','QuotationLicController@reversar_quotation')->name('quotationslic.reversarQuotation');
+    Route::get('reversarquotationmultipayment/{id}/{id_header?}','QuotationLicController@reversar_quotation_multipayment')->name('quotationslic.reversar_quotation_multipayment');
+    Route::get('reversardeliverynote/{id_quotation}','DeliveryNoteController@reversar_delivery_note')->name('quotationslic.reversar_delivery_note');
+});
+
+
+Route::group(["prefix"=>'clientslic'],function(){
+    Route::get('/','ClientLicController@index')->name('clientslic');
+    Route::get('register','ClientLicController@create')->name('clientslic.create');
+    Route::post('store','ClientLicController@store')->name('clientslic.store');
+
+    Route::get('{id}/edit','ClientLicController@edit')->name('clientslic.edit');
+    Route::delete('{id}/delete','ClientLicController@destroy')->name('clientslic.delete');
+    Route::patch('{id}/update','ClientLicController@update')->name('clientslic.update');
+
+
+});
+
+
+Route::group(["prefix"=>'invoiceslic'],function(){
+    Route::get('/','InvoiceLicController@index')->name('invoiceslic');
+
+    Route::get('movementinvoice/{id_invoice}/{coin?}','InvoiceLicController@movementsinvoicelic')->name('invoices.movement');
+
+    Route::post('multipayment','InvoiceLicController@multipayment')->name('invoiceslic.multipayment');
+    Route::post('storemultipayment','InvoiceLicController@storemultipayment')->name('invoiceslic.storemultipayment');
+
+ });

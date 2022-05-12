@@ -153,8 +153,29 @@
         </div>
     </li>
     @endif
-
-
+    <li class="nav-item" style="display: none;">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
+    aria-expanded="true" aria-controls="collapgastoscon">
+    <i class="fas fa-fw fa-file-alt" ></i>
+    <span>Facturación Licores</span>
+     </a>
+        <div id="collapgastoscon" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{route('quotationslic')}}" > <i class="fas fa-pencil-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cotizaciones</strong></a>
+                <a class="collapse-item" href="{{route('invoiceslic')}}" > <i class="fas fa-file-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Facturas</strong></a>
+                <a class="collapse-item" href="{{route('quotationslic.indexdeliverynote')}}" > <i class="fas fa-sort-amount-up-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Notas de Entrega</strong></a>
+                <a class="collapse-item" href="{{route('orders.index')}}" > <i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Pedidos</strong></a>
+                <a class="collapse-item" href="{{route('creditnotes')}}" > <i class="fas fa-credit-card fa-sm fa-fw mr-2 text-blue-400"></i><strong>Notas de Crédito</strong></a>
+                <a class="collapse-item" href="{{route('payments')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros</strong></a>
+                <a class="collapse-item" href="{{route('directchargeorders.create')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Orden de Cobro</strong></a>
+                <!--<a class="collapse-item" href="{{ ''/*route('receipt')*/}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Recibos de Cobro</strong></a>-->
+                <a class="collapse-item" href="{{route('clientslic')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Clientes</strong></a>
+                <a class="collapse-item" href="{{route('vendors')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Vendedores</strong></a>
+                <a class="collapse-item" href="{{route('sales')}}" ><i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-blue-400"></i><strong>Ventas</strong></a>
+                <a class="collapse-item" href="{{route('anticipos')}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos Clientes</strong></a>
+            </div>
+        </div>
+    </li>
 @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2') || (Auth::user()->role_id  == '3'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
