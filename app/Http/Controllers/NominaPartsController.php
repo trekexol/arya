@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App;
 use App\Employee;
-use App\NominaBasesCalcs;
+use App\Company;
 use App\BasesCalcs;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class NominaBasesCalcController extends Controller
+class NominaPartsController extends Controller
 {
     public $conection_logins = "logins"; 
 
@@ -25,13 +25,57 @@ class NominaBasesCalcController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
 
-    public function index()
+    public function index($type = null)
     {
         $user= auth()->user();
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id' ,'DESC')->get();
        
-        return view('admin.employees.index',compact('employees'));
+        return view('admin.nominaparts.index',compact('employees','type'));
     }
+
+
+
+    function completcalcs($employee = null)
+    {
+      
+       // dd($employee);
+            
+            $pdf = App::make('dompdf.wrapper');
+            $company = Company::on(Auth::user()->database_name)->find(1);
+   
+            $employee = Employee::on(Auth::user()->database_name) // Buscamos el empleado
+            ->where('status','NOT LIKE','X')
+            ->where('id','=',$employee)
+            ->orderBy('id' ,'DESC')->get()->first();
+            
+            //datos del empleado
+            
+            //dd($employee->nombres);
+            
+            /* 
+            $ci = 
+            $cie =
+            $fechai =
+            $acumulado_prestaciones = 
+            $tipo_sueldo =
+            $tipo_utilidad = */
+                
+
+
+
+
+
+          
+          $pdf = $pdf->loadView('pdf.prestations',compact('company'))->setPaper('a4', 'landscape');
+          
+          return $pdf->stream();
+       
+            //return redirect('/quotations/index')->withDanger('La cotizacion no existe');
+
+        
+    }
+
+
    /* public function index()
     {
 

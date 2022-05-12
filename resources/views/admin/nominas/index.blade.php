@@ -32,7 +32,7 @@
   </div>   
 
 <!-- container-fluid -->
-<div class="container-fluid">
+<div class="container-fluid" style="display:none;">
 
     <!-- Page Heading -->
     <div class="row py-lg-3">
@@ -62,7 +62,7 @@
             </a>
         </div>
     </div>
-  </div>
+</div>
 
 
 

@@ -216,10 +216,10 @@
                 <!--<a class="collapse-item" href="{{ '' /*route('nominabasescalc') */}}" > <i class="fas fa-book fa-sm fa-fw mr-2 text-black-400"></i><strong>Bases de Cálculo</strong></a> -->
                 <a class="collapse-item" href="{{ route('indexbcvs') }}" > <i class="fas fa-money-bill fa-sm fa-fw mr-2 text-black-400"></i><strong>Indices BCV</strong></a>
                 <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Empleados</strong></a>
-                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Prestaciones</strong></a>
-                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Utilidades</strong></a>
-                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Vacaciones</strong></a>
-                <a class="collapse-item" href="{{ route('employees') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Liquidaciones</strong></a>
+                <a class="collapse-item" href="{{ route('nominaparts','prestaciones') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Prestaciones</strong></a>
+                <a class="collapse-item" href="{{ route('nominaparts','utilidades') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Utilidades</strong></a>
+                <a class="collapse-item" href="{{ route('nominaparts','vacaciones') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Vacaciones</strong></a>
+                <a class="collapse-item" href="{{ route('nominaparts','liquidacion') }}" > <i class="fas fa-users fa-sm fa-fw mr-2 text-black-400"></i><strong>Liquidaciones</strong></a>
                 
             </div>
         </div>
