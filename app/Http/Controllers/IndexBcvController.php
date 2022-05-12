@@ -28,7 +28,8 @@ class IndexBcvController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
      
-           $indexbcvs = IndexBcv::on($this->conection_logins)->orderBy('id', 'desc')->get();
+           $indexbcvs = IndexBcv::on($this->conection_logins)->orderBy('period', 'desc')
+           ->orderBy('month', 'desc')->get();
           // $bases = BasesCalcs::on($this->conection_logins)->find(1);
 
     
