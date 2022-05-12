@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class IndexBcvController extends Controller
 {
+    public $conection_logins = "logins"; 
+ 
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,11 +27,9 @@ class IndexBcvController extends Controller
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $indexbcvs = IndexBcv::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
+     
+           $indexbcvs = IndexBcv::on($this->conection_logins)->orderBy('id', 'desc')->get();
+          // $bases = BasesCalcs::on($this->conection_logins)->find(1);
 
     
         return view('admin.indexbcvs.index',compact('indexbcvs'));

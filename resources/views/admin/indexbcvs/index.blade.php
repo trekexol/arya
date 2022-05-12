@@ -11,16 +11,7 @@
     <div class="row py-lg-2">
         <div class="col-md-6">
             <h2>Indices BCV</h2>
-        </div>
-       
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
-        <div class="col-md-6">
-            <a href="{{ route('indexbcvs.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar un Indice BCV</a>
-         
-        </div>
-        @endif
-       
-            
+        </div>   
        
     </div>
 
@@ -43,12 +34,12 @@
             <thead>
             <tr>
                 <th>Id</th>
+                <th>Fecha Emisión</th>
                 <th>Periodo</th>
                 <th>Mes</th>
-                <th>Tasa</th>
-                
-                <th>Status</th>
-                <th>Opciones</th>
+                <th>Tasa Promedio A/P</th>
+                <th>Tasa Activa</th>
+            
               
             </tr>
             </thead>
@@ -59,21 +50,11 @@
                     @foreach ($indexbcvs as $key => $var)
                     <tr>
                     <td>{{$var->id}}</td>
+                    <td>{{$var->date}}</td>
                     <td>{{$var->period}}</td>
                     <td>{{$var->month}}</td>
-                    <td>{{$var->rate}}</td>
-                  
-                    @if (Auth::user()->role_id  == '1')
-                        @if($var->status == 1)
-                            <td>Activo</td>
-                        @else
-                            <td>Inactivo</td>
-                        @endif
-                        <td>
-                        <a href="{{route('indexbcvs.edit',$var->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                        </td>
-                    @endif
-                    </tr>
+                    <td>{{$var->rate_average_a_p}}</td>
+                    <td>{{$var->rate_active}}</td>
                     @endforeach
                 @endif
             </tbody>
