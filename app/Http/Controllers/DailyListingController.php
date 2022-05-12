@@ -366,16 +366,7 @@ class DailyListingController extends Controller
                         
                         $detail->header_description .= '. '.$client->name;
 
-                   } else {
-
-                    
-                    
-                    $client = Client::on(Auth::user()->database_name) // buscar factura
-                    ->where('id','=',$anticipo->id_client)
-                    ->get()->first();
-                    
-                    $detail->header_description .= '. '.$client->name;
-                   }
+                   } 
                     
 
                 }
