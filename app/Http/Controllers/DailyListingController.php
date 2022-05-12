@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App;
 use App\Account;
 use App\Company;
+use App\Quotation;
+use App\Anticipo;
+use App\Client;
 use App\DetailVoucher;
 use App\Http\Controllers\Calculations\AccountCalculationController;
 use Carbon\Carbon;
@@ -308,6 +311,77 @@ class DailyListingController extends Controller
                 }
                 
             }
+
+            $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
+            ->where('id','=',$detail->id_invoice)
+            ->where('date_billing','!=',null)
+            ->get()->first();     
+        
+
+            $anticipo = Anticipo::on(Auth::user()->database_name) // buscar anticipo
+            ->where('id','=',$detail->id_anticipo)
+            ->get()->first();     
+          
+
+            if (isset($quotation)) {
+
+                $detail->header_description .= ' FAC: '.$quotation->number_invoice;
+                $client = Client::on(Auth::user()->database_name) // buscar factura
+                ->where('id','=',$quotation->id_client)
+                ->get()->first();
+                
+                $detail->header_description .= '. '.$client->name;
+
+            } else {
+
+
+                if (isset($anticipo)) {
+                    $id_client = '';
+                   if ($anticipo->id_quotation != null){
+                        
+   
+                        $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
+                        ->where('id','=',$anticipo->id_quotation)
+                        ->where('date_billing','!=',null)
+                        ->get()->first();
+
+                        $quotation_delivery = Quotation::on(Auth::user()->database_name) // buscar Nota de entrega
+                        ->where('id','=',$anticipo->id_quotation)
+                        ->where('date_billing','=',null)
+                        ->where('number_invoice','=',null)
+                        ->get()->first();
+                        
+                        if (isset($quotation)) {
+                        $detail->header_description .= ' FAC: '.$quotation->number_invoice;
+                        $id_client = $quotation->id_client;
+                        }
+                        if (isset($quotation_delivery)) {
+                        $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
+                        $id_client = $quotation_delivery->id_client;
+                        }
+
+                        $client = Client::on(Auth::user()->database_name) // buscar factura
+                        ->where('id','=',$id_client)
+                        ->get()->first();
+                        
+                        $detail->header_description .= '. '.$client->name;
+
+                   } else {
+
+                    
+                    
+                    $client = Client::on(Auth::user()->database_name) // buscar factura
+                    ->where('id','=',$anticipo->id_client)
+                    ->get()->first();
+                    
+                    $detail->header_description .= '. '.$client->name;
+                   }
+                    
+
+                }
+
+            }
+            
         }
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
