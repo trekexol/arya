@@ -344,6 +344,7 @@ class DailyListingController extends Controller
 
                 if (isset($anticipo)) {
                     $id_client = '';
+                    $coin = '';
                    if ($anticipo->id_quotation != null){
                         
    
@@ -362,18 +363,22 @@ class DailyListingController extends Controller
                         
                         if (isset($quotation)) {
                         $detail->header_description .= ' FAC: '.$quotation->number_invoice;
-                        $id_client = $quotation->id_client.'. '.$quotation->coin;
+                        $id_client = $quotation->id_client;
+                        $coin = $quotation->coin;
                         }
                         if (isset($quotation_delivery)) {
                         $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
-                        $id_client = $quotation_delivery->id_client.'. '.$quotation_delivery->coin;
+                        $id_client = $quotation_delivery->id_client;
+                        $coin = $quotation_delivery->coin;    
                         }
 
                         $client = Client::on(Auth::user()->database_name) // buscar factura
                         ->where('id','=',$id_client)
                         ->get()->first();
                         
-                        $detail->header_description .= '. '.$client->name;
+                        $detail->header_description .= $client->name;
+
+                        $detail->header_description .= '. '.$coin;
                         
                         
 
