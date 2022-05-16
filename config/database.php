@@ -106,6 +106,26 @@ return [
             ]) : [],
         ],
 
+        'alimentos_jvg' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('ALIMENTOS_JVG_HOST', '127.0.0.1'),
+            'port' => env('ALIMENTOS_JVG_PORT', '3306'),
+            'database' => env('ALIMENTOS_JVG_DATABASE', 'forge'),
+            'username' => env('ALIMENTOS_JVG_USERNAME', 'forge'),
+            'password' => env('ALIMENTOS_JVG_PASSWORD', ''),
+            'unix_socket' => env('ALIMENTOS_JVG_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         
         'gsa' => [
             'driver' => 'mysql',

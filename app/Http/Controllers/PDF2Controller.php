@@ -1198,7 +1198,9 @@ class PDF2Controller extends Controller
      
              if(isset($expense)){
 
-                 $payment_expenses = ExpensePayment::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+                 $payment_expenses = ExpensePayment::on(Auth::user()->database_name)
+                 ->where('status','NOT LIKE','X')
+                 ->where('id_expense',$expense->id)->get();
                  
                  
                  if(!$payment_expenses->isEmpty()){
@@ -1251,7 +1253,9 @@ class PDF2Controller extends Controller
      
              if(isset($expense)){
 
-                 $payment_expenses = ExpensePayment::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+                 $payment_expenses = ExpensePayment::on(Auth::user()->database_name)
+                 ->where('status','NOT LIKE','X')
+                 ->where('id_expense',$expense->id)->get();
 
                  if(!$payment_expenses->isEmpty()){
                     foreach($payment_expenses as $var){

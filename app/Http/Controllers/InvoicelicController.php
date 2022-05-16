@@ -9,7 +9,7 @@ use App\Company;
 use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
-use App\Quotationlic;
+use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use Carbon\Carbon;
@@ -28,22 +28,22 @@ class InvoiceLicController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
-         $quotations = Quotationlic::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                         ->where('date_billing','<>',null)
                                         ->get();
         
  
-        return view('admin.invoices.index',compact('quotations'));
+        return view('admin.invoiceslic.index',compact('quotations'));
     }
 
-    public function movementsinvoice($id_invoice,$coin = null)
+    public function movementsinvoicelic($id_invoice,$coin = null)
     {
         
 
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
-            $quotation = Quotationlic::on(Auth::user()->database_name)->find($id_invoice);
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_invoice);
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
                                             ->where('id_invoice',$id_invoice)
                                             ->where('status','C')
@@ -64,7 +64,7 @@ class InvoiceLicController extends Controller
             }
          
         
-        return view('admin.invoices.index_detail_movement',compact('detailvouchers','quotation','coin','invoices','multipayments_detail'));
+        return view('admin.invoiceslic.index_detail_movement',compact('detailvouchers','quotation','coin','invoices','multipayments_detail'));
     }
 
 
@@ -153,7 +153,7 @@ class InvoiceLicController extends Controller
                     $total_facturas->total_mercancia += $quotation->total_mercancia;
                     $total_facturas->total_servicios += $quotation->total_servicios;
                 }else{
-                    return redirect('invoices')->withDanger('Solo se pueden Pagar Facturas de un mismo Cliente!');
+                    return redirect('invoiceslic')->withDanger('Solo se pueden Pagar Facturas de un mismo Cliente!');
                 }
             
             }
@@ -177,7 +177,7 @@ class InvoiceLicController extends Controller
         $total_facturas->amount_with_iva -= $total_facturas->anticipo;
          
         if(empty($facturas_a_procesar)){
-            return redirect('invoices')->withDanger('Debe seleccionar facturar para Pagar!');
+            return redirect('invoiceslic')->withDanger('Debe seleccionar facturar para Pagar!');
        }
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
@@ -203,7 +203,7 @@ class InvoiceLicController extends Controller
 
         //dd($total_facturas);
         
-        return view('admin.invoices.createmultifacturar',compact('total_facturas',
+        return view('admin.invoiceslic.createmultifacturar',compact('total_facturas',
                  'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                 ,'datenow','facturas_a_procesar'));
          
@@ -284,7 +284,7 @@ class InvoiceLicController extends Controller
                     
                     $valor_sin_formato_amount_pay = str_replace(',', '.', str_replace('.', '', $amount_pay));
                 }else{
-                    return redirect('invoices')->withDanger('Debe ingresar un monto de pago 1!');
+                    return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 1!');
                 }
                     
         
@@ -313,10 +313,10 @@ class InvoiceLicController extends Controller
                                     $var->reference = $reference;
         
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria!');
                                 }
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria!');
                             }
                         }
                         if($payment_type == 4){
@@ -326,7 +326,7 @@ class InvoiceLicController extends Controller
                                 $var->credit_days = $credit_days;
         
                             }else{
-                                return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito!');
+                                return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito!');
                             }
                         }
         
@@ -337,7 +337,7 @@ class InvoiceLicController extends Controller
                                 $var->id_account = $account_efectivo;
         
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo!');
                             }
                         }
         
@@ -346,7 +346,7 @@ class InvoiceLicController extends Controller
                             if(($account_punto_de_venta != 0)){
                                 $var->id_account = $account_punto_de_venta;
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta!');
                             }
                         }
         
@@ -370,12 +370,12 @@ class InvoiceLicController extends Controller
         
                         
                     }else{
-                        return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 1!');
+                        return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 1!');
                     }
         
                     
                 }else{
-                        return redirect('invoices')->withDanger('El pago debe ser distinto de Cero!');
+                        return redirect('invoiceslic')->withDanger('El pago debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
             }   
@@ -393,7 +393,7 @@ class InvoiceLicController extends Controller
                     
                     $valor_sin_formato_amount_pay2 = str_replace(',', '.', str_replace('.', '', $amount_pay2));
                 }else{
-                    return redirect('invoices')->withDanger('Debe ingresar un monto de pago 2!');
+                    return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 2!');
                 }
                     
 
@@ -424,10 +424,10 @@ class InvoiceLicController extends Controller
                                 $var2->reference = $reference2;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 2!');
+                                return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 2!');
                             }
                         }else{
-                            return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 2!');
+                            return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 2!');
                         }
                     }
                     if($payment_type2 == 4){
@@ -437,7 +437,7 @@ class InvoiceLicController extends Controller
                             $var2->credit_days = $credit_days2;
 
                         }else{
-                            return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 2!');
+                            return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 2!');
                         }
                     }
 
@@ -448,7 +448,7 @@ class InvoiceLicController extends Controller
                             $var2->id_account = $account_efectivo2;
 
                         }else{
-                            return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 2!');
+                            return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 2!');
                         }
                     }
 
@@ -457,7 +457,7 @@ class InvoiceLicController extends Controller
                         if(($account_punto_de_venta2 != 0)){
                             $var2->id_account = $account_punto_de_venta2;
                         }else{
-                            return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 2!');
+                            return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 2!');
                         }
                     }
 
@@ -480,12 +480,12 @@ class InvoiceLicController extends Controller
 
                     
                 }else{
-                    return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 2!');
+                    return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 2!');
                 }
 
                 
                 }else{
-                    return redirect('invoices')->withDanger('El pago 2 debe ser distinto de Cero!');
+                    return redirect('invoiceslic')->withDanger('El pago 2 debe ser distinto de Cero!');
                 }
                 /*--------------------------------------------*/
             } 
@@ -503,7 +503,7 @@ class InvoiceLicController extends Controller
                         
                         $valor_sin_formato_amount_pay3 = str_replace(',', '.', str_replace('.', '', $amount_pay3));
                     }else{
-                        return redirect('invoices')->withDanger('Debe ingresar un monto de pago 3!');
+                        return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 3!');
                     }
                         
 
@@ -534,10 +534,10 @@ class InvoiceLicController extends Controller
                                         $var3->reference = $reference3;
 
                                     }else{
-                                        return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 3!');
+                                        return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 3!');
                                     }
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 3!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 3!');
                                 }
                             }
                             if($payment_type3 == 4){
@@ -547,7 +547,7 @@ class InvoiceLicController extends Controller
                                     $var3->credit_days = $credit_days3;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 3!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 3!');
                                 }
                             }
 
@@ -558,7 +558,7 @@ class InvoiceLicController extends Controller
                                     $var3->id_account = $account_efectivo3;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 3!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 3!');
                                 }
                             }
 
@@ -567,7 +567,7 @@ class InvoiceLicController extends Controller
                                 if(($account_punto_de_venta3 != 0)){
                                     $var3->id_account = $account_punto_de_venta3;
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 3!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 3!');
                                 }
                             }
 
@@ -590,12 +590,12 @@ class InvoiceLicController extends Controller
 
                             
                         }else{
-                            return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 3!');
+                            return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 3!');
                         }
 
                         
                     }else{
-                            return redirect('invoices')->withDanger('El pago 3 debe ser distinto de Cero!');
+                            return redirect('invoiceslic')->withDanger('El pago 3 debe ser distinto de Cero!');
                         }
                     /*--------------------------------------------*/
             }
@@ -613,7 +613,7 @@ class InvoiceLicController extends Controller
                         
                         $valor_sin_formato_amount_pay4 = str_replace(',', '.', str_replace('.', '', $amount_pay4));
                     }else{
-                        return redirect('invoices')->withDanger('Debe ingresar un monto de pago 4!');
+                        return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 4!');
                     }
                         
 
@@ -644,10 +644,10 @@ class InvoiceLicController extends Controller
                                         $var4->reference = $reference4;
 
                                     }else{
-                                        return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 4!');
+                                        return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 4!');
                                     }
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 4!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 4!');
                                 }
                             }
                             if($payment_type4 == 4){
@@ -657,7 +657,7 @@ class InvoiceLicController extends Controller
                                     $var4->credit_days = $credit_days4;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 4!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 4!');
                                 }
                             }
 
@@ -668,7 +668,7 @@ class InvoiceLicController extends Controller
                                     $var4->id_account = $account_efectivo4;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 4!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 4!');
                                 }
                             }
 
@@ -677,7 +677,7 @@ class InvoiceLicController extends Controller
                                 if(($account_punto_de_venta4 != 0)){
                                     $var4->id_account = $account_punto_de_venta4;
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 4!');
+                                    return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 4!');
                                 }
                             }
 
@@ -700,12 +700,12 @@ class InvoiceLicController extends Controller
 
                             
                         }else{
-                            return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 4!');
+                            return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 4!');
                         }
 
                         
                     }else{
-                            return redirect('invoices')->withDanger('El pago 4 debe ser distinto de Cero!');
+                            return redirect('invoiceslic')->withDanger('El pago 4 debe ser distinto de Cero!');
                         }
                     /*--------------------------------------------*/
             } 
@@ -723,7 +723,7 @@ class InvoiceLicController extends Controller
                     
                     $valor_sin_formato_amount_pay5 = str_replace(',', '.', str_replace('.', '', $amount_pay5));
                 }else{
-                    return redirect('invoices')->withDanger('Debe ingresar un monto de pago 5!');
+                    return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 5!');
                 }
                     
 
@@ -754,10 +754,10 @@ class InvoiceLicController extends Controller
                                     $var5->reference = $reference5;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 5!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 5!');
                                 }
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 5!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 5!');
                             }
                         }
                         if($payment_type5 == 4){
@@ -767,7 +767,7 @@ class InvoiceLicController extends Controller
                                 $var5->credit_days = $credit_days5;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 5!');
+                                return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 5!');
                             }
                         }
 
@@ -778,7 +778,7 @@ class InvoiceLicController extends Controller
                                 $var5->id_account = $account_efectivo5;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 5!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 5!');
                             }
                         }
 
@@ -787,7 +787,7 @@ class InvoiceLicController extends Controller
                             if(($account_punto_de_venta5 != 0)){
                                 $var5->id_account = $account_punto_de_venta5;
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 5!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 5!');
                             }
                         }
 
@@ -811,12 +811,12 @@ class InvoiceLicController extends Controller
 
                         
                     }else{
-                        return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 5!');
+                        return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 5!');
                     }
 
                     
                 }else{
-                        return redirect('invoices')->withDanger('El pago 5 debe ser distinto de Cero!');
+                        return redirect('invoiceslic')->withDanger('El pago 5 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
             } 
@@ -834,7 +834,7 @@ class InvoiceLicController extends Controller
                     
                     $valor_sin_formato_amount_pay6 = str_replace(',', '.', str_replace('.', '', $amount_pay6));
                 }else{
-                    return redirect('invoices')->withDanger('Debe ingresar un monto de pago 6!');
+                    return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 6!');
                 }
                     
 
@@ -865,10 +865,10 @@ class InvoiceLicController extends Controller
                                     $var6->reference = $reference6;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 6!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 6!');
                                 }
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 6!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 6!');
                             }
                         }
                         if($payment_type6 == 4){
@@ -878,7 +878,7 @@ class InvoiceLicController extends Controller
                                 $var6->credit_days = $credit_days6;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 6!');
+                                return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 6!');
                             }
                         }
 
@@ -889,7 +889,7 @@ class InvoiceLicController extends Controller
                                 $var6->id_account = $account_efectivo6;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 6!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 6!');
                             }
                         }
 
@@ -898,7 +898,7 @@ class InvoiceLicController extends Controller
                             if(($account_punto_de_venta6 != 0)){
                                 $var6->id_account = $account_punto_de_venta6;
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 6!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 6!');
                             }
                         }
 
@@ -922,12 +922,12 @@ class InvoiceLicController extends Controller
 
                         
                     }else{
-                        return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 6!');
+                        return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 6!');
                     }
 
                     
                 }else{
-                        return redirect('invoices')->withDanger('El pago 6 debe ser distinto de Cero!');
+                        return redirect('invoiceslic')->withDanger('El pago 6 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
             } 
@@ -945,7 +945,7 @@ class InvoiceLicController extends Controller
                     
                     $valor_sin_formato_amount_pay7 = str_replace(',', '.', str_replace('.', '', $amount_pay7));
                 }else{
-                    return redirect('invoices')->withDanger('Debe ingresar un monto de pago 7!');
+                    return redirect('invoiceslic')->withDanger('Debe ingresar un monto de pago 7!');
                 }
                     
 
@@ -976,10 +976,10 @@ class InvoiceLicController extends Controller
                                     $var7->reference = $reference7;
 
                                 }else{
-                                    return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 7!');
+                                    return redirect('invoiceslic')->withDanger('Debe ingresar una Referencia Bancaria en pago numero 7!');
                                 }
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 7!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta Bancaria en pago numero 7!');
                             }
                         }
                         if($payment_type7 == 4){
@@ -989,7 +989,7 @@ class InvoiceLicController extends Controller
                                 $var7->credit_days = $credit_days7;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito en pago numero 7!');
+                                return redirect('invoiceslic')->withDanger('Debe ingresar los Dias de Credito en pago numero 7!');
                             }
                         }
 
@@ -1000,7 +1000,7 @@ class InvoiceLicController extends Controller
                                 $var7->id_account = $account_efectivo7;
 
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 7!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Efectivo en pago numero 7!');
                             }
                         }
 
@@ -1009,7 +1009,7 @@ class InvoiceLicController extends Controller
                             if(($account_punto_de_venta7 != 0)){
                                 $var7->id_account = $account_punto_de_venta7;
                             }else{
-                                return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 7!');
+                                return redirect('invoiceslic')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 7!');
                             }
                         }
 
@@ -1032,12 +1032,12 @@ class InvoiceLicController extends Controller
 
                         
                     }else{
-                        return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 7!');
+                        return redirect('invoiceslic')->withDanger('Debe seleccionar un Tipo de Pago 7!');
                     }
 
                     
                 }else{
-                        return redirect('invoices')->withDanger('El pago 7 debe ser distinto de Cero!');
+                        return redirect('invoiceslic')->withDanger('El pago 7 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
             } 
@@ -1061,7 +1061,7 @@ class InvoiceLicController extends Controller
                 
             }
             
-            $quotation = Quotationlic::on(Auth::user()->database_name)->findOrFail($id_quotation);
+            $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
             $bcv = $quotation->bcv;
             $coin = $quotation->coin;
@@ -1240,10 +1240,10 @@ class InvoiceLicController extends Controller
             $global = new GlobalController;                                                
             $global->procesar_anticipos($quotation,$amount_with_iva);
             
-            return redirect('invoices')->withSuccess('Facturas Guardadas con Exito!');
+            return redirect('invoiceslic')->withSuccess('Facturas Guardadas con Exito!');
    
         }else{
-            return redirect('invoices')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
+            return redirect('invoiceslic')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
         }
     }
 
@@ -1254,7 +1254,7 @@ class InvoiceLicController extends Controller
 
         foreach($facturas_a_procesar as $factura){
             
-            $quotation = Quotationlic::on(Auth::user()->database_name)->findOrFail($factura);
+            $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($factura);
             
             $payment = $global->add_payment($quotation,$id_account,3,$quotation->amount_with_iva,$bcv);
 
@@ -1266,14 +1266,14 @@ class InvoiceLicController extends Controller
     
     public function procesar_quotation($id_quotation,$total_pay)
     {
-        $quotation = Quotationlic::on(Auth::user()->database_name)->findOrFail($id_quotation);
+        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
         
         /*descontamos el inventario, si existe la fecha de nota de entrega, significa que ya hemos descontado del inventario, por ende no descontamos de nuevo*/
         if(!isset($quotation->date_delivery_note) && !isset($quotation->date_order)){
             $retorno = $this->discount_inventory($quotation->id);
 
             if($retorno != "exito"){
-                return redirect('invoices');
+                return redirect('invoiceslic');
             }
         }
 
@@ -1381,14 +1381,14 @@ class InvoiceLicController extends Controller
                             $quotation_product->price = $inventories_quotation->price;
                             $quotation_product->save();
                         }else{
-                            return redirect('invoices/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!');
+                            return redirect('invoiceslic/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!');
                         }
                         
                     }else{
-                        return redirect('invoices/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario no existe!');
+                        return redirect('invoiceslic/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario no existe!');
                     }
                 }else{
-                return redirect('invoices/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario de la cotizacion no existe!');
+                return redirect('invoiceslic/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario de la cotizacion no existe!');
                 }
 
             }
@@ -1442,7 +1442,7 @@ class InvoiceLicController extends Controller
 
         $coin = 'bolivares';
         if(isset($id_quotation)){
-            $quotation = Quotationlic::on(Auth::user()->database_name)->find($id_quotation);
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
         }
 
         if(isset($quotation)){

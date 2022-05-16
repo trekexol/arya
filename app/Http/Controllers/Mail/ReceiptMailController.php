@@ -190,7 +190,7 @@ class ReceiptMailController extends Controller
                         ->orwhere('receipt_products.status','=','1')
                         ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                         'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
-                        ,'receipt_products.retiene_islr as retiene_islr_quotation', )
+                        ,'receipt_products.retiene_islr as retiene_islr_quotation')
                         ->get();
 
                     }
@@ -335,7 +335,7 @@ class ReceiptMailController extends Controller
                     ->orwhere('receipt_products.status','=','1')
                     ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                     'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
-                    ,'receipt_products.retiene_islr as retiene_islr_quotation', )
+                    ,'receipt_products.retiene_islr as retiene_islr_quotation')
                     ->get();
 
                 }

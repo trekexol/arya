@@ -11,7 +11,7 @@
       <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('invoices') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('quotations.indexdeliverynote') }}" role="tab" aria-controls="contact" aria-selected="false">Notas De Entrega</a>
+      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('quotationslic.indexdeliverynote') }}" role="tab" aria-controls="contact" aria-selected="false">Notas De Entrega</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('orders.index') }}" role="tab" aria-controls="contact" aria-selected="false">Pedidos</a>
@@ -68,7 +68,7 @@
             </select>
         </div>
       <div class="col-sm-3">
-        <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
+        <a href="{{ route('quotationslic.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
     </div>
   </div>
@@ -113,8 +113,8 @@
                     @foreach ($quotations as $quotation)
                         <tr>
                             <td>
-                                <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                                <a href="{{ route('quotationslic.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                                <a href="{{ route('pdf.quotationlic',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
                                 <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
                             </td>
                             <td class="text-center">{{$quotation->serie ?? ''}}</td>
@@ -144,7 +144,7 @@
               </button>
           </div>
           <div class="modal-body">
-          <form action="{{ route('quotations.deleteQuotation') }}" method="post">
+          <form action="{{ route('quotationslic.deleteQuotation') }}" method="post">
               @csrf
               @method('DELETE')
               <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
@@ -202,7 +202,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('quotations.pdfQuotations') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+            <form method="POST" id="formPostPdfAccountOrdenDePago" action="{{ route('quotationslic.pdfQuotations') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
                 @csrf
             <div class="modal-body">
                 <div class="form-group row">
@@ -343,7 +343,7 @@
     $("#coin").on('change',function(){
         
         var coin = $(this).val();
-        window.location = "{{route('quotations', '')}}"+"/"+coin;
+        window.location = "{{route('quotationslic', '')}}"+"/"+coin;
     });
 
     $(document).on('click','.delete',function(){

@@ -27,4 +27,5 @@ class Quotation extends Model
     public function datails() {
         return $this->hasMany('App\DetailVoucher');   
     }
+
 }

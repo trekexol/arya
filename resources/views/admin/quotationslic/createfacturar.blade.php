@@ -27,7 +27,7 @@
         
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" ><h3>Facturar</h3></div>
-                <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('quotationslic.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
 
@@ -279,14 +279,14 @@
                                         Guardar Factura
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="{{ route('quotations.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                    <a href="{{ route('quotationslic.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 </div>
                             </div>
                         @endif
                         
                         
             </form>           
-            <form method="POST" action="{{ route('quotations.storefactura') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('quotationslic.storefactura') }}" enctype="multipart/form-data">
                 @csrf   
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
@@ -845,12 +845,12 @@
                             
                             <div class="col-md-2">
                             @if(isset($quotation->date_delivery_note))
-                                 <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                 <a href="{{ route('quotationslic.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                             @else
                                 @if (isset($is_after) && ($is_after == false))
-                                    <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
+                                    <a href="{{ route('invoiceslic') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
                                 @else
-                                    <a href="{{ route('quotations.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                    <a href="{{ route('quotationslic.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 @endif
                             @endif
                              </div>
@@ -904,7 +904,7 @@
         });
         $("#coin").on('change',function(){
             coin = $(this).val();
-            window.location = "{{route('quotations.createfacturar', [$quotation->id,''])}}"+"/"+coin;
+            window.location = "{{route('quotationslic.createfacturar', [$quotation->id,''])}}"+"/"+coin;
         });
 
         $("#date-begin").on('change',function(){

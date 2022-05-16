@@ -81,12 +81,9 @@
             <tr> 
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
-                <th class="text-center"></th>
-                <th class="text-center">Ctrl/Serie</th>
                 <th class="text-center">Condominio</th>
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs.</th>
-                <th class="text-center"></th>
 
             </tr>
             </thead>
@@ -125,8 +122,6 @@
                                     <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
                                 </td>
                             @endif
-                            <td class="text-center font-weight-bold">{{$quotation->number_delivery_note ?? ''}}</td>
-                            <td class="text-center font-weight-bold" style="width:11%;">{{$quotation->serie ?? ''}}</td>
                             <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
@@ -144,16 +139,18 @@
                                 <td>
                                 </td>
                             @else
-                                @if (($diferencia_en_dias >= 0) && ($validator_date))
+
+
+                                 <!--//if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ ''/*route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares'])*/}}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
-                                @else
+                                //else
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        <a href="{{ ''/*route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) */}}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
-                                @endif
-                                <!--<td>
+                                //endif
+                               <td>
                                     <input type="checkbox" name="check{{ ''/*$quotation->id */ }}" value="{{ ''/*$quotation->id */ }}" onclick="buttom();" id="flexCheckChecked">    
                                 </td>-->
                             @endif

@@ -79,7 +79,7 @@
             
                             
                             <div class="col-md-4">
-                                <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $client->cedula_rif }}" readonly required autocomplete="cedula_rif">
+                                <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $client->personcontact }}" readonly required autocomplete="cedula_rif">
 
                                 @error('cedula_rif')
                                     <span class="invalid-feedback" role="alert">
@@ -87,6 +87,7 @@
                                     </span>
                                 @enderror
                             </div>
+                        <div style="display: none;">   
                             <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
                             <div class="col-md-3">
                                 <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="serie">
@@ -96,7 +97,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+                        </div>
                         </div>
 
                         <div class="form-group row">
@@ -197,6 +198,7 @@
                         
                         <div class="form-group row">
 
+                            <div style="display: none;">
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             @if (empty($anticipos_sum))
                                 <div class="col-md-3">
@@ -219,9 +221,11 @@
                                     @enderror
                                 </div>
                             @endif
+                       >
                             <div class="col-md-1">
                                 <a href="{{ route('anticipos.selectanticipo',[$quotation->id_client,$coin,$quotation->id]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                             </div>
+                        </div>
                             <div style="display: none;">
                                 <label for="iva" class="col-md-1 col-form-label text-md-right">IVA:</label>
                                 <div class="col-md-2">
@@ -236,6 +240,8 @@
                                     </select>
                                 </div>
                            </div>
+                           <div class="col-md-2">
+                            </div>
                             <div class="col-md-2">
                                 <select class="form-control" name="coin" id="coin">
                                     <option value="bolivares">Bolívares</option>
@@ -267,7 +273,7 @@
                             @if (isset($is_after) && ($is_after == true))
                                 <div class="col-md-2">
                                     <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="customSwitches">
+                                        <input type="checkbox" class="custom-control-input" id="customSwitches" checked>
                                         <label class="custom-control-label" for="customSwitches">Tiene Crédito</label>
                                     </div>
                                 </div>
@@ -817,6 +823,8 @@
     <script>
         $("#credit").hide();
         $("#formenviarcredito").hide();
+
+
         var switchStatus = false;
         $("#customSwitches").on('change', function() {
             if ($(this).is(':checked')) {

@@ -111,7 +111,7 @@
   <tr>
     <td style="text-align: center;">{{ $client->name}}</td>
     <td style="text-align: center;">{{ $client->cedula_rif ?? '' }}</td>
-    <td style="text-align: center;">{{ str_pad($client->direction , 3, "0", STR_PAD_LEFT)}}</td>
+    <td style="text-align: center;">{{ $client->personcontact ?? ''}}</td>
     <td style="text-align: center;">{{ $client->phone1 ?? '' }}</td>
     
   </tr>

@@ -51,7 +51,7 @@
                         <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
                         @endif
                         <div class="col-md-3">
-                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->cedula_rif  ?? '' }}" readonly required autocomplete="date_quotation">
+                            <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->personcontact  ?? '' }}" readonly required autocomplete="date_quotation">
     
                             @error('date_quotation')
                                 <span class="invalid-feedback" role="alert">
@@ -81,16 +81,17 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="client" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
-                            <div class="col-md-3">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="client">
-                                @error('client')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div style="display: none;">
+                                <label for="client" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
+                                <div class="col-md-3">
+                                    <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="client">
+                                    @error('client')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
-                            
                         </div>
                         <div class="form-group row" style="display: none;">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>

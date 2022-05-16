@@ -188,8 +188,8 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item" title="facturar">Imprimir Factura Media Carta</a>
-                                    <a href="{{ route('quotations.reversarQuotation',$quotation->id) }}" class="dropdown-item">Reversar Compra</a>
+                                    <!--<a onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item" title="facturar">Imprimir Factura Media Carta</a>-->
+                                    <a href="{{ route('quotationslic.reversarQuotation',$quotation->id) }}" class="dropdown-item">Reversar Factura</a>
                                 </div>
                             </div>
 
@@ -198,7 +198,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Facturas</a>
+                                <a href="{{ route('invoiceslic') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Facturas</a>
                             </div>
                         </div>
 
@@ -218,16 +218,16 @@
 
             $("#coin").on('change',function(){
                 coin = $(this).val();
-                window.location = "{{route('quotations.createfacturado', [$quotation->id,''])}}"+"/"+coin;
+                window.location = "{{route('quotationslic.createfacturado', [$quotation->id,''])}}"+"/"+coin;
             });
             function pdf() {
 
-                var nuevaVentana= window.open("{{ route('pdf',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+                var nuevaVentana= window.open("{{ route('pdf.facturalic',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
 
             }
             function pdf_media() {
 
-                var nuevaVentana2= window.open("{{ route('pdf.factura',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+                var nuevaVentana2= window.open("{{ route('pdf.factura_media',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
 
             }
 

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Clientslics;
+use App\Client;
 use App\Company;
 use App\DetailVoucher;
 use App\Exports\ProductsExport;
 use App\Inventory;
 use App\Product;
-use App\Quotationlic;
+use App\Http\Controllers\UserAccess\UserAccessController;
+use App\UserAccess;
+use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use App\Transport;
@@ -23,31 +25,41 @@ use App\Driver;
 class QuotationLicController extends Controller
 {
 
+    public $userAccess;
+    public $modulo = 'Cotizacion';
+
+ 
     public function __construct(){
 
        $this->middleware('auth');
+       $this->userAccess = new UserAccessController();
+      
    }
+
 
    public function index()
    {
-       $user       =   auth()->user();
-       try{
-           $users_role =   $user->role_id;
-           if($users_role == '1'){
-               $quotations = Quotationlic::orderBy('id' ,'DESC')
-                   ->where('date_billing','=',null)
-                   ->where('date_delivery_note','=',null)
-                   ->get();
-           }elseif($users_role == '2'){
-               return view('admin.index');
-           }
-       }catch(\Illuminate\Database\QueryException $qry_ex){//capturar excepciones de consultas en BD
-           return redirect('/');
-       }catch(Throwable $th){//Capturar errores en General.
-           return redirect('/');
-       }
-       return view('admin.quotations.index',compact('quotations'));
-   }
+           
+        if($this->userAccess->validate_user_access($this->modulo)){
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->get();
+
+        /*  $company = Company::on(Auth::user()->database_name)->find(1);
+
+            $clients = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');*/
+
+            //return view('admin.quotationslic.index',compact('quotations','company','coin','clients','datenow'));
+            return view('admin.quotationslic.index',compact('quotations'));
+        }else{
+            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+        }
+   
+    }
 
    /**
     * Show the form for creating a new resource.
@@ -57,13 +69,13 @@ class QuotationLicController extends Controller
 
     public function createquotation()
     {
-        $transports     = Transport::all();
-        $drivers        = Driver::all();
+
         $date           = Carbon::now();
         $datenow        = $date->format('Y-m-d');
 
-
-       /* $last_number = Quotationlic::on(Auth::user()->database_name)
+        $transports = Transport::on(Auth::user()->database_name)->get();
+        $drivers = Driver::on(Auth::user()->database_name)->get();
+       /* $last_number = Quotation::on(Auth::user()->database_name)
         ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
 
         //Asigno un numero incrementando en 1
@@ -76,27 +88,27 @@ class QuotationLicController extends Controller
         } */
 
 
-        return view('admin.quotations.createquotation',compact('datenow','transports','drivers'));
+        return view('admin.quotationslic.createquotation',compact('datenow','transports','drivers'));
     }
 
     public function createquotationclient($id_client)
     {
         $client = null;
         if(isset($id_client)){
-            $client = Clientslics::on(Auth::user()->database_name)->find($id_client);
+            $client = Client::on(Auth::user()->database_name)->find($id_client);
         }
         if(isset($client)){
 
         /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
 
             $transports     = Transport::on(Auth::user()->database_name)->get();
-            $drivers        = Driver::all();
+            $drivers = Driver::on(Auth::user()->database_name)->get();
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
-            return view('admin.quotations.createquotation',compact('client','datenow','transports','drivers'));
+            return view('admin.quotationslic.createquotation',compact('client','datenow','transports','drivers'));
         }else{
-            return redirect('/quotations')->withDanger('El Cliente no existe');
+            return redirect('/quotationslic')->withDanger('El Cliente no existe');
         }
     }
 
@@ -104,7 +116,7 @@ class QuotationLicController extends Controller
     {
         $client = null;
         if(isset($id_client)){
-            $client = Clientslics::on(Auth::user()->database_name)->find($id_client);
+            $client = Client::on(Auth::user()->database_name)->find($id_client);
         }
         if(isset($client)){
 
@@ -118,12 +130,12 @@ class QuotationLicController extends Controller
                 $drivers        = Driver::all();
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');
-                return view('admin.quotations.createquotation',compact('client','vendor','datenow','transports','drivers'));
+                return view('admin.quotationslic.createquotation',compact('client','vendor','datenow','transports','drivers'));
             }else{
-                return redirect('/quotations')->withDanger('El Vendedor no existe');
+                return redirect('/quotationslic')->withDanger('El Vendedor no existe');
             }
         }else{
-            return redirect('/quotations')->withDanger('El Cliente no existe');
+            return redirect('/quotationslic')->withDanger('El Cliente no existe');
         }
     }
 
@@ -132,7 +144,7 @@ class QuotationLicController extends Controller
             $quotation = null;
 
             if(isset($id_quotation)){
-                $quotation = Quotationlic::on(Auth::user()->database_name)->find($id_quotation);
+                $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
             }
 
             if(isset($quotation) && ($quotation->status == 1)){
@@ -248,9 +260,9 @@ class QuotationLicController extends Controller
                     }
 
                 }
-                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','total','rate','total_retiene','total_iva','total_base_impo_pcb','total_iva_pcb','total_venta','iva'));
+                return view('admin.quotationslic.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','total','rate','total_retiene','total_iva','total_base_impo_pcb','total_iva_pcb','total_venta','iva'));
             }else{
-                return redirect('/quotations')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/quotationslic')->withDanger('No es posible ver esta cotizacion');
             }
     }
 
@@ -283,7 +295,7 @@ class QuotationLicController extends Controller
         $quotation = null;
 
         if(isset($id_quotation)){
-            $quotation = Quotationlic::on(Auth::user()->database_name)->find($id_quotation);
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
         }
 
         if(isset($quotation) && ($quotation->status == 1)){
@@ -332,13 +344,13 @@ class QuotationLicController extends Controller
                         $bcv = null;
                     }
 
-                    return view('admin.quotations.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin'));
+                    return view('admin.quotationslic.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin'));
 
                 }else{
-                    return redirect('/quotations')->withDanger('El Producto no existe');
+                    return redirect('/quotationslic')->withDanger('El Producto no existe');
                 }
         }else{
-            return redirect('/quotations')->withDanger('La cotizacion no existe');
+            return redirect('/quotationslic')->withDanger('La cotizacion no existe');
         }
 
     }
@@ -356,7 +368,7 @@ class QuotationLicController extends Controller
             ->orderBy('products.code_comercial','desc')
             ->get();
 
-        $quotation = Quotationlic::on(Auth::user()->database_name)->find($id_quotation);
+        $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
         $bcv_quotation_product = $quotation->bcv;
 
@@ -380,13 +392,48 @@ class QuotationLicController extends Controller
             ->orderBy('products.code_comercial','desc')
             ->get();
 
-            return view('admin.quotations.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product'));
+            return view('admin.quotationslic.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product'));
         }
 
-        return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product'));
+        return view('admin.quotationslic.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product'));
     }
 
+    public function pdfQuotations(Request $request)
+    {
+        $date_begin = request('date_begin');
+        $date_end = request('date_end');
+ 
+        $date = Carbon::now();
+        $datenow = $date->format('d-m-Y');
+ 
+        $pdf = App::make('dompdf.wrapper');
+ 
+        $id_client = request('id_client');
+ 
+        $coin = request('coin');
+        
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
+        if(isset($id_client)){
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->where('id_client',$id_client)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }else{
+            $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+            ->where('date_billing','=',null)
+            ->where('date_delivery_note','=',null)
+            ->where('date_order','=',null)
+            ->whereBetween('date_quotation', [$date_begin, $date_end])->get();
+        }
+
+        $pdf = $pdf->loadView('admin.quotationslic.pdfQuotations',compact('company','quotations'
+        ,'datenow','date_begin','date_end'));
+
+        return $pdf->stream();
+    }
     public function createvendor($id_product,$id_vendor)
     {
 
@@ -396,7 +443,7 @@ class QuotationLicController extends Controller
                 $vendor = vendor::on(Auth::user()->database_name)->find($id_vendor);
             }
 
-            $clients     = Clientslics::on(Auth::user()->database_name)->get();
+            $clients     = Client::on(Auth::user()->database_name)->get();
 
             $vendors     = Vendor::on(Auth::user()->database_name)->get();
 
@@ -405,7 +452,7 @@ class QuotationLicController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
-            return view('admin.quotations.create',compact('clients','vendors','datenow','transports','vendor'));
+            return view('admin.quotationslic.create',compact('clients','vendors','datenow','transports','vendor'));
     }
 
     public function selectvendor($id_client)
@@ -416,10 +463,10 @@ class QuotationLicController extends Controller
 
 
 
-                return view('admin.quotations.selectvendor',compact('vendors','id_client'));
+                return view('admin.quotationslic.selectvendor',compact('vendors','id_client'));
 
             }else{
-                return redirect('/quotations/registerquotation')->withDanger('Seleccione un Cliente primero');
+                return redirect('/quotationslic/registerquotation')->withDanger('Seleccione un Cliente primero');
             }
 
 
@@ -427,9 +474,9 @@ class QuotationLicController extends Controller
 
     public function selectclient()
     {
-        $clients     = Clientslics::on(Auth::user()->database_name)->get();
+        $clients     = Client::on(Auth::user()->database_name)->get();
 
-        return view('admin.quotations.selectclient',compact('clients'));
+        return view('admin.quotationslic.selectclient',compact('clients'));
     }
 
 
@@ -489,9 +536,9 @@ class QuotationLicController extends Controller
                 $var->coin = 'bolivares';
                 $var->status =  1;
                 $var->save();
-                return redirect('quotations/register/'.$var->id.'/bolivares');
+                return redirect('quotationslic/register/'.$var->id.'/bolivares');
         }else{
-            return redirect('/quotations/registerquotation')->withDanger('Debe Buscar un Cliente');
+            return redirect('/quotationslic/registerquotation')->withDanger('Debe Buscar un Cliente');
         }
     } 
 
@@ -537,12 +584,12 @@ class QuotationLicController extends Controller
 
         $coin = request('coin');
 
-        $quotation = Quotationlic::on(Auth::user()->database_name)->find($var->id_quotation);
+        $quotation = Quotation::on(Auth::user()->database_name)->find($var->id_quotation);
 
         $var->rate = $quotation->bcv;
 
         if($var->id_inventory == -1){
-            return redirect('quotations/register/'.$var->id_quotation.'')->withDanger('No se encontro el producto!');
+            return redirect('quotationslic/register/'.$var->id_quotation.'')->withDanger('No se encontro el producto!');
         }
 
         $amount = request('amount');
@@ -552,7 +599,7 @@ class QuotationLicController extends Controller
         $value_return = $this->check_amount($quotation->id,$var->id_inventory,$amount);
 
         if($value_return != 'exito'){
-                return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
+                return redirect('quotationslic/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
         }
 
 
@@ -571,14 +618,14 @@ class QuotationLicController extends Controller
         $var->discount = request('discount');
 
         if(($var->discount < 0) || ($var->discount > 100)){
-            return redirect('quotations/register/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('El descuento debe estar entre 0% y 100%!');
+            return redirect('quotationslic/register/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('El descuento debe estar entre 0% y 100%!');
         }
 
         $var->status =  1;
 
         $var->save();
 
-        return redirect('quotations/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
+        return redirect('quotationslic/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
     }
     /**
         * Display the specified resource.
@@ -636,9 +683,9 @@ class QuotationLicController extends Controller
         */
     public function edit($id)
     {
-        $quotation = quotation::on(Auth::user()->database_name)->find($id);
+        $quotation = Quotation::on(Auth::user()->database_name)->find($id);
 
-        return view('admin.quotations.edit',compact('quotation'));
+        return view('admin.quotationslic.edit',compact('quotation'));
 
     }
     public function editquotationproduct($id,$coin = null)
@@ -668,9 +715,9 @@ class QuotationLicController extends Controller
                     $rate = $quotation_product->rate;
                 }
 
-                return view('admin.quotations.edit_product',compact('rate','coin','quotation_product','inventory','bcv'));
+                return view('admin.quotationslic.edit_product',compact('rate','coin','quotation_product','inventory','bcv'));
             }else{
-                return redirect('/quotations')->withDanger('No se Encontro el Producto!');
+                return redirect('/quotationslic')->withDanger('No se Encontro el Producto!');
             }
 
 
@@ -688,7 +735,7 @@ class QuotationLicController extends Controller
     public function update(Request $request, $id)
     {
 
-        $vars =  Quotationlic::on(Auth::user()->database_name)->find($id);
+        $vars =  Quotation::on(Auth::user()->database_name)->find($id);
 
         $vars_status = $vars->status;
         $vars_exento = $vars->exento;
@@ -716,7 +763,7 @@ class QuotationLicController extends Controller
 
         ]);
 
-        $var = Quotationlic::on(Auth::user()->database_name)->findOrFail($id);
+        $var = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
         $var->segment_id = request('segment_id');
         $var->subsegment_id= request('sub_segment_id');
@@ -757,7 +804,7 @@ class QuotationLicController extends Controller
 
         $var->save();
 
-        return redirect('/quotations')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/quotationslic')->withSuccess('Actualizacion Exitosa!');
         }
 
 
@@ -822,13 +869,13 @@ class QuotationLicController extends Controller
             }
 
             if($value_return != 'exito'){
-                return redirect('quotations/quotationproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
+                return redirect('quotationslic/quotationproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario!');
            }
 
 
             $var->save();
 
-            return redirect('/quotations/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Actualizacion Exitosa de Detalle!');
+            return redirect('/quotationslic/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Actualizacion Exitosa de Detalle!');
 
         }
 
@@ -842,12 +889,12 @@ class QuotationLicController extends Controller
                                     ->update(['rate' => $sin_formato_rate]);
 
 
-            Quotationlic::on(Auth::user()->database_name)->where('id',$id_quotation)
+            Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)
                                     ->update(['bcv' => $sin_formato_rate]);
 
 
 
-            return redirect('/quotations/register/'.$id_quotation.'/'.$coin.'')->withSuccess('Actualizacion de Tasa Exitosa!');
+            return redirect('/quotationslic/register/'.$id_quotation.'/'.$coin.'')->withSuccess('Actualizacion de Tasa Exitosa!');
 
         }
 
@@ -866,11 +913,11 @@ class QuotationLicController extends Controller
               }
 
  
-            Quotationlic::on(Auth::user()->database_name)->where('id',$id_quotation)
+            Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)
                                     ->update(['observation' => $observation,'note' => $note,'serie_note' => $serie2]);
 
 
-            return redirect('/quotations/register/'.$id_quotation.'/'.$coin.'')->withSuccess('Datos Guardados!');
+            return redirect('/quotationslic/register/'.$id_quotation.'/'.$coin.'')->withSuccess('Datos Guardados!');
             
         }
 
@@ -908,7 +955,7 @@ class QuotationLicController extends Controller
         $product = QuotationProduct::on(Auth::user()->database_name)->find(request('id_quotation_product_modal'));
         $product->delete();
 
-        return redirect('/quotations/register/'.request('id_quotation_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa del producto!!');
+        return redirect('/quotationslic/register/'.request('id_quotation_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa del producto!!');
         
     }
   
@@ -917,20 +964,20 @@ class QuotationLicController extends Controller
     public function deleteQuotation(Request $request)
     {
 
-        $quotation = Quotationlic::on(Auth::user()->database_name)->find(request('id_quotation_modal'));
+        $quotation = Quotation::on(Auth::user()->database_name)->find(request('id_quotation_modal'));
 
         QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->delete();
 
         $quotation->delete();
 
-        return redirect('/quotations')->withDanger('Eliminacion exitosa del factura!!');
+        return redirect('/quotationslic')->withDanger('Eliminacion exitosa del factura!!');
 
     }
 
     public function reversar_quotation($id_quotation)
     {
 
-        $quotation = Quotationlic::on(Auth::user()->database_name)->findOrFail($id_quotation);
+        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
         if($quotation != 'X'){
             $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)

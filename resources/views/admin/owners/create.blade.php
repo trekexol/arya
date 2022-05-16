@@ -121,7 +121,7 @@
 
                         </div>
                         <div class="form-group row">
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección/Cod.Ap.</label>
 
                             <div class="col-md-4">
                                 <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ old('direction') }}" required autocomplete="direction">
@@ -132,19 +132,18 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div style="display:none;">
-                                <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
+                            <label for="personcontact" class="col-md-2 col-form-label text-md-right">Apartamento</label>
 
-                                <div class="col-md-4">
-                                    <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ old('personcontac') }}" autocomplete="personcontact">
+                            <div class="col-md-4">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ old('personcontac') }}" autocomplete="personcontact">
 
-                                    @error('personcontact')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                @error('personcontact')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
+ 
                        </div>
                         <div class="form-group row">
                             <label for="phone1" class="col-md-2 col-form-label text-md-right">Teléfono</label>

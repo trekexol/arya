@@ -26,7 +26,7 @@
                     <div class="card-header text-center font-weight-bold h3">Crear de Cotización </div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('quotations.store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('quotationslic.store') }}" enctype="multipart/form-data">
                             @csrf
 
                             <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
@@ -45,7 +45,7 @@
                                     @endif
                                 </div>
                                 <div class="form-group col-sm-1">
-                                    <a href="{{ route('quotations.selectclient') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>
+                                    <a href="{{ route('quotationslic.selectclient') }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>
                                 </div>
                                 <div class="col-sm-2">
                                     <label for="vendors">Vendedor:</label>
@@ -59,7 +59,7 @@
                                     @endif
                                 </div>
                                 <div class="form-group col-md-1">
-                                    <a href="{{ route('quotations.selectvendor',$client->id ?? -1) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>
+                                    <a href="{{ route('quotationslic.selectvendor',$client->id ?? -1) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>
                                 </div>
                             </div>
                             <div class="form-group row">

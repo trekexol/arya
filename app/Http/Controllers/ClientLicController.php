@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Clientslics;
+use App\Client;
 use App\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +19,7 @@ class ClientLicController extends Controller
    {
        $user= auth()->user();
 
-       $clients = Clientslics::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
+       $clients = Client::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
 
        return view('admin.clientslic.index',compact('clients'));
    }
@@ -71,7 +71,7 @@ class ClientLicController extends Controller
     $direccion_destino      = trim(request('Direccion_Destino'));
     $direccion_entrega      = trim(request('Direccion_Entrega'));
 
-    $users = new clientslic();
+    $users = new client();
     $users->setConnection(Auth::user()->database_name);
     $users->id_vendor   = request('id_vendor');
     $users->id_user     = request('id_user');
@@ -116,7 +116,7 @@ class ClientLicController extends Controller
     */
    public function edit($id)
    {
-        $var            = clientslic::on(Auth::user()->database_name)->find($id);
+        $var            = client::on(Auth::user()->database_name)->find($id);
         $vendors        = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         return view('admin.clientslic.edit',compact('var','vendors'));
 
@@ -132,7 +132,7 @@ class ClientLicController extends Controller
    public function update(Request $request, $id)
    {
 
-    $vars =  clientslic::on(Auth::user()->database_name)->find($id);
+    $vars =  client::on(Auth::user()->database_name)->find($id);
     $vars_status = $vars->status;
 
     $data = request()->validate([
@@ -143,7 +143,7 @@ class ClientLicController extends Controller
    $direccion_destino      = trim(request('Direccion_Destino'));
    $direccion_entrega      = trim(request('Direccion_Entrega'));
 
-    $users                              = clientslic::on(Auth::user()->database_name)->findOrFail($id);
+    $users                              = client::on(Auth::user()->database_name)->findOrFail($id);
     $users->id_vendor                   = request('id_vendor');
     $users->type_code                   = request('type_code');
     $users->name                        = request('name');

@@ -275,6 +275,8 @@ Route::group(["prefix"=>'products'],function(){
     Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list2subsegment')->name('products.list2subsegment');
     Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list')->name('products.listtwosubsegment');
     Route::get('listthreesubsegment/{id_subsegment}','ThreeSubSegmentController@list')->name('products.listthreesubsegment');
+    
+    Route::get('listprice/{code_id?}','ProductController@listprice')->name('products.listprice');
 
 });
 
@@ -607,6 +609,13 @@ Route::group(["prefix"=>'invoices'],function(){
    
     Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
 
+     //////PDF EMPRESA LICORES//////////////////////////////////////////////////////////////////////////////////
+    Route::get('quotation/{id_quotation}/{coin?}','PDF2LicController@printQuotation')->name('pdf.quotationlic');
+    Route::get('previewfactura/{id_quotation}/{coin?}','PDF2LicController@previewfactura')->name('pdf.previewfactura');
+    Route::get('imprimirFactura/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.facturalic');
+    Route::get('imprimirFacturaMedia/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.factura_media');
+    Route::get('previewnote/{id_quotation}/{coin},{serienote}','PDF2LicController@previewnote')->name('pdf.previewnote');
+    Route::get('deliverynotelic/{id_quotation}/{coin}/{iva}/{date}','PDF2LicController@deliverynote')->name('pdf.deliverynotelic');
 });
 
 Route::group(["prefix"=>'receipt'],function(){
@@ -1296,7 +1305,7 @@ Route::group(["prefix"=>'report_anticipos'],function(){
     Route::get('selectProvider','Reports\AnticipoReportController@selectProvider')->name('report_anticipos.selectProvider');
 });
 
-
+/////////////////////////////////////////EMPRESA LICORES///////////////////////////////////////////////
 Route::group(["prefix"=>'quotationslic'],function(){
     Route::get('/','QuotationLicController@index')->name('quotationslic');
     Route::get('register/{id_quotation}/{coin}','QuotationLicController@create')->name('quotationslic.create');
@@ -1316,8 +1325,8 @@ Route::group(["prefix"=>'quotationslic'],function(){
     Route::post('storefactura','FacturarLicController@storefactura')->name('quotationslic.storefactura');
     Route::get('facturado/{id_quotation}/{coin}/{reverso?}','FacturarLicController@createfacturado')->name('quotationslic.createfacturado');
     Route::get('listinventory/{var?}','QuotationLicController@listinventory')->name('quotationslic.listinventory');
-    Route::get('notadeentrega/{id_quotation}/{coin}','DeliveryNoteController@createdeliverynote')->name('quotationslic.createdeliverynote');
-    Route::get('indexnotasdeentrega/','DeliveryNoteController@index')->name('quotationslic.indexdeliverynote');
+    Route::get('notadeentrega/{id_quotation}/{coin}','DeliveryNoteLicController@createdeliverynote')->name('quotationslic.createdeliverynote');
+    Route::get('indexnotasdeentrega/','DeliveryNoteLicController@index')->name('quotationslic.indexdeliverynote');
     Route::get('quotationproduct/{id}/{coin}/edit','QuotationLicController@editquotationproduct')->name('quotationslic.productedit');
     Route::patch('productupdate/{id}/update','QuotationLicController@updatequotationproduct')->name('quotationslic.productupdate');
     Route::post('storefacturacredit','FacturarLicController@storefacturacredit')->name('quotationslic.storefacturacredit');
@@ -1329,6 +1338,8 @@ Route::group(["prefix"=>'quotationslic'],function(){
     Route::get('reversarquotation{id}','QuotationLicController@reversar_quotation')->name('quotationslic.reversarQuotation');
     Route::get('reversarquotationmultipayment/{id}/{id_header?}','QuotationLicController@reversar_quotation_multipayment')->name('quotationslic.reversar_quotation_multipayment');
     Route::get('reversardeliverynote/{id_quotation}','DeliveryNoteController@reversar_delivery_note')->name('quotationslic.reversar_delivery_note');
+
+    Route::post('pdfQuotations','QuotationLicController@pdfQuotations')->name('quotationslic.pdfQuotations');
 });
 
 
@@ -1340,7 +1351,6 @@ Route::group(["prefix"=>'clientslic'],function(){
     Route::get('{id}/edit','ClientLicController@edit')->name('clientslic.edit');
     Route::delete('{id}/delete','ClientLicController@destroy')->name('clientslic.delete');
     Route::patch('{id}/update','ClientLicController@update')->name('clientslic.update');
-
 
 });
 
@@ -1354,3 +1364,72 @@ Route::group(["prefix"=>'invoiceslic'],function(){
     Route::post('storemultipayment','InvoiceLicController@storemultipayment')->name('invoiceslic.storemultipayment');
 
  });
+ Route::group(["prefix"=>'saleslic'],function(){
+    Route::get('/','SaleLicController@index')->name('saleslic');
+    /*Route::get('register','SaleController@create')->name('sales.create');
+    Route::post('store', 'saleController@store')->name('sales.store');
+
+    Route::get('{id}/edit','SaleController@edit')->name('sales.edit');
+    Route::delete('{id}/delete','SaleController@destroy')->name('sales.delete');
+    Route::patch('{id}/update','SaleController@update')->name('sales.update');*/
+
+});
+
+Route::group(["prefix"=>'anticiposlic'],function(){
+    Route::get('/','AnticipoLicController@index')->name('anticiposlic');
+    Route::get('register','AnticipoLicController@create')->name('anticiposlic.create');
+    Route::post('store', 'AnticipoLicController@store')->name('anticiposlic.store');
+
+    Route::get('edit/{id}/{id_client?}/{id_provider?}','AnticipoLicController@edit')->name('anticiposlic.edit');
+   Route::patch('{id}/update','AnticipoLicController@update')->name('anticiposlic.update');
+
+    Route::get('register/{id_client}','AnticipoLicController@createclient')->name('anticiposlic.createclient');
+    Route::get('selectclient/{id_anticipo?}','AnticipoLicController@selectclient')->name('anticiposlic.selectclient');
+
+    Route::get('historic','AnticipoLicController@indexhistoric')->name('anticiposlic.historic');
+
+    Route::get('selectanticipo/{id_client}/{coin}/{id_quotation}','AnticipoLicController@selectanticipo')->name('anticiposlic.selectanticipo');
+
+    Route::get('changestatus/{id_anticipo}/{verify}','AnticipoLicController@changestatus')->name('anticiposlic.changestatus');
+
+    Route::get('indexprovider','AnticipoLicController@index_provider')->name('anticiposlic.index_provider');
+    Route::get('historicprovider','AnticipoLicController@indexhistoric_provider')->name('anticiposlic.historic_provider');
+    Route::get('registerprovider/{id_provider?}','AnticipoLicController@create_provider')->name('anticiposlic.create_provider');
+    Route::get('selectprovider/{id_anticipo?}','AnticipoLicController@selectprovider')->name('anticiposlic.selectprovider');
+    Route::get('selectanticipoexpense/{id_provider}/{coin}/{id_expense}','AnticipoLicController@selectanticipo_provider')->name('anticiposlic.selectanticipo_provider');
+    Route::post('storeprovider', 'AnticipoLicController@store_provider')->name('anticiposlic.store_provider');
+
+    Route::delete('delete','AnticipoLicController@delete_anticipo')->name('anticiposlic.delete');
+    Route::delete('deleteprovider','AnticipoLicController@delete_anticipo_provider')->name('anticipos.delete_provider');
+});
+
+
+
+Route::group(["prefix"=>'vendorslic'],function(){
+    Route::get('/','VendorLicController@index')->name('vendorslic');
+    Route::get('register','VendorLicController@create')->name('vendorslic.create');
+    Route::post('store','VendorLicController@store')->name('vendorslic.store');
+
+    Route::get('{id}/edit','VendorLicController@edit')->name('vendorslic.edit');
+    Route::delete('{id}/delete','VendorLicController@destroy')->name('vendorslic.delete');
+    Route::patch('{id}/update','VendorLicController@update')->name('vendorslic.update');
+});
+
+
+Route::group(["prefix"=>'paymentslic'],function(){
+    Route::get('index','PaymentLicController@index')->name('paymentslic');
+    Route::get('movement/{id_quotation}','PaymentLicController@movements')->name('paymentslic.movement');
+    Route::get('pdf/{id_payment}/{coin}','PaymentLicController@pdf')->name('paymentslic.pdf');
+
+    Route::delete('deleteall','PaymentLicController@deleteAllPayments')->name('paymentslic.deleteAllPayments');
+});
+
+Route::group(["prefix"=>'report_paymentslic'],function(){
+    Route::get('menu/{typeperson}/{id_client?}','Reports\PaymentLicReportController@index')->name('report_paymentslic.index');
+    Route::post('store','Reports\PaymentLicReportController@store')->name('report_paymentslic.store');
+    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_client_or_vendor?}','Reports\PaymentLicReportController@pdf')->name('report_paymentslic.pdf');
+    Route::get('selectclient','Reports\PaymentLicReportController@selectClient')->name('report_paymentslic.selectClient');
+    Route::get('selectvendor','Reports\PaymentLicReportController@selectVendor')->name('report_paymentslic.selectVendor');
+});
+
+/////////////////////////////////////////FIN EMPRESA LICORES///////////////////////////////////////////////
