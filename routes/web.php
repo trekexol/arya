@@ -610,7 +610,7 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
 
      //////PDF EMPRESA LICORES//////////////////////////////////////////////////////////////////////////////////
-    Route::get('quotation/{id_quotation}/{coin?}','PDF2LicController@printQuotation')->name('pdf.quotationlic');
+    Route::get('quotationlic/{id_quotation}/{coin?}','PDF2LicController@printQuotation')->name('pdf.quotationlic');
     Route::get('previewfactura/{id_quotation}/{coin?}','PDF2LicController@previewfactura')->name('pdf.previewfactura');
     Route::get('imprimirFactura/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.facturalic');
     Route::get('imprimirFacturaMedia/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.factura_media');
