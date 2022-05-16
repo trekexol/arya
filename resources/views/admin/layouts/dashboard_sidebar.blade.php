@@ -153,6 +153,7 @@
         </div>
     </li>
     @endif
+    @if ((Auth::user()->id_company  == '21'))
     <li class="nav-item" style="display: block;">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
     aria-expanded="true" aria-controls="collapgastoscon">
@@ -176,6 +177,7 @@
             </div>
         </div>
     </li>
+    @endif
 @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2') || (Auth::user()->role_id  == '3'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
