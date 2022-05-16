@@ -159,11 +159,11 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-3">
-                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Ver Notas de Entrega</a>
+                                <a href="{{ route('quotationslic.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Ver Notas de Entrega</a>
                             </div>
                             @if (empty($quotation->date_delivery_note))
                             <div class="col-sm-2">
-                                <a href="{{ route('quotations.create',[$quotation->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
+                                <a href="{{ route('quotationslic.create',[$quotation->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
                             </div>
                             @endif
 
@@ -183,7 +183,7 @@
     $("#coin").on('change',function()
     {
                 coin = $(this).val();
-                window.location = "{{route('quotations.createdeliverynote', [$quotation->id,''])}}"+"/"+coin;
+                window.location = "{{route('quotationslic.createdeliverynote', [$quotation->id,''])}}"+"/"+coin;
     });
 
     $("#iva").on('change',function()
@@ -251,7 +251,7 @@
         let date = document.getElementById("date-begin").value;
         let serienote = document.getElementById("serien").value;
 
-        var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'','',''])}}"+"/"+inputIva+"/"+date+"/"+serienote,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+        var nuevaVentana= window.open("{{ route('pdf.deliverynotelic',[$quotation->id,$coin,'','',''])}}"+"/"+inputIva+"/"+date+"/"+serienote,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
 
     }
 

@@ -25,11 +25,11 @@
             <div class="card">
                 <div class="card-header h4">Editar Cliente</div>
                 <div class="card-body">
-                    <form  method="POST"   action="{{ route('clients.update',$var->id) }}" enctype="multipart/form-data" >
+                    <form  method="POST"   action="{{ route('clientslic.update',$var->id) }}" enctype="multipart/form-data" >
                         @method('PATCH')
                         @csrf()
                         <div class="card-body">
-                            <form method="POST" action="{{ route('clients.store') }}" enctype="multipart/form-data">
+                            <form method="POST" action="{{ route('clientslic.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
                                 <div class="form-group row">
@@ -295,7 +295,7 @@
                                 <button type="submit" class="btn btn-success btn-block"><i class="fa fa-send-o"></i>Actualizar</button>
                             </div>
                             <div class="form-group col-sm-2">
-                                <a href="{{ route('clients') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
+                                <a href="{{ route('clientslic') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
                             </div>
                         </div>
                     </form>

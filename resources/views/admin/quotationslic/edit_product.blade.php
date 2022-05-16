@@ -18,7 +18,7 @@
                     <div class="card-header"><h2>Editar Producto Cotizado</h2></div>
     
                     <div class="card-body">
-            <form  method="POST"   action="{{ route('quotations.productupdate',$quotation_product->id) }}" enctype="multipart/form-data" onsubmit="return validacion()">
+            <form  method="POST"   action="{{ route('quotationslic.productupdate',$quotation_product->id) }}" enctype="multipart/form-data" onsubmit="return validacion()">
                 @method('PATCH')
                 @csrf()
 
@@ -121,7 +121,7 @@
                                     </div>
                                 </form>
                                     <div class="col-md-2">
-                                        <a href="{{ route('quotations.create',[$quotation_product->id_quotation,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                        <a href="{{ route('quotationslic.create',[$quotation_product->id_quotation,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                     </div>
                                 </div>
                             

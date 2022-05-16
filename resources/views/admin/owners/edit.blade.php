@@ -86,12 +86,24 @@
                             </div>
                           </div>
 
-                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
+                            <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección/Cod.Ap.</label>
 
                             <div class="col-md-4">
                                 <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $var->direction }}" required autocomplete="direction">
 
                                 @error('direction')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <label for="personcontact" class="col-md-2 col-form-label text-md-right"> Apartamento</label>
+
+                            <div class="col-md-4">
+                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ $var->personcontact }}" autocomplete="personcontact">
+
+                                @error('personcontact')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -162,20 +174,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div style="display:none;">
-                            <label for="personcontact" class="col-md-2 col-form-label text-md-right">Persona Contacto</label>
 
-                            <div class="col-md-4">
-                                <input id="personcontact" type="text" class="form-control @error('personcontact') is-invalid @enderror" name="personcontact" value="{{ $var->personcontact }}" autocomplete="personcontact">
-
-                                @error('personcontact')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
-                        </div>
                         </div>
 
 

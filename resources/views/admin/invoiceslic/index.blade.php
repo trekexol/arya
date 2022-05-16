@@ -5,31 +5,32 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-      <a class="nav-link  font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('quotations') }}" role="tab" aria-controls="home" aria-selected="true">Cotizaciones</a>
+      <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('quotationslic') }}" role="tab" aria-controls="home" aria-selected="true">Cotizaciones<span style="color: green;">•</span></a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('invoices') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas</a>
+      <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('invoiceslic') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas<span style="color: green;">•</span></a>
+    </li>
+
+    <li class="nav-item" role="presentation">
+      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('quotationslic.indexdeliverynote') }}" role="tab" aria-controls="contact" aria-selected="false">Notas De Entrega<span style="color: green;">•</span></a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('quotations.indexdeliverynote') }}" role="tab" aria-controls="contact" aria-selected="false">Notas De Entrega</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('clientslic') }}" role="tab" aria-controls="profile" aria-selected="false">Clientes<span style="color: green;">•</span></a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('vendorslic') }}" role="tab" aria-controls="contact" aria-selected="false">Vendedores<span style="color: green;">•</span></a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('saleslic') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas<span style="color: green;">•</span></a>
       </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('anticipos') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Clientes</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('clients') }}" role="tab" aria-controls="profile" aria-selected="false">Clientes</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('vendors') }}" role="tab" aria-controls="contact" aria-selected="false">Vendedores</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('anticiposlic') }}" role="tab" aria-controls="contact" aria-selected="false">Anticipos Clientes<span style="color: green;">•</span></a>
     </li>
   </ul>
 
 
 
-<form method="POST" action="{{ route('invoices.multipayment') }}" enctype="multipart/form-data" >
+<form method="POST" action="{{ route('invoiceslic.multipayment') }}" enctype="multipart/form-data" >
 @csrf
 <!-- container-fluid -->
 <div class="container-fluid">
@@ -40,7 +41,7 @@
           <h2>Facturas</h2>
       </div>
       <div class="col-md-2">
-        <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
+        <a href="{{ route('paymentslic')}}" class="btn btn-info btn-icon-split">
             <span class="icon text-white-50">
                 <i class="fas fa-hand-holding-usd"></i>
             </span>
@@ -98,16 +99,16 @@
                                 </td>
                             @else
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
+                                    <a href="{{ route('quotationslic.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
                                 </td>
                             @endif
-                            <td class="text-center font-weight-bold">{{ $quotation->clients['name']}}</td>
+                            <td class="text-center font-weight-bold">{{ $quotation->id_clients }}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_iva, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
                             @if ($quotation->status == "C")
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
+                                    <a href="{{ route('quotationslic.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                 <td class="text-center font-weight-bold">
                                 </td>
@@ -118,7 +119,7 @@
                                 </td>
                             @else
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                    <a href="{{ route('quotationslic.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                 </td>
                                 <td>
                                     <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">    

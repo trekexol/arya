@@ -12,6 +12,7 @@ use App\Subsegment;
 use App\ThreeSubsegment;
 use App\TwoSubsegment;
 use App\UnitOfMeasure;
+use App\ProductPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -35,6 +36,24 @@ class ProductController extends Controller
 
        return view('admin.products.index',compact('products'));
    }
+
+   
+   public function listprice(Request $request, $code_id = null){
+
+    //validar si la peticion es asincrona
+    if($request->ajax()){
+        try{
+            $productprice = ProductPrice::on(Auth::user()->database_name)
+            ->where('id_product',$code_id)
+            ->orderBy('price','asc')->get();
+            return response()->json($productprice,200);
+        }catch(Throwable $th){
+            return response()->json(false,500);
+        }
+    }
+
+}
+
 
    /**
     * Show the form for creating a new resource.

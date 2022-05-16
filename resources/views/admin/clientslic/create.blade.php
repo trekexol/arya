@@ -26,7 +26,7 @@
                 <div class="card-header text-center font-weight-bold h3">Registro de Clientes</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('clients.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('clientslic.store') }}" enctype="multipart/form-data">
                         @csrf
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
 
@@ -264,7 +264,7 @@
 
                             </div>
                             <div class="col-md-3">
-                                <a href="{{ route('clients') }}" name="danger" type="button" class="btn btn-danger">Cancelar</a>
+                                <a href="{{ route('clientslic') }}" name="danger" type="button" class="btn btn-danger">Cancelar</a>
                             </div>
                         </div>
                     </form>

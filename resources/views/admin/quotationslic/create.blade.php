@@ -152,7 +152,7 @@
                             <a href="#" onclick="refreshrate()" title="Guardar Tasa"><i class="fas fa-save"></i></a>
                             <label  class="col-md-1">BCV:</label><label for="tasaactual" id="tasaacutal">{{ number_format(bcdiv($bcv,'1',2), 2, ',', '.')}}</label>
                         </div>
-                        <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
+                        <form id="formSendProduct" method="POST" action="{{ route('quotationslic.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
                             <input id="id_inventory" type="hidden" class="form-control @error('id_inventory') is-invalid @enderror" name="id_inventory" value="{{ $inventory->id ?? -1 }}" readonly required autocomplete="id_inventory">
@@ -174,7 +174,7 @@
 
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>
 
-                                            <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos']) }}" title="Productos"><i class="fa fa-eye"></i></a>
+                                            <a href="{{ route('quotationslic.selectproduct',[$quotation->id,$coin,'productos']) }}" title="Productos"><i class="fa fa-eye"></i></a>
 
                                     </div>
 
@@ -366,11 +366,11 @@
                                                 @endif
 
                                                 <?php
-                                                    $suma += $total_less_percentage;
+                                                    $suma += number_format($total_less_percentage,2,".","");
 
                                                 ?>
                                                     <td style="text-align: right">
-                                                    <a href="{{ route('quotations.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>
+                                                    <a href="{{ route('quotationslic.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>
                                                     <a href="#" class="delete" data-id={{$var->quotation_products_id}} data-description={{$var->description}} data-id-quotation={{$quotation->id}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>                                                     </td>
                                                        
                                                        
@@ -416,7 +416,7 @@
                                         <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
                                         <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>
                                     @else
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
+                                        <a href="{{ route('quotationslic.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
                                         <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>
                                     @endif
                                 </div>
@@ -439,7 +439,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('quotations.deleteProduct') }}" method="post">
+            <form action="{{ route('quotationslic.deleteProduct') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <input id="id_quotation_product_modal" type="text" class="form-control @error('id_quotation_product_modal') is-invalid @enderror" name="id_quotation_product_modal" readonly required autocomplete="id_quotation_product_modal">
@@ -570,7 +570,7 @@
 
         $("#coin").on('change',function(){
             coin = $(this).val();
-            window.location = "{{route('quotations.create', [$quotation->id,''])}}"+"/"+coin;
+            window.location = "{{route('quotationslic.create', [$quotation->id,''])}}"+"/"+coin;
         });
 
 
@@ -582,14 +582,14 @@
     }
     function deliveryNoteSend() {
 
-            window.location = "{{route('quotations.createdeliverynote', [$quotation->id,$coin])}}";
+            window.location = "{{route('quotationslic.createdeliverynote', [$quotation->id,$coin])}}";
 
     }
 
     function refreshrate() {
 
         let rate = document.getElementById("rate").value;
-        window.location = "{{ route('quotations.refreshrate',[$quotation->id,$coin,'']) }}"+"/"+rate;
+        window.location = "{{ route('quotationslic.refreshrate',[$quotation->id,$coin,'']) }}"+"/"+rate;
 
     }
 
@@ -612,7 +612,7 @@
 
           
 
-        window.location = "{{ route('quotations.guardarcambios',[$quotation->id,$coin,'','','']) }}"+"/"+observation+"/"+note+"/"+serie2;
+        window.location = "{{ route('quotationslic.guardarcambios',[$quotation->id,$coin,'','','']) }}"+"/"+observation+"/"+note+"/"+serie2;
 
     }
 
@@ -663,7 +663,7 @@
             if(reference_id != ""){
                 $.ajax({
 
-                url:"{{ route('quotations.listinventory') }}" + '/' + reference_id,
+                url:"{{ route('quotationslic.listinventory') }}" + '/' + reference_id,
                 beforSend:()=>{
                     alert('consultando datos');
                 },
@@ -674,7 +674,7 @@
                         response.forEach((item, index, object)=>{
                             let {id,description,date} = item;
 
-                           window.location = "{{route('quotations.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
+                           window.location = "{{route('quotationslic.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
 
                         });
                     }else{

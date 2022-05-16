@@ -57,7 +57,7 @@
                     @foreach ($products as $product)
                         <tr>
                             <td>
-                                <a href="{{ route('quotations.createproduct',[$id_quotation,$product->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                <a href="{{ route('quotationslic.createproduct',[$id_quotation,$product->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                              </td>
                             <td>{{$product->description}}</td>
                             <td>{{$product->segments['description']}}</td>

@@ -42,20 +42,27 @@
 @csrf
 <!-- container-fluid -->
 <div class="container-fluid">
-
-    <!-- Page Heading -->
     <div class="row py-lg-4">
-      <div class="col-md-4">
-          <h2>Recibos de Condominio </h2>
-        
-      </div>
+        <div class="col-md-4">
+            <h2>Recibos de Condominio </h2>
+        </div>
+    </div>
+    <!-- Page Heading -->
+    <div class="row py-lg-2">
+
       @if (Auth::user()->role_id  == '1')
 
        
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
+            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Crear Recibo Individual</a>
+          </div>
+          <div class="col-sm-3">
+            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Pendientes por Verificar</a>
+          </div>
+          <div class="col-sm-3">
             <a href="{{ route('receipt.envioreceiptclients') }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Correo Masivo</a>
           </div>
 
@@ -144,13 +151,29 @@
 
                             @if ($quotation->status == "C")
                                 <td class="text-center font-weight-bold">
-                                    <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
+                                    @if ($quotation->verified == 1)
+                                        @if (Auth::user()->role_id  == '11')
+                                        <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Pagado</a>
+                                        @endif
+                                        @if (Auth::user()->role_id  != '11')
+                                        <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
+                                        @endif
+                                    @else
+                                        @if (Auth::user()->role_id  == '11')
+                                        <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Pendiente por Verificar</a>
+                                        @endif
+                                        @if (Auth::user()->role_id  != '11')
+                                        <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Pendiente por Verificar</a>
+                                        @endif
+                                    @endif
                                 </td>
                                  <td>
                                     @if ($quotation->verified == '1' & $quotation->verified == 1)
                                     <span style="cursor: pointer;" class="verifiedh" data-input="{{$quotation->id}}"><i style="color:green" class="fa fa-check"></i><div style="display: none;"><input type="checkbox" data-input="{{$quotation->id}}" id="verified{{$quotation->id}}"  name="verified" class="verified" value="1" checked ></div></span>    
                                     @else
-                                    <input type="checkbox" data-input="{{$quotation->id}}" id="verified{{$quotation->id}}" name="verified" class="verified" value="0">
+                                        @if (Auth::user()->role_id  != '11')
+                                        <input type="checkbox" data-input="{{$quotation->id}}" id="verified{{$quotation->id}}" name="verified" class="verified" value="0">
+                                        @endif
                                     @endif
                                 </td>
                             @elseif ($quotation->status == "X")
@@ -165,7 +188,13 @@
                                     </td>
                                 @else
                                     <td class="text-center font-weight-bold">
+                                        @if (Auth::user()->role_id  == '11')
+                                        <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Pagar</a>
+                                        @endif
+                                        @if (Auth::user()->role_id  != '11')
                                         <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        @endif
+
                                     </td>
                                 @endif
   

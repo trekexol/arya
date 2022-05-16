@@ -77,7 +77,7 @@
                     @foreach ($inventories as $var)
                         <tr>
                             <td>
-                                <a href="{{ route('quotations.createproduct',[$id_quotation,$coin,$var->id_inventory]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                <a href="{{ route('quotationslic.createproduct',[$id_quotation,$coin,$var->id_inventory]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
                             <td>{{ $var->code_comercial }}</td>
                             <td>{{ $var->description}}</td>
@@ -120,7 +120,7 @@
 
         $("#type").on('change',function(){
             type = $(this).val();
-            window.location = "{{route('quotations.selectproduct', [$id_quotation,$coin,''])}}"+"/"+type;
+            window.location = "{{route('quotationslic.selectproduct', [$id_quotation,$coin,''])}}"+"/"+type;
         });
 
 
