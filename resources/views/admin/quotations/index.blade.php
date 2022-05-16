@@ -114,7 +114,7 @@
                         <tr>
                             <td>
                                 <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                                <a href="{{ route('pdf.quotationlic',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
                                 <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
                             </td>
                             <td class="text-center">{{$quotation->serie ?? ''}}</td>
