@@ -178,7 +178,7 @@
         </div>
     </li>
     @endif
-@if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2') || (Auth::user()->role_id  == '3') || (Auth::user()->id_company  == '21'))
+@if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2') || (Auth::user()->role_id  == '3') || (Auth::user()->id_company  != '21'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
