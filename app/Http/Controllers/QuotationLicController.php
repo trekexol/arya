@@ -127,7 +127,7 @@ class QuotationLicController extends Controller
             if(isset($vendor)){
                 /* $vendors     = Vendor::on(Auth::user()->database_name)->get();*/
                 $transports     = Transport::on(Auth::user()->database_name)->get();
-                $drivers        = Driver::all();
+                $drivers        = Driver::on(Auth::user()->database_name)->get();
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');
                 return view('admin.quotationslic.createquotation',compact('client','vendor','datenow','transports','drivers'));

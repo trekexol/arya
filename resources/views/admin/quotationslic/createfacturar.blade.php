@@ -845,7 +845,7 @@
                             
                             <div class="col-md-2">
                             @if(isset($quotation->date_delivery_note))
-                                 <a href="{{ route('quotationslic.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                 <a href="{{ url()->previous() }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                             @else
                                 @if (isset($is_after) && ($is_after == false))
                                     <a href="{{ route('invoiceslic') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             

@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group mb-3">
-                                        <input id="iva_percibido" type="text" class="form-control @error('iva_percibido') is-invalid @enderror"  value="15" name="Iva_Percibido" autocomplete="iva_percibido">
+                                        <input id="iva_percibido" type="text" class="form-control @error('iva_percibido') is-invalid @enderror"  value="10" name="Iva_Percibido" autocomplete="iva_percibido">
                                         <div class="input-group-append">
                                             <span class="input-group-text">%</span>
                                         </div>
