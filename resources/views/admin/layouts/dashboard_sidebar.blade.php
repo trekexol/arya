@@ -153,7 +153,7 @@
         </div>
     </li>
     @endif
-    @if ((Auth::user()->id_company  != '21'))
+    @if ((Auth::user()->id_company  == '21'))
     <li class="nav-item" style="display: block;">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapgastoscon"
     aria-expanded="true" aria-controls="collapgastoscon">
