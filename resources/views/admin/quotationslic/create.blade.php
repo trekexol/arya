@@ -408,10 +408,10 @@
                                             <a onclick="deliveryNoteSend()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>
                                         @endif
                                    
-                                @else
                                 @endif
-                                
+                                    @if(!isset($quotation->number_delivery_note))
                                     <a href="{{ route('pdf.previewfactura',[$quotation->id,$coin ?? null])}}"  id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Imprimir Prev Factura</a>
+                                    @endif
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
                                         <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>

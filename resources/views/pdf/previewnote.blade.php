@@ -195,15 +195,15 @@
                     <td style="font-size: 10px;text-align: right;border: 1px solid black;">0</td>
                 @endif
 
-<?php
-/*
-$tsubtotal = $inventories_quotation->price * $inventories_quotation->amount_quotation;
-$tiva = $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100);
-$tivapercibido = $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100);
-$totalventa = $tsubtotal + $tiva + $tivapercibido;
-*/
-?>
-            <?php
+               <!-- TOTAL DE VENTA -->
+               <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format(number_format($inventories_quotation->price * $inventories_quotation->amount_quotation,2,".","") + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100),2,".","") + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".",""),2,",",".")}}</td>
+               @if ($quotation->clients['coin'] == '0')
+               <!-- TOTAL DE VENTA DOLARES -->
+               <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100)) / $inventories_quotation->rate ,2,",",".")}}</td>
+               @endif
+           </tr>
+
+        <?php
             //Se calcula restandole el porcentaje de descuento (discount)
             $percentage = (($inventories_quotation->price * $inventories_quotation->amount_quotation) * $inventories_quotation->discount)/100;
             $total += number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage,2,".","");
@@ -237,18 +237,6 @@ $totalventa = $tsubtotal + $tiva + $tivapercibido;
 
         
         ?>
-
-
-
-               <!-- TOTAL DE VENTA -->
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($total_venta,2,",",".")}}</td>
-                @if ($quotation->clients['coin'] == '0')
-                <!-- TOTAL DE VENTA DOLARES -->
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format($total_venta / $inventories_quotation->rate ,2,",",".")}}</td>
-                @endif
-            </tr>
-
-
 
         @endforeach
     @endif

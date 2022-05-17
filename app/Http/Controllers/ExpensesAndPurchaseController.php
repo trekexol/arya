@@ -1752,8 +1752,8 @@ class ExpensesAndPurchaseController extends Controller
                 
          
                 //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-                if(($total_pay == $total_pay_form) || ($sin_formato_total_pay <= 0))
-                {
+            if(($total_pay == $total_pay_form) || ($sin_formato_total_pay <= 0))
+            {
 
             
                 $header_voucher  = new HeaderVoucher();
@@ -2003,19 +2003,16 @@ class ExpensesAndPurchaseController extends Controller
 
                     $expense->save();
 
-                /*---------------------- */
-
                 
-                /*aumentamos el inventario*/
+                    //aumentamos el inventario
                     $retorno = $this->increase_inventory($expense->id,$expense->date);
 
 
+          
 
                     if($retorno != "exito"){
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'');
                     }
-                
-                /*---------------- */
 
                
              
@@ -2040,7 +2037,7 @@ class ExpensesAndPurchaseController extends Controller
 
         }else{
             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Este pago ya ha sido realizado!');
-        }
+        } 
 
     }
 
@@ -2142,17 +2139,9 @@ class ExpensesAndPurchaseController extends Controller
                         if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
 
                             $global = new GlobalController; 
-        
-                            $quotation_products = DB::connection(Auth::user()->database_name)->table('expenses_details')
-                            ->where('id_expense', '=', $id_expense)->get(); // Conteo de Productos para incluiro en el historial de inventario
-                    
-                            foreach($quotation_products as $det_products){ // guardado historial de inventario
-                                
-                            $global->transaction_inv('compra',$det_products->id_inventory,'compra_n',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
+    
+                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
                             
-                            } 
-
-
                         }
                         
                     }else{
@@ -2217,41 +2206,43 @@ class ExpensesAndPurchaseController extends Controller
        
         
         $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$id_expense)->get();
-        
-        if(isset($expense_detail)){  
+
+
+
+          if(isset($expense_detail)){  
            
            foreach($expense_detail as $var){
             
                 if(isset($var->id_inventory)){
-                        $product = Product::on(Auth::user()->database_name)->find($var->id_product);
-        
-                    if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
+                     
+                    $product = Product::on(Auth::user()->database_name)->find($var->id_inventory);
+                    
+                    if(isset($product)){    
+
+                         if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
   
                             $global = new GlobalController; 
-        
-                            $quotation_products = DB::connection(Auth::user()->database_name)->table('expenses_details')
-                            ->where('id_expense', '=', $id_expense)->get(); // Conteo de Productos para incluiro en el historial de inventario
-                    
-                            foreach($quotation_products as $det_products){ // guardado historial de inventario
-                                
-                            $global->transaction_inv('compra',$det_products->id_inventory,'compra_n',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
+           
+                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
                             
-                            } 
+
+                        }    
                         
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$id_expense.'')->withDanger('El Inventario no existe!');
-                    }
+                    } 
                 }
            }         
             
                    
         }else{
             return redirect('expensesandpurchases/registerpaymentafter/'.$id_expense.'')->withDanger('El Inventario de la cotizacion no existe!');
-        }
+        } 
 
            
 
             return "exito";
+   
 
     }
 
