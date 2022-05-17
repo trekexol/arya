@@ -306,8 +306,6 @@ class QuotationController extends Controller
     public function selectproduct($id_quotation,$coin,$type,$type_quotation = null)
     {
 
-        $services = null;
-
             $services = null;
 
             $user       =   auth()->user();

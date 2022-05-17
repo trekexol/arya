@@ -165,7 +165,7 @@
                                     <div class="form-group col-md-2">
                                         <label for="description" >Código</label>
                                         <input id="code_id" type="hidden" class="form-control @error('code_id') is-invalid @enderror" name="code_id" value="{{ $inventory->product_id ?? old('code_id') ?? '' }}"  required autocomplete="code" autofocus >
-                                        <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code ?? old('code') ?? '' }}"  required autocomplete="code" autofocus  onblur="mycodePrecio()" >
+                                        <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial ?? old('code') ?? '' }}"  required autocomplete="code" autofocus  onblur="mycodePrecio()" >
 
 
                                     </div>
@@ -180,7 +180,7 @@
 
                                     <div class="form-group col-md-2">
                                         <label for="description" >Descripción</label>
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->products['description'] ?? old('description') ?? '' }}" readonly required autocomplete="description">
+                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') ?? '' }}" readonly required autocomplete="description">
 
                                         @error('description')
                                             <span class="invalid-feedback" role="alert">
@@ -208,7 +208,7 @@
                                         </div>
                                         @else
                                         <div class="form-check">
-                                            @if($inventory->products['exento'] == 1)
+                                            @if($inventory->exento == 1)
                                                 <input class="form-check-input" type="checkbox" name="exento" checked id="gridCheck">
                                             @else
                                                 <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
@@ -230,7 +230,7 @@
                                         </div>
                                         @else
                                             <div class="form-check">
-                                                @if($inventory->products['exento'] == 1)
+                                                @if($inventory->exento == 1)
                                                     <input class="form-check-input" type="checkbox" name="islr" checked id="gridCheck2">
                                                 @else
                                                     <input class="form-check-input" type="checkbox" name="islr" id="gridCheck2">
@@ -242,17 +242,17 @@
                                         @endif
                                     </div>
                                     <div class="form-group col-md-2">
-                                        @if(isset($inventory->products['price']) && (isset($quotation->bcv)) && ($inventory->products['money'] != 'Bs') && ($coin == 'bolivares'))
+                                        @if(isset($inventory->price) && (isset($quotation->bcv)) && ($inventory->money != 'Bs') && ($coin == 'bolivares'))
                                             <?php
 
-                                                $product_Bs = $inventory->products['price'] * $quotation->bcv;
+                                                $product_Bs = $inventory->price * $quotation->bcv;
 
                                             ?>
                                             <label for="cost" >Precio</label>
                                             <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ number_format($product_Bs, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
                                         @else
                                             <label for="cost" >Precio</label>
-                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{number_format($inventory->products['price'] ?? 0, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
+                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{number_format($inventory->price ?? 0, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
                                         @endif
 
 
@@ -401,7 +401,7 @@
                             <div class="form-group row mb-0">
                                 @if(!isset($quotation->date_billing))
                                     <div class="col-md-12">
-                                        <a href="#" onclick="guardarcambios()" id="btnguardar" name="btnguardar" class="btn btn-info" title="facturar">Guardar</a>
+                                        <a href="#" onclick="guardarcambios()" id="btnguardar" name="btnguardar" class="btn btn-info" title="facturar">Guardar Cambios</a>
                                         @if($suma == 0)
                                             <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>
                                         @else
@@ -414,11 +414,12 @@
                                     @endif
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
-                                        <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>
+                                        <!--<a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>-->
                                     @else
                                         <a href="{{ route('quotationslic.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
-                                        <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>
+                                         <!--<a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a> -->
                                     @endif
+                                    <a href="{{ url()->previous() }}" id="volver" name="volver" class="btn btn-danger" title="Volver">Volver</a>
                                 </div>
 
                             </div>

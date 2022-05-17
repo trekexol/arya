@@ -151,7 +151,7 @@
                                 <a href="{{ route('pdf.previewnote',[$quotation->id,$coin ?? null,$quotation->serien ?? ' ']) }}" id="" name="" class="btn btn-warning" title="facturar">Imprimir Prev Nota Ent.</a>
                             </div>
                             <div class="col-sm-4 offset-sm-1">
-                                <a onclick="pdf();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar e Imprimir Nota de Entrega</a>
+                                <a onclick="pdfnotelic();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar e Imprimir Nota de Entrega</a>
                             </div>
                             <div class="col-sm-2">
                                 <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Media Carta</a>
@@ -161,12 +161,11 @@
                             <div class="col-sm-3">
                                 <a href="{{ route('quotationslic.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Ver Notas de Entrega</a>
                             </div>
-                            @if (empty($quotation->date_delivery_note))
+                           
                             <div class="col-sm-2">
-                                <a href="{{ route('quotationslic.create',[$quotation->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
+                                <a href="{{ url()->previous() }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
                             </div>
-                            @endif
-
+                
                         </div>
 
 
@@ -245,7 +244,10 @@
 
     calculate();
 
-    function pdf() {
+    function pdfnotelic() {
+      
+      
+      
         let inputIva = document.getElementById("iva").value;
 
         let date = document.getElementById("date-begin").value;
