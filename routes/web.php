@@ -615,7 +615,8 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('imprimirFactura/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.facturalic');
     Route::get('imprimirFacturaMedia/{id_quotation}/{coin?}','PDF2LicController@imprimirFactura')->name('pdf.factura_media');
     Route::get('previewnote/{id_quotation}/{coin},{serienote}','PDF2LicController@previewnote')->name('pdf.previewnote');
-    Route::get('deliverynotelic/{id_quotation}/{coin}/{iva}/{date}','PDF2LicController@deliverynote')->name('pdf.deliverynotelic');
+    Route::get('deliverynotelic/{id_quotation}/{coin}/{iva?}/{date?}/{serienote?}','PDF2LicController@deliverynotelic')->name('pdf.deliverynotelic');
+   
 });
 
 Route::group(["prefix"=>'receipt'],function(){

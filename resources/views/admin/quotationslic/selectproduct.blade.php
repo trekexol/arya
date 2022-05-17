@@ -52,13 +52,14 @@
             </thead>
             
             <tbody>
-                @if (empty($products))
+                @if (empty($inventories))
                 @else  
-                    @foreach ($products as $product)
+                    @foreach ($inventories as $product)
                         <tr>
                             <td>
-                                <a href="{{ route('quotationslic.createproduct',[$id_quotation,$product->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
-                             </td>
+                                <a href="{{ route('quotationslic.createproduct',[$id_quotation,$coin,$product->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                 
+                            </td>
                             <td>{{$product->description}}</td>
                             <td>{{$product->segments['description']}}</td>
                             <td>{{$product->subsegments['description']}}</td> 

@@ -60,8 +60,8 @@
                 <th class="text-center">SKU</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Cantidad</th>
+                <th class="text-center">Precio REF</th>
                 <th class="text-center">Precio Bs</th>
-                <th class="text-center">Precio Moneda</th>
                 <th class="text-center">Moneda</th>
                 <th class="text-center">Foto del Producto</th>
                 
@@ -83,13 +83,12 @@
                             <td>{{ $var->description}}</td>
                             <td>{{ $var->amount ?? 0}}</td>
                            
-                            @if($var->money != 'Bs')
+                                               
+                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td> 
+                              
                                 <td style="text-align: right">{{number_format($var->price * $bcv_quotation_product, 2, ',', '.')}}</td>
-                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td> 
-                            @else
-                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td> 
-                                <td style="text-align: right"></td> 
-                            @endif
+
+
                             
                            
                             @if($var->money == "D")

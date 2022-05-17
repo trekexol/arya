@@ -150,31 +150,31 @@ class QuotationLicController extends Controller
             if(isset($quotation) && ($quotation->status == 1)){
                 //$inventories_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                 ->where('quotation_products.id_quotation',$id_quotation)
-                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
-                                'quotation_products.amount as amount_quotation','quotation_products.excento as excento')
-                                ->get();
-                $inventories_quotationss = DB::table('products')->join('inventories', 'products.id', '=', 'inventories.product_id')
-                    ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                                ->whereIn('quotation_products.status',['1','C'])
+                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
+                                'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
+                                ->get(); 
+                $inventories_quotationss = DB::connection(Auth::user()->database_name)->table('products')
+                                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                     ->where('quotation_products.id_quotation',$quotation->id)
-                    ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
-                        'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
-                        ,'quotation_products.retiene_islr as retiene_islr_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
-                    ->get();
+                    ->whereIn('quotation_products.status',['1','C'])
+                    ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
+                    'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
+                    ->get(); 
 
 
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
-
+                $global = new GlobalController;  
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     //esto es para que siempre se pueda guardar la tasa en la base de datos
-                    $bcv_quotation_product = $this->search_bcv();
-                    $bcv = $this->search_bcv();
+                    $bcv_quotation_product = $global->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv_quotation_product = $company->rate;
@@ -200,8 +200,8 @@ class QuotationLicController extends Controller
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     //esto es para que siempre se pueda guardar la tasa en la base de datos
-                    $bcv_quotation_product = $this->search_bcv();
-                    $bcv = $this->search_bcv();
+                    $bcv_quotation_product = $global->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv_quotation_product = $company->rate;
@@ -235,12 +235,11 @@ class QuotationLicController extends Controller
                 $iva                   = $tax_1;
                 $rate                  = $quotation->bcv;
 
-
                 foreach($inventories_quotationss as $vars){
 
                     //Se calcula restandole el porcentaje de descuento (discount)
                     $percentage = (($vars->price * $vars->amount_quotation) * $vars->discount)/100;
-                    $total += ($vars->price * $vars->amount_quotation) - $percentage;
+                    $total += number_format(($vars->price * $vars->amount_quotation) - $percentage,2,".","");
 
 
                     if( $vars->retiene_iva_quotation == 1 ){
@@ -252,8 +251,8 @@ class QuotationLicController extends Controller
 
                     }else{
 
-                        $total_retiene         +=  ($vars->price * $vars->amount_quotation) - $percentage;
-                        $total_iva             =  $total_retiene * ($iva / 100) ;
+                        $total_retiene         +=  number_format(($vars->price * $vars->amount_quotation) - $percentage,2,".","");
+                        $total_iva             =  number_format($total_retiene * ($iva / 100),2,".","") ;
                         $total_base_impo_pcb   =  $total_retiene *($base_imponible_pcb /100) ;
                         $total_iva_pcb         =  $total_base_impo_pcb * ($iva /100);
                         $total_venta           =    $total_retiene + $total_iva + $total_iva_pcb;
@@ -266,28 +265,6 @@ class QuotationLicController extends Controller
             }
     }
 
-
-    public function search_bcv()
-    {
-        /*Buscar el indice bcv*/
-        $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
-        $pageDocument = @file_get_contents($urlToGet);
-        preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
-
-        if ($cap[0] == array()){ // VALIDAR Concidencia
-            $titulo = '0,00';
-        }else {
-            $titulo = $cap[1][4];
-        }
-
-        $bcv_con_formato = $titulo;
-        $bcv = str_replace(',', '.', str_replace('.', '',$bcv_con_formato));
-
-
-        /*-------------------------- */
-        return $bcv;
-
-    }
 
 
     public function createproduct($id_quotation,$coin,$id_inventory)
@@ -302,26 +279,28 @@ class QuotationLicController extends Controller
             //$product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
                 $product = null;
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('inventories', 'products.id', '=', 'inventories.product_id')
-                                ->join('quotation_products', 'inventories.id', '=', 'quotation_products.id_inventory')
+                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                 ->where('quotation_products.id_quotation',$id_quotation)
-                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','inventories.code as code','quotation_products.discount as discount',
-                                'quotation_products.amount as amount_quotation')
-                                ->get();
+                                ->whereIn('quotation_products.status',['1','C'])
+                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
+                                'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
+                                ->get(); 
 
                 if(isset($id_inventory)){
-                    $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
+                    $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
                 }
                 if(isset($inventory)){
 
                     $date = Carbon::now();
                     $datenow = $date->format('Y-m-d');
+                   
+                    $global = new GlobalController;
 
                     /*Revisa si la tasa de la empresa es automatica o fija*/
                     $company = Company::on(Auth::user()->database_name)->find(1);
                     //Si la taza es automatica
                     if($company->tiporate_id == 1){
-                        $bcv_quotation_product = $this->search_bcv();
+                        $bcv_quotation_product = $global->search_bcv();
                     }else{
                         //si la tasa es fija
                         $bcv_quotation_product = $company->rate;
@@ -331,15 +310,15 @@ class QuotationLicController extends Controller
                     if(($coin == 'bolivares')){
 
                         if($company->tiporate_id == 1){
-                            $bcv = $this->search_bcv();
+                            $bcv = $global->search_bcv();
                         }else{
                             //si la tasa es fija
                             $bcv = $company->rate;
                         }
                     }else{
                         //Cuando mi producto esta en Bolivares, pero estoy cotizando en dolares, convierto los bs a dolares
-                        if($inventory->products['money'] == 'Bs'){
-                            $inventory->products['price'] = $inventory->products['price'] / $quotation->bcv;
+                        if($inventory->money == 'Bs'){
+                            $inventory->price = $inventory->price / $quotation->bcv;
                         }
                         $bcv = null;
                     }
@@ -360,22 +339,40 @@ class QuotationLicController extends Controller
 
         $services = null;
 
-        $inventories = DB::connection(Auth::user()->database_name)->table('inventories')
-            ->join('products', 'products.id', '=', 'inventories.product_id')
-            ->where('products.type','MERCANCIA')
-            ->where('products.status',1)
-            ->select('products.*','inventories.amount as amount','inventories.id as id_inventory')
-            ->orderBy('products.code_comercial','desc')
-            ->get();
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+ 
+        $global = new GlobalController();
+        
+        $inventories = Product::on(Auth::user()->database_name)
+        ->where(function ($query){
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','COMBO')
+                ->orWhere('type','SERVICIO')
+                ->orWhere('type','MATERIAP');
+        })
+
+        ->where('products.status',1)
+        ->select('products.id as id_inventory','products.*')  
+        ->get();     
+
+        foreach ($inventories as $inventorie) {
+            
+            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+
+        }
+
 
         $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
 
         $bcv_quotation_product = $quotation->bcv;
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+        $global = new GlobalController();
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
-            $bcv = $this->search_bcv();
+            $bcv = $global->search_bcv();
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -525,9 +522,10 @@ class QuotationLicController extends Controller
                 $var->iva_percibido         = request('Iva_Percibido');
                 $var->serie                 = request('serie');
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController;
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;
@@ -646,14 +644,14 @@ class QuotationLicController extends Controller
         //si es un servicio no se chequea que posea inventario
 
         if(isset($inventories_quotations) && ($inventories_quotations->type == "MERCANCIA")){
-            $inventory = Inventory::on(Auth::user()->database_name)->find($id_inventory);
 
-            $sum_amount = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                            ->where('id_quotation',$id_quotation)
-                            ->where('id_inventory',$id_inventory)
-                            ->sum('amount');
+            $global = new GlobalController;
+
+            $sum_amount =  $global->consul_prod_invt($id_inventory);
 
             $total_in_quotation = $sum_amount + $amount_new;
+
+            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
 
             if($inventory->amount >= $total_in_quotation){
                 return "exito";
@@ -697,9 +695,10 @@ class QuotationLicController extends Controller
                 $inventory= Inventory::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController;
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
-                    $bcv = $this->search_bcv();
+                    $bcv = $global->search_bcv();
                 }else{
                     //si la tasa es fija
                     $bcv = $company->rate;
