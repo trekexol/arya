@@ -9,6 +9,7 @@ class Quotation extends Model
     public function clients(){
         return $this->belongsTo('App\Client','id_client');
     }
+
     public function vendors(){
         return $this->belongsTo('App\Permission\Models\Vendor','id_vendor');
     }
