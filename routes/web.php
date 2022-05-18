@@ -1357,12 +1357,12 @@ Route::group(["prefix"=>'clientslic'],function(){
 
 
 Route::group(["prefix"=>'invoiceslic'],function(){
-    Route::get('/','InvoiceLicController@index')->name('invoiceslic');
+    Route::get('/','InvoicesLicController@index')->name('invoiceslic');
 
-    Route::get('movementinvoice/{id_invoice}/{coin?}','InvoiceLicController@movementsinvoicelic')->name('invoices.movement');
+    Route::get('movementinvoice/{id_invoice}/{coin?}','InvoicesLicController@movementsinvoicelic')->name('invoices.movement');
 
-    Route::post('multipayment','InvoiceLicController@multipayment')->name('invoiceslic.multipayment');
-    Route::post('storemultipayment','InvoiceLicController@storemultipayment')->name('invoiceslic.storemultipayment');
+    Route::post('multipayment','InvoicesLicController@multipayment')->name('invoiceslic.multipayment');
+    Route::post('storemultipayment','InvoicesLicController@storemultipayment')->name('invoiceslic.storemultipayment');
 
  });
  Route::group(["prefix"=>'saleslic'],function(){
