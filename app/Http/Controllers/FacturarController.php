@@ -330,6 +330,7 @@ class FacturarController extends Controller
                 }
              }
 
+
              $quotation->total_factura = $total;
              $quotation->base_imponible = $base_imponible;
             
@@ -374,6 +375,7 @@ class FacturarController extends Controller
 
             $is_after = false;
      
+            
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
