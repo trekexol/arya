@@ -894,13 +894,11 @@
                              </button>
                         </div>
                         <div class="col-md-3">     
-                            @if(isset($quotation->date_delivery_note))
+                            <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
+                            <input type="hidden" id="anticipo_form2" name="anticipo_form2">
 
-                                    <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
-                                    <input type="hidden" id="anticipo_form2" name="anticipo_form2">
-
+                            @if(isset($quotation->date_delivery_note))             
                                     <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota</a>
-                
                             @endif
                         </div>
                         <div class="col-md-5">     
@@ -1078,12 +1076,13 @@
             calculate();
 
             function calculate() {
+                
                 let inputIva = document.getElementById("iva").value; 
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
 
                 let totalFactura = "<?php echo $quotation->total_factura   ?>";       
-
+                
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
 
@@ -1131,27 +1130,31 @@
 
                 var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 
-
-
+                
                 document.getElementById("grand_total").value = grand_totalformat;
 
-
+                
                 let inputAnticipo = document.getElementById("anticipo").value;  
-
+                
                 var montoFormat = inputAnticipo.replace(/[$.]/g,'');
 
                 var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
+                
 
-                if(inputAnticipo){
-                    
+                if(inputAnticipo > 0){
+                     
+                   
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
                     document.getElementById("anticipo_form2").value =  montoFormat_anticipo;
                 }else{
+                    
                     document.getElementById("anticipo_form").value = 0;
                     document.getElementById("anticipo_form2").value = 0;
                 }
 
-
+                alert(0);
+               
+               
                 var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
 
                
@@ -1176,6 +1179,8 @@
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 
                 document.getElementById("total_pay").value =  total_payformat;
+
+                
 
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
 
