@@ -26,11 +26,11 @@
     <tr>
         @if (isset($quotation->credit_days))
             <td style="width: 10%; font-size: 12px; border: 1px solid black;">Fecha de Emisión:</td>
-            <td style="width: 10%; font-size: 12px; border: 1px solid black;"> {{date('d-m-Y',strtotime($newDate))}} </td>
+            <td style="width: 10%; font-size: 12px; border: 1px solid black;"> {{date('d-m-Y',strtotime($datenow))}} </td>
 
         @else
             <td style="width: 10%; font-size: 12px; border: 1px solid black;">Fecha de Emisión:</td>
-            <td style="width: 10%; font-size: 12px; border: 1px solid black;">{{date('d-m-Y',strtotime($newDate))}} </td>
+            <td style="width: 10%; font-size: 12px; border: 1px solid black;">{{date('d-m-Y',strtotime($datenow))}} </td>
         @endif
     </tr>
 </table>

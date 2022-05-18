@@ -692,10 +692,16 @@ class QuotationLicController extends Controller
 
             if(isset($quotation_product)){
 
-                $inventory= Inventory::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
+                $global = new GlobalController;
+                
+                $inventory= Product::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
+               
+                foreach ($inventory as $inventorie) {
+                    $inventory->amount = $global->consul_prod_invt($quotation_product->id_inventory);        
+                }
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
-                $global = new GlobalController;
+                
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     $bcv = $global->search_bcv();
@@ -713,6 +719,8 @@ class QuotationLicController extends Controller
                 }else{
                     $rate = $quotation_product->rate;
                 }
+
+
 
                 return view('admin.quotationslic.edit_product',compact('rate','coin','quotation_product','inventory','bcv'));
             }else{
@@ -1014,7 +1022,7 @@ class QuotationLicController extends Controller
         if($request->ajax()){
             try{
 
-                $respuesta = Inventory::on(Auth::user()->database_name)->select('id')->where('code',$var)->where('status',1)->get();
+                $respuesta = Product::on(Auth::user()->database_name)->select('id')->where('code_comercial',$var)->where('status',1)->get();
                 return response()->json($respuesta,200);
 
             }catch(Throwable $th){

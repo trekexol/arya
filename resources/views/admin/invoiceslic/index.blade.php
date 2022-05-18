@@ -102,7 +102,7 @@
                                     <a href="{{ route('quotationslic.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
                                 </td>
                             @endif
-                            <td class="text-center font-weight-bold">{{ $quotation->id_clients }}</td>
+                            <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_iva, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>

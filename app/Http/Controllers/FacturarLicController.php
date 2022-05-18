@@ -193,8 +193,13 @@ class FacturarLicController extends Controller
             
 
 
-            $last_number = Quotation::on(Auth::user()->database_name)->where('serie','<>',NULL)->orderBy('serie','desc')->first();
-                        
+            $last_number = Quotation::on(Auth::user()->database_name)
+            ->where('serie','<>',NULL)
+            ->where('number_invoice','<>',NULL)
+            ->select('serie')
+            ->orderBy('number_invoice','desc')
+            ->first();
+            
             //Asigno un numero incrementando en 1
             if(!empty($last_number)){
                 

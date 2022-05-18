@@ -192,7 +192,12 @@ class DeliveryNoteLicController extends Controller
     
            
                //Me busco el ultimo numero en notas de entrega
-           $last_number = Quotation::on(Auth::user()->database_name)->where('serie_note','<>',NULL)->orderBy('serie_note','desc')->first();
+           $last_number = Quotation::on(Auth::user()->database_name)
+           ->where('serie_note','<>',NULL)
+           ->where('number_delivery_note','<>',NULL)
+           ->select('serie_note')
+           ->orderBy('number_delivery_note','desc')->first();
+           
            
                //Asigno un numero incrementando en 1
                if(!empty($last_number)){
