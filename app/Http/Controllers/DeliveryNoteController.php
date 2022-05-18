@@ -94,7 +94,7 @@ class DeliveryNoteController extends Controller
                 
                 $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
                     
-                $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id);
+                $quotation = Quotation::on(Auth::user()->database_name)->find($id);
 
                 $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id)->update([ 'status' => 'C' ]);
 
