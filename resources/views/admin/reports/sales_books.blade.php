@@ -150,7 +150,10 @@
         $total_amount_iva += $quotation->amount_iva;
         $total_amount_with_iva += $quotation->amount_with_iva;
 
-        }else if($quotation->status == 'X'){
+        }
+        
+        
+        if($quotation->status == 'X'){
           $status = "Reversada";
           $quotation->amount = 0;
           $quotation->base_imponible = 0;
@@ -160,7 +163,19 @@
           $quotation->bcv = 1;
           $quotation->amount_iva = 0;
           $quotation->amount_with_iva = 0;
-        }else{
+
+          $total_base_imponible = 0;
+          $total_amount = 0;
+          $total_amount_exento = 0;
+          $total_retencion_iva = 0;
+          $total_retencion_islr = 0;
+          $total_anticipo = 0;
+          $total_amount_iva = 0;
+          $total_amount_with_iva = 0;
+
+        }
+        
+        if($quotation->status == 'P'){
           $status = "por revisar";
 
           $total_base_imponible += $quotation->base_imponible;
