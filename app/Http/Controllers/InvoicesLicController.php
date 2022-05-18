@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
 use App\Multipayment;
 
-class InvoiceLicController extends Controller
+class InvoicesLicController extends Controller
 {
     
  
