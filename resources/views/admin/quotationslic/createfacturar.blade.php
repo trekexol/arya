@@ -41,9 +41,9 @@
                         <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 / ($bcv ?? 1)}}" readonly>
 
                         <div class="form-group row">
-                            <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
+                            <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha Factura:</label>
                             <div class="col-md-3">
-                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
+                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $datenow }}" autocomplete="date-begin">
     
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">

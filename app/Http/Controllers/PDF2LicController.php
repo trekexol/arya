@@ -1956,8 +1956,8 @@ class PDF2LicController extends Controller
 
 
 
-            $originalDate = $quotation->date_billing;
-            $newDate = date("d-m-Y", strtotime($originalDate));
+            $originalDate = $quotation->date_quotation;
+            $newDate = $originalDate;
 
             if(empty($quotation->date_expiration)){
                 $newVenc ="";

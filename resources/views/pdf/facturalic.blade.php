@@ -77,10 +77,10 @@
         @endif
 
 
-    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{$transport->type}}--{{$modelo->description}}</td>
-    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $drivers->name }} {{ $drivers->last_name }}</td>
-    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $drivers->type_code }}{{ $drivers->cedula }}</td>
-    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $transport->placa}}</td>
+    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{$transport->type ?? ''}}--{{$modelo->description ?? ''}}</td>
+    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $drivers->name ?? ''}} {{ $drivers->last_name ?? '' }}</td>
+    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $drivers->type_code ?? ''}}{{ $drivers->cedula  ?? '' }}</td>
+    <td style="font-size: 12px;text-align: center;border: 1px solid black;">{{ $transport->placa ?? ''}}</td>
 
 
     
