@@ -472,6 +472,12 @@ class FacturarLicController extends Controller
          
         //$iva_percibido_porc = request('iva_percibido_porc');
         $IGTF_input = request('IGTF_input_pre');
+        $IGTF_input_check = request('IGTF_input');
+          
+        if ($IGTF_input_check == 0) {
+            $IGTF_input = 0;
+        }
+
         $iva_percibido = request('iva_percibido_form');
 
         $total_mercancia = request('total_mercancia_credit');
@@ -560,7 +566,18 @@ class FacturarLicController extends Controller
                 ->where('id_quotation', '=', $quotation->id)
                 ->update(['status' => 'C']);
 
+        $global = new GlobalController; 
         
+        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+        ->where('id_quotation', '=', $quotation->id)
+        ->where('status','!=','X')
+        ->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+        foreach($quotation_products as $det_products){ // guardado historial de inventario
+            
+        $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+        }  
        
         //Busqueda de Cuentas
 
@@ -703,6 +720,12 @@ class FacturarLicController extends Controller
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
         $amount_pay = request('amount_pay');
         $IGTF_input = request('IGTF_input_pre');
+        $IGTF_input_check = request('IGTF_input');
+          
+        if ($IGTF_input_check == 0) {
+            $IGTF_input = 0;
+        }
+
         $IGTF_porc = request('IGTF_porc');
         $iva_percibido = request('iva_percibido_form'); 
         $total_mercancia = request('total_mercancia');
@@ -1693,6 +1716,20 @@ class FacturarLicController extends Controller
                         $quotation->number_invoice = 1;
                     }
                 }
+
+                $global = new GlobalController;                                                
+        
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $quotation->id)
+                ->where('status','!=','X')
+                ->get();
+        
+                foreach($quotation_products as $det_products){
+    
+                $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+        
+                }  
+
             }
 
 

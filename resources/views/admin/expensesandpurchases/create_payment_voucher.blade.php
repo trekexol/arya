@@ -147,6 +147,18 @@
                                     <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" value="{{ $expense->credit_days ?? '' }}" readonly autocomplete="credit"> 
                                 </div>
                             @endif
+
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+
+                            <div class="col-md-3">
+                                <input id="tasa_view" type="text" class="form-control @error('tasa_view') is-invalid @enderror" name="tasa_view" value="{{ number_format($expense->rate ?? 0.00, 2, ',', '.') }}" readonly autocomplete="tasa_view">
+
+                                @error('tasa_view')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                             
                         </div>
            
