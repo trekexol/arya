@@ -154,9 +154,10 @@ class PaymentLicController extends Controller
             QuotationPayment::on(Auth::user()->database_name)
                             ->where('id_quotation',$quotation->id)
                             ->update(['status' => 'X']);
-
-            $quotation->status = 'P';
-            $quotation->save();
+            
+            Quotation::on(Auth::user()->database_name)
+                            ->where('id',$quotation->id)
+                            ->update(['status' => 'P']);
         }
         
         

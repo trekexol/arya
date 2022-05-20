@@ -1151,13 +1151,8 @@
                     document.getElementById("anticipo_form").value = 0;
                     document.getElementById("anticipo_form2").value = 0;
                 }
-
-                alert(0);
-               
                
                 var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
-
-               
                 //retencion de iva
 
                 let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
@@ -1179,9 +1174,7 @@
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 
                 document.getElementById("total_pay").value =  total_payformat;
-
-                
-
+         
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
 
                 document.getElementById("iva_form").value =  inputIva;
