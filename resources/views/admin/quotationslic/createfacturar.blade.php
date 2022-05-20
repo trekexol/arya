@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Facturar</h3></div>
+                <div class="card-header" ><h3>Facturar / Cobrar</h3></div>
                 <form method="POST" action="{{ route('quotationslic.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -39,7 +39,12 @@
                        
                         <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 / ($bcv ?? 1)}}" readonly>
                         <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 / ($bcv ?? 1)}}" readonly>
-
+                        
+                        <input type="hidden" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
+                        
+                        <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
+                        <input type="hidden" id="iva_percibido_form_credit" name="iva_percibido_form" value="{{$total_iva_pcb ?? 0}}" readonly>
+                        
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha Factura:</label>
                             <div class="col-md-3">
@@ -238,8 +243,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            
+                        <div class="form-group row IGTF" style="display: none;">
+
+                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
+                            <div class="col-md-3">
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="0" readonly>
+
+                            </div>
+
+                    
                         </div>
              
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
@@ -255,19 +268,30 @@
                                     </span>
                                 @enderror
                             </div>
+
+
                             @if (isset($is_after) && ($is_after == true))
-                                <div class="col-md-2">
+                                <div class="col-sm-2">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="customSwitches">
                                         <label class="custom-control-label" for="customSwitches">Tiene Crédito</label>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias de Crédito" autocomplete="credit"> 
+                                <div class="col-sm-1">
+                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias" autocomplete="credit"> 
                                 </div>
                             @endif
-                            
+
+                            <div class="col-md-1" id="IGTF_buttom">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal">
+                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF</label>
+                                </div>
+                            </div>
+
                         </div>
+
+
                         <br>
                         @if (isset($is_after) && ($is_after == true))
                             <div class="form-group row" id="formenviarcredito">
@@ -314,9 +338,14 @@
                         <input type="hidden" id="grandtotal_form" name="grandtotal_form"  readonly>
                         
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="hidden" id="total_pay_form" name="total_pay_form">
+                        <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
 
-                      
+                        <input id="IGTF_input_pre" type="hidden" name="IGTF_input_pre">
+                        <input id="IGTF_general" type="hidden" name="IGTF_general">
+                        <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
+                        <input id="total_pay_before" type="hidden" name="total_pay_before">
+                        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -1023,15 +1052,35 @@
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 
+                var porcentaje = document.getElementById("IGTF_porc").value;
+                  
+                var calc_porc = total_pay * (porcentaje/100);
+
+                var IGTF_general = total_pay + calc_porc;
+
+                var IGTF_input = calc_porc.toFixed(2);
+              
                 document.getElementById("total_pay").value =  total_payformat;
 
-                document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+                document.getElementById("total_pay_form").value =  total_pay.toFixed(2);  
+
+                document.getElementById("total_pay_form_before").value =  total_pay.toFixed(2);                
+
+                document.getElementById("IGTF_input_pre").value =  IGTF_input;
+                document.getElementById("IGTF_input_pre_credit").value =  IGTF_input;
+
+                document.getElementById("IGTF_general").value =  IGTF_general.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                
+                document.getElementById("IGTF_general_form").value =  IGTF_general.toFixed(2);
+                                
+                document.getElementById("total_pay_before").value = total_payformat;
 
                 document.getElementById("iva_form").value =  inputIva;
 
                 document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
                
                 document.getElementById("grandtotal_form").value = grand_totalformat;
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
                 
 
                 //Quiere decir que el monto total a pagar es negativo o igual a cero
@@ -1150,6 +1199,8 @@
 
                 document.getElementById("grandtotal_form").value = grand_totalformat;
 
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
+
                  //Quiere decir que el monto total a pagar es negativo o igual a cero
                  if(total_pay.toFixed(2) <= 0){
                     document.getElementById("amount_pay").required = false;
@@ -1160,6 +1211,37 @@
                     $("#label_amount_pays").hide();
                 }
                
+            });
+
+
+            $("#customSwitchesIGTFTotal").on('change', function() {
+                if ($(this).is(':checked')) {
+                    $(".IGTF").show(); 
+                    var val_input = document.getElementById("IGTF_input_pre").value;
+                    var val_general = document.getElementById("IGTF_general").value;   
+                    var IGTF_general_form = document.getElementById("IGTF_general_form").value;
+                    /*alert(IGTF_general_form);*/
+                    document.getElementById("IGTF_input").value = val_input;
+                    document.getElementById("total_pay").value = val_general;
+                    document.getElementById("total_pay_form").value = IGTF_general_form;
+
+                    document.getElementById("grandtotal_form").value = val_general;
+                    document.getElementById("grandtotal_form_credit").value = val_general;
+                    
+                    
+                } else {
+                /*switchStatus = $(this).is(':checked');*/
+                    $(".IGTF").hide();
+                    $("#IGTF_input").val(0);
+                    var total_pay_before = document.getElementById("total_pay_before").value;
+                    var IGTF_general_form = document.getElementById("IGTF_general_form").value;
+                    var total_pay_form_before = document.getElementById("total_pay_form_before").value;
+                    var grand_total = document.getElementById("grand_total").value;
+                    document.getElementById("total_pay").value = total_pay_before;
+                    document.getElementById("total_pay_form").value = total_pay_form_before;
+                    document.getElementById("grandtotal_form").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                    document.getElementById("grandtotal_form_credit").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});;
+                }
             });
 
             $("#anticipo").on('keyup',function(){
@@ -1269,6 +1351,7 @@
                 document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
                
                 document.getElementById("grandtotal_form").value = grand_totalformat;
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
 
                  //Quiere decir que el monto total a pagar es negativo o igual a cero
                  if(total_pay.toFixed(2) <= 0){

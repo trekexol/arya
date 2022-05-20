@@ -100,7 +100,7 @@
         <td style="font-size: 12px;border: 1px solid black;" width="70%"> Dirección Entrega: {{$quotation->delivery}}</td>
     </tr>
 </table>
-<table width="100%" style="border: 0px solid black;"  >
+<table width="100%" style="border: 0px"  >
     <thead>
     <tr >
         <th style="font-size: 10px;border: 1px solid black;" >COD PRO</th>
@@ -121,12 +121,19 @@
         @if ($quotation->clients['coin'] == '0')
         <th style="font-size: 10px;border: 1px solid black;" >Total $</th>
         @endif
+    
+        <th style="font-size: 10px;border: 1px solid black;" >IGTF</th>
+        <th style="font-size: 10px;border: 1px solid black;" >Total</th>
+        
+        @if ($quotation->clients['coin'] == '0')
+        <th style="font-size: 10px;border: 1px solid black;" >Total $</th>
+        @endif 
     </tr>
     </thead>
-    <tbody style="font-size: 10px;border: 0px;">
+    <tbody style="font-size: 10px;border: 1px solid black;">
     @if (empty($inventories_quotations))
     @else
-    <?php
+       <?php
                        $total= 0;
             $base_imponible= 0;
             $price_cost_total= 0;
@@ -140,31 +147,32 @@
             $total_base_impo_pcb   = 0;
             $total_iva_pcb         = 0;
             $total_venta           = 0;
+            $totalsuma_IGTF        = 0;
             $retiene_islr          = 0;
             $variable_total        = 0;
             $base_imponible_pcb    = $tax_3;
             $iva                   = $tax_1;
             $rate                  = $quotation->bcv;
-       ?>    
-    
-    @foreach ($inventories_quotations as $inventories_quotation)
+       ?>
+       @foreach ($inventories_quotations as $inventories_quotation)
             @php
                 $codigo = $inventories_quotation->code_comercial ?? '' ;        //CODIGO
-
+        
             @endphp
 
             <tr>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;" >{{$codigo}}</td>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->amount_quotation}}</td>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->bottle}}</td>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->capacity}}</td>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->liter}}</td>
-                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->degree}}</td>
-                <td style="font-size: 10px;text-align: left;border: 1px solid black;">{{$inventories_quotation->description}}</td>
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price,2,",",".")}}</td>
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{$inventories_quotation->discount}}</td>
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation,2,",",".")}}</td> <!-- Sub-TOTAL-->
-            
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;" >{{$codigo ?? ''}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->amount_quotation ?? ''}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->bottle ?? ''}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->capacity ?? ''}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->liter ?? ''}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->degree ?? ''}}</td>
+                <td style="font-size: 10px;text-align: left;border: 1px solid black;">{{$inventories_quotation->description ?? ''}}</td>
+                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price ?? 0,2,",",".")}}</td>
+                <td style="font-size: 10px;text-align: center;border: 1px solid black;">{{$inventories_quotation->discount ?? ''}}</td>
+                
+                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format(($inventories_quotation->price ?? 0) * $inventories_quotation->amount_quotation,2,",",".") ?? ''}}</td> <!-- Sub-TOTAL-->
+             
                 <?php
                 if($inventories_quotation->retiene_iva_quotation == "1"){
                  
@@ -173,138 +181,162 @@
 
                 } 
                 ?>
-            
-                @if($inventories_quotation->retiene_iva_quotation == "0")       <!-- BASE IMPONIBLE-->
+
+                @if($inventories_quotation->retiene_iva_quotation == "0") <!-- BASE IMPONIBLE-->
                 <td style="font-size: 10px;text-align: right;border: 1px solid black; ">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation,2,",",".")}}</td>
                 @else
-                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0</td>
+                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0.00</td>
                 @endif
                 @if($inventories_quotation->retiene_iva_quotation == "0") <!-- IVA-->
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation *  $iva / 100,2,",",".")}}</td>
+                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100),2,",",".")}}</td>
                 @else
-                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0</td>
+                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0.00</td>
                 @endif
-                @if($inventories_quotation->retiene_iva_quotation == "0") <!-- BASE.IMPONIBLE.PERCIBIDO-->
+                @if($inventories_quotation->retiene_iva_quotation == "0") <!-- BASE.IMPONIBLE.IVA-->
                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * $base_imponible_pcb / 100  ,2,",",".")}}</td>
                 @else
-                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0</td>
+                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0.00</td>
                 @endif
                 @if($inventories_quotation->retiene_iva_quotation == "0") <!-- .IVA PERCIBIDO-->
-                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * $base_imponible_pcb / 100 * $iva / 100,2,",",".")}}</td>
+                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,",",".")}}</td>
                 @else
-                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0</td>
+                    <td style="font-size: 10px;text-align: right;border: 1px solid black;">0.00</td>
                 @endif
+                                <!-- TOTAL DE VENTA -->
+                                <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,",",".")}}</td>
+                   
+                                <?php
+                                 $total_venta_c = 0;
+             
+                                 $total_venta_c = ($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100);
+                                 ?>
+             
+                                 @if ($quotation->clients['coin'] == '0')
+                                 <!-- TOTAL DE VENTA DOLARES -->
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100)) / $inventories_quotation->rate ,2,",",".")}}</td>
+                                 @endif
+             
+                                 <!--IGTF-->
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format((3 * $total_venta_c) /100 ,2,",",".")}}</td>
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format((3 * $total_venta_c) /100 + $total_venta_c,2,",",".")}}</td>
+                                 
+                                 @if ($quotation->clients['coin'] == '0')
+                                 <!-- TOTAL DE VENTA DOLARES -->
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100) + (($quotation->IGTF_percentage * $total_venta_c) /100 ))  / $inventories_quotation->rate ,2,",",".")}}</td>
+                                 @endif      
+                         <?php
 
-               <!-- TOTAL DE VENTA -->
-               <td style="font-size: 10px;text-align: right;border: 1px solid black;">{{number_format(number_format($inventories_quotation->price * $inventories_quotation->amount_quotation,2,".","") + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100),2,".","") + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".",""),2,",",".")}}</td>
-               @if ($quotation->clients['coin'] == '0')
-               <!-- TOTAL DE VENTA DOLARES -->
-               <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100)) / $inventories_quotation->rate ,2,",",".")}}</td>
-               @endif
-           </tr>
-
-        <?php
-            //Se calcula restandole el porcentaje de descuento (discount)
-            $percentage = (($inventories_quotation->price * $inventories_quotation->amount_quotation) * $inventories_quotation->discount)/100;
-            $total += number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage,2,".","");
-           
-            //$total_venta           +=  $inventories_quotation->price * $inventories_quotation->amount_quotation ;
-
+                            //Se calcula restandole el porcentaje de descuento (discount)
+                            $percentage = (($inventories_quotation->price * $inventories_quotation->amount_quotation) * $inventories_quotation->discount)/100;
+                            $total += number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage,2,".","");
+                           
+                            //$total_venta           +=  $inventories_quotation->price * $inventories_quotation->amount_quotation ;
             
+                                                          
+                            $totalsuma_IGTF += ($company->IGTF_porc * $total_venta_c) /100;
+                                 
+                            
+                            
+                            if( $inventories_quotation->retiene_iva_quotation == 1) {
+                                $total_retiene         +=  0;
+                                $total_iva             +=  0;
+                                $iva = 0;
+                                $base_imponible_pcb =0;
             
+                            } else {
             
-            if( $inventories_quotation->retiene_iva_quotation == 1) {
-                $total_retiene         +=  0;
-                $total_iva             +=  0;
-                $iva = 0;
-                $base_imponible_pcb =0;
-
-            } else {
-
-                $total_retiene         +=  number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage,2,".","");
-                $total_iva             +=  number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage) * ($iva / 100),2,".","");
-
-            }
+                                $total_retiene         +=  number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage,2,".","");
+                                $total_iva             +=  number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) - $percentage) * ($iva / 100),2,".","");
             
+                            }
+                            
+                            
+                            $base_imponible        = $total_retiene;
+                           
+                            $total_base_impo_pcb   =  $total_retiene * ($base_imponible_pcb /100);
             
-            $base_imponible        = $total_retiene;
-           
-            $total_base_impo_pcb   =  $total_retiene * ($base_imponible_pcb /100);
-
-            $total_iva_pcb         =  ($total_retiene * ($base_imponible_pcb /100)) * ($iva / 100);
-           
-            $total_venta           =   $total + $total_retiene + $total_iva + $total_iva_pcb;
-
-        
-        ?>
-
-        @endforeach
-    @endif
-    </tbody>
-<tfoot style="border: none; border-bottom: 0px" border="5" >
-    <tr>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        <td style="color: #fff">.</td>
-        @if ($quotation->clients['coin'] == '0')
-        <td style="color: #fff">.</td>
-        @endif
-    </tr>
-    
-    <tr style="border: none;">
-        <td style="font-size: 8px;text-align: left;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 10px;text-align: right;"><strong>Bs.</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_retiene ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_iva ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_base_impo_pcb ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_iva_pcb ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total + $total_iva + $total_iva_pcb ,2,",",".")}}</strong></td>
-        @if ($quotation->clients['coin'] == '0')
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb) / $rate,2,",",".")}}</strong></td>
-        @endif
-    </tr>
-    @if ($quotation->clients['coin'] == '0')
-     <tr style="border: none;">
-        <td style="font-size: 8px;text-align: left;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 8px;text-align: center;"></td>
-        <td style="font-size: 10px;text-align: right;"><strong>REF</strong></td>
-        <td style="font-size: 10px;text-align: right;" ><strong>${{number_format($total / $rate ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_retiene / $rate  ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_iva / $rate ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_base_impo_pcb / $rate ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_iva_pcb / $rate ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb) / $rate ,2,",",".")}}</strong></td>
-        <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb)/ $rate ,2,",",".")}}</strong></td> 
-    </tr> 
-    @endif
-</tfoot>
-
+                            $total_iva_pcb         =  ($total_retiene * ($base_imponible_pcb /100)) * ($iva / 100);
+                           
+                            $total_venta           =   $total + $total_retiene + $total_iva + $total_iva_pcb;
+            
+                        
+                        ?>
+                           
+                       @endforeach
+                   @endif
+                   </tbody>
+               <tfoot style="border: none; border-bottom: 0px" border="5" >
+                   <tr>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td>
+                       <td style="color: #fff">.</td> 
+                       <td style="color: #fff">.</td>                       
+                       @if ($quotation->clients['coin'] == '0')
+                       <td style="color: #fff">.</td>
+                       @endif
+                   </tr>
+                   
+                   <tr style="border: none;">
+                       <td style="font-size: 8px;text-align: left;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>Bs.</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_retiene ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_iva ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_base_impo_pcb ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total_iva_pcb ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($total + $total_iva + $total_iva_pcb ,2,",",".")}}</strong></td>
+                       @if ($quotation->clients['coin'] == '0')
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb) / $rate,2,",",".")}}</strong></td>
+                       @endif
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format($totalsuma_IGTF,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format(($total + $total_iva + $total_iva_pcb + $totalsuma_IGTF),2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>{{number_format(($total + $total_iva + $total_iva_pcb + $totalsuma_IGTF)/ $rate,2,",",".")}}</strong></td>
+                   </tr>
+                   @if ($quotation->clients['coin'] == '0')
+                    <tr style="border: none;">
+                       <td style="font-size: 8px;text-align: left;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 8px;text-align: center;"></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>REF</strong></td>
+                       <td style="font-size: 10px;text-align: right;" ><strong>${{number_format($total / $rate ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_retiene / $rate  ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_iva / $rate ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_base_impo_pcb / $rate ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format($total_iva_pcb / $rate ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb) / $rate ,2,",",".")}}</strong></td>  
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb) / $rate ,2,",",".")}}</strong></td>                         
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format($totalsuma_IGTF / $rate,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb + $totalsuma_IGTF)/$rate ,2,",",".")}}</strong></td>
+                       <td style="font-size: 10px;text-align: right;"><strong>${{number_format(($total + $total_iva + $total_iva_pcb + $totalsuma_IGTF) / $rate ,2,",",".")}}</strong></td>  
+                   </tr>
+                   @endif 
+               </tfoot>
 </table>
 @if ($quotation->clients['coin'] == '0')
 <table width="50%" style="margin-top: -30px;">

@@ -107,12 +107,8 @@ class FacturarLicController extends Controller
             $total_servicios= 0;
 
             $total_iva_pcb = 0;
-
-            $company = Company::on(Auth::user()->database_name)->find(1);
-            $tax_1   = $company->tax_1;
-            $tax_3   = $company->tax_3;
             
-            $base_imponible_pcb    = $tax_3;
+            $base_imponible_pcb    = $company->iba_percibido_porc;
             $iva                   = $tax_1;
 
             $rate = $quotation->bcv;
@@ -222,10 +218,13 @@ class FacturarLicController extends Controller
             if(empty($quotation->credit_days)){
                 $is_after = true;
             }
+
+            $igtfporc = 3;
+
              return view('admin.quotationslic.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','total_iva_pcb','newcontrolf'));
+                        ,'total_mercancia','total_servicios','client','total_iva_pcb','newcontrolf','igtfporc'));
          }else{
              return redirect('/quotationslic')->withDanger('La cotizacion no existe');
          } 
@@ -332,8 +331,8 @@ class FacturarLicController extends Controller
              $company = Company::on(Auth::user()->database_name)->find(1);
              $tax_1   = $company->tax_1;
              $tax_3   = $company->tax_3;
-             
-             $base_imponible_pcb    = $tax_3;
+             $igtfporc = $company->IGTF_porc;
+             $base_imponible_pcb    = $company->iba_percibido_porc;
              $iva                   = $tax_1;
 
              foreach($inventories_quotations as $var){
@@ -428,12 +427,16 @@ class FacturarLicController extends Controller
 
                 $newcontrolf = 0;
             }
+            
+            
+
+  
 
 
              return view('admin.quotationslic.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'
-                        ,'total_iva_pcb','newcontrolf'));
+                        ,'total_iva_pcb','newcontrolf','igtfporc'));
 
          }else{
              return redirect('/quotationslic')->withDanger('La cotizacion no existe');
@@ -465,12 +468,16 @@ class FacturarLicController extends Controller
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount')));
         $sin_formato_amount_with_iva = str_replace(',', '.', str_replace('.', '', request('total_pay')));
 
-        $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total')));
-        
+        $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+         
+        //$iva_percibido_porc = request('iva_percibido_porc');
+        $IGTF_input = request('IGTF_input_pre');
+        $iva_percibido = request('iva_percibido_form');
 
         $total_mercancia = request('total_mercancia_credit');
         $total_servicios = request('total_servicios_credit');
 
+   
         if($quotation->coin != 'bolivares'){
             $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
             $sin_formato_amount_with_iva = $sin_formato_amount_with_iva * $bcv;
@@ -487,12 +494,12 @@ class FacturarLicController extends Controller
        
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
-
-       
         $date_begin = request('date-begin');
 
-        $quotation->date_billing = $date_begin;
+        $company = Company::on(Auth::user()->database_name)->find(1);
+        $igtfporc = $company->IGTF_porc;
 
+        $quotation->date_billing = $date_begin;
         $quotation->retencion_iva =  $total_retiene_iva;
         $quotation->retencion_islr =  $total_retiene_islr;
         $quotation->anticipo =  $anticipo;
@@ -530,7 +537,10 @@ class FacturarLicController extends Controller
             }
         }
         $quotation->serie = request('serie');
-        $quotation->save();
+        $quotation->IGTF_amount = $IGTF_input;
+        $quotation->IGTF_percentage = $igtfporc;
+
+       $quotation->save();
 
         $date_payment = request('date-payment');
 
@@ -552,7 +562,7 @@ class FacturarLicController extends Controller
 
         
        
-        /*Busqueda de Cuentas*/
+        //Busqueda de Cuentas
 
         //Cuentas por Cobrar Clientes
 
@@ -588,7 +598,30 @@ class FacturarLicController extends Controller
                 $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$sin_formato_amount_iva);
             }
         }
-        
+
+
+
+        //anadir movimiento de IGTF
+        if ($IGTF_input > 0){
+            $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar IGTF')->first(); 
+
+            if(isset($account_IGTF)){
+                
+                $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
+            }
+        }
+
+
+        // Iva Percibido
+        if ($iva_percibido > 0){
+            $account_iva_precibido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Percibido por Pagar')->first(); 
+
+            if(isset($account_iva_precibido)){
+                
+                $this->add_movement($bcv,$header_voucher->id,$account_iva_precibido->id,$quotation->id,$user_id,0,$iva_percibido);
+            }
+        }
+
         //Mercancia para la Venta
 
         if((isset($price_cost_total)) && ($price_cost_total != 0)){
@@ -607,21 +640,16 @@ class FacturarLicController extends Controller
             }
         }
         
-
-       
-
         return redirect('quotationslic/facturado/'.$quotation->id.'/'.$quotation->coin.'')->withSuccess('Factura Guardada con Exito!');
+    
     }
 
 
     public function storefactura(Request $request)
     {
         
-        //dd($request);
-        $data = request()->validate([
-            
-        
-        
+   
+        $data = request()->validate([        
         ]);
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
@@ -642,7 +670,7 @@ class FacturarLicController extends Controller
         $come_pay = request('amount_of_payments');
         $user_id = request('user_id');
 
-        /*Validar cuales son los pagos a guardar */
+        //Validar cuales son los pagos a guardar 
             $validate_boolean1 = false;
             $validate_boolean2 = false;
             $validate_boolean3 = false;
@@ -673,11 +701,12 @@ class FacturarLicController extends Controller
 
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
-
-
+        $amount_pay = request('amount_pay');
+        $IGTF_input = request('IGTF_input_pre');
+        $IGTF_porc = request('IGTF_porc');
+        $iva_percibido = request('iva_percibido_form'); 
         $total_mercancia = request('total_mercancia');
         $total_servicios = request('total_servicios');
-
         $date_payment = request('date-payment-form');
 
         
@@ -696,23 +725,24 @@ class FacturarLicController extends Controller
         $fecha = date($datenow);
 
         $fecha_actual = date("Y-m-d", strtotime($fecha . "+" . $credit . "days"));
-        /* $dd = date('l', strtotime($fecha_actual));
-        $credit_day = $credit;
-       if ($dd == "Saturday") {
-            $credit_day = $credit + 2;
-            $fecha_actual = date("Y-m-d", strtotime($fecha . "+" . $credit_day . "days"));
-        } elseif ($dd == "Sunday") {
-            $credit_day = $credit + 1;
-            $fecha_actual = date("Y-m-d", strtotime($fecha . "+" . $credit_day . "days"));
-        } */
+        // $dd = date('l', strtotime($fecha_actual));
+        //$credit_day = $credit;
+       //if ($dd == "Saturday") {
+         //   $credit_day = $credit + 2;
+           // $fecha_actual = date("Y-m-d", strtotime($fecha . "+" . $credit_day . "days"));
+        //} elseif ($dd == "Sunday") {
+          //  $credit_day = $credit + 1;
+           // $fecha_actual = date("Y-m-d", strtotime($fecha . "+" . $credit_day . "days"));
+        //} 
 
-     
         //si el monto es menor o igual a cero, quiere decir que el anticipo cubre el total de la factura, por tanto no hay pagos
+        
+      
         if($sin_formato_total_pay > 0){
             $payment_type = request('payment_type');
             if($come_pay >= 1){
 
-                /*-------------PAGO NUMERO 1----------------------*/
+                //-------------PAGO NUMERO 1----------------------
 
                 $var = new QuotationPayment();
                 $var->setConnection(Auth::user()->database_name);
@@ -816,12 +846,15 @@ class FacturarLicController extends Controller
                 }else{
                         return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             }   
+
+
+
             $payment_type2 = request('payment_type2');
             if($come_pay >= 2){
 
-                /*-------------PAGO NUMERO 2----------------------*/
+                //-------------PAGO NUMERO 2----------------------
 
                 $var2 = new QuotationPayment();
                 $var2->setConnection(Auth::user()->database_name);
@@ -926,12 +959,12 @@ class FacturarLicController extends Controller
                 }else{
                     return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 2 debe ser distinto de Cero!');
                 }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type3 = request('payment_type3');   
             if($come_pay >= 3){
 
-                    /*-------------PAGO NUMERO 3----------------------*/
+                    //-------------PAGO NUMERO 3----------------------
 
                     $var3 = new QuotationPayment();
                     $var3->setConnection(Auth::user()->database_name);
@@ -1036,12 +1069,12 @@ class FacturarLicController extends Controller
                     }else{
                             return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 3 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                    //--------------------------------------------
             }
             $payment_type4 = request('payment_type4');
             if($come_pay >= 4){
 
-                    /*-------------PAGO NUMERO 4----------------------*/
+                    //-------------PAGO NUMERO 4----------------------
 
                     $var4 = new QuotationPayment();
                     $var4->setConnection(Auth::user()->database_name);
@@ -1146,12 +1179,12 @@ class FacturarLicController extends Controller
                     }else{
                             return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 4 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                    //--------------------------------------------
             } 
             $payment_type5 = request('payment_type5');
             if($come_pay >= 5){
 
-                /*-------------PAGO NUMERO 5----------------------*/
+                //-------------PAGO NUMERO 5----------------------
 
                 $var5 = new QuotationPayment();
                 $var5->setConnection(Auth::user()->database_name);
@@ -1257,12 +1290,12 @@ class FacturarLicController extends Controller
                 }else{
                         return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 5 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type6 = request('payment_type6');
             if($come_pay >= 6){
 
-                /*-------------PAGO NUMERO 6----------------------*/
+                //-------------PAGO NUMERO 6----------------------
 
                 $var6 = new QuotationPayment();
                 $var6->setConnection(Auth::user()->database_name);
@@ -1368,12 +1401,12 @@ class FacturarLicController extends Controller
                 }else{
                         return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 6 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type7 = request('payment_type7');
             if($come_pay >= 7){
 
-                /*-------------PAGO NUMERO 7----------------------*/
+                //-------------PAGO NUMERO 7----------------------
 
                 $var7 = new QuotationPayment();
                 $var7->setConnection(Auth::user()->database_name);
@@ -1478,11 +1511,12 @@ class FacturarLicController extends Controller
                 }else{
                         return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 7 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
 
         }
-
+    
+    
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
         if(($total_pay == $sin_formato_total_pay) || ($sin_formato_total_pay <= 0))
         {
@@ -1493,26 +1527,18 @@ class FacturarLicController extends Controller
             if($retorno != "exito"){
                 return redirect('quotationslic/facturar/'.$quotation->id.'/'.$quotation->coin.'');
             }
-            
-            
-        
-            /*---------------- */
-
-                
+             
 
                 $header_voucher  = new HeaderVoucher();
                 $header_voucher->setConnection(Auth::user()->database_name);
-
-
+                
                 $header_voucher->description = "Cobro de Bienes o servicios.";
                 $header_voucher->date = $date_payment;
                 
-            
                 $header_voucher->status =  "1";
             
                 $header_voucher->save();
 
-                
 
             
             if($validate_boolean1 == true){
@@ -1597,7 +1623,7 @@ class FacturarLicController extends Controller
             $date_begin = request('date-begin-form');
             $quotation->date_billing = $date_begin;
 
-            /*Anticipos*/
+            //Anticipos
             if(isset($anticipo) && ($anticipo != 0)){
                 $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('code_one',2)
                                                         ->where('code_two',3)
@@ -1622,7 +1648,7 @@ class FacturarLicController extends Controller
              }else{
                  $quotation->anticipo = 0;
              }
-            /*---------- */
+            //---------- 
 
             if($retencion_iva !=0){
                 $account_iva_retenido = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)
@@ -1670,7 +1696,7 @@ class FacturarLicController extends Controller
             }
 
 
-            /*Modifica la cotizacion */
+            //Modifica la cotizacion 
             $quotation->serie = request('serie');
 
             $quotation->date_billing = $date_begin;
@@ -1684,10 +1710,12 @@ class FacturarLicController extends Controller
             $quotation->iva_percibido = $iva_percibido;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
+            $quotation->IGTF_percentage = $IGTF_porc;
+            $quotation->IGTF_amount = $IGTF_input;
             
             $quotation->save();
 
-            /*---------------------- */
+
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
@@ -1705,7 +1733,7 @@ class FacturarLicController extends Controller
             
                 $header_voucher->save();
 
-                /*Busqueda de Cuentas*/
+                //Busqueda de Cuentas
 
                 //Cuentas por Cobrar Clientes
 
@@ -1744,7 +1772,28 @@ class FacturarLicController extends Controller
                         $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$total_iva);
                     }
                 }
+
+                  //anadir movimiento de IGTF
+                if ($IGTF_input > 0){
+                    $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar IGTF')->first(); 
+
+                    if(isset($account_IGTF)){
+                        
+                        $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
+                    }
+                }
+ 
                 
+                // Iva Percibido
+               if ($iva_percibido > 0){
+                   $account_iva_precibido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Percibido por Pagar')->first(); 
+       
+                   if(isset($account_iva_precibido)){
+                       
+                       $this->add_movement($bcv,$header_voucher->id,$account_iva_precibido->id,$quotation->id,$user_id,0,$iva_percibido);
+                   }
+               }
+
                 //Mercancia para la Venta
                 
                 if($price_cost_total != 0){
@@ -1763,7 +1812,7 @@ class FacturarLicController extends Controller
                         $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$price_cost_total,0);
                     }
                 }
-                /*----------- */
+               
             }
              
             //Aqui pasa los quotation_products a status C de Cobrado
@@ -1774,7 +1823,6 @@ class FacturarLicController extends Controller
             $global = new GlobalController;                                                
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);
             
-            /*------------------------------------------------- */
 
             return redirect('quotationslic/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
 
@@ -1783,8 +1831,7 @@ class FacturarLicController extends Controller
             return redirect('quotationslic/facturar/'.$quotation->id.'/'.$coin.'')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
         }
 
-        
-        }
+    } 
         
     }
     
@@ -1865,7 +1912,7 @@ class FacturarLicController extends Controller
             } 
 
 
-            /*Verificamos si el cliente tiene anticipos activos */
+            //Verificamos si el cliente tiene anticipos activos 
             DB::connection(Auth::user()->database_name)->table('anticipos')
                     ->where('id_client', '=', $quotation->id_client)
                     ->where(function ($query) use ($quotation){
@@ -1899,8 +1946,8 @@ class FacturarLicController extends Controller
         $detail->tasa = $bcv;
         $detail->id_invoice = $id_invoice;
 
-      /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
-        $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+      //  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+       // $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));
 
 
         $detail->debe = $debe;

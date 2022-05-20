@@ -1968,7 +1968,7 @@ class PDF2LicController extends Controller
 
 
             $pdf = App::make('dompdf.wrapper');
-            $pdf = $pdf->loadView('pdf.previewfactura',compact('quotation','inventories_quotations','datenow','newDate','bcv','coin','bcv_quotation_product','rate','tax_1','tax_3','drivers','transport','modelo'))->setPaper('letter', 'landscape');
+            $pdf = $pdf->loadView('pdf.previewfactura',compact('quotation','inventories_quotations','datenow','newDate','bcv','coin','bcv_quotation_product','rate','tax_1','tax_3','drivers','transport','modelo','company'))->setPaper('letter', 'landscape');
             return $pdf->stream();
 
         }else{
@@ -1998,12 +1998,13 @@ class PDF2LicController extends Controller
                         $quotation->number_delivery_note = 1;
                     }
                 }
-                $global = new GlobalController();
+                
+                /*$global = new GlobalController();
                 $retorno = $global->discount_inventory($id_quotation);
 
                 if($retorno != 'exito'){
                     return redirect('quotationslic/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
-                }
+                }*/
                
 
              }else{
@@ -2097,15 +2098,15 @@ class PDF2LicController extends Controller
        
 
             $pdf = App::make('dompdf.wrapper');
-            $pdf = $pdf->loadView('pdf.previewnote',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','rate','newDate','serienote','tax_1','tax_3','drivers','transport','modelo'))->setPaper('letter', 'landscape');
+            $pdf = $pdf->loadView('pdf.previewnote',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','rate','newDate','serienote','tax_1','tax_3','drivers','transport','modelo','company'))->setPaper('letter', 'landscape');
 
             return $pdf->stream();
 
         }else{
             return redirect('/invoiceslic')->withDanger('La Nota de Entrega no existe');
         }
-    }
 
+    }
 
 
 }

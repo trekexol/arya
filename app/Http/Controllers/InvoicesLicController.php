@@ -232,9 +232,8 @@ class InvoicesLicController extends Controller
         $amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
         $amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount')));
         $amount_with_iva = str_replace(',', '.', str_replace('.', '', request('total_pay')));
-
+        
         $grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total')));
-
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
@@ -273,7 +272,7 @@ class InvoicesLicController extends Controller
         if($amount_with_iva > 0){
             if($come_pay >= 1){
 
-                /*-------------PAGO NUMERO 1----------------------*/
+                //-------------PAGO NUMERO 1----------------------
 
                 $var = new QuotationPayment();
                 $var->setConnection(Auth::user()->database_name);
@@ -377,12 +376,12 @@ class InvoicesLicController extends Controller
                 }else{
                         return redirect('invoiceslic')->withDanger('El pago debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+               
             }   
             $payment_type2 = request('payment_type2');
             if($come_pay >= 2){
 
-                /*-------------PAGO NUMERO 2----------------------*/
+                //-------------PAGO NUMERO 2----------------------
 
                 $var2 = new QuotationPayment();
                 $var2->setConnection(Auth::user()->database_name);
@@ -487,12 +486,12 @@ class InvoicesLicController extends Controller
                 }else{
                     return redirect('invoiceslic')->withDanger('El pago 2 debe ser distinto de Cero!');
                 }
-                /*--------------------------------------------*/
+                
             } 
             $payment_type3 = request('payment_type3');   
             if($come_pay >= 3){
 
-                    /*-------------PAGO NUMERO 3----------------------*/
+                    //-------------PAGO NUMERO 3----------------------
 
                     $var3 = new QuotationPayment();
                     $var3->setConnection(Auth::user()->database_name);
@@ -597,12 +596,12 @@ class InvoicesLicController extends Controller
                     }else{
                             return redirect('invoiceslic')->withDanger('El pago 3 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                    
             }
             $payment_type4 = request('payment_type4');
             if($come_pay >= 4){
 
-                    /*-------------PAGO NUMERO 4----------------------*/
+                    //-------------PAGO NUMERO 4----------------------
 
                     $var4 = new QuotationPayment();
                     $var4->setConnection(Auth::user()->database_name);
@@ -707,12 +706,12 @@ class InvoicesLicController extends Controller
                     }else{
                             return redirect('invoiceslic')->withDanger('El pago 4 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                  
             } 
             $payment_type5 = request('payment_type5');
             if($come_pay >= 5){
 
-                /*-------------PAGO NUMERO 5----------------------*/
+                //-------------PAGO NUMERO 5----------------------
 
                 $var5 = new QuotationPayment();
                 $var5->setConnection(Auth::user()->database_name);
@@ -818,12 +817,12 @@ class InvoicesLicController extends Controller
                 }else{
                         return redirect('invoiceslic')->withDanger('El pago 5 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                
             } 
             $payment_type6 = request('payment_type6');
             if($come_pay >= 6){
 
-                /*-------------PAGO NUMERO 6----------------------*/
+                //-------------PAGO NUMERO 6----------------------
 
                 $var6 = new QuotationPayment();
                 $var6->setConnection(Auth::user()->database_name);
@@ -929,12 +928,12 @@ class InvoicesLicController extends Controller
                 }else{
                         return redirect('invoiceslic')->withDanger('El pago 6 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                
             } 
             $payment_type7 = request('payment_type7');
             if($come_pay >= 7){
 
-                /*-------------PAGO NUMERO 7----------------------*/
+                //-------------PAGO NUMERO 7----------------------
 
                 $var7 = new QuotationPayment();
                 $var7->setConnection(Auth::user()->database_name);
@@ -1039,7 +1038,7 @@ class InvoicesLicController extends Controller
                 }else{
                         return redirect('invoiceslic')->withDanger('El pago 7 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+               
             } 
         }
 
@@ -1180,7 +1179,7 @@ class InvoicesLicController extends Controller
             }
             
             
-             /*Anticipos*/
+             //Anticipos
              if(isset($anticipo) && ($anticipo != 0)){
                 $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('code_one',2)
                 ->where('code_two',3)
@@ -1205,7 +1204,7 @@ class InvoicesLicController extends Controller
                 }                           
                 
              }
-            /*---------- */
+
 
             if($total_retiene_iva !=0){
                 $account_iva_retenido = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)
@@ -1244,7 +1243,7 @@ class InvoicesLicController extends Controller
    
         }else{
             return redirect('invoiceslic')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
-        }
+        } 
     }
 
 
