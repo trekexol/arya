@@ -361,13 +361,13 @@
         <tr>
          <td style="font-size: 10px;text-align: left center;" ><strong>ESTA FACTURA VA SIN TACHADURAS NI ENMIENDAS</strong></td>
          <td style="font-size: 10px;text-align: center center;" ></td>
-         <td style="font-size: 10px;text-align: left center;" ><strong>TOTAL FACTURA Bs.</strong></td>
+         <td style="font-size: 10px;text-align: left center;" ><strong>TOTAL Bs.</strong></td>
      </tr>
      @if ($quotation->clients['coin'] == '0')
      <tr>
          <td style="font-size: 10px;text-align: left;" ><strong>TASA A LA FECHA: {{number_format($rate ,2,",",".")}} BS.</strong></td>
          <td style="font-size: 10px;text-align: center;" ></td>
-         <td style="font-size: 10px;text-align: left;" ><strong>TOTAL FACTURA USD.</strong></td>       
+         <td style="font-size: 10px;text-align: left;" ><strong>TOTAL USD.</strong></td>       
      </tr>
      @endif
     </table>

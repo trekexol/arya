@@ -610,6 +610,20 @@ class PDF2LicController extends Controller
             $quotation->serie_note = $serienote;   
             $quotation->save();
 
+                
+            $global = new GlobalController();
+
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('id_quotation', '=', $quotation->id)
+            ->where('status','!=','X')
+            ->get(); // Conteo de Productos para incluiro en el historial de inventario
+               
+            
+            foreach($quotation_products as $det_products){ // guardado historial de inventario 
+            $global->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
+            }
+
+
             $originalDate = $quotation->date_billing;
             $newDate = date("d/m/Y", strtotime($originalDate));
 
