@@ -63,7 +63,28 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="number_fact" class="col-md-2 col-form-label text-md-right">Factura:</label>
+                            <div class="col-md-4">
+                                <input id="number_fact" type="text" class="form-control @error('number_fact') is-invalid @enderror" name="number_fact" value="{{ $quotation->number_invoice ?? '' }}" readonly autocomplete="number_fact">
 
+                                @error('number_fact')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label for="number_delivery_note" class="col-md-2 col-form-label text-md-right">Nota de Entrega:</label>
+                            <div class="col-md-3">
+                                <input id="number_delivery_note" type="text" class="form-control @error('number_delivery_note') is-invalid @enderror" name="number_delivery_note" value="{{ $quotation->number_delivery_note ?? '' }}" readonly autocomplete="number_delivery_note">
+                                @error('number_delivery_note')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            
+                        </div>
                         <div class="form-group row">
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif Cliente:</label>
                             <div class="col-md-4">
@@ -284,7 +305,7 @@
                                 </div>
                                 <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
-                                        Guardar Factura
+                                        Guardar Factura a Crédito
                                     </button>
                                 </div>
                                 <div class="col-md-2">
@@ -295,7 +316,7 @@
                         
                         
             </form>           
-            <form method="POST" action="{{ route('quotations.storefactura') }}" enctype="multipart/form-data">
+            <form id="primer_form" method="POST" action="{{ route('quotations.storefactura') }}" enctype="multipart/form-data">
                 @csrf   
 
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
@@ -346,7 +367,7 @@
 
                         
                         <div class="form-group row" id="formulario1" >
-                            <label id="label_amount_pays" for="amount_pays" class="col-md-2 col-form-label text-md-right">Forma de Pago:</label>
+                            <label id="label_amount_pays" for="amount_pays" class="col-md-2 col-form-label text-md-right">Monto a Cancelar:</label>
                             <div class="col-md-3">
                                 <input id="amount_pay" type="text" class="form-control @error('amount_pay') is-invalid @enderror"  name="amount_pay" placeholder="0,00" required autocomplete="amount_pay"> 
                            
@@ -359,7 +380,7 @@
                           
                             <div class="col-md-2">
                                 <select  id="payment_type" required name="payment_type" class="form-control">
-                                    <option selected value="">Tipo de Pago 1</option>
+                                    <option selected value="">Forma de Pago 1</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -435,7 +456,7 @@
                           
                                 <div class="col-md-2">
                                     <select  id="payment_type2" name="payment_type2" class="form-control">
-                                        <option selected value="0">Tipo de Pago 2</option>
+                                        <option selected value="0">Forma de Pago 2</option>
                                         <option value="1">Cheque</option>
                                         <option value="2">Contado</option>
                                         
@@ -513,7 +534,7 @@
                       
                             <div class="col-md-2">
                                 <select  id="payment_type3"  name="payment_type3" class="form-control">
-                                    <option selected value="0">Tipo de Pago 3</option>
+                                    <option selected value="0">Forma de Pago 3</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -590,7 +611,7 @@
                       
                             <div class="col-md-2">
                                 <select  id="payment_type4"  name="payment_type4" class="form-control">
-                                    <option selected value="0">Tipo de Pago 4</option>
+                                    <option selected value="0">Forma de Pago 4</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -667,7 +688,7 @@
                       
                             <div class="col-md-2">
                                 <select  id="payment_type5"  name="payment_type5" class="form-control">
-                                    <option selected value="0">Tipo de Pago 5</option>
+                                    <option selected value="0">Forma de Pago 5</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -744,7 +765,7 @@
                       
                             <div class="col-md-2">
                                 <select  id="payment_type6"  name="payment_type6" class="form-control">
-                                    <option selected value="0">Tipo de Pago 6</option>
+                                    <option selected value="0">Forma de Pago 6</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -821,7 +842,7 @@
                       
                             <div class="col-md-2">
                                 <select  id="payment_type7"  name="payment_type7" class="form-control">
-                                    <option selected value="0">Tipo de Pago 7</option>
+                                    <option selected value="0">Forma de Pago 7</option>
                                     <option value="1">Cheque</option>
                                     <option value="2">Contado</option>
                                     
@@ -889,19 +910,28 @@
                             <div class="col-md-2">
                             </div>   
                         <div class="col-md ">
-                            <button type="submit" class="btn btn-primary">
+                            <button id="saveinvoice" type="submit" class="btn btn-primary">
                                 Guardar Factura
                              </button>
                         </div>
-                        <div class="col-md-3">     
+                        <div>     
                             <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
                             <input type="hidden" id="anticipo_form2" name="anticipo_form2">
-
-                            @if(isset($quotation->date_delivery_note))             
-                                    <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota</a>
-                            @endif
                         </div>
-                        <div class="col-md-5">     
+
+                        @if(isset($quotation->date_delivery_note) && $anticipos_sum > 0)
+                        <div class="col-sm-3">       
+                                <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota con Anticipos</a>
+                        </div>
+                        @endif
+                        @if(isset($quotation->date_delivery_note))    
+                        <div class="col-sm-3">     
+                                <button type="submit" onmouseover="cambioderuta()" onmouseout="restauraruta()" id="cob_anticipo_saldar" name="cob_anticipo_saldar" class="btn btn-info" title="cob_anticipo_saldar">
+                                    Crear Anticipo y Saldar Nota
+                                 </button>
+                            </div>                        
+                        @endif                        
+                        <div class="col-md-1">     
                             @if(isset($quotation->date_delivery_note))
                              
                                 <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
@@ -1005,6 +1035,28 @@
             document.getElementById("date-payment-form").value = $(this).val();
             
         });
+
+        /*------------Saldar contra anticipo---------*/
+        
+        $("#cob_anticipo_saldar").on('focus', function() {
+            $("#primer_form").attr("action",'{{route("quotations.storeanticiposaldar")}}');
+        });
+
+        
+        $("#saveinvoice").on('focus', function() {
+         $("#primer_form").attr("action",'{{route("quotations.storefactura")}}');
+        });;
+
+        function cambioderuta() {
+            $("#primer_form").attr("action",'{{route("quotations.storeanticiposaldar")}}');
+        }
+
+        function restauraruta() {
+            $("#primer_form").attr("action",'{{route("quotations.storefactura")}}');
+        }    
+        /*------------fin Saldar contra anticipo---------*/
+
+
 
         function calculateTotalIGTF(){
             
@@ -1440,8 +1492,7 @@
                 
             });
 
-
-                
+            /*------------Saldar nota---------*/
      $(document).on('click','#saldar',function(){
 
          var id_quotation = document.getElementById("id_quotation2").value;

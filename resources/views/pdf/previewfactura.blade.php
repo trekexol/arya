@@ -223,7 +223,7 @@
                                  
                                  @if ($quotation->clients['coin'] == '0')
                                  <!-- TOTAL DE VENTA DOLARES -->
-                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100) + (($quotation->IGTF_percentage * $total_venta_c) /100 ))  / $inventories_quotation->rate ,2,",",".")}}</td>
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100) + ((3 * $total_venta_c) /100 ))  / $inventories_quotation->rate ,2,",",".")}}</td>
                                  @endif      
                          <?php
 

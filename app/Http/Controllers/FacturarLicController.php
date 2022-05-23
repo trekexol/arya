@@ -1873,6 +1873,8 @@ class FacturarLicController extends Controller
     }
     
 
+
+
     public function check_anticipo($quotation,$total_pay)
     {
         

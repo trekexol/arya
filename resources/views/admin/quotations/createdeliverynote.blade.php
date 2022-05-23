@@ -29,7 +29,15 @@
                 <div class="card-header" ><h3>Cerrar e Imprimir la Nota de Entrega </h3></div>
                 
                 <div class="card-body" >
-                        <div class="form-group row">
+                    <div class="form-group row">
+                        <label for="note" class="col-md-2 col-form-label text-md-right">Nota de Entrega:</label>
+                        <div class="col-md-2">
+                            <input id="num_note" type="text" class="form-control" name="num_note" value="{{ $quotation->number_delivery_note}}" readonly>
+                        </div>
+                    </div>    
+                    
+                    
+                    <div class="form-group row">
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif Cliente:</label>
                             <div class="col-md-4">
                                 <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $quotation->clients['cedula_rif']  ?? '' }}" readonly required autocomplete="cedula_rif">

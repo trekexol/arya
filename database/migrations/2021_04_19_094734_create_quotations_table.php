@@ -55,7 +55,7 @@ class CreateQuotationsTable extends Migration
 
            
             $table->string('status',1);
-           
+            $table->date('date_saldate')->nullable();
             $table->foreign('id_client')->references('id')->on('clients');
             $table->foreign('id_vendor')->references('id')->on('vendors');
             $table->foreign('id_transport')->references('id')->on('transports');

@@ -90,13 +90,21 @@ class DeliveryNoteController extends Controller
 
     public function storesaldar($id=null,$anticipo=null,$totalfac)
     {
+        
 
-                
-                $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
-                    
                 $quotation = Quotation::on(Auth::user()->database_name)->find($id);
 
-                $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id)->update([ 'status' => 'C' ]);
+
+                $anticipo_def_fecha = Anticipo::on(Auth::user()->database_name)
+                ->where('id_client',$quotation->id_client)
+                ->where('id_quotation',$quotation->id)
+                ->orderBy('id','desc')
+                ->first();
+                
+                $quotationsupdt_fecha_saldad = Quotation::on(Auth::user()->database_name)->where('id',$quotation->id)->update(['date_saldate' => $anticipo_def_fecha->date]);
+                $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$id)->update(['status' => 'C']);
+                $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id)->update(['status' => 'C']);
+
 
                 return redirect('quotations/indexnotasdeentrega')->withSuccess('Nota '.$quotation->number_delivery_note.' Saldada Exitosamente!');
     

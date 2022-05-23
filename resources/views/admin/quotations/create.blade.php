@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}}</h3></div>
+                <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}} {{$quotation->number_delivery_note ?? $quotation->id}}</h3> </div>
                 <div class="card-body" >
                     <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id) }}" enctype="multipart/form-data" >
                         @method('PATCH')

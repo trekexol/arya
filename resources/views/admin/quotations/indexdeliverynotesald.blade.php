@@ -108,7 +108,7 @@
                     
                       <tr>
                             <td class="text-center">{{$numcont}}</td>    
-                            <td class="text-center">{{ date_format(date_create($quotation->updated_at),"d-m-Y") ?? ''}}</td>
+                            <td class="text-center">{{ date_format(date_create($quotation->date_saldate),"d-m-Y") ?? ''}}</td>
                                
                             <td class="text-center">{{ date_format(date_create($quotation->date_delivery_note),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
