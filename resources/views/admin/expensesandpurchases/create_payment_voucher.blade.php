@@ -132,7 +132,7 @@
                         </div>
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total Pagado:</label>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" value="{{ number_format($expense->amount_with_iva / ($bcv ?? 1), 2, ',', '.') }}" readonly  required autocomplete="total_pay"> 
                            
                                 @error('total_pay')
@@ -148,7 +148,7 @@
                                 </div>
                             @endif
 
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                            <label for="note" class="col-md-1 col-form-label text-md-right">Tasa:</label>
 
                             <div class="col-md-1">
                                 <input id="tasa_view" type="text" class="form-control @error('tasa_view') is-invalid @enderror" name="tasa_view" value="{{ number_format($expense->rate ?? 0.00, 2, ',', '.') }}" readonly autocomplete="tasa_view">

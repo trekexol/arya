@@ -460,7 +460,8 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::get('indexnotasdeentregasald/{id_quotation?}/{number_pedido?}','DeliveryNoteController@indexsald')->name('quotations.indexdeliverynotesald');
    
     Route::get('storesaldar/{id?}/{anticipo?}/{totalfac?}','DeliveryNoteController@storesaldar')->name('quotation.storesaldar');
-
+    Route::post('storesaldarnota','FacturarController@storeanticiposaldar')->name('quotations.storeanticiposaldar');
+    
     Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');
     Route::patch('productupdate/{id}/update','QuotationController@updatequotationproduct')->name('quotations.productupdate');
 
@@ -1342,6 +1343,7 @@ Route::group(["prefix"=>'quotationslic'],function(){
 
     Route::post('pdfQuotations','QuotationLicController@pdfQuotations')->name('quotationslic.pdfQuotations');
 });
+
 
 
 Route::group(["prefix"=>'clientslic'],function(){
