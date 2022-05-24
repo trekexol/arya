@@ -164,7 +164,7 @@
                                 <div class="form-row col-md-12">
                                     <div class="form-group col-md-2">
                                         <label for="description" >Código</label>
-                                        <input id="code_id" type="hidden" class="form-control @error('code_id') is-invalid @enderror" name="code_id" value="{{ $inventory->product_id ?? old('code_id') ?? '' }}"  required autocomplete="code" autofocus >
+                                        <input id="code_id" type="hidden" class="form-control @error('code_id') is-invalid @enderror" name="code_id" value="{{ $inventory->id ?? old('code_id') ?? '' }}"  required autocomplete="code">
                                         <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial ?? old('code') ?? '' }}"  required autocomplete="code" autofocus  onblur="mycodePrecio()" >
 
 
@@ -443,9 +443,9 @@
             <form action="{{ route('quotationslic.deleteProduct') }}" method="post">
                 @csrf
                 @method('DELETE')
-                <input id="id_quotation_product_modal" type="text" class="form-control @error('id_quotation_product_modal') is-invalid @enderror" name="id_quotation_product_modal" readonly required autocomplete="id_quotation_product_modal">
-                <input id="id_quotation_modal" type="text" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
-                <input id="coin_modal" type="text" class="form-control @error('coin_modal') is-invalid @enderror" name="coin_modal" readonly required autocomplete="coin_modal">
+                <input id="id_quotation_product_modal" type="hidden" class="form-control @error('id_quotation_product_modal') is-invalid @enderror" name="id_quotation_product_modal" readonly required autocomplete="id_quotation_product_modal">
+                <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
+                <input id="coin_modal" type="hidden" class="form-control @error('coin_modal') is-invalid @enderror" name="coin_modal" readonly required autocomplete="coin_modal">
 
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
 
@@ -520,13 +520,14 @@
                 document.getElementsByName("cost")[0].value = precio_str;
             }else{
                 var rate        = document.getElementById("rate").value;
-                var rate_str    = rate.replaceAll(".", "");
-                var rate_str2    = rate_str.replaceAll(",", ".");
+                /*var rate_str    = rate.replaceAll(".", "");
+                var rate_str2    = rate_str.replaceAll(",", ".");*/
                 var precio_list = document.getElementById("precio_list").value;
-                var resultado   = (parseFloat(precio_list) * parseFloat(rate_str2)).toFixed(2);
+                var resultado   = (parseFloat(precio_list) * parseFloat(rate)).toFixed(2);
+                var resultado    = resultado.replaceAll(".", ",");
                 var grand_totalformat = resultado.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
-                document.getElementsByName("cost")[0].value = new Intl.NumberFormat('es-MX').format(resultado);
+                document.getElementsByName("cost")[0].value = resultado;
             }
         });
         $(document).ready(function () {

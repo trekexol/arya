@@ -37,23 +37,99 @@ class ProductController extends Controller
        return view('admin.products.index',compact('products'));
    }
 
-   
-   public function listprice(Request $request, $code_id = null){
 
-    //validar si la peticion es asincrona
-    if($request->ajax()){
-        try{
-            $productprice = ProductPrice::on(Auth::user()->database_name)
-            ->where('id_product',$code_id)
-            ->orderBy('price','asc')->get();
-            return response()->json($productprice,200);
-        }catch(Throwable $th){
-            return response()->json(false,500);
-        }
+   public function productprices($id)
+   {
+
+       $user       =   auth()->user();
+       $users_role =   $user->role_id;
+
+
+       $product_detail        =   Product::on(Auth::user()->database_name)->find($id);
+       $products = ProductPrice::on(Auth::user()->database_name)->orderBy('id' ,'ASC')->where("id_product",$product_detail->id)->get();
+
+       if(empty($products)){
+           
+        return view('admin.index');
+       } else {
+        return view('admin.products.productprices',compact('products','product_detail'));
+       }
+
+   }
+   public function createprice($id)
+   {
+       $user       =   auth()->user();
+       $users_role =   $user->role_id;
+
+           $product_detail        =   Product::on(Auth::user()->database_name)->find($id);
+  
+       return view('admin.products.createprice',compact('product_detail'));
+   }
+
+   public function editprice($id)
+   {
+    $product = ProductPrice::on(Auth::user()->database_name)->find($id);
+    $product_detail        =   Product::on(Auth::user()->database_name)->where('id',$product->id_product)->get()->first();
+
+     return view('admin.products.editprice',compact('product','product_detail'));
+
+   }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateproduct($id,Request $request)
+    {
+        $valor_sin_formato_price            =   trim(str_replace(',', '.', str_replace('.', '',request('Precio')))) ;
+        $var = ProductPrice::on(Auth::user()->database_name)->findOrFail($id);
+        $var->price = $valor_sin_formato_price;
+
+        $var->save();
+        
+        $id_producto     = request('id_product');
+
+        return \redirect()->route('products.productprices',$id_producto)->withSuccess('Actualizacion Exitosa!');
+
+       /* //return \redirect()->route('products.productprice',$id)->withSuccess('Actualizacion Exitosa!');;*/
     }
 
-}
 
+    public function storeprice(Request $request)
+    {
+
+        $id     = request('id_product');
+          $valor_sin_formato_precio =   trim(str_replace(',', '.', str_replace('.', '',request('Precio'))));
+
+            
+            $var = new ProductPrice();
+            $var->setConnection(Auth::user()->database_name);
+            $var->id_product        = $id;
+            $var->price             = $valor_sin_formato_precio;
+            $var->status            =  1;
+            $var->save();
+
+            return \redirect()->route('products.productprices',$id);
+        
+    }
+
+    public function listprice(Request $request, $code_id = null){
+
+
+        //validar si la peticion es asincrona
+        if($request->ajax()){
+            try{                
+                $productprice = ProductPrice::on(Auth::user()->database_name)->select('id','price')->where('id_product',$code_id)->orderBy('price','asc')->get();
+                return response()->json($productprice,200);
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+        }
+
+    }
 
    /**
     * Show the form for creating a new resource.

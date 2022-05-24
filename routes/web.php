@@ -276,6 +276,11 @@ Route::group(["prefix"=>'products'],function(){
     Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list')->name('products.listtwosubsegment');
     Route::get('listthreesubsegment/{id_subsegment}','ThreeSubSegmentController@list')->name('products.listthreesubsegment');
     
+    Route::get('productprices/{id}','ProductController@productprices')->name('products.productprices');
+    Route::get('createprice/{id}','ProductController@createprice')->name('products.createprice');
+    Route::get('editprice/{id}','ProductController@editprice')->name('products.editprice');
+    Route::patch('updateproduct/{id}','ProductController@updateproduct')->name('products.updateproduct');
+    Route::post('storeprice','ProductController@storeprice')->name('products.storeprice');
     Route::get('listprice/{code_id?}','ProductController@listprice')->name('products.listprice');
 
 });
@@ -461,7 +466,7 @@ Route::group(["prefix"=>'quotations'],function(){
    
     Route::get('storesaldar/{id?}/{anticipo?}/{totalfac?}','DeliveryNoteController@storesaldar')->name('quotation.storesaldar');
     Route::post('storesaldarnota','FacturarController@storeanticiposaldar')->name('quotations.storeanticiposaldar');
-    
+
     Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');
     Route::patch('productupdate/{id}/update','QuotationController@updatequotationproduct')->name('quotations.productupdate');
 

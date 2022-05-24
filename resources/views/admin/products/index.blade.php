@@ -80,9 +80,9 @@
                 <th class="text-center">Precio</th>
                 <th class="text-center">Moneda</th>
                 <th class="text-center">Foto del Producto</th>
-                <th class="text-center">Estatus</th>
+                <th class="text-center">(E)</th>
               
-                <th class="text-center" width="7%"></th>
+                <th class="text-center" width="9%"></th>
             </tr>
             </thead>
             
@@ -109,8 +109,9 @@
                             @else
                             <td class="text-center" style="font-weight: bold; color: green">A</td>
                             @endif
-                            <td class="text-center">
+                            <td class="text-center" width="9%">
                                 <a href="{{ route('products.edit',$product->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
+                                <a href="{{ route('products.productprices',$product->id) }}"  title="Listado de Precios"><i class="fa fa-list"></i></a>
                                 <a href="#" class="delete" data-id-product={{$product->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                             </td>
                         </tr>     
