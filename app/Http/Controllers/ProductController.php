@@ -31,7 +31,7 @@ class ProductController extends Controller
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        
-        $products = Product::on(Auth::user()->database_name)->orderBy('status','DESC')->orderBy('id' ,'DESC')->get();
+        $products = Product::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('status','DESC')->orderBy('id' ,'DESC')->get();
 
 
        return view('admin.products.index',compact('products'));
