@@ -57,6 +57,10 @@
         <td style="text-align: center;"></td>
       </tr>
       </table>
+      @php
+          $total_asignacion = 0;
+          $total_deduccion = 0;
+      @endphp
       @if($contador_por_pagina == 2)
         <?php
            $contador_por_pagina = 0;
