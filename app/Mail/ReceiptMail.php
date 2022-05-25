@@ -36,7 +36,7 @@ class ReceiptMail extends Mailable
         
         return $this->view('mail.quotation')
         ->attachData($this->pdf, 'recibo_de_condominio.pdf', ['mime' => 
-        'application/pdf'])->subject('Recibo de Condominio');
+        'application/pdf'])->from('condominioshelenaemail@gmail.com')->subject('Recibo de Condominio');
     }
 
     
