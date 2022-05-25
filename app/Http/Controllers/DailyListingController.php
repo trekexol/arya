@@ -158,7 +158,7 @@ class DailyListingController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        if(isset($coin) && $coin == "bolivares")
+        if($coin == "bolivares")
         {
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
@@ -176,7 +176,8 @@ class DailyListingController extends Controller
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
             ,'header_vouchers.description as header_description')
-            ->orderBy('detail_vouchers.id','asc')->get();
+            ->orderBy('header_vouchers.date','asc')
+            ->orderBy('header_vouchers.id','asc')->get();
 
            
             //busca los saldos previos de la cuenta                    
@@ -212,7 +213,8 @@ class DailyListingController extends Controller
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
             ,'header_vouchers.description as header_description')
-            ->orderBy('detail_vouchers.id','asc')->get();
+            ->orderBy('header_vouchers.date','asc')
+            ->orderBy('header_vouchers.id','asc')->get();
 
             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
@@ -264,7 +266,7 @@ class DailyListingController extends Controller
         $account_historial = $account_calculate->calculateBalance($account,$date_begin);
 
         
-        if(isset($coin) && $coin !="bolivares"){
+        if($coin !="bolivares"){
             if(empty($account_historial->rate) || ($account_historial->rate == 0)){
                 $account_historial->rate = 1;
             }
@@ -279,7 +281,7 @@ class DailyListingController extends Controller
         foreach($detailvouchers as $detail){
             if($detail->id_account == $id_account){
                 /*esta parte convierte los saldos a dolares */
-                if(isset($coin) && $coin !="bolivares"){
+                if($coin !="bolivares"){
                     if((isset($detail->debe)) && ($detail->debe != 0)){
                     $detail->debe = $detail->debe / ($detail->tasa ?? 1);
                     }
