@@ -140,6 +140,7 @@ class DirectPaymentOrderController extends Controller
                 $header->description = "Orden de Pago ". request('description');
                 $header->date = request('date');
                 $header->reference = request('reference');
+                $header->id_payment_order = $payment_order->id;
                 $header->status =  1;
             
                 $header->save();
