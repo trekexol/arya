@@ -31,7 +31,7 @@
   <br>
   <h5 style="color: black; text-align: center;">{{ $company->razon_social ?? ''}} / Rif: {{ $company->code_rif ?? ''}} / Fecha de Emisión: {{ $datenow }}</h5>
   
-  <h4 style="color: black; text-align: center;">LISTADO MOVIMIENTO DE CUENTAS</h4>
+  <h4 style="color: black; text-align: center;">LISTADO MOVIMIENTO DE CUENTAS..</h4>
   <h5 style="color: black; text-align: center;">Código de Cuenta: {{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</h5>
   <h5 style="color: black; text-align: center;">Cuenta: {{ $account->description ?? ''}}</h5>
   <h5 style="color: black; text-align: center;">Periodo: {{ $date_begin ?? ''}} hasta {{ $date_end ?? ''}}</h5>
