@@ -94,10 +94,6 @@
 
                         $amount_bcv = $anticipo->amount / $anticipo->rate;
 
-
-                        if($anticipo->coin != 'bolivares'){
-                            $anticipo->amount = $anticipo->amount / $anticipo->rate;
-                        }
                     ?>
                     <tr>
                         <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>

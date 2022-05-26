@@ -84,8 +84,7 @@
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha</th>
-                <th class="text-center">Monto</th>
-                <th class="text-center">Iva</th>
+                <th class="text-center">REF</th>
                 <th class="text-center">Total</th>
                 <th ></th>
                 <th ></th>
@@ -97,7 +96,17 @@
                 @if (empty($expensesandpurchases))
                 @else  
                     @foreach ($expensesandpurchases as $expensesandpurchase)
-                        <tr>
+                        <?php
+                            $amount_bcv = 1;
+
+                             if ($expensesandpurchase->rate <= 0) {
+                                 $rate = 1;
+                             } else {
+                                 $rate = $expensesandpurchase->rate; 
+                             }
+
+                        ?>
+                         <tr>
                            <td>{{$expensesandpurchase->id ?? ''}}</td>
                             <td class="text-center">
                                 <a href="{{ route('expensesandpurchases.create_expense_voucher',[$expensesandpurchase->id,$expensesandpurchase->coin ?? 'bolivares']) }}" title="Ver Detalle" class="text-center text-dark font-weight-bold">
@@ -107,8 +116,7 @@
                             <td class="text-center">{{$expensesandpurchase->serie ?? ''}}</td>
                             <td class="text-center">{{$expensesandpurchase->providers['razon_social'] ?? ''}}</td>
                             <td class="text-center">{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }} </td>
-                            <td class="text-right">{{number_format($expensesandpurchase->amount, 2, ',', '.')}}</td>
-                            <td class="text-right">{{number_format($expensesandpurchase->amount_iva, 2, ',', '.')}}</td>
+                            <td class="text-right">${{number_format($expensesandpurchase->amount_with_iva / $rate ?? 0, 2, ',', '.')}}</td>
                             <td class="text-right">{{number_format($expensesandpurchase->amount_with_iva, 2, ',', '.')}}</td>
                             @if ($expensesandpurchase->status == "C")
                             <td class="text-center font-weight-bold">

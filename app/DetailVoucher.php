@@ -21,4 +21,5 @@ class DetailVoucher extends Model
     public function quotations(){
         return $this->belongsTo('App\Quotation','id_invoice');
     }
+
 }

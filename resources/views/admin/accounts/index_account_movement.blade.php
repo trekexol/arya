@@ -49,7 +49,7 @@
                 @else
                     @foreach ($detailvouchers as $var)
                     <tr>
-                    <td>{{$var->headers['date'] ?? ''}}</td>
+                    <td>{{$var->date ?? ''}}</td>
 
                     
                     @if(isset($var->id_invoice))
@@ -80,21 +80,25 @@
 
                        @if (isset($var->quotations['number_invoice']))
                        
-                        <td>{{$var->headers['description'] ?? ''}} fact({{ $var->quotations['number_invoice'] }})  / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} fact({{ $var->quotations['number_invoice'] }})  / {{$var->accounts['description'] ?? ''}}</td>
                     
                        @elseif(isset($var->quotations['number_delivery_note']))
                        
-                        <td>{{$var->headers['description'] ?? ''}} nota({{ $var->quotations['number_delivery_note'] }})  / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} nota({{ $var->quotations['number_delivery_note'] }})  / {{$var->accounts['description'] ?? ''}}</td>
                       
                        @endif
                         
                         
                     @elseif (isset($var->id_expense))
                         
-                        <td>{{$var->headers['description'] ?? ''}} Compra({{ $var->id_expense }}) / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} Compra({{ $var->id_expense }}) / {{$var->accounts['description'] ?? ''}}</td>
+                   
+                    @elseif (isset($var->id_anticipo))
+                        <td>{{$var->description ?? ''}} {{ $var->id_anticipo ?? 'no found' }}</td>                   
                     @else
                         
-                        <td>{{$var->headers['description'] ?? ''}}</td>
+                     <td>{{$var->description ?? ''}} {{ 'sin condicion' }}</td>
+
                     @endif
                    
                     @if(isset($var->accounts['coin']))
