@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Anticipo;
 use App\AccountHistorial;
 use App\BankMovement;
 use App\Company;
 use App\DetailVoucher;
+use App\ExpensesAndPurchase;
 use App\Http\Controllers\Calculations\CalculationController;
 use App\Http\Controllers\Calculations\CalculationWithCController;
 use App\Http\Controllers\Calculations\CalculationWithoutDateController;
@@ -195,8 +197,57 @@ class AccountController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         if($users_role == '1'){
-             
-            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_account',$id_account)->orderBy('id','desc')->get();
+           /*  
+            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
+            ->where('status','C')
+            ->where('id_account',$id_account)
+            ->orderBy('id','desc')
+            ->get(); */
+            
+
+            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
+            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+            //->join('quotations', 'quotations.id', '=', 'detail_vouchers.id_invoice')
+           // ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->where('detail_vouchers.status','C')
+            ->where('detail_vouchers.id_account',$id_account)
+            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo')
+            ->orderBy('header_vouchers.date','desc')
+            ->orderBy('detail_vouchers.id','desc')
+            ->get();
+            
+            
+            if (!empty($detailvouchers)) {
+                foreach ($detailvouchers as $var) {
+                   
+                    $anticipos = Anticipo::on(Auth::user()->database_name)->find($var->id_anticipo);
+                    
+                    if (isset($anticipos)) {
+                        $quotation_anticipo = Quotation::on(Auth::user()->database_name)->find($anticipos->id_quotation);
+                        $expense_anticipo = ExpensesAndPurchase::on(Auth::user()->database_name)->find($anticipos->id_expense);
+                        
+
+                        if (isset($quotation_anticipo)) {
+
+                            if (isset($quotation_anticipo->date_billing)) {
+                            $var->id_anticipo .= ' (Fact: '.$quotation_anticipo->number_invoice.') Fecha Anticipo: '.date_format(date_create($anticipos->date),"d-m-Y");
+                            } else {
+                            $var->id_anticipo .= ' (NE: '.$quotation_anticipo->number_delivery_note.') Fecha Anticipo: '.date_format(date_create($anticipos->date),"d-m-Y");   
+                            }
+
+                        }
+
+                                            
+                        if (isset($expense_anticipo)) {
+                            $var->id_anticipo .= ' Compra Factura: '.$expense_anticipo->invoice.' Fecha Anticipo: '.date_format(date_create($anticipos->date),"d-m-Y");
+                        }
+
+                    }
+                }
+
+
+            }
+
             $account = Account::on(Auth::user()->database_name)->find($id_account);
            
             if(empty($coin)){
