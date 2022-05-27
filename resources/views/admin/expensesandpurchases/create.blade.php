@@ -125,7 +125,7 @@
                                             @foreach($contrapartidas as $index => $value)
                                     
                                             
-                                            @if ($value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
+                                            @if ($value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
                                                 <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
                                                     {{ $value }}
                                                 </option>
@@ -558,54 +558,50 @@
             document.getElementById("code_inventary").value = "";
             document.getElementById("description").value = "";
             document.getElementById("price").value = "";
-            controlador(type_var);
+            var combo = document.getElementById("type_form");
+            var selected = combo.options[combo.selectedIndex].text;
+            controlador(type_var,selected);
         });
 
-        function controlador(type_var)
+        function controlador(type_var,selected)
         {
- 
-            if(type_var == 31){
-                    $("#code_inventary_label").show();
-                    $("#code_inventary").show();
-                    $("#btn_code_inventary").show();
-                    $("#centro_costo_label").hide();
-                    $("#centro_costo").hide();
-                    document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";
-
-                    
-                }else 
                 
-                if(type_var == 300){
+                if(selected == 'Inventario'){
                     $("#code_inventary_label").show();
                     $("#code_inventary").show();
                     $("#btn_code_inventary").show();
-                    $("#centro_costo_label").show();
-                    $("#centro_costo").show();
+                    document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";   
+                }
+                
+                if(selected == 'Costos de Ventas'){
+                    $("#code_inventary_label").show();
+                    $("#code_inventary").show();
+                    $("#btn_code_inventary").show();
+
 
                     document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
                     document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";
 
 
-                }else if(type_var != "-1"){
+                }
+                
+                if(type_var != "-1"){
                     $("#code_inventary_label").hide();
                     $("#code_inventary").hide();
                     $("#btn_code_inventary").hide();
-                    $("#centro_costo_label").show();
-                    $("#centro_costo").show();
 
-                }else if(type_var == "-1"){
+                    searchCode(type_var);
+                }
+                
+                if(type_var == "-1"){
                     
                     $("#code_inventary_label").hide();
                     $("#code_inventary").hide();
                     $("#btn_code_inventary").hide();
-                    $("#centro_costo_label").hide();
-                    $("#centro_costo").hide();
+
                 }
-               
-               if(type_var != "-1"){
-                 
-                searchCode(type_var);
-               }
+                    $("#centro_costo_label").show();
+                    $("#centro_costo").show();
         }
 
         function searchCode(type_var){
