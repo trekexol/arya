@@ -143,15 +143,20 @@
                             <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
                             <div class="col-md-4">
                                 <select id="type_form"  name="type_form" class="form-control" required>
-                                    <option value="-1">Seleccionar</option>
-                                    <option value="1">Inventario de Mercancia</option>
-                                    <option value="2">Propiedad, Planta y Equipo</option>
-                                    <option value="3">Costos de Ventas</option>
-                                    <option value="4">Gastos - Personal</option>
-                                    <option value="5">Gastos - Tributos</option>
-                                    <option value="6">Gastos - Municipales</option>
-                                    <option value="7">Gastos - Administración</option>
+     
+                                <option value="-1">Seleccione una Contrapartida</option>
+                                @foreach($contrapartidas as $index => $value)
+                                    
+                                    @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio'  && $value != 'Resultados Anteriores')
+                                        <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                            {{ $value }}
+                                        </option>
+                                    @endif
+
+
+                                @endforeach
                                 </select>
+
                             </div>
                             <div class="col-md-4">
                                 <select  id="account_counterpart"  name="Account_counterpart" class="form-control" required>
@@ -350,9 +355,10 @@
         });
         function searchCode(type_var){
 
+        
             $.ajax({
                 
-                url:"{{ route('expensesandpurchases.listaccount') }}" + '/' + type_var,
+                url:"{{ route('expensesandpurchases.listaccount') }}"+'/'+type_var,
                 beforSend:()=>{
                     alert('consultando datos');
                 },
@@ -380,9 +386,9 @@
             })
         }
 
-        $("#contrapartida").on('change',function(){
+        $("#type_form").on('change',function(){
             var contrapartida_id = $(this).val();
-            $("#subcontrapartida").val("");
+            $("#account_counterpart").val("");
             
             getSubcontrapartida(contrapartida_id);
         });
@@ -395,13 +401,13 @@
                     alert('consultando datos');
                 },
                 success:(response)=>{
-                    let subcontrapartida = $("#subcontrapartida");
+                    let subcontrapartida = $("#account_counterpart");
                     let htmlOptions = `<option value='' >Seleccione..</option>`;
                     // console.clear();
                     if(response.length > 0){
                         response.forEach((item, index, object)=>{
                             let {id,description} = item;
-                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
+                            htmlOptions += `<option value='${id}' {{ old('account_counterpart') == '${id}' ? 'selected' : '' }}>${description}</option>`
 
                         });
                     }
@@ -419,9 +425,9 @@
             })
         }
 
-        $("#subcontrapartida").on('change',function(){
+        $("#account_counterpart").on('change',function(){
                 var subcontrapartida_id = $(this).val();
-                var contrapartida_id    = document.getElementById("contrapartida").value;
+                var contrapartida_id    = document.getElementById("type_form").value;
                 
             });
 

@@ -215,6 +215,7 @@ class BankMovementController extends Controller
                                             ->where('code_four', '<>',0)
                                             ->where('code_five', '=',0)
                                         ->orderBY('description','asc')->pluck('description','id')->toArray();
+           
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');  
             
