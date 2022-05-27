@@ -122,27 +122,17 @@
                                     <div class="col-md-4">
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="-1">Seleccionar</option>
-                                            @if (isset($inventory))
-                                                @if (isset($type) && (($type == 'MERCANCIA')|| ($type == 'COMBO')))
-                                                    <option value="1" selected>Inventario de Mercancia</option>
-                                                    <option value="2">Activos Fijos</option>
-                                                    <option value="3">Costos</option>
-                                                @else
-                                                    <option value="1">Inventario de Mercancia</option>
-                                                    <option value="2">Activos Fijos</option>
-                                                    <option value="3" selected>Costos</option>
-                                                @endif
-                                            @else
-                                                <option value="1">Inventario de Mercancia</option>
-                                                <option value="2">Activos Fijos</option>
-                                                <option value="3">Costos</option>
+                                            @foreach($contrapartidas as $index => $value)
+                                    
+                                            
+                                            @if ($value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
+                                                <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                                    {{ $value }}
+                                                </option>
                                             @endif
-                                            
-                                            
-                                            <option value="4">Gastos - Personal</option>
-                                            <option value="5">Gastos - Tributos</option>
-                                            <option value="6">Gastos - Municipales</option>
-                                            <option value="7">Gastos - Administración</option>
+        
+        
+                                        @endforeach
                                         </select>
                                     </div>
                                     
