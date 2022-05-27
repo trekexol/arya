@@ -40,13 +40,17 @@ class DirectPaymentOrderController extends Controller
         
         if(isset($accounts)){   
 
-            $contrapartidas     = Account::on(Auth::user()->database_name)->where('code_one', '<>',0)
+            $contrapartidas     = Account::on(Auth::user()->database_name)
+                                            ->where('code_one', '<>',0)
+                                            ->where('code_one', '<>',4)
                                             ->where('code_two', '<>',0)
                                             ->where('code_three', '<>',0)
                                             ->where('code_four', '<>',0)
                                             ->where('code_five', '=',0)
                                         ->orderBY('description','asc')->pluck('description','id')->toArray();
-            $date = Carbon::now();
+           
+           
+                                        $date = Carbon::now();
             $datenow = $date->format('Y-m-d');  
 
             $branches = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
