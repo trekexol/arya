@@ -564,7 +564,7 @@
         function controlador(type_var)
         {
  
-            if(type_var == 1){
+            if(type_var == 31){
                     $("#code_inventary_label").show();
                     $("#code_inventary").show();
                     $("#btn_code_inventary").show();
@@ -573,7 +573,9 @@
                     document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";
 
                     
-                }else if(type_var == 3){
+                }else 
+                
+                if(type_var == 300){
                     $("#code_inventary_label").show();
                     $("#code_inventary").show();
                     $("#btn_code_inventary").show();
