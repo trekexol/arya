@@ -519,6 +519,8 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
     Route::post('orderPaymentPdf','OrderPaymentListController@orderPaymentPdf')->name('bankmovements.orderPaymentPdf');
 
+    Route::get('orderPaymentPdfDetail','OrderPaymentListController@orderPaymentPdfDetail')->name('bankmovements.orderPaymentPdfDetail');
+
 });
 
 Route::group(["prefix"=>'nominas'],function(){
