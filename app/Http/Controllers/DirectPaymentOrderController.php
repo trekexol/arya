@@ -28,7 +28,9 @@ class DirectPaymentOrderController extends Controller
                                         ->where('code_five','<>',0)
                                         ->orderBY('description','asc')->pluck('description','id')->toArray();
 
-        $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',2)->get();
+         $accounts_inventory = null;
+        
+                                        /* $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',2)->get();
 
 
         $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',1)
@@ -36,7 +38,7 @@ class DirectPaymentOrderController extends Controller
                         ->where('code_three', 3)
                         ->where('code_four',1)
                         ->where('code_five', '<>',0)
-                        ->get();
+                        ->get();*/
         
         if(isset($accounts)){   
 

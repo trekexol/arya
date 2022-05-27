@@ -147,7 +147,7 @@
                                 <option value="-1">Seleccione una Contrapartida</option>
                                 @foreach($contrapartidas as $index => $value)
                                     
-                                    @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio'  && $value != 'Resultados Anteriores')
+                                    @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio' && $value != 'Resultados Anteriores'  && $value != 'Cuentas por Cobrar')
                                         <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
                                             {{ $value }}
                                         </option>

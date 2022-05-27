@@ -347,7 +347,21 @@ class ExpensesAndPurchaseController extends Controller
                 
             }
         }
-            
+
+        $contrapartidas     = Account::on(Auth::user()->database_name)
+        ->where('code_one', '<>',0)
+        ->where('code_one', '<>',4)
+        ->where('code_one', '<>',3)
+        ->where('code_one', '<>',2)
+        ->where('code_two', '<>',0)
+        ->where('code_three', '<>',0)
+        ->where('code_four', '<>',0)
+        ->where('code_five', '=',0)
+        ->orderBY('description','asc')->pluck('description','id')->toArray();
+       
+
+
+
         $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
 
         $company = Company::on(Auth::user()->database_name)->find(1);
@@ -385,7 +399,7 @@ class ExpensesAndPurchaseController extends Controller
             $coin = 'dolares';
         }
 
-        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory'));
+        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas'));
     }
 
     public function create_expense_voucher($id_expense,$coin)
