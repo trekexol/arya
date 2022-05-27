@@ -22,7 +22,8 @@
             <div class="dropdown-menu animated--fade-in"
                 aria-labelledby="dropdownMenuButton">
                 <a href="#" data-toggle="modal" data-target="#PDFModalAccount" class="dropdown-item bg-light">Exportar a PDF</a>
-                <a href="#" data-toggle="modal" data-target="#PDFDetalladoModalAccount" class="dropdown-item bg-light">Exportar a PDF Detallado</a>
+                <!--<a href="#" data-toggle="modal" data-target="#PDFDetalladoModalAccount" class="dropdown-item bg-light">Exportar a PDF Detallado</a>
+                -->
                 <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
             </div>
         </div> 
@@ -317,7 +318,7 @@
     });
 
     function pdf(id_header_voucher) {
-            var nuevaVentana= window.open("{{ route('bankmovements.orderPaymentPdfDetail',[''])}}"+"/"+id_header_voucher,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");   
+            var nuevaVentana= window.open("{{ route('bankmovements.orderPaymentPdfDetail','')}}"+"/"+id_header_voucher,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");   
         }
     </script> 
 @endsection
