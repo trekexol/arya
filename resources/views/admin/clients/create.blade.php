@@ -296,7 +296,6 @@
     <script>    
 	$(function(){
         soloAlfaNumerico('code_client');
-        soloAlfaNumerico('razon_social');
         sololetras('country');
         sololetras('city');
         soloAlfaNumerico('direction');
