@@ -98,7 +98,7 @@
 
 
                             <td>
-                            <a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher]) }}" title="Crear">{{ $var->id_header_voucher }}</a>
+                            <a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher]) }}" title="Ver comprobante contable">{{ $var->id_header_voucher }}</a>
                             </td>       
                                        
         

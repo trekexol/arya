@@ -64,6 +64,8 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            
+                            @isset($quotation->number_invoice)
                             <label for="number_fact" class="col-md-2 col-form-label text-md-right">Factura:</label>
                             <div class="col-md-4">
                                 <input id="number_fact" type="text" class="form-control @error('number_fact') is-invalid @enderror" name="number_fact" value="{{ $quotation->number_invoice ?? '' }}" readonly autocomplete="number_fact">
@@ -74,6 +76,20 @@
                                     </span>
                                 @enderror
                             </div>
+                            @endisset
+                            @if($quotation->number_invoice == null)
+                            <label for="number_fact" class="col-md-2 col-form-label text-md-right">Cotización:</label>
+                            <div class="col-md-4">
+                                <input id="id_quotation" type="text" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? '' }}" readonly autocomplete="id_quotation">
+
+                                @error('id_quotation')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            @endif
+
                             <label for="number_delivery_note" class="col-md-2 col-form-label text-md-right">Nota de Entrega:</label>
                             <div class="col-md-3">
                                 <input id="number_delivery_note" type="text" class="form-control @error('number_delivery_note') is-invalid @enderror" name="number_delivery_note" value="{{ $quotation->number_delivery_note ?? '' }}" readonly autocomplete="number_delivery_note">

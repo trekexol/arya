@@ -25,17 +25,16 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}} {{$quotation->number_delivery_note ?? $quotation->id}}</h3> </div>
+                <div class="card-header" ><h3>Crear Registro Recibo Individual</h3></div>
+
                 <div class="card-body" >
-                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id) }}" enctype="multipart/form-data" >
-                        @method('PATCH')
-                        @csrf()
-                        <input id="coinhidden2" type="hidden" class="form-control @error('coin') is-invalid @enderror" name="coin2" value="{{ $coin ?? 'bolivares' }}" readonly autocomplete="coin">
-                           
+                   
+                       
+                       
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-sm-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}:</label>
-                            <div class="col-sm-2">
-                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}"  required autocomplete="date_quotation">
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de Relación de Gasto:</label>
+                            <div class="col-md-4">
+                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $quotation->date_quotation ?? $datenow }}" readonly required autocomplete="date_quotation">
     
                                 @error('date_quotation')
                                     <span class="invalid-feedback" role="alert">
@@ -43,55 +42,34 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="serie" class="col-sm-2 col-form-label text-md-right">N° de Control/Serie:</label>
-
-                            <div class="col-sm-2">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $quotation->serie ?? '' }}"  autocomplete="serie">
-
-                                @error('serie')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>  
-                            @isset($branches)
-                            <label for="serie" class="col-sm-2 col-form-label text-md-right">Sucursal:</label>
-
-                            <div class="col-sm-2">
-                                
-                                
-                                    @foreach($branches as $branch)
-                                        @if ($user_branch->id == $branch->id) 
-                                            <input id="id_branch" name="id_branch" type="text" class="form-control @error('id_branch') is-invalid @enderror" name="id_branch" value="{{ $branch->description ?? '' }}"  autocomplete="id_branch" disabled>
-                                        @endif
-                                    @endforeach
-                                
-                                    
-                                    @error('id_branch')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror                              
-                            </div>          
-                            @endisset
-                        </div>
-
-                        <div class="form-group row">
-
-                            <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
-                            <div class="col-md-3">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly autocomplete="client">
+                            <label for="client" class="col-md-2 col-form-label text-md-right">Condominio:</label>
+                            <div class="col-md-4">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly required autocomplete="client">
                                 @error('client')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
-                            <a href="#" onclick="searchClient();" title="Cambiar Cliente"><i class="fa fa-eye"></i></a>  
+                        </div>
 
-                            <label for="vendor" class="col-md-2 col-form-label text-md-right">Vendedor:</label>
+                        <div class="form-group row" style="display:none;">
+                            
+                            <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
+
                             <div class="col-md-3">
-                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }} {{ $quotation->vendors['surname'] ?? '' }}" readonly autocomplete="vendor">
+                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $quotation->serie ?? '' }}" readonly required autocomplete="serie">
+
+                                @error('serie')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                      
+                            <label for="vendor" class="col-md-3 col-form-label text-md-right">Vendedor:</label>
+                            <div class="col-md-4">
+                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }}" readonly required autocomplete="vendor">
                                 @error('vendor')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -102,9 +80,10 @@
                         
                         
                         <div class="form-group row">
-                            <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte:</label>
-                            <div class="col-md-3">
-                                <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly autocomplete="transport"> 
+                            <div style="display:none;">
+                            <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte/ Tipo de Entrega:</label>
+                            <div class="col-md-4">
+                                <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly required autocomplete="transport"> 
                            
                                 @error('transport')
                                     <span class="invalid-feedback" role="alert">
@@ -112,27 +91,11 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-sm-1"></div>
-
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
-
-                            <div class="col-md-4">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}"  autocomplete="note">
-
-                                @error('note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            
                         </div>
-                       
-                        <div class="form-group row">
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
                             <div class="col-md-4">
-                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $quotation->observation ?? old('observation') }}"   autocomplete="observation">
+                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $quotation->observation ?? old('observation') }}" readonly required autocomplete="observation">
 
                                 @error('observation')
                                     <span class="invalid-feedback" role="alert">
@@ -140,15 +103,39 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> {{$type ?? 'Cotización'}}:</h6></label>
+                            <label for="clients" class="col-md-2 col-form-label text-md-right">Propietario</label>
+                                <div class="col-md-3">
+
+                                <input id="owner" type="text" class="form-control @error('owner') is-invalid @enderror" name="owner" value="{{ $owners->name ?? '' }}" readonly required autocomplete="owner">
+
+                                @error('owner')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                         
+                        </div>
+                       
+                        <div class="form-group row">
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
+
+                            <div class="col-md-4">
+                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}" readonly required autocomplete="note">
+
+                                @error('note')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de Gasto</h6></label>
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="totallabel" id="total"><h3></h3></label>
                             </div>
-                            <div class="col-md-2">
-                            <button type="submit" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
+
                         </div>
-                    </form>
-                        <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
+                        <form id="formSendProduct" method="POST" action="{{ route('receipt.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
                             <input id="id_inventory" type="hidden" class="form-control @error('id_inventory') is-invalid @enderror" name="id_inventory" value="{{ $inventory->id ?? -1 }}" readonly required autocomplete="id_inventory">
@@ -182,33 +169,33 @@
                                 @enderror
                             </div>
                             <a href="#" onclick="refreshrate()" title="actualizar tasa"><i class="fa fa-redo-alt"></i></a>  
-                            <label  class="col-md-2 col-form-label text-md-right h6">Tasa BCV actual:</label>
+                            <label  class="col-md-2 col-form-label text-md-right h6">Tasa actual:</label>
                             <div class="col-md-2 col-form-label text-md-left">
                                 <label for="tasaactual" id="tasaacutal">{{ number_format(bcdiv(($bcv), '1', 2), 2, ',', '.')}}</label>
                             </div>
-
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="customSwitches">
+                                <label class="custom-control-label" for="customSwitches">Auto</label>
+                                
+                            </div>
                         </div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="customSwitches">
-                            <label id="id_scan_auto" class="custom-control-label" for="customSwitches">Activar Agregar Automático</label>
-                        </div>
+                        <br>
+                       
                             
                                 <div class="form-row col-md-12">
-
                                     <div class="form-group col-md-2">
                                         <label for="description" >Código</label>
                                         <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial ?? old('code') ?? '' }}" required autocomplete="code" onblur="searchCode()">
-                                 
                                     </div>
-
-
+                                   
                                     <div class="form-group col-md-1">
+                                        
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>  
-
-                                        <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
+                                    
+                                        <a href="{{ route('receipt.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                                         
                                     </div>
-
+                                    
                                     <div class="form-group col-md-2">
                                         <label for="description" >Descripción</label>
                                         <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') ?? '' }}" required autocomplete="description">
@@ -373,7 +360,7 @@
                                                     
                                                 ?>
                                                     <td style="text-align: right">
-                                                        <a href="{{ route('quotations.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                                        <a href="{{ route('receipt.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                                                         <a href="#" class="delete" data-id={{$var->quotation_products_id}} data-description={{$var->description}} data-id-quotation={{$quotation->id}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                                     </td>
                                             
@@ -397,6 +384,7 @@
                                         @endif
                                     </tbody>
                                 </table>
+                                </div>
                             </div>
                             <div class="form-group row mb-0">
                                
@@ -410,13 +398,13 @@
                           
                                 <div id="divFacturar" class="col-sm-4">
                                     @if($suma == 0)
-                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>
+                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>
                                         @if (empty($quotation->date_order))
                                             <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif  
                                         
                                     @else
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
+                                        <a href="{{ route('receipt.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>  
                                         @if (empty($quotation->date_order))
                                             <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif
@@ -453,7 +441,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('quotations.deleteProduct') }}" method="post">
+            <form action="{{ route('receipt.deleteProduct') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <input id="id_quotation_product_modal" type="hidden" class="form-control @error('id_quotation_product_modal') is-invalid @enderror" name="id_quotation_product_modal" readonly required autocomplete="id_quotation_product_modal">
@@ -516,14 +504,6 @@
 
         }
 
-        function searchClient(){
-            var old_action = document.getElementById("formUpdate").action;
-            document.getElementById("formUpdate").action = "{{ route('quotations.selectclientQuotation',$quotation->id) }}";
-            document.getElementById("formUpdate").submit();
-            document.getElementById("formUpdate").action = old_action;
-        }
-
-
         $(document).ready(function () {
             $("#discount_product").mask('000', { reverse: true });
             
@@ -560,8 +540,7 @@
                 //alert(13);             
             }
        });
-
-
+      
         /*$("#description").on('change',function(){
           alert('change');
         });*/
@@ -569,22 +548,8 @@
         checkbox = document.getElementById('customSwitches'); // retoma el valor anterior
         checkbox.checked = eval(window.localStorage.getItem(checkbox.id));
         checkbox.addEventListener('change', function(){
-            if($("#customSwitches").is(':checked')) {
-                document.getElementById("id_scan_auto").innerHTML = "Agregar Atomático Activado";
-            } else {
-                document.getElementById("id_scan_auto").innerHTML = "Activar Agregar Atomático";
-            }
             window.localStorage.setItem(checkbox.id, checkbox.checked);
         })
-
-
-        if($("#customSwitches").is(':checked')) {
-            document.getElementById("id_scan_auto").innerHTML = "Agregar Atomático Activado";
-        } else {
-            document.getElementById("id_scan_auto").innerHTML = "Activar Agregar Atomático";
-        }
-  
-
 
         if( $('#customSwitches').prop('checked')) { // validar seleccionado
             var value=$.trim($("#description").val()); // valida el campo si esta lleno
@@ -616,22 +581,15 @@
     <script>
      $('#dataTable').dataTable( {
         "ordering": false,
-        "searching": false,
-        "paging": false,
-
-
         "order": [],
-            'aLengthMenu': [[200, 300, 400, 500, -1],[200, 300, 400, 500, "All"]],
-
+            'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     } );
 
         $("#coin").on('change',function(){
             coin = $(this).val();
-            window.location = "{{route('quotations.create', [$quotation->id,''])}}"+"/"+coin;
+            window.location = "{{route('receipt.create', [$quotation->id,''])}}"+"/"+coin;
         });
 
-
-      
 
     function sendProduct(){
         if(validacion()){
@@ -699,11 +657,11 @@
                         response.forEach((item, index, object)=>{
                             let {id,description,date} = item;
                           
-                           window.location = "{{route('quotations.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
+                           window.location = "{{route('receipt.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
                            
                         });
                     }else{
-                        window.location = "{{route('quotations.create', [$quotation->id,$coin,''])}}";
+                        window.location = "{{route('receipt.create', [$quotation->id,$coin,''])}}";
                        //alert('No se Encontro este numero de Referencia');
                     }
                    
@@ -745,7 +703,7 @@
                         });
                     }else{
 
-                          window.location = "{{route('quotations.create', [$quotation->id,$coin,''])}}"+"/{{$type ?? null}}";
+                          window.location = "{{route('receipt.create', [$quotation->id,$coin,''])}}"+"/{{$type ?? null}}";
                        //alert('No se Encontro este numero de Referencia');
                     }
                    

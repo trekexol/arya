@@ -2859,12 +2859,12 @@ class ExpensesAndPurchaseController extends Controller
         if($request->ajax()){
             try{
                 
-                $respuesta = Inventory::on(Auth::user()->database_name)
+                /*$respuesta = Inventory::on(Auth::user()->database_name)
                                         ->join('products','products.id','inventories.product_id')
                                         ->where('inventories.code',$var)
                                         ->select('inventories.id','products.type')
-                                        ->get();
-                                        
+                                        ->get();*/
+               $respuesta = Product::on(Auth::user()->database_name)->where('code_comercial',$var)->where('status',1)->get();                        
                 return response()->json($respuesta,200);
 
             }catch(Throwable $th){
