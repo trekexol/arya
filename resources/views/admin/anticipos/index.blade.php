@@ -84,7 +84,7 @@
             <thead>
             <tr>
                 <th class="text-center">ID</th>
-                <th class="text-center">Fecha del Anticipo</th>                
+                <th class="text-center" width="11%">Fecha del Anticipo</th>                
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Caja/Banco</th>
                 <th class="text-center">Comp.</th>

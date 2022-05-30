@@ -254,10 +254,8 @@
         });
 
         $(function(){
-            soloAlfaNumerico('razon_social');
             soloLetras('country');
             soloLetras('city');
-            soloAlfaNumerico('direction');
         });
 
 
