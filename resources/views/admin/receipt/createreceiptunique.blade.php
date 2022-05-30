@@ -23,10 +23,10 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de {{$type ?? 'Cotización'}}</div>
+                <div class="card-header text-center font-weight-bold h3">Crear Recibo Individual</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('quotations.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('receipt.storeunique') }}" enctype="multipart/form-data">
                         @csrf
                        
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
@@ -36,16 +36,8 @@
                        
                         
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}</label>
-                            <div class="col-md-3">
-                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $datenow }}" required autocomplete="date_quotation">
-    
-                                @error('date_quotation')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+
+                            <div style="display:none;">
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
@@ -57,14 +49,14 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+                        </div>
                             
                         </div>
 
                         <div class="form-group row">
                            
                             
-                            <label for="clients" class="col-md-2 col-form-label text-md-right">Cliente</label>
+                            <label for="clients" class="col-md-2 col-form-label text-md-right">Condominio</label>
                             <div class="col-md-3">
                                 <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
     
@@ -74,62 +66,61 @@
                                     </span>
                                 @enderror
                             </div>
+
+
+
+
+
                             <div class="form-group col-md-1">
-                                <a href="{{ route('quotations.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                                <a href="{{ route('receipt.selectcondominiumsunique',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
+                           
+                            <div style="display:none;">
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
                             <div class="col-md-3">
                             <select class="form-control" id="id_transport" name="id_transport">
                                 <option selected value="-1">Ninguno</option>
-                                @foreach($transports as $var)
+
+                                 @foreach($transports as $var)
                                     <option value="{{ $var->id }}">{{ $var->placa }}</option>
-                                @endforeach
-                              
+                                 @endforeach
+
                             </select>
                             </div> 
-                           
+                        </div>   
                         </div>
 
-                        
                         <div class="form-group row">
-                           <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
-                            <div class="col-md-3">
-                                <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }} {{ $vendor->surname ?? $client->vendors['surname'] ?? '' }}" readonly required autocomplete="id_vendor">
 
-                                    @error('id_vendor')
+                                <label for="clients" class="col-md-2 col-form-label text-md-right">Propietario</label>
+                                <div class="col-md-3">
+
+                                <input id="owner" type="text" class="form-control @error('owner') is-invalid @enderror" name="owner" value="{{ $owners->name ?? '' }}" readonly required autocomplete="owner">
+    
+                                @error('owner')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="{{ route('receipt.selectownersreceiptunique',['','','',''])}}/{{$client->id ?? '0'}}/{{$type ?? '0'}}/{{$datenow ?? '0'}}/{{$owners->id ?? '0'}}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
+                            </div>
+
+                        </div>                 
+                        <div class="form-group row">
+                                <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha</label>
+                                <div class="col-md-3">
+                                    <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $datenow ?? old('date_quotation')}}" required autocomplete="date_quotation">
+
+                                    @error('date_quotation')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
-                            </div>
-                            <div class="form-group col-md-1">
-                                <a href="{{ route('quotations.selectvendor',[$client->id ?? -1,$type]) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
-                            </div>
-                           
-                            <label for="rol" class="col-md-2 col-form-label text-md-right">Sucursal</label>
-                            <div class="col-md-3">
-                               
-
-                                <select class="form-control" id="id_branch" name="id_branch">
-                                    @isset($branches)
-
-                                    @foreach($branches as $branch)
-                                        @if ($user_branch->id == $branch->id) 
-                                            <option selected value="{{$branch->id}}">{{ $branch->description ?? '' }}</option>
-                                        @else
-                                            @if ($user->role_id == 1) 
-                                            <option value="{{$branch->id}}">{{ $branch->description ?? '' }}</option>
-                                            @endif
-                                        @endif
-                                    @endforeach
-                                @endisset
-                                </select>
-                            </div>
-                            
-                        </div>
-                       
-                       
+                                </div>
+                       </div>
                         <div class="form-group row">
                            
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones</label>
@@ -150,18 +141,12 @@
                         <div class="form-group row">
                             <div class="col-sm-3 offset-sm-4">
                                 <button type="submit" class="btn btn-info">
-                                  Crear {{$type ?? 'Cotización'}}
+                                  Crear Recibo
                                 </button>
                             </div>
                             <div class="col-sm-2">
-                                @if ($type == "Nota de Entrega")
-                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                                @elseif ($type == "factura")
-                                <a href="{{ route('invoices') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                                @else
-                                <a href="{{ route('quotations') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                                @endif
-                             </div>
+                                <a href="{{ route('receipt') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
+                            </div>
                         </div>
                         </form>      
                            

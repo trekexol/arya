@@ -46,6 +46,21 @@ class AnticipoController extends Controller
                 
                 $control = 'index';
 
+                
+                    foreach ($anticipos as $key => $anticipo) {
+                    
+                        $headervoucher = HeaderVoucher::on(Auth::user()->database_name)
+                        ->where('id_anticipo',$anticipo->id)
+                        ->first();
+                        if (isset($headervoucher)) {
+                        $anticipo->comprobante = $headervoucher->id;
+                        } else {
+                         $anticipo->comprobante = ''; 
+                        }
+                    }
+
+
+
             return view('admin.anticipos.index',compact('anticipos','control'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
@@ -61,6 +76,18 @@ class AnticipoController extends Controller
         $anticipos = Anticipo::on(Auth::user()->database_name)->whereIn('status',[1,'M'])->where('id_provider','<>',null)->orderBy('id','desc')->get();
         
         $control = 'index';
+                
+        foreach ($anticipos as $key => $anticipo) {
+                    
+            $headervoucher = HeaderVoucher::on(Auth::user()->database_name)
+            ->where('id_anticipo',$anticipo->id)
+            ->first();
+            if (isset($headervoucher)) {
+            $anticipo->comprobante = $headervoucher->id;
+            } else {
+             $anticipo->comprobante = ''; 
+            }
+        }
 
        
        return view('admin.anticipos.index_provider',compact('anticipos','control'));
@@ -75,6 +102,18 @@ class AnticipoController extends Controller
         $anticipos = Anticipo::on(Auth::user()->database_name)->where('status','C')->where('id_provider','<>',null)->orderBy('id','desc')->get();
 
         $control = 'historic';
+                
+        foreach ($anticipos as $key => $anticipo) {
+                    
+            $headervoucher = HeaderVoucher::on(Auth::user()->database_name)
+            ->where('id_anticipo',$anticipo->id)
+            ->first();
+            if (isset($headervoucher)) {
+            $anticipo->comprobante = $headervoucher->id;
+            } else {
+             $anticipo->comprobante = ''; 
+            }
+        }
 
        
        return view('admin.anticipos.index_provider',compact('anticipos','control'));
@@ -88,6 +127,18 @@ class AnticipoController extends Controller
        
         $anticipos = Anticipo::on(Auth::user()->database_name)->where('status','C')->where('id_client','<>',null)->orderBy('id','desc')->get();
         $control = 'historic';
+                
+        foreach ($anticipos as $key => $anticipo) {
+                    
+            $headervoucher = HeaderVoucher::on(Auth::user()->database_name)
+            ->where('id_anticipo',$anticipo->id)
+            ->first();
+            if (isset($headervoucher)) {
+            $anticipo->comprobante = $headervoucher->id;
+            } else {
+             $anticipo->comprobante = ''; 
+            }
+        }
 
        
        return view('admin.anticipos.index',compact('anticipos','control'));
@@ -310,8 +361,7 @@ class AnticipoController extends Controller
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
 
-        $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');
+        $datenow = request('date_begin');
         $header_voucher->id_anticipo =  $var->id;
         $header_voucher->description = "Anticipo";
         $header_voucher->date = $datenow;
@@ -465,7 +515,7 @@ class AnticipoController extends Controller
         $header_voucher->setConnection(Auth::user()->database_name);
 
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');
+        $datenow = request('date_begin');
         $header_voucher->id_anticipo =  $var->id;
         $header_voucher->description = "Anticipo Proveedor";
         $header_voucher->date = $datenow;
@@ -676,7 +726,7 @@ class AnticipoController extends Controller
                         ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')
                         ->where('h.id_anticipo',$var->id)
                         ->where('d.haber',0)
-                        ->update([ 'd.debe' => $var->amount, 'd.tasa' => $var->rate,'d.id_account' => $var->id_account]);
+                        ->update([ 'd.debe' => $var->amount, 'd.tasa' => $var->rate,'d.id_account' => $var->id_account,'h.date' => $var->date]);
         
         DB::connection(Auth::user()->database_name)->table('detail_vouchers as d')
                         ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')

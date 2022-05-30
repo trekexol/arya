@@ -634,17 +634,25 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('/','ReceiptController@index')->name('receipt');
     Route::get('receipt/{id_quotation?}/{check?}','ReceiptController@indexr')->name('receiptr');
     
-    Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt'); // Inicio de Creacion de recibo
-    Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a clientes
+    Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt');
+    Route::get('registerreceiptunique/{id_client?}/{type?}/{datenow?}/{owners?}','ReceiptController@createreceiptunique')->name('receipt.createreceiptunique'); // Inicio de Creacion de recibo
+
+    Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a propietarios
     Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
     
+    Route::get('registerreceiptclientsunique/{type?}','ReceiptController@createreceiptclientsunique')->name('receipt.createreceiptclientsunique'); // crear recibo individual a propietario
+
     Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
     //Route::get('selectclient/{type?}','ReceiptController@selectclient')->name('receipt.selectclient');
     Route::get('selectcondominiums/{type?}','ReceiptController@selectcondominiums')->name('receipt.selectcondominiums');
+    Route::get('selectcondominiumsunique/{type?}','ReceiptController@selectcondominiumsunique')->name('receipt.selectcondominiumsunique');
+
     Route::get('selectcondominiumsreceipt/{type?}','ReceiptController@selectcondominiumsreceipt')->name('receipt.selectcondominiumsreceipt');
     Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
+    Route::get('selectownersreceiptunique/{client?}/{type?}/{date?}/{owner}','ReceiptController@selectownersreceiptunique')->name('receipt.selectownersreceiptunique');
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
+
     Route::get('selectclientemail/{type?}','ReceiptController@selectclientemail')->name('receipt.selectclientemail');
     
     Route::get('registerreceiptnvendor/{id_client}/{id_vendor}/{type?}','ReceiptController@createreceiptvendor')->name('receipt.createreceiptvendor');
@@ -655,9 +663,16 @@ Route::group(["prefix"=>'receipt'],function(){
     
     Route::get('register/{id_quotation}/{coin}/{type?}','ReceiptController@create')->name('receipt.create');
 
+    Route::get('registerunique/{id_quotation?}/{coin?}/{type?}','ReceiptController@createunique')->name('receipt.createunique');
+
+
     Route::post('store','ReceiptController@store')->name('receipt.store');
-    Route::post('storeclients','ReceiptController@storeclients')->name('receipt.storeclients');
+    Route::post('storeunique','ReceiptController@storeunique')->name('receipt.storeunique');
     
+    Route::post('storeclients','ReceiptController@storeclients')->name('receipt.storeclients');
+
+    Route::post('storeownersunique','ReceiptController@storeownersunique')->name('receipt.storeownersunique');
+
     Route::post('storeproduct','ReceiptController@storeproduct')->name('receipt.storeproduct');
 
     Route::get('receiptfacturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createreceiptfacturado')->name('receipt.createreceiptfacturado');

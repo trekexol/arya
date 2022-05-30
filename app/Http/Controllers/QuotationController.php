@@ -85,6 +85,7 @@ class QuotationController extends Controller
         
         $user   =   auth()->user();
 
+
         if(isset($user->id_branch)){
             $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
         }else{
@@ -93,7 +94,8 @@ class QuotationController extends Controller
 
         $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
-        return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type'));
+        return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type','user'));
+   
     }
 
     public function createquotationclient($id_client,$type = null)
@@ -124,7 +126,7 @@ class QuotationController extends Controller
             $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
             
-            return view('admin.quotations.createquotation',compact('user_branch','branches','client','datenow','transports','type'));
+            return view('admin.quotations.createquotation',compact('user_branch','branches','client','datenow','transports','type','user'));
 
         }else{
             return redirect('/quotations/index')->withDanger('El Cliente no existe');
@@ -163,7 +165,7 @@ class QuotationController extends Controller
         
                 $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
-                return view('admin.quotations.createquotation',compact('user_branch','branches','client','vendor','datenow','transports','type'));
+                return view('admin.quotations.createquotation',compact('user_branch','branches','client','vendor','datenow','transports','type','user'));
 
             }else{
                 return redirect('/quotations/index')->withDanger('El Vendedor no existe');
@@ -179,6 +181,18 @@ class QuotationController extends Controller
     public function create($id_quotation,$coin,$type = null)
     {
         
+        $user   =   auth()->user();
+
+        if(isset($user->id_branch)){
+            $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
+        }else{
+            $user_branch  = null;
+        }
+
+        $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+
+
+
         if($this->userAccess->validate_user_access($this->modulo)){
             $quotation = null;
                 
@@ -194,6 +208,7 @@ class QuotationController extends Controller
                                 ->whereIn('quotation_products.status',['1','C'])
                                 ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as quotation_products_id','products.code_comercial as code','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
+                                ->orderBy('id','desc')
                                 ->get(); 
             
                 
@@ -225,7 +240,7 @@ class QuotationController extends Controller
                 }
                 
         
-                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company'));
+                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company','branches','user_branch'));
             }else{
                 return redirect('/quotations/index')->withDanger('No es posible ver esta cotizacion');
             } 
@@ -1275,7 +1290,7 @@ class QuotationController extends Controller
         if($request->ajax()){
             try{
                 
-                $respuesta = Product::on(Auth::user()->database_name)->select('id')->where('code',$var)->where('status',1)->get();
+                $respuesta = Product::on(Auth::user()->database_name)->where('code_comercial',$var)->where('status',1)->get();
                 return response()->json($respuesta,200);
 
             }catch(Throwable $th){
