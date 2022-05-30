@@ -105,7 +105,7 @@
                             <label for="phone1" class="col-md-2 col-form-label text-md-right">Teléfono</label>
 
                             <div class="col-md-4">
-                                <input id="phone1" type="text" class="form-control @error('phone1') is-invalid @enderror" name="phone1" value="{{ old('phone1') }}" required autocomplete="phone1">
+                                <input id="phone1" type="text" class="form-control @error('phone1') is-invalid @enderror" name="phone1" value="{{ old('phone1') ?? 0 }}" required autocomplete="phone1">
 
                                 @error('phone1')
                                     <span class="invalid-feedback" role="alert">
@@ -116,7 +116,7 @@
                             <label for="phone2" class="col-md-2 col-form-label text-md-right">Teléfono 2</label>
 
                             <div class="col-md-4">
-                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ old('phone2') }}" required autocomplete="phone2">
+                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ old('phone2') ?? 0 }}" required autocomplete="phone2">
 
                                 @error('phone2')
                                     <span class="invalid-feedback" role="alert">
@@ -132,7 +132,7 @@
                             <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
 
                             <div class="col-md-4">
-                                <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{ old('amount_max_credit') }}" required autocomplete="amount_max_credit">
+                                <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{old('amount_max_credit') ?? 0}}" required autocomplete="amount_max_credit">
 
                                 @error('amount_max_credit')
                                     <span class="invalid-feedback" role="alert">
@@ -144,7 +144,7 @@
                               <label for="balance" class="col-md-2 col-form-label text-md-right">Saldo</label>
 
                               <div class="col-md-4">
-                                  <input id="balance" type="text" class="form-control @error('balance') is-invalid @enderror" name="balance" value="{{ old('balance') }}" required autocomplete="balance">
+                                  <input id="balance" type="text" class="form-control @error('balance') is-invalid @enderror" name="balance" value="{{ old('balance') ?? 0 }}" required autocomplete="balance">
   
                                   @error('balance')
                                       <span class="invalid-feedback" role="alert">
@@ -180,7 +180,7 @@
                             <label for="porc_retencion_iva" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de IVA</label>
 
                             <div class="col-md-4">
-                                <input id="porc_retencion_iva" type="text" class="form-control @error('porc_retencion_iva') is-invalid @enderror" name="porc_retencion_iva" value="{{ old('porc_retencion_iva') }}" required autocomplete="porc_retencion_iva">
+                                <input id="porc_retencion_iva" type="text" class="form-control @error('porc_retencion_iva') is-invalid @enderror" name="porc_retencion_iva" value="{{ old('porc_retencion_iva') ?? 0}}" required autocomplete="porc_retencion_iva">
 
                                 @error('porc_retencion_iva')
                                     <span class="invalid-feedback" role="alert">
@@ -191,7 +191,7 @@
                             <label for="porc_retencion_islr" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
 
                             <div class="col-md-4">
-                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') }}" required autocomplete="porc_retencion_islr">
+                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') ?? 0}}" required autocomplete="porc_retencion_islr">
 
                                 @error('porc_retencion_islr')
                                     <span class="invalid-feedback" role="alert">
