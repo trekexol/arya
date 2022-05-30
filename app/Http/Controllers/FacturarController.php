@@ -203,7 +203,7 @@ class FacturarController extends Controller
          } 
          
     }
-    public function registerAnticipo($date_begin,$id_client,$id_account,$coin,$amount,$rate,$reference,$id_quotation = null)
+    public function registerAnticipo($date_begin,$id_client,$id_account,$coin,$amount,$rate,$reference,$id_quotation = null,$header_voucher = null)
     {
    
         $user       =   auth()->user();
@@ -230,6 +230,10 @@ class FacturarController extends Controller
         $var->status = 'C';
 
         $var->save();
+
+        $updatecabecera = HeaderVoucher::on(Auth::user()->database_name)
+        ->where('id',$header_voucher) //Saldar anticipo previo
+        ->update(['id_anticipo' => $var->id]); 
         
     }
 
@@ -2921,7 +2925,7 @@ public function storeanticiposaldar(Request $request)
                 $var->save();
 
                 $this->add_pay_movement($bcv,$payment_type,$header_voucher->id,$var->id_account,$quotation->id,$user_id,$var->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var->id_account,$coin,$var->amount,$bcv,$reference,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var->id_account,$coin,$var->amount,$bcv,$reference,$quotation->id,$header_voucher->id);
                
                 $historial_quotation = new HistorialQuotationController();
 
@@ -2937,7 +2941,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var2,"quotation_payment","Registro de Pago");
             
                 $this->add_pay_movement($bcv,$payment_type2,$header_voucher->id,$var2->id_account,$quotation->id,$user_id,$var2->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var2->id_account,$coin,$var2->amount,$bcv,$reference2,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var2->id_account,$coin,$var2->amount,$bcv,$reference2,$quotation->id,$header_voucher->id);
             }           
             if($validate_boolean3 == true){
                 $var3->created_at = $date_payment;
@@ -2948,7 +2952,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var3,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type3,$header_voucher->id,$var3->id_account,$quotation->id,$user_id,$var3->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var3->id_account,$coin,$var3->amount,$bcv,$reference3,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var3->id_account,$coin,$var3->amount,$bcv,$reference3,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean4 == true){
                 $var4->created_at = $date_payment;
@@ -2959,7 +2963,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var4,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type4,$header_voucher->id,$var4->id_account,$quotation->id,$user_id,$var4->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var4->id_account,$coin,$var4->amount,$bcv,$reference4,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var4->id_account,$coin,$var4->amount,$bcv,$reference4,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean5 == true){
                 $var5->created_at = $date_payment;
@@ -2970,7 +2974,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var5,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type5,$header_voucher->id,$var5->id_account,$quotation->id,$user_id,$var5->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var5->id_account,$coin,$var5->amount,$bcv,$reference5,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var5->id_account,$coin,$var5->amount,$bcv,$reference5,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean6 == true){
                 $var6->created_at = $date_payment;
@@ -2981,7 +2985,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var6,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type6,$header_voucher->id,$var6->id_account,$quotation->id,$user_id,$var6->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var6->id_account,$coin,$var6->amount,$bcv,$reference6,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var6->id_account,$coin,$var6->amount,$bcv,$reference6,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean7 == true){
                 $var7->created_at = $date_payment;
@@ -2992,7 +2996,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var7,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type7,$header_voucher->id,$var7->id_account,$quotation->id,$user_id,$var7->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var7->id_account,$coin,$var7->amount,$bcv,$reference7,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var7->id_account,$coin,$var7->amount,$bcv,$reference7,$quotation->id,$header_voucher->id);
             }
 
             if($coin != 'bolivares'){
