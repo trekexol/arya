@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Registrar / Cobrar Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Registrar / Cobrar Nº. {{$quotation->number_invoice ?? ''}}</h3></div>
                 <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -44,7 +44,7 @@
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
                             <div class="col-md-3">
-                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
+                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $datenow }}" autocomplete="date-begin">
     
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">
