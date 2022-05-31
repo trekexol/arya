@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Reports;
 use App;
 use App\Anticipo;
 use App\Client;
+use App\HeaderVoucher;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Provider;
@@ -155,6 +156,19 @@ class AnticipoReportController extends Controller
                                 ->orderBy('anticipos.id','desc')
                                 ->get();
         }
+
+        foreach ($anticipos as $key => $anticipo) {
+                    
+            $headervoucher = HeaderVoucher::on(Auth::user()->database_name)
+            ->where('id_anticipo',$anticipo->id)
+            ->first();
+            if (isset($headervoucher)) {
+            $anticipo->comprobante = $headervoucher->id;
+            } else {
+             $anticipo->comprobante = ''; 
+            }
+        }
+
 
         $pdf = $pdf->loadView('admin.reports.anticipos.anticipos',compact('coin','anticipos','datenow','date_end','typeperson'));
         return $pdf->stream();

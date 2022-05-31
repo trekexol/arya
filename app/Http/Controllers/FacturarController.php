@@ -484,8 +484,10 @@ class FacturarController extends Controller
         $quotation->status = 'P';
 
         $last_number = Quotation::on(Auth::user()->database_name)
-        ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
- 
+        ->where('id_branch',$quotation->id_branch)
+        ->where('number_invoice','<>',NULL)
+        ->orderBy('number_invoice','desc')->first();
+
         //Asigno un numero incrementando en 1
         if(empty($quotation->number_invoice)){
             if(isset($last_number)){
@@ -1751,12 +1753,14 @@ class FacturarController extends Controller
             }
             
             
-            if(($quotation_status != 'C') && ($quotation_status != 'P')){
+            if(($quotation_status != 'C') && ($quotation_status != 'P')){ //numeracion factura
 
                 if(empty($quotation->number_invoice))
                 {   //Me busco el ultimo numero en factura
-                    $last_number = Quotation::on(Auth::user()->database_name)->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
-
+                    $last_number = Quotation::on(Auth::user()->database_name)
+                    ->where('id_branch',$quotation->id_branch)
+                    ->where('number_invoice','<>',NULL)
+                    ->orderBy('number_invoice','desc')->first();
                     //Asigno un numero incrementando en 1
                     if(isset($last_number)){
                         $quotation->number_invoice = $last_number->number_invoice + 1;
@@ -1782,7 +1786,7 @@ class FacturarController extends Controller
                 ->where('status','!=','X')
                 ->get();
         
-                foreach($quotation_products as $det_products){
+                foreach($quotation_products as $det_products){ //descontar venta de inventario
     
                 $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
         

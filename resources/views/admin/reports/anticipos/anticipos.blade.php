@@ -1,4 +1,5 @@
 
+
   
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -44,12 +45,13 @@
 <table style="width: 100%;">
   <tr>
     <th class="text-center">N°</th>
+    <th class="text-center">Fecha del Anticipo</th>
     <th class="text-center">{{$typeperson ?? 'Cliente'}}</th>
     <th class="text-center">Caja/Banco</th>
-    <th class="text-center">Fecha del Anticipo</th>
+    <th class="text-center">Comp.</th>
     <th class="text-center">Referencia</th>
-    <th class="text-center">REF</th>
-    <th class="text-center">Monto</th>
+    <th class="text-center">Monto REF</th>
+    <th class="text-center">Monto Bs.</th>
     <th class="text-center">Moneda</th>
    
 </tr>
@@ -98,10 +100,10 @@
             @else
                 <td class="text-center">{{$anticipo->id ?? ''}}</td>
             @endif
-        
+            <td style="text-align: center; font-weight: normal;">{{date('d-m-Y',strtotime($anticipo->date)) ?? ''}}</td>
             <td class="text-center">{{ $anticipo->name ?? $anticipo->clients['name'] ?? ''}}<br>{{$num_fac}}</td>
             <td style="text-align: center; font-weight: normal;">{{$anticipo->accounts['description'] ?? ''}}</td>
-            <td style="text-align: center; font-weight: normal;">{{date('d-m-Y',strtotime($anticipo->date)) ?? ''}}</td>
+            <td class="text-center">{{$anticipo->comprobante ?? ''}}</td>
             <td class="text-center">{{$anticipo->reference ?? ''}}</td>
             <td style="text-align: right; font-weight: normal;">{{number_format($amount_bcv ?? 0, 2, ',', '.')}}$</td>
             <td style="text-align: right; font-weight: normal;">{{number_format($anticipo->amount ?? 0, 2, ',', '.')}}</td>

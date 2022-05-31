@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras..</div>
 
                 <div class="card-body">
 
@@ -120,17 +120,19 @@
                                     <label for="type" class="col-md-2 col-form-label text-md-right">Tipo de Compra:</label>
                                 
                                     <div class="col-md-4">
+                                        <input value="{{ old('type_form') ?? '..'}}">
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="-1">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
                                     
                                             
                                             @if ($value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costo de Venta Mercancía' || $value == 'Costo de Venta' || $value == 'Costo de Ventas' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
-                                                <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
-                                                    {{ $value }}
-                                                </option>
+                                                
+                                           
+                                                <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>{{ $value }}</option>
+                                       
                                             @endif
-        
+                                          
         
                                         @endforeach
                                         </select>
