@@ -287,7 +287,8 @@ class FacturarController extends Controller
                                         ->where(function ($query) use ($quotation){
                                             $query->where('id_quotation',null)
                                                 ->orWhere('id_quotation',$quotation->id);
-                                        })
+            })
+
                                         ->where('coin','not like','bolivares')
                                         ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
                                         ->get();
@@ -1710,7 +1711,7 @@ class FacturarController extends Controller
                     $quotation->status = "C";
                    
                 }else{
-                    $quotation->anticipo =  $anticipo;
+                    $quotation->anticipo = $anticipo;
                     $global->associate_anticipos_quotation($quotation);
                     $quotation->status = "C";
                 }
