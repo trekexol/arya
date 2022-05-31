@@ -1202,14 +1202,14 @@
                 document.getElementById("grand_total").value = grand_totalformat;
 
                 
-                let inputAnticipo = document.getElementById("anticipo").value;  
+                var inputAnticipo = document.getElementById("anticipo").value;  
                 
                 var montoFormat = inputAnticipo.replace(/[$.]/g,'');
 
                 var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
                 
 
-                if(inputAnticipo > 0){
+                if(inputAnticipo){
                      
                    
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
@@ -1452,7 +1452,7 @@
 
                 var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
 
-                if(inputAnticipo){
+                if(inputAnticipo) {
                     
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
                     document.getElementById("anticipo_form2").value =  montoFormat_anticipo;
