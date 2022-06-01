@@ -191,8 +191,13 @@
           //data:{'name':"luis"},
          // type:'post',
           success: function (response) {
-
-            document.getElementById("rate").value = response.rate;
+           
+           
+            amount = response.rate;
+            
+            var rateFormat = amount.replace(/[$.]/g,',');
+ 
+            document.getElementById("rate").value = rateFormat;
 
           },
           statusCode: {
@@ -205,6 +210,7 @@
               window.open(JSON.stringify(x));
               alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
           } 
+    
        }); 
       
 /*
