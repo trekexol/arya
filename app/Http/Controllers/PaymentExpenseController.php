@@ -110,7 +110,7 @@ class PaymentExpenseController extends Controller
             'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
             'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description',
             'providers.razon_social as provider_name','providers.code_provider as provider_code_provider',
-            'expenses_and_purchases.id as expense_id','expenses_and_purchases.serie as expense_serie')
+            'expenses_and_purchases.id as expense_id','expenses_and_purchases.serie as expense_serie','expenses_and_purchases.invoice as expense_invoice')
             ->get();
 
         

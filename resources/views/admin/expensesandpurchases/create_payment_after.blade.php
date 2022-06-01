@@ -67,7 +67,7 @@
                             </div>
                             
                           
-                            <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retencion IVA:</label>
+                            <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retencion IVA: </label>
 
                             <div class="col-md-3">
                                 <input id="iva_retencion" type="text" class="form-control @error('iva_retencion') is-invalid @enderror" name="iva_retencion" value="{{ number_format($total_retiene_iva / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="iva_retencion">
@@ -872,7 +872,9 @@
                 var retencion_iva_check = $("#retencion_iva_check").is(':checked');
 
                 let porc_retencion_iva = "<?php echo $provider->porc_retencion_iva ?>";
-                var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
+                var calc_retencion_iva =  parseFloat(total_iva_exento).toFixed(2) * porc_retencion_iva / 100;
+                
+                
                 var total_retencion_iva = calc_retencion_iva.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 
@@ -891,7 +893,7 @@
                 let id_islr_concept_expense     = "<?php echo $expense->id_islr_concept ?? -1 ?>";
 
                 let porc_retencion_islr = islr_concept;
-                var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+                var calc_retencion_islr = parseFloat(total_retiene_islr).toFixed(2) * porc_retencion_islr / 100;
                 var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 document.getElementById("islr_retencion").value =  total_retencion_islr;
@@ -1011,7 +1013,7 @@
                
                 //retencion de iva
                 let porc_retencion_iva = "<?php echo $provider->porc_retencion_iva ?>";
-                var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
+                var calc_retencion_iva = parseFloat(total_iva_exento).toFixed(2) * porc_retencion_iva / 100;
                 var total_retencion_iva = calc_retencion_iva.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 
@@ -1029,7 +1031,7 @@
                 let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
 
                 let porc_retencion_islr = islr_concept;
-                var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+                var calc_retencion_islr = parseFloat(total_retiene_islr).toFixed(2) * porc_retencion_islr / 100;
                 var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 document.getElementById("islr_retencion").value =  total_retencion_islr;
@@ -1151,7 +1153,7 @@
 
                  //retencion de iva
                 let porc_retencion_iva = "<?php echo $provider->porc_retencion_iva ?>";
-                var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
+                var calc_retencion_iva = parseFloat(total_iva_exento).toFixed(2) * porc_retencion_iva / 100;
                 var total_retencion_iva = calc_retencion_iva.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 
@@ -1169,7 +1171,7 @@
                 let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
 
                 let porc_retencion_islr = islr_concept;
-                var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+                var calc_retencion_islr = parseFloat(total_retiene_islr).toFixed(2) * porc_retencion_islr / 100;
                 var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
                 document.getElementById("islr_retencion").value =  total_retencion_islr;
