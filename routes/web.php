@@ -763,6 +763,9 @@ Route::group(["prefix"=>'anticipos'],function(){
 
     Route::delete('delete','AnticipoController@delete_anticipo')->name('anticipos.delete');
     Route::delete('deleteprovider','AnticipoController@delete_anticipo_provider')->name('anticipos.delete_provider');
+
+    Route::get('consultrate/{id?}','AnticipoController@consultrate')->name('anticipos.consultrate');
+
 });
 
 
