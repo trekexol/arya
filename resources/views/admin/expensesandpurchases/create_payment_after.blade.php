@@ -207,26 +207,26 @@
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
 
                         <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                        <input type="text" id="amount_of_payments" name="amount_of_payments"  readonly>
+                        <input type="hidden" id="amount_of_payments" name="amount_of_payments"  readonly>
 
                          <!--Total del pago que se va a realizar-->
-                         <input type="text" id="base_imponible_form" name="base_imponible_form"  readonly>
+                         <input type="hidden" id="base_imponible_form" name="base_imponible_form"  readonly>
 
                          <!--Total del pago que se va a realizar-->
-                        <input type="text" id="sub_total_form" name="sub_total_form" value="{{ $expense->total_factura }}" readonly>
+                        <input type="hidden" id="sub_total_form" name="sub_total_form" value="{{ $expense->total_factura }}" readonly>
 
                         <!--Total de la factura sin restarle nada que se va a realizar-->
-                        <input type="text" id="grandtotal_form" name="grandtotal_form"  readonly>
+                        <input type="hidden" id="grandtotal_form" name="grandtotal_form"  readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="text" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
                         <input type="hidden" id="iva_amount_form" name="iva_amount_form"  readonly>
 
                         <!--Anticipo aplicado que se va a realizar-->
-                        <input type="text" id="anticipo_form" name="anticipo_form"  readonly>
+                        <input type="hidden" id="anticipo_form" name="anticipo_form"  readonly>
 
                         <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                        
