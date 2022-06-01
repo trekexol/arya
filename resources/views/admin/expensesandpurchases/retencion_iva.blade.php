@@ -53,7 +53,7 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
   </tr>
   <tr>
     <td style="font-size: x-small;">{{ $company->address ?? ''}}</td>
-    <td style="font-size: x-small;">{{ $datenow ?? ''}}</td>
+    <td style="font-size: x-small;">{{ date_format(date_create($pago->created_at),"d-m-Y")?? ''}}</td>
   </tr>
   
 </table>
@@ -67,7 +67,7 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
   <tr>
     <td style="font-size: x-small;">{{ $provider->razon_social ?? ''}}</td>
     <td style="font-size: x-small;">{{ $provider->code_provider ?? ''}}</td>
-    <td style="font-size: x-small;">{{ $period ?? ''}}</td>
+    <td style="font-size: x-small;">{{ $periodo_pago ?? ''}}-{{$mes_pago ?? ''}}</td>
   </tr>
   
 </table>
@@ -106,7 +106,7 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
   </tr>
   <tr>
     <td style="font-size: x-small; text-align: center;">{{ $oper }}</td>
-    <td style="font-size: x-small; text-align: center;">{{ $datenow ?? '' }}</td>
+    <td style="font-size: x-small; text-align: center;">{{ date_format(date_create($expense->date),"d-m-Y") ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->invoice ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
     <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv(($expense->amount ?? 0) + ($expense->amount_iva ?? 0), '1', 2), 2, ',', '.')}}</td>

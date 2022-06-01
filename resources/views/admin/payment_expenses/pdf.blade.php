@@ -55,7 +55,7 @@
       </tr>
       <?php
           $header_id = $movement->header_id ?? '';
-          $expense_id = $movement->expense_id ?? '';
+          $expense_invoice = $movement->expense_invoice ?? '';
           $expense_serie = $movement->expense_serie ?? '';
           $type = $payment->type ?? '';
 
@@ -69,19 +69,19 @@
    <br><br><br>
   <table style="width: 100%;">
     <tr>
-      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Cobro:</th>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Pago:</th>
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $header_id ?? ''}}</th>
     </tr> 
     <tr>
       <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Factura:</th>
-      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $expense_id ?? ''}}</th>
+      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $expense_invoice ?? ''}}</th>
     </tr> 
     <tr>
       <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Serie:</th>
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $expense_serie ?? ''}}</th>
     </tr> 
     <tr>
-      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Tipo de Cobro:</th>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Tipo de Pago:</th>
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $type ?? ''}}</th>
     </tr> 
     <tr>

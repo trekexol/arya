@@ -254,7 +254,7 @@ class ExpensesAndPurchaseController extends Controller
             $company = Company::on(Auth::user()->database_name)->find(1);
                     
             
-            $pdf = $pdf->loadView('admin.expensesandpurchases.retencion_iva',compact('company','expense','datenow','period','provider','periodo_pago','mes_pago'))->setPaper('a4', 'landscape');
+            $pdf = $pdf->loadView('admin.expensesandpurchases.retencion_iva',compact('pago','company','expense','datenow','period','provider','periodo_pago','mes_pago'))->setPaper('a4', 'landscape');
             return $pdf->stream();
         }else{
             return redirect('/expensesandpurchases/expensevoucher/'.$id_expense.'/bolivares')->withDanger('Esta factura no retiene IVA!');
@@ -420,7 +420,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_payment($id_expense,$coin)
     {
-       
+      
         $expense = null;
         $provider = null;
         $expense_details = null;
@@ -674,8 +674,7 @@ class ExpensesAndPurchaseController extends Controller
              /*Aqui revisamos el porcentaje de retencion de iva que tiene el proveedor, para aplicarlo a productos que retengan iva */
              $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
-            
-             
+           
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
      
              return view('admin.expensesandpurchases.create_payment_after',compact('coin','expense','datenow'
@@ -1864,7 +1863,7 @@ class ExpensesAndPurchaseController extends Controller
                     if(isset($account_iva_retenido)){
                         $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$expense->id,$user_id,0,$retencion_iva);
                     }
-                    $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_iva','<>',NULL)->orderBy('number_iva','desc')->first();
+                    $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_iva','<>',NULL)->where('status','C')->orderBy('number_iva','desc')->first();
 
                     //Asigno un numero incrementando en 1
                     if(isset($last_number)){
@@ -1882,7 +1881,7 @@ class ExpensesAndPurchaseController extends Controller
                     if(isset($account_islr_pagago)){
                         $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$expense->id,$user_id,0,$retencion_islr);
                     }
-                    $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_islr','<>',NULL)->orderBy('number_islr','desc')->first();
+                    $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_islr','<>',NULL)->where('status','C')->orderBy('number_islr','desc')->first();
 
                     //Asigno un numero incrementando en 1
                     if(isset($last_number)){

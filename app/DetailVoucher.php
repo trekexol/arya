@@ -21,4 +21,8 @@ class DetailVoucher extends Model
     public function quotations(){
         return $this->belongsTo('App\Quotation','id_invoice');
     }
+
+    public function expenses(){
+        return $this->belongsTo('App\ExpensesAndPurchase','id_expense');
+    }
 }
