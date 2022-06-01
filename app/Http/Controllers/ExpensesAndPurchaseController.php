@@ -643,15 +643,17 @@ class ExpensesAndPurchaseController extends Controller
                     $total += ($var->price * $var->amount);
                
                 if($var->exento == 0){
-                    $base_imponible += ($var->price * $var->amount); 
+                    $base_imponible = ($var->price * $var->amount); 
                 }
 
                 if($var->islr == 1){
-                    $total_retiene_islr += ($var->price * $var->amount); 
+                    $total_retiene_islr = ($var->price * $var->amount); 
                 }
              }
 
-            
+
+
+
             
              $date = Carbon::now();
              $datenow = $date->format('Y-m-d');    

@@ -93,6 +93,24 @@ class AnticipoController extends Controller
        return view('admin.anticipos.index_provider',compact('anticipos','control'));
    }
 
+   public function consultrate(Request $request, $id)
+   {
+    
+       //validar si la peticion es asincrona
+       
+       if($request->ajax()){
+           try{
+               $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id);   
+            return response()->json($expenses,200);
+
+           }catch(Throwable $th){
+               return response()->json(false,500);
+           }
+       }
+       
+   }
+
+
    public function indexhistoric_provider()
    {
        $user       =   auth()->user();
