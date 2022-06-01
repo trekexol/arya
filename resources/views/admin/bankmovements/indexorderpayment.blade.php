@@ -22,7 +22,8 @@
             <div class="dropdown-menu animated--fade-in"
                 aria-labelledby="dropdownMenuButton">
                 <a href="#" data-toggle="modal" data-target="#PDFModalAccount" class="dropdown-item bg-light">Exportar a PDF</a>
-                <a href="#" data-toggle="modal" data-target="#PDFDetalladoModalAccount" class="dropdown-item bg-light">Exportar a PDF Detallado</a>
+                <!--<a href="#" data-toggle="modal" data-target="#PDFDetalladoModalAccount" class="dropdown-item bg-light">Exportar a PDF Detallado</a>
+                -->
                 <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
             </div>
         </div> 
@@ -73,6 +74,7 @@
                                         <td>{{ number_format($var->debe / $var->tasa, 2, ',', '.')}}</td>
                                         <td>{{ number_format($var->haber / $var->tasa, 2, ',', '.')}}</td>
                                         <td>
+                                            <a href="#" onclick="pdf({{ $var->id_header_voucher }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                             <a href="{{ route('orderpayment.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                         </td>  
                                         
@@ -314,5 +316,9 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+
+    function pdf(id_header_voucher) {
+            var nuevaVentana= window.open("{{ route('bankmovements.orderPaymentPdfDetail','')}}"+"/"+id_header_voucher,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");   
+        }
     </script> 
 @endsection

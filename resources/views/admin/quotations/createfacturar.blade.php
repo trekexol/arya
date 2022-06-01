@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Registrar / Cobrar Nº {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Registrar / Cobrar Nº. {{$quotation->number_invoice ?? ''}}</h3></div>
                 <form method="POST" action="{{ route('quotations.storefacturacredit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -44,7 +44,7 @@
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
                             <div class="col-md-3">
-                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
+                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $datenow }}" autocomplete="date-begin">
     
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -64,6 +64,8 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            
+                            @isset($quotation->number_invoice)
                             <label for="number_fact" class="col-md-2 col-form-label text-md-right">Factura:</label>
                             <div class="col-md-4">
                                 <input id="number_fact" type="text" class="form-control @error('number_fact') is-invalid @enderror" name="number_fact" value="{{ $quotation->number_invoice ?? '' }}" readonly autocomplete="number_fact">
@@ -74,6 +76,20 @@
                                     </span>
                                 @enderror
                             </div>
+                            @endisset
+                            @if($quotation->number_invoice == null)
+                            <label for="number_fact" class="col-md-2 col-form-label text-md-right">Cotización:</label>
+                            <div class="col-md-4">
+                                <input id="id_quotation" type="text" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? '' }}" readonly autocomplete="id_quotation">
+
+                                @error('id_quotation')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            @endif
+
                             <label for="number_delivery_note" class="col-md-2 col-form-label text-md-right">Nota de Entrega:</label>
                             <div class="col-md-3">
                                 <input id="number_delivery_note" type="text" class="form-control @error('number_delivery_note') is-invalid @enderror" name="number_delivery_note" value="{{ $quotation->number_delivery_note ?? '' }}" readonly autocomplete="number_delivery_note">
@@ -1186,14 +1202,14 @@
                 document.getElementById("grand_total").value = grand_totalformat;
 
                 
-                let inputAnticipo = document.getElementById("anticipo").value;  
+                var inputAnticipo = document.getElementById("anticipo").value;  
                 
                 var montoFormat = inputAnticipo.replace(/[$.]/g,'');
 
                 var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
                 
 
-                if(inputAnticipo > 0){
+                if(inputAnticipo){
                      
                    
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
@@ -1436,7 +1452,7 @@
 
                 var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
 
-                if(inputAnticipo){
+                if(inputAnticipo) {
                     
                     document.getElementById("anticipo_form").value =  montoFormat_anticipo;
                     document.getElementById("anticipo_form2").value =  montoFormat_anticipo;

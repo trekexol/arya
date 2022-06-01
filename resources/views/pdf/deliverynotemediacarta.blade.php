@@ -68,9 +68,10 @@
 </table>
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center;">Teléfono fff</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
+    <th style="text-align: center;">Teléfono</th>
+    <th style="text-align: center;">RIF/C.I</th>
+    <th style="text-align: center;">Pedido</th>
+    <th style="text-align: center;">N° Ctrl/Serie</th>
     <th style="text-align: center;">Condición de Pago</th>
     <th style="text-align: center;">Transporte/Tipo de Entrega</th>
    
@@ -78,6 +79,7 @@
   <tr>
     <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? ''}}</td>
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
+    <td style="text-align: center;">{{ $quotation->number_pedido ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie }}</td>
     <td style="text-align: center;">Nota de Entrega</td>
     <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
@@ -208,15 +210,17 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center;">Teléfono</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
+    <th style="text-align: center;">RIF/C.I</th>
+    <th style="text-align: center;">Pedido</th>
+    <th style="text-align: center;">N° Ctrl/Serie</th>
     <th style="text-align: center;">Condición de Pago</th>
-    <th style="text-align: center;">Transporte</th>
+    <th style="text-align: center;">Transporte/Tipo de Entrega</th>
    
   </tr>
   <tr>
     <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? ''}}</td>
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
+    <td style="text-align: center;">{{ $quotation->number_pedido ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie }}</td>
     <td style="text-align: center;">Nota de Entrega</td>
     <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
@@ -346,15 +350,17 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center;">Teléfono</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
+    <th style="text-align: center;">RIF/C.I</th>
+    <th style="text-align: center;">Pedido</th>
+    <th style="text-align: center;">N° Ctrl/Serie</th>
     <th style="text-align: center;">Condición de Pago</th>
-    <th style="text-align: center;">Transporte</th>
+    <th style="text-align: center;">Transporte/Tipo de Entrega</th>
    
   </tr>
   <tr>
     <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? ''}}</td>
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
+    <td style="text-align: center;">{{ $quotation->number_pedido ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie }}</td>
     <td style="text-align: center;">Nota de Entrega</td>
     <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>

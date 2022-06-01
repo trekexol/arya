@@ -38,10 +38,7 @@
     </tr> 
   </table>
   <div class="text-center h4">Orden de Pago</div>
-  @php
-  $contador_por_pagina = 0;
-@endphp
-@for ($i = 0; $i < count($movements);$i++)
+  
   <table style="width: 100%;">
     <tr>
       <th style="text-align: center;  font-size: medium;">Cuenta</th>
@@ -50,36 +47,31 @@
       <th style="text-align: center;  font-size: medium;">Haber</th>
     </tr>
    
+    @foreach ($movements as $movement)
       <tr>
-        <td style="text-align: center;">{{ $movements[$i]->code_one }}.{{ $movements[$i]->code_two }}.{{ $movements[$i]->code_three }}.{{ $movements[$i]->code_four }}.{{ $movements[$i]->code_five }}</td>
-        <td style="text-align: center;">{{ $movements[$i]->account_description }}</td>
-        <td style="text-align: right;">{{ number_format($movements[$i]->debe / ($bcv ?? 1), 2, ',', '.')}}</td>
-        <td style="text-align: right;">{{ number_format($movements[$i]->haber / ($bcv ?? 1), 2, ',', '.')}}</td>
+        <td style="text-align: center;">{{ $movement->code_one }}.{{ $movement->code_two }}.{{ $movement->code_three }}.{{ $movement->code_four }}.{{ $movement->code_five }}</td>
+        <td style="text-align: center;">{{ $movement->account_description }}</td>
+        <td style="text-align: right;">{{ number_format($movement->debe / ($bcv ?? 1), 2, ',', '.')}}</td>
+        <td style="text-align: right;">{{ number_format($movement->haber / ($bcv ?? 1), 2, ',', '.')}}</td>
       </tr>
-      <tr>
-        <td style="text-align: center;">{{ $movements[$i+1]->code_one }}.{{ $movements[$i+1]->code_two }}.{{ $movements[$i+1]->code_three }}.{{ $movements[$i+1]->code_four }}.{{ $movements[$i+1]->code_five }}</td>
-        <td style="text-align: center;">{{ $movements[$i+1]->account_description }}</td>
-        <td style="text-align: right;">{{ number_format($movements[$i+1]->debe / ($bcv ?? 1), 2, ',', '.')}}</td>
-        <td style="text-align: right;">{{ number_format($movements[$i+1]->haber / ($bcv ?? 1), 2, ',', '.')}}</td>
-      </tr>
+   
       <?php
-          $header_id = $movements[$i]->header_id ?? '';
-          $id_order = $movements[$i]->id_order ?? '';
-          $expense_serie = $movements[$i]->expense_serie ?? '';
+          $header_id = $movement->header_id ?? '';
+          $id_order = $movement->id_order ?? '';
+          $expense_serie = $movement->expense_serie ?? '';
           
-          $provider_name = $movements[$i]->provider_name ?? '';
-          $provider_code_provider = $movements[$i]->code_provider ?? '';
-          $provider_type_provider = $movements[$i]->type_code ?? '';
+          $provider_name = $movement->provider_name ?? '';
+          $provider_code_provider = $movement->code_provider ?? '';
+          $provider_type_provider = $movement->type_code ?? '';
 
-          $client_name = $movements[$i]->client_name ?? '';
-          $order_reference = $movements[$i]->reference_order ?? '';
-          $date_order = $movements[$i]->date_order ?? '';
+          $client_name = $movement->client_name ?? '';
+          $order_reference = $movement->reference_order ?? '';
+          $date_order = $movement->date_order ?? '';
 
-          $contador_por_pagina += 1;
 
       ?>
 
-    
+  @endforeach
   </table>
    <br><br><br>
   <table style="width: 100%;">
@@ -96,13 +88,13 @@
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $order_reference ?? ''}}</th>
     </tr> 
    
-    @if ($movements[$i]->provider_name)
+    @if ($movement->provider_name)
       <tr>
         <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Proveedor:</th>
         <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $provider_type_code ?? ''}}{{ $provider_code_provider ?? '' }} / {{ $provider_name ?? ''}}</th>
       </tr> 
     @endif
-    @if ($movements[$i]->client_name)
+    @if ($movement->client_name)
       <tr>
         <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Cliente:</th>
         <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $client_name ?? ''}}</th>
@@ -114,12 +106,5 @@
     </tr> 
   </table>
 
-  @if($contador_por_pagina == 1)
-      <?php
-        $contador_por_pagina = 0;
-      ?>
-      <div class="page-break"></div>
-      @endif
-    @endfor
 </body>
 </html>

@@ -25,4 +25,5 @@ class DetailVoucher extends Model
     public function expenses(){
         return $this->belongsTo('App\ExpensesAndPurchase','id_expense');
     }
+
 }

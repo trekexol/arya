@@ -347,7 +347,21 @@ class ExpensesAndPurchaseController extends Controller
                 
             }
         }
-            
+
+        $contrapartidas     = Account::on(Auth::user()->database_name)
+        ->where('code_one', '<>',0)
+        ->where('code_one', '<>',4)
+        ->where('code_one', '<>',3)
+        ->where('code_one', '<>',2)
+        ->where('code_two', '<>',0)
+        ->where('code_three', '<>',0)
+        ->where('code_four', '<>',0)
+        ->where('code_five', '=',0)
+        ->orderBY('description','asc')->pluck('description','id')->toArray();
+       
+
+
+
         $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
 
         $company = Company::on(Auth::user()->database_name)->find(1);
@@ -385,7 +399,7 @@ class ExpensesAndPurchaseController extends Controller
             $coin = 'dolares';
         }
 
-        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory'));
+        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas'));
     }
 
     public function create_expense_voucher($id_expense,$coin)
@@ -2817,87 +2831,25 @@ class ExpensesAndPurchaseController extends Controller
 
     public function listaccount(Request $request, $type = null)
     {
+     
+      
         //validar si la peticion es asincrona
         if($request->ajax()){
             try{
-                    $code_one = 0;  $code_two = 0;
-                    
-
-                if($type == 1 || $type == 2){
-                    //Inventario
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')
-                                                                        ->where('code_one',1)
-                                                                        ->where('code_two', 2)
-                                                                        ->where('code_three', 1)
-                                                                        ->where('code_four',1)
-                                                                        ->where('code_five', '<>',0)
-                                                                        ->orderBy('description','asc')
-                                                                        ->get();
-                }
+                $account = Account::on(Auth::user()->database_name)->find($type);
+                $subcontrapartidas = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$account->code_one)
+                                                                    ->where('code_two',$account->code_two)
+                                                                    ->where('code_three',$account->code_three)
+                                                                    ->where('code_four',$account->code_four)
+                                                                    ->where('code_five','<>',0)
+                                                                    ->orderBy('description','asc')->get();
                 
-                if($type == 3){
-                    $code_one = 5;  
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$code_one)
-                                                                ->where('code_two', '<>',0)
-                                                                ->where('code_three', '<>',0)
-                                                                ->where('code_four', '<>',0)
-                                                                ->where('code_five', '<>',0)
-                                                                ->orderBy('description','asc')
-                                                                ->get();
-                    return response()->json($respuesta,200);
-                }
-                if($type == 4){
-                    $code_one = 6; 
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$code_one)
-                                        ->where('code_two', '<>',0)
-                                        ->where('code_three', '<>',0)
-                                        ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)
-                                        ->orderBy('description','asc')
-                                        ->get();
-                    return response()->json($respuesta,200);
-                }
-                if($type == 5){
-                    $code_one = 6;  
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$code_one)
-                                        ->where('code_two', '<>',0)
-                                        ->where('code_three', '<>',0)
-                                        ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)
-                                        ->orderBy('description','asc')
-                                        ->get();
-                    return response()->json($respuesta,200);
-                }
-                if($type == 6){
-                    $code_one = 6;  
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$code_one)
-                                        ->where('code_two', '<>',0)
-                                        ->where('code_three', '<>',0)
-                                        ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)
-                                        ->orderBy('description','asc')
-                                        ->get();
-                    return response()->json($respuesta,200);
-                }
-                if($type == 7){
-                    $code_one = 6;  
-                    $respuesta = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$code_one)
-                                        ->where('code_two', '<>',0)
-                                        ->where('code_three', '<>',0)
-                                        ->where('code_four', '<>',0)
-                                        ->where('code_five', '<>',0)
-                                        ->orderBy('description','asc')
-                                        ->get();
-                    return response()->json($respuesta,200);
-                }
-                
-                
-                return response()->json($respuesta,200);
+                return response()->json($subcontrapartidas,200);
 
             }catch(Throwable $th){
                 return response()->json(false,500);
             }
-        }
+        } 
         
     }
 
@@ -2906,12 +2858,12 @@ class ExpensesAndPurchaseController extends Controller
         if($request->ajax()){
             try{
                 
-                $respuesta = Inventory::on(Auth::user()->database_name)
+                /*$respuesta = Inventory::on(Auth::user()->database_name)
                                         ->join('products','products.id','inventories.product_id')
                                         ->where('inventories.code',$var)
                                         ->select('inventories.id','products.type')
-                                        ->get();
-                                        
+                                        ->get();*/
+               $respuesta = Product::on(Auth::user()->database_name)->where('code_comercial',$var)->where('status',1)->get();                        
                 return response()->json($respuesta,200);
 
             }catch(Throwable $th){

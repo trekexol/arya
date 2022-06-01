@@ -203,7 +203,7 @@ class FacturarController extends Controller
          } 
          
     }
-    public function registerAnticipo($date_begin,$id_client,$id_account,$coin,$amount,$rate,$reference,$id_quotation = null)
+    public function registerAnticipo($date_begin,$id_client,$id_account,$coin,$amount,$rate,$reference,$id_quotation = null,$header_voucher = null)
     {
    
         $user       =   auth()->user();
@@ -230,6 +230,10 @@ class FacturarController extends Controller
         $var->status = 'C';
 
         $var->save();
+
+        $updatecabecera = HeaderVoucher::on(Auth::user()->database_name)
+        ->where('id',$header_voucher) //Saldar anticipo previo
+        ->update(['id_anticipo' => $var->id]); 
         
     }
 
@@ -283,7 +287,8 @@ class FacturarController extends Controller
                                         ->where(function ($query) use ($quotation){
                                             $query->where('id_quotation',null)
                                                 ->orWhere('id_quotation',$quotation->id);
-                                        })
+            })
+
                                         ->where('coin','not like','bolivares')
                                         ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
                                         ->get();
@@ -480,8 +485,10 @@ class FacturarController extends Controller
         $quotation->status = 'P';
 
         $last_number = Quotation::on(Auth::user()->database_name)
-        ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
- 
+        ->where('id_branch',$quotation->id_branch)
+        ->where('number_invoice','<>',NULL)
+        ->orderBy('number_invoice','desc')->first();
+
         //Asigno un numero incrementando en 1
         if(empty($quotation->number_invoice)){
             if(isset($last_number)){
@@ -1704,7 +1711,7 @@ class FacturarController extends Controller
                     $quotation->status = "C";
                    
                 }else{
-                    $quotation->anticipo =  $anticipo;
+                    $quotation->anticipo = $anticipo;
                     $global->associate_anticipos_quotation($quotation);
                     $quotation->status = "C";
                 }
@@ -1747,12 +1754,14 @@ class FacturarController extends Controller
             }
             
             
-            if(($quotation_status != 'C') && ($quotation_status != 'P')){
+            if(($quotation_status != 'C') && ($quotation_status != 'P')){ //numeracion factura
 
                 if(empty($quotation->number_invoice))
                 {   //Me busco el ultimo numero en factura
-                    $last_number = Quotation::on(Auth::user()->database_name)->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
-
+                    $last_number = Quotation::on(Auth::user()->database_name)
+                    ->where('id_branch',$quotation->id_branch)
+                    ->where('number_invoice','<>',NULL)
+                    ->orderBy('number_invoice','desc')->first();
                     //Asigno un numero incrementando en 1
                     if(isset($last_number)){
                         $quotation->number_invoice = $last_number->number_invoice + 1;
@@ -1778,7 +1787,7 @@ class FacturarController extends Controller
                 ->where('status','!=','X')
                 ->get();
         
-                foreach($quotation_products as $det_products){
+                foreach($quotation_products as $det_products){ //descontar venta de inventario
     
                 $global->transaction_inv('venta',$det_products->id_inventory,'venta',$det_products->amount,$det_products->price,$date,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
         
@@ -1952,9 +1961,21 @@ public function storeanticiposaldar(Request $request)
 
     //dd($request);
 
-    $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
+    $quotation = Quotation::on(Auth::user()->database_name)->find(request('id_quotation'));
 
     $company = Company::on(Auth::user()->database_name)->find(1);
+
+    $anticipo = Anticipo::on(Auth::user()->database_name)
+    ->where('id_quotation',$quotation->id) //Saldar anticipo previo
+    ->where('status',1)
+    ->get();
+
+    foreach ($anticipo as $variante){
+       
+        $updateanticipo = Anticipo::on(Auth::user()->database_name)
+        ->where('id',$variante->id) //Saldar anticipo previo
+        ->update(['status' => 'C']);   
+    }
 
     if($quotation->date_billing != null && $quotation->status == 'C' ){
         return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta Nota fue procesada!');
@@ -2027,7 +2048,7 @@ public function storeanticiposaldar(Request $request)
             $payment_type = request('payment_type');
             if($come_pay >= 1){
 
-                /*-------------PAGO NUMERO 1----------------------*/
+                //-------------PAGO NUMERO 1----------------------
 
                 $var = new QuotationPayment();
                 $var->setConnection(Auth::user()->database_name);
@@ -2141,12 +2162,12 @@ public function storeanticiposaldar(Request $request)
                 }else{
                         return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             }   
             $payment_type2 = request('payment_type2');
             if($come_pay >= 2){
 
-                /*-------------PAGO NUMERO 2----------------------*/
+                //-------------PAGO NUMERO 2----------------------
 
                 $var2 = new QuotationPayment();
                 $var2->setConnection(Auth::user()->database_name);
@@ -2263,12 +2284,12 @@ public function storeanticiposaldar(Request $request)
                 }else{
                     return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 2 debe ser distinto de Cero!');
                 }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type3 = request('payment_type3');   
             if($come_pay >= 3){
 
-                    /*-------------PAGO NUMERO 3----------------------*/
+                    //-------------PAGO NUMERO 3----------------------
 
                     $var3 = new QuotationPayment();
                     $var3->setConnection(Auth::user()->database_name);
@@ -2385,12 +2406,12 @@ public function storeanticiposaldar(Request $request)
                     }else{
                             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 3 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                    //--------------------------------------------
             }
             $payment_type4 = request('payment_type4');
             if($come_pay >= 4){
 
-                    /*-------------PAGO NUMERO 4----------------------*/
+                    //-------------PAGO NUMERO 4----------------------
 
                     $var4 = new QuotationPayment();
                     $var4->setConnection(Auth::user()->database_name);
@@ -2507,12 +2528,12 @@ public function storeanticiposaldar(Request $request)
                     }else{
                             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 4 debe ser distinto de Cero!');
                         }
-                    /*--------------------------------------------*/
+                    //--------------------------------------------
             } 
             $payment_type5 = request('payment_type5');
             if($come_pay >= 5){
 
-                /*-------------PAGO NUMERO 5----------------------*/
+                //-------------PAGO NUMERO 5----------------------
 
                 $var5 = new QuotationPayment();
                 $var5->setConnection(Auth::user()->database_name);
@@ -2629,12 +2650,12 @@ public function storeanticiposaldar(Request $request)
                 }else{
                         return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 5 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type6 = request('payment_type6');
             if($come_pay >= 6){
 
-                /*-------------PAGO NUMERO 6----------------------*/
+                //-------------PAGO NUMERO 6----------------------
 
                 $var6 = new QuotationPayment();
                 $var6->setConnection(Auth::user()->database_name);
@@ -2751,12 +2772,12 @@ public function storeanticiposaldar(Request $request)
                 }else{
                         return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 6 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
             $payment_type7 = request('payment_type7');
             if($come_pay >= 7){
 
-                /*-------------PAGO NUMERO 7----------------------*/
+               // -------------PAGO NUMERO 7----------------------
 
                 $var7 = new QuotationPayment();
                 $var7->setConnection(Auth::user()->database_name);
@@ -2873,7 +2894,7 @@ public function storeanticiposaldar(Request $request)
                 }else{
                         return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('El pago 7 debe ser distinto de Cero!');
                     }
-                /*--------------------------------------------*/
+                //--------------------------------------------
             } 
 
         }
@@ -2900,12 +2921,16 @@ public function storeanticiposaldar(Request $request)
         
             $header_voucher->save();
 
+          //  $anticipo = Anticipo::on(Auth::user()->database_name)->where('id_quotation',$quotation->id) //Saldar anticipo previo
+          //  ->where('status',1)
+           // ->update(['status' => 'C']);
+
             if($validate_boolean1 == true){
                 $var->created_at = $date_payment;
                 $var->save();
 
                 $this->add_pay_movement($bcv,$payment_type,$header_voucher->id,$var->id_account,$quotation->id,$user_id,$var->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var->id_account,$coin,$var->amount,$bcv,$reference,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var->id_account,$coin,$var->amount,$bcv,$reference,$quotation->id,$header_voucher->id);
                
                 $historial_quotation = new HistorialQuotationController();
 
@@ -2921,7 +2946,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var2,"quotation_payment","Registro de Pago");
             
                 $this->add_pay_movement($bcv,$payment_type2,$header_voucher->id,$var2->id_account,$quotation->id,$user_id,$var2->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var2->id_account,$coin,$var2->amount,$bcv,$reference2,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var2->id_account,$coin,$var2->amount,$bcv,$reference2,$quotation->id,$header_voucher->id);
             }           
             if($validate_boolean3 == true){
                 $var3->created_at = $date_payment;
@@ -2932,7 +2957,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var3,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type3,$header_voucher->id,$var3->id_account,$quotation->id,$user_id,$var3->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var3->id_account,$coin,$var3->amount,$bcv,$reference3,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var3->id_account,$coin,$var3->amount,$bcv,$reference3,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean4 == true){
                 $var4->created_at = $date_payment;
@@ -2943,7 +2968,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var4,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type4,$header_voucher->id,$var4->id_account,$quotation->id,$user_id,$var4->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var4->id_account,$coin,$var4->amount,$bcv,$reference4,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var4->id_account,$coin,$var4->amount,$bcv,$reference4,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean5 == true){
                 $var5->created_at = $date_payment;
@@ -2954,7 +2979,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var5,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type5,$header_voucher->id,$var5->id_account,$quotation->id,$user_id,$var5->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var5->id_account,$coin,$var5->amount,$bcv,$reference5,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var5->id_account,$coin,$var5->amount,$bcv,$reference5,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean6 == true){
                 $var6->created_at = $date_payment;
@@ -2965,7 +2990,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var6,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type6,$header_voucher->id,$var6->id_account,$quotation->id,$user_id,$var6->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var6->id_account,$coin,$var6->amount,$bcv,$reference6,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var6->id_account,$coin,$var6->amount,$bcv,$reference6,$quotation->id,$header_voucher->id);
             }
             if($validate_boolean7 == true){
                 $var7->created_at = $date_payment;
@@ -2976,7 +3001,7 @@ public function storeanticiposaldar(Request $request)
                 $historial_quotation->registerAction($var7,"quotation_payment","Registro de Pago");
 
                 $this->add_pay_movement($bcv,$payment_type7,$header_voucher->id,$var7->id_account,$quotation->id,$user_id,$var7->amount,0);
-                $this->registerAnticipo($date_payment,$quotation->id_client,$var7->id_account,$coin,$var7->amount,$bcv,$reference7,$quotation->id);
+                $this->registerAnticipo($date_payment,$quotation->id_client,$var7->id_account,$coin,$var7->amount,$bcv,$reference7,$quotation->id,$header_voucher->id);
             }
 
             if($coin != 'bolivares'){
@@ -3027,9 +3052,11 @@ public function storeanticiposaldar(Request $request)
             $quotation->date_saldate = $date_payment;
             
             $quotation->save();
-
-
             $date = Carbon::now();
+
+
+
+
 
             return redirect('quotations/indexnotasdeentregasald')->withSuccess('Nota '.$quotation->number_delivery_note.' Saldada con Exito!');
 
@@ -3037,7 +3064,7 @@ public function storeanticiposaldar(Request $request)
         }else{
             return redirect('quotations/facturar/'.$quotation->id.'/'.$coin.'')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
         }
-    }  
+    } 
 }
 /////Fin CREAR ANTICIPO DIRECTO Y SALDAR NOTA ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
 

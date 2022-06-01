@@ -45,7 +45,7 @@
                 <th>Id</th>
                 <th>Codigo</th>
                 <th>Periodo</th>
-                <th>Id Voucher</th>
+                <th>Comprobante</th>
                 <th>Debe</th>
                 <th>Haber</th>
                 <th>Referencia</th>

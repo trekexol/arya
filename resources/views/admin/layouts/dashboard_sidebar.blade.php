@@ -199,12 +199,13 @@
                 <a class="collapse-item" href="{{route('clients')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Clientes</strong></a>
                 <a class="collapse-item" href="{{route('vendors')}}" ><i class="fas fa-user fa-sm fa-fw mr-2 text-blue-400"></i><strong>Vendedores</strong></a>
                 <a class="collapse-item" href="{{route('sales')}}" ><i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-blue-400"></i><strong>Ventas</strong></a>
+                <a class="collapse-item" href="{{ route('products')}}" ><i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-black-400"></i><strong>Productos y Servicios</strong></a>
                 <a class="collapse-item" href="{{route('anticipos')}}" ><i class="fas fa-hand-holding-usd fa-sm fa-fw mr-2 text-blue-400"></i><strong>Anticipos Clientes</strong></a>
             </div>
         </div>
     </li>
     @endif
-    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '2')  || (Auth::user()->role_id  == '3'))
+    @if ((Auth::user()->role_id  == '1') || (Auth::user()->role_id  == '3'))
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGastos"
             aria-expanded="true" aria-controls="collapseGastos">

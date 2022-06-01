@@ -63,60 +63,47 @@
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th class="text-center width: 8%;">Fecha</th>
-                   
-                    <th class="text-center">Cuenta</th>
-                    <th class="text-center">Tipo de Movimiento</th>
-                    
-                    <th class="text-center">Ref</th>
-                  
-                    <th class="text-center">Descripción</th>
-                    <th class="text-center">Debe</th>
-                    <th class="text-center">Haber</th>
+                    <th>Fecha</th>
+                    <th>Cuenta</th>
+                    <th>Tipo de Movimiento</th>
+                    <th>Comprobante</th>
+                    <th>Descripción</th>
+                    <th>Debe</th>
+                    <th>Haber</th>
+
                     <th class="text-center"></th>
                 </tr>
                 </thead>
                 
                 <tbody>
+
                     @if (empty($detailvouchers))
                     @else
                         @foreach ($detailvouchers as $var)
                         <tr>
-                        <td class="text-center">{{$var->date ?? ''}}</td>
+                        <td>{{$var->date ?? ''}}</td>
                         
                         <td>{{$var->account_description ?? ''}}</td>
                         
                         @if(isset($var->id_invoice))
-                            <td class="text-center">Factura</td>
-                            <td class="text-center">
-                            {{ $var->id_invoice }}
-                            </td>
+                            <td class="text-center">{{ $var->id_invoice }}</td>
+   
                         @elseif(isset($var->id_expense))
-                            <td class="text-center">Gasto o Compra</td>
-                            <td class="text-center">
-                            {{ $var->id_expense }}
-                            </td>
+                            <td class="text-center">Compra ({{ $var->id_expense }})</td>
+
                         @elseif(isset($var->id_header_voucher)) 
                             <td class="text-center">Otro</td>
-                            <td class="text-center">
-                            {{ $var->id_header_voucher }}
-                            </td>
+
                         @endif
-                        
+
+
+                            <td>
+                            <a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher]) }}" title="Ver comprobante contable">{{ $var->id_header_voucher }}</a>
+                            </td>       
                                        
-                       
-                        @if (isset($var->id_invoice))
-                            
-                            <td>{{$var->description ?? ''}}</td>
-                        
-                        @elseif (isset($var->id_expense))
-                            
-                            <td>{{$var->description ?? ''}}</td>
-                        @else
-                            
-                            <td>{{ $var->description ?? ''}}</td>
-                        @endif
-                       
+        
+                         <td>{{$var->description ?? ''}}</td>
+
                         @if(isset($var->accounts['coin']))
                             @if(($var->debe != 0) && ($var->tasa))
                                 <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>{{number_format($var->debe/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
@@ -129,15 +116,18 @@
                                 <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
                             @endif
                         @else
-                            <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
-                            <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
+
+                                <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>${{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                                <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}<br>${{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            
                         @endif
-                            <td>    
-                                <a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher]) }}" title="Editar"><i class="fa fa-edit"></i></a>
-                            </td>
+                        <td>    
+                            <a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher]) }}" title="Editar"><i class="fa fa-edit"></i></a>
+                        </td>
                         </tr>
                         @endforeach
                     @endif
+
                 </tbody>
             </table>
         </div>

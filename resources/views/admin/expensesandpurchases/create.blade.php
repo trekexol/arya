@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-lg font-weight-bold">Registro de Gastos y Compras</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras..</div>
 
                 <div class="card-body">
 
@@ -120,74 +120,46 @@
                                     <label for="type" class="col-md-2 col-form-label text-md-right">Tipo de Compra:</label>
                                 
                                     <div class="col-md-4">
+                                        <input value="{{ old('type_form') ?? '..'}}">
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="-1">Seleccionar</option>
-                                            @if (isset($inventory))
-                                                @if (isset($type) && (($type == 'MERCANCIA')|| ($type == 'COMBO')))
-                                                    <option value="1" selected>Inventario de Mercancia</option>
-                                                    <option value="2">Activos Fijos</option>
-                                                    <option value="3">Costos</option>
-                                                @else
-                                                    <option value="1">Inventario de Mercancia</option>
-                                                    <option value="2">Activos Fijos</option>
-                                                    <option value="3" selected>Costos</option>
-                                                @endif
-                                            @else
-                                                <option value="1">Inventario de Mercancia</option>
-                                                <option value="2">Activos Fijos</option>
-                                                <option value="3">Costos</option>
-                                            @endif
-                                            
-                                            
-                                            <option value="4">Gastos - Personal</option>
-                                            <option value="5">Gastos - Tributos</option>
-                                            <option value="6">Gastos - Municipales</option>
-                                            <option value="7">Gastos - Administración</option>
-                                        </select>
-                                    </div>
+                                            @foreach($contrapartidas as $index => $value)
                                     
-                                        <label id="code_inventary_label" for="code_inventary" class="col-md-2 col-form-label text-md-right">Código Inventario: </label>
-                                        
-                                        <div class="col-md-2">
-                                            <input id="code_inventary" type="text" class="form-control @error('code_inventary') is-invalid @enderror" name="code_inventary" value="{{ $inventory->code ?? '' }}"  autocomplete="code_inventary">
-            
-                                            @error('code_inventary')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
                                             
-                                        </div>
-                                        
-                                        <div id="btn_code_inventary" class="form-group col-md-1">
-                                            <a href="" title="Buscar por Código" onclick="searchCodeInventory()"><i class="fa fa-search"></i></a>  
-                                            <a id="btnselectinventory" href="{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,"mercancia"]) }}" title="Buscar"><i class="fa fa-eye"></i></a>  
-                                        
-                                        </div>
-                                    
-                                </div>
-                                <div class="form-group row">
-                                    <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
-                                        
-                                    <div class="col-sm-3">
-                                        <select class="form-control" id="centro_costo" name="centro_costo" title="centro_costo">
-                                            <option value="">Ninguno</option>
-                                            @if(!empty($branches))
-                                                @foreach ($branches as $var)
-                                                    <option value="{{ $var->id }}">{{ $var->description }}</option>
-                                                @endforeach
+                                            @if ($value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costo de Venta Mercancía' || $value == 'Costo de Venta' || $value == 'Costo de Ventas' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
                                                 
+                                           
+                                                <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>{{ $value }}</option>
+                                       
                                             @endif
-                                        
+                                          
+        
+                                        @endforeach
                                         </select>
                                     </div>
+                                    
+                                        <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
+                                        
+                                        <div class="col-sm-3">
+                                            <select class="form-control" id="centro_costo" name="centro_costo" title="centro_costo">
+                                                <option value="">Ninguno</option>
+                                                @if(!empty($branches))
+                                                    @foreach ($branches as $var)
+                                                        <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                                    @endforeach
+                                                    
+                                                @endif
+                                            
+                                            </select>
+                                        </div>                  
                                 </div>
+
                                 <div class="form-group row">
                                     <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
                                 
                                     <div class="col-md-4">
                                         <select  id="account"  name="Account" class="form-control" required>
-                                            <option value="">Seleccionar</option>
+                                            <option value="-1">Seleccionar</option>
                                             @if (isset($accounts_inventory))
                                                 @foreach ($accounts_inventory as $var)
                                                     <option value="{{ $var->id }}">{{ $var->description }}</option>
@@ -201,10 +173,9 @@
                                             </span>
                                         @endif
                                     </div>
-                                   
                                     <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
         
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <select class="form-control" name="coin" id="coin">
                                             <option value="bolivares">Bolívares</option>
                                             @if($coin == 'dolares')
@@ -214,9 +185,31 @@
                                             @endif
                                         </select>
                                     </div>
-                                    
+
                                 </div>
-                                
+
+                                <div class="form-group row" id="divinventario" style="display:none;">
+                                    <label id="code_inventary_label" for="code_inventary" class="col-md-2 col-form-label text-md-right">Código Inventario: </label>
+                                                                        
+                                    <div class="col-md-2">
+                                        <input id="code_inventary" type="text" class="form-control @error('code_inventary') is-invalid @enderror" name="code_inventary" value="{{ $inventory->code ?? '' }}"  autocomplete="code_inventary">
+
+                                        @error('code_inventary')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                        
+                                    </div>
+                                    
+                                    <div id="btn_code_inventary" class="form-group col-md-1">
+                                        <a href="" title="Buscar por Código" onclick="searchCodeInventory()"><i class="fa fa-search"></i></a>  
+                                        <a id="btnselectinventory" href="{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,"mercancia"]) }}" title="Buscar"><i class="fa fa-eye"></i></a>  
+                                    
+                                    </div>
+
+                                </div>
+
                                 <br>
                                 <div class="form-row">
                                     <div class="form-group col-md-1">
@@ -445,25 +438,15 @@
 </div>
 @endsection
 
-@if (isset($inventory))
-    @section('validacionExpense')
-        <script>
-                $("#code_inventary_label").show();
-                $("#code_inventary").show();
-                $("#btn_code_inventary").show();
-
-                
-        </script>
-    @endsection
-@endif
 
 @section('consulta')
     <script>
         $('#dataTable').dataTable( {
         "ordering": false,
+        "searching": false,
+        "paging": false,
         "order": [],
-            'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]],
-            'iDisplayLength': '50'
+            'aLengthMenu': [[200, 300, 400, 500, -1],[200, 300, 400, 500, "All"]],
         } );
 
         $(document).ready(function () {
@@ -555,65 +538,62 @@
     </script>
     @endif
     <script>
-        $("#code_inventary_label").hide();
-        $("#code_inventary").hide();
-        $("#btn_code_inventary").hide();
-        $("#centro_costo_label").hide();
-        $("#centro_costo").hide();
 
-        controlador(type_var);
+        $("#centro_costo_label").show();
+        $("#centro_costo").show();
+        
+        controlador(type_var,null);
 
         $("#type_form").on('change',function(){
             type_var = $(this).val();
             document.getElementById("code_inventary").value = "";
             document.getElementById("description").value = "";
             document.getElementById("price").value = "";
-            controlador(type_var);
+            var combo = document.getElementById("type_form");
+            var selected = combo.options[combo.selectedIndex].text;
+           
+            controlador(type_var,selected);
         });
 
-        function controlador(type_var)
+        function controlador(type_var,selected)
         {
- 
-            if(type_var == 1){
-                    $("#code_inventary_label").show();
-                    $("#code_inventary").show();
-                    $("#btn_code_inventary").show();
-                    $("#centro_costo_label").hide();
-                    $("#centro_costo").hide();
-                    document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";
-
+                
+                if(type_var != "-1"){    
+                
+                    if(selected == 'Inventario'){
+                            $("#divinventario").show();       
+                            document.getElementById("code_inventary_label").innerHTML = "Código Producto:";
+                            document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";   
+                    }
                     
-                }else if(type_var == 3){
-                    $("#code_inventary_label").show();
-                    $("#code_inventary").show();
-                    $("#btn_code_inventary").show();
-                    $("#centro_costo_label").show();
-                    $("#centro_costo").show();
-
-                    document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
-                    document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";
-
-
-                }else if(type_var != "-1"){
-                    $("#code_inventary_label").hide();
-                    $("#code_inventary").hide();
-                    $("#btn_code_inventary").hide();
-                    $("#centro_costo_label").show();
-                    $("#centro_costo").show();
-
-                }else if(type_var == "-1"){
                     
-                    $("#code_inventary_label").hide();
-                    $("#code_inventary").hide();
-                    $("#btn_code_inventary").hide();
-                    $("#centro_costo_label").hide();
-                    $("#centro_costo").hide();
-                }
+                    if(selected == 'Costos de Ventas'){
+                        $("#divinventario").show();
+                        document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
+                         document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";  
                
-               if(type_var != "-1"){
-                 
-                searchCode(type_var);
-               }
+                     }
+
+                     if(selected == 'Costo de Venta Mercancia'){
+
+                        $("#divinventario").show();
+                        document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
+                        document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";  
+                
+                     }
+
+                    
+                    if(selected != 'Inventario' & selected != 'Costos de Ventas' & selected != 'Costo de Venta Mercancia'){
+                    $("#divinventario").hide();
+                    }
+
+                    searchCode(type_var);
+
+                } else {
+
+                    $("#divinventario").hide();
+                }
+                
         }
 
         function searchCode(type_var){

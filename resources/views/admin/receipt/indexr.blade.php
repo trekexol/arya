@@ -54,10 +54,10 @@
 
        
           <div class="col-sm-3">
-            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos de Condomino</a>
+            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos a Propietarios</a>
           </div>
           <div class="col-sm-3">
-            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Crear Recibo Individual</a>
+            <a href="{{ route('receipt.createreceiptunique',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Crear Recibo Individual</a>
           </div>
           <div class="col-sm-3">
             <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Pendientes por Verificar</a>

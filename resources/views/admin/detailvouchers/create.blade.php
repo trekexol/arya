@@ -62,7 +62,7 @@ $suma_haber = 0;
                                 <a id="btn_search_reference" class="btn btn-info " onclick="searchReference()" title="Buscar Referencia">Buscar</a>  
                             </div>
                             <div class="col-sm-3">
-                                <button type="submit" class="btn btn-success" title="Agregarheader">Registrar Cabecera</button>  
+                                <button type="submit" class="btn btn-primary" title="Agregarheader">Registrar Comprobante</button>  
                             </div>
                             <div class="col-sm-2">
                                <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Deshabilitar</a>  
@@ -104,11 +104,7 @@ $suma_haber = 0;
                                     </span>
                                 @enderror
                                 </div>
-                                @if (isset($header))
-                                    <div class="col-sm-3">
-                                        <button onclick="updateForm()" class="btn btn-light" title="Actualizar">Actualizar Cabecera</button>  
-                                    </div>
-                                @endif
+
                             </div>
                         
                             <div class="form-group row">
@@ -126,6 +122,11 @@ $suma_haber = 0;
                                         </span>
                                     @enderror
                                 </div>
+                                @if (isset($header))
+                                <div class="col-sm-3">
+                                    <button onclick="updateForm()" class="btn btn-success" title="Actualizar">Guardar Cambios</button>  
+                                </div>
+                            @endif
                         </form>
                             <!--<label for="date" class="col-md-2 col-form-label text-md-right"><h5>Total</h5></label>
                             <div class="col-md-2 col-form-label text-md-left">

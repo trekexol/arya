@@ -249,6 +249,37 @@ class OrderPaymentListController extends Controller
    }
 
 
+   public function orderPaymentPdfDetail($id_header_voucher)
+   {
+       
+       $pdf = App::make('dompdf.wrapper');
+
+       $date = Carbon::now();
+       $datenow = $date->format('Y-m-d');    
+      
+        $movements = DetailVoucher::on(Auth::user()->database_name)
+            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
+            ->join('accounts','accounts.id','detail_vouchers.id_account')
+            ->leftJoin('payment_orders','payment_orders.id','header_vouchers.id_payment_order')
+            ->leftJoin('clients','clients.id','payment_orders.id_client')
+            ->leftJoin('providers','providers.id','payment_orders.id_provider')
+            ->where('header_vouchers.id',$id_header_voucher)
+            ->where('detail_vouchers.status','C')
+            ->select('header_vouchers.description', 'header_vouchers.id as header_id',
+            'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
+            'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description'
+            ,'clients.name as client_name','providers.razon_social as provider_name'
+            ,'providers.code_provider as code_provider'
+            ,'payment_orders.reference as reference_order','payment_orders.date as date_order'
+            ,'payment_orders.id as id_order')
+            ->get();
+        
+       
+       $pdf = $pdf->loadView('admin.bankmovements.reports.order_payment_pdf',compact('movements','datenow'));
+       return $pdf->stream();
+                
+   }
+
    /**
     * Show the form for creating a new resource.
     *

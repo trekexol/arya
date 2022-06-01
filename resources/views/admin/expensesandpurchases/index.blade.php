@@ -57,6 +57,7 @@
             <thead>
             <tr> 
                 <th ></th>
+                <th class="text-center">ID</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
@@ -74,6 +75,7 @@
                             <td>
                             <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
                             </td>
+                            <td>{{$expensesandpurchase->id}}</td>
                             <td>{{$expensesandpurchase->invoice}}</td>
                             <td>{{$expensesandpurchase->serie}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>

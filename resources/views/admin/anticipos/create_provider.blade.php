@@ -162,12 +162,93 @@
             
         });
 
-
-
-
 	$(function(){
         soloAlfaNumerico('description');
        
     });
+
+
     </script>
+@endsection
+
+
+@section('javascript')
+
+<script>
+    $("#id_expense").on('change',function(){
+            id = $(this).val();
+            
+           
+            searcrate(id);
+
+        });
+        
+   function searcrate(id){
+
+       //we will send data and recive data fom our AjaxController
+        $.ajax({
+          url:"{{ route('anticipos.consultrate') }}" +'/'+id,
+          //data:{'name':"luis"},
+         // type:'post',
+          success: function (response) {
+           
+           
+            amount = response.rate;
+            
+            var rateFormat = amount.replace(/[$.]/g,',');
+ 
+            document.getElementById("rate").value = rateFormat;
+
+          },
+          statusCode: {
+             404: function() {
+                alert('web not found');
+             }
+          },
+          error:function(x,xs,xt){
+              //nos dara el error si es que hay alguno
+              window.open(JSON.stringify(x));
+              alert('error: ' + JSON.stringify(x) +"\n error string: "+ xs + "\n error throwed: " + xt);
+          } 
+    
+       }); 
+      
+/*
+$.ajax({
+    
+    url:"{{ route('anticipos.consultrate') }}" +'/'+id,
+    beforSend:()=>{
+        alert('consultando datos');
+    },
+    success:(response)=>{
+       
+        let account = $("#rate");
+        // let htmlOptions = `<option value='' >Seleccione..</option>`;
+        // console.clear();
+       if(response.length > 0){
+            
+            response.forEach((item, index, object)=>{
+                let {id} = item;
+                
+                htmlOptions = id;
+                //htmlOptions += `<option value='${id}' {{ old('Account') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+            }); 
+        }
+        account.value(5);
+        //account.html(htmlOptions);
+
+        alert(response);
+    
+        
+    
+    },
+    error:(xhr)=>{
+        alert('mmm');
+    }
+}) */
+}
+  
+</script>
+
 @endsection
