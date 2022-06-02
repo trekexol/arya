@@ -31,6 +31,7 @@
                        
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
                         <input id="id_client" type="hidden" class="form-control @error('id_client') is-invalid @enderror" name="id_client" value="{{ $client->id ?? -1  }}" required autocomplete="id_client">
+                        <input id="id_owner" type="hidden" class="form-control @error('id_owner') is-invalid @enderror" name="id_owner" value="{{ $owners->id ?? -1  }}" required autocomplete="id_owner">
                         <input id="id_vendor" type="hidden" class="form-control @error('id_vendor') is-invalid @enderror" name="id_vendor" value="{{ $vendor->id ?? $client->id_vendor ?? null  }}" required autocomplete="id_vendor">
                         <input id="type" type="hidden" class="form-control @error('type') is-invalid @enderror" name="type" value="{{ $type ?? null  }}" required autocomplete="type">
                        

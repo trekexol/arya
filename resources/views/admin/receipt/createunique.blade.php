@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Crear Registro Recibo Individual</h3></div>
+                <div class="card-header" ><h3>Registrar Recibo Individual</h3></div>
 
                 <div class="card-body" >
                    
@@ -42,9 +42,9 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="client" class="col-md-2 col-form-label text-md-right">Condominio:</label>
+                            <label for="client" class="col-md-2 col-form-label text-md-right">Propietario:</label>
                             <div class="col-md-4">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly required autocomplete="client">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
                                 @error('client')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -103,12 +103,12 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="clients" class="col-md-2 col-form-label text-md-right">Propietario</label>
+                            <label for="clients" class="col-md-2 col-form-label text-md-right">Apartamento</label>
                                 <div class="col-md-3">
 
-                                <input id="owner" type="text" class="form-control @error('owner') is-invalid @enderror" name="owner" value="{{ $owners->name ?? '' }}" readonly required autocomplete="owner">
+                                <input id="direction" type="text" class="form-control @error('direction') is-invalid @enderror" name="direction" value="{{ $client->direction ?? '' }}" readonly required autocomplete="direction">
 
-                                @error('owner')
+                                @error('direction')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -118,7 +118,7 @@
                         </div>
                        
                         <div class="form-group row">
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Página:</label>
 
                             <div class="col-md-4">
                                 <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}" readonly required autocomplete="note">
@@ -135,7 +135,7 @@
                             </div>
 
                         </div>
-                        <form id="formSendProduct" method="POST" action="{{ route('receipt.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
+                        <form id="formSendProduct" method="POST" action="{{ route('receipt.storeproductunique') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
                             <input id="id_inventory" type="hidden" class="form-control @error('id_inventory') is-invalid @enderror" name="id_inventory" value="{{ $inventory->id ?? -1 }}" readonly required autocomplete="id_inventory">
@@ -192,7 +192,7 @@
                                         
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>  
                                     
-                                        <a href="{{ route('receipt.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
+                                        <a href="{{ route('receipt.selectproductunique',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                                         
                                     </div>
                                     
@@ -388,7 +388,7 @@
                             </div>
                             <div class="form-group row mb-0">
                                
-                                <div id="divDeliveryNote" class="col-sm-4">
+                                <div id="divDeliveryNote" class="col-sm-4" style="display:none;">
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
                                     @else
@@ -398,19 +398,14 @@
                           
                                 <div id="divFacturar" class="col-sm-4">
                                     @if($suma == 0)
-                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>
-                                        @if (empty($quotation->date_order))
-                                            <a onclick="validate()" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
-                                        @endif  
+                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="Guardar Recibo">Guardar Recibo</a>
                                         
                                     @else
-                                        <a href="{{ route('receipt.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Guardar</a>  
-                                        @if (empty($quotation->date_order))
-                                            <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
-                                        @endif
+                                        <a href="{{ route('receipt.createfacturarunique',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="Guardar Recibo">Guardar Recibo</a>  
+
                                     @endif
                                 </div>
-                                <div id="divOpciones" class="col-sm-3 dropdown mb-4">
+                                <div id="divOpciones" class="col-sm-3 dropdown mb-4" style="display:none;">
                                     <button class="btn btn-dark" type="button"
                                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                         aria-expanded="false">
@@ -587,7 +582,7 @@
 
         $("#coin").on('change',function(){
             coin = $(this).val();
-            window.location = "{{route('receipt.create', [$quotation->id,''])}}"+"/"+coin;
+            window.location = "{{route('receipt.createunique', [$quotation->id,''])}}"+"/"+coin;
         });
 
 
@@ -657,11 +652,11 @@
                         response.forEach((item, index, object)=>{
                             let {id,description,date} = item;
                           
-                           window.location = "{{route('receipt.createproduct', [$quotation->id,$coin,''])}}"+"/"+id;
+                           window.location = "{{route('receipt.createproductunique', [$quotation->id,$coin,''])}}"+"/"+id;
                            
                         });
                     }else{
-                        window.location = "{{route('receipt.create', [$quotation->id,$coin,''])}}";
+                        window.location = "{{route('receipt.createunique', [$quotation->id,$coin,''])}}";
                        //alert('No se Encontro este numero de Referencia');
                     }
                    
@@ -698,12 +693,12 @@
                         response.forEach((item, index, object)=>{
                             let {id,description,date} = item;
                             
-                           window.location = "{{route('quotations.createproduct', [$quotation->id,$coin,'',''])}}"+"/"+id+"/"+"{{$type ?? null}}";
+                           window.location = "{{route('receipt.createproductunique', [$quotation->id,$coin,'',''])}}"+"/"+id+"/"+"{{$type ?? null}}";
                            
                         });
                     }else{
 
-                          window.location = "{{route('receipt.create', [$quotation->id,$coin,''])}}"+"/{{$type ?? null}}";
+                          window.location = "{{route('receipt.createunique', [$quotation->id,$coin,''])}}"+"/{{$type ?? null}}";
                        //alert('No se Encontro este numero de Referencia');
                     }
                    
