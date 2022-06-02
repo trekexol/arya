@@ -659,7 +659,12 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('selectvendor/{id_client}/{type?}','ReceiptController@selectvendor')->name('receipt.selectvendor');
 
     Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','ReceiptController@selectproduct')->name('receipt.selectproduct');
+    Route::get('selectproductunique/{id_quotation}/{coin}/{type}/{type_quotation?}','ReceiptController@selectproductunique')->name('receipt.selectproductunique');
+    Route::get('selectinventaryuique/{id_expense}/{coin}/{type}','ReceiptControlle@selectinventaryunique')->name('receipy.selectinventaryunique');
+
+
     Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproduct')->name('receipt.createproduct');
+    Route::get('registerproductunique/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproductunique')->name('receipt.createproductunique');
     
     Route::get('register/{id_quotation}/{coin}/{type?}','ReceiptController@create')->name('receipt.create');
 
@@ -674,6 +679,8 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::post('storeownersunique','ReceiptController@storeownersunique')->name('receipt.storeownersunique');
 
     Route::post('storeproduct','ReceiptController@storeproduct')->name('receipt.storeproduct');
+    Route::post('storeproductunique','ReceiptController@storeproductunique')->name('receipt.storeproductunique');
+
 
     Route::get('receiptfacturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createreceiptfacturado')->name('receipt.createreceiptfacturado');
 
@@ -683,11 +690,18 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::delete('deleteproduct','ReceiptController@deleteProduct')->name('receipt.deleteProduct');
 
     Route::get('facturar/{id_quotation}/{coin}','ReceiptController@createfacturar')->name('receipt.createfacturar');
-    
+    Route::get('facturarunique/{id_quotation}/{coin}','ReceiptController@createfacturarunique')->name('receipt.createfacturarunique');
+
     Route::post('storefacturacredit','ReceiptController@storefacturacredit')->name('receipt.storefacturacredit');
+    Route::post('storefacturacreditunique','ReceiptController@storefacturacreditunique')->name('receipt.storefacturacreditunique');
      
     Route::post('storefactura','ReceiptController@storefactura')->name('receipt.storefactura');
     Route::get('facturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createfacturado')->name('receipt.createfacturado');
+
+    Route::post('storefacturaunique','ReceiptController@storefacturaunique')->name('receipt.storefacturaunique');
+    Route::get('facturadounique/{id_quotation}/{coin}/{reverso?}','ReceiptController@createfacturadounique')->name('receipt.createfacturadounique');
+
+
     Route::get('reversarquotationmultipayment/{id}/{id_header?}','ReceiptController@reversar_quotation_multipayment')->name('receipt.reversar_quotation_multipayment');
     Route::delete('reversarquotation','ReceiptController@reversar_quotation')->name('receipt.reversarQuotation');
  
@@ -809,6 +823,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::post('storeexpensecredit', 'ExpensesAndPurchaseController@store_expense_credit')->name('expensesandpurchases.store_expense_credit');
 
     Route::get('selectinventary/{id_expense}/{coin}/{type}','ExpensesAndPurchaseController@selectinventary')->name('expensesandpurchases.selectinventary');
+   
 
     Route::get('expensevoucher/{id_expense}/{coin}','ExpensesAndPurchaseController@create_expense_voucher')->name('expensesandpurchases.create_expense_voucher');
 
