@@ -36,13 +36,11 @@
                         <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Recibo:</label>
 
                         <div class="col-md-4">
-                            <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
+                            <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_delivery_note}}" readonly>
                         </div>
-                        @if($quotation->type == 'F')
-                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
-                        @else
+
                         <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
-                        @endif
+
                         <div class="col-md-3">
                             <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->personcontact  ?? '' }}" readonly required autocomplete="date_quotation">
     
@@ -241,8 +239,9 @@
                                 <a href="{{ ''/*route('receipt.movement',[$quotation->id,$coin])*/ }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div> -->
 
-
-                            <div class="col-md-2">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-3">
                                 <a href="{{ route('receipt') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Listado de Recibos</a>  
                             </div>
                         </div>
@@ -333,7 +332,7 @@
             });
             function pdf() {
                 
-                var nuevaVentana= window.open("{{ route('pdf.receipt',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+                var nuevaVentana= window.open("{{ route('pdf.receiptunique',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
         
             }
             function pdf_media() {

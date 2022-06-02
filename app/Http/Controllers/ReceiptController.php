@@ -81,8 +81,8 @@ class ReceiptController extends Controller
                                                 ->get();
              }else{
     
-                $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-                ->where('date_billing','<>',null)
+                $quotations = Receipts::on(Auth::user()->database_name)
+                ->orderBy('id' ,'desc')
                 ->where('type','=','R')
                 ->get(); 
              }
@@ -584,22 +584,11 @@ public function store(Request $request) // Empezar a Crear Factura
             
                 $var = new Receipts();
                 $var->setConnection(Auth::user()->database_name);
-
+                $type = 'R';
                 //$validateFactura = new ReceiptValidationController($var);
 
                 $var->id_client = $id_owner;
                 $id_transport = request('id_transport');
-
-                $type = request('type');
-
-                if(empty($type)){
-                    $type = '';
-                }else if($type == 'factura'){
-                    $var->date_billing = request('date_quotation');
-                    $var = $validateFactura->validateNumberInvoice();
-                }
-
-               
 
                 if($id_transport != '-1'){
                     $var->id_transport = request('id_transport');
@@ -628,7 +617,7 @@ public function store(Request $request) // Empezar a Crear Factura
                 $var->coin = 'bolivares';
         
                 $var->status =  1;
-                $var->type =  'R';
+                $var->type =  $type;
             
                 $var->save();
 
@@ -2537,6 +2526,144 @@ public function store(Request $request) // Empezar a Crear Factura
          
                 }else{
                  return redirect('/receipt/receipt')->withDanger('La recibo de condominio no existe');
+             } 
+             
+        
+
+        
+    }
+    function imprimirecibounique($id_quotation,$coin = null) /// recibo de condominio
+    {
+      
+
+        $pdf = App::make('dompdf.wrapper');
+
+        
+             $quotation = null;
+                 
+             if(isset($id_quotation)){
+                 $quotation = Receipts::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+              
+                                     
+             }else{
+                return redirect('/receipt/receiptunique')->withDanger('No llega el numero del recibo de condominio');
+                } 
+     
+             if(isset($quotation)){
+
+                $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)
+                                            ->where('id_quotation',$quotation->id)
+                                            ->where('status',1)
+                                            ->get();
+
+                foreach($payment_quotations as $var){
+                    $var->payment_type = $this->asignar_payment_type($var->payment_type);
+                    if($coin == 'dolares'){
+                        $var->amount = $var->amount / $var->rate;
+                    }
+                }
+
+
+                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products') 
+                    ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                    ->where('receipt_products.id_quotation',$quotation->id)
+                    ->where('receipt_products.status','=','C')
+                    ->orwhere('receipt_products.status','=','1')
+                    ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                    'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                    ,'receipt_products.retiene_islr as retiene_islr_quotation')
+                    ->get(); 
+
+
+                 $client = owners::on(Auth::user()->database_name) // buscar cliente
+                ->where('id','=',$quotation->id_client)
+                ->select('owners.*')
+                ->get()->first();
+
+                //Buscar Factura original
+                $quotationsorigin = '';
+
+                $inventories_quotationso = '';
+                
+                
+                //Buscar recibos que debe
+                $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
+                ->orderBy('id' ,'asc') 
+                ->where('date_billing','<>',null)
+                ->where('type','=','R')
+                ->where('status','=','P')
+                ->where('id','!=',$quotation->id)
+                ->where('receipts.id_client','=',$client->id)
+                ->select('receipts.*')
+                ->get();
+               
+               
+                if (isset($quotationp)) {
+                
+                    foreach ($quotationp as $quotationtpp) {
+
+                        $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products') // productos recibo pendiente
+                        ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
+                        ->where('receipt_products.id_quotation',$quotationtpp->id)
+                        ->where('receipt_products.status','=','C')
+                        ->orwhere('receipt_products.status','=','1')
+                        ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
+                        'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
+                        ,'receipt_products.retiene_islr as retiene_islr_quotation', )
+                        ->get();
+
+                    }
+
+
+                    if(isset($inventories_quotationsp)){
+                        foreach ($inventories_quotationsp as $varp) {
+                            $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
+                            ->orderBy('id' ,'asc') 
+                            ->where('date_billing','<>',null)
+                            ->where('type','=','F')
+                            ->where('status','=','P')
+                            ->where('receipts.id_client','=',$client)
+                            ->select('number_delivery_note','date_billing')
+                            ->get()->first();
+                            
+                             if (isset($quotationpn)) {
+                             $varp->number_delivery_note = $quotationpn->number_delivery_note;
+                             $varp->date_billing = $quotationpn->date_billing;
+                             } else {
+                                $varp->number_delivery_note = NULL;
+                                $varp->date_billing = NULL;                               
+                             }
+                        }
+                    } else {
+                        $inventories_quotationsp = 0;
+                    }
+
+
+                } else {
+                      
+                    $inventories_quotationsp = 0;
+
+
+                }
+
+
+
+                if($coin == 'bolivares'){
+                    $bcv = null;
+                    
+                }else{
+                    $bcv = $quotation->bcv;
+                }
+
+                $company = Company::on(Auth::user()->database_name)->find(1);
+                
+               // $lineas_cabecera = $company->format_header_line;
+
+                $pdf = $pdf->loadView('pdf.receiptunique',compact('company','quotation','inventories_quotations','payment_quotations','bcv','coin','quotationsorigin','inventories_quotationso','client','quotationp','inventories_quotationsp'));
+                return $pdf->stream();
+         
+                }else{
+                 return redirect('/receipt/receiptunique')->withDanger('La recibo de condominio no existe');
              } 
              
         
@@ -5556,6 +5683,56 @@ public function store(Request $request) // Empezar a Crear Factura
          } 
          
     }
+
+
+    public function createfacturadounique($id_quotation,$coin,$reverso = null) // finalizando factura
+    {
+         $quotation = null;
+ 
+
+         if(isset($id_quotation)){
+             $quotation = Receipts::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
+       
+             
+            
+            $client = Owners::on(Auth::user()->database_name)->find($quotation->id_client);
+
+         }
+
+
+        if(isset($quotation)){
+             
+    
+            // $product_quotations = ReceiptProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+                $payment_quotations = ReceiptPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
+     
+             $date = Carbon::now();
+             $datenow = $date->format('Y-m-d');    
+
+             if(isset($coin)){
+                if($coin == 'bolivares'){
+                   $bcv = null;
+                }else{
+                    $bcv = $quotation->bcv;
+                    $quotation->anticipo = $quotation->anticipo;
+                }
+            }else{
+               $bcv = null;
+            }
+             
+
+            return view('admin.receipt.createfacturadounique',compact('quotation','payment_quotations', 'datenow','bcv','coin','reverso','client'));    
+            
+
+
+        }else{
+             
+            return redirect('/receiptunique')->withDanger('El recibo no existe');
+        
+            } 
+         
+    }
+
     public function reversar_quotation(Request $request)
     { 
        

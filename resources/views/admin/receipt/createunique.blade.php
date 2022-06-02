@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registrar Recibo Individual</h3></div>
+                <div class="card-header" ><h3>Crear Recibo Individual</h3></div>
 
                 <div class="card-body" >
                    
