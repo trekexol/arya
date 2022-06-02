@@ -27,7 +27,7 @@
         
             <div class="card" style="width: 70rem;" >
 
-                <div class="card-header" ><h3>Registrar Recibo de Condominio individual: {{$quotation->number_delivery_note ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Registrar Recibo individual {{$quotation->number_delivery_note ?? ''}}</h3></div>
 
                 <form method="POST" action="{{ route('receipt.storefacturacreditunique') }}" enctype="multipart/form-data">
                     @csrf   
@@ -54,15 +54,17 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="date-payment" class="col-md-3 col-form-label text-md-right">Fecha del Pago:</label>
-                            <div class="col-md-3">
-                                <input id="date-payment" type="date" class="form-control @error('date-payment') is-invalid @enderror" name="date-payment" value="{{ $datenow }}" autocomplete="date-payment">
-    
-                                @error('date')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                           <div style="display: none;">
+                                <label for="date-payment" class="col-md-3 col-form-label text-md-right">Fecha del Pago:</label>
+                                <div class="col-md-3">
+                                    <input id="date-payment" type="date" class="form-control @error('date-payment') is-invalid @enderror" name="date-payment" value="{{ $datenow }}" autocomplete="date-payment">
+        
+                                    @error('date')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 
@@ -289,7 +291,7 @@
                                 </div>
                                 <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
-                                        Guardar Factura
+                                        Guardar Recibo
                                     </button>
                                 </div>
                                 <div class="col-md-2">

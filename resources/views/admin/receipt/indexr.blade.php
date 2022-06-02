@@ -102,7 +102,7 @@
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs.</th>
                 <th class="text-center">Status</th>
-                <th class="text-center">Verificado</th>
+                <th class="text-center"></th>
                <!-- <th class="text-center"></th> -->
             </tr>
             </thead>
@@ -176,17 +176,22 @@
                                         @endif
                                     @endif
                                 </td>
-                            @elseif ($quotation->status == "X")
+                            @endif
+                            
+                            @if ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
                                 </td>
                                 <td>
                                 </td>
-                            @else
+                            @endif
+
+                            @if ($quotation->status == 'P')
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
                                         <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
                                 @else
+                            
                                     <td class="text-center font-weight-bold">
                                         @if (Auth::user()->role_id  == '11')
                                         <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Pagar</a>
@@ -194,16 +199,20 @@
                                         @if (Auth::user()->role_id  != '11')
                                         <a href="{{ route('receipt.createfacturar_aftereceipt',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                         @endif
-
                                     </td>
+                                    <td>
+                                        <a href="#" title="Enviar Correo" data-rute="{{ route('mails.receipt',[$quotation->id,$quotation->coin]) }}" data-email="{{$quotation->owners['email'] ?? ''}}" data-msg="Recibo de Condomino Fecha {{ date_format(date_create($quotation->date_billing),"d-m-Y") ?? '' }}" data-toggle="modal" data-target="#emailModal" class="buttonemail"><i class="fa fa-envelope"></i></a>
+                                    </td> 
                                 @endif
-  
 
-                                  
-                                <td>
-                                    <a href="#" title="Enviar Correo" data-rute="{{ route('mails.receipt',[$quotation->id,$quotation->coin]) }}" data-email="{{$quotation->owners['email'] ?? ''}}" data-msg="Recibo de Condomino Fecha {{ date_format(date_create($quotation->date_billing),"d-m-Y") ?? '' }}" data-toggle="modal" data-target="#emailModal" class="buttonemail"><i class="fa fa-envelope"></i></a> 
-                                
-                                </td> 
+                            @endif
+                            
+                            @if ($quotation->status == '1' & $quotation->status == 1)      
+                            <td class="text-center font-weight-bold">
+                                <a href="{{ route('receipt.createunique',[$quotation->id,$quotation->coin ?? 'bolivares',"Nota de Entrega"])}}" title="Procesar" class="font-weight-bold text-dark">Por Procesar</a>
+                               
+                            </td>
+                            <td></td>    
                             @endif
                             
                         </tr>     
