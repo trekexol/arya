@@ -246,7 +246,11 @@
                                 @if($quotation->type == 'F')
                                 <a onclick="pdf('F');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Relación de Gasto</a>  
                                 @else
-                                <a onclick="pdf('R');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Recibo de Condominio</a>  
+                                    @if($quotation->type == 'R' && $quotation->number_invoice == NULL)
+                                    <a onclick="pdfi('R');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Recibo individual</a>  
+                                    @else
+                                    <a onclick="pdf('R');" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Ver Recibo de Condominio</a>  
+                                    @endif
                                 @endif
                             </div>
                             
@@ -370,6 +374,14 @@
                 var nuevaVentana= window.open("{{ route('pdf.receipt',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");    
                 }        
             }
+
+            function pdfi(type) {
+                
+
+                var nuevaVentana= window.open("{{ route('pdf.receiptunique',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");    
+                        
+            }
+
             function pdf_media() {
                 
                 var nuevaVentana2= window.open("{{ route('pdf.receiptfacmedia',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
