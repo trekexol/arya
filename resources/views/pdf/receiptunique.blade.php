@@ -162,6 +162,7 @@
   $conteo_recibos_pendientes = 0;
   $monto_recibos_acumulado = 0;
   $conteo_recibos_acumulados = 0;
+  $total_less_percentageusd = 0;
 ?>
 
 
@@ -185,7 +186,7 @@
 
       $total_less_percentage = ($var->price * $var->amount_quotation) - $percentage;
 
-      $total_less_percentage = $total_less_percentage / ($quotation->bcv ?? 1);
+      $total_less_percentageusd = $total_less_percentage / ($quotation->bcv ?? 1);
       ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
