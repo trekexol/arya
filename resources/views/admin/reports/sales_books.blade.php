@@ -135,67 +135,42 @@
     $total_amount_with_iva = 0;
     $conteo = 1;
   ?>
+
+
+
   @foreach ($quotations as $quotation)
-      <?php
+   
 
-        if($quotation->status == 'C'){
-          $status = "Activa";
-
-        $total_base_imponible += $quotation->base_imponible;
-        $total_amount += $quotation->amount;
-        $total_amount_exento += $quotation->amount_exento;
-        $total_retencion_iva += $quotation->retencion_iva;
-        $total_retencion_islr += $quotation->retencion_islr;
-        $total_anticipo += $quotation->anticipo;
-        $total_amount_iva += $quotation->amount_iva;
-        $total_amount_with_iva += $quotation->amount_with_iva;
-
-        }
-        
-        
-        if($quotation->status == 'X'){
-          $status = "Reversada";
-          $quotation->amount = 0;
-          $quotation->base_imponible = 0;
-          $quotation->amount_exento = 0;
-          $quotation->retencion_iva = 0;
-          $quotation->retencion_islr = 0;
-          $quotation->bcv = 1;
-          $quotation->amount_iva = 0;
-          $quotation->amount_with_iva = 0;
-
-          $total_base_imponible = 0;
-          $total_amount = 0;
-          $total_amount_exento = 0;
-          $total_retencion_iva = 0;
-          $total_retencion_islr = 0;
-          $total_anticipo = 0;
-          $total_amount_iva = 0;
-          $total_amount_with_iva = 0;
-
-        }
-        
-        if($quotation->status == 'P'){
-          $status = "por revisar";
-
-          $total_base_imponible += $quotation->base_imponible;
-          $total_amount += $quotation->amount;
-          $total_amount_exento += $quotation->amount_exento;
-          $total_retencion_iva += $quotation->retencion_iva;
-          $total_retencion_islr += $quotation->retencion_islr;
-          $total_anticipo += $quotation->anticipo;
-          $total_amount_iva += $quotation->amount_iva;
-          $total_amount_with_iva += $quotation->amount_with_iva;
-        }
-      ?>
-    <tr>
-      
+  @if($quotation->status == 'X')
+    <?php
+      $quotation->amount = 0;
+      $quotation->base_imponible = 0;
+      $quotation->amount_exento = 0;
+      $quotation->retencion_iva = 0;
+      $quotation->retencion_islr = 0;
+      $quotation->bcv = 1;
+      $quotation->amount_iva = 0;
+      $quotation->amount_with_iva = 0;
+    ?>
+  @endif
+  
+  <tr>
       <td style="text-align: center; ">{{ $conteo }}</td>
       <td style="text-align: center; ">{{ $quotation->date_billing ?? ''}}</td>
       
       <td style="text-align: center; font-weight: normal;">{{$quotation->clients['type_code']}}{{ $quotation->clients['cedula_rif'] ?? '' }}</td>
       <td style="text-align: center; font-weight: normal;">{{ $quotation->clients['name'] ?? '' }}</td>
-      <td style="text-align: center; font-weight: normal;">{{ $status }}</td>
+      
+      @if($quotation->status == 'C' || $quotation->status == 'P')
+      <td style="text-align: center; font-weight: normal;">{{'Activa'}}</td>
+      @else
+        @if($quotation->status == 'X')
+        <td style="text-align: center; font-weight: normal;">{{'Reversada'}}</td>
+        @else
+        <td style="text-align: center; font-weight: normal;">{{'Otro'}}</td>
+        @endif
+      @endif
+      
       <td style="text-align: center; ">{{ $quotation->number_invoice ?? $quotation->id ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $quotation->serie ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{''}}</td><!--D-->
@@ -228,10 +203,38 @@
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
       @endif
      
-    </tr> 
+    </tr>
+
     <?php
-      $conteo++;
-    ?>
+
+    if($quotation->status == 'C' || $quotation->status == 'P'){
+
+    $total_amount +=  $quotation->amount;
+    $total_base_imponible += $quotation->base_imponible;
+    $total_amount_exento += $quotation->amount_exento;
+    $total_retencion_iva += $quotation->retencion_iva;
+    $total_retencion_islr += $quotation->retencion_islr;
+    $total_anticipo += $quotation->anticipo;
+    $total_amount_iva += $quotation->amount_iva;
+    $total_amount_with_iva += $quotation->amount_with_iva;
+
+    } else { 
+
+      $total_amount += 0;
+      $total_base_imponible += 0;
+      $total_amount_exento += 0;
+      $total_retencion_iva += 0;
+      $total_retencion_islr += 0;
+      $total_anticipo += 0;
+      $total_amount_iva += 0;
+      $total_amount_with_iva += 0;
+
+    }
+
+    $conteo++;
+  ?>   
+ 
+
   @endforeach 
 
   <tr>
@@ -246,17 +249,18 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-bottom-color: white; border-right-color: black;"></th>
-    <th style="text-align: right; font-weight: normal; font-style:bold; border-right-color: black; border-left-color: black;">{{ number_format($total_amount, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;font-style:bold;  border-color: black; border-left: 1px;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: right; font-weight: normal; font-style:bold; border-color: white;">{{ number_format($total_amount, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;font-style:bold; border-color: white; border-left: 1px;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ '' }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format($total_base_imponible, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ '' }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    
   </tr> 
 </table>
 <div class="page-break"></div>

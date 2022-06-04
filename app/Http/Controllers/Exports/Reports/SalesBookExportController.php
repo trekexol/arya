@@ -44,11 +44,10 @@ class SalesBookExportController extends Controller
         $period = $date->format('Y'); 
         $quotations = Quotation::on(Auth::user()->database_name)
                                     ->where('date_billing','<>',null)
-                                    ->where('status','C')
                                     ->whereRaw(
                                         "(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
-                                    ->orderBy('date_billing','desc')->get();
+                                    ->orderBy('number_invoice','asc')->get();
 
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');
