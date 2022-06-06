@@ -151,6 +151,7 @@
       $quotation->bcv = 1;
       $quotation->amount_iva = 0;
       $quotation->amount_with_iva = 0;
+     
     ?>
   @endif
   
@@ -209,14 +210,26 @@
 
     if($quotation->status == 'C' || $quotation->status == 'P'){
 
-    $total_amount +=  $quotation->amount;
-    $total_base_imponible += $quotation->base_imponible;
-    $total_amount_exento += $quotation->amount_exento;
-    $total_retencion_iva += $quotation->retencion_iva;
-    $total_retencion_islr += $quotation->retencion_islr;
-    $total_anticipo += $quotation->anticipo;
-    $total_amount_iva += $quotation->amount_iva;
-    $total_amount_with_iva += $quotation->amount_with_iva;
+
+     if (isset($coin) && ($coin == 'bolivares')){
+      $total_amount +=  $quotation->amount;
+      $total_base_imponible += $quotation->base_imponible;
+      $total_amount_exento += $quotation->amount_exento;
+      $total_retencion_iva += $quotation->retencion_iva;
+      $total_retencion_islr += $quotation->retencion_islr;
+      $total_anticipo += $quotation->anticipo;
+      $total_amount_iva += $quotation->amount_iva;
+      $total_amount_with_iva += $quotation->amount_with_iva;
+
+     } else {
+      $total_amount += ($quotation->amount / $quotation->bcv ?? 0); 
+      $total_amount_exento += ($quotation->amount_exento / $quotation->bcv ?? 0); 
+      $total_base_imponible += ($quotation->base_imponible / $quotation->bcv ?? 0); 
+      $total_amount_iva += ($quotation->amount_iva / $quotation->bcv ?? 0); 
+      $total_retencion_iva += ($quotation->retencion_iva / $quotation->bcv ?? 0); 
+
+     }
+
 
     } else { 
 
@@ -228,6 +241,7 @@
       $total_anticipo += 0;
       $total_amount_iva += 0;
       $total_amount_with_iva += 0;
+
 
     }
 
@@ -260,7 +274,8 @@
     <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format($total_amount_iva, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format($total_retencion_iva, 2, ',', '.') }}</th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    
+
+
   </tr> 
 </table>
 <div class="page-break"></div>

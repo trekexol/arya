@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registrar Gasto de Condominio</h3></div>
+                <div class="card-header" ><h3>Registrar Relación de Gasto de Condominio</h3></div>
 
                 <div class="card-body" >
                    
@@ -226,9 +226,12 @@
                                         @endif
                                             
                                     </div>
-                                    <div class="form-group col-md-1">
+                                    <div class="form-group col-md-1" >
+                                    </div>    
+                                    <div class="form-group col-md-1" style="display: none;">
                                         @if (empty($inventory))
                                         <div class="form-check">
+                                            
                                             <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
                                             <label class="form-check-label" for="gridCheck">
                                                 Retiene ISLR

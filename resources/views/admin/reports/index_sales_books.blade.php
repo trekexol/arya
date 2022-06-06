@@ -40,14 +40,18 @@
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                        @if($coin == 'bolivares')
+                                        <option selected value="bolivares">Bolívares</option>
+                                        <option value="dolares">Dólares</option>
+                                        @endif
+                                        @if($coin == 'dolares')
+                                        <option value="bolivares">Bolívares</option>
+                                        <option selected value="dolares">Dólares</option>
+                                        @endif
                                     @else
-                                        <option disabled selected value="bolivares">Moneda</option>
-                                    @endif
-                                    
-                                    <option  value="bolivares">Bolívares</option>
+                                    <option value="bolivares">Bolívares</option>
                                     <option value="dolares">Dólares</option>
+                                    @endif
                                 </select>
                             </div>
                             <div class="col-sm-1">

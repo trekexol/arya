@@ -34,7 +34,7 @@
                 <div class="card-body" >
 
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
+                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_quotation ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
                         <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
@@ -46,7 +46,7 @@
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
                             <div class="col-md-3">
-                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
+                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_quotation ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
     
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -295,7 +295,7 @@
                                     </button>
                                 </div>
                                 <div class="col-md-2">
-                                    <a href="{{ route('receipt.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                    <a href="{{ route('receipt.createunique',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 </div>
                             </div>
                         @endif
@@ -795,7 +795,7 @@
                             <div class="col-md-2">
 
                                 @if (isset($is_after) && ($is_after == false))
-                                    <a href="{{ route('receipt') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
+                                    <a href="{{ route('receiptunique') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
                                 @else
                                     <a href="{{ route('receipt.createunique',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 @endif
