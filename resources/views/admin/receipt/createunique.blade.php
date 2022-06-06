@@ -238,7 +238,9 @@
                                         @endif
                                             
                                     </div>
-                                    <div class="form-group col-md-1">
+                                    <div class="form-group col-md-1" >
+                                    </div>    
+                                    <div class="form-group col-md-1" style="display: none;">
                                         @if (empty($inventory))
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
