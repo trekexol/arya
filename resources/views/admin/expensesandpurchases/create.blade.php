@@ -120,7 +120,7 @@
                                     <label for="type" class="col-md-2 col-form-label text-md-right">Tipo de Compra:</label>
                                 
                                     <div class="col-md-4">
-                                        <input value="{{ old('type_form') ?? '..'}}">
+                                       
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="-1">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
