@@ -934,7 +934,6 @@ Route::group(["prefix"=>'twosubsegments'],function(){
     Route::get('/','TwoSubSegmentController@index')->name('twosubsegments');
     Route::get('register','TwoSubSegmentController@create')->name('twosubsegments.create');
     Route::post('store', 'TwoSubSegmentController@store')->name('twosubsegments.store');
-
     Route::get('{id}/edit','TwoSubSegmentController@edit')->name('twosubsegments.edit');
     Route::delete('{id}/delete','TwoSubSegmentController@destroy')->name('twosubsegments.delete');
     Route::patch('{id}/update','TwoSubSegmentController@update')->name('twosubsegments.update');
