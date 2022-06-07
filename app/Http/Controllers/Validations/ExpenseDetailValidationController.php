@@ -36,6 +36,7 @@ class ExpenseDetailValidationController extends Controller
 
     public function updateExpenseTotal($expense){
 
+       
         $expense_details = DB::connection(Auth::user()->database_name)->table('expenses_details')
                     ->where('id_expense',$expense->id)
                     ->get();
@@ -60,13 +61,15 @@ class ExpenseDetailValidationController extends Controller
                 $total_retiene_islr += ($var->price * $var->amount); 
             }
         }
-
+       
         $expense->base_imponible = $base_imponible;
         $expense->amount = $total;
         $expense->amount_iva = ($base_imponible * $expense->iva_percentage) /100;
         $expense->amount_with_iva =  $expense->amount + $expense->amount_iva;
 
-        //$expense->retencion_islr = 
+        $expense->retencion_islr = ($total_retiene_islr * $expense->islr_concepts['value'])/100;
+        $expense->retencion_iva = ($expense->amount_iva * $expense->providers['porc_retencion_iva']) / 100;
+        
         $expense->save();
 
     }
