@@ -195,6 +195,44 @@ class BankMovementController extends Controller
        return $pdf->stream();
    }
 
+
+   public function bankmovementPdfDetail($id_header_voucher)
+   {
+       
+       $pdf = App::make('dompdf.wrapper');
+
+       $date = Carbon::now();
+       $datenow = $date->format('Y-m-d');    
+       $type = "";
+      
+        $movements = DetailVoucher::on(Auth::user()->database_name)
+            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
+            ->join('accounts','accounts.id','detail_vouchers.id_account')
+            ->leftJoin('payment_orders','payment_orders.id','header_vouchers.id_payment_order')
+            ->where('header_vouchers.id',$id_header_voucher)
+            ->whereIn('detail_vouchers.status',['C','F'])
+            ->select('header_vouchers.description', 'header_vouchers.id as header_id', 'header_vouchers.date as date',
+            'header_vouchers.reference as reference','header_vouchers.description as description',
+            'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
+            'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description'
+            )
+            ->get();
+         
+        if(count($movements) > 0){
+            if(substr($movements[0]->description,0,13) == "Transferencia") {
+                $type = "Transferencia";
+            }else if(substr($movements[0]->description,0,6) == "Retiro") {
+               $type = "Retiro";
+           }else  if(substr($movements[0]->description,0,8) == "Deposito") {
+               $type = "Deposito";
+           }
+        }
+        
+       
+       $pdf = $pdf->loadView('admin.bankmovements.reports.bankmovement_pdf',compact('type','movements','datenow'));
+       return $pdf->stream();
+                
+   }
    /**
     * Show the form for creating a new resource.
     *

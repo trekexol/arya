@@ -521,6 +521,9 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
     Route::get('orderPaymentPdfDetail/{id_header_voucher}','OrderPaymentListController@orderPaymentPdfDetail')->name('bankmovements.orderPaymentPdfDetail');
 
+     Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
+
+    
 });
 
 Route::group(["prefix"=>'nominas'],function(){
