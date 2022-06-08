@@ -305,7 +305,7 @@ class ExpensesAndPurchaseController extends Controller
 
     }
 
-    public function create_expense_detail($id_expense,$coin,$type = null,$id_product = null)
+    public function create_expense_detail($id_expense,$coin,$type = null,$id_product = null,$account = null,$subaccount = null)
     {
         
         $expense = null;
@@ -399,7 +399,7 @@ class ExpensesAndPurchaseController extends Controller
             $coin = 'dolares';
         }
 
-        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas'));
+        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas','account','subaccount'));
     }
 
     public function create_expense_voucher($id_expense,$coin)
@@ -709,7 +709,7 @@ class ExpensesAndPurchaseController extends Controller
     }
     
     
-    public function selectinventary($id_expense,$coin,$type)
+    public function selectinventary($id_expense,$coin,$type,$account = null ,$subaccount = null) 
     {
         if($type == 'mercancia' || $type == 'MERCANCIA'){
             $type = 'MERCANCIA';
@@ -750,7 +750,7 @@ class ExpensesAndPurchaseController extends Controller
             }
 
         
-            return view('admin.expensesandpurchases.selectinventary',compact('type','coin','inventories','id_expense'));
+            return view('admin.expensesandpurchases.selectinventary',compact('type','coin','inventories','id_expense','account','subaccount'));
     }
     
 

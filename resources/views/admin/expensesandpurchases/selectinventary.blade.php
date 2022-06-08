@@ -68,7 +68,7 @@
                     @foreach ($inventories as $var)
                         <tr>
                             <td>
-                                <a href="{{ route('expensesandpurchases.create_detail',[$id_expense,$coin,$type ?? 'MERCANCIA',$var->id]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                                <a href="{{ route('expensesandpurchases.create_detail',[$id_expense,$coin,$type ?? 'MERCANCIA',$var->id,$account,$subaccount]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             </td>
                             <td>{{ $var->id }}</td>
                             <td>{{ $var->code_comercial }}</td>
