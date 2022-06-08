@@ -124,13 +124,11 @@
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="-1">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
-                                    
                                             
-                                            @if ($value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costo de Venta Mercancía' || $value == 'Costo de Venta' || $value == 'Costo de Ventas' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario')
-                                                
-                                           
-                                                <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>{{ $value }}</option>
-                                       
+                                            @if ($value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costo de Venta Mercancía' || $value == 'Costo de Venta' || $value == 'Costo de Ventas' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario') 
+                                                 
+                                                <option value="{{ $index }}" {{ $account == $index ? 'selected' : '' }}>{{ $value }}</option>
+
                                             @endif
                                           
         
@@ -146,7 +144,7 @@
                                                 @if(!empty($branches))
                                                     @foreach ($branches as $var)
                                                         <option value="{{ $var->id }}">{{ $var->description }}</option>
-                                                    @endforeach
+                                                        @endforeach
                                                     
                                                 @endif
                                             
@@ -162,9 +160,10 @@
                                             <option value="-1">Seleccionar</option>
                                             @if (isset($accounts_inventory))
                                                 @foreach ($accounts_inventory as $var)
-                                                    <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                                    <option value="{{ $var->id }}" {{ $subaccount == $var->id ? 'selected' : '' }}>{{ $var->description }}</option>
                                                 @endforeach
                                             @endif
+
                                         </select>
 
                                         @if ($errors->has('account'))
@@ -204,7 +203,7 @@
                                     
                                     <div id="btn_code_inventary" class="form-group col-md-1">
                                         <a href="" title="Buscar por Código" onclick="searchCodeInventory()"><i class="fa fa-search"></i></a>  
-                                        <a id="btnselectinventory" href="{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,"mercancia"]) }}" title="Buscar"><i class="fa fa-eye"></i></a>  
+                                        <a id="btnselectinventory" href="" title="Buscar"><i class="fa fa-eye"></i></a>  
                                     
                                     </div>
 
@@ -541,8 +540,62 @@
 
         $("#centro_costo_label").show();
         $("#centro_costo").show();
+
+        var combo = document.getElementById("type_form");
+        var selected = combo.options[combo.selectedIndex].text;
+
+
+       /*controlador(type_var,null);*/
+        var valueac = '<?php echo $account ?>';
+        var value = '<?php echo $subaccount ?>';
+
+        if(selected == 'Inventario'){   
+            $("#divinventario").show();
+            document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}"+'/'+valueac+'/'+value;  
+
+        }
         
-        controlador(type_var,null);
+        if(selected == 'Costos de Ventas' || selected == 'Costo de Venta Mercancia' ||  selected == 'Costo de Venta Mercancía'){
+            $("#divinventario").show();
+            document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}"+'/'+valueac+'/'+value;  
+    
+        }
+
+        if (value != '') {
+            $.ajax({
+                
+                url:"{{ route('expensesandpurchases.listaccount') }}" + '/' + valueac,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                   
+                    let account = $("#account");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            if(value == id){
+                            htmlOptions += `<option value='${id}' selected>${description}</option>`
+                            }else{
+                                htmlOptions += `<option value='${id}'>${description}</option>`    
+                            }
+                        });
+                    }
+                    account.html('');
+                    account.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                }
+            })
+        }
+
+
 
         $("#type_form").on('change',function(){
             type_var = $(this).val();
@@ -557,33 +610,33 @@
 
         function controlador(type_var,selected)
         {
-                
+
+            var account = document.getElementById("type_form").value;
+            var subaccount = document.getElementById("account").value;
+              
+
                 if(type_var != "-1"){    
                 
-                    if(selected == 'Inventario'){
+                     if(selected == 'Inventario'){
                             $("#divinventario").show();       
                             document.getElementById("code_inventary_label").innerHTML = "Código Producto:";
-                            document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}";   
-                    }
+                            document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}"+'/'+account+'/'+subaccount;  
+                           
+                           
+                    
+                        }
                     
                     
-                    if(selected == 'Costos de Ventas'){
+                    if(selected == 'Costos de Ventas' || selected == 'Costo de Venta Mercancia' ||  selected == 'Costo de Venta Mercancía'){
                         $("#divinventario").show();
                         document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
-                         document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";  
+                         document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}"+'/'+account+'/'+subaccount;  
                
                      }
 
-                     if(selected == 'Costo de Venta Mercancia'){
-
-                        $("#divinventario").show();
-                        document.getElementById("code_inventary_label").innerHTML = "Código Servicio:";
-                        document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}";  
-                
-                     }
 
                     
-                    if(selected != 'Inventario' & selected != 'Costos de Ventas' & selected != 'Costo de Venta Mercancia'){
+                    if(selected != 'Inventario' & selected != 'Costos de Ventas' & selected != 'Costo de Venta Mercancia' & selected != 'Costo de Venta Mercancía'){
                     $("#divinventario").hide();
                     }
 
@@ -595,6 +648,40 @@
                 }
                 
         }
+
+
+        function controladortwo()
+        {
+            var combo = document.getElementById("type_form");
+            var selected = combo.options[combo.selectedIndex].text;
+            var type_var = document.getElementById("type_form").value;
+            var account = document.getElementById("type_form").value;
+            var subaccount = document.getElementById("account").value;
+              
+
+                if(type_var != "-1"){    
+                
+                    if(selected == 'Inventario'){   
+                        document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'mercancia']) }}"+'/'+account+'/'+subaccount;  
+
+                    }
+                    
+                    if(selected == 'Costos de Ventas' || selected == 'Costo de Venta Mercancia' ||  selected == 'Costo de Venta Mercancía'){
+                        document.getElementById("btnselectinventory").href = "{{ route('expensesandpurchases.selectinventary',[$expense->id,$coin,'servicio']) }}"+'/'+account+'/'+subaccount;  
+               
+                    }
+
+                    if(selected != 'Inventario' & selected != 'Costos de Ventas' & selected != 'Costo de Venta Mercancia' & selected != 'Costo de Venta Mercancía'){
+                    $("#divinventario").hide();
+                    }
+
+                } else {
+
+                    $("#divinventario").hide();
+                }
+                
+        }
+
 
         function searchCode(type_var){
 
@@ -628,48 +715,57 @@
             })
         }
 
+
         function searchCodeInventory(){
             
             let reference_id = document.getElementById("code_inventary").value; 
+            var account = document.getElementById("type_form").value;
+            var subaccount = document.getElementById("account").value;
             
-            $.ajax({
-                
-                url:"{{ route('expensesandpurchases.listinventory',['']) }}" + '/' + reference_id,
-                beforSend:()=>{
-                    alert('consultando datos');
-                },
-                success:(response)=>{
-                 
+
+            if (reference_id != ''){
+                $.ajax({
                     
-                    if(response.length > 0){
-                        response.forEach((item, index, object)=>{
-                            let {id,type} = item;
-                          
-                           window.location = "{{route('expensesandpurchases.create_detail', [$expense->id,$coin,'',''])}}"+"/"+type+"/"+id;
-                           
-                        });
-                    }else{
-                       
+                    url:"{{ route('expensesandpurchases.listinventory',['']) }}" + '/' + reference_id,
+                    beforSend:()=>{
+                        alert('consultando datos');
+                    },
+                    success:(response)=>{
+                    
+                        
+                        if(response.length > 0){
+                            response.forEach((item, index, object)=>{
+                                let {id,type} = item;
+                            
+                            window.location = "{{route('expensesandpurchases.create_detail', [$expense->id,$coin,'',''])}}"+"/"+type+"/"+id+"/"+account+"/"+subaccount;
+                
+                            });
+                        }else{
+                        
+                        }
+                    
+                    },
+                    error:(xhr)=>{
+                    
                     }
-                   
-                },
-                error:(xhr)=>{
-                   
-                }
-            })
+                })
+             }
         }
 
                 $("#account").on('change',function(){
+                    
                     var type_form_validate = document.getElementById("type_form").value; 
 
                    
                     if((type_form_validate != 1) && (type_form_validate != 3)){
                             var e = document.getElementById("account");
                             var text = e.options[e.selectedIndex].text;
-
+                            
                             document.getElementById("description").value = text;
-                    
+                            
+
                     }
+                    controladortwo();
                         
                     
                 });

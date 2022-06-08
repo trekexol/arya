@@ -814,7 +814,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
 
     Route::get('selectprovider','ExpensesAndPurchaseController@selectprovider')->name('expensesandpurchases.selectprovider');
 
-    Route::get('register/{id_expense}/{coin}/{type?}/{id_inventory?}','ExpensesAndPurchaseController@create_expense_detail')->name('expensesandpurchases.create_detail');
+    Route::get('register/{id_expense}/{coin}/{type?}/{id_inventory?}/{account?}/{subaccount?}','ExpensesAndPurchaseController@create_expense_detail')->name('expensesandpurchases.create_detail');
 
     Route::get('listaccount/{type_var?}','ExpensesAndPurchaseController@listaccount')->name('expensesandpurchases.listaccount');
 
@@ -828,7 +828,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
 
     Route::post('storeexpensecredit', 'ExpensesAndPurchaseController@store_expense_credit')->name('expensesandpurchases.store_expense_credit');
 
-    Route::get('selectinventary/{id_expense}/{coin}/{type}','ExpensesAndPurchaseController@selectinventary')->name('expensesandpurchases.selectinventary');
+    Route::get('selectinventary/{id_expense}/{coin}/{type}/{account?}/{subaccount?}','ExpensesAndPurchaseController@selectinventary')->name('expensesandpurchases.selectinventary');
    
 
     Route::get('expensevoucher/{id_expense}/{coin}','ExpensesAndPurchaseController@create_expense_voucher')->name('expensesandpurchases.create_expense_voucher');
