@@ -115,7 +115,7 @@ class DeliveryNoteController extends Controller
 
 
 
-    public function createdeliverynote($id_quotation,$coin)
+    public function createdeliverynote($id_quotation,$coin,$type = null)
     {   
         
          $quotation = null;
@@ -205,7 +205,7 @@ class DeliveryNoteController extends Controller
             /*-------------- */
              
      
-             return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr'));
+             return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr','type'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
