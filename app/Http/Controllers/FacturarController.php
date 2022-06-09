@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FacturarController extends Controller
 {
-    public function createfacturar($id_quotation,$coin)
+    public function createfacturar($id_quotation,$coin,$type = 'Cotización')
     {
         
          $quotation = null;
@@ -156,7 +156,12 @@ class FacturarController extends Controller
              $quotation->base_imponible = $base_imponible;
             
              $date = Carbon::now();
+             
+             if($type == 'factura'){
+             $datenow = date_format(date_create($quotation->date_billing),"Y-m-d");    
+             }else{
              $datenow = $date->format('Y-m-d');    
+             }
              $anticipos_sum = 0;
              if(isset($coin)){
                  if($coin == 'bolivares'){
@@ -197,7 +202,7 @@ class FacturarController extends Controller
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','retiene_iva'));
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 

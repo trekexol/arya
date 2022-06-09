@@ -36,15 +36,18 @@
                        
                         
                         <div class="form-group row">
-                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}</label>
+                            <label for="clients" class="col-md-2 col-form-label text-md-right">Cliente</label>
                             <div class="col-md-3">
-                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $datenow }}" required autocomplete="date_quotation">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
     
-                                @error('date_quotation')
+                                @error('client')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="{{ route('quotations.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
@@ -63,20 +66,21 @@
 
                         <div class="form-group row">
                            
-                            
-                            <label for="clients" class="col-md-2 col-form-label text-md-right">Cliente</label>
+                            <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
                             <div class="col-md-3">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $client->name ?? '' }}" readonly required autocomplete="client">
-    
-                                @error('client')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                                <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }} {{ $vendor->surname ?? $client->vendors['surname'] ?? '' }}" readonly required autocomplete="id_vendor">
+
+                                    @error('id_vendor')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                            </div>      
                             <div class="form-group col-md-1">
-                                <a href="{{ route('quotations.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
+                                <a href="{{ route('quotations.selectvendor',[$client->id ?? -1,$type]) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
                             </div>
+                           
+
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
                             <div class="col-md-3">
@@ -93,20 +97,19 @@
 
                         
                         <div class="form-group row">
-                           <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
+                            <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}</label>
                             <div class="col-md-3">
-                                <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }} {{ $vendor->surname ?? $client->vendors['surname'] ?? '' }}" readonly required autocomplete="id_vendor">
+                                <input id="date_quotation" type="date" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $datenow }}" required autocomplete="date_quotation">
+    
+                                @error('date_quotation')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                          
 
-                                    @error('id_vendor')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                            </div>
-                            <div class="form-group col-md-1">
-                                <a href="{{ route('quotations.selectvendor',[$client->id ?? -1,$type]) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
-                            </div>
-                           
+
                             <label for="rol" class="col-md-2 col-form-label text-md-right">Sucursal</label>
                             <div class="col-md-3">
                                

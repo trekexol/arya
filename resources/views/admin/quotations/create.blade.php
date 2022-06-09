@@ -416,7 +416,7 @@
                                         @endif  
                                         
                                     @else
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
+                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$coin,$type]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Facturar</a>  
                                         @if (empty($quotation->date_order))
                                             <a href="{{ route('orders.create_order',[$quotation->id,$coin]) }}" id="btnorder" name="btnorder" class="btn btn-danger" title="order">Pedido</a>  
                                         @endif

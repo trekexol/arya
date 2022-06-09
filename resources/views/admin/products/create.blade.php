@@ -314,12 +314,15 @@
           
             if(type == 'SERVICIO'){
                 $("#AssociateAccount").hide();
+                
+                $('#id_account').removeAttr('required');
                 $("#AssociateAccount2").hide();
-                document.getElementById("id_account").value = null;
             }else{
                 $("#AssociateAccount").show();
                 $("#AssociateAccount2").show();
-                document.getElementById("id_account").value = null;
+                $('#id_account').prop('required',true);
+                
+
             }
         });
 
