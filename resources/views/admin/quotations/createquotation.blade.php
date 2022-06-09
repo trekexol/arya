@@ -49,6 +49,7 @@
                             <div class="form-group col-md-1">
                                 <a href="{{ route('quotations.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
+                           @if($type == 'factura' || $type == 'Nota de Entrega')
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
@@ -60,7 +61,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+                           @endif 
                             
                         </div>
 
@@ -156,13 +157,15 @@
                                   Crear {{$type ?? 'Cotización'}}
                                 </button>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-3">
                                 @if ($type == "Nota de Entrega")
-                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                                @elseif ($type == "factura")
-                                <a href="{{ route('invoices') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                                @else
-                                <a href="{{ route('quotations') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
+                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver a Notas de Ent.</a>  
+                                @endif
+                                @if ($type == "factura")
+                                <a href="{{ route('invoices') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver a Faturas</a>  
+                                @endif
+                                @if ($type != "Nota de Entrega" && $type != "factura") 
+                                <a href="{{ route('quotations') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver a Cotizaciones</a>  
                                 @endif
                              </div>
                         </div>

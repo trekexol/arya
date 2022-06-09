@@ -958,7 +958,7 @@
                                 @if (isset($is_after) && ($is_after == false))
                                     <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
                                 @else
-                                    <a href="{{ route('quotations.create',[$quotation->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                    <a href="{{ route('quotations.create',[$quotation->id,$coin,$type]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 @endif
                             @endif
                              </div>

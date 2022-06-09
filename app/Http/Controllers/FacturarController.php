@@ -158,7 +158,7 @@ class FacturarController extends Controller
              $date = Carbon::now();
              
              if($type == 'factura'){
-             $datenow = date_format(date_create($quotation->date_billing),"Y-m-d");    
+             $datenow = date_format(date_create($quotation->date_quotation),"Y-m-d");    
              }else{
              $datenow = $date->format('Y-m-d');    
              }

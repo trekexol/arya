@@ -29,13 +29,15 @@
                 <div class="card-header" ><h3>Cerrar e Imprimir la Nota de Entrega </h3></div>
                 
                 <div class="card-body" >
+                    @if (isset($quotation->number_delivery_note))
                     <div class="form-group row">
                         <label for="note" class="col-md-2 col-form-label text-md-right">Nota de Entrega:</label>
                         <div class="col-md-2">
+                           
                             <input id="num_note" type="text" class="form-control" name="num_note" value="{{ $quotation->number_delivery_note}}" readonly>
                         </div>
                     </div>    
-                    
+                    @endif
                     
                     <div class="form-group row">
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif Cliente:</label>
@@ -157,11 +159,11 @@
                                 <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Guardar Media Carta</a>  
                             </div>
                             <div class="col-sm-3">
-                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Listar Notas de Entrega</a>  
+                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="">Listar Notas de Entrega</a>  
                             </div>
                            
                             <div class="col-sm-2">
-                                <a href="{{ route('quotations.create',[$quotation->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                <a href="{{ route('quotations.create',[$quotation->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="Volver a La Nota">Volver/Editar</a>  
                             </div>
                             @else
                             <div class="col-sm-3 offset-sm-1">
@@ -171,8 +173,11 @@
                                 <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Ver Media Carta</a>  
                             </div>
                             <div class="col-sm-3">
-                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Listar Notas de Entrega</a>  
+                                <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="">Listar Notas de Entrega</a>  
                             </div>                           
+                            <div class="col-sm-2">
+                                <a href="{{ route('quotations.create',[$quotation->id,$coin ?? 'bolivares','Nota de Entrega']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="Volver a La Nota">Editar</a>  
+                            </div>
                             @endif
                             
                         </div>
