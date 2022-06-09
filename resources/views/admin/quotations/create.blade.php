@@ -32,15 +32,16 @@
                 @if($type == 'factura')
                 <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}}</h3> </div>
                 @endif
-                @if($type != 'Nota de Entrega' && $type == 'factura')            
+                @if($type != 'Nota de Entrega' && $type != 'factura')            
                 <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
                 @endif 
                 <div class="card-body" >
-                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id) }}" enctype="multipart/form-data" >
+                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type) }}" enctype="multipart/form-data" >
                         @method('PATCH')
                         @csrf()
                         <input id="coinhidden2" type="hidden" class="form-control @error('coin') is-invalid @enderror" name="coin2" value="{{ $coin ?? 'bolivares' }}" readonly autocomplete="coin">
-                           
+                        <input id="type_f" type="hidden" class="form-control @error('type_f') is-invalid @enderror" name="type_f" value="{{ $type ?? 'Cotización' }}" autocomplete="type_f">
+            
                         <div class="form-group row">
                             <label for="date_quotation" class="col-sm-2 col-form-label text-md-right">Fecha de {{$type ?? 'Cotización'}}:</label>
                             <div class="col-sm-2">

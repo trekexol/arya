@@ -815,12 +815,14 @@ class QuotationController extends Controller
     
         $var->save();
 
+        $type = request('type_f');
+
         $historial_quotation = new HistorialQuotationController();
 
         $historial_quotation->registerAction($var,"quotation","Actualizó la Cotización");
 
 
-        return redirect('/quotations/register/'.$var->id.'/'.$request->coin2.'')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/quotations/register/'.$var->id.'/'.$request->coin2.'/'.$type)->withSuccess('Actualizacion Exitosa!');
     }
 
         
