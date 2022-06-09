@@ -93,8 +93,18 @@ class QuotationController extends Controller
         }
 
         $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+        
+        $clients = Client::on(Auth::user()->database_name)
+        ->where('cedula_rif','00000000')
+        ->find();
+    
+        if(isset($clients)){
+            $client = $client->id;
+        }else{
+            $client = null;
+        }     
 
-        return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type','user'));
+        return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type','user','client'));
    
     }
 

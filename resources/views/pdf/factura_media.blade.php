@@ -191,7 +191,7 @@
     $total = $total / ($quotation->bcv ?? 1);
   }
  
-   $texto_tasa = ' Tasa de cambio a la fecha '.number_format(bcdiv(($quotation->bcv ?? 1), '1', 2), 2, ',', '.').' Bs.';
+   $texto_tasa = ' Tasa de cambio a la fecha '.number_format(bcdiv(($quotation->bcv ?? 1), '1', 2), 3, ',', '.').' Bs.';
 
 ?>
 
