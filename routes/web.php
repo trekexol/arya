@@ -450,7 +450,7 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::post('storeproduct','QuotationController@storeproduct')->name('quotations.storeproduct');
 
-    Route::get('facturar/{id_quotation}/{coin}','FacturarController@createfacturar')->name('quotations.createfacturar');
+    Route::get('facturar/{id_quotation}/{coin}/{type?}','FacturarController@createfacturar')->name('quotations.createfacturar');
 
     Route::post('storefactura','FacturarController@storefactura')->name('quotations.storefactura');
     Route::get('facturado/{id_quotation}/{coin}/{reverso?}','FacturarController@createfacturado')->name('quotations.createfacturado');

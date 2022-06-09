@@ -242,7 +242,7 @@ class QuotationController extends Controller
         
                 return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company','branches','user_branch'));
             }else{
-                return redirect('/quotations/index')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/quotations/index')->withDanger('No es posible ver esta cotizacion fall');
             } 
             
         }else{
@@ -482,8 +482,8 @@ class QuotationController extends Controller
                 if(empty($type)){
                     $type = '';
                 }else if($type == 'factura'){
-                    $var->date_billing = request('date_quotation');
-                    $var = $validateFactura->validateNumberInvoice();
+                    /*$var->date_billing = request('date_quotation');*/
+                   /* $var = $validateFactura->validateNumberInvoice();*/
                 }
 
                
