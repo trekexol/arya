@@ -95,8 +95,8 @@ class QuotationController extends Controller
         $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
         
         $clients = Client::on(Auth::user()->database_name)
-        ->where('cedula_rif','00000000')
-        ->find();
+        ->where('cedula_rif','00.000.000')
+        ->first();
     
         if(isset($clients)){
             $client = $client->id;
