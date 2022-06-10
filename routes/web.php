@@ -488,9 +488,14 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::post('pdfQuotations','QuotationController@pdfQuotations')->name('quotations.pdfQuotations');
 
-    Route::get('printerreceiptfac','FacturarController@printerreceiptfac')->name('quotations.printerreceiptfac');
-
+   
+    
 });
+
+Route::group(["prefix"=>'printer'],function(){
+    Route::get('/','printerController@index')->name('printer');
+    Route::get('printer','printerController@printer')->name('printer.printer');
+});    
 
 Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('/','BankMovementController@index')->name('bankmovements');

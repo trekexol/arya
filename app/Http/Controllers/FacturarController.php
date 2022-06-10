@@ -3294,12 +3294,6 @@ public function storeanticiposaldar(Request $request)
          } 
          
     }
-
-    public function printerreceiptfac()
-    {
-    
-    
-    }
     
 
 
