@@ -32,7 +32,7 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->code_rif ?? ''}} </h4></th>
     </tr> 
   </table>
-  <h4 style="color: black; text-align: center">Ventas</h4>
+  <h4 style="color: black; text-align: center">Ventas.</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $datenow ?? '' }} / Fecha desde: {{ $date_begin ?? '' }} Fecha Hasta: {{ $date_end ?? '' }} / Tasa: {{ number_format(($rate ?? 0), 2, ',', '.') }}</h5>
    
  
