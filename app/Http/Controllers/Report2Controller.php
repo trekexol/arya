@@ -1173,7 +1173,9 @@ class Report2Controller extends Controller
              ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
              ->join('segments', 'segments.id', '=', 'products.segment_id')
              ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
-             ->where('quotations.status','C')
+             ->orwhere('quotations.date_delivery_note','!=',null)
+             ->orwhere('quotations.date_billing','!=',null)
+             ->where('quotations.status','!=','X')
              ->where('quotation_products.status','C')
              ->where('products.description','LIKE',$name.'%')
              ->whereRaw(
@@ -1185,11 +1187,13 @@ class Report2Controller extends Controller
            
         }else{
             $sales = Quotation::on(Auth::user()->database_name)
-             ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
-             ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
-             ->join('segments', 'segments.id', '=', 'products.segment_id')
-             ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
-            ->where('quotations.status','C')
+            ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+            ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+            ->join('segments', 'segments.id', '=', 'products.segment_id')
+            ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+            ->orwhere('quotations.date_delivery_note','!=',null)
+            ->orwhere('quotations.date_billing','!=',null)
+            ->where('quotations.status','!=','X')
             ->where('quotation_products.status','C')
             ->whereRaw(
                 "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
