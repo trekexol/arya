@@ -64,7 +64,7 @@
     ?>
 
     <tr>
-      <td style="text-align: center; ">{{ $sale->code ?? ''}}</td>
+      <td style="text-align: center; ">{{ $sale->code_comercial ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->description ?? '' }}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->segment_description ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->subsegment_description ?? ''}}</td>

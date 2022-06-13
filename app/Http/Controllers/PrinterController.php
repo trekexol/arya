@@ -8,8 +8,13 @@ use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+//use App\Http\Controllers\Mike42\Escpos\Printer;
+//use App\Http\Controllers\Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+
 use App\Mike42\Escpos\Printer;
 use App\Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+
 
 class PrinterController extends Controller
 {
@@ -19,7 +24,7 @@ class PrinterController extends Controller
 
         return view('admin.printer.index');
    
-   }
+    }
 
     public function printer(){
         try {
@@ -30,9 +35,8 @@ class PrinterController extends Controller
         // Print a "Hello world" receipt"
             $printer = new Printer($connector);
             $printer -> text("Hello World!\n");
-            $printer -> text("Hello World!\n");
-            $printer -> text("Hello World!\n");
-            $printer -> cut();
+
+            //$printer -> cut();
             
            // Close printer 
             $printer -> close();
