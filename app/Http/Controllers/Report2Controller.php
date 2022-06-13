@@ -1168,32 +1168,34 @@ class Report2Controller extends Controller
         $period = $date->format('Y'); 
 
         if(isset($name)){
-            $sales = Product::on(Auth::user()->database_name)
-            ->join('inventories', 'inventories.product_id', '=', 'products.id')
-            ->join('quotation_products', 'quotation_products.id_inventory', '=', 'inventories.id')
-            ->join('segments', 'segments.id', '=', 'products.segment_id')
-            ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
-            ->where('quotation_products.status','C')
-            ->where('products.description','LIKE',$name.'%')
-            ->whereRaw(
-                "(DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') <= ?)", 
+            $sales = Quotation::on(Auth::user()->database_name)
+             ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+             ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+             ->join('segments', 'segments.id', '=', 'products.segment_id')
+             ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+             ->where('quotations.status','C')
+             ->where('quotation_products.status','C')
+             ->where('products.description','LIKE',$name.'%')
+             ->whereRaw(
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','products.price_buy','inventories.code','products.money','segments.description','subsegments.description')
+            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+            ->groupBy('products.description','products.type','products.price','products.code_comercial','products.price_buy','products.money','segments.description','subsegments.description')
             ->orderBy('products.description','asc')->get();
            
         }else{
-            $sales = Product::on(Auth::user()->database_name)
-            ->join('inventories', 'inventories.product_id', '=', 'products.id')
-            ->join('quotation_products', 'quotation_products.id_inventory', '=', 'inventories.id')
-            ->join('segments', 'segments.id', '=', 'products.segment_id')
-            ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+            $sales = Quotation::on(Auth::user()->database_name)
+             ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+             ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+             ->join('segments', 'segments.id', '=', 'products.segment_id')
+             ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+            ->where('quotations.status','C')
             ->where('quotation_products.status','C')
             ->whereRaw(
-                "(DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotation_products.created_at, '%Y-%m-%d') <= ?)", 
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
                 [$date_begin, $date_end])
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','inventories.code','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','products.price_buy','inventories.code','products.money','segments.description','subsegments.description')
+            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+            ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
             ->orderBy('products.description','asc')->get();
         }
         

@@ -13,7 +13,8 @@
 
 declare(strict_types=1);
 
-namespace app\Mike42\Escpos\PrintConnectors;
+
+namespace App\Mike42\Escpos\PrintConnectors;
 
 use Exception;
 use BadMethodCallException;

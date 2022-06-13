@@ -495,6 +495,8 @@ Route::group(["prefix"=>'quotations'],function(){
 Route::group(["prefix"=>'printer'],function(){
     Route::get('/','printerController@index')->name('printer');
     Route::get('printer','printerController@printer')->name('printer.printer');
+    
+
 });    
 
 Route::group(["prefix"=>'bankmovements'],function(){
