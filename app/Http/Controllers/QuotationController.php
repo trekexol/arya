@@ -606,7 +606,6 @@ class QuotationController extends Controller
                 return redirect('quotations/registerproduct/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger($value_return);
         }
 
-        
 
         if($coin == 'dolares'){
             $cost_sin_formato = ($cost) * $var->rate;
@@ -629,9 +628,23 @@ class QuotationController extends Controller
     
         $var->save();
 
+        if(isset($quotation->number_delivery_note)){
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('id', '=', $var->id)
+            ->where('status','!=','X')
+            ->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+            foreach($quotation_products as $det_products){ // guardado historial de inventario 
+            $global->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_delivery_note,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
+            }
+        } 
+
+
+
         if(isset($quotation->date_delivery_note) || isset($quotation->date_billing)){
             $this->recalculateQuotation($quotation->id);
         }
+
 
         $historial_quotation = new HistorialQuotationController();
 
@@ -969,6 +982,25 @@ class QuotationController extends Controller
             $quotation_product->status = 'X'; 
             $quotation_product->save(); 
         }
+
+            $date = Carbon::now();
+            $date = $date->format('Y-m-d'); 
+            $global = new GlobalController;                                                
+        
+            
+            $quotation = Quotation::on(Auth::user()->database_name)->find($quotation_product->id_quotation);
+
+            if(isset($quotation->number_delivery_note)){
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id', '=', request('id_quotation_product_modal'))->get();
+        
+                if(isset( $quotation_products)){
+                    foreach($quotation_products as $det_products){
+            
+                    $global->transaction_inv('rev_nota',$det_products->id_inventory,'reverso',$det_products->amount,$det_products->price,$date ,1,1,$quotation->number_delivery_note,$det_products->id_inventory_histories,$det_products->id,$quotation_product->id_quotation);
+                    }  
+                }
+            }
 
         $historial_quotation = new HistorialQuotationController();
 

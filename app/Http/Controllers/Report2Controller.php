@@ -398,8 +398,9 @@ class Report2Controller extends Controller
         $coin = request('coin');
         $date_begin = request('date_begin');
         $date_end = request('date_end');
+        $type = request('type');
         
-        return view('admin.reports.index_sales_books',compact('coin','date_begin','date_end'));
+        return view('admin.reports.index_sales_books',compact('coin','date_begin','date_end','type'));
     }
 
     public function store_purchases_books(Request $request)
@@ -471,8 +472,9 @@ class Report2Controller extends Controller
         $date_end = request('date_end');
         $name = request('name');
         $coin = request('coin');
+        $type = request('type');
         
-        return view('admin.reports.index_sales',compact('name','coin','date_begin','date_end'));
+        return view('admin.reports.index_sales',compact('name','coin','date_begin','date_end','type'));
     }
 
 
@@ -1158,7 +1160,7 @@ class Report2Controller extends Controller
                  
     }
 
-    function sales_pdf($coin,$date_begin,$date_end,$name = null)
+    function sales_pdf($coin,$date_begin,$date_end,$name,$type)
     {
         
         $pdf = App::make('dompdf.wrapper');
@@ -1166,51 +1168,153 @@ class Report2Controller extends Controller
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y'); 
         $period = $date->format('Y'); 
+        //$type = 'todo';
+        
 
-        if(isset($name)){
-            $sales = Quotation::on(Auth::user()->database_name)
-            ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
-            ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
-            ->join('segments', 'segments.id', '=', 'products.segment_id')
-            ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+        if($name != 'nada'){
 
-            ->whereRaw(
-               "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
-               [$date_begin, $date_end])
-            ->orwhereRaw(
-                   "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
-                   [$date_begin, $date_end])                
-                 //  ->where('quotations.date_delivery_note','!=',null)
-                  // ->orwhere('quotations.date_billing','!=',null)
-                   //->where('quotations.status','!=','X')
-                   ->where('quotation_products.status','!=','X')
-                   ->where('products.description','LIKE',$name.'%')
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
-            ->orderBy('products.description','asc')->get();
-           
-        }else{
-            $sales = Quotation::on(Auth::user()->database_name)
-            ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
-            ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
-            ->join('segments', 'segments.id', '=', 'products.segment_id')
-            ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+            if($type == 'todo') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
 
-            ->whereRaw(
-               "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
-               [$date_begin, $date_end])
-            ->orwhereRaw(
-                   "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
-                   [$date_begin, $date_end])                
-                 //  ->where('quotations.date_delivery_note','!=',null)
-                  // ->orwhere('quotations.date_billing','!=',null)
-                   //->where('quotations.status','!=','X')
-                   ->where('quotation_products.status','!=','X')
-            ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
-            ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
-            ->orderBy('products.description','asc')->get();
+                ->whereRaw(
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+                ->orwhereRaw(
+                    "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
+                    [$date_begin, $date_end])                
+                    //  ->where('quotations.date_delivery_note','!=',null)
+                    // ->orwhere('quotations.date_billing','!=',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                    ->where('products.description','LIKE','%'.$name.'%')
+                ->select('quotations.number_delivery_note as note','quotations.number_invoice as invoice','products.description',DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('invoice','note','products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+
+
+                $invoices = ''; 
+                $notes = '';
+        
+                foreach ($sales as $sale) {
+                    
+                    $sales->invoices = $sale->number_delivery;
+                    $sales->notes = $sale->number_delivery_note;
+    
+                
+                }
+    
+
+            }
+            if($type == 'notas') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+                ->whereRaw(
+                    "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
+                    [$date_begin, $date_end])                
+                    ->where('quotations.date_delivery_note','!=',null)
+                    ->where('quotations.date_billing','=',null)
+                    // ->orwhere('quotations.date_billing','!=',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                    ->where('products.description','LIKE','%'.$name.'%') 
+                ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+            }
+            if($type == 'facturas') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+
+                ->whereRaw(
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+              
+                    ->where('quotations.date_billing','<>',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                    ->where('products.description','LIKE','%'.$name.'%')
+                ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+            }  
+
+
+        }else{ //////////////////////////////sin busqueda/////////////////////////////////////////////////////////////////
+
+            if($type == 'todo') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+
+                ->whereRaw(
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+                ->orwhereRaw(
+                    "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
+                    [$date_begin, $date_end])                
+                    //  ->where('quotations.date_delivery_note','!=',null)
+                    // ->orwhere('quotations.date_billing','!=',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+            }
+            if($type == 'notas') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+                ->whereRaw(
+                    "(DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_delivery_note, '%Y-%m-%d') <= ?)", 
+                    [$date_begin, $date_end])                
+                    ->where('quotations.date_delivery_note','!=',null)
+                    ->where('quotations.date_billing','=',null)
+                    // ->orwhere('quotations.date_billing','!=',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+            }
+            if($type == 'facturas') {
+                $sales = Quotation::on(Auth::user()->database_name)
+                ->join('quotation_products', 'quotation_products.id_quotation', '=', 'quotations.id')
+                ->join('products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->join('segments', 'segments.id', '=', 'products.segment_id')
+                ->leftjoin('subsegments', 'subsegments.id', '=', 'products.subsegment_id')
+
+                ->whereRaw(
+                "(DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(quotations.date_billing, '%Y-%m-%d') <= ?)", 
+                [$date_begin, $date_end])
+              
+                     ->where('quotations.date_billing','<>',null)
+                    //->where('quotations.status','!=','X')
+                    ->where('quotation_products.status','!=','X')
+                ->select('products.description', DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.amount) as amount_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount) as price_sales'), DB::connection(Auth::user()->database_name)->raw('SUM(quotation_products.price*quotation_products.amount/quotation_products.rate) as price_sales_dolar'),'products.type','products.price as price','products.price_buy as price_buy','products.code_comercial','products.money as money','segments.description as segment_description','subsegments.description as subsegment_description')
+                ->groupBy('products.description','products.type','products.price','products.price_buy','products.code_comercial','products.money','segments.description','subsegments.description')
+                ->orderBy('products.description','asc')->get();
+            }
         }
         
+
+
+
+
+
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');
 
@@ -1229,7 +1333,7 @@ class Report2Controller extends Controller
         }
 
        
-        $pdf = $pdf->loadView('admin.reports.sales',compact('coin','rate','sales','datenow','date_begin','date_end'))->setPaper('a4', 'landscape');
+        $pdf = $pdf->loadView('admin.reports.sales',compact('coin','rate','sales','datenow','date_begin','date_end','type'))->setPaper('a4', 'landscape');
         return $pdf->stream();
                  
     }

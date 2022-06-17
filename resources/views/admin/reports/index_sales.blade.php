@@ -23,7 +23,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta </label>
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Hasta:</label>
 
                             <div class="col-sm-3">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
@@ -34,11 +34,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-sm-2">
-                                <button type="submit" class="btn btn-primary ">
-                                    Buscar
-                                 </button>
-                            </div>
+
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-2">
@@ -54,7 +50,7 @@
                                     <option value="dolares">Dólares</option>
                                 </select>
                             </div>
-                            <label for="name" class="col-md-2 col-form-label text-md-right">Nombre</label>
+                            <label for="name" class="col-md-2 col-form-label text-md-right">Descripción:</label>
 
                             <div class="col-md-3">
                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $name ?? '' }}" autocomplete="name">
@@ -65,12 +61,37 @@
                                     </span>
                                 @enderror
                             </div> 
-                            
+                            <div class="col-sm-2">
+                                <select class="form-control" name="type" id="type">
+                                    @if (isset($type))
+                                        @if ($type == 'notas')
+                                            <option selected value="notas">Notas de Entrega</option>                                       
+                                        @elseif($type == 'facturas')
+                                            <option selected value="facturas">Facturas</option>
+                                        @endif
+                                        <option disabled value="todo">-----------------</option>
+                                        <option value="todo">Todo</option>
+                                        <option value="notas">Notas de Entrega</option>
+                                        <option value="facturas">Facturas</option>
+                                    @else
+                                        <option selected value="todo">Todo</option>
+                                        <option value="todo">Todo</option>
+                                        <option value="notas">Notas de Entrega</option>
+                                        <option value="facturas">Facturas</option>
+                                        
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-primary ">
+                                    Buscar
+                                 </button>
+                            </div>
                         </div>
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.sales_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.sales_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? 'nada',$type ?? 'todo']) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
@@ -107,7 +128,7 @@
     }
     
 
-    $("#type").on('change',function(){
+    /*$("#type").on('change',function(){
             type = $(this).val();
             
             if(type == 'todo'){
@@ -119,7 +140,7 @@
                 $("#client_label2").show();
                 $("#client_label3").show();
             }
-        });
+        }); */
 
     </script> 
 

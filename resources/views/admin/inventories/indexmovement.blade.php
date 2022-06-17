@@ -139,7 +139,7 @@
                              
                                             @if (isset($id_inventory)) 
                                                    <option value="todos">Todos</option>
-                                                    @foreach ($inventories as $var) {
+                                                    @foreach ($inventories as $var)
                                                         @if($id_inventory == $var->id_inventory)
                                                         <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
                                                         @else
@@ -148,7 +148,7 @@
                                                     @endforeach      
                                             @else
                                                     <option selected value="todos">Todos</option>     
-                                                    @foreach ($inventories as $var) {
+                                                    @foreach ($inventories as $var)
                                                     <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
                                                     @endforeach                                    
 
