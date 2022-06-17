@@ -888,6 +888,35 @@ class ExpensesAndPurchaseController extends Controller
 
         if($var->expenses['status'] == 'P'){
             $validation->calculateExpenseModify($var->id_expense);
+           
+            $date = Carbon::now();
+            $date = $date->format('Y-m-d'); 
+
+            $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$var->id_expense)->get();
+
+            if(isset($expense_detail)){  
+               
+               foreach($expense_detail as $var){
+                
+                    if(isset($var->id_inventory)){
+                         
+                        $product = Product::on(Auth::user()->database_name)->find($var->id_inventory);
+                        
+                        if(isset($product)){    
+    
+                            if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
+      
+                                $global = new GlobalController; 
+                                $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
+    
+                            }    
+                            
+                        }
+                    }
+               }           
+                       
+            }
+
         }
 
         $historial_expense = new HistorialExpenseController();
@@ -2222,7 +2251,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
 
-          if(isset($expense_detail)){  
+        if(isset($expense_detail)){  
            
            foreach($expense_detail as $var){
             
@@ -2249,7 +2278,7 @@ class ExpensesAndPurchaseController extends Controller
             
                    
         }else{
-            return redirect('expensesandpurchases/registerpaymentafter/'.$id_expense.'')->withDanger('El Inventario de la cotizacion no existe!');
+            return redirect('expensesandpurchases/registerpaymentafter/'.$id_expense.'')->withDanger('El Inventario de compra no existe!');
         } 
 
            
@@ -2416,6 +2445,7 @@ class ExpensesAndPurchaseController extends Controller
             }else{
                 $inventory = null;
             }
+
             
             if($coin != 'bolivares'){
                 $rate = $expense_detail->rate;
@@ -2578,9 +2608,36 @@ class ExpensesAndPurchaseController extends Controller
         
             $var->save();
            
-            if($var->expenses['status'] == 'P'){
-                $validation->calculateExpenseModify($var->id_expense);
-            }
+                if($var->expenses['status'] == 'P'){
+                    $validation->calculateExpenseModify($var->id_expense);
+                    
+                    $date = Carbon::now();
+                    $date = $date->format('Y-m-d'); 
+
+                    $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$var->id_expense)->get();
+
+                    if(isset($expense_detail)){  
+                            
+                            foreach($expense_detail as $varp){
+                                        
+                                    if(isset($varp->id_inventory)){
+                                        
+                                        $product = Product::on(Auth::user()->database_name)->find($varp->id_inventory);
+                                        
+                                        if(isset($product)){    
+
+                                            if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
+                    
+                                                $global = new GlobalController; 
+                                                $global->transaction_inv('aju_compra',$varp->id_inventory,'compra_n',$varp->amount,$varp->price,$date,1,1,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
+                                                
+                                            }    
+                                            
+                                        }
+                                    }
+                            }   
+                    }
+                }
             
             /*$historial_expense = new HistorialExpenseController();
 
@@ -2800,25 +2857,45 @@ class ExpensesAndPurchaseController extends Controller
         $coin = request('coin_modal');
         
         $detail_old = ExpensesDetail::on(Auth::user()->database_name)->find($id_detail); 
-        
-        if(isset($detail_old) && $detail_old->status == "C"){
-            ExpensesDetail::on(Auth::user()->database_name)
-                ->join('inventories','inventories.id','expenses_details.id_inventory')
-                ->join('products','products.id','inventories.product_id')
-                ->where(function ($query){
-                    $query->where('products.type','MERCANCIA')
-                        ->orWhere('products.type','COMBO');
-                })
-                ->where('expenses_details.id',$detail_old->id)
-                ->update(['inventories.amount' => DB::raw('inventories.amount-expenses_details.amount'), 'expenses_details.status' => 'X']);
-        }else{
-            $detail_old->delete(); 
-        }
+
+          
 
         $validation = new ExpenseDetailValidationController();
 
         if($detail_old->expenses['status'] == 'P'){
             $validation->calculateExpenseModify($detail_old->id_expense);
+                                
+            $date = Carbon::now();
+            $date = $date->format('Y-m-d'); 
+
+            $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id',$id_detail)->get();
+
+            $detail_old->delete(); 
+
+            if(isset($expense_detail)){  
+                    
+                    foreach($expense_detail as $varp){
+                                
+                            if(isset($varp->id_inventory)){
+                                
+                                $product = Product::on(Auth::user()->database_name)->find($varp->id_inventory);
+                                
+                                if(isset($product)){    
+
+                                    if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
+            
+                                        $global = new GlobalController; 
+                                        $global->transaction_inv('rev_compra',$varp->id_inventory,'compra_reverso',$varp->amount,$varp->price,$date,1,1,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
+                
+                                    }    
+                                }
+                            }
+                    }   
+            }
+
+  
+        } else {
+            $detail_old->delete();   
         }
 
         $historial_expense = new HistorialExpenseController();

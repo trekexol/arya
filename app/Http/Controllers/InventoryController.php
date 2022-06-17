@@ -180,19 +180,16 @@ class InventoryController extends Controller
 
 
         foreach ($inventories as $inventory) {
-            
 
 
-                
-
-
-                if ($inventory->type == 'compra' or $inventory->type == 'rev_compra') {   
+                if ($inventory->type == 'compra' or $inventory->type == 'rev_compra' or $inventory->type == 'aju_compra') {   
 
                     $invoice = DB::connection(Auth::user()->database_name)
                     ->table('expenses_and_purchases')
                     ->where('id','=',$inventory->id_expense_detail)
                     ->select('invoice')
                     ->get()->last(); 
+                    
                 } else  {
 
                     $invoice = DB::connection(Auth::user()->database_name)
@@ -200,15 +197,15 @@ class InventoryController extends Controller
                     ->where('id','=',$inventory->id_quotation_product)
                     ->select('number_invoice')
                     ->get()->last(); 
+
+
                 }
-
-
                 $note = DB::connection(Auth::user()->database_name)
                 ->table('quotations')
                 ->where('id','=',$inventory->id_quotation_product)
                 ->select('number_delivery_note')
-                ->get()->last(); 
- 
+                ->get()->last();
+
                 
                 $branch = DB::connection(Auth::user()->database_name)
                 ->table('branches')

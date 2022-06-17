@@ -610,11 +610,7 @@ class GlobalController extends Controller
                 }
             }
         }
-    }
-
-
-    
-        
+    }     
 
     public function search_bcv()
     {
@@ -624,9 +620,8 @@ class GlobalController extends Controller
         $datenow = $date->format('Y-m-d');    
         $clientg = new Clientg();
 
-        if(empty($company->date_consult_bcv) || ($company->date_consult_bcv != $datenow)){
+        if($company->date_consult_bcv != $datenow){
            
-            
                 $url = "http://www.bcv.org.ve/bcv/contactos";
             
                 $ch = curl_init( $url );
@@ -724,7 +719,6 @@ class GlobalController extends Controller
 
     function consul_prod_invt($id_product,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
-
         if ($sucursal == 1) {
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
@@ -810,25 +804,39 @@ class GlobalController extends Controller
     
                 switch ($type) {
                     case 'compra':
+                        
                         if ($id_historial_inv != 0) {
-    
+       
                             $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
                             ->where('id','=',$id_historial_inv)
                             ->select('id','amount')
                             ->get()->last();  
-                            
-                                if (!empty($inventories_quotations_hist)) {
-                                    
-                                        $amount = 0;
-                                        $transaccion = $amount_real;
-                                        $agregar = 'false';   
-                                }
-        
-                        } else {
-                            $transaccion = $amount_real+$amount;
-                        }   
                         
+
+                            if (!empty($inventories_quotations_hist)) {
+                        
+                                
+                                if ($inventories_quotations_hist->amount == $amount) {
+                                
+                                    $transaccion = $amount_real;
+                                    $agregar = 'false';   
+                                } else {
+                                    	
+                                    $transaccion = ($amount_real+$inventories_quotations_hist->amount)-$amount;	
+                                    $agregar = 'true'; 
+                                    $type = 'compra';                                    
+                                
+                                }
+    
+                                
+                            } else {
+                                $transaccion = $amount_real+$amount;  
+                            }
+                        } else {
+
+                            $transaccion = $amount_real+$amount; 
+                        }
 
                     break;
                     case 'venta':
@@ -897,8 +905,76 @@ class GlobalController extends Controller
                     $transaccion = $amount_real+$amount;
                     break;
                     case 'aju_nota':
-                        $transaccion = $amount_real+$amount;
+                        if ($id_historial_inv != 0) {
+       
+                            $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->where('id','=',$id_historial_inv)
+                            ->select('id','amount')
+                            ->get()->last();  
+                        
+
+                            if (!empty($inventories_quotations_hist)) {
+                        
+                                
+                                if ($inventories_quotations_hist->amount == $amount) {
+                                    $amount_nota = 0;
+                                    $transaccion = $amount_real;
+                                    $agregar = 'false';   
+                                } else {
+
+                                    $transaccion = ($amount_real+$inventories_quotations_hist->amount)-$amount;	
+                                    $agregar = 'true'; 
+                                    $type = 'aju_nota';                                    
+                                
+                                }
+    
+                                
+                            } else {
+                                $transaccion = $amount_real-$amount;  
+                            }
+    
+                        } else {
+                                $transaccion = $amount_real-$amount; 
+                        }
                     break;  
+
+                    case 'aju_compra':
+                        if ($id_historial_inv != 0) {
+       
+                            $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->where('id','=',$id_historial_inv)
+                            ->select('id','amount')
+                            ->get()->last();  
+                        
+
+                            if (!empty($inventories_quotations_hist)) {
+                        
+                                
+                                if ($inventories_quotations_hist->amount == $amount) {
+                                    $amount_nota = 0;
+                                    $transaccion = $amount_real;
+                                    $agregar = 'false';   
+                                } else {
+
+                                    $transaccion = ($amount_real-$inventories_quotations_hist->amount)+$amount;	
+                                    $agregar = 'true'; 
+                                    $type = 'aju_compra';                                    
+                                
+                                }
+    
+                                
+                            } else {
+                                $transaccion = $amount_real;
+                                $agregar = 'false';  
+                            }
+    
+                        } else {
+                                $transaccion = $amount_real;
+                                $agregar = 'false'; 
+                        }
+                    break;
                     case 'rev_venta':
                     $transaccion = $amount_real+$amount;
                     break;  
@@ -909,7 +985,7 @@ class GlobalController extends Controller
                 }
     
     
-                    if ($transaccion < 0) {
+                    if ($transaccion <= 0) {
     
                        $msg = "La cantidad es mayor a la disponible en inventario";
                 
@@ -939,9 +1015,17 @@ class GlobalController extends Controller
                             ->select('id')
                             ->get()->last();                             
 
-                            DB::connection(Auth::user()->database_name)->table('quotation_products')
-                            ->where('id','=',$id)
-                            ->update(['id_inventory_histories' => $id_last->id]);
+                                if ($type == 'nota' || $type == 'factura' || $type == 'aju_nota'){
+                                    DB::connection(Auth::user()->database_name)->table('quotation_products')
+                                    ->where('id','=',$id)
+                                    ->update(['id_inventory_histories' => $id_last->id]);
+                                }
+       
+                                if ($type == 'compra' || $type == 'aju_compra'){
+                                    DB::connection(Auth::user()->database_name)->table('expenses_details')
+                                    ->where('id','=',$id)
+                                    ->update(['id_inventory_histories' => $id_last->id]);
+                                }      
                         
                         }
     
@@ -959,7 +1043,10 @@ class GlobalController extends Controller
                             $msg = 'Reverso de Nota exitoso';
                             break;   
                             case 'aju_nota':
-                             $msg = 'Eliminacion de producto de la Nota exitoso';
+                            $msg = 'Eliminacion de producto de la Nota exitoso';
+                            break;   
+                            case 'aju_compra':
+                            $msg = 'Ajuste de producto de Compra exitoso';
                             break;      
                             case 'rev_venta':
                             $msg = 'Reverso de Factura exitoso';
@@ -1009,7 +1096,7 @@ class GlobalController extends Controller
             }
     
     return $msg;
-    
+
     } // fin de funcion transaccion
    
 }

@@ -38,6 +38,8 @@
  
 <table style="width: 100%;">
   <tr>
+    <th style="text-align: center; ">Factura</th>
+    <th style="text-align: center; ">Nota</th>
     <th style="text-align: center; ">Código</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Segmento</th>
@@ -64,6 +66,8 @@
     ?>
 
     <tr>
+      <td style="text-align: center; ">{{ $sale->invoices ?? ''}}</td>
+      <td style="text-align: center; ">{{ $sale->notes ?? ''}}</td>
       <td style="text-align: center; ">{{ $sale->code_comercial ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->description ?? '' }}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->segment_description ?? ''}}</td>
@@ -93,6 +97,8 @@
   @endforeach 
 
   <tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
