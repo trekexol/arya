@@ -51,9 +51,10 @@
      ?>
     <table style="width: 100%;">
       <tr>
-        <th style="text-align: center; width: 20%;">Fecha</th>
-        <th style="text-align: center; width: 10%;">Ref</th>
+        <th style="text-align: center; width: 12%;">Fecha</th>
+        <th style="text-align: center; width: 10%;">Comp.</th>
         <th style="text-align: center; width: 30%;">Descripcion</th>
+        <th style="text-align: center; width: 20%;">Referencia</th>      
         <th style="text-align: center; width: 20%;">Debe</th>
         <th style="text-align: center; width: 20%;">Haber</th>
         <th style="text-align: center; width: 20%;">Saldo</th>
@@ -74,7 +75,7 @@
             <td style="text-align: center;">{{ date_format(date_create($detail->date),"d-m-Y") ?? ''}}</td>
             <td style="text-align: center;">{{ $detail->id_header ?? ''}}</td>
             <td style="text-align: left;">{{ $detail->header_description ?? ''}} / {{ $detail->account_counterpart ?? '' }}</td>
-
+            <td style="text-align: center;">{{ $detail->reference ?? ''}}</td>
             <td style="text-align: right;">{{ number_format($detail->debe ?? 0, 2, ',', '.')}}</td>
             <td style="text-align: right;">{{ number_format($detail->haber ?? 0, 2, ',', '.')}}</td>
             <td style="text-align: right;">{{ number_format($detail->saldo ?? 0, 2, ',', '.')}}</td>
@@ -89,39 +90,40 @@
       <td style="text-align: center;">Saldo Inicial</td>
       <td style="text-align: center;"></td>
       <td style="text-align: center;"></td>
+      <td style="text-align: center;"></td>
       <td style="text-align: right;">{{ number_format($saldo_inicial, 2, ',', '.')}}</td>
+    </tr>
+    <tr>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white; border-right-color: black;"></th>
+      <th style="text-align: right;">{{ number_format($total_debe ?? 0, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_haber ?? 0, 2, ',', '.')}}</th>
+      <th style="text-align: center; border-color: black;"></th>
+    </tr>
+    <tr>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo del mes</th>
+      <th style="text-align: right;">{{ number_format($total_debe - $total_haber, 2, ',', '.')}}</th>
+    </tr>
+    <tr>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: center; border-color: white;"></th>
+      <th style="text-align: right; border-color: white; border-right-color: black;">Saldo actual a la fecha</th>
+      <th style="text-align: right;">{{ number_format($saldo, 2, ',', '.')}}</th>
     </tr>
   </table>
 @endif
-    <table style="width: 100%;">
-      <tr>
-        <th style="text-align: center; width: 20%; border-color: white;"></th>
-        <th style="text-align: center; width: 10%; border-color: white;"></th>
-        <th style="text-align: center; width: 30%; border-color: white; border-right-color: black;"></th>
-        <th style="text-align: right; width: 20%; ">{{ number_format($total_debe ?? 0, 2, ',', '.')}}</th>
-        <th style="text-align: right; width: 20%;">{{ number_format($total_haber ?? 0, 2, ',', '.')}}</th>
-        <th style="text-align: center; width: 20%; border-color: white; border-left-color: black;"></th>
-      </tr>
-    </table>
-    <table style="width: 100%;">
-      <tr>
-        <th style="text-align: center; width: 20%; border-color: white;"></th>
-        <th style="text-align: center; width: 10%; border-color: white;"></th>
-        <th style="text-align: center; width: 30%; border-color: white;"></th>
-        <th style="text-align: center; width: 20%; border-color: white;"></th>
-        <th style="text-align: center; width: 20%; border-color: white; border-right-color: black;">Saldo del mes</th>
-        <th style="text-align: right; width: 20%;">{{ number_format($total_debe - $total_haber, 2, ',', '.')}}</th>
-      </tr>
-    </table>
-    <table style="width: 100%;">
-      <tr>
-        <th style="text-align: center; width: 20%;border-color: white;"></th>
-        <th style="text-align: center; width: 10%;border-color: white;"></th>
-        <th style="text-align: center; width: 30%;border-color: white;"></th>
-        <th style="text-align: right; width: 40%;border-color: white; border-right-color: black;">Saldo actual a la fecha</th>
-        <th style="text-align: right; width: 20%;">{{ number_format($saldo, 2, ',', '.')}}</th>
-      </tr>
-    </table>
+
+
 </body>
 
 
