@@ -201,8 +201,13 @@ class ProductController extends Controller
         $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
         $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
         
-
-
+        //Empreas licores
+        $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));
+        $valor_sin_formato_liter            = trim(str_replace(',', '.', str_replace('.', '',request('Litros') ?? 0)));
+        $valor_sin_formato_capacity         = trim(str_replace(',', '.', str_replace('.', '',request('Capacidad') ?? 0)));
+        //fin Empreas licores
+        
+        
         $var->price = $valor_sin_formato_price;
         $var->price_buy = $valor_sin_formato_price_buy;
         $var->cost_average = $valor_sin_formato_cost_average;
@@ -231,6 +236,15 @@ class ProductController extends Controller
         $var->lote= request('lote');
         $var->date_expirate= request('fecha_vencimiento');
         $var->status =  1;
+
+        //Empresa licores
+        $var->box               = request('Cajas') ?? 0;
+        $var->degree            = $valor_sin_formato_degree;
+        $var->bottle            = request('Botellas');
+        $var->liter             = $valor_sin_formato_liter;
+        $var->capacity          = $valor_sin_formato_capacity;
+        //fin Empresa licores
+        
         $var->save();
 
 
@@ -374,7 +388,12 @@ class ProductController extends Controller
     $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
     $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
        
-
+    //Empreas licores
+    $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));
+    $valor_sin_formato_liter            = trim(str_replace(',', '.', str_replace('.', '',request('Litros') ?? 0)));
+    $valor_sin_formato_capacity         = trim(str_replace(',', '.', str_replace('.', '',request('Capacidad') ?? 0)));
+    //fin Empreas licores
+    
 
     $var->price = $valor_sin_formato_price;
     $var->price_buy = $valor_sin_formato_price_buy;
@@ -408,7 +427,15 @@ class ProductController extends Controller
     }else{
         $var->status = request('status');
     }
-   
+
+    //Empresa licores
+    $var->box               = request('Cajas') ?? 0;
+    $var->degree            = $valor_sin_formato_degree;
+    $var->bottle            = request('Botellas');
+    $var->liter             = $valor_sin_formato_liter;
+    $var->capacity          = $valor_sin_formato_capacity;
+    //fin Empresa licores
+
     $var->save();
 
     return redirect('/products')->withSuccess('Actualizacion Exitosa!');

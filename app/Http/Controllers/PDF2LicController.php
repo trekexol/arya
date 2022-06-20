@@ -645,6 +645,185 @@ class PDF2LicController extends Controller
     }
 
 
+    function deliverynotelicvertical($id_quotation,$coin,$iva = null,$date = null,$serienote = null)
+    {
+      
+
+        $quotation = null;
+
+        if(isset($id_quotation)){
+            $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
+       
+       
+            if(!(isset($quotation->date_delivery_note))){
+
+                if(empty($quotation->number_delivery_note)){
+                    //Me busco el ultimo numero en notas de entrega
+                    $last_number = Quotation::on(Auth::user()->database_name)->where('number_delivery_note','<>',NULL)->orderBy('number_delivery_note','desc')->first();
+
+                
+                    //Asigno un numero incrementando en 1
+                    if(isset($last_number)){
+                        $quotation->number_delivery_note = $last_number->number_delivery_note + 1;
+                    }else{
+                        $quotation->number_delivery_note = 1;
+                    }
+                }
+                $global = new GlobalController();
+                $retorno = $global->discount_inventory($id_quotation);
+
+                if($retorno != 'exito'){
+                    return redirect('quotationslic/register/'.$id_quotation.'/'.$coin.'')->withDanger($retorno);                     
+                }
+               
+
+             }else{
+                if(isset($quotation->bcv)){
+                    $bcv = $quotation->bcv;
+                 }
+             }     
+       
+       
+        }else{
+                return redirect('/quotationslic')->withDanger('No llega el numero de la cotizacion');
+        } 
+
+        if(isset($quotation)){
+            //$inventories_quotations = QuotationProduct::where('id_quotation',$quotation->id)->get();
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+            ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->where('quotation_products.id_quotation',$quotation->id)
+                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                    'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                    ,'quotation_products.retiene_islr as retiene_islr_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
+                ->get();
+
+                $inventories_quotationss = DB::connection(Auth::user()->database_name)->table('products')
+                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->where('quotation_products.id_quotation',$quotation->id)
+                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                    'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                    ,'quotation_products.retiene_islr as retiene_islr_quotation','quotation_products.retiene_iva as retiene_iva_quotation')
+                ->get();
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $tax_1   = $company->tax_1;
+            $tax_3   = $company->tax_3;
+
+            $global = new GlobalController();
+            //Si la taza es automatica
+            if($company->tiporate_id == 1){
+                //esto es para que siempre se pueda guardar la tasa en la base de datos
+                $bcv_quotation_product = $global->search_bcv();
+                $bcv = $global->search_bcv();
+            }else{
+                //si la tasa es fija
+                $bcv_quotation_product = $company->rate;
+                $bcv = $company->rate;
+
+            }
+
+            if(($coin == 'bolivares') ){
+
+                $coin = 'bolivares';
+            }else{
+                //$bcv = null;
+
+                $coin = 'dolares';
+            }
+
+            $total= 0;
+            $base_imponible= 0;
+            $price_cost_total= 0;
+
+            //este es el total que se usa para guardar el monto de todos los productos que estan exentos de iva, osea retienen iva
+            $total_retiene_iva     = 0;
+            $retiene_iva           = 0;
+            $total_retiene_islr    = 0;
+            $total_retiene         = 0;
+            $total_iva             = 0;
+            $total_base_impo_pcb   = 0;
+            $total_iva_pcb         = 0;
+            $total_venta           = 0;
+            $retiene_islr          = 0;
+            $variable_total        = 0;
+            $base_imponible_pcb    = $tax_3;
+            $iva                   = $tax_1;
+            $rate                  = $quotation->bcv;
+
+
+            foreach($inventories_quotationss as $vars){
+
+                //Se calcula restandole el porcentaje de descuento (discount)
+                $percentage = (($vars->price * $vars->amount_quotation) * $vars->discount)/100;
+                $total += ($vars->price * $vars->amount_quotation) - $percentage;
+
+
+                if( $vars->retiene_iva_quotation == 1 ){
+                    $total_retiene         = 0;
+                    $total_base_impo_pcb   = 0;
+                    $total_iva_pcb         = 0;
+                    $total_iva             = 0;
+                    $total_venta        += $vars->price * $vars->amount_quotation ;
+
+                }else{
+
+                    $total_retiene         +=  ($vars->price * $vars->amount_quotation) - $percentage;
+                    $base_imponible        += $total_retiene;
+                    $total_iva             =  $total_retiene * ($iva / 100) ;
+                    $total_base_impo_pcb   =  $total_retiene *($base_imponible_pcb /100) ;
+                    $total_iva_pcb         =  $total_base_impo_pcb * ($iva /100);
+                    $total_venta           =    $total_retiene + $total_iva + $total_iva_pcb;
+                }
+
+            }
+
+            $quotation->amount = $total;
+            $quotation->base_imponible = $base_imponible;
+            $quotation->amount_iva = $base_imponible * $quotation->iva_percentage / 100;
+            $quotation->amount_with_iva = $quotation->amount + $quotation->amount_iva;
+            $quotation->iva_percentage = $iva;
+            $quotation->date_delivery_note = $date;
+            $quotation->serie_note = $serienote;   
+            $quotation->save();
+
+                
+            $global = new GlobalController();
+
+            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+            ->where('id_quotation', '=', $quotation->id)
+            ->where('status','!=','X')
+            ->get(); // Conteo de Productos para incluiro en el historial de inventario
+               
+            
+            foreach($quotation_products as $det_products){ // guardado historial de inventario 
+            $global->transaction_inv('nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id,0);
+            }
+
+
+            $originalDate = $quotation->date_billing;
+            $newDate = date("d/m/Y", strtotime($originalDate));
+
+            $newVenc = date("d/m/Y", strtotime($quotation->date_expiration));
+
+            if(empty($newVenc)){
+                $newVenc ="";
+            }
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf = $pdf->loadView('pdf.deliverynotelicvertical',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','total','rate','total_retiene','total_iva','total_base_impo_pcb','total_iva_pcb','total_venta','iva','newDate','base_imponible','serienote','base_imponible_pcb'))->setPaper('letter', 'portrait');
+
+            return $pdf->stream();
+
+        }else{
+            return redirect('/invoiceslic')->withDanger('La Nota de Entrega no existe');
+        }
+        
+    }
+
     
 
     public function aggregate_movement_mercancia($quotation,$price_cost_total){
