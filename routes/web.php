@@ -1024,7 +1024,7 @@ Route::group(["prefix"=>'reports'],function(){
 
     Route::get('sales_books','Report2Controller@index_sales_books')->name('reports.sales_books');
     Route::post('storesales_books','Report2Controller@store_sales_books')->name('reports.store_sales_books');
-    Route::get('sales_bookspdf/{coin}/{date_begin}/{date_end}/{type}','Report2Controller@sales_books_pdf')->name('reports.sales_books_pdf');
+    Route::get('sales_bookspdf/{coin}/{date_begin}/{date_end}','Report2Controller@sales_books_pdf')->name('reports.sales_books_pdf');
 
     Route::get('purchases_book','Report2Controller@index_purchases_books')->name('reports.purchases_book');
     Route::post('storepurchases_book','Report2Controller@store_purchases_books')->name('reports.store_purchases_books');
