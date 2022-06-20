@@ -373,12 +373,17 @@ class DailyListingController extends Controller
                         $id_client = $quotation_delivery->id_client;
                         $coin = $quotation_delivery->coin;    
                         }
-
-                        $client = Client::on(Auth::user()->database_name) // buscar factura
-                        ->where('id','=',$id_client)
-                        ->get()->first();
                         
-                        $detail->header_description .= $client->name;
+                        if(isset($id_client)) {
+                            $client = Client::on(Auth::user()->database_name) // buscar factura
+                            ->where('id','=',$id_client)
+                            ->get()->first();
+                            
+                            if(!empty($client)) {
+                            $detail->header_description .= $client->name;
+                            }
+                       }
+
 
                         $detail->header_description .= '. '.$coin;
                         
@@ -386,21 +391,27 @@ class DailyListingController extends Controller
 
                    } else {
 
-                        
-                        $client = Client::on(Auth::user()->database_name) // buscar factura
-                        ->where('id','=',$anticipo->id_client)
-                        ->get()->first();
 
-                        $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
-                        ->where('id','=',$anticipo->id_provider)
-                        ->get()->first();
 
-                        if (isset($client)) {
-                        $detail->header_description .= '. '.$client->name;
+
+                        if (isset($anticipo->id_client)) {
+                                                    
+                            $client = Client::on(Auth::user()->database_name) // buscar factura
+                            ->where('id','=',$anticipo->id_client)
+                            ->get()->first();
+                                 if (isset($client)) {
+                                 $detail->header_description .= '. '.$client->name;
+                                 }
                         }
 
-                        if (isset($proveedor)) {
-                        $detail->header_description .= '. '.$proveedor->razon_social;
+                        if (isset($anticipo->id_provider)) {
+                        
+                            $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
+                            ->where('id','=',$anticipo->id_provider)
+                            ->get()->first();
+                                 if (isset($proveedor)) {
+                                 $detail->header_description .= '. '.$proveedor->razon_social;
+                                 }
                         } 
 
                         $detail->header_description .= '. '.$anticipo->coin;
