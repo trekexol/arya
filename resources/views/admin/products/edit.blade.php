@@ -300,7 +300,73 @@
                                         @endif
                                     </div>
                                 </div>
-                               
+                            @if ((Auth::user()->id_company  == '21'))
+                                <div id="companylic">
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">
+                                            <label for="box">Cajas:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="box" type="text" class="form-control @error('box') is-invalid @enderror" name="Cajas" value="{{ $product->box }}" required autocomplete="box">
+                                            @error('box')
+                                            <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="degree">Grado de Alcohol:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="degree" type="text" class="form-control @error('degree') is-invalid @enderror" name="Grado" value="{{ $product->degree }}" required autocomplete="degree">
+                                            @error('degree')
+                                            <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">
+                                            <label for="bottle">Botellas por Caja:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="bottle" type="text" class="form-control @error('bottle') is-invalid @enderror" name="Botellas" value="{{ $product->bottle }}" required autocomplete="bottle">
+                                            @error('bottle')
+                                            <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label for="liter">Litros por Botellas:</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input id="liter" type="text" class="form-control @error('liter') is-invalid @enderror" name="Litros" value="{{ $product->liter }}"  required autocomplete="liter">
+                                            @error('liter')
+                                            <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">
+                                            <label for="capacity">Capacidad de Litros:</label>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <input id="capacity" type="text" class="form-control @error('capacity') is-invalid @enderror" name="Capacidad" value="{{ $product->capacity }}" onclick="litros();" required autocomplete="capacity" readonly>
+                                            @error('capacity')
+                                            <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                </div>
+                            @endif  
                                 <div class="form-group row">
                                     <label for="special_impuesto" class="col-md-2 col-form-label text-md-right">Impuesto Especial</label>
         
@@ -351,9 +417,61 @@
                     </div>
  @endsection
  @section('validacion')
-    <script>    
+    <script>  
+    
+    function litros(){
+            var n1 = document.getElementById('bottle').value;
+            var n2 = document.getElementById('liter').value;
+            var n3 = document.getElementById('box').value;
+
+            if ( n1 == '' || n1 == null ) {
+                alert("Agregar la cantidad de botellas");
+                exit;
+            }  
+            
+            
+            if ( n2 == '' || n2 == null ) {
+                alert("Agregar la cantidad de litros o mililitros");
+                exit;
+            }  
+
+            
+            if ( n3 == '' || n3 == null ) {
+                alert("Agregar la cantidad de cajas");
+                exit;
+            }  
+
+            
+            if ((n1 != null || n1 != '') && (n2 != null || n2 != '') && (n3 != null || n3 != '')) {
+                // var n2 = document.getElementById('xponcetaje').value; // PORCENTAJE
+                var n2_format  = n2.replace(",", "." );
+                var resultado       = (parseFloat(n1) * parseFloat(n3)  * parseFloat(n2_format));
+                document.getElementsByName("Capacidad")[0].value = resultado;
+            }
+        } 
+     
+        $("#liter").on('blur',function(){
+            litros();
+        }); 
+        
+        $("#bottle").on('blur',function(){
+            litros();
+        }); 
+        
+        $("#box").on('blur',function(){
+            litros();
+        });
+
         $(document).ready(function () {
             $("#price").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#liter").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#degree").mask('000.000.000.000.000,00', { reverse: true });
             
         });
         $(document).ready(function () {

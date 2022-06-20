@@ -151,10 +151,10 @@
                                 <a href="{{ route('pdf.previewnote',[$quotation->id,$coin ?? null,$quotation->serien ?? ' ']) }}" id="" name="" class="btn btn-warning" title="facturar">Imprimir Prev Nota Ent.</a>
                             </div>
                             <div class="col-sm-4 offset-sm-1">
-                                <a onclick="pdfnotelic();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar e Imprimir Nota de Entrega</a>
+                                <a onclick="pdfnotelic();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar/Imprimir Nota de Entrega</a>
                             </div>
-                            <div class="col-sm-2">
-                                <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Media Carta</a>
+                            <div class="col-sm-4">
+                                <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Guardar/Imp. Media Carta</a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -257,13 +257,18 @@
 
     }
 
+
     function pdfmediacarta3() {
-        let inputIva = document.getElementById("iva").value;
-        let date = document.getElementById("date-begin").value;
+      
+      
+      let inputIva = document.getElementById("iva").value;
 
-        var nuevaVentana= window.open("{{ route('pdf.deliverynotemediacarta',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+      let date = document.getElementById("date-begin").value;
+      let serienote = document.getElementById("serien").value;
 
-    }
+      var nuevaVentana= window.open("{{ route('pdf.deliverynotelicvertical',[$quotation->id,$coin,'','',''])}}"+"/"+inputIva+"/"+date+"/"+serienote,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+
+  }
 
     function calculate() {
         let inputIva = document.getElementById("iva").value;
