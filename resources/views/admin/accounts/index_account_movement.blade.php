@@ -94,10 +94,10 @@
                         <td>{{$var->description ?? ''}} Compra({{ $var->id_expense }}) / {{$var->accounts['description'] ?? ''}}</td>
                    
                     @elseif (isset($var->id_anticipo))
-                        <td>{{$var->description ?? ''}} {{ $var->id_anticipo ?? 'no found' }}</td>                   
+                        <td>{{$var->description ?? ''}} {{ $var->id_anticipo ?? '' }}</td>                   
                     @else
                         
-                     <td>{{$var->description ?? ''}} {{ 'sin condicion' }}</td>
+                     <td>{{$var->description ?? ''}}</td>
 
                     @endif
                    
