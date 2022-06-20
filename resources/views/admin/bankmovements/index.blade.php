@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Consulta de Caja Y Bancos</div>
+                <div class="card-header text-center font-weight-bold h3">Consulta de Bancos y Cajas</div>
 
                 <div class="card-body">
                         <div class="table-responsive">
