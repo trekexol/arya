@@ -136,11 +136,14 @@
                                 </td>
 
                             @else
-
-
+                                @if ($quotation->status == '1' & $quotation->status == 1)      
+                                <td class="text-center font-weight-bold">
+                                    <a href="{{ route('receipt.create',[$quotation->id,$quotation->coin ?? 'bolivares',"Nota de Entrega"])}}" title="Procesar" class="font-weight-bold text-dark">Por Procesar</a>
+                                    
+                                @endif
                                  <!--//if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ ''/*route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares'])*/}}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ ''/*route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares'])*/}}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{ ''/*$diferencia_en_dias*/}} dias)</a>
                                     </td>
                                 //else
                                     <td class="text-center font-weight-bold">
