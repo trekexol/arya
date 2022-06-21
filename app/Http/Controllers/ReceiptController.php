@@ -474,9 +474,18 @@ class ReceiptController extends Controller
                                 ->where('receipt_products.id_quotation',$id_quotation)
                                 ->whereIn('receipt_products.status',['1','C'])
                                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.id as quotation_products_id','products.code_comercial as code','receipt_products.discount as discount',
-                                'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva')
+                                'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva','receipt_products.description as description_det')
                                 ->get(); 
-            
+          
+
+                foreach ($inventories_quotations as $var) {
+    
+                    if($var->description_det != null) {
+        
+                        $var->description = $var->description_det; 
+                    }
+                    
+                }
                 
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');  
@@ -6534,6 +6543,52 @@ public function store(Request $request) // Empezar a Crear Factura
     
     }
 
+    public function editquotationproductunique($id,$coin = null)
+    {
+            $quotation_product = ReceiptProduct::on(Auth::user()->database_name)->find($id);
+        
+            if(isset($quotation_product)){
+
+                $inventory= Product::on(Auth::user()->database_name)->find($quotation_product->id_inventory);
+
+                $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
+                
+                //Si la taza es automatica
+                if($company->tiporate_id == 1){
+                    $bcv = $global->search_bcv();
+                }else{
+                    //si la tasa es fija
+                    $bcv = $company->rate;
+                }
+
+                if(!isset($coin)){
+                    $coin = 'bolivares';
+                }
+
+                if($coin == 'bolivares'){
+                    $rate = null;
+                }else{
+                    $rate = $quotation_product->rate;
+                }
+
+                 
+                
+                    if($quotation_product->description != null) {
+        
+                        $inventory->description = $quotation_product->description; 
+                    }
+                    
+
+
+                return view('admin.receipt.edit_productunique',compact('rate','coin','quotation_product','inventory','bcv'));
+            }else{
+                return redirect('/receiptr')->withDanger('No se Encontro el Producto!');
+            }
+    
+    
+    }
+
 
     public function updatequotationproduct(Request $request, $id)
     { 
@@ -6591,9 +6646,9 @@ public function store(Request $request) // Empezar a Crear Factura
                 $var->retiene_iva = true;
             }
 
-            if($value_return != 'exito'){
+           /* if($value_return != 'exito'){
                 return redirect('receipt/quotationproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario! ');
-            }
+            } */
 
         
             $var->save();
@@ -6622,6 +6677,96 @@ public function store(Request $request) // Empezar a Crear Factura
         */
             
             return redirect('/receipt/register/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
+        
+    }
+
+    public function updatequotationproductunique(Request $request, $id)
+    { 
+
+           
+            $data = request()->validate([
+                
+                'amount'         =>'required',
+                'discount'         =>'required',
+                'description'         =>'required'
+            
+            ]);
+
+            
+        
+            $var = ReceiptProduct::on(Auth::user()->database_name)->findOrFail($id);
+
+            $price_old = $var->price;
+            $amount_old = $var->amount;
+
+            $sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
+            $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+
+            $coin = request('coin');
+            $var->rate = $sin_formato_rate;
+
+            if($coin == 'bolivares'){
+                $var->price = $sin_formato_price;
+            }else{
+                $var->price = $sin_formato_price * $sin_formato_rate;
+            }
+        
+            $var->amount = request('amount');
+        
+            $var->discount = request('discount');
+
+            $var->description = request('description');
+        
+            $global = new GlobalController();
+
+            $value_return = $global->check_product($var->id_quotation,$var->id_inventory,$var->amount);
+
+
+            $islr = request('islr');
+            if($islr == null){
+                $var->retiene_islr = false;
+            }else{
+                $var->retiene_islr = true;
+            }
+
+            $exento = request('exento');
+            if($exento == null){
+                $var->retiene_iva = false;
+            }else{
+                $var->retiene_iva = true;
+            }
+
+            /*if($value_return != 'exito'){
+                return redirect('receipt/quotationproduct/'.$var->id.'/'.$coin.'/edit')->withDanger('La cantidad de este producto excede a la cantidad puesta en inventario! ');
+            } */
+
+        
+            $var->save();
+
+            
+            if(isset($var->quotations['date_delivery_note']) || isset($var->quotations['date_billing'])){
+                $this->recalculateQuotation($var->id_quotation);
+            }
+
+            $global = new GlobalController();
+            
+            /*if(isset($var->quotations['date_delivery_note'])) {
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('receipt_products')
+                ->where('id_quotation', '=', $var->id_quotation)
+                ->where('id', '=',  $var->id)
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
+                foreach($quotation_products as $det_products){ // guardado historial de inventario 
+                $global->transaction_inv('aju_nota',$det_products->id_inventory,'pruebaf',$det_products->amount,$det_products->price,null,1,1,0,$det_products->id_inventory_histories,$det_products->id,$var->id_quotation);
+                }
+            }
+
+            $historial_quotation = new HistorialQuotationController();
+
+            $historial_quotation->registerAction($var,"receipt_product","Actualizó el Producto: ".$var->inventories['code']."/ 
+            Precio Viejo: ".number_format($price_old, 2, ',', '.')." Cantidad: ".$amount_old."/ Precio Nuevo: ".number_format($var->price, 2, ',', '.')." Cantidad: ".$var->amount);
+        */
+            
+            return redirect('/receipt/registerunique/'.$var->id_quotation.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }
 

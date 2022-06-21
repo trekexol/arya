@@ -701,7 +701,11 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('receiptproduct/{id}/{coin}/edit','ReceiptController@editquotationproduct')->name('receipt.productedit');
 
+    Route::get('receiptproductunique/{id}/{coin}/edit','ReceiptController@editquotationproductunique')->name('receipt.producteditunique');
+
     Route::patch('productupdate/{id}/update','ReceiptController@updatequotationproduct')->name('receipt.productupdate');
+    Route::patch('productupdateunique/{id}/update','ReceiptController@updatequotationproductunique')->name('receipt.productupdateunique');
+
     Route::delete('deleteproduct','ReceiptController@deleteProduct')->name('receipt.deleteProduct');
 
     Route::get('facturar/{id_quotation}/{coin}','ReceiptController@createfacturar')->name('receipt.createfacturar');

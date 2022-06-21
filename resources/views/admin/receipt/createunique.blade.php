@@ -362,7 +362,7 @@
                                                     
                                                 ?>
                                                     <td style="text-align: right">
-                                                        <a href="{{ route('receipt.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                                        <a href="{{ route('receipt.producteditunique',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                                                         <a href="#" class="delete" data-id={{$var->quotation_products_id}} data-description={{$var->description}} data-id-quotation={{$quotation->id}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                                     </td>
                                             
