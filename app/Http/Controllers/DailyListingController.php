@@ -278,7 +278,11 @@ class DailyListingController extends Controller
         $saldo = 0;
         $counterpart = "";
 
+
         foreach($detailvouchers as $detail){
+            
+            //$detailvouchers->account_counterpart = '';
+
             if($detail->id_account == $id_account){
                 /*esta parte convierte los saldos a dolares */
                 if($coin !="bolivares"){
@@ -299,21 +303,32 @@ class DailyListingController extends Controller
                     $saldo = $detail->saldo;
                 }
                 
-                if($counterpart == ""){
+               /* if($counterpart == ""){
                     $last_detail = $detail;
                 }else{
                     $detail->account_counterpart = $counterpart;
-                }
-                
+                }*/
+              
+
+
+                $detail->account_counterpart = 'peluda';
+
             }else{
-                if(isset($last_detail)){
+               /*if(isset($last_detail)){
                     $last_detail->account_counterpart = $detail->account_description;
                    
                 }else{
                     $counterpart = $detail->account_description;
-                }
+                }*/
+
                 
+               // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
+                
+
+               $detail->account_counterpart = 'rata';
+ 
             }
+            
 
             $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
             ->where('id','=',$detail->id_invoice)
