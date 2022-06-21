@@ -647,7 +647,8 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('/','ReceiptController@index')->name('receipt');
     Route::get('receipt/{id_quotation?}/{check?}','ReceiptController@indexr')->name('receiptr');
-    
+    Route::get('indexpenverif/{id_quotation?}/{check?}','ReceiptController@index_pen_verif')->name('receipt.indexpenverif');
+
     Route::get('registerreceipt/{type?}','ReceiptController@createreceipt')->name('receipt.createreceipt');
     Route::get('registerreceiptunique/{id_client?}/{type?}/{datenow?}/{owners?}','ReceiptController@createreceiptunique')->name('receipt.createreceiptunique'); // Inicio de Creacion de recibo
 

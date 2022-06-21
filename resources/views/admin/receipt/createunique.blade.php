@@ -343,11 +343,11 @@
 
                                             ?>
                                                 <tr>
-                                                <td style="text-align: right">{{ $var->code}}</td>
+                                                <td style="text-align: center">{{ $var->code}}</td>
                                                 @if(isset($var->retiene_iva) && ($var->retiene_iva == 1))
-                                                    <td style="text-align: right">{{ $var->description}} (E)</td>
+                                                    <td style="text-align: left">{{ $var->description}} (E)</td>
                                                 @else
-                                                    <td style="text-align: right">{{ $var->description}}</td>
+                                                    <td style="text-align: left">{{ $var->description}}</td>
                                                 @endif
                                                 
                                                 <td style="text-align: right">{{ $var->amount_quotation}}</td>

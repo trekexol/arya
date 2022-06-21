@@ -42,9 +42,11 @@
 @csrf
 <!-- container-fluid -->
 <div class="container-fluid">
-    <div class="row py-lg-4">
-        <div class="col-md-4">
-            <h2>Recibos de Condominio </h2>
+    <div class="row py-lg-8">
+
+        <div class="col-md-8">
+
+            <h2>Recibos de Condominio Pendientes Por Verificar</h2>
         </div>
     </div>
     <!-- Page Heading -->
@@ -54,16 +56,7 @@
 
        
           <div class="col-sm-3">
-            <a href="{{ route('receipt.createreceiptclients',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Generar Recibos a Propietarios</a>
-          </div>
-          <div class="col-sm-3">
-            <a href="{{ route('receipt.createreceiptunique',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Crear Recibo Individual</a>
-          </div>
-          <div class="col-sm-3">
-            <a href="{{ route('receipt.indexpenverif',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Pendientes por Verificar</a>
-          </div>
-          <div class="col-sm-3">
-            <a href="{{ route('receipt.envioreceiptclients') }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Enviar Correo Masivo</a>
+            <a href="{{ route('receiptr') }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Volver al Listado de Recibos</a>
           </div>
 
 
