@@ -363,7 +363,7 @@ class ReceiptController extends Controller
                                 ->where('receipt_products.id_quotation',$id_quotation)
                                 ->whereIn('receipt_products.status',['1','C'])
                                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.id as quotation_products_id','products.code_comercial as code','receipt_products.discount as discount',
-                                'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva')
+                                'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva','receipt_products.description as description_det')
                                 ->get(); 
             
                 
@@ -392,6 +392,15 @@ class ReceiptController extends Controller
                     //$bcv = null;
 
                     $coin = 'dolares';
+                }
+
+                foreach ($inventories_quotations as $var) {
+    
+                    if($var->description_det != null) {
+        
+                        $var->description = $var->description_det; 
+                    }
+                    
                 }
                 
         
@@ -2444,9 +2453,19 @@ public function store(Request $request) // Empezar a Crear Factura
                 ->orwhere('receipt_products.status','=','1')
                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                 'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
-                ,'receipt_products.retiene_islr as retiene_islr_quotation')
+                ,'receipt_products.retiene_islr as retiene_islr_quotation','receipt_products.description as description_det')
                 ->get();
+
                 
+
+                foreach ($inventories_quotationso as $varo) {
+    
+                    if($varo->description_det != null) {
+        
+                        $varo->description = $varo->description_det; 
+                    }
+                    
+                }              
                 
                 //Buscar recibos que debe
                 $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
@@ -5885,7 +5904,7 @@ public function store(Request $request) // Empezar a Crear Factura
 
                                      
              }else{
-                return redirect('/receipt')->withDanger('No llega el numero de la factura');
+                return redirect('/receipt')->withDanger('No llega el numero de la Relacion');
                 } 
      
              if(isset($quotation)){
@@ -5910,8 +5929,17 @@ public function store(Request $request) // Empezar a Crear Factura
                                                                 ->orwhere('receipt_products.status','=','1')
                                                                 ->select('products.*','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                                                                 'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
-                                                                ,'receipt_products.retiene_islr as retiene_islr_quotation')
+                                                                ,'receipt_products.retiene_islr as retiene_islr_quotation','receipt_products.description as description_det')
                                                                 ->get(); 
+
+                foreach ($inventories_quotations as $var) {
+    
+                    if($var->description_det != null) {
+        
+                        $var->description = $var->description_det; 
+                    }
+                    
+                }
 
                 
                 if($coin == 'bolivares'){
@@ -6454,6 +6482,15 @@ public function store(Request $request) // Empezar a Crear Factura
                     $rate = $quotation_product->rate;
                 }
 
+                 
+                
+                    if($quotation_product->description != null) {
+        
+                        $inventory->description = $quotation_product->description; 
+                    }
+                    
+
+
                 return view('admin.receipt.edit_product',compact('rate','coin','quotation_product','inventory','bcv'));
             }else{
                 return redirect('/receipt')->withDanger('No se Encontro el Producto!');
@@ -6471,6 +6508,7 @@ public function store(Request $request) // Empezar a Crear Factura
                 
                 'amount'         =>'required',
                 'discount'         =>'required',
+                'description'         =>'required'
             
             ]);
 
@@ -6496,6 +6534,8 @@ public function store(Request $request) // Empezar a Crear Factura
             $var->amount = request('amount');
         
             $var->discount = request('discount');
+
+            $var->description = request('description');
         
             $global = new GlobalController();
 

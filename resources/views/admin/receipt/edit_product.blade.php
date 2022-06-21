@@ -15,7 +15,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header"><h2>Editar Producto </h2></div>
+                    <div class="card-header"><h2>Editar Producto / Servicio</h2></div>
     
                     <div class="card-body">
             <form  method="POST"   action="{{ route('receipt.productupdate',$quotation_product->id) }}" enctype="multipart/form-data" onsubmit="return validacion()">
@@ -29,12 +29,15 @@
                         <div class="col-md-3">
                             <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->code_comercial ?? old('code') }}" readonly required autocomplete="code" autofocus>
                         </div>
-                        <label for="description"  class="col-md-3 col-form-label text-md-right">Descripción</label>
-                        <div class="col-md-3">
-                            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') }}" readonly required autocomplete="description">
+                    </div>
+                    <div class="form-group row">
+
+                        <label for="description"  class="col-md-2 col-form-label text-md-right">Descripción</label>
+                        <div class="col-md-10">
+                            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $inventory->description ?? old('description') }}" required autocomplete="description">
                         </div>
                     </div>
-                   
+                                     
                     <div class="form-group row">
                         <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
 
@@ -48,10 +51,6 @@
                                 @endif
                             </select>
                         </div>
-                        <label for="amount_old" class="col-md-3 col-form-label text-md-right">Cantidad En Inventario</label>
-                        <div class="col-md-3">
-                            <input id="amount_old" type="text" class="form-control @error('amount_old') is-invalid @enderror" name="amount_old" value="{{ $inventory->amount }}" readonly required autocomplete="amount_old">
-                        </div> 
                     </div>
                     <div class="form-group row">
                         <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
