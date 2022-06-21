@@ -92,6 +92,41 @@ class ReceiptController extends Controller
 
     }
 
+    public function index_pen_verif($id_quotation = null,$check = null)
+    {
+      
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+            if (isset($id_quotation)){
+                $verified = Receipts::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['verified' => $check]);
+
+            }
+            
+            if (Auth::user()->role_id  == '11'){
+
+                $email = Auth::user()->email;
+                $id_owner = Owners::on(Auth::user()->database_name)->where('email','=',$email)->get()->first();
+
+                $quotations = Receipts::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+                                                ->where('date_billing','<>',null)
+                                                ->where('receipts.id_client','=',$id_owner->id)
+                                                ->where('type','=','R')
+                                                ->get();
+             }else{
+    
+                $quotations = Receipts::on(Auth::user()->database_name)
+                ->orderBy('id' ,'desc')
+                ->where('type','=','R')
+                ->where('status','=','C')
+                ->where('verified','=','0')
+                ->get(); 
+             }
+             
+
+            return view('admin.receipt.indexpenverif',compact('quotations','datenow'));
+
+    }
+
     public function createreceipt($type = null) // crando recibo
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();

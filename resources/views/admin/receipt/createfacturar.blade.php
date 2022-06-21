@@ -72,12 +72,11 @@
 
 
                             @if($quotation->type == 'F')
-                            <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
+                            <!--<label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label> -->
                             @else
                             <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
-                            @endif
-            
-                            
+                          
+                                                      
                             <div class="col-md-4">
                                 <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ $client->personcontact }}" readonly required autocomplete="cedula_rif">
 
@@ -87,6 +86,10 @@
                                     </span>
                                 @enderror
                             </div>
+
+                            @endif
+            
+
                         <div style="display: none;">   
                             <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
                             <div class="col-md-3">
@@ -221,7 +224,7 @@
                                     @enderror
                                 </div>
                             @endif
-                       >
+
                             <div class="col-md-1">
                                 <a href="{{ route('anticipos.selectanticipo',[$quotation->id_client,$coin,$quotation->id]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                             </div>
@@ -291,7 +294,7 @@
                                 </div>
                                 <div id="divGuardar" class="col-md-3">
                                     <button type="submit" class="btn btn-primary">
-                                        Guardar Factura
+                                        Guardar Relación
                                     </button>
                                 </div>
                                 <div class="col-md-2">
@@ -790,7 +793,7 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary">
-                                    Guardar Factura
+                                    Guardar Relación
                                  </button>
                             </div>
                             
@@ -824,11 +827,6 @@
         $("#credit").hide();
         $("#formenviarcredito").hide();
 
-
-        var switchStatus = false;
-        $("#customSwitches").on('change', function() {
-            if ($(this).is(':checked')) {
-                switchStatus = $(this).is(':checked');
                 $("#credit").show();
                 $("#formulario1").hide();
                 $("#formulario2").hide();
@@ -840,15 +838,7 @@
                 $("#formenviarcredito").show();
                 $("#enviarpagos").hide();
                 number_form = 1; 
-            }
-            else {
-            switchStatus = $(this).is(':checked');
-                $("#credit").hide();
-                $("#formulario1").show();
-                $("#formenviarcredito").hide();
-                $("#enviarpagos").show();
-            }
-        });
+
 
         if("{{$quotation->total_factura}}" == 0){
             $("#divGuardar").hide();

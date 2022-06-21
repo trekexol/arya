@@ -46,10 +46,9 @@
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $quotation->number_invoice}}" readonly>
                         </div>
                         @if($quotation->type == 'F')
-                        <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>
+                       <!-- <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">CI/Rif:</label>-->
                         @else
                         <label for="cedula_rif" class="col-md-2 col-form-label text-md-right">Apartamento:</label>
-                        @endif
                         <div class="col-md-3">
                             <input id="date_quotation" type="text" class="form-control @error('date_quotation') is-invalid @enderror" name="date_quotation" value="{{ $client->personcontact  ?? '' }}" readonly required autocomplete="date_quotation">
     
@@ -59,6 +58,8 @@
                                 </span>
                             @enderror
                         </div>  
+                        @endif
+
                     </div>
                     
               
