@@ -296,8 +296,11 @@ class DailyListingController extends Controller
                 /*----------------------------- */
                 if($primer_movimiento){
                     $detail->saldo = $detail->debe - $detail->haber + $saldo_anterior;
+                    
                     $saldo += $detail->saldo;
                     $primer_movimiento = false;
+                    
+                    
                 }else{
                     $detail->saldo = $detail->debe - $detail->haber + $saldo;
                     $saldo = $detail->saldo;
@@ -449,7 +452,7 @@ class DailyListingController extends Controller
 
         
         $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
-                                ,'datenow','date_begin','date_end','account'
+                                ,'datenow','date_begin','date_end','account','saldo_anterior'
                                 ,'detailvouchers_saldo_debe','detailvouchers_saldo_haber','saldo','id_account'));
         return $pdf->stream();
     }
