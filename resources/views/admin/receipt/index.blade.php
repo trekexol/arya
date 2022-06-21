@@ -84,7 +84,7 @@
                 <th class="text-center">Condominio</th>
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs.</th>
-
+                <th class="text-center">Estatus</th>
             </tr>
             </thead>
             
@@ -131,13 +131,10 @@
                                 <td class="text-center font-weight-bold">
                                     <a href="{{ route('receipt.createreceiptfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
-                                <td class="text-center font-weight-bold">
-                                </td>
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
                                 </td>
-                                <td>
-                                </td>
+
                             @else
 
 

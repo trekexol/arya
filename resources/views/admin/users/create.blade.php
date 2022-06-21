@@ -81,6 +81,7 @@
                             <select class="form-control" id="roles_id" name="roles_id">
                                 <option value="1">Administrador</option>
                                 <option value="2">Usuario</option>
+                                <option value="11">Propietario Condominio</option>
                             </select>
                             </div>
                         </div>
