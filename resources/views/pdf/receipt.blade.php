@@ -154,7 +154,9 @@
             ?>
           <tr>
             <th style="text-align: center; font-weight: normal;">{{ $varo->code_comercial }}</th>
-            <th style="text-align: center; font-weight: normal;">{{ $varo->description }}</th>
+
+            <td style="text-align: center">{{ $varo->description}}</td>
+
             <th style="text-align: center; font-weight: normal;">{{ number_format($varo->amount_quotation, 0, '', '.') }}</th>
             <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
             <th style="text-align: right; font-weight: normal;">${{ number_format($total_less_percentage / $quotationsorigin[0]['bcv'], 2, ',', '.') }}</th>

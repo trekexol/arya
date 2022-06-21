@@ -141,6 +141,11 @@
                                     <a href="{{ route('receipt.create',[$quotation->id,$quotation->coin ?? 'bolivares',"Nota de Entrega"])}}" title="Procesar" class="font-weight-bold text-dark">Por Procesar</a>
                                     
                                 @endif
+                                @if ($quotation->status == "P")
+                                <td class="text-center font-weight-bold text-success">Guardada
+                                </td>
+
+                                @endif
                                  <!--//if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
                                         <a href="{{ ''/*route('receipt.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares'])*/}}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{ ''/*$diferencia_en_dias*/}} dias)</a>
