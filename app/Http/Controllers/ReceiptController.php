@@ -2476,7 +2476,7 @@ public function store(Request $request) // Empezar a Crear Factura
                     ->get(); 
 
 
-                 $client = owners::on(Auth::user()->database_name) // buscar cliente
+                 $client = owners::on(Auth::user()->database_name) // buscar propietario
                 ->where('id','=',$quotation->id_client)
                 ->select('owners.*')
                 ->get()->first();
@@ -2512,7 +2512,7 @@ public function store(Request $request) // Empezar a Crear Factura
                 }              
                 
                 //Buscar recibos que debe
-                $quotationp = Receipts::on(Auth::user()->database_name) // buscar facura original
+                $quotationp = Receipts::on(Auth::user()->database_name) // buscar recibo original
                 ->orderBy('id' ,'asc') 
                 ->where('date_billing','<>',null)
                 ->where('type','=','R')
@@ -2522,7 +2522,7 @@ public function store(Request $request) // Empezar a Crear Factura
                 ->select('receipts.*')
                 ->get();
                
-               
+
                 if (isset($quotationp)) {
                 
                     foreach ($quotationp as $quotationtpp) {
@@ -2530,8 +2530,7 @@ public function store(Request $request) // Empezar a Crear Factura
                         $inventories_quotationsp = DB::connection(Auth::user()->database_name)->table('products') // productos recibo pendiente
                         ->join('receipt_products', 'products.id', '=', 'receipt_products.id_inventory')
                         ->where('receipt_products.id_quotation',$quotationtpp->id)
-                        ->where('receipt_products.status','=','C')
-                        ->orwhere('receipt_products.status','=','1')
+                        ->where('receipt_products.status','!=','X')
                         ->select('products.*','receipt_products.id_quotation as id_quotation','receipt_products.price as price','receipt_products.rate as rate','receipt_products.discount as discount',
                         'receipt_products.amount as amount_quotation','receipt_products.retiene_iva as retiene_iva_quotation'
                         ,'receipt_products.retiene_islr as retiene_islr_quotation', )
@@ -2540,9 +2539,9 @@ public function store(Request $request) // Empezar a Crear Factura
                     }
 
 
-                    if(isset($inventories_quotationsp)){
-                        foreach ($inventories_quotationsp as $varp) {
-                            $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
+                    if(!isset($inventories_quotationsp)){
+                       /*   foreach ($inventories_quotationsp as $varp) {
+                          $quotationpn = Receipts::on(Auth::user()->database_name) // buscar facura original
                             ->orderBy('id' ,'asc') 
                             ->where('date_billing','<>',null)
                             ->where('type','=','F')
@@ -2558,8 +2557,8 @@ public function store(Request $request) // Empezar a Crear Factura
                                 $varp->number_delivery_note = NULL;
                                 $varp->date_billing = NULL;                               
                              }
-                        }
-                    } else {
+                        }*/
+                   // } else {
                         $inventories_quotationsp = 0;
                     }
 

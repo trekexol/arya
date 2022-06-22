@@ -27,7 +27,7 @@
         
             <div class="card" style="width: 70rem;" >
                 @if($quotation->type == 'F')
-                <div class="card-header" ><h3>Registrar Relación de Gastos: {{$quotation->number_invoice ?? ''}}</h3></div>
+                <div class="card-header" ><h3>Registrar Relación de Gastos: {{$quotation->number_invoice}} </h3></div>
                 @else
                 <div class="card-header" ><h3>Registrar Recibo de Condominio: {{$quotation->number_delivery_note ?? ''}}</h3></div>
                 @endif
@@ -824,21 +824,55 @@
 
 @section('consulta')
     <script>
-        $("#credit").hide();
-        $("#formenviarcredito").hide();
+       var status = '<?php echo $quotation->status ?? '' ?>';
 
-                $("#credit").show();
-                $("#formulario1").hide();
-                $("#formulario2").hide();
-                $("#formulario3").hide();
-                $("#formulario4").hide();
-                $("#formulario5").hide();
-                $("#formulario6").hide();
-                $("#formulario7").hide();
-                $("#formenviarcredito").show();
-                $("#enviarpagos").hide();
-                number_form = 1; 
+      
+        if (status != 'P') {
+            $("#credit").hide();
+            $("#formenviarcredito").hide();
 
+                    $("#credit").show();
+                    $("#formulario1").hide();
+                    $("#formulario2").hide();
+                    $("#formulario3").hide();
+                    $("#formulario4").hide();
+                    $("#formulario5").hide();
+                    $("#formulario6").hide();
+                    $("#formulario7").hide();
+                    $("#formenviarcredito").show();
+                    $("#enviarpagos").hide();
+
+        }
+
+            $("#customSwitches").on('change', function() {
+                if ($(this).is(':checked')) {
+                    
+                    switchStatus = $(this).is(':checked');
+                    $("#credit").show();
+                    $("#formulario1").hide();
+                    $("#formulario2").hide();
+                    $("#formulario3").hide();
+                    $("#formulario4").hide();
+                    $("#formulario5").hide();
+                    $("#formulario6").hide();
+                    $("#formulario7").hide();
+                    $("#formenviarcredito").show();
+                    $("#enviarpagos").hide();
+                    $("#IGTF_form").hide();
+                    $("#IGTF_buttom").hide();
+
+                }
+                else {
+                switchStatus = $(this).is(':checked');
+                    $("#credit").hide();
+                    $("#formulario1").show();
+                    $("#formenviarcredito").hide();
+                    $("#enviarpagos").show(); 
+                    $("#IGTF_buttom").show();
+                
+                }
+            });
+      
 
         if("{{$quotation->total_factura}}" == 0){
             $("#divGuardar").hide();
