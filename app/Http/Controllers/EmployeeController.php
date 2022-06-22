@@ -77,6 +77,8 @@ class EmployeeController extends Controller
         
         'position_id'         =>'required',
         'profession_id'         =>'required',
+
+        'asignacion_general'         =>'required',
         
         'estado'         =>'required',
         'Municipio'         =>'required',
@@ -114,8 +116,10 @@ class EmployeeController extends Controller
     $users->direccion = request('direccion');
 
     $sin_formato_monto_pago = str_replace(',', '.', str_replace('.', '', request('monto_pago')));
+    $sin_formato_asignacion_general = str_replace(',', '.', str_replace('.', '', request('asignacion_general')));
 
     $users->monto_pago = $sin_formato_monto_pago;
+    $users->asignacion_general = $sin_formato_asignacion_general;
 
     $users->salary_types_id = request('salarytype_id');
 
@@ -206,7 +210,8 @@ class EmployeeController extends Controller
         
         'position_id'         =>'required',
         'profession_id'         =>'required',
-        
+        'asignacion_general'         =>'required',
+
         'estado'         =>'required',
         'Municipio'         =>'required',
         'Parroquia'         =>'required',
@@ -243,6 +248,7 @@ class EmployeeController extends Controller
     $users->fecha_nacimiento = request('fecha_nacimiento');
     $users->direccion = request('direccion');
     $users->monto_pago = str_replace(',', '.', str_replace('.', '', request('monto_pago')));
+    $users->asignacion_general = str_replace(',', '.', str_replace('.', '', request('asignacion_general')));
 
     $users->salary_types_id = request('salarytype_id');
 

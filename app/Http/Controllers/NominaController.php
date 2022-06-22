@@ -329,6 +329,10 @@ class NominaController extends Controller
             
             $total = ($employee->monto_pago / 30) * $days;
             
+        }else if($id_formula == 17){
+            //{{sueldo}} /4
+            $total = ($employee->monto_pago) /4;
+            
         }else{
             return -1;
         }

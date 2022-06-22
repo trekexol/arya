@@ -140,8 +140,10 @@
     
                                 <div class="col-md-6">
                                     <select class="form-control" id="formula_m" name="formula_m" title="formula_mensual">
-                                        @foreach ($formulas as $formula)
-                                            <option value="{{ $formula->id }}">{{ $formula->description }}</option>
+                                        @foreach ($formulas as $formula_m)
+                                            @if ($var->id_formula_m == $formula_m->id)
+                                            <option value="{{ $formula_m->id }}">{{ $formula_m->description }}</option>
+                                            @endif
                                         @endforeach
                                     <option value="nulo">----------------</option>
                                     
@@ -160,7 +162,9 @@
                                 <div class="col-md-6">
                                    <select class="form-control" id="formula_s" name="formula_s" title="formula_semanal">
                                         @foreach ($formulas as $formula_s)
+                                            @if ($var->id_formula_s == $formula_s->id)
                                             <option value="{{ $formula_s->id }}">{{ $formula_s->description }}</option>
+                                            @endif
                                         @endforeach
                                     <option value="nulo">----------------</option>
                                     
@@ -177,14 +181,22 @@
                                 <label for="formula_q" class="col-md-2 col-form-label text-md-right">Fórmula Quincenal:</label>
     
                                 <div class="col-md-6">
-                                    <input id="formula_q" type="text" class="form-control @error('formula_q') is-invalid @enderror" name="formula_q" value="{{ $var->formula_q ?? old('formula_q') }}" maxlength="60" autocomplete="formula_q">
-    
-                                    @error('formula_q')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                    <select class="form-control" id="formula_q" name="formula_q" title="formula_quincenal">
+                                         @foreach ($formulas as $formula_q)
+                                            @if ($var->id_formula_q == $formula_q->id)
+                                            <option value="{{ $formula_q->id }}">{{ $formula_q->description }}</option>
+                                            @endif
+                                         @endforeach
+                                     <option value="nulo">----------------</option>
+                                     
+                                     <div class="dropdown">
+                                         @foreach ($formulas as $s)
+                                             <option value="{{ $s->id }}">{{ $s->description }}</option>
+                                         @endforeach
+                                     </div>
+                                     
+                                 </select>
+                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="minimum" class="col-md-2 col-form-label text-md-right">Mínimo:</label>

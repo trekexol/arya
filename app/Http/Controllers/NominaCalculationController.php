@@ -507,8 +507,9 @@ class NominaCalculationController extends Controller
 
 
 
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
+       
         $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->find($id);
         
         $nomina_calculation->delete();
