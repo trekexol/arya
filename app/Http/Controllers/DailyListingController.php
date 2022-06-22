@@ -314,7 +314,7 @@ class DailyListingController extends Controller
               
 
 
-                $detail->account_counterpart = 'peluda';
+                $detail->account_counterpart = '';
 
             }else{
                /*if(isset($last_detail)){
@@ -328,7 +328,7 @@ class DailyListingController extends Controller
                // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
                 
 
-               $detail->account_counterpart = 'rata';
+               $detail->account_counterpart = '';
  
             }
             

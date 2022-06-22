@@ -1,5 +1,16 @@
 @extends('admin.layouts.dashboard')
 
+@section("styles")
+<link href="{{asset("assets/js/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+@endsection
+
+@section("scriptsPlugins")
+<script src="{{asset("assets/js/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("assets/js/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{asset("assets/js/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+@endsection
+
+
 @section('content')
 
 
@@ -199,21 +210,7 @@
 
                         
                         <div class="form-group row">
-                            <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
-
-                            <div class="col-md-4">
-                                <input id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ 0 ?? old('cost_average') }}" required autocomplete="cost_average">
-
-                                @error('cost_average')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            
-                        </div>
-                       
-                        <div class="form-group row">
+                           
                             <label for="money" class="col-md-2 col-form-label text-md-right">Moneda</label>
 
                             <div class="col-md-4">
@@ -222,6 +219,7 @@
                                     <option value="Bs">Bolívares</option>
                                 </select>
                             </div>
+
                             <label for="exento" class="col-md-2 col-form-label text-md-right">exento</label>
                             
                             <div class="form-check">
@@ -232,7 +230,10 @@
                             <div class="form-check">
                                 <input class="form-check-input position-static" type="checkbox" id="islr" name="islr" value="1" aria-label="...">
                             </div>
+                            
                         </div>
+
+
                         @if ((Auth::user()->id_company  == '21'))
                         <div id="companylic">
                             <div class="form-group row">
@@ -301,6 +302,7 @@
                         @endif
                        
                         <div class="form-group row">
+                            <div style="display: none;">
                             <label for="special_impuesto" class="col-md-2 col-form-label text-md-right">Impuesto Especial</label>
 
                             <div class="col-md-4">
@@ -311,6 +313,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
                             </div>
                             <label id="AssociateAccount" for="account" class="col-md-2 col-form-label text-md-right">Asociar a Cuenta:</label>
                         
@@ -330,9 +333,29 @@
                                     </span>
                                 @endif
                             </div>
+                                                        
+                            <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
+
+                            <div class="col-md-4">
+                                <input id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ 0 ?? old('cost_average') }}" required autocomplete="cost_average">
+
+                                @error('cost_average')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
+                            <div class="col-md-4">
+                            <input id="imagen" type="file" class="" name="imagen" title="Subir Foto">
+                            </div>
+                        </div>
+                        
                         <p id="valueInput"></p> 
                         <br>
+
                         <div class="form-group row mb-0">
                             <div class="col-md-3 offset-md-2">
                                 <button type="submit" class="btn btn-primary">

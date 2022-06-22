@@ -244,10 +244,12 @@
   $total_less_percentagep = 0;
   $total_less_percentagen = 0;
   ?>     
-      @if ($inventories_quotationsp != null) 
+      @if (isset($inventories_quotationsp)) 
         @foreach ($inventories_quotationsp as $varp)
           <?php
-          $percentagep = 0;
+          
+          
+          /*$percentagep = 0;
         
           $conteo_recibos_pendientes++;
           $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
@@ -255,7 +257,10 @@
           $total_less_percentagepn = $quotation->amount_with_iva;
 
           $total_less_percentagep += $quotation->amount_with_iva;
-          ?>
+          */
+         
+         ?>
+         
         @endforeach 
       @endif  
   @endif
