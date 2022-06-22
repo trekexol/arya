@@ -587,9 +587,9 @@ Route::group(["prefix"=>'nominacalculations'],function(){
     Route::get('index/{id_nomina}/{id_employee}','NominaCalculationController@index')->name('nominacalculations');
     Route::get('register/{id_nomina}/{id_employee}','NominaCalculationController@create')->name('nominacalculations.create');
     Route::post('store','NominaCalculationController@store')->name('nominacalculations.store');
-    Route::get('{id}/edit','NominaCalculationController@edit')->name('nominacalculations.edit');
-    Route::delete('{id}/delete','NominaCalculationController@destroy')->name('nominacalculations.delete');
-    Route::patch('{id}/update','NominaCalculationController@update')->name('nominacalculations.update');
+    Route::get('edit/{id}','NominaCalculationController@edit')->name('nominacalculations.edit');
+    Route::get('delete/{id}','NominaCalculationController@destroy')->name('nominacalculations.delete');
+    Route::patch('update/{id}','NominaCalculationController@update')->name('nominacalculations.update');
 
     Route::get('listformula/{id?}','NominaCalculationController@listformula')->name('nominacalculations.listformula');
     Route::get('listformulamensual/{id?}','NominaCalculationController@listformulamensual')->name('nominacalculations.listformulamensual');
