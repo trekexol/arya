@@ -215,7 +215,27 @@ class AccountController extends Controller
             ->orderBy('header_vouchers.date','desc')
             ->orderBy('detail_vouchers.id','desc')
             ->get();
-            
+
+            $primer_movimiento = true;
+            $saldo = 0;
+
+            foreach ($detailvouchers as $var){
+
+                /*----------------------------- */
+                if($primer_movimiento){
+                    $var->saldo = $var->debe - $var->haber;
+                    
+                    $saldo += $var->saldo;
+                    $primer_movimiento = false;
+                    
+                    
+                }else{
+                    $var->saldo = $var->debe - $var->haber + $saldo;
+                    $saldo = $var->saldo;
+                }
+            }    
+
+
             
             if (!empty($detailvouchers)) {
                 foreach ($detailvouchers as $var) {

@@ -250,15 +250,12 @@
           
           
           /*$percentagep = 0;
-        
           $conteo_recibos_pendientes++;
           $percentagep = (($varp->price * $varp->amount_quotation) * $varp->discount)/100;
-
           $total_less_percentagepn = $quotation->amount_with_iva;
-
           $total_less_percentagep += $quotation->amount_with_iva;
           */
-         
+
          ?>
          
         @endforeach 

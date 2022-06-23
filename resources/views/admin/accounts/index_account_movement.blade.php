@@ -38,6 +38,7 @@
                 <th>Descripción</th>
                 <th>Debe</th>
                 <th>Haber</th>
+                <th>Saldo</th>
                
                
               
@@ -112,6 +113,7 @@
                         @else
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
                         @endif
+                        <td class="text-right font-weight-bold">{{number_format($var->saldo, 2, ',', '.')}}</td>
                     @else
                         @if (isset($coin) && $coin == "bolivares")
                             <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
@@ -120,6 +122,7 @@
                             <td class="text-right font-weight-bold">{{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
                         @endif
+                        <td class="text-right font-weight-bold">{{number_format($var->saldo/($var->tasa ?? 1), 2, ',', '.')}}</td>
                         
                     @endif
                     
