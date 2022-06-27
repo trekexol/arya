@@ -129,7 +129,7 @@ class NominaConceptController extends Controller
         $vars =  NominaConcept::on(Auth::user()->database_name)->find($id);
         $var_status = $vars->status;
       
-
+      
         $data = request()->validate([
            
             'order'         =>'required',
@@ -158,9 +158,9 @@ class NominaConceptController extends Controller
         $var->sign = request('sign');
         
         $var->calculate = request('calculate');
-        $var->formula_m = request('formula_m');
-        $var->formula_s = request('formula_s');
-        $var->formula_q = request('formula_q');
+        $var->id_formula_m = request('formula_m');
+        $var->id_formula_s = request('formula_s');
+        $var->id_formula_q = request('formula_q');
 
         $valor_sin_formato_minimum = str_replace(',', '.', str_replace('.', '', request('minimum')));
         $valor_sin_formato_maximum = str_replace(',', '.', str_replace('.', '', request('maximum')));

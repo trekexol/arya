@@ -211,7 +211,17 @@
                                             </span>
                                         @enderror
                                     </div>
+                                    <label for="asignacion_general" class="col-md-2 col-form-label text-md-right">Asignación General</label>
 
+                                    <div class="col-md-4">
+                                        <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ number_format($var->asignacion_general ?? 0, 2, ',', '.')}}" autocomplete="asignacion_general">
+        
+                                        @error('asignacion_general')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
         
                                 <div class="form-group row">
@@ -511,6 +521,11 @@
             $("#telefono1").mask('0000 000-0000', { reverse: true });
             
         }); 
+
+        $(document).ready(function () {
+            $("#asignacion_general").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });   
        
     </script>
 @endsection

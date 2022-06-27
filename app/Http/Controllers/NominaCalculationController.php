@@ -35,9 +35,12 @@ class NominaCalculationController extends Controller
             if(isset($nomina)){
                 if(isset($employee)){
 
-                        $nominacalculations   =   NominaCalculation::on(Auth::user()->database_name)->where('id_nomina', $id_nomina)
+                        $nominacalculations   =   NominaCalculation::on(Auth::user()->database_name)
+                                                                    ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                                                                    ->where('id_nomina', $id_nomina)
                                                                     ->where('id_employee', $id_employee)
-                                                                    ->orderby('id','desc')
+                                                                    ->orderby('nomina_concepts.sign','asc')
+                                                                    ->select('nomina_calculations.*')
                                                                     ->get();
 
                         $new_format = Carbon::parse($nomina->date_begin);
@@ -237,6 +240,8 @@ class NominaCalculationController extends Controller
         
     }
 
+    
+
 
     public function formula($id_formula,$employee,$nomina,$nomina_calculation)
     {
@@ -336,6 +341,11 @@ class NominaCalculationController extends Controller
             //{{sueldo}} / 30 * {{dias_faltados}}
             
             $total = ($employee->monto_pago / 30) * $days;
+            
+        }else if($id_formula == 17){
+            //{{sueldo}} / 4
+            
+            $total = ($employee->monto_pago / 4);
             
         }else{
             return -1;
@@ -507,8 +517,9 @@ class NominaCalculationController extends Controller
 
 
 
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
+       
         $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->find($id);
         
         $nomina_calculation->delete();
