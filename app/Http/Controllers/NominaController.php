@@ -71,14 +71,36 @@ class NominaController extends Controller
         
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$nomina->id_profession)->get();
 
+       
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
         }
 
+
+        $amount_total_nomina = $this->calculateAmountTotalNomina($nomina);
+        
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
         
     }
 
+
+    public function calculateAmountTotalNomina($nomina){
+
+       
+        $amount_total_asignacion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                                                    ->where('id_nomina',$nomina->id)
+                                                    ->where('nomina_concepts.sign',"A")
+                                                    ->sum('nomina_calculations.amount');
+
+        $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                                                    ->where('id_nomina',$nomina->id)
+                                                    ->where('nomina_concepts.sign',"D")
+                                                    ->sum('nomina_calculations.amount');
+
+                                            
+        return $amount_total_asignacion - $amount_total_deduccion;
+
+    }
    
   
     public function addNominaCalculation($nomina,$employee)
@@ -118,7 +140,8 @@ class NominaController extends Controller
                                                 ->where('calculate','LIKE','S')->get();
         }
        
-        if(isset($nominaconcepts)){
+        if(isset($nominaconcepts))
+        {
             foreach($nominaconcepts as $nominaconcept){
 
                 $vars = new NominaCalculation();
@@ -169,12 +192,16 @@ class NominaController extends Controller
             
                 if($tiene_calculo == true){
                     $vars->save();
+                  
                 }
             }
+
+           
         }
 
 
-        if(isset($nominaconcepts_comun)){
+        if(isset($nominaconcepts_comun))
+        {
             foreach($nominaconcepts_comun as $nominaconcept){
 
                 $vars = new NominaCalculation();
@@ -220,13 +247,17 @@ class NominaController extends Controller
                
                 if($tiene_calculo == true){
                     $vars->save();
+                   
+             
                 }
                 
             }
+            
+           
         }    
         
 
-       
+        
         
     }
 
