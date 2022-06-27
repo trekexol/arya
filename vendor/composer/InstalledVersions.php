@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '7bf52437882c285fa6b70c345ae88dda58f85984',
+    'reference' => '8777d207f0047839cb04a4c4e2891706563977c9',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -423,6 +423,15 @@ private static $installed = array (
         0 => '*',
       ),
     ),
+    'kartik-v/bootstrap-fileinput' => 
+    array (
+      'pretty_version' => 'v5.2.8',
+      'version' => '5.2.8.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '89be70dbb9470dd8a56ef27508e344fcfccdb5af',
+    ),
     'kodova/hamcrest-php' => 
     array (
       'replaced' => 
@@ -446,7 +455,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '7bf52437882c285fa6b70c345ae88dda58f85984',
+      'reference' => '8777d207f0047839cb04a4c4e2891706563977c9',
     ),
     'laravel/tinker' => 
     array (

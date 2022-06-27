@@ -208,13 +208,13 @@
                    
                                 <?php
                                  $total_venta_c = 0;
-             
-                                 $total_venta_c = ($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100);
+    
+                                 $total_venta_c = number_format(($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".",""),2,".","");
                                  ?>
              
                                  @if ($quotation->clients['coin'] == '0')
                                  <!-- TOTAL DE VENTA DOLARES -->
-                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100)) / $inventories_quotation->rate ,2,",",".")}}</td>
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".","")) / $inventories_quotation->rate ,2,",",".")}}</td>
                                  @endif
              
                                  <!--IGTF-->
@@ -223,7 +223,7 @@
                                  
                                  @if ($quotation->clients['coin'] == '0')
                                  <!-- TOTAL DE VENTA DOLARES -->
-                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100) + ((3 * $total_venta_c) /100 ))  / $inventories_quotation->rate ,2,",",".")}}</td>
+                                 <td style="font-size: 10px;text-align: right;border: 1px solid black;">${{number_format((($inventories_quotation->price * $inventories_quotation->amount_quotation) + $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100) + number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".","") + ((3 * $total_venta_c) /100 ))  / $inventories_quotation->rate ,2,",",".")}}</td>
                                  @endif      
                          <?php
 
@@ -256,7 +256,7 @@
                            
                             $total_base_impo_pcb   =  $total_retiene * ($base_imponible_pcb /100);
             
-                            $total_iva_pcb         =  ($total_retiene * ($base_imponible_pcb /100)) * ($iva / 100);
+                            $total_iva_pcb         =  number_format(($total_retiene * ($base_imponible_pcb /100)) * ($iva / 100),2,".","");
                            
                             $total_venta           =   $total + $total_retiene + $total_iva + $total_iva_pcb;
             

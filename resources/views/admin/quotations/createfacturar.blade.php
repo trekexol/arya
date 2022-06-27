@@ -42,6 +42,10 @@
                         <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
                         <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
 
+                        <input type="hidden" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
+                        
+                        <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
+
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
                             <div class="col-md-3">
@@ -267,23 +271,28 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row" id="IGTF_form">
-                            <label for="IGTF_total" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+                        @if ($quotation->IGTF_amount > 0) 
+                        <div class="form-group row IGTF" style="display: visible;" >
+                        @else
+                        <div class="form-group row IGTF" style="display: none;" >
+                        @endif
+
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
                             <div class="col-md-3">
-                                <input id="IGTF_total"  type="text" class="form-control @error('IGTF_total') is-invalid @enderror" name="IGTF_total" readonly  autocomplete="IGTF_total"> 
-                        
+                                
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{$quotation->IGTF_amount ?? 0}}" readonly>
+
                             </div>
-                            <label for="amount_dolar" class="col-md-2 col-form-label text-md-right">Total a Pagar en $:</label>
-                            <div class="col-md-2">
-                                <input id="amount_dolar" onblur="calculateTotalIGTF();" type="text" class="form-control @error('amount_dolar') is-invalid @enderror" name="amount_dolar"  autocomplete="amount_dolar"> 
-                        
-                            </div>
+
+                    
                         </div>
-             
+
+
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
 
                         <div class="form-group row">
-                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Pagar</label>
+                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Cobrar</label>
                             <div class="col-md-4">
                                 <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly  required autocomplete="total_pay"> 
                            
@@ -302,16 +311,22 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-md-1" id="IGTF_buttom">
+                            <div class="col-md-3" id="IGTF_buttom">
                                 <div class="custom-control custom-switch">
+                                    @if ($quotation->IGTF_amount> 0 )
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal" checked>
+                                    @else
                                     <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal">
-                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF</label>
+                                    @endif
+                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF: 3% (Total General)</label>
                                 </div>
                             </div>
                             @if (isset($is_after) && ($is_after == true))
-                                <div class="col-md-2">
+                            <div class="col-md-6">
+                            </div>    
+                            <div class="col-md-2">
                                     <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" placeholder="Dias de Crédito" autocomplete="credit"> 
-                                </div>
+                            </div>
                             @endif
                         </div>
                         <br>
@@ -339,7 +354,7 @@
                         <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
                         <input type="hidden" id="date-begin-form2" name="date-begin-form2" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
                         <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
-
+                        
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
@@ -362,10 +377,16 @@
                         
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                          
+                        <!--IGTF-->
+                        <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
 
-                         <!--Total del pago que se va a realizar-->
-                         <input type="hidden" id="IGTF_amount_form" name="IGTF_amount_form"  readonly>
-
+                        <input id="IGTF_input_pre" type="hidden" name="IGTF_input_pre">
+                        <input id="IGTF_input_store" type="hidden" name="IGTF_input_store" value="0">
+                        <input id="IGTF_general" type="hidden" name="IGTF_general">
+                        <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
+                        <input id="total_pay_before" type="hidden" name="total_pay_before">
+                        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -412,7 +433,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1" id="IGTF_div_form" name="IGTF_div_form">
-                                <div class="custom-control custom-switch" > 
+                                <div class="custom-control custom-switch igtfunic" > 
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF" name="IGTF">
                                     <label class="custom-control-label" for="customSwitchesIGTF">IGTF</label>
                                 </div>
@@ -488,7 +509,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-1">
-                                    <div class="custom-control custom-switch">
+                                    <div class="custom-control custom-switch igtfunic">
                                         <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF2" name="IGTF2">
                                         <label class="custom-control-label" for="customSwitchesIGTF2">IGTF</label>
                                     </div>
@@ -566,7 +587,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch igtfunic">
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF3" name="IGTF3">
                                     <label class="custom-control-label" for="customSwitchesIGTF3">IGTF</label>
                                 </div>
@@ -643,7 +664,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch igtfunic">
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF4" name="IGTF4">
                                     <label class="custom-control-label" for="customSwitchesIGTF4">IGTF</label>
                                 </div>
@@ -720,7 +741,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch igtfunic">
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF5" name="IGTF5">
                                     <label class="custom-control-label" for="customSwitchesIGTF5">IGTF</label>
                                 </div>
@@ -797,7 +818,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch igtfunic">
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF6" name="IGTF6">
                                     <label class="custom-control-label" for="customSwitchesIGTF6">IGTF</label>
                                 </div>
@@ -874,7 +895,7 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <div class="custom-control custom-switch">
+                                <div class="custom-control custom-switch igtfunic">
                                     <input type="checkbox" class="custom-control-input" id="customSwitchesIGTF7" name="IGTF7">
                                     <label class="custom-control-label" for="customSwitchesIGTF7">IGTF</label>
                                 </div>
@@ -979,10 +1000,8 @@
 @section('consulta')
     <script>
         $("#credit").hide();
+        $(".igtfunic").hide();
         $("#formenviarcredito").hide();
-        $("#IGTF_form").hide();
-
-
         var switchStatus = false;
         $("#customSwitches").on('change', function() {
             if ($(this).is(':checked')) {
@@ -998,8 +1017,6 @@
                 $("#formulario7").hide();
                 $("#formenviarcredito").show();
                 $("#enviarpagos").hide();
-                $("#IGTF_form").hide();
-                $("#IGTF_buttom").hide();
                 number_form = 1; 
             }
             else {
@@ -1013,7 +1030,7 @@
             }
         });
 
-        $("#customSwitchesIGTFTotal").on('change', function() {
+        /*$("#customSwitchesIGTFTotal").on('change', function() {
             if ($(this).is(':checked')) {
                 $("#IGTF_form").show();
                 calculateTotalIGTF();
@@ -1023,7 +1040,8 @@
                 $("#IGTF_form").hide();
                 calculate();
             }
-        });
+        }); */
+
 
         if("{{$quotation->total_factura}}" == 0){
             $("#divGuardar").hide();
@@ -1035,6 +1053,11 @@
         });
         $("#coin").on('change',function(){
             coin = $(this).val();
+            if (coin == 'dolares'){
+                $(".igtfunic").show();
+            } else {
+                $(".igtfunic").hide();
+            }
             window.location = "{{route('quotations.createfacturar', [$quotation->id,''])}}"+"/"+coin;
         });
 
@@ -1075,7 +1098,7 @@
 
 
 
-        function calculateTotalIGTF(){
+      /*  function calculateTotalIGTF(){
             
             let IGTF_percentage = "<?php echo $company->IGTF_percentage ?? 3 ?>";     
 
@@ -1138,12 +1161,13 @@
             
           
 
-        }
+        } */
     </script>
     <script type="text/javascript">
 
             calculate();
-
+            let igtf_saved = parseFloat("<?php echo $quotation->IGTF_amount;?>");  
+           
             function calculate() {
                 
                 let inputIva = document.getElementById("iva").value; 
@@ -1156,8 +1180,6 @@
                 let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
 
                 let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
-
-
 
 
                 /*Toma la Base y la envia por form*/
@@ -1235,23 +1257,45 @@
                 //-----------------------
 
                 //retencion de islr
-                    var total_islr_retencion = document.getElementById("total_retiene_islr").value;
+                var total_islr_retencion = document.getElementById("total_retiene_islr").value;
                 //------------------------------------
 
                 var total_pay = total_pay - calc_retencion_iva - total_islr_retencion;
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 
+               //IGTF
+                var porcentaje = document.getElementById("IGTF_porc").value;
+                  
+                var calc_porc = total_pay * (porcentaje/100);
+
+                var IGTF_general = total_pay + calc_porc;
+
+                var IGTF_input = calc_porc.toFixed(2);
+
+
+
                 document.getElementById("total_pay").value =  total_payformat;
          
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+                //////IGTF/////////
+                document.getElementById("total_pay_form_before").value =  total_pay.toFixed(2);
 
+                document.getElementById("IGTF_input_pre").value =  IGTF_input;
+                document.getElementById("IGTF_input_pre_credit").value =  IGTF_input;
+
+                document.getElementById("IGTF_general").value =  IGTF_general.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                
+                document.getElementById("IGTF_general_form").value =  IGTF_general.toFixed(2);
+                                
+                document.getElementById("total_pay_before").value = total_payformat;
+                 //////IGTF/////////
                 document.getElementById("iva_form").value =  inputIva;
 
                 document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
                
                 document.getElementById("grandtotal_form").value = grand_totalformat;
-                
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
 
                 //Quiere decir que el monto total a pagar es negativo o igual a cero
                 if(total_pay.toFixed(2) <= 0){
@@ -1372,6 +1416,8 @@
 
                 document.getElementById("grandtotal_form").value = grand_totalformat;
 
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
+
                  //Quiere decir que el monto total a pagar es negativo o igual a cero
                  if(total_pay.toFixed(2) <= 0){
                     document.getElementById("amount_pay").required = false;
@@ -1384,6 +1430,53 @@
                 }
                
             });
+
+            $("#customSwitchesIGTFTotal").on('change', function() {
+                if ($(this).is(':checked')) {
+                    $(".IGTF").show(); 
+
+                    var val_input = document.getElementById("IGTF_input_pre").value;
+                    var val_general = document.getElementById("IGTF_general").value;   
+                    var IGTF_general_form = document.getElementById("IGTF_general_form").value;
+
+                    document.getElementById("IGTF_input").value = val_input;
+                    document.getElementById("IGTF_input_store").value = val_input;
+                    document.getElementById("total_pay").value = val_general;
+                    document.getElementById("total_pay_form").value = IGTF_general_form;
+                    document.getElementById("grandtotal_form").value = val_general;
+                    document.getElementById("grandtotal_form_credit").value = val_general;
+                    
+                    
+                } else {
+                /*switchStatus = $(this).is(':checked');*/
+                    $(".IGTF").hide();
+                    $("#IGTF_input").val(0);
+                    $("#IGTF_input_store").val(0);
+                    var total_pay_before = document.getElementById("total_pay_before").value;
+                    var IGTF_general_form = document.getElementById("IGTF_general_form").value;
+                    var total_pay_form_before = document.getElementById("total_pay_form_before").value;
+                    var grand_total = document.getElementById("grand_total").value;
+                    document.getElementById("total_pay").value = total_pay_before;
+                    document.getElementById("total_pay_form").value = total_pay_form_before;
+                    document.getElementById("grandtotal_form").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                    document.getElementById("grandtotal_form_credit").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});;
+                }
+            });
+
+            if (igtf_saved > 0 ) {
+
+
+                var val_input = document.getElementById("IGTF_input_pre").value;
+                var val_general = document.getElementById("IGTF_general").value;   
+                var IGTF_general_form = document.getElementById("IGTF_general_form").value;
+
+                document.getElementById("IGTF_input").value = val_input;
+                document.getElementById("IGTF_input_store").value = val_input;
+                document.getElementById("total_pay").value = val_general;
+                document.getElementById("total_pay_form").value = IGTF_general_form;
+                document.getElementById("grandtotal_form").value = val_general;
+                document.getElementById("grandtotal_form_credit").value = val_general;
+            }
 
             $("#anticipo").on('keyup',function(){
                 //calculate();
@@ -1494,8 +1587,10 @@
                 document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
                
                 document.getElementById("grandtotal_form").value = grand_totalformat;
-
-                 //Quiere decir que el monto total a pagar es negativo o igual a cero
+                
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
+                
+                //Quiere decir que el monto total a pagar es negativo o igual a cero
                  if(total_pay.toFixed(2) <= 0){
                     document.getElementById("amount_pay").required = false;
                     document.getElementById("payment_type").required = false;
@@ -1520,6 +1615,7 @@
 
          window.location.href = url;
      });
-       
+
+     
     </script>
 @endsection

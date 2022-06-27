@@ -180,7 +180,7 @@
 
                 $tsubtotal = $inventories_quotation->price * $inventories_quotation->amount_quotation;
                 $tiva = $inventories_quotation->price * $inventories_quotation->amount_quotation * ($iva / 100);
-                $tivapercibido = $inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100);
+                $tivapercibido = number_format($inventories_quotation->price * $inventories_quotation->amount_quotation * ($base_imponible_pcb / 100) * ($iva / 100),2,".","");
                 $totalventa = $tsubtotal + $tiva + $tivapercibido;
                 
                 ?>

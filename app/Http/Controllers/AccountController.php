@@ -230,8 +230,8 @@ class AccountController extends Controller
                     
                     
                 }else{
-                    $var->saldo = $var->debe - $var->haber + $saldo;
-                    $saldo = $var->saldo;
+                    $var->saldo = ($saldo + $var->debe) - $var->haber; 
+                   // $saldo = $var->saldo;
                 }
             }    
 

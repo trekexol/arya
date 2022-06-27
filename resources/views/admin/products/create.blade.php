@@ -1,13 +1,11 @@
 @extends('admin.layouts.dashboard')
 
-@section("styles")
-<link href="{{asset("assets/js/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
-@endsection
+
 
 @section("scriptsPlugins")
-<script src="{{asset("assets/js/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
-<script src="{{asset("assets/js/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
-<script src="{{asset("assets/js/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+
+<script src="{{asset('vendor/sb-admin/js/demo/foto.js')}}"></script>
+
 @endsection
 
 
@@ -34,7 +32,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Productos</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Productos.</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
@@ -349,8 +347,9 @@
                         <div class="form-group row">
                             <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
                             <div class="col-md-4">
-                            <input id="imagen" type="file" class="" name="imagen" title="Subir Foto">
-                            </div>
+                           <!-- <input id="fotop" name="fotop" type="file" data-initial-preview="{{ ''/*isset($data->imagen) ? Storage::url("imagenes/caratulas/$data->imagen") : "http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=Caratula+libro"*/}}"> -->
+                           <input id="fotop" name="fotop" type="file" >    
+                        </div>
                         </div>
                         
                         <p id="valueInput"></p> 
@@ -375,6 +374,8 @@
 @endsection
 @section('validacion')
     <script> 
+        $.fn.fileinputBsVersion = '3.4.1'; // for example if using bootstrap css 3.4.1 version
+
         function litros(){
             var n1 = document.getElementById('bottle').value;
             var n2 = document.getElementById('liter').value;
@@ -466,6 +467,22 @@
             }
         });
 
+        /*$("#fotop").fileinput();*/
+
+       // with plugin options
+       /*$("#input-id").fileinput({'uploadUrl': '/public/img', 'previewFileType': true});*/
+
+        $("#fotop").fileinput({
+            language: 'es',
+            allowedFileExtensions: ['jpg','jpeg','png'],
+            maxFileSize: 1000,
+            showUpload: false,
+            showClose: false,
+            initialPreviewAsData: true,
+            dropZoneEnabled: false,
+            theme: "fas"    
+        });
+
         $("#segment").on('change',function(){
             var segment_id = $(this).val();
             $("#subsegment").val("");
@@ -474,7 +491,6 @@
             getSubsegment(segment_id);
         });
 
-        
 
         function getSubsegment(segment_id){
             // alert(`../subsegment/list/${segment_id}`);

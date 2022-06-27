@@ -30,6 +30,7 @@ class CreateEmployeesTable extends Migration
             $table->date('fecha_nacimiento');
             $table->string('direccion',250);
             $table->double('monto_pago', 64, 2);
+            $table->double('asignacion_general', 64, 2)->nullable();
             $table->string('email',100);
             $table->string('telefono1',20);
 
