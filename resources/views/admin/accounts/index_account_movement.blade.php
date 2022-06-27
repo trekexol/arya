@@ -48,7 +48,32 @@
             <tbody>
                 @if (empty($detailvouchers))
                 @else
+                    <?php 
+                    $saldos = 0;
+                    $cont0 = 0;
+                    $cont = 0;
+
+                        foreach ($detailvouchers_most as $row) {
+ 
+                  
+                            if ($cont0 <= 0){
+                            $saldos += $account->balance_previus + $row->debe - $row->haber;    
+                            } else{
+                            $saldos += $row->debe - $row->haber;        
+                            }
+
+                            $cont0++;
+                        
+                            $saldo_most[] = array($cont0,$saldos);
+                            
+                        
+                        }
+                        
+                        rsort($saldo_most);
+
+                    ?>               
                     @foreach ($detailvouchers as $var)
+
                     <tr>
                     <td>{{$var->date ?? ''}}</td>
 
@@ -103,36 +128,93 @@
                     @endif
                    
                     @if(isset($var->accounts['coin']))
+                    
+                        <?php
+                        $cont++;  
+
+                        
+                        for ($f=0; $f < $cont; $f++) { 
+
+                            $saldo = $saldo_most[$f][1];
+
+                        }
+
+                        ?>
+                    
                         @if(($var->debe != 0) && ($var->tasa))
-                            <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>{{number_format($var->debe/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
+                            <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>{{ $var->accounts['coin'] }}{{number_format($var->debe/$var->tasa, 2, ',', '.')}}</td>
                         @else
                             <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
                         @endif
                         @if($var->haber != 0 && ($var->tasa))
-                            <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}<br>{{number_format($var->haber/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
+                            <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}<br>{{ $var->accounts['coin'] }}{{number_format($var->haber/$var->tasa, 2, ',', '.')}}</td>
                         @else
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
                         @endif
-                        <td class="text-right font-weight-bold">{{number_format($var->saldo, 2, ',', '.')}}</td>
-                    @else
+
+                        @if(($var->tasa))
+                        <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}<br>{{ $var->accounts['coin'] }}{{number_format($saldo/$var->tasa, 2, ',', '.')}}</td>
+                        @else
+                        <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}</td>
+                        @endif
+                        
+                  
+                  
+                   @else
+                        <?php
+                        $cont++;  
+
+                        
+                        for ($f=0; $f < $cont; $f++) { 
+
+                            $saldo = $saldo_most[$f][1];
+
+                        }
+
+                        ?>
+                       
+
                         @if (isset($coin) && $coin == "bolivares")
                             <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}</td>
+                            
                         @elseif(isset($coin) && $coin == "dolares")
-                            <td class="text-right font-weight-bold">{{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
-                            <td class="text-right font-weight-bold">{{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">${{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">${{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">${{number_format($saldo/($var->tasa ?? 1), 2, ',', '.')}}</td>
                         @endif
-                        <td class="text-right font-weight-bold">{{number_format($var->saldo/($var->tasa ?? 1), 2, ',', '.')}}</td>
-                        
+
                     @endif
                     
                     </tr>
                     @endforeach
                 @endif
             </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Saldo Anterior</td>
+                    <td></td>
+                    <td></td>
+                    @if(isset($var->accounts['coin']))
+                        @if(($var->tasa)) 
+                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}<br>${{number_format($account->balance_previus/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                        @else
+                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}</td>
+                        @endif
+                    @else
+                       <td>{{number_format($account->balance_previus, 2, ',', '.')}}</td>
+                    @endif
+                </tr>
+            </tfoot>
         </table>
+
         </div>
     </div>
+
 </div>
 
 @endsection

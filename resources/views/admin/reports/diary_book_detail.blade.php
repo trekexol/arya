@@ -55,8 +55,8 @@
      ?>
     <table style="width: 100%;">
       <tr>
-        <th style="text-align: center; width: 12%;">Fecha</th>
-        <th style="text-align: center; width: 10%;">Comp.</th>
+        <th style="text-align: center; width: 9%;">Fecha</th>
+        <th style="text-align: center; width: 7%;">Comp.</th>
         <th style="text-align: center; width: 30%;">Descripcion</th>
         <th style="text-align: center; width: 12%;">Referencia</th>      
         <th style="text-align: center;">Debe</th>
