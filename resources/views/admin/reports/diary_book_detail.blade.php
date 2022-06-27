@@ -58,10 +58,10 @@
         <th style="text-align: center; width: 12%;">Fecha</th>
         <th style="text-align: center; width: 10%;">Comp.</th>
         <th style="text-align: center; width: 30%;">Descripcion</th>
-        <th style="text-align: center; width: 20%;">Referencia</th>      
-        <th style="text-align: center; width: 20%;">Debe</th>
-        <th style="text-align: center; width: 20%;">Haber</th>
-        <th style="text-align: center; width: 20%;">Saldo</th>
+        <th style="text-align: center; width: 12%;">Referencia</th>      
+        <th style="text-align: center;">Debe</th>
+        <th style="text-align: center;">Haber</th>
+        <th style="text-align: center;">Saldo</th>
       </tr>
       
       @foreach ($detailvouchers as $detail)
