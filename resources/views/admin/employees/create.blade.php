@@ -155,8 +155,19 @@
                                     </span>
                                 @enderror
                             </div>
+                            <label for="asignacion_general" class="col-md-2 col-form-label text-md-right">Asignación General</label>
 
+                            <div class="col-md-4">
+                                <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ old('asignacion_general') }}" autocomplete="asignacion_general">
 
+                                @error('asignacion_general')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                                 <label for="email" class="col-md-2 col-form-label text-md-right">Correo Electrónico</label>
 
                                 <div class="col-md-4">
@@ -396,7 +407,10 @@
             $("#monto_pago").mask('000.000.000.000.000,00', { reverse: true });
             
         });
-        
+        $(document).ready(function () {
+            $("#asignacion_general").mask('000.000.000.000.000,00', { reverse: true });
+            
+        });   
         </script>
     <script>    
         $(function(){
