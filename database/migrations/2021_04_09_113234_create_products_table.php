@@ -33,9 +33,16 @@ class CreateProductsTable extends Migration
             $table->string('exento',1);
             $table->string('islr',1);
             $table->decimal('special_impuesto', 64, 2);
-
             $table->string('status',1);
             
+            //Empresa Licores
+            $table->string('sku',50)->nullable();
+            $table->integer('box')->nullable();
+            $table->decimal('degree', 64, 2)->nullable();
+            $table->integer('bottle')->nullable();
+            $table->decimal('liter', 64, 2)->nullable();
+            $table->decimal('capacity', 64, 2)->nullable();
+            //fin Empresa Licores
             
             $table->foreign('segment_id')->references('id')->on('segments');
             $table->foreign('subsegment_id')->references('id')->on('subsegments');

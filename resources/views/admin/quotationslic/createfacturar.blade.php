@@ -340,7 +340,7 @@
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="total_pay_form" name="total_pay_form">
                         <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
-
+                        <input type="hidden" id="IGTF_input_store" name="IGTF_input_store" value="0">
                         <input id="IGTF_input_pre" type="hidden" name="IGTF_input_pre">
                         <input id="IGTF_general" type="hidden" name="IGTF_general">
                         <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
@@ -961,16 +961,16 @@
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
 
-                let totalFactura = "<?php echo $quotation->total_factura  / ($bcv ?? 1) ?>";       
+                let totalFactura = "<?php echo $quotation->total_factura  / ($bcv ?? 1) ?>";
+                
 
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100;  
-
-                let iva_percibido = "<?php echo $total_iva_pcb / ($bcv ?? 1) ; ?>";
-
+                let totalIvaMenos = parseFloat((inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100).toFixed(2); 
                
+                let iva_percibido = parseFloat("<?php echo $total_iva_pcb / ($bcv ?? 1) ; ?>").toFixed(2);
+                 
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
 
@@ -1027,11 +1027,13 @@
                 }else{
                     document.getElementById("anticipo_form").value = 0;
                 }
-
+               
+               
 
                 var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
+                
 
-               
+                
                 //retencion de iva
 
                 let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
@@ -1045,20 +1047,30 @@
                 //-----------------------
 
                 //retencion de islr
-                    var total_islr_retencion = document.getElementById("total_retiene_islr").value;
+                var total_islr_retencion = document.getElementById("total_retiene_islr").value;
                 //------------------------------------
 
                 var total_pay = total_pay - calc_retencion_iva - total_islr_retencion + parseFloat(iva_percibido);
-
+                 
+ 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-                
+
+
                 var porcentaje = document.getElementById("IGTF_porc").value;
                   
                 var calc_porc = total_pay * (porcentaje/100);
+                 
+                var suma = parseFloat(total_pay) + parseFloat(calc_porc);
+                suma = suma.toFixed(2);
 
                 var IGTF_general = total_pay + calc_porc;
 
+
+                //alert(parseFloat(IGTF_general).toFixed(2));
+
                 var IGTF_input = calc_porc.toFixed(2);
+
+                
               
                 document.getElementById("total_pay").value =  total_payformat;
 
@@ -1109,8 +1121,8 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100;  
-
+                let totalIvaMenos = parseFloat((inputIva * "<?php echo $quotation->base_imponible  / ($bcv ?? 1) ; ?>") / 100).toFixed(2);  
+                
 
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
@@ -1191,7 +1203,7 @@
 
                 document.getElementById("total_pay").value =  total_payformat;
 
-                document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+                document.getElementById("total_pay_form").value = total_pay.toFixed(2);
 
                 document.getElementById("iva_form").value =  inputIva;
               
@@ -1222,6 +1234,8 @@
                     var IGTF_general_form = document.getElementById("IGTF_general_form").value;
                     /*alert(IGTF_general_form);*/
                     document.getElementById("IGTF_input").value = val_input;
+                    document.getElementById("IGTF_input_store").value = val_input;
+
                     document.getElementById("total_pay").value = val_general;
                     document.getElementById("total_pay_form").value = IGTF_general_form;
 
@@ -1233,6 +1247,7 @@
                 /*switchStatus = $(this).is(':checked');*/
                     $(".IGTF").hide();
                     $("#IGTF_input").val(0);
+                    $("#IGTF_input_store").val(0);
                     var total_pay_before = document.getElementById("total_pay_before").value;
                     var IGTF_general_form = document.getElementById("IGTF_general_form").value;
                     var total_pay_form_before = document.getElementById("total_pay_form_before").value;
@@ -1258,8 +1273,8 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible; ?>") / 100;  
-
+                let totalIvaMenos =  parseFloat((inputIva * "<?php echo $quotation->base_imponible; ?>") / 100).toFixed(2);  
+               
 
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 

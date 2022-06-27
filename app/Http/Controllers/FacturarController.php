@@ -194,6 +194,8 @@ class FacturarController extends Controller
                 }
 
             /*-------------- */
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $igtfporc = $company->IGTF_porc ?? 3;
      
             $is_after = false;
             if(empty($quotation->credit_days)){
@@ -202,7 +204,7 @@ class FacturarController extends Controller
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','retiene_iva','type'));
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -408,11 +410,14 @@ class FacturarController extends Controller
                     $total_retiene_islr =0;
                 }
 
+                $company = Company::on(Auth::user()->database_name)->find(1);
+                $igtfporc = $company->IGTF_porc ?? 3;
+
             /*-------------- */
 
             $is_after = false;
      
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client'));
+             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -443,8 +448,18 @@ class FacturarController extends Controller
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount')));
         $sin_formato_amount_with_iva = str_replace(',', '.', str_replace('.', '', request('total_pay')));
 
-        $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total')));
-        
+       /* $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
+        $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+         
+        $IGTF_input = request('IGTF_input_pre');
+        $IGTF_input_check = request('IGTF_input');
+          
+        if ($IGTF_input_check == 0) {
+            $IGTF_input = 0;
+        }
+
+        $iva_percibido = request('iva_percibido_form');
+
 
         $total_mercancia = request('total_mercancia_credit');
         $total_servicios = request('total_servicios_credit');
@@ -502,6 +517,11 @@ class FacturarController extends Controller
                 $quotation->number_invoice = 1;
             }
         }
+        $company = Company::on(Auth::user()->database_name)->find(1);
+        $igtfporc = $company->IGTF_porc;
+
+        $quotation->IGTF_amount = $IGTF_input;
+        $quotation->IGTF_percentage = $igtfporc;
 
         $quotation->save();
 
@@ -584,6 +604,17 @@ class FacturarController extends Controller
             }
         }
 
+        //anadir movimiento de IGTF
+        if ($IGTF_input > 0){
+            $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', '%Cuentas por Pagar IGTF%')->first(); 
+
+            if(isset($account_IGTF)){
+                
+                $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
+            }
+        }
+
+
         $validation_factura = new FacturaValidationController($quotation);
 
         $return_validation_factura = $validation_factura->validate_movement_mercancia();
@@ -620,7 +651,8 @@ class FacturarController extends Controller
     public function storefactura(Request $request)
     {
         $data = request()->validate([
-        
+
+
         ]);
 
         //dd($request);
@@ -677,6 +709,15 @@ class FacturarController extends Controller
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
 
+        $amount_pay = request('amount_pay');
+        $IGTF_input = request('IGTF_input_pre');
+        $IGTF_input_check = request('IGTF_input_store');
+
+        if ($IGTF_input_check == 0) {
+            $IGTF_input = 0;
+        }
+
+        $IGTF_porc = request('IGTF_porc');
 
         $total_mercancia = request('total_mercancia');
         $total_servicios = request('total_servicios');
@@ -685,9 +726,9 @@ class FacturarController extends Controller
 
         $total_iva = 0;
 
-        $IGTF_amount = (double) request('IGTF_amount_form');
-
         $IGTF_percentage = $company->IGTF_percentage ?? 3;
+
+
 
         if($base_imponible != 0){
             $total_iva = ($base_imponible * $iva_percentage)/100;
@@ -1554,11 +1595,11 @@ class FacturarController extends Controller
         }
 
        //validacion que verifica que el total pagado en IGTF sea igual al total a pagar de IGTF
-        if(isset($IGTF_amount)){
+      /*  if(isset($IGTF_amount)){
             if($IGTF_amount_check != $IGTF_amount){
                 return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger("El total pagado en IGTF es diferente al total a pagar de IGTF !!");
             }
-        }
+        }*/
         
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
         if(($total_pay == $sin_formato_total_pay) || ($sin_formato_total_pay <= 0))
@@ -1697,7 +1738,7 @@ class FacturarController extends Controller
 
                 $sub_total = $sub_total * $bcv;
     
-                $IGTF_amount = $IGTF_amount * $bcv;
+
             }
 
 
@@ -1812,8 +1853,8 @@ class FacturarController extends Controller
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
-            $quotation->IGTF_amount = $IGTF_amount;
-            $quotation->IGTF_percentage = $IGTF_percentage;
+            $quotation->IGTF_percentage = $IGTF_porc;
+            $quotation->IGTF_amount = $IGTF_input;
             $quotation->status = "C";
             
             $quotation->save();
@@ -1876,23 +1917,24 @@ class FacturarController extends Controller
                     }
                 }
 
-                $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar IGTF')->first(); 
-
                 //anadir movimiento de IGTF
-                if(isset($IGTF_amount_check) && $IGTF_amount_check != 0){
-                    if(isset($account_IGTF)){
-
-                        $amount_IGTF = ($var->amount * $var->IGTF_percentage) / 100;
-                        
-                        $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_amount_check);
+      
+                    if ($IGTF_input > 0){
+                        $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', '%Cuentas por Pagar IGTF%')->first(); 
+    
+                        if(isset($account_IGTF)){
+                            
+                            $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
+                        }
                     }
-                }
-             
+                
+                  //anadir movimiento de IGTF
+
                 
                 //Mercancia para la Venta
-               /* $validation_factura = new FacturaValidationController($quotation);
+                $validation_factura = new FacturaValidationController($quotation);
 
-                $return_validation_factura = $validation_factura->validate_movement_mercancia();*/
+                $return_validation_factura = $validation_factura->validate_movement_mercancia();
 
                 
                 if(empty($quotation->date_delivery_note)){
@@ -2036,7 +2078,6 @@ public function storeanticiposaldar(Request $request)
 
         $total_iva = 0;
 
-        $IGTF_amount = (double) request('IGTF_amount_form');
 
         $IGTF_percentage = $company->IGTF_percentage ?? 3;
 
@@ -3025,7 +3066,6 @@ public function storeanticiposaldar(Request $request)
 
                 $sub_total = $sub_total * $bcv;
 
-                $IGTF_amount = $IGTF_amount * $bcv;
             }
 
             
@@ -3051,8 +3091,8 @@ public function storeanticiposaldar(Request $request)
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
-            $quotation->IGTF_amount = $IGTF_amount;
-            $quotation->IGTF_percentage = $IGTF_percentage;
+            $quotation->IGTF_percentage = $IGTF_porc;
+            $quotation->IGTF_amount = $IGTF_input;
             $quotation->status = "C";
             $quotation->date_saldate = $date_payment;
             

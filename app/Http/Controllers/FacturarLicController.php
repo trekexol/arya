@@ -718,13 +718,16 @@ class FacturarLicController extends Controller
 
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
+       
         $amount_pay = request('amount_pay');
         $IGTF_input = request('IGTF_input_pre');
-        $IGTF_input_check = request('IGTF_input');
+        $IGTF_input_check = request('IGTF_input_store');
           
+
         if ($IGTF_input_check == 0) {
             $IGTF_input = 0;
         }
+
 
         $IGTF_porc = request('IGTF_porc');
         $iva_percibido = request('iva_percibido_form'); 
@@ -1811,14 +1814,14 @@ class FacturarLicController extends Controller
                 }
 
                   //anadir movimiento de IGTF
-                if ($IGTF_input > 0){
+               if ($IGTF_input > 0){
                     $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar IGTF')->first(); 
 
                     if(isset($account_IGTF)){
                         
                         $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
                     }
-                }
+                } 
  
                 
                 // Iva Percibido
