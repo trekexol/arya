@@ -216,12 +216,23 @@ class AccountController extends Controller
             ->orderBy('detail_vouchers.id','desc')
             ->get();
 
-            $primer_movimiento = true;
+            
+            $detailvouchers_most = DetailVoucher::on(Auth::user()->database_name)
+            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+            //->join('quotations', 'quotations.id', '=', 'detail_vouchers.id_invoice')
+           // ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->where('detail_vouchers.status','C')
+            ->where('detail_vouchers.id_account',$id_account)
+            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo')
+            ->orderBy('header_vouchers.date','asc')
+            ->orderBy('detail_vouchers.id','asc')
+            ->get();
+
+            /*$primer_movimiento = true;
             $saldo = 0;
 
             foreach ($detailvouchers as $var){
 
-                /*----------------------------- */
                 if($primer_movimiento){
                     $var->saldo = $var->debe - $var->haber;
                     
@@ -233,9 +244,9 @@ class AccountController extends Controller
                     $var->saldo = ($saldo + $var->debe) - $var->haber; 
                    // $saldo = $var->saldo;
                 }
-            }    
+            }    */
 
-
+  
             
             if (!empty($detailvouchers)) {
                 foreach ($detailvouchers as $var) {
@@ -269,6 +280,7 @@ class AccountController extends Controller
             }
 
             $account = Account::on(Auth::user()->database_name)->find($id_account);
+
            
             if(empty($coin)){
                 $coin = "bolivares";
@@ -278,7 +290,7 @@ class AccountController extends Controller
             return view('admin.index');
         }
         
-        return view('admin.accounts.index_account_movement',compact('detailvouchers','account','coin'));
+        return view('admin.accounts.index_account_movement',compact('detailvouchers','account','coin','detailvouchers_most'));
     }
 
     public function header_movements($id,$type,$id_account)
