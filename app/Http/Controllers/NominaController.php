@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
+use App\DetailVoucher;
 use App\Employee;
+use App\HeaderVoucher;
 use App\Nomina;
 use App\NominaCalculation;
 use App\NominaConcept;
@@ -10,6 +13,7 @@ use App\Profession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NominaController extends Controller
 {
@@ -30,6 +34,7 @@ class NominaController extends Controller
         $users_role =   $user->role_id;
         if($users_role == '1'){
            $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id', 'desc')->get();
+          
         }elseif($users_role == '2'){
             return view('admin.index');
         }
@@ -37,6 +42,18 @@ class NominaController extends Controller
     
         return view('admin.nominas.index',compact('nominas'));
       
+    }
+
+    public function searchMovementNomina($id_nomina){
+        $header = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
+        
+        if(isset($header)){
+            $detail = new DetailVoucherController();
+            return $detail->create("bolivares",$header->id);
+        }
+
+
+        return redirect('/nominas')->withDanger('No posee movimientos la Nomina !!');
     }
 
     public function create()
@@ -71,6 +88,11 @@ class NominaController extends Controller
         
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$nomina->id_profession)->get();
 
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');
+
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
@@ -78,9 +100,72 @@ class NominaController extends Controller
 
 
         $amount_total_nomina = $this->calculateAmountTotalNomina($nomina);
+
+        $header_voucher  = new HeaderVoucher();
+        $header_voucher->setConnection(Auth::user()->database_name);
+
+        $header_voucher->id_nomina = $id_nomina;
+        $header_voucher->description = "Nomina";
+        $header_voucher->date = $datenow;
+        
+    
+        $header_voucher->status =  "1";
+    
+        $header_voucher->save();
+
+        $accounts_sueldos = DB::connection(Auth::user()->database_name)->table('accounts')
+                                                                        ->where('description','LIKE', 'Sueldos y Salarios')
+                                                                        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
+
+        $accounts_sueldos_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Sueldos por Pagar')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
+
         
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
         
+    }
+
+
+    
+    public function add_movement($bcv,$id_header,$id_account,$id_nomina,$debe,$haber){
+
+        $detail = new DetailVoucher();
+        $detail->setConnection(Auth::user()->database_name);
+        $user       =   auth()->user();
+
+        $detail->id_account = $id_account;
+        $detail->id_header_voucher = $id_header;
+        $detail->user_id = $user->id;
+        $detail->tasa = $bcv;
+       
+
+      /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+        $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+
+        $detail->debe = $debe;
+        $detail->haber = $haber;
+       
+      
+        $detail->status =  "C";
+
+         /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+         
+            $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+            if($account->status != "M"){
+                $account->status = "M";
+                $account->save();
+            }
+         
+    
+        $detail->save();
+
     }
 
 
