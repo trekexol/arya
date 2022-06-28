@@ -1,9 +1,7 @@
 
   $(document).ready(function() {
 
-
-alert('seta');
-      /*  $("#fotop").fileinput({
+       $("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
             maxFileSize: 1000,
@@ -12,5 +10,5 @@ alert('seta');
             initialPreviewAsData: true,
             dropZoneEnabled: false,
             theme: "fas"    
-        });*/
+        });
  });

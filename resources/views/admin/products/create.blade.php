@@ -1,17 +1,8 @@
+
 @extends('admin.layouts.dashboard')
 
 
-
-@section("scriptsPlugins")
-
-<script src="{{asset('vendor/sb-admin/js/demo/foto.js')}}"></script>
-
-@endsection
-
-
 @section('content')
-
-
 
     {{-- VALIDACIONES-RESPUESTA--}}
     @include('admin.layouts.success')   {{-- SAVE --}}
@@ -28,6 +19,7 @@
             </ul>
         </div>
     @endif
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -347,8 +339,10 @@
                         <div class="form-group row">
                             <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
                             <div class="col-md-4">
-                           <!-- <input id="fotop" name="fotop" type="file" data-initial-preview="{{ ''/*isset($data->imagen) ? Storage::url("imagenes/caratulas/$data->imagen") : "http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=Caratula+libro"*/}}"> -->
-                           <input id="fotop" name="fotop" type="file" >    
+                                <input id="fotop" name="fotop" type="file" data-initial-preview="img/logo.jpg">
+                             
+                           <br>
+
                         </div>
                         </div>
                         
@@ -372,9 +366,17 @@
     </div>
 </div>
 @endsection
+
+
+
 @section('validacion')
+    
+
+<!--<script src="{{''/*asset('vendor/bootstrap-fileinput/js/foto.js')*/}}"></script>-->
+    
     <script> 
-        $.fn.fileinputBsVersion = '3.4.1'; // for example if using bootstrap css 3.4.1 version
+
+
 
         function litros(){
             var n1 = document.getElementById('bottle').value;
@@ -447,9 +449,14 @@
 	
     </script>
 @endsection
-
 @section('javascript')
-    <script>
+<script src="{{asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("assets/pages/script/imagen/foto.js")}}" type="text/javascript"></script> 
+<link href="{{asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+
+<script>    
         $("#type").on('change',function(){
             var type = $(this).val();
           
@@ -465,22 +472,6 @@
                 
 
             }
-        });
-
-        /*$("#fotop").fileinput();*/
-
-       // with plugin options
-       /*$("#input-id").fileinput({'uploadUrl': '/public/img', 'previewFileType': true});*/
-
-        $("#fotop").fileinput({
-            language: 'es',
-            allowedFileExtensions: ['jpg','jpeg','png'],
-            maxFileSize: 1000,
-            showUpload: false,
-            showClose: false,
-            initialPreviewAsData: true,
-            dropZoneEnabled: false,
-            theme: "fas"    
         });
 
         $("#segment").on('change',function(){
