@@ -93,9 +93,13 @@ class NominaController extends Controller
 
         $global = new GlobalController();
         $bcv = $global->search_bcv();
+        $sum_employees = 0;
+        $sum_employees_asignacion_general = 0;
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
+            $sum_employees ++;
+            $sum_employees_asignacion_general += $employee->asignacion_general;
         }
 
 
@@ -105,7 +109,7 @@ class NominaController extends Controller
         $header_voucher->setConnection(Auth::user()->database_name);
 
         $header_voucher->id_nomina = $id_nomina;
-        $header_voucher->description = "Nomina";
+        $header_voucher->description = "Nomina "+$nomina->description ?? '';
         $header_voucher->date = $datenow;
         
     
@@ -113,17 +117,92 @@ class NominaController extends Controller
     
         $header_voucher->save();
 
+        /*MOVIMIENTO DE SUELDOS */
         $accounts_sueldos = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                         ->where('description','LIKE', 'Sueldos y Salarios')
                                                                         ->first();
 
         $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
 
+
+         /*MOVIMIENTO DE BONO ALIMENTACION */
+         $total_bono_alimentacion = 45 * $sum_employees;
+
+         $accounts_alimentacion = DB::connection(Auth::user()->database_name)->table('accounts')
+         ->where('description','LIKE', 'Bono de Alimentacion')
+         ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
+
+        /*MOVIMIENTO DE SSO */
+        $total_sso = $this->calculateAmountTotalSSO($nomina);
+        $accounts_sso = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_sso->id,$nomina->id,$total_sso,0);
+
+        /*MOVIMIENTO DE FAOV */
+        $total_faov = $this->calculateAmountTotalFAOV($nomina);
+        $accounts_faov = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);
+
+        /*MOVIMIENTO DE Bono Medico */
+                
+        $total_bono_medico = ($sum_employees_asignacion_general * $bcv) - $amount_total_nomina - $total_bono_alimentacion - $total_faov - $total_sso;
+
+        $accounts_bono_medico = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Bono Medico')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$total_bono_medico,0);
+
+
+        /*AHORA LOS MOVIMIENTOS POR PAGAR */
+
         $accounts_sueldos_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Sueldos por Pagar')
         ->first();
 
         $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
+        /*------------------------ */
+        
+
+        $accounts_alimentacion_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Bono Alimentacion por Pagar')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$total_bono_alimentacion);
+        /*------------------------ */
+        
+
+        $accounts_sso_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio por pagar')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$total_sso);
+        /*------------------------ */
+      
+
+        $accounts_faov_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda por Pagar')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$total_faov);
+        /*------------------------ */
+        
+ 
+         $accounts_bono_medico_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+         ->where('description','LIKE', 'Bono Medico por Pagar')
+         ->first();
+ 
+         $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$total_bono_medico);
+         /*------------------------ */
+
+
 
         
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
@@ -132,6 +211,48 @@ class NominaController extends Controller
 
 
     
+
+
+    public function calculateAmountTotalNomina($nomina){
+
+       
+        $amount_total_asignacion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                                                    ->where('id_nomina',$nomina->id)
+                                                    ->where('nomina_concepts.sign',"A")
+                                                    ->sum('nomina_calculations.amount');
+
+        $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                                                    ->where('id_nomina',$nomina->id)
+                                                    ->where('nomina_concepts.sign',"D")
+                                                    ->sum('nomina_calculations.amount');
+
+                                            
+        return $amount_total_asignacion - $amount_total_deduccion;
+
+    }
+
+    public function calculateAmountTotalSSO($nomina){
+
+       
+        $amount_total_sso = NominaCalculation::where('id_nomina',$nomina->id)
+                                            ->where('id_nomina_concept',19)
+                                            ->sum('nomina_calculations.amount');
+   
+        return $amount_total_sso;
+
+    }
+   
+    public function calculateAmountTotalFAOV($nomina){
+
+       
+        $amount_total_faov = NominaCalculation::where('id_nomina',$nomina->id)
+                                            ->where('id_nomina_concept',23)
+                                            ->sum('nomina_calculations.amount');
+   
+        return $amount_total_faov;
+
+    }
+  
     public function add_movement($bcv,$id_header,$id_account,$id_nomina,$debe,$haber){
 
         $detail = new DetailVoucher();
@@ -168,26 +289,6 @@ class NominaController extends Controller
 
     }
 
-
-    public function calculateAmountTotalNomina($nomina){
-
-       
-        $amount_total_asignacion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-                                                    ->where('id_nomina',$nomina->id)
-                                                    ->where('nomina_concepts.sign',"A")
-                                                    ->sum('nomina_calculations.amount');
-
-        $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-                                                    ->where('id_nomina',$nomina->id)
-                                                    ->where('nomina_concepts.sign',"D")
-                                                    ->sum('nomina_calculations.amount');
-
-                                            
-        return $amount_total_asignacion - $amount_total_deduccion;
-
-    }
-   
-  
     public function addNominaCalculation($nomina,$employee)
     {
         

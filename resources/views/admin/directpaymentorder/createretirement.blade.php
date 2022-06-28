@@ -21,16 +21,14 @@
     @endif
 <div class="container">
     <div class="row justify-content-right">
-        <div class="col-md-1">
+        <div class="col-sm-1">
         </div>
-        <div class="col-md-11" style="text-align: right;">
+        <div class="col-sm-10" style="text-align: right;">
             <a href="{{ route('bankmovements.indexorderpayment')}}" class="btn btn-info" title="Transferencia">Listar Orden de Pago</a>
         </div>
-
     </div>
+    <br>
     <div class="row justify-content-center">
-        
-
         
         <div class="col-md-12">
             <div class="card">
@@ -174,6 +172,7 @@
                                     </span>
                                 @endif
                             </div>
+                          
                         </div>  
                         <div class="form-group row">
                             
@@ -190,7 +189,7 @@
                             </div>
                             <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
 
                                 @error('rate')
@@ -199,8 +198,88 @@
                                     </span>
                                 @enderror
                             </div>
+                           
                         </div>
                        
+
+                       <!--
+
+                <form method="POST" action="{{ route('accounts.store') }}" id="form_contacto" data-parsley-validate class="form-horizontal form-label-left">
+                  @csrf
+                        <div class="item clonar">
+                            <div class="form-group row">
+                           
+                                <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
+                                <div class="col-md-4">
+                                    <select id="type_form"  name="type_form" class="form-control" required>
+         
+                                    <option value="-1">Seleccione una Contrapartida</option>
+                                    @foreach($contrapartidas as $index => $value)
+                                        
+                                        @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio' && $value != 'Resultados Anteriores')
+                                            <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endif
+    
+    
+                                    @endforeach
+                                    </select>
+    
+                                </div>
+                                <div class="col-md-4">
+                                    <select  id="account_counterpart"  name="Account_counterpart" class="form-control" required>
+                                        <option value="">Seleccionar</option>
+                                        @if (isset($accounts_inventory))
+                                            @foreach ($accounts_inventory as $var)
+                                                <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+    
+                                    @if ($errors->has('account'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('account') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-1 col-sm-1 ">
+                                    <button id="agregar" title="Agregar Bultos" type="button" onclick="nuevo_packagings();" class=" btn btn-round btn-info"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>  
+                            <div class="form-group row">
+                                
+                                <label for="amount" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+    
+                                <div class="col-md-4">
+                                    <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" required autocomplete="amount">
+    
+                                    @error('amount')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+    
+                                <div class="col-md-4">
+                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
+    
+                                    @error('rate')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div id="contenedor"></div>
+                </form>
+
+            -->
+
+
+
                         <div class="form-group row">
                             <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
 
@@ -277,6 +356,51 @@
            
             }
         });
+
+
+        function nuevo_packagings() {
+           
+            let agregar = document.getElementById('agregar');
+            let contenido = document.getElementById('contenedor');
+
+            let boton_enviar = document.querySelector('#enviar_contacto')
+
+            agregar.addEventListener('click', e =>{
+                e.preventDefault();
+                let clonado = document.querySelector('.clonar');
+                let clon = clonado.cloneNode(true);
+
+                contenido.appendChild(clon).classList.remove('clonar');
+
+                let remover_ocutar = contenido.lastChild.childNodes[1].querySelectorAll('span');
+                remover_ocutar[0].classList.remove('ocultar');
+            });
+
+            contenido.addEventListener('click', e =>{
+                e.preventDefault();
+                if(e.target.classList.contains('puntero')){
+                    let contenedor  = e.target.parentNode.parentNode;
+                
+                    contenedor.parentNode.removeChild(contenedor);
+                }
+            });
+
+
+            boton_enviar.addEventListener('click', e => {
+                e.preventDefault();
+
+                const formulario = document.querySelector('#form_contacto');
+                const form = new FormData(formulario);
+
+                const peticion = {
+                    body:form,
+                    method:'POST'
+                };
+            
+            document.getElementById("form_contacto").submit();
+
+            });
+        }
     </script> 
 
 @endsection     
