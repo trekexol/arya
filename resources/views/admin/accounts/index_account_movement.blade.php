@@ -30,7 +30,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                <th>Fecha</th>
+                <th style="width: 11%;">Fecha</th>
                 <th>Tipo de Movimiento</th>
                 
                 <th>Referencia</th>
@@ -50,6 +50,7 @@
                 @else
                     <?php 
                     $saldos = 0;
+                    $saldos_USD = 0;
                     $cont0 = 0;
                     $cont = 0;
 
@@ -62,20 +63,28 @@
                             $saldos += $row->debe - $row->haber;        
                             }
 
+                            if ($cont0 <= 0){
+                            $saldos_USD += $account->balance_previus/$account->rate + ($row->debe/$row->tasa) - $row->haber/$row->tasa;    
+                            } else{
+                            $saldos_USD += ($row->debe/$row->tasa) - $row->haber/$row->tasa;        
+                            }
+
                             $cont0++;
                         
                             $saldo_most[] = array($cont0,$saldos);
+                            $saldo_most_usd[] = array($cont0,$saldos_USD);
                             
                         
                         }
                         
                         rsort($saldo_most);
+                        rsort($saldo_most_usd);
 
                     ?>               
                     @foreach ($detailvouchers as $var)
 
                     <tr>
-                    <td>{{$var->date ?? ''}}</td>
+                    <td>{{ date_format(date_create($var->date ?? ''),"d-m-Y")}}</td>
 
                     
                     @if(isset($var->id_invoice))
@@ -136,6 +145,7 @@
                         for ($f=0; $f < $cont; $f++) { 
 
                             $saldo = $saldo_most[$f][1];
+                            $saldo_USD = $saldo_most_usd[$f][1];
 
                         }
 
@@ -153,7 +163,7 @@
                         @endif
 
                         @if(($var->tasa))
-                        <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}<br>{{ $var->accounts['coin'] }}{{number_format($saldo/$var->tasa, 2, ',', '.')}}</td>
+                        <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}<br>{{ $var->accounts['coin'] }}{{number_format($saldo_USD, 2, ',', '.')}}</td>
                         @else
                         <td class="text-right font-weight-bold">{{number_format($saldo, 2, ',', '.')}}</td>
                         @endif
@@ -168,7 +178,7 @@
                         for ($f=0; $f < $cont; $f++) { 
 
                             $saldo = $saldo_most[$f][1];
-
+                            $saldo_USD = $saldo_most_usd[$f][1];
                         }
 
                         ?>
@@ -182,7 +192,7 @@
                         @elseif(isset($coin) && $coin == "dolares")
                             <td class="text-right font-weight-bold">${{number_format($var->debe/($var->tasa ?? 1), 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">${{number_format($var->haber/($var->tasa ?? 1), 2, ',', '.')}}</td>
-                            <td class="text-right font-weight-bold">${{number_format($saldo/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">${{number_format($saldo_USD ?? 1, 2, ',', '.')}}</td>
                         @endif
 
                     @endif
@@ -201,7 +211,7 @@
                     <td></td>
                     @if(isset($var->accounts['coin']))
                         @if(($var->tasa)) 
-                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}<br>${{number_format($account->balance_previus/($var->tasa ?? 1), 2, ',', '.')}}</td>
+                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}<br>${{number_format($account->balance_previus/($account->rate ?? 1), 2, ',', '.')}}</td>
                         @else
                         <td>{{number_format($account->balance_previus, 2, ',', '.')}}</td>
                         @endif
