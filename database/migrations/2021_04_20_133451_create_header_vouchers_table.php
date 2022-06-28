@@ -17,6 +17,7 @@ class CreateHeaderVouchersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('id_anticipo')->nullable();
             $table->unsignedBigInteger('id_payment_order')->nullable();
+            $table->unsignedBigInteger('id_nomina')->nullable();
 
             $table->string('reference',60)->nullable();
             $table->string('description',150);
@@ -26,6 +27,7 @@ class CreateHeaderVouchersTable extends Migration
             $table->string('status',1);
 
             $table->foreign('id_anticipo')->references('id')->on('anticipos');
+            $table->foreign('id_nomina')->references('id')->on('nominas');
             $table->timestamps();
         });
     }
