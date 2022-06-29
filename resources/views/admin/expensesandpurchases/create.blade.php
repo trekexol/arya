@@ -127,7 +127,6 @@
                                             
                                             @if (
                                                 $value == 'Activos Depreciables' || 
-                                                $value == 'Activos Depreciables' || 
                                                 $value == 'PROPIEDAD, PLANTA Y EQUIPOS' || 
                                                 $value == 'Costo de Venta Mercancía' || 
                                                 $value == 'Costo de Venta' || 
@@ -135,6 +134,7 @@
                                                 $value == 'Costos de Ventas' || 
                                                 $value == 'Costo de Venta Mercancia' || 
                                                 $value == 'Costos Integral de Financiamiento' ||
+                                                $value == 'Costos de mantenimiento operacionales' ||
                                                 $value == 'Otros Costos' ||
                                                 $value == 'Gasto de Venta' || 
                                                 $value == 'Gastos de Administracion' || 
