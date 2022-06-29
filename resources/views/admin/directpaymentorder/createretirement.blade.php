@@ -136,6 +136,8 @@
                                 @endif
                             </div>
                         </div>  
+
+                        <!--
                         <div class="form-group row">
                            
                             <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
@@ -201,9 +203,8 @@
                            
                         </div>
                        
-
-                       <!--
-
+                    -->
+                     
                 <form method="POST" action="{{ route('accounts.store') }}" id="form_contacto" data-parsley-validate class="form-horizontal form-label-left">
                   @csrf
                         <div class="item clonar">
@@ -262,7 +263,7 @@
                                 </div>
                                 <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
     
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
     
                                     @error('rate')
@@ -272,11 +273,12 @@
                                     @enderror
                                 </div>
                             </div>
+                            <span class="badge badge-pill badge-danger puntero ocultar">Eliminar</span>
+
+
                         </div>
                         <div id="contenedor"></div>
                 </form>
-
-            -->
 
 
 
