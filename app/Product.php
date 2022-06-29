@@ -4,14 +4,13 @@ namespace App;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
     protected $fillable = ['id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
     'code_comercial','type','description','price','price_buy','cost_average','photo_product','money','id_user',
     'exento','islr','special_impuesto','status','created_at','updated_at'];
+
 
     public function segments(){
         return $this->belongsTo('App\Segment','segment_id');

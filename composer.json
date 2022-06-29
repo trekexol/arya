@@ -14,11 +14,11 @@
         "davejamesmiller/laravel-breadcrumbs": "5.x",
         "fabpot/goutte": "^4.0",
         "fideloper/proxy": "^4.4",
+        "intervention/image": "^2.7",
         "kartik-v/bootstrap-fileinput": "@dev",
         "laravel/framework": "^6.20",
         "laravel/tinker": "^2.5",
-        "maatwebsite/excel": "^3.1",
-        "teepluss/asset": "dev-master"
+        "maatwebsite/excel": "^3.1"
     },
     "require-dev": {
         "facade/ignition": "^1.16.4",

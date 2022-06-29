@@ -7,7 +7,7 @@
             maxFileSize: 1000,
             showUpload: false,
             showClose: false,
-            initialPreviewAsData: true,
+            initialPreviewAsData: false,
             dropZoneEnabled: false,
             theme: "fas"    
         });

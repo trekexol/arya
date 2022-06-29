@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '8777d207f0047839cb04a4c4e2891706563977c9',
+    'reference' => '2687640689a62a0574e547a89ef3de2eecc13512',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -177,6 +177,15 @@
       array (
       ),
       'reference' => 'd501fd2658d55491a2295ff600ae5978eaad7403',
+    ),
+    'guzzlehttp/psr7' => 
+    array (
+      'pretty_version' => '2.4.0',
+      'version' => '2.4.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '13388f00956b1503577598873fffb5ae994b5737',
     ),
     'hamcrest/hamcrest-php' => 
     array (
@@ -383,6 +392,15 @@
         0 => 'v6.20.21',
       ),
     ),
+    'intervention/image' => 
+    array (
+      'pretty_version' => '2.7.2',
+      'version' => '2.7.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '04be355f8d6734c826045d02a1079ad658322dad',
+    ),
     'jakub-onderka/php-console-color' => 
     array (
       'replaced' => 
@@ -429,7 +447,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '8777d207f0047839cb04a4c4e2891706563977c9',
+      'reference' => '2687640689a62a0574e547a89ef3de2eecc13512',
     ),
     'laravel/tinker' => 
     array (
@@ -814,6 +832,13 @@
       ),
       'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
     ),
+    'psr/http-factory-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
+    ),
     'psr/http-message' => 
     array (
       'pretty_version' => '1.0.1',
@@ -822,6 +847,13 @@
       array (
       ),
       'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+    ),
+    'psr/http-message-implementation' => 
+    array (
+      'provided' => 
+      array (
+        0 => '1.0',
+      ),
     ),
     'psr/log' => 
     array (
@@ -857,6 +889,15 @@
       array (
       ),
       'reference' => 'a395af46999a12006213c0c8346c9445eb31640c',
+    ),
+    'ralouphie/getallheaders' => 
+    array (
+      'pretty_version' => '3.0.3',
+      'version' => '3.0.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '120b605dfeb996808c31b6477290a714d356e822',
     ),
     'ramsey/uuid' => 
     array (

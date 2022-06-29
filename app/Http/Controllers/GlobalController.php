@@ -16,6 +16,10 @@ use Carbon\Carbon;
 use App\UserAccess;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -1098,5 +1102,28 @@ class GlobalController extends Controller
     return $msg;
 
     } // fin de funcion transaccion
+
+   // funcion para subir imagenes
+    public static function setCaratula($foto,$id = '0',$code_comercial = '0'){
+        if ($foto) {
+            $company = Company::on(Auth::user()->database_name)->find(1);
+           /* $actual = $id.'-'.$code_comercial.'.jpg';
+            if($actual){
+                Storage::disk('public')->delete("img/$company->login/productos/$actual");
+            }*/
+            $imageName = $id.'-'.$code_comercial.'.jpg';
+            $imagen = Image::make($foto)->encode('jpg',90);
+            $imagen->resize(600,800, function($constraint) {
+                $constraint->upsize();
+            });
+            Storage::disk('public')->put("img/$company->login/productos/$imageName", $imagen->stream());
+            
+            return $imageName;
+
+        }else{
+            return 'false';
+        }
+    }
+   // fin funcion para subir imagenes
    
 }

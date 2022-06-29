@@ -7,6 +7,7 @@ use App\Inventory;
 use App\InventoryHistories;
 use Carbon\Carbon;
 use App\Product;
+use App\Company;
 use App\Segment;
 use App\Subsegment;
 use App\ThreeSubsegment;
@@ -30,11 +31,12 @@ class ProductController extends Controller
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
-       
+       $company = Company::on(Auth::user()->database_name)->find(1);
+
         $products = Product::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('status','DESC')->orderBy('id' ,'DESC')->get();
 
 
-       return view('admin.products.index',compact('products'));
+       return view('admin.products.index',compact('products','company'));
    }
 
 
@@ -212,7 +214,6 @@ class ProductController extends Controller
         $var->price_buy = $valor_sin_formato_price_buy;
         $var->cost_average = $valor_sin_formato_cost_average;
         $var->money = request('money');
-        $var->photo_product = request('photo_product');
 
         $exento = request('exento');
         if($exento == null){
@@ -244,21 +245,35 @@ class ProductController extends Controller
         $var->liter             = $valor_sin_formato_liter;
         $var->capacity          = $valor_sin_formato_capacity;
         //fin Empresa licores
-        
         $var->save();
-
 
         $id_product = DB::connection(Auth::user()->database_name)->table('products')
         ->select('products.*')
         ->get()->last();  // consulta el ultimo producto creado para guardarlo en el historial
 
-        $date = Carbon::now();
-        $date = $date->format('Y-m-d'); 
         
-        $global = new GlobalController; 
+        $global = new GlobalController;
+
+        //Historial del Inventario producto creado
+        $date = Carbon::now();
+        $date = $date->format('Y-m-d');  
         
         $global->transaction_inv('creado',$id_product->id,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0); // guardando registro en historial
-        
+
+        // fin Historial del Inventario producto creado
+
+        //guardar foto del producto creado----------------------------
+        $foto = $global->setCaratula($request->fotop,$id_product->id,$id_product->code_comercial);
+    
+        if($foto != 'false'){// guardar ruta de foto en el producto creado
+           
+            Product::on(Auth::user()->database_name)
+            ->where('id',$id_product->id)
+            ->update(['photo_product' => $foto]);
+            
+        }
+
+        //fin foto------------------------
 
         $inventory = new Inventory();
         $inventory->setConnection(Auth::user()->database_name);

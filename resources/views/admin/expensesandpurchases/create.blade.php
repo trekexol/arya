@@ -125,7 +125,32 @@
                                             <option value="-1">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
                                             
-                                            @if ($value == 'Activos Depreciables' || $value == 'PROPIEDAD, PLANTA Y EQUIPOS' || $value == 'Costo de Venta Mercancía' || $value == 'Costo de Venta' || $value == 'Costo de Ventas' || $value == 'Costos de Ventas' || $value == 'Costo de Venta Mercancia' || $value == 'Costos Integral de Financiamiento' || $value == 'Gasto de Venta' || $value == 'Gastos de Administracion' || $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || $value == 'GASTOS DE COMPRAS NACIONALES' || $value == 'Gastos de Depreciacion' || $value == 'Gastos de Inventario' || $value == 'Gastos de Personal' || $value == 'GASTOS DE PERSONAL DE PRODUCCION' || $value == 'Gastos por Tributos Municipales' || $value == 'GASTOS Y COMISIONES BANCARIAS' || $value == 'GASTOS Y DERECHOS DE IMPORTACION' || $value == 'Inventario') 
+                                            @if (
+                                                $value == 'Activos Depreciables' || 
+                                                $value == 'Activos Depreciables' || 
+                                                $value == 'PROPIEDAD, PLANTA Y EQUIPOS' || 
+                                                $value == 'Costo de Venta Mercancía' || 
+                                                $value == 'Costo de Venta' || 
+                                                $value == 'Costo de Ventas' || 
+                                                $value == 'Costos de Ventas' || 
+                                                $value == 'Costo de Venta Mercancia' || 
+                                                $value == 'Costos Integral de Financiamiento' ||
+                                                $value == 'Otros Costos' ||
+                                                $value == 'Gasto de Venta' || 
+                                                $value == 'Gastos de Administracion' || 
+                                                $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || 
+                                                $value == 'GASTOS DE COMPRAS NACIONALES' || 
+                                                $value == 'Gastos de Depreciacion' || 
+                                                $value == 'Gastos de Inventario' || 
+                                                $value == 'Gastos de Personal' || 
+                                                $value == 'GASTOS DE PERSONAL DE PRODUCCION' || 
+                                                $value == 'Gastos por Tributos Municipales' || 
+                                                $value == 'GASTOS Y COMISIONES BANCARIAS' || 
+                                                $value == 'GASTOS Y DERECHOS DE IMPORTACION' || 
+                                                $value == 'GASTOS DE PERSONAL DE PRODUCCION' ||
+                                                $value == 'COMPRAS INTERNACIONALES' ||
+                                                $value == 'Inventario'                                                
+                                                ) 
                                                  
                                                 <option value="{{ $index }}" {{ $account == $index ? 'selected' : '' }}>{{ $value }}</option>
 
