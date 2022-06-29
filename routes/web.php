@@ -549,7 +549,7 @@ Route::group(["prefix"=>'nominas'],function(){
     Route::get('calculate/{id}','NominaController@calculate')->name('nominas.calculate');
     Route::get('searchmovement/{id}','NominaController@searchMovementNomina')->name('nominas.searchMovementNomina');
 
-
+    Route::get('recalculate/{id}','NominaController@recalculate')->name('nominas.recalculate');
 });
 
 

@@ -45,7 +45,7 @@ class NominaController extends Controller
     }
 
     public function searchMovementNomina($id_nomina){
-        $header = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
+        $header = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->orderBy('id','desc')->first();
         
         if(isset($header)){
             $detail = new DetailVoucherController();
@@ -81,10 +81,51 @@ class NominaController extends Controller
         
     }
 
+    public function recalculate($id_nomina)
+    {
+       NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->delete();
+
+       $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
+
+       if(isset($header_search)){
+            $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($header_search->id);
+
+            $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header->id)
+                ->update(['status' => 'X']);
+    
+            $header->status = "X";
+            $header->save();
+       }
+
+      
+
+       return $this->calculate($id_nomina);
+    }
+
     public function calculate($id_nomina)
     {
 
+        $check_exist_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+       
+        //Chequea si hay calculos previos y pregunta si se desea recalcular la nomina
+        if(isset($check_exist_calculation)){
+          
+            $user       =   auth()->user();
+            $users_role =   $user->role_id;
+            if($users_role == '1'){
+                $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id', 'desc')->get();
+                $exist_nomina_calculation = $nomina;
+             }elseif($users_role == '2'){
+                 return view('admin.index');
+             }
+     
+         
+             return view('admin.nominas.index',compact('nominas','exist_nomina_calculation'));
+        }
+
+
+        
         
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$nomina->id_profession)->get();
 
@@ -107,11 +148,11 @@ class NominaController extends Controller
 
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
-
-        $header_voucher->id_nomina = $id_nomina;
-        $header_voucher->description = "Nomina "+$nomina->description ?? '';
-        $header_voucher->date = $datenow;
         
+        $header_voucher->id_nomina = $id_nomina;
+        $header_voucher->description = "Nomina ".$nomina->description ?? '';
+        $header_voucher->date = $datenow;
+       
     
         $header_voucher->status =  "1";
     
@@ -125,14 +166,17 @@ class NominaController extends Controller
         $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
 
 
-         /*MOVIMIENTO DE BONO ALIMENTACION */
-         $total_bono_alimentacion = 45 * $sum_employees;
+        if($nomina->type == "Segunda Quincena"){
+            /*MOVIMIENTO DE BONO ALIMENTACION */
+            $total_bono_alimentacion = 45 * $sum_employees;
 
-         $accounts_alimentacion = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Bono de Alimentacion')
-         ->first();
+            $accounts_alimentacion = DB::connection(Auth::user()->database_name)->table('accounts')
+            ->where('description','LIKE', 'Bono de Alimentacion')
+            ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
+            $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
+        }
+        
 
         /*MOVIMIENTO DE SSO */
         $total_sso = $this->calculateAmountTotalSSO($nomina);
@@ -152,7 +196,7 @@ class NominaController extends Controller
 
         /*MOVIMIENTO DE Bono Medico */
                 
-        $total_bono_medico = ($sum_employees_asignacion_general * $bcv) - $amount_total_nomina - $total_bono_alimentacion - $total_faov - $total_sso;
+        $total_bono_medico = ($sum_employees_asignacion_general * $bcv) - $amount_total_nomina - ($total_bono_alimentacion ?? 0) - $total_faov - $total_sso;
 
         $accounts_bono_medico = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Bono Medico')
@@ -170,14 +214,14 @@ class NominaController extends Controller
         $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
         /*------------------------ */
         
+        if($nomina->type == "Segunda Quincena"){
+            $accounts_alimentacion_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
+            ->where('description','LIKE', 'Bono Alimentacion por Pagar')
+            ->first();
 
-        $accounts_alimentacion_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Bono Alimentacion por Pagar')
-        ->first();
-
-        $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$total_bono_alimentacion);
-        /*------------------------ */
-        
+            $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$total_bono_alimentacion);
+            /*------------------------ */
+        }
 
         $accounts_sso_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio por pagar')

@@ -109,7 +109,7 @@
                            
                             <a href="{{route('nominas.searchMovementNomina',$nomina->id) }}" title="Ver Movimiento Contable Nomina"><i class="fa fa-search"></i></a>  
                            
-                           <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>  
+                            <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>  
                             <a href="{{route('nominas.edit',$nomina->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                             <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" target="_blank" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
                             <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" target="_blank" onclick="" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
@@ -153,6 +153,33 @@
     </div>
   </div>
 
+@if (isset($exist_nomina_calculation))
+<div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina: {{$exist_nomina_calculation->description ?? ''}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            
+                <h5 class="text-center">Seguro desea Eliminar los cálculos y hacerlos nuevamente?</h5>
+                
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('nominas.recalculate',$exist_nomina_calculation->id) }}" type="submit" class="btn btn-info">Recalcular</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+           
+        </div>
+    </div>
+  </div>
+
+@endif
+
+
 @endsection
 
 @section('javascript')
@@ -170,5 +197,11 @@
          $('#id_nomina_modal').val(id_nomina);
 
     });
+
+
+    if("{{isset($exist_nomina_calculation)}}"){
+        $('#recalculateModal').modal('show'); // abrir
+    }
+   
     </script> 
 @endsection
