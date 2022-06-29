@@ -83,24 +83,12 @@ class NominaController extends Controller
 
     public function recalculate($id_nomina)
     {
-       NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->delete();
-
-       $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
-
-       if(isset($header_search)){
-            $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($header_search->id);
-
-            $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header->id)
-                ->update(['status' => 'X']);
-    
-            $header->status = "X";
-            $header->save();
-       }
-
-      
+        $this->deleteNomina($id_nomina);
 
        return $this->calculate($id_nomina);
     }
+
+   
 
     public function calculate($id_nomina)
     {
@@ -716,6 +704,9 @@ class NominaController extends Controller
         $nomina = Nomina::on(Auth::user()->database_name)->findOrFail($request->id_nomina_modal);
 
         if(isset($nomina)){
+
+            $this->deleteNomina($nomina->id);
+
             $nomina->status = 'X';
 
             $nomina->save();
@@ -727,5 +718,22 @@ class NominaController extends Controller
             return redirect('/nominas')->withDanger('No se encontro el empleado!');
         }
    }
+
+    public function deleteNomina($id_nomina){
+        
+        NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->delete();
+
+        $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
+
+        if(isset($header_search)){
+            $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($header_search->id);
+
+            $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header->id)
+                ->update(['status' => 'X']);
+    
+            $header->status = "X";
+            $header->save();
+        }
+    }
 
 }
