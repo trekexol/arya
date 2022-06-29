@@ -336,7 +336,8 @@ class ExpensesAndPurchaseController extends Controller
                     ->orderBy('description','asc')
                     ->get();
                 }else{
-                    $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',5)
+                    $accounts_inventory = Account::on(Auth::user()->database_name)->select('id','description')
+                    ->where('code_one',5)
                     ->where('code_two', '<>',0)
                     ->where('code_three', '<>',0)
                     ->where('code_four', '<>',0)

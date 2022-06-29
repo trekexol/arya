@@ -102,8 +102,12 @@
                             @else
                               <td class="text-center">Dolares</td>
                             @endif
-                            
-                            <td class="text-center"><img src="{{ asset('/storage/descarga.jpg') }} " ></td>
+                            <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 50px )">
+                           <!-- <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 800px )">
+                            <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 1000px )"> -->
+            
+                            <td class="text-center"><img class="img-responsive" src="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" alt=""> </td>
+
                             @if ($product->status == '0')
                             <td class="text-center" style="font-weight: bold; color: red">I</td>
                             @else
