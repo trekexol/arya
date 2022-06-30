@@ -55,7 +55,9 @@
   @include('admin.layouts.danger')    {{-- EDITAR --}}
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
-<!-- DataTales Example -->
+
+
+  <!-- DataTales Example -->
 <div class="card shadow mb-4">
    
     <div class="card-body">
@@ -81,7 +83,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
-                <th class="text-center">ID</th>
+                <th class="text-center negro">ID</th>
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Tipo</th>
@@ -117,7 +119,7 @@
                             <source srcset="{{ ''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" media="( max-width: 1000px )"> -->
             
                             <td class="text-center">
-                                <img style="width:60px; max-width:60px; height:80px; max-height:80px" class="img-responsive" src="{{  asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) }}" alt="" onclick="loadimg('{{asset('storage/img/'.$company->login.'/productos/'.$product->photo_product)}}')">
+                                <!--<img style="width:60px; max-width:60px; height:80px; max-height:80px" class="img-responsive" src="{{ '' /*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" alt="" onclick="loadimg('{{''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}')"> -->
 
                             </td>
                            
@@ -245,15 +247,13 @@
   </div>
   
 @endsection
+
 @section('javascript')
 <script src="{{asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
 <script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
 <script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
-
-
 <link href="{{asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 
-    
     <script>
         if("{{isset($total_amount_for_import)}}"){
             $('#movementModal').modal('show');
@@ -400,7 +400,7 @@
                 
             });
 
-            /*$(".fotop").fileinput({
+            $(".fotop").fileinput({
                 language: 'es',
                 allowedFileExtensions: ['jpg','jpeg','png'],
                 maxFileSize: 1000,
@@ -408,8 +408,11 @@
                 showClose: false,
                 initialPreviewAsData: true,
                 dropZoneEnabled: false,
-                theme: "fas"    
-            }); */
+                //showZoom: false,
+
+                theme: "fas"   
+               
+            });
 
         </script> 
 @endsection
