@@ -69,7 +69,15 @@
             </div>   
         @endif
         </div>
+
+
         <div class="table-responsive">
+            <div align="center">
+                <canvas align="center" id="canvas" > </canvas>
+                <div align="center" class="full-img" style="position: fixed; z-index:10000;">
+                    <img  class="img-responsive" src="" alt="" id="myImage">      
+                </div>
+               </div>
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
@@ -79,8 +87,8 @@
                 <th class="text-center">Tipo</th>
                 <th class="text-center">Precio</th>
                 <th class="text-center">Moneda</th>
-                <th class="text-center">Foto del Producto</th>
-                <th class="text-center">(E)</th>
+                <th class="text-center">Foto</th>
+                <th class="text-center" width="1%">(S)</th>
               
                 <th class="text-center" width="9%"></th>
             </tr>
@@ -102,12 +110,18 @@
                             @else
                               <td class="text-center">Dolares</td>
                             @endif
-                            <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 50px )">
-                           <!-- <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 800px )">
-                            <source srcset="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" media="( max-width: 1000px )"> -->
+                           
+                           <!--  
+                            <source srcset="{{ ''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" media="( max-width: 500px )">
+                            <source srcset="{{ ''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" media="( max-width: 800px )">
+                            <source srcset="{{ ''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" media="( max-width: 1000px )"> -->
             
-                            <td class="text-center"><img class="img-responsive" src="{{ asset('storage/img/'.$company->login.'/'.$product->photo_product) }}" alt=""> </td>
+                            <td class="text-center">
+                                <img style="width:60px; max-width:60px; height:80px; max-height:80px" class="img-responsive" src="{{  asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) }}" alt="" onclick="loadimg('{{asset('storage/img/'.$company->login.'/productos/'.$product->photo_product)}}')">
 
+                            </td>
+                           
+            
                             @if ($product->status == '0')
                             <td class="text-center" style="font-weight: bold; color: red">I</td>
                             @else
@@ -232,6 +246,14 @@
   
 @endsection
 @section('javascript')
+<script src="{{asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+
+
+<link href="{{asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+
+    
     <script>
         if("{{isset($total_amount_for_import)}}"){
             $('#movementModal').modal('show');
@@ -288,7 +310,27 @@
             document.getElementById("fileForm").submit();
         }
 
-        
+        function loadimg (url){
+                fetch(url)
+                .then(response => response.blob())
+                .then(blo => {
+                    const domString = URL.createObjectURL(blo)
+                    //console.log(domString)
+                    var ctx = canvas.getContext('2d')
+                    var img = new Image()
+                    img.src = domString
+                    img.onload = function(){
+                    const domString = URL.createObjectURL(blo)
+                    document.getElementById('myImage').setAttribute('src',domString)
+                        ctx.clearRect(0,0,canvas.width, canvas.height)
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+                        const colors = getColorPalete(ctx)
+                        //console.log(colors)
+                        // console.log(colors.length)
+                        updateProperties(colors)
+                    }
+                })
+            }      
 
         $("#file_form").on('change',function(){
             
@@ -357,5 +399,17 @@
                 var contrapartida_id    = document.getElementById("contrapartida").value;
                 
             });
+
+            /*$(".fotop").fileinput({
+                language: 'es',
+                allowedFileExtensions: ['jpg','jpeg','png'],
+                maxFileSize: 1000,
+                showUpload: false,
+                showClose: false,
+                initialPreviewAsData: true,
+                dropZoneEnabled: false,
+                theme: "fas"    
+            }); */
+
         </script> 
 @endsection

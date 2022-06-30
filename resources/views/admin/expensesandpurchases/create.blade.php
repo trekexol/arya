@@ -136,7 +136,8 @@
                                                 $value == 'Costos Integral de Financiamiento' ||
                                                 $value == 'Costos de mantenimiento operacionales' ||
                                                 $value == 'Otros Costos' ||
-                                                $value == 'Gasto de Venta' || 
+                                                $value == 'Gasto de Venta' ||
+                                                $value == 'Gasto de Ventas' || 
                                                 $value == 'Gastos de Administracion' || 
                                                 $value == 'GASTOS DE COMPRAS DE IMPORTACIONES' || 
                                                 $value == 'GASTOS DE COMPRAS NACIONALES' || 
