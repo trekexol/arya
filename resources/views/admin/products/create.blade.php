@@ -339,7 +339,7 @@
                         <div class="form-group row">
                             <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
                             <div class="col-md-4">
-                                <input id="fotop" name="fotop" type="file" data-initial-preview="" accept="image/*">
+                                <input id="fotop" style="border:0;" name="fotop" type="file" data-initial-preview="" accept="image/*">
                              
                            <br>
 
