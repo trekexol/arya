@@ -32,9 +32,9 @@
 
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form  method="POST"   action="{{ route('products.update',$product->id) }}" enctype="multipart/form-data" >
+            <form  method="POST" action="{{ route('products.update',$product->id) }}" enctype="multipart/form-data" >
                 @method('PATCH')
-                @csrf()
+                @csrf
                 <div class="container py-2">
                     <div class="row">
                         <div class="col-12 ">
@@ -400,7 +400,20 @@
                                         </select>
                                     </div>
                                 </div>
-                                
+                                <div class="form-group row">
+                                    <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
+                                    <div class="col-md-4">
+                                        @if (isset($product->photo_product)) 
+                                        <input id="fotop" style="border:0;" name="fotop" type="file" data-initial-preview="{{asset('storage/img/'.$company->login.'/productos/'.$product->photo_product)}}" accept="image/*" value="{{$product->photo_product}}">
+                                        <input id="fotoname" name="fotoname" type="hidden" value="{{$product->photo_product}}">
+                                        @else
+                                        <input id="fotop" style="border:0;" name="fotop" type="file" accept="image/*">
+                                        <input id="fotoname" name="fotoname" type="hidden" value="{{$product->photo_product}}">
+                                        @endif
+                                   <br>
+        
+                                </div>
+                                </div>                               
                                 <br>
                                 <div class="form-group row mb-0">
                                     <div class="col-md-3 offset-md-4">
@@ -417,6 +430,13 @@
                     </div>
  @endsection
  @section('validacion')
+    
+ <script src="{{asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+ <script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+ <script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+ <script src="{{asset("assets/pages/script/imagen/foto.js")}}" type="text/javascript"></script> 
+ <link href="{{asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+ 
     <script>  
     
     function litros(){
