@@ -264,7 +264,8 @@ class ProductController extends Controller
 
         //guardar foto del producto creado----------------------------
         $foto = $global->setCaratula($request->fotop,$id_product->id,$id_product->code_comercial);
-    
+         
+
         if($foto != 'false'){// guardar ruta de foto en el producto creado
            
             Product::on(Auth::user()->database_name)
@@ -308,6 +309,8 @@ class ProductController extends Controller
     */
    public function edit($id)
    {
+        $company = Company::on(Auth::user()->database_name)->find(1);
+    
         $product = Product::on(Auth::user()->database_name)->find($id);
         
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
@@ -328,7 +331,7 @@ class ProductController extends Controller
                                 ->where('code_five', '<>',0)
                                 ->get();
        
-        return view('admin.products.edit',compact('accounts','threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures'));
+        return view('admin.products.edit',compact('accounts','threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures','company'));
   
    }
 
@@ -413,8 +416,21 @@ class ProductController extends Controller
     $var->price = $valor_sin_formato_price;
     $var->price_buy = $valor_sin_formato_price_buy;
     $var->cost_average = $valor_sin_formato_cost_average;
-    
-    $var->photo_product = request('photo_product');
+    $fotoname = request('fotoname');
+
+        $global = new GlobalController;
+        //guardar foto del producto creado----------------------------
+        $foto = $global->setCaratulaup($request->fotop,$var->id,$var->code_comercial,$fotoname);
+
+        if($foto != 'false'){// guardar ruta de foto en el producto creado
+           
+            Product::on(Auth::user()->database_name)
+            ->where('id',$var->id)
+            ->update(['photo_product' => $foto]);
+            
+        }
+
+        //fin foto------------------------
 
     $var->money = request('money');
     $var->lote= request('lote');

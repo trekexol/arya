@@ -1105,13 +1105,38 @@ class GlobalController extends Controller
 
    // funcion para subir imagenes
     public static function setCaratula($foto,$id = '0',$code_comercial = '0'){
+
+        $fecha_hora = date('dmYhis', time());
+    
         if ($foto) {
             $company = Company::on(Auth::user()->database_name)->find(1);
-           /* $actual = $id.'-'.$code_comercial.'.jpg';
-            if($actual){
-                Storage::disk('public')->delete("img/$company->login/productos/$actual");
-            }*/
-            $imageName = $id.'-'.$code_comercial.'.jpg';
+
+            $imageName = $id.'-'.$code_comercial.'-'.$fecha_hora.'.jpg';
+            $imagen = Image::make($foto)->encode('jpg',90);
+            $imagen->resize(600,800, function($constraint) {
+                $constraint->upsize();
+            });
+            Storage::disk('public')->put("img/$company->login/productos/$imageName", $imagen->stream()); 
+            
+            return $imageName;
+
+        }else{
+            return 'false';
+        }
+    }
+   // fin funcion para subir imagenes
+
+    // funcion para actualizar imagenes
+      public static function setCaratulaup($foto,$id = '0',$code_comercial = '0',$actual = null){
+      
+        $fecha_hora = date('dmYhis', time());
+    
+        if ($foto) {
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            
+            Storage::disk('public')->delete("img/$company->login/productos/$actual");
+
+            $imageName = $id.'-'.$code_comercial.'-'.$fecha_hora.'.jpg';
             $imagen = Image::make($foto)->encode('jpg',90);
             $imagen->resize(600,800, function($constraint) {
                 $constraint->upsize();
