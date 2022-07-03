@@ -14,7 +14,7 @@
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "jquery": "^3.2",
-        "laravel-mix": "^6.0.34",
+        "laravel-mix": "^6.0.49",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",
         "postcss": "^8.3.11",
@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.13"
     },
     "dependencies": {
+        "bootstrap-fileinput": "^5.5.0",
         "vue-moments-ago": "^0.2.0"
     }
 }

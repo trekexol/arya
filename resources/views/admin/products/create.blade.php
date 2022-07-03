@@ -445,26 +445,17 @@
     </script>
 @endsection
 @section('javascript')
-<!--<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/fileinput.min.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/locales/es.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("assets/pages/script/imagen/foto.js")*/}}" type="text/javascript"></script> 
-<link href="{{ ''/*asset("vendor/bootstrap-fileinput/css/fileinput.min.css")*/}}" rel="stylesheet" type="text/css"/>-->
+<script src="{{ asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{ asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{ asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+<link href="{{ asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 
-<script src="{{''/*asset('assets/pages/script/imagen/foto.js')*/}}"></script>
-
-<script src="{{url('assets/pages/script/imagen/foto.js')}}"></script> 
-<script src="{{url('app/public/assets/pages/script/imagen/foto.js')}}"></script> 
-
-<script src="{{url('public/assets/pages/script/imagen/foto.js')}}"></script> 
-<script src="{{url('public_html/assets/pages/script/imagen/foto.js')}}"></script> 
-<script src="{{url('vendor/foto.js')}}"></script> 
-<script src="{{url('app/foto.js')}}"></script> 
+<script src="{{ asset("assets/pages/script/imagen/foto.js")}}" type="text/javascript"></script> 
 
 
 
-
-<script>    
+<script> 
+   
         $("#type").on('change',function(){
             var type = $(this).val();
           

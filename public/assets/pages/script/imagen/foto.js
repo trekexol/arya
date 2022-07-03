@@ -1,8 +1,8 @@
 
   $(document).ready(function() {
 
-       alert(' estoy');
-       /*$("#fotop").fileinput({
+       alert('estoy en public/assets');
+       $("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
             maxFileSize: 1000,
@@ -11,5 +11,5 @@
             initialPreviewAsData: true,
             dropZoneEnabled: false,
             theme: "fas"    
-        }); */
+        }); 
  });
