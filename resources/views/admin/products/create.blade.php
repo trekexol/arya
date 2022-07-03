@@ -453,8 +453,10 @@
 
 <script src="{{''/*asset('assets/pages/script/imagen/foto.js')*/}}"></script>
 
-<script src="{{asset('./assets/pages/script/imagen/foto.js')}}"></script> 
-      
+<script src="{{url('assets/pages/script/imagen/foto.js')}}"></script> 
+
+
+
 
 <script>    
         $("#type").on('change',function(){
