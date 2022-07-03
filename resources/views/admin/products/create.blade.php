@@ -454,6 +454,7 @@
 <script src="{{''/*asset('assets/pages/script/imagen/foto.js')*/}}"></script>
 <script src="{{asset('public/assets/pages/script/imagen/foto.js')}}"></script>
 <script src="{{asset('../assets/pages/script/imagen/foto.js')}}"></script>       
+
 <script>    
         $("#type").on('change',function(){
             var type = $(this).val();
