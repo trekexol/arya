@@ -1,7 +1,7 @@
 
   $(document).ready(function() {
 
-       alert(' estoy');
+       alert(' estoy en vendor afuera de public');
        /*$("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
