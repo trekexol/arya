@@ -452,8 +452,9 @@
 <link href="{{ ''/*asset("vendor/bootstrap-fileinput/css/fileinput.min.css")*/}}" rel="stylesheet" type="text/css"/>-->
 
 <script src="{{''/*asset('assets/pages/script/imagen/foto.js')*/}}"></script>
-<script src="{{asset('public/assets/pages/script/imagen/foto.js')}}"></script>
-<script src="{{asset('../assets/pages/script/imagen/foto.js')}}"></script>       
+
+<script src="{{asset('./assets/pages/script/imagen/foto.js')}}"></script> 
+      
 
 <script>    
         $("#type").on('change',function(){
