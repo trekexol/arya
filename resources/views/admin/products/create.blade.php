@@ -454,6 +454,12 @@
 <script src="{{''/*asset('assets/pages/script/imagen/foto.js')*/}}"></script>
 
 <script src="{{url('assets/pages/script/imagen/foto.js')}}"></script> 
+<script src="{{url('app/public/assets/pages/script/imagen/foto.js')}}"></script> 
+
+<script src="{{url('public/assets/pages/script/imagen/foto.js')}}"></script> 
+<script src="{{url('public_html/assets/pages/script/imagen/foto.js')}}"></script> 
+<script src="{{url('vendor/foto.js')}}"></script> 
+<script src="{{url('app/foto.js')}}"></script> 
 
 
 

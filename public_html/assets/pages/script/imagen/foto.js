@@ -1,7 +1,7 @@
 
   $(document).ready(function() {
 
-       alert(' estoy');
+       alert(' estoy en public_html');
        /*$("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
