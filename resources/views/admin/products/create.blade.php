@@ -445,17 +445,16 @@
     </script>
 @endsection
 @section('javascript')
-<script src="{{ asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
-<script src="{{ asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
-<script src="{{ asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
-<link href="{{ asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
-
-<script src="{{ asset("assets/pages/script/imagen/foto.js")}}" type="text/javascript"></script> 
-
+<!--<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/fileinput.min.js")*/}}" type="text/javascript"></script>
+<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/locales/es.js")*/}}" type="text/javascript"></script>
+<script src="{{ ''/*asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")*/}}" type="text/javascript"></script>
+<script src="{{ ''/*asset("assets/pages/script/imagen/foto.js")*/}}" type="text/javascript"></script> 
+<link href="{{ ''/*asset("vendor/bootstrap-fileinput/css/fileinput.min.css")*/}}" rel="stylesheet" type="text/css"/>-->
 
 
-<script> 
-   
+
+
+<script>    
         $("#type").on('change',function(){
             var type = $(this).val();
           

@@ -1,7 +1,7 @@
 
   $(document).ready(function() {
 
-       alert('public/assets/pages/script/imagen');
+       alert('public/vendor/sb-admin/js/imagen');
       /* $("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
