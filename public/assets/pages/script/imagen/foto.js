@@ -1,7 +1,8 @@
 
   $(document).ready(function() {
 
-       $("#fotop").fileinput({
+       alert('estoy');
+       /*$("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
             maxFileSize: 1000,
@@ -10,5 +11,5 @@
             initialPreviewAsData: true,
             dropZoneEnabled: false,
             theme: "fas"    
-        });
+        }); */
  });
