@@ -24,7 +24,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Productos.</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Productos</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
@@ -445,13 +445,11 @@
     </script>
 @endsection
 @section('javascript')
-<!--<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/fileinput.min.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("vendor/bootstrap-fileinput/js/locales/es.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")*/}}" type="text/javascript"></script>
-<script src="{{ ''/*asset("assets/pages/script/imagen/foto.js")*/}}" type="text/javascript"></script> 
-<link href="{{ ''/*asset("vendor/bootstrap-fileinput/css/fileinput.min.css")*/}}" rel="stylesheet" type="text/css"/>-->
-
-
+<script src="{{ asset("storage/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/script/imagen/foto.js")}}" type="text/javascript"></script> 
+<link href="{{ asset("storage/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 
 
 <script>    
