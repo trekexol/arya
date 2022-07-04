@@ -445,11 +445,6 @@
     </script>
 @endsection
 @section('javascript')
-<script src="{{ asset("storage/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
-<script src="{{ asset("storage/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
-<script src="{{ asset("storage/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
-<script src="{{ asset("storage/bootstrap-fileinput/script/imagen/foto.js")}}" type="text/javascript"></script> 
-<link href="{{ asset("storage/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 
 
 <script>    
