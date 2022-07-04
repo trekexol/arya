@@ -247,10 +247,11 @@
 
 @section('javascript')
 
-<script src="{{asset("vendor/bootstrap-fileinput/js/fileinputcopy.min.js")}}" type="text/javascript"></script>
-<script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
-<script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
-<link href="{{asset("vendor/bootstrap-fileinput/css/fileinput-copia.min.css")}}" rel="stylesheet" type="text/css"/>
+<script src="{{asset("storage/bootstrap-fileinput/js/fileinputcopy.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("storage/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{asset("storage/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+<script src="{{asset("storage/bootstrap-fileinput/script/imagen/foto.js")}}" type="text/javascript"></script> 
+<link href="{{asset("storage/bootstrap-fileinput/css/fileinput-copia.min.css")}}" rel="stylesheet" type="text/css"/>
 
     <script>
         if("{{isset($total_amount_for_import)}}"){
@@ -377,18 +378,6 @@
                 
             });
 
-            $(".fotop").fileinput({
-                language: 'es',
-                allowedFileExtensions: ['jpg','jpeg','png'],
-                maxFileSize: 1000,
-                showUpload: false,
-                showClose: false,
-                initialPreviewAsData: true,
-                dropZoneEnabled: false,
-                //showZoom: false,
-                theme: "fas"   
-               
-            });
 
 
         // Create a timestamp

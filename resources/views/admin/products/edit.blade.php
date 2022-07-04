@@ -431,14 +431,14 @@
  @endsection
  @section('validacion')
     
- <script src="{{asset("vendor/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
- <script src="{{asset("vendor/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
- <script src="{{asset("vendor/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
- <script src="{{asset("assets/pages/script/imagen/foto.js")}}" type="text/javascript"></script> 
- <link href="{{asset("vendor/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
- 
-    <script>  
-    
+<script src="{{ asset("storage/bootstrap-fileinput/js/fileinput.min.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
+<script src="{{ asset("storage/bootstrap-fileinput/script/imagen/foto.js")}}" type="text/javascript"></script> 
+<link href="{{ asset("storage/bootstrap-fileinput/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
+
+
+<script>
     function litros(){
             var n1 = document.getElementById('bottle').value;
             var n2 = document.getElementById('liter').value;
