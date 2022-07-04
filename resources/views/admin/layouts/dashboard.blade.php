@@ -29,6 +29,7 @@
     <link href="{{asset('vendor/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <!--End TABLES-->
 
+    <link href="{{ asset("vendor/sb-admin/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 </head>
 
 <body id="page-top">
@@ -114,10 +115,6 @@
 
         <!-- Page level plugins -->
         <script src="{{asset('vendor/sb-admin/vendor/chart.js/Chart.min.js')}}"></script>
-
-        <script src="{{asset('public/assets/pages/script/imagen/foto.js')}}"></script> 
-
-        <script src="{{asset('public/vendor/sb-admin/js/foto.js')}}"></script>
     <!-- END SCRIPTS INDEX -->
 
      <!-- SCRIPTS FOR TABLES-->
@@ -134,6 +131,10 @@
         <!-- Para las mascaras -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
 
+        <script src="{{ asset("vendor/sb-admin/js/fileinput.min.js")}}" type="text/javascript"></script>
+        <script src="{{ asset("vendor/sb-admin/js/es.js")}}" type="text/javascript"></script>
+        <script src="{{ asset("vendor/sb-admin/js/theme.min.js")}}" type="text/javascript"></script>
+        <script src="{{ asset("vendor/sb-admin/js/foto.js")}}" type="text/javascript"></script> 
 
         <script>
             $("body").toggleClass("sidebar-toggled");

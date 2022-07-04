@@ -247,12 +247,6 @@
 
 @section('javascript')
 
-<script src="{{asset("storage/bootstrap-fileinput/js/fileinputcopy.min.js")}}" type="text/javascript"></script>
-<script src="{{asset("storage/bootstrap-fileinput/js/locales/es.js")}}" type="text/javascript"></script>
-<script src="{{asset("storage/bootstrap-fileinput/themes/fas/theme.min.js")}}" type="text/javascript"></script>
-<script src="{{asset("storage/bootstrap-fileinput/script/imagen/foto.js")}}" type="text/javascript"></script> 
-<link href="{{asset("storage/bootstrap-fileinput/css/fileinput-copia.min.css")}}" rel="stylesheet" type="text/css"/>
-
     <script>
         if("{{isset($total_amount_for_import)}}"){
             $('#movementModal').modal('show');
