@@ -260,6 +260,28 @@
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
 
+        $("#fotop").fileinput({
+            language: 'es',
+            allowedFileExtensions: ['jpg','jpeg','png'],
+            maxFileSize: 1000,
+            showUpload: false,
+            showClose: false,
+            initialPreviewAsData: true,
+            dropZoneEnabled: false,
+            theme: "fa"    
+        });
+
+        $(".fotop").fileinput({
+          language: 'es',
+          allowedFileExtensions: ['jpg','jpeg','png'],
+          maxFileSize: 1000,
+          showUpload: false,
+          showClose: false,
+          initialPreviewAsData: true,
+          dropZoneEnabled: false,
+          theme: "fa"    
+      });
+
         $(document).ready(function () {
             $("#rate").mask('000.000.000.000.000,00', { reverse: true });
             
