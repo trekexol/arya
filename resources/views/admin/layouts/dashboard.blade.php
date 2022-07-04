@@ -31,7 +31,7 @@
 
     <link href="{{ asset("vendor/sb-admin/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 <!--auquii CSS-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/css/fileinput.min.css" integrity="sha512-XHMymTWTeqMm/7VZghZ2qYTdoJyQxdsauxI4dTaBLJa8d1yKC/wxUXh6lB41Mqj88cPKdr1cn10SCemyLcK76A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://aryasoftware.net/vendor/sb-admin/css/fileinputn.min.css" rel="stylesheet"/>
 
 </head>
 
@@ -135,9 +135,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/js/fileinput.min.js" integrity="sha512-C9i+UD9eIMt4Ufev7lkMzz1r7OV8hbAoklKepJW0X6nwu8+ZNV9lXceWAx7pU1RmksTb1VmaLDaopCsJFWSsKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/js/locales/es.min.js" integrity="sha512-q2lXTQuccVsDwaOpJNHbGDL2c5DEK706u1MCjKuGAG4zz+q1Sja3l2RuymU3ySE6RfmTYZ/V4wY5Ol71sRvvWA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/themes/explorer-fa5/theme.min.js" integrity="sha512-Ae2hcSSMLXTBvqDjKBPJUWFfGYDVCTiK48bNdjyZoZ+VPJ/5D7IS0gR5t6K7qNfyj7Jv2rYC87F0GB95Rpv60A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://aryasoftware.net/vendor/sb-admin/js/fileinputn.nmin.js"  ></script>
+        <script src="https://aryasoftware.net/vendor/sb-admin/js/es.js"  ></script>
+        <script src="https://aryasoftware.net/vendor/sb-admin/js/themen.min.js" ></script>
 
         <script>
             $("body").toggleClass("sidebar-toggled");
