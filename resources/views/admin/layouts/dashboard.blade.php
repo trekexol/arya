@@ -29,9 +29,13 @@
     <link href="{{asset('vendor/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <!--End TABLES-->
 
-    <link href="{{ asset("vendor/sb-admin/css/fileinput.min.css")}}" rel="stylesheet" type="text/css"/>
 <!--auquii CSS-->
-<link rel="stylesheet" href="https://aryasoftware.net/vendor/sb-admin/css/fileinputn.min.css" rel="stylesheet"/>
+<link href="{{asset('vendor/sb-admin/css/fileinput.min.css')}}" rel="stylesheet"/>
+
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 </head>
 
@@ -135,9 +139,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
 
 
-        <script src="https://aryasoftware.net/vendor/sb-admin/js/fileinputn.nmin.js"  ></script>
-        <script src="https://aryasoftware.net/vendor/sb-admin/js/es.js"  ></script>
-        <script src="https://aryasoftware.net/vendor/sb-admin/js/themen.min.js" ></script>
+        <script src="{{asset('vendor/sb-admin/js/fileinputn.min.js')}}"></script>
+        <script src="{{asset('vendor/sb-admin/js/es.js')}}"></script>
+        <script src="{{asset('vendor/sb-admin/js/themen.min.js')}}"></script>
 
         <script>
             $("body").toggleClass("sidebar-toggled");
