@@ -115,9 +115,9 @@
         <!-- Page level plugins -->
         <script src="{{asset('vendor/sb-admin/vendor/chart.js/Chart.min.js')}}"></script>
 
-        <script src="{{asset('assets/pages/script/imagen/foto.js')}}"></script> 
+        <script src="{{asset('public/assets/pages/script/imagen/foto.js')}}"></script> 
 
-        <script src="{{asset('vendor/sb-admin/js/foto.js')}}"></script>
+        <script src="{{asset('public/vendor/sb-admin/js/foto.js')}}"></script>
     <!-- END SCRIPTS INDEX -->
 
      <!-- SCRIPTS FOR TABLES-->
