@@ -268,7 +268,7 @@
             showClose: false,
             initialPreviewAsData: true,
             dropZoneEnabled: false,
-            theme: "fa"    
+            theme: "fas"    
         });
 
         $(".fotop").fileinput({
@@ -279,7 +279,7 @@
           showClose: false,
           initialPreviewAsData: true,
           dropZoneEnabled: false,
-          theme: "fa"    
+          theme: "fas"    
       });
 
         $(document).ready(function () {
