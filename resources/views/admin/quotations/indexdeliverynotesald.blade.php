@@ -176,7 +176,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" data-id-quotation={{ $quotation->id ?? ''}} class="btn btn-danger desaldar">Quitar Saldado</button>
+                <button type="button" data-id-quotation-desaldar="" class="btn btn-danger desaldar">Quitar Saldado</button>
+                <input id="id-quotation-desaldar" type="hidden" name="id-quotation-desaldar">
+                
             </div>
         </div>
         </div>
@@ -222,13 +224,14 @@
          let id_quotation = $(this).attr('data-id-quotation');
  
          $('#id_quotation_modal').val(id_quotation);
+         $('#id-quotation-desaldar').val(id_quotation);
 
      });
 
      $(document).on('click','.desaldar',function(){
-        
-        let id_quotation = $(this).attr('data-id-quotation');
-        var saldar = 0;
+            
+        let id_quotation = $('#id-quotation-desaldar').val();
+        var saldar = '0';
          var valinput = '0';
 
          var url = "{{ route('quotations.indexdeliverynote') }}"+"/"+id_quotation+"/"+valinput+"/"+saldar;

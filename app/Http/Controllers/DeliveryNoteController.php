@@ -39,11 +39,8 @@ class DeliveryNoteController extends Controller
                 if($saldar == '0') {
                     $quotationsupdt = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['status' => '1']);
                     
-                    $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
-
                     $anticipo = Anticipo::on(Auth::user()->database_name)
                     ->where('id_quotation',$id_quotation)
-                    ->where('status','C')
                     ->update([ 'status' => '1' ]);
          
                 }

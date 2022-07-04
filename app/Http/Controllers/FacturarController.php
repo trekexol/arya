@@ -2078,6 +2078,15 @@ public function storeanticiposaldar(Request $request)
 
         $total_iva = 0;
 
+        $amount_pay = request('amount_pay');
+        $IGTF_input = request('IGTF_input_pre');
+        $IGTF_input_check = request('IGTF_input_store');
+
+        if ($IGTF_input_check == 0) {
+            $IGTF_input = 0;
+        }
+
+        $IGTF_porc = request('IGTF_porc');
 
         $IGTF_percentage = $company->IGTF_percentage ?? 3;
 
