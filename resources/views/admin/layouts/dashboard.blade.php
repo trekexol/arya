@@ -131,10 +131,10 @@
         <!-- Para las mascaras -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
 
-        <script src="{{ asset("vendor/sb-admin/js/fileinput.min.js")}}" type="text/javascript"></script>
+        <script src="{{ asset("vendor/sb-admin/js/fileinputn.min.js")}}" type="text/javascript"></script>
         <script src="{{ asset("vendor/sb-admin/js/es.js")}}" type="text/javascript"></script>
-        <script src="{{ asset("vendor/sb-admin/js/theme.min.js")}}" type="text/javascript"></script>
-        <script src="{{ asset("vendor/sb-admin/js/foto.js")}}" type="text/javascript"></script> 
+        <script src="{{ asset("vendor/sb-admin/js/themen.min.js")}}" type="text/javascript"></script>
+        <script src="{{ asset("vendor/sb-admin/js/foton.js")}}" type="text/javascript"></script> 
 
         <script>
             $("body").toggleClass("sidebar-toggled");

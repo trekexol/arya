@@ -1,6 +1,6 @@
 
   $(document).ready(function() {
-      alert('estoy en public/vendor/sb-admin/js')
+ 
       $("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],
