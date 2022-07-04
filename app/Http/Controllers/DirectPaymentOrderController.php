@@ -82,6 +82,7 @@ class DirectPaymentOrderController extends Controller
     public function store(Request $request)
     {
 
+       // dd($request);
        
         $data = request()->validate([
             
@@ -203,6 +204,10 @@ class DirectPaymentOrderController extends Controller
                     $account->save();
                 }
 
+                if($this->storeMore($request) != 'ok'){
+                    return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
+                }
+
                 return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');
 
            /* }else{
@@ -212,6 +217,348 @@ class DirectPaymentOrderController extends Controller
         }else{
             return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
+    }
+
+
+    public function storeMore(Request $request)
+    {
+        if($request->amount_of_payments >= 2){
+
+        $account = request('account');
+        $contrapartida2 = request('Account_counterpart2');
+        $coin = request('coin');
+
+        if($account != $contrapartida2){
+
+            $amount2 = str_replace(',', '.', str_replace('.', '', request('amount2')));
+            $rate2 = str_replace(',', '.', str_replace('.', '', request('rate2')));
+
+            if($coin != 'bolivares'){
+                $amount2 = $amount2 * $rate2;
+            }
+
+            if($rate2 == 0){
+                return 'La tasa no puede ser cero!';
+            }
+
+            /*$check_amount2 = $this->check_amount2($account2);
+            se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
+            if($check_amount2->saldo_actual >= $amount2){*/
+
+                $payment_order = new PaymentOrder();
+                $payment_order->setConnection(Auth::user()->database_name);
+
+                if(request('beneficiario') == 1){
+                    $payment_order->id_client = request('Subbeneficiario');
+                    
+                }else{
+                    $payment_order->id_provider = request('Subbeneficiario');
+                }
+                $payment_order->id_user = request('user_id');
+                if(request('branch') != 'ninguno'){
+                    $payment_order->id_branch = request('branch');
+                }
+                $payment_order->date = request('date');
+                $payment_order->reference = request('reference');
+                $payment_order->description = request('description');
+                $payment_order->amount = $amount2;
+                $payment_order->rate = $rate2;
+                $payment_order->coin = $coin;
+                $payment_order->status = 1;
+
+                $payment_order->save();
+
+                $header = new HeaderVoucher();
+                $header->setConnection(Auth::user()->database_name);
+
+                $header->description = "Orden de Pago ". request('description');
+                $header->date = request('date');
+                $header->reference = request('reference');
+                $header->id_payment_order = $payment_order->id;
+                $header->status =  1;
+            
+                $header->save();
+
+
+                $movement = new DetailVoucher();
+                $movement->setConnection(Auth::user()->database_name);
+
+                $movement->id_header_voucher = $header->id;
+                $movement->id_account = $account;
+                $movement->user_id = request('user_id');
+                $movement->debe = 0;
+                $movement->haber = $amount2;
+                $movement->tasa = $rate2;
+                $movement->status = "C";
+            
+                $movement->save();
+                
+                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+                $movement_counterpart = new DetailVoucher();
+                $movement_counterpart->setConnection(Auth::user()->database_name);
+
+                $movement_counterpart->id_header_voucher = $header->id;
+                $movement_counterpart->id_account = $contrapartida2;
+                $movement_counterpart->user_id = request('user_id');
+                $movement_counterpart->debe = $amount2;
+                $movement_counterpart->haber = 0;
+                $movement_counterpart->tasa = $rate2;
+                $movement_counterpart->status = "C";
+
+                $movement_counterpart->save();
+
+                $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida2);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+                $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+              
+
+        }else{
+            return "No se puede hacer un movimiento a la misma cuenta!";
+        }
+        
+        }
+        if($request->amount_of_payments >= 3){
+
+            $account = request('account');
+            $contrapartida3 = request('Account_counterpart3');
+            $coin = request('coin');
+    
+            if($account != $contrapartida3){
+    
+                $amount3 = str_replace(',', '.', str_replace('.', '', request('amount3')));
+                $rate3 = str_replace(',', '.', str_replace('.', '', request('rate3')));
+    
+                if($coin != 'bolivares'){
+                    $amount3 = $amount3 * $rate3;
+                }
+    
+                if($rate3 == 0){
+                    return 'La tasa no puede ser cero!';
+                }
+    
+                /*$check_amount3 = $this->check_amount3($account3);
+                se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
+                if($check_amount3->saldo_actual >= $amount3){*/
+    
+                    $payment_order = new PaymentOrder();
+                    $payment_order->setConnection(Auth::user()->database_name);
+    
+                    if(request('beneficiario') == 1){
+                        $payment_order->id_client = request('Subbeneficiario');
+                        
+                    }else{
+                        $payment_order->id_provider = request('Subbeneficiario');
+                    }
+                    $payment_order->id_user = request('user_id');
+                    if(request('branch') != 'ninguno'){
+                        $payment_order->id_branch = request('branch');
+                    }
+                    $payment_order->date = request('date');
+                    $payment_order->reference = request('reference');
+                    $payment_order->description = request('description');
+                    $payment_order->amount = $amount3;
+                    $payment_order->rate = $rate3;
+                    $payment_order->coin = $coin;
+                    $payment_order->status = 1;
+    
+                    $payment_order->save();
+    
+                    $header = new HeaderVoucher();
+                    $header->setConnection(Auth::user()->database_name);
+    
+                    $header->description = "Orden de Pago ". request('description');
+                    $header->date = request('date');
+                    $header->reference = request('reference');
+                    $header->id_payment_order = $payment_order->id;
+                    $header->status =  1;
+                
+                    $header->save();
+    
+    
+                    $movement = new DetailVoucher();
+                    $movement->setConnection(Auth::user()->database_name);
+    
+                    $movement->id_header_voucher = $header->id;
+                    $movement->id_account = $account;
+                    $movement->user_id = request('user_id');
+                    $movement->debe = 0;
+                    $movement->haber = $amount3;
+                    $movement->tasa = $rate3;
+                    $movement->status = "C";
+                
+                    $movement->save();
+                    
+                    $account = Account::on(Auth::user()->database_name)->findOrFail($account);
+    
+                    if($account->status != "M"){
+                        $account->status = "M";
+                        $account->save();
+                    }
+    
+                    $movement_counterpart = new DetailVoucher();
+                    $movement_counterpart->setConnection(Auth::user()->database_name);
+    
+                    $movement_counterpart->id_header_voucher = $header->id;
+                    $movement_counterpart->id_account = $contrapartida3;
+                    $movement_counterpart->user_id = request('user_id');
+                    $movement_counterpart->debe = $amount3;
+                    $movement_counterpart->haber = 0;
+                    $movement_counterpart->tasa = $rate3;
+                    $movement_counterpart->status = "C";
+    
+                    $movement_counterpart->save();
+    
+                    $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida3);
+    
+                    if($account->status != "M"){
+                        $account->status = "M";
+                        $account->save();
+                    }
+    
+                    $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
+    
+                    if($account->status != "M"){
+                        $account->status = "M";
+                        $account->save();
+                    }
+    
+                  
+    
+            }else{
+                return "No se puede hacer un movimiento a la misma cuenta!";
+            }
+            
+            }
+            if($request->amount_of_payments >= 4){
+
+                $account = request('account');
+                $contrapartida4 = request('Account_counterpart4');
+                $coin = request('coin');
+        
+                if($account != $contrapartida4){
+        
+                    $amount4 = str_replace(',', '.', str_replace('.', '', request('amount4')));
+                    $rate4 = str_replace(',', '.', str_replace('.', '', request('rate4')));
+        
+                    if($coin != 'bolivares'){
+                        $amount4 = $amount4 * $rate4;
+                    }
+        
+                    if($rate4 == 0){
+                        return 'La tasa no puede ser cero!';
+                    }
+        
+                    /*$check_amount4 = $this->check_amount4($account4);
+                    se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
+                    if($check_amount4->saldo_actual >= $amount4){*/
+        
+                        $payment_order = new PaymentOrder();
+                        $payment_order->setConnection(Auth::user()->database_name);
+        
+                        if(request('beneficiario') == 1){
+                            $payment_order->id_client = request('Subbeneficiario');
+                            
+                        }else{
+                            $payment_order->id_provider = request('Subbeneficiario');
+                        }
+                        $payment_order->id_user = request('user_id');
+                        if(request('branch') != 'ninguno'){
+                            $payment_order->id_branch = request('branch');
+                        }
+                        $payment_order->date = request('date');
+                        $payment_order->reference = request('reference');
+                        $payment_order->description = request('description');
+                        $payment_order->amount = $amount4;
+                        $payment_order->rate = $rate4;
+                        $payment_order->coin = $coin;
+                        $payment_order->status = 1;
+        
+                        $payment_order->save();
+        
+                        $header = new HeaderVoucher();
+                        $header->setConnection(Auth::user()->database_name);
+        
+                        $header->description = "Orden de Pago ". request('description');
+                        $header->date = request('date');
+                        $header->reference = request('reference');
+                        $header->id_payment_order = $payment_order->id;
+                        $header->status =  1;
+                    
+                        $header->save();
+        
+        
+                        $movement = new DetailVoucher();
+                        $movement->setConnection(Auth::user()->database_name);
+        
+                        $movement->id_header_voucher = $header->id;
+                        $movement->id_account = $account;
+                        $movement->user_id = request('user_id');
+                        $movement->debe = 0;
+                        $movement->haber = $amount4;
+                        $movement->tasa = $rate4;
+                        $movement->status = "C";
+                    
+                        $movement->save();
+                        
+                        $account = Account::on(Auth::user()->database_name)->findOrFail($account);
+        
+                        if($account->status != "M"){
+                            $account->status = "M";
+                            $account->save();
+                        }
+        
+                        $movement_counterpart = new DetailVoucher();
+                        $movement_counterpart->setConnection(Auth::user()->database_name);
+        
+                        $movement_counterpart->id_header_voucher = $header->id;
+                        $movement_counterpart->id_account = $contrapartida4;
+                        $movement_counterpart->user_id = request('user_id');
+                        $movement_counterpart->debe = $amount4;
+                        $movement_counterpart->haber = 0;
+                        $movement_counterpart->tasa = $rate4;
+                        $movement_counterpart->status = "C";
+        
+                        $movement_counterpart->save();
+        
+                        $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida4);
+        
+                        if($account->status != "M"){
+                            $account->status = "M";
+                            $account->save();
+                        }
+        
+                        $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
+        
+                        if($account->status != "M"){
+                            $account->status = "M";
+                            $account->save();
+                        }
+        
+                      
+        
+                }else{
+                    return "No se puede hacer un movimiento a la misma cuenta!";
+                }
+                
+                }
+        return 'ok';
     }
 
     public function check_amount($id_account)

@@ -27,7 +27,7 @@ class BackendController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
 
-        
+       
         if($users_role == 1){
 
             if(empty($coin)){
