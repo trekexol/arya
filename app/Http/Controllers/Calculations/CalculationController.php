@@ -35,22 +35,7 @@ class CalculationController extends Controller
         foreach($accounts as $account){
             
               
-             if($type == '1') {
-                
-                if(isset($coin)){
-
-                    if ($account->coin ==  '$' && $coin == 'dolares') {
-                          $tasa;
-              
-                          
-
-                    } else {
-
-
-                    $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
-                    
-                   }
-
+                if($type == '1') {
 
                     if(isset($coin) && $coin == 'bolivares'){
                         
@@ -68,7 +53,6 @@ class CalculationController extends Controller
                         $account->debe = $account_calculate->debe;
                         $account->haber = $account_calculate->haber;
                         }
-                    
                     
                     
                     }else{
@@ -92,17 +76,14 @@ class CalculationController extends Controller
 
 
 
-                }
+                } else {
 
-
-             }else {
-
-                if(isset($coin) && $coin == 'bolivares'){
-                    $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
-                
-                }else{
-                    $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
-                }
+                    if(isset($coin) && $coin == 'bolivares'){
+                        $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+                    
+                    }else{
+                        $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                    }
 
                 $account->balance_previus = $account_calculate->balance_previus;
                 $account->debe = $account_calculate->debe;
