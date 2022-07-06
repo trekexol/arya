@@ -118,6 +118,9 @@ class DirectPaymentOrderController extends Controller
                 return redirect('/directpaymentorders')->withDanger('La tasa no puede ser cero!');
             }
 
+            $total_amount = $this->returnTotalAmount($request);  
+
+
             /*$check_amount = $this->check_amount($account);
             se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
             if($check_amount->saldo_actual >= $amount){*/
@@ -138,7 +141,7 @@ class DirectPaymentOrderController extends Controller
                 $payment_order->date = request('date');
                 $payment_order->reference = request('reference');
                 $payment_order->description = request('description');
-                $payment_order->amount = $amount;
+                $payment_order->amount = $total_amount;
                 $payment_order->rate = $rate;
                 $payment_order->coin = $coin;
                 $payment_order->status = 1;
@@ -156,27 +159,6 @@ class DirectPaymentOrderController extends Controller
             
                 $header->save();
 
-
-                $movement = new DetailVoucher();
-                $movement->setConnection(Auth::user()->database_name);
-
-                $movement->id_header_voucher = $header->id;
-                $movement->id_account = $account;
-                $movement->user_id = request('user_id');
-                $movement->debe = 0;
-                $movement->haber = $amount;
-                $movement->tasa = $rate;
-                $movement->status = "C";
-            
-                $movement->save();
-                
-                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
-
                 $movement_counterpart = new DetailVoucher();
                 $movement_counterpart->setConnection(Auth::user()->database_name);
 
@@ -189,6 +171,34 @@ class DirectPaymentOrderController extends Controller
                 $movement_counterpart->status = "C";
 
                 $movement_counterpart->save();
+
+              
+
+                if($request->amount_of_payments >= 2){
+                    if($this->storeMore($request,$header) != 'ok'){
+                        return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
+                    }
+                }
+
+                $movement = new DetailVoucher();
+                $movement->setConnection(Auth::user()->database_name);
+
+                $movement->id_header_voucher = $header->id;
+                $movement->id_account = $account;
+                $movement->user_id = request('user_id');
+                $movement->debe = 0;
+                $movement->haber = $total_amount;
+                $movement->tasa = $rate;
+                $movement->status = "C";
+            
+                $movement->save();
+                
+                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
 
                 $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida);
 
@@ -203,11 +213,8 @@ class DirectPaymentOrderController extends Controller
                     $account->status = "M";
                     $account->save();
                 }
-
-                if($this->storeMore($request) != 'ok'){
-                    return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
-                }
-
+            
+                
                 return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');
 
            /* }else{
@@ -219,8 +226,49 @@ class DirectPaymentOrderController extends Controller
         }
     }
 
+    public function returnTotalAmount(Request $request){
+        
+        $amount = str_replace(',', '.', str_replace('.', '', request('amount')));
 
-    public function storeMore(Request $request)
+        $total = $amount;
+
+        if($request->amount_of_payments >= 2){
+
+            $amount2 = str_replace(',', '.', str_replace('.', '', request('amount2')));
+          
+            $total += $amount2;
+        }
+        if($request->amount_of_payments >= 3){
+            $amount3 = str_replace(',', '.', str_replace('.', '', request('amount3')));
+          
+            $total += $amount3;
+        }
+        if($request->amount_of_payments >= 4){
+            $amount4 = str_replace(',', '.', str_replace('.', '', request('amount4')));
+          
+            $total += $amount4;
+        }
+        if($request->amount_of_payments >= 5){
+            $amount5 = str_replace(',', '.', str_replace('.', '', request('amount5')));
+          
+            $total += $amount5;
+        }
+        if($request->amount_of_payments >= 6){
+            $amount6 = str_replace(',', '.', str_replace('.', '', request('amount6')));
+          
+            $total += $amount6;
+        }
+        if($request->amount_of_payments >= 7){
+            $amount7 = str_replace(',', '.', str_replace('.', '', request('amount7')));
+          
+            $total += $amount7;
+        }
+
+        return $total;
+    }
+
+
+    public function storeMore(Request $request,$header)
     {
         if($request->amount_of_payments >= 2){
 
@@ -241,64 +289,6 @@ class DirectPaymentOrderController extends Controller
                 return 'La tasa no puede ser cero!';
             }
 
-            /*$check_amount2 = $this->check_amount2($account2);
-            se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
-            if($check_amount2->saldo_actual >= $amount2){*/
-
-                $payment_order = new PaymentOrder();
-                $payment_order->setConnection(Auth::user()->database_name);
-
-                if(request('beneficiario') == 1){
-                    $payment_order->id_client = request('Subbeneficiario');
-                    
-                }else{
-                    $payment_order->id_provider = request('Subbeneficiario');
-                }
-                $payment_order->id_user = request('user_id');
-                if(request('branch') != 'ninguno'){
-                    $payment_order->id_branch = request('branch');
-                }
-                $payment_order->date = request('date');
-                $payment_order->reference = request('reference');
-                $payment_order->description = request('description');
-                $payment_order->amount = $amount2;
-                $payment_order->rate = $rate2;
-                $payment_order->coin = $coin;
-                $payment_order->status = 1;
-
-                $payment_order->save();
-
-                $header = new HeaderVoucher();
-                $header->setConnection(Auth::user()->database_name);
-
-                $header->description = "Orden de Pago ". request('description');
-                $header->date = request('date');
-                $header->reference = request('reference');
-                $header->id_payment_order = $payment_order->id;
-                $header->status =  1;
-            
-                $header->save();
-
-
-                $movement = new DetailVoucher();
-                $movement->setConnection(Auth::user()->database_name);
-
-                $movement->id_header_voucher = $header->id;
-                $movement->id_account = $account;
-                $movement->user_id = request('user_id');
-                $movement->debe = 0;
-                $movement->haber = $amount2;
-                $movement->tasa = $rate2;
-                $movement->status = "C";
-            
-                $movement->save();
-                
-                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
 
                 $movement_counterpart = new DetailVoucher();
                 $movement_counterpart->setConnection(Auth::user()->database_name);
@@ -320,14 +310,6 @@ class DirectPaymentOrderController extends Controller
                     $account->save();
                 }
 
-                $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
-
-              
 
         }else{
             return "No se puede hacer un movimiento a la misma cuenta!";
@@ -357,61 +339,6 @@ class DirectPaymentOrderController extends Controller
                 se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
                 if($check_amount3->saldo_actual >= $amount3){*/
     
-                    $payment_order = new PaymentOrder();
-                    $payment_order->setConnection(Auth::user()->database_name);
-    
-                    if(request('beneficiario') == 1){
-                        $payment_order->id_client = request('Subbeneficiario');
-                        
-                    }else{
-                        $payment_order->id_provider = request('Subbeneficiario');
-                    }
-                    $payment_order->id_user = request('user_id');
-                    if(request('branch') != 'ninguno'){
-                        $payment_order->id_branch = request('branch');
-                    }
-                    $payment_order->date = request('date');
-                    $payment_order->reference = request('reference');
-                    $payment_order->description = request('description');
-                    $payment_order->amount = $amount3;
-                    $payment_order->rate = $rate3;
-                    $payment_order->coin = $coin;
-                    $payment_order->status = 1;
-    
-                    $payment_order->save();
-    
-                    $header = new HeaderVoucher();
-                    $header->setConnection(Auth::user()->database_name);
-    
-                    $header->description = "Orden de Pago ". request('description');
-                    $header->date = request('date');
-                    $header->reference = request('reference');
-                    $header->id_payment_order = $payment_order->id;
-                    $header->status =  1;
-                
-                    $header->save();
-    
-    
-                    $movement = new DetailVoucher();
-                    $movement->setConnection(Auth::user()->database_name);
-    
-                    $movement->id_header_voucher = $header->id;
-                    $movement->id_account = $account;
-                    $movement->user_id = request('user_id');
-                    $movement->debe = 0;
-                    $movement->haber = $amount3;
-                    $movement->tasa = $rate3;
-                    $movement->status = "C";
-                
-                    $movement->save();
-                    
-                    $account = Account::on(Auth::user()->database_name)->findOrFail($account);
-    
-                    if($account->status != "M"){
-                        $account->status = "M";
-                        $account->save();
-                    }
-    
                     $movement_counterpart = new DetailVoucher();
                     $movement_counterpart->setConnection(Auth::user()->database_name);
     
@@ -432,12 +359,6 @@ class DirectPaymentOrderController extends Controller
                         $account->save();
                     }
     
-                    $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
-    
-                    if($account->status != "M"){
-                        $account->status = "M";
-                        $account->save();
-                    }
     
                   
     
@@ -465,64 +386,7 @@ class DirectPaymentOrderController extends Controller
                         return 'La tasa no puede ser cero!';
                     }
         
-                    /*$check_amount4 = $this->check_amount4($account4);
-                    se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
-                    if($check_amount4->saldo_actual >= $amount4){*/
-        
-                        $payment_order = new PaymentOrder();
-                        $payment_order->setConnection(Auth::user()->database_name);
-        
-                        if(request('beneficiario') == 1){
-                            $payment_order->id_client = request('Subbeneficiario');
-                            
-                        }else{
-                            $payment_order->id_provider = request('Subbeneficiario');
-                        }
-                        $payment_order->id_user = request('user_id');
-                        if(request('branch') != 'ninguno'){
-                            $payment_order->id_branch = request('branch');
-                        }
-                        $payment_order->date = request('date');
-                        $payment_order->reference = request('reference');
-                        $payment_order->description = request('description');
-                        $payment_order->amount = $amount4;
-                        $payment_order->rate = $rate4;
-                        $payment_order->coin = $coin;
-                        $payment_order->status = 1;
-        
-                        $payment_order->save();
-        
-                        $header = new HeaderVoucher();
-                        $header->setConnection(Auth::user()->database_name);
-        
-                        $header->description = "Orden de Pago ". request('description');
-                        $header->date = request('date');
-                        $header->reference = request('reference');
-                        $header->id_payment_order = $payment_order->id;
-                        $header->status =  1;
-                    
-                        $header->save();
-        
-        
-                        $movement = new DetailVoucher();
-                        $movement->setConnection(Auth::user()->database_name);
-        
-                        $movement->id_header_voucher = $header->id;
-                        $movement->id_account = $account;
-                        $movement->user_id = request('user_id');
-                        $movement->debe = 0;
-                        $movement->haber = $amount4;
-                        $movement->tasa = $rate4;
-                        $movement->status = "C";
-                    
-                        $movement->save();
-                        
-                        $account = Account::on(Auth::user()->database_name)->findOrFail($account);
-        
-                        if($account->status != "M"){
-                            $account->status = "M";
-                            $account->save();
-                        }
+                
         
                         $movement_counterpart = new DetailVoucher();
                         $movement_counterpart->setConnection(Auth::user()->database_name);
@@ -544,14 +408,7 @@ class DirectPaymentOrderController extends Controller
                             $account->save();
                         }
         
-                        $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
-        
-                        if($account->status != "M"){
-                            $account->status = "M";
-                            $account->save();
-                        }
-        
-                      
+                    
         
                 }else{
                     return "No se puede hacer un movimiento a la misma cuenta!";

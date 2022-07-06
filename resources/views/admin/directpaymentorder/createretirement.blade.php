@@ -361,7 +361,7 @@
                           @enderror
                       </div>
                       <div class="col-sm-1">
-                        <span class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</span>
+                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</a>
                       </div>
                   </div>
                  
@@ -541,7 +541,7 @@
 
     //AGREGAR formS
     function deleteForm() {
-        if(number_form <= 7){
+        if(number_form <= 7 && number_form >=1){
             number_form -= 1; 
         }
         if(number_form == 1){
