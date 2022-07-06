@@ -123,7 +123,7 @@
                             <td class="text-center">
                                 <!--<img style="width:60px; max-width:60px; height:80px; max-height:80px" class="img-responsive" src="{{ '' /*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}" alt="" onclick="loadimg('{{''/*asset('storage/img/'.$company->login.'/productos/'.$product->photo_product) */}}')"> -->
                                 @if(isset($product->photo_product))
-                                <input class="fotop" style="width:60px; max-width:60px; height:80px; max-height:80px"  type="file" data-initial-preview="{{asset('storage/img/'.$company->login.'/productos/'.$product->photo_product)}}" accept="image/*">
+                                <input class="fotop" style="width:60px; max-width:60px; height:80px; max-height:80px"  type="file" data-initial-preview="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$product->photo_product)}}" accept="image/*">
                                 @endif
                             </td>
                            
