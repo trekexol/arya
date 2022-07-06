@@ -43,7 +43,16 @@ module.exports = {
     },
 
     stats: 'minimal',
-
+        stats: {
+            // lets you precisely control what bundle information gets displayed
+            preset: "errors-only",
+            // A stats preset
+            outputPath: true,
+            // include absolute output path in the output
+            publicPath: true,
+            // include public path in the output
+            assets: true,
+        },
     performance: {
         hints: false,
     },
