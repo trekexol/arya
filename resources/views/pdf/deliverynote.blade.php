@@ -18,6 +18,7 @@
     
     text-align: left;
   }
+
   </style>
 </head>
 
@@ -200,6 +201,28 @@
     <th style="text-align: right; font-weight: normal; width: 15%; "></th>
   </tr> 
 </table>
+<footer>
+  <br>
+  <br>
+  <table style="border:#fff; width:100%">
+      <tr style="border:#fff; width:100%">
+          <td style="border:#fff" style="width:50%">Firma Persona que Entrega:</td>
+          <td style="border:#fff" style="width:50%; margin-left:50px;">Firma Persona que Recibe:</td>
+      </tr>
+      <tr style="border:#fff; width:100%">
+          <td style="border:#fff" style="width:50%">Nombre:</td>
+          <td style="border:#fff" style="width:50%; margin-left:50px;">Nombre:</td>
+      </tr>
+      <tr style="border:#fff; width:100%">
+          <td style="border:#fff" style="width:50%">CI:</td>
+          <td style="border:#fff" style="width:50%; margin-left:50px;">CI:</td>
+      <tr style="border:#fff; width:100%">
+          <td style="border:#fff" style="width:50%">______________________________</td>
+          <td style="border:#fff" style="width:50%; margin-left:50px;">______________________________</td>
+      </tr>
 
+  </table>
+</footer>
 </body>
+
 </html>
