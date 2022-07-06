@@ -29,9 +29,6 @@
     <link href="{{asset('vendor/sb-admin/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <!--End TABLES-->
 
-<!--auquii CSS-->
-<link href="{{URL::asset('css/fileinputa.min.css')}}" rel="stylesheet" type="text/css">       
-
 </head>
 
 <body id="page-top">
@@ -132,14 +129,9 @@
 
         <!-- Para las mascaras -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
+      
 
-        <script src="{{URL::asset('js/fileinputa.min.js')}}"></script>
-        <script src="{{URL::asset('js/themeputa.min.js')}}"></script>
-        <script src="{{URL::asset('js/es.js')}}"></script>
-
-
-
-        <script>
+      <script>
             $("body").toggleClass("sidebar-toggled");
                 $(".sidebar").toggleClass("toggled");
                 if ($(".sidebar").hasClass("toggled")) {
@@ -205,9 +197,6 @@
           });
         }
       </script>
-
-
-
 </body>
 
 </html>
