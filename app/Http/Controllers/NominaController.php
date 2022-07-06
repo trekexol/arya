@@ -193,6 +193,17 @@ class NominaController extends Controller
         $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$total_bono_medico,0);
 
 
+        /*MOVIMIENTO DE aporte patronal*/
+                        
+       
+        $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio Voluntario Patronal')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
+
+
+
         /*AHORA LOS MOVIMIENTOS POR PAGAR */
 
         $accounts_sueldos_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
@@ -234,7 +245,11 @@ class NominaController extends Controller
          $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$total_bono_medico);
          /*------------------------ */
 
+         $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
+         ->where('description','LIKE', 'Gastos de Aportes al Fondo de Ahorro Obligatorio Voluntario Patronal')
+         ->first();
 
+         $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
 
         
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
