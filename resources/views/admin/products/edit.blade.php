@@ -421,7 +421,7 @@
                                     <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
                                     <div class="col-md-4">
                                         @if (isset($product->photo_product)) 
-                                        <input id="fotop" style="border:0;" name="fotop" type="file" data-initial-preview="{{asset('storage/img/'.$company->login.'/productos/'.$product->photo_product)}}" accept="image/*" value="{{$product->photo_product}}">
+                                        <input id="fotop" style="border:0;" name="fotop" type="file" data-initial-preview="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$product->photo_product)}}" accept="image/*" value="{{$product->photo_product}}">
                                         <input id="fotoname" name="fotoname" type="hidden" value="{{$product->photo_product}}">
                                         @else
                                         <input id="fotop" style="border:0;" name="fotop" type="file" accept="image/*">

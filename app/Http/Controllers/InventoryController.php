@@ -55,8 +55,9 @@ class InventoryController extends Controller
 
         }
 
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
-       return view('admin.inventories.index',compact('inventories'));
+       return view('admin.inventories.index',compact('inventories','company'));
    }
 
 
