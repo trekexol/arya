@@ -41,9 +41,9 @@
      .file-preview .btn-xs{padding:1px 5px;font-size:12px;line-height:1.5;border-radius:3px}
      .file-preview .fileinput-remove{top:1px;right:1px;line-height:10px}
      .file-preview .clickable{cursor:pointer}
-     .file-preview-image{font:40px Impact,Charcoal,sans-serif;color:green;width:auto;height:auto;max-width:100%;max-height:100%}
+     .file-preview-image{font:40px Impact,Charcoal,sans-serif;color:green;width:60;height:80;max-width:60;max-height:80;}
      .krajee-default.file-preview-frame{margin:0px;border:0px solid rgba(0,0,0,.2);box-shadow:0 0 10px 0 rgba(0,0,0,.2);padding:0px;float:left;text-align:center}
-     .krajee-default.file-preview-frame .kv-file-content{width:auto;height:auto}
+     .krajee-default.file-preview-frame .kv-file-content{width:60;height:80;max-width:60;max-height:80;}
      .krajee-default.file-preview-frame .kv-file-content.kv-pdf-rendered{width:400px}
      .krajee-default.file-preview-frame[data-template=audio] .kv-file-content{width:240px;height:55px}
      .file-thumbnail-footer{background-color: none; margin: 0px; padding: 0px;}
