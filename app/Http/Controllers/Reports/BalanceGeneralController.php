@@ -7,6 +7,7 @@ use App\Account;
 use App\DetailVoucher;
 use App\Http\Controllers\Calculations\CalculationController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,12 +55,14 @@ class BalanceGeneralController extends Controller
         $date_end = request('date_end');
         $level = request('level');
         $coin = request('coin');
+        $type = request('type');
+
         
         
-        return view('admin.reports.index_balance_general',compact('date_begin','date_end','level','coin'));
+        return view('admin.reports.index_balance_general',compact('date_begin','date_end','level','coin','type'));
     }
 
-    function balance_pdf($coin = null,$date_begin = null,$date_end = null,$level = null)
+    function balance_pdf($coin = null,$date_begin = null,$date_end = null,$level = null,$type = null)
     {
         
         $pdf = App::make('dompdf.wrapper');
@@ -90,7 +93,7 @@ class BalanceGeneralController extends Controller
 
         $global = new CalculationController();
       
-        $accounts_all = $global->calculate_all($coin,$date_begin,$date_end);
+        $accounts_all = $global->calculate_all($coin,$date_begin,$date_end,$type);
       
        
         $accounts = $accounts_all->filter(function($account)
@@ -113,9 +116,13 @@ class BalanceGeneralController extends Controller
         
         $foto = auth()->user()->company->foto_company ?? '';
         $code_rif = auth()->user()->company->code_rif ?? '';
-
         
-        $pdf = $pdf->loadView('admin.reports.balance_general',compact('foto','code_rif','coin','datenow','accounts','level','detail_old','date_begin','date_end'));
+        $global_tasa = new GlobalController;
+
+        $tasa = $global_tasa->search_bcv();
+        
+        $pdf = $pdf->loadView('admin.reports.balance_general',compact('foto','code_rif','coin','datenow','accounts','level','detail_old','date_begin','date_end','type','tasa'));
+
         return $pdf->stream();
                  
     }
