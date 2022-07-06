@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Calculations;
-
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class CalculationController extends Controller
 {
 
-    public function calculate_all($coin,$date_begin,$date_end){
+    public function calculate_all($coin,$date_begin,$date_end,$type=null){
        
         $accounts = Account::on(Auth::user()->database_name)
                                                             ->orderBy('code_one','asc')
@@ -26,17 +26,93 @@ class CalculationController extends Controller
                                                             ->get();
         $account_calculate = null;
         //dd($accounts);
+
+        $global_tasa = new GlobalController;
+
+        $tasa = $global_tasa->search_bcv();
+        
+
         foreach($accounts as $account){
             
-            if(isset($coin) && $coin == 'bolivares'){
-                $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
               
-            }else{
-                $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
-            }
-            $account->balance_previus = $account_calculate->balance_previus;
-            $account->debe = $account_calculate->debe;
-            $account->haber = $account_calculate->haber;
+             if($type == '1') {
+                
+                if(isset($coin)){
+
+                    if ($account->coin ==  '$' && $coin == 'dolares') {
+                          $tasa;
+              
+                          
+
+                    } else {
+
+
+                    $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+                    
+                   }
+
+
+                    if(isset($coin) && $coin == 'bolivares'){
+                        
+                       if ($account->coin ==  '$'){
+                       $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                      
+                       $account->balance_previus = $account_calculate->balance_previus * $tasa;
+                       $account->debe = $account_calculate->debe * $tasa;
+                       $account->haber = $account_calculate->haber * $tasa;
+                    
+                        } else {
+                        $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+                    
+                        $account->balance_previus = $account_calculate->balance_previus;
+                        $account->debe = $account_calculate->debe;
+                        $account->haber = $account_calculate->haber;
+                        }
+                    
+                    
+                    
+                    }else{
+
+                       if ($account->coin ==  '$'){
+                       $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+                       
+                       $account->balance_previus = $account_calculate->balance_previus / $tasa;
+                       $account->debe = $account_calculate->debe / $tasa ;
+                       $account->haber = $account_calculate->haber / $tasa ;
+                    
+                        } else {
+                        $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                        $account->balance_previus = $account_calculate->balance_previus;
+                        $account->debe = $account_calculate->debe;
+                        $account->haber = $account_calculate->haber;
+                        }
+                        
+                    }
+                    
+
+
+
+                }
+
+
+             }else {
+
+                if(isset($coin) && $coin == 'bolivares'){
+                    $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
+                
+                }else{
+                    $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                }
+
+                $account->balance_previus = $account_calculate->balance_previus;
+                $account->debe = $account_calculate->debe;
+                $account->haber = $account_calculate->haber;
+
+             }
+
+
+
+
         }
         
         

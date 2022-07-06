@@ -88,10 +88,29 @@
                                     <option value="dolares">Dólares</option>
                                 </select>
                             </div>
+
+                            <div class="col-sm-2">
+                                <select class="form-control" name="type" id="type">
+                                    @if(isset($type))
+                                           
+                                       @if($type == '1')
+                                        <option disabled selected value="{{ $type ?? '' }}">Actual</option>
+                                        @else
+                                        <option disabled selected value="{{ $type ?? '' }}">Normal</option>
+                                        @endif
+                                        <option disabled  value="{{ $type ?? 0 }}">-----------</option>
+                                    @else
+                                        <option disabled selected value="0">Tasa</option>
+                                    @endif
+                                    
+                                    <option  value="0">Normal</option>
+                                    <option value="1">Actual</option>
+                                </select>
+                            </div> 
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('balancegenerals.balance_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$level ?? 5]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('balancegenerals.balance_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$level ?? 5,$type ?? 0]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>

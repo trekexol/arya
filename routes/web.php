@@ -988,7 +988,7 @@ Route::group(["prefix"=>'daily_listing'],function(){
 Route::group(["prefix"=>'balancegenerals'],function(){
     Route::get('balancegeneral','Reports\BalanceGeneralController@index')->name('balancegenerals');
     Route::post('store','Reports\BalanceGeneralController@store')->name('balancegenerals.store');
-    Route::get('balancepdf/{date_begin?}/{date_end?}/{level?}/{coin?}','Reports\BalanceGeneralController@balance_pdf')->name('balancegenerals.balance_pdf');
+    Route::get('balancepdf/{date_begin?}/{date_end?}/{level?}/{coin?}/{type?}','Reports\BalanceGeneralController@balance_pdf')->name('balancegenerals.balance_pdf');
 });
 Route::group(["prefix"=>'balanceingresos'],function(){
     Route::get('balance','Reports\BalanceIngresosController@index_ingresos')->name('balanceingresos');
