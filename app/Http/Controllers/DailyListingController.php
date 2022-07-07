@@ -288,56 +288,7 @@ class DailyListingController extends Controller
             
             //$detailvouchers->account_counterpart = '';
 
-            if($detail->id_account == $id_account){
-                /*esta parte convierte los saldos a dolares */
-                if($coin != "bolivares"){
-                    
-                    if((isset($detail->debe)) && ($detail->debe != 0)){
-                    $detail->debe = $detail->debe / ($detail->tasa ?? 1);
-                    }
-
-                    if((isset($detail->haber)) && ($detail->haber != 0)){
-                    $detail->haber = $detail->haber / ($detail->tasa ?? 1);
-                    }
-                }
-                /*----------------------------- */
-                if($primer_movimiento){
-                    $detail->saldo = $detail->debe - $detail->haber + $saldo_anterior;
-                    
-                    $saldo += $detail->saldo;
-                    $primer_movimiento = false;
-                    
-                    
-                }else{
-                    $detail->saldo = $detail->debe - $detail->haber + $saldo;
-                    $saldo = $detail->saldo;
-                }
-                
-               /* if($counterpart == ""){
-                    $last_detail = $detail;
-                }else{
-                    $detail->account_counterpart = $counterpart;
-                }*/
-              
-
-
-                $detail->account_counterpart = '';
-
-            }else{
-               /*if(isset($last_detail)){
-                    $last_detail->account_counterpart = $detail->account_description;
-                   
-                }else{
-                    $counterpart = $detail->account_description;
-                }*/
-
-                
-               // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
-                
-
-               $detail->account_counterpart = '';
- 
-            }
+            
             
 
             $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
@@ -448,9 +399,70 @@ class DailyListingController extends Controller
             }
             
 
+                if($coin != "bolivares"){
+                    
+                    if((isset($detail->debe)) && ($detail->debe != 0)){
+                    $detail->debe = $detail->debe / ($detail->tasa ?? 1);
+                    }
+
+                    if((isset($detail->haber)) && ($detail->haber != 0)){
+                    $detail->haber = $detail->haber / ($detail->tasa ?? 1);
+                    }
+
+                }
 
 
+                if($detail->id_account == $id_account){
+                    /*esta parte convierte los saldos a dolares */
+                    /*if($coin != "bolivares"){
+                        
+                        if((isset($detail->debe)) && ($detail->debe != 0)){
+                        $detail->debe = $detail->debe / ($detail->tasa ?? 1);
+                        }
+    
+                        if((isset($detail->haber)) && ($detail->haber != 0)){
+                        $detail->haber = $detail->haber / ($detail->tasa ?? 1);
+                        }
+                    } */
+                    /*----------------------------- */
+                    if($primer_movimiento){
+                        
+                        $detail->saldo = $detail->debe - $detail->haber + $saldo_anterior;
+                     
+                        $saldo += $detail->saldo;
+    
+                        $primer_movimiento = false;
 
+                    }else{
+    
+                        $detail->saldo = $detail->debe - $detail->haber + $saldo;                 
+                    
+                        $saldo = $detail->saldo;   
+                    }
+                    
+                   /* if($counterpart == ""){
+                        $last_detail = $detail;
+                    }else{
+                        $detail->account_counterpart = $counterpart;
+                    }*/
+                  
+                    $detail->account_counterpart = '';
+    
+                }else{
+                   /*if(isset($last_detail)){
+                        $last_detail->account_counterpart = $detail->account_description;
+                       
+                    }else{
+                        $counterpart = $detail->account_description;
+                    }*/
+    
+                    
+                   // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
+                    
+    
+                   $detail->account_counterpart = '';
+     
+                }
 
         }
 
