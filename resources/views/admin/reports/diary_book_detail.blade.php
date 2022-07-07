@@ -35,9 +35,18 @@
   <h5 style="color: black; text-align: center;">Código de Cuenta: {{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</h5>
   <h5 style="color: black; text-align: center;">Cuenta: {{ $account->description ?? ''}}</h5>
   <h5 style="color: black; text-align: center;">Desde: {{ $date_begin ?? ''}}  -  Hasta {{ $date_end ?? ''}}</h5>
+  <?php
+   if ($coin == 'bolivares'){
+    $moneda = '';
+    $monedabs = 'Bs.';   
+  } else {
+    $moneda = '$';
+    $monedabs = '';
+   }
   
+  ?>
  
-  <h5 style="color: black; text-align: right;">Saldo actual a la fecha: {{ number_format($saldo ?? 0, 2, ',', '.')}}</h5>
+  <h5 style="color: black; text-align: right;">Saldo actual a la fecha: {{$moneda}}{{ number_format(bcdiv($saldo,'1',2) ?? 0, 2, ',', '.')}} {{$monedabs}}</h5>
   
   @if (isset($detailvouchers))
       <?php 
@@ -80,9 +89,9 @@
             <td style="text-align: center;">{{ $detail->id_header ?? ''}}</td>
             <td style="text-align: left;">{{ $detail->header_description ?? ''}} / {{ $detail->account_counterpart ?? '' }}</td>
             <td style="text-align: center;">{{ $detail->reference ?? ''}}</td>
-            <td style="text-align: right;">{{ number_format($detail->debe ?? 0, 2, ',', '.')}}</td>
-            <td style="text-align: right;">{{ number_format($detail->haber ?? 0, 2, ',', '.')}}</td>
-            <td style="text-align: right;">{{ number_format($detail->saldo ?? 0, 2, ',', '.')}}</td>
+            <td style="text-align: right;">{{ number_format(bcdiv($detail->debe,'1',2) ?? 0, 2, ',', '.')}}</td>
+            <td style="text-align: right;">{{ number_format(bcdiv($detail->haber,'1',2) ?? 0, 2, ',', '.')}}</td>
+            <td style="text-align: right;">{{ number_format(bcdiv($detail->saldo,'1',2) ?? 0, 2, ',', '.')}}</td>
           </tr>
         @endif
       @endforeach
@@ -102,8 +111,8 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white; border-right-color: black;"></th>
-      <th style="text-align: right;">{{ number_format($total_debe ?? 0, 2, ',', '.')}}</th>
-      <th style="text-align: right;">{{ number_format($total_haber ?? 0, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($total_debe,'1',2) ?? 0, 2, ',', '.')}} {{$monedabs}}</th>
+      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($total_haber,'1',2) ?? 0, 2, ',', '.')}} {{$monedabs}}</th>
       <th style="text-align: center; border-color: black;"></th>
     </tr>
     <tr>
@@ -113,7 +122,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white; border-right-color: black;">Saldo del mes</th>
-      <th style="text-align: right;">{{ number_format($total_debe - $total_haber, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($total_debe - $total_haber,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     <tr>
       <th style="text-align: center; border-color: white;"></th>
@@ -122,7 +131,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: right; border-color: white; border-right-color: black;">Saldo actual a la fecha</th>
-      <th style="text-align: right;">{{ number_format($saldo, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
   </table>
 @endif
