@@ -214,7 +214,7 @@ class DiaryBookDetailExportController extends Controller
 
                 if (isset($anticipo)) {
                     $id_client = '';
-                    $coin = '';
+                    $coin_mov = '';
                    if ($anticipo->id_quotation != null){
                         
    
@@ -234,12 +234,12 @@ class DiaryBookDetailExportController extends Controller
                         if (isset($quotation)) {
                         $detail->header_description .= ' FAC: '.$quotation->number_invoice;
                         $id_client = $quotation->id_client;
-                        $coin = $quotation->coin;
+                        $coin_mov = $quotation->coin;
                         }
                         if (isset($quotation_delivery)) {
                         $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
                         $id_client = $quotation_delivery->id_client;
-                        $coin = $quotation_delivery->coin;    
+                        $coin_mov = $quotation_delivery->coin;    
                         }
                         
                         if(isset($id_client)) {
@@ -253,7 +253,7 @@ class DiaryBookDetailExportController extends Controller
                        }
 
 
-                        $detail->header_description .= '. '.$coin;
+                        $detail->header_description .= '. '.$coin_mov;
                         
                         
 
