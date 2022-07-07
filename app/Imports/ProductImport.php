@@ -36,7 +36,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
 
 
         if (empty($buscar_product) & $row['id'] != '') {
-   
+   /*
             $product = new Product([
                 
                 'id'                    => $row['id'],
@@ -44,6 +44,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 'subsegment_id'         => $row['id_subsegmento'], 
                 'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
                 'threesubsegment_id'    => $row['id_threesubsegment'] ?? null, 
+                'id_account'            => null,
                 'unit_of_measure_id'    => $row['id_unidadmedida'], 
                 'code_comercial'        => $row['codigo_comercial'], 
                 'type'                  => $row['tipo_mercancia_o_servicio'], 
@@ -51,7 +52,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 'price'                 => $row['precio'], 
                 'price_buy'             => $row['precio_compra'], 
                 'cost_average'          => 0, 
-                'photo_product'         => null , 
+                'photo_product'         => null, 
                 'money'                 => $row['moneda_d_o_bs'], 
                 'exento'                => $row['exento_1_o_0'], 
                 'islr'                  => $row['islr_1_o_0'], 
@@ -61,15 +62,42 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 'created_at'            => $date,
                 'updated_at'            => $date,
             ]);
-            $product->setConnection(Auth::user()->database_name);
+*/
+            $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
+                'id'                    => $row['id'],
+                'segment_id'            => $row['id_segmento'], 
+                'subsegment_id'         => $row['id_subsegmento'], 
+                'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
+                'threesubsegment_id'    => $row['id_threesubsegment'] ?? null,
+                'id_account'            => null,
+                'unit_of_measure_id'    => $row['id_unidadmedida'], 
+                'code_comercial'        => $row['codigo_comercial'], 
+                'type'                  => $row['tipo_mercancia_o_servicio'], 
+                'description'           => $row['descripcion'], 
+                'price'                 => $row['precio'], 
+                'price_buy'             => $row['precio_compra'], 
+                'cost_average'          => 0, 
+                'photo_product'         => null, 
+                'money'                 => $row['moneda_d_o_bs'], 
+                'exento'                => $row['exento_1_o_0'], 
+                'islr'                  => $row['islr_1_o_0'], 
+                'id_user'               => $user->id,
+                'special_impuesto'      => 0,
+                'status'                => 1,
+                'created_at'            => $date,
+                'updated_at'            => $date
+            ]);       
+
+
+            //$product->setConnection(Auth::user()->database_name);
             
             
             $global = new GlobalController; 
             $global->transaction_inv('entrada',$row['id'],'Entrada de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
 
-            if($product->status == '1'){
+            /*if($product->status == '1'){
                 return $product;
-            }
+            }*/
             
         }
 

@@ -381,7 +381,9 @@
             "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
+        file
 
+        
         $("#fotop").fileinput({
             language: 'es',
             allowedFileExtensions: ['jpg','jpeg','png'],

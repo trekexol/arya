@@ -145,9 +145,11 @@ class DailyListingController extends Controller
 
     public function print_diary_book_detail(Request $request)
     {
+        
+        
         $id_account = request('id_account');
         $coin = request('coin');
-       
+        
         $date_begin = request('date_begin');
         $date_end = request('date_end');
 
@@ -158,47 +160,8 @@ class DailyListingController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-        if($coin == "bolivares")
+        if($coin != "bolivares")
         {
-            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-            ->whereRaw(
-                "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
-               [$date_begin, $date_end])
-            ->whereIn('header_vouchers.id', function($query) use ($id_account){
-                $query->select('id_header_voucher')
-                ->from('detail_vouchers')
-                ->where('id_account',$id_account);
-            })
-            ->whereIn('detail_vouchers.status', ['F','C'])
-            ->select('detail_vouchers.*','header_vouchers.*'
-            ,'accounts.description as account_description'
-            ,'header_vouchers.id as id_header'
-            ,'header_vouchers.description as header_description')
-            ->orderBy('header_vouchers.date','asc')
-            ->orderBy('header_vouchers.id','asc')->get();
-
-           
-            //busca los saldos previos de la cuenta                    
-            $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-                        ->where('header_vouchers.date','<' ,$date_begin)
-                        ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
-                        ->sum('detail_vouchers.debe');
-
-            
-            $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-                        ->where('header_vouchers.date','<' ,$date_begin)
-                        ->where('accounts.id',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
-                        ->sum('detail_vouchers.haber');       
-            //-----------------------------------------------
-        }else{
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -250,8 +213,49 @@ class DailyListingController extends Controller
                 }else{
                     $detailvouchers_saldo_haber = 0;
                 }
+     
+            
+        }else{ // dolares-----------------------------------------------
+            
 
-               
+ 
+            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->whereRaw(
+                "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
+               [$date_begin, $date_end])
+            ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                $query->select('id_header_voucher')
+                ->from('detail_vouchers')
+                ->where('id_account',$id_account);
+            })
+            ->whereIn('detail_vouchers.status', ['F','C'])
+            ->select('detail_vouchers.*','header_vouchers.*'
+            ,'accounts.description as account_description'
+            ,'header_vouchers.id as id_header'
+            ,'header_vouchers.description as header_description')
+            ->orderBy('header_vouchers.date','asc')
+            ->orderBy('header_vouchers.id','asc')->get();
+
+           
+            //busca los saldos previos de la cuenta                    
+            $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                        ->where('header_vouchers.date','<' ,$date_begin)
+                        ->where('accounts.id',$id_account)
+                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->sum('detail_vouchers.debe');
+
+            
+            $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                        ->where('header_vouchers.date','<' ,$date_begin)
+                        ->where('accounts.id',$id_account)
+                        ->whereIn('detail_vouchers.status', ['F','C'])
+                        ->sum('detail_vouchers.haber');       
         }
 
         
@@ -267,6 +271,7 @@ class DailyListingController extends Controller
 
         
         if($coin !="bolivares"){
+
             if(empty($account_historial->rate) || ($account_historial->rate == 0)){
                 $account_historial->rate = 1;
             }
@@ -285,10 +290,12 @@ class DailyListingController extends Controller
 
             if($detail->id_account == $id_account){
                 /*esta parte convierte los saldos a dolares */
-                if($coin !="bolivares"){
+                if($coin != "bolivares"){
+                    
                     if((isset($detail->debe)) && ($detail->debe != 0)){
                     $detail->debe = $detail->debe / ($detail->tasa ?? 1);
                     }
+
                     if((isset($detail->haber)) && ($detail->haber != 0)){
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
