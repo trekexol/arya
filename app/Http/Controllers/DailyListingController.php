@@ -215,7 +215,7 @@ class DailyListingController extends Controller
                 }
      
             
-        }else{ // dolares-----------------------------------------------
+        }else{ // bolivares-----------------------------------------------
             
 
  
@@ -269,14 +269,13 @@ class DailyListingController extends Controller
 
         $account_historial = $account_calculate->calculateBalance($account,$date_begin);
 
-        
-        if($coin !="bolivares"){
+ 
 
-            if(empty($account_historial->rate) || ($account_historial->rate == 0)){
-                $account_historial->rate = 1;
-            }
-            $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
+        if(empty($account_historial->rate) || ($account_historial->rate == 0)){
+            $account_historial->rate = 1;
         }
+        $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
+    
 
         $saldo_anterior = ($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
         $primer_movimiento = true;
@@ -322,7 +321,7 @@ class DailyListingController extends Controller
 
                 if (isset($anticipo)) {
                     $id_client = '';
-                    $coin = '';
+                    $coin_mov = '';
                    if ($anticipo->id_quotation != null){
                         
    
@@ -342,12 +341,12 @@ class DailyListingController extends Controller
                         if (isset($quotation)) {
                         $detail->header_description .= ' FAC: '.$quotation->number_invoice;
                         $id_client = $quotation->id_client;
-                        $coin = $quotation->coin;
+                        $coin_mov = $quotation->coin;
                         }
                         if (isset($quotation_delivery)) {
                         $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
                         $id_client = $quotation_delivery->id_client;
-                        $coin = $quotation_delivery->coin;    
+                        $coin_mov = $quotation_delivery->coin;    
                         }
                         
                         if(isset($id_client)) {
@@ -361,7 +360,7 @@ class DailyListingController extends Controller
                        }
 
 
-                        $detail->header_description .= '. '.$coin;
+                        $detail->header_description .= '. '.$coin_mov;
                         
                         
 
@@ -413,18 +412,7 @@ class DailyListingController extends Controller
 
 
                 if($detail->id_account == $id_account){
-                    /*esta parte convierte los saldos a dolares */
-                    /*if($coin != "bolivares"){
-                        
-                        if((isset($detail->debe)) && ($detail->debe != 0)){
-                        $detail->debe = $detail->debe / ($detail->tasa ?? 1);
-                        }
-    
-                        if((isset($detail->haber)) && ($detail->haber != 0)){
-                        $detail->haber = $detail->haber / ($detail->tasa ?? 1);
-                        }
-                    } */
-                    /*----------------------------- */
+
                     if($primer_movimiento){
                         
                         $detail->saldo = $detail->debe - $detail->haber + $saldo_anterior;
@@ -456,18 +444,19 @@ class DailyListingController extends Controller
                         $counterpart = $detail->account_description;
                     }*/
     
-                    
                    // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
                     
-    
                    $detail->account_counterpart = '';
      
                 }
 
         }
 
+
+
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
+        
 
         
         $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
