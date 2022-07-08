@@ -124,11 +124,14 @@ class NominaController extends Controller
         $bcv = $global->search_bcv();
         $sum_employees = 0;
         $sum_employees_asignacion_general = 0;
+        $sum_sso_patronal = 0;
+        $lunes = $this->calcular_cantidad_de_lunes($nomina);
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
             $sum_employees ++;
             $sum_employees_asignacion_general += $employee->asignacion_general;
+            $sum_sso_patronal += ($employee->monto_pago * 12)/52 * ($lunes * 0.10);;
         }
 
 
@@ -197,10 +200,21 @@ class NominaController extends Controller
                         
        
         $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio Voluntario Patronal')
+        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal')
         ->first();
 
         $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
+
+
+        $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
+        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal')
+        ->first();
+
+        $this->add_movement($bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,$sum_sso_patronal,0);
+
+
+
+
 
 
 
@@ -246,10 +260,17 @@ class NominaController extends Controller
          /*------------------------ */
 
          $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Gastos de Aportes al Fondo de Ahorro Obligatorio Voluntario Patronal')
+         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal por Pagar')
          ->first();
 
          $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
+
+
+         $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
+         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal por pagar')
+         ->first();
+
+         $this->add_movement($bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,0,$sum_sso_patronal);
 
         
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
