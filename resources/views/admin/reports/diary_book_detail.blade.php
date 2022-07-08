@@ -54,7 +54,7 @@
       $total_haber = 0;
       /*se quito el saldo inicial para que no descuadrara*/
       if(isset($saldo_anterior) && ($saldo_anterior != 0)){
-        $saldo_inicial = $saldo_anterior;//($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+        $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
       }else{
         $saldo_inicial = ($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
       }
@@ -121,7 +121,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo del mes</th>
+      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo del Mes</th>
       <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($total_debe - $total_haber,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     <tr>
@@ -130,7 +130,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: right; border-color: white; border-right-color: black;">Saldo actual a la fecha</th>
+      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo Actual</th>
       <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
   </table>

@@ -23,7 +23,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta </label>
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Hasta:</label>
 
                             <div class="col-sm-3">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
@@ -75,36 +75,47 @@
                             
                                 </select>
                             </div>
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Moneda:</label>
                             <div class="col-sm-2">
+                               
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                        
+                                        @if($coin == 'bolivares')
+                                        <option selected value="bolivares">Bolívares</option>
+                                        <option value="dolares">Dólares</option>
+                                        @else
+                                        <option selected value="dolares">Dólares</option>
+                                        <option value="bolivares">Bolívares</option>
+                                        @endif
+
                                     @else
-                                        <option disabled selected value="bolivares">Moneda</option>
+                                        <option selected value="bolivares">Bolívares</option>
+                                        <option value="dolares">Dólares</option>
                                     @endif
                                     
-                                    <option  value="bolivares">Bolívares</option>
-                                    <option value="dolares">Dólares</option>
                                 </select>
                             </div>
-
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Tasa:</label>
                             <div class="col-sm-2">
+ 
                                 <select class="form-control" name="type" id="type">
                                     @if(isset($type))
                                            
-                                       @if($type == '1')
-                                        <option disabled selected value="{{ $type ?? '' }}">Actual</option>
+                                        @if($type == '1')
+                                        <option selected value="1">Actual</option>
+                                        <option value="0">Normal</option>
                                         @else
-                                        <option disabled selected value="{{ $type ?? '' }}">Normal</option>
+                                        <option selected value="0">Normal</option>
+                                        <option value="1">Actual</option>
                                         @endif
-                                        <option disabled  value="{{ $type ?? 0 }}">-----------</option>
                                     @else
-                                        <option disabled selected value="0">Tasa</option>
+                                        <option selected value="0">Normal</option>
+                                        <option value="1">Actual</option>
                                     @endif
+
                                     
-                                    <option  value="0">Normal</option>
-                                    <option value="1">Actual</option>
+                                    
                                 </select>
                             </div> 
                         </div>

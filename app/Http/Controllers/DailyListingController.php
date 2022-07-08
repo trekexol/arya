@@ -175,6 +175,7 @@ class DailyListingController extends Controller
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
+            ,'accounts.balance_previus as balance_previous'
             ,'header_vouchers.description as header_description')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('header_vouchers.id','asc')->get();
@@ -234,6 +235,7 @@ class DailyListingController extends Controller
             ->select('detail_vouchers.*','header_vouchers.*'
             ,'accounts.description as account_description'
             ,'header_vouchers.id as id_header'
+            ,'accounts.balance_previus as balance_previous'
             ,'header_vouchers.description as header_description')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('header_vouchers.id','asc')->get();
@@ -274,21 +276,23 @@ class DailyListingController extends Controller
         if(empty($account_historial->rate) || ($account_historial->rate == 0)){
             $account_historial->rate = 1;
         }
+       
+       
+       /* if($coin != "bolivares"){
         $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
-    
+        } else {
+        $account_historial->balance_previous = $account_historial->balance_previous;   
+        } */
 
-        $saldo_anterior = ($account_historial->balance_previous ?? 0) + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+
+       
         $primer_movimiento = true;
         $saldo = 0;
         $counterpart = "";
 
-
         foreach($detailvouchers as $detail){
-            
+           
             //$detailvouchers->account_counterpart = '';
-
-            
-            
 
             $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
             ->where('id','=',$detail->id_invoice)
@@ -301,10 +305,6 @@ class DailyListingController extends Controller
                 ->get()->first();  
                 
 
-   
-
-
-          
 
             if (isset($quotation)) {
 
@@ -396,7 +396,8 @@ class DailyListingController extends Controller
                 }
 
             }
-            
+
+
 
                 if($coin != "bolivares"){
                     
@@ -407,15 +408,23 @@ class DailyListingController extends Controller
                     if((isset($detail->haber)) && ($detail->haber != 0)){
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
+                    $saldo_anterior = $account->balance_previus / ($detail->tasa ?? 1);
+                } else {
 
+                    $saldo_anterior = $account->balance_previus;
                 }
+                
+               
+                
+                
+                $detail->balance_previus = $saldo_anterior;
 
 
                 if($detail->id_account == $id_account){
 
                     if($primer_movimiento){
                         
-                        $detail->saldo = $detail->debe - $detail->haber + $saldo_anterior;
+                        $detail->saldo = $saldo_anterior + $detail->debe - $detail->haber;
                      
                         $saldo += $detail->saldo;
     
@@ -423,7 +432,7 @@ class DailyListingController extends Controller
 
                     }else{
     
-                        $detail->saldo = $detail->debe - $detail->haber + $saldo;                 
+                        $detail->saldo = $saldo_anterior + $detail->debe - $detail->haber + $saldo;                 
                     
                         $saldo = $detail->saldo;   
                     }
@@ -451,8 +460,6 @@ class DailyListingController extends Controller
                 }
 
         }
-
-
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
