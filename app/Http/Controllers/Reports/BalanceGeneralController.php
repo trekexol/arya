@@ -58,7 +58,6 @@ class BalanceGeneralController extends Controller
         $type = request('type');
 
         
-        
         return view('admin.reports.index_balance_general',compact('date_begin','date_end','level','coin','type'));
     }
 

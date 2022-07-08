@@ -39,12 +39,12 @@ class CalculationController extends Controller
 
                     if(isset($coin) && $coin == 'bolivares'){
                         
-                       if ($account->coin ==  '$'){
-                       $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
-                      
-                       $account->balance_previus = $account_calculate->balance_previus * $tasa;
-                       $account->debe = $account_calculate->debe * $tasa;
-                       $account->haber = $account_calculate->haber * $tasa;
+                       if ($account->coin == '$'){
+                        $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
+                        
+                        $account->balance_previus = $account_calculate->balance_previus * $tasa;
+                        $account->debe = $account_calculate->debe * $tasa;
+                        $account->haber = $account_calculate->haber * $tasa;
                     
                         } else {
                         $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
