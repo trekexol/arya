@@ -220,14 +220,21 @@ class QuotationController extends Controller
                                 'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva')
                                 ->orderBy('id','desc')
                                 ->get(); 
-            
-                
+
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');  
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
 
+                // sconsultar stock
+                $stock = 0;
+
+                foreach ($inventories_quotations as $var){
+                   
+                    $stock = $global->consul_prod_invt($var->id,$user->id_branch);
+                    $var->stock = $stock;
+                }
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     //esto es para que siempre se pueda guardar la tasa en la base de datos
@@ -264,6 +271,8 @@ class QuotationController extends Controller
 
     public function createproduct($id_quotation,$coin,$id_inventory,$type = null)
     {
+        $user   =   auth()->user();
+
         $quotation = null;
                 
         if(isset($id_quotation)){
@@ -315,6 +324,15 @@ class QuotationController extends Controller
                             $inventory->price = $inventory->price / $quotation->bcv;
                         }
                         $bcv = null;
+                    }
+
+                    // sconsultar stock
+                    $stock = 0;
+    
+                    foreach ($inventories_quotations as $var){
+                       
+                        $stock = $global->consul_prod_invt($var->id,$user->id_branch);
+                        $var->stock = $stock;
                     }
                    
                     return view('admin.quotations.create',compact('bcv_quotation_product','quotation','inventories_quotations','inventory','bcv','datenow','coin','type'));

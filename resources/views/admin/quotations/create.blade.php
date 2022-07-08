@@ -366,9 +366,18 @@
                                                 <tr>
                                                 <td style="text-align: right">{{ $var->code}}</td>
                                                 @if(isset($var->retiene_iva) && ($var->retiene_iva == 1))
+                                                    @if($var->stock <= 0 || $var->stock < $var->amount_quotation)
+                                                    <td style="text-align: right">{{ $var->description}} (E) <span style="color: red;">Stock {{ $var->stock}}</span></td>
+                                                    @else
                                                     <td style="text-align: right">{{ $var->description}} (E)</td>
+                                                    @endif
                                                 @else
-                                                    <td style="text-align: right">{{ $var->description}}</td>
+                                                     @if($var->stock <= 0 || $var->stock < $var->amount_quotation)
+                                                     <td style="text-align: right">{{ $var->description}} <span style="color: red;">Stock {{ $var->stock}}</span></td>
+                                                     @else
+                                                     <td style="text-align: right">{{ $var->description}}</td>
+                                                     @endif
+
                                                 @endif
                                                 
                                                 <td style="text-align: right">{{ $var->amount_quotation}}</td>
