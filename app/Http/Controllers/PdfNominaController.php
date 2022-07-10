@@ -248,6 +248,67 @@ class PdfNominaController extends Controller
        
     }
 
+    function print_payrool_summary_all($id_nomina){
+        
+        $pdf = App::make('dompdf.wrapper');
+
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
+
+ 
+        $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+
+
+        if(isset($nomina)){
+            
+           
+            $nomina_calculation_asignacion = NominaCalculation::on(Auth::user()->database_name)
+            ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+            ->join('employees','employees.id','nomina_calculations.id_employee')
+            ->where('nomina_concepts.sign','A')
+            ->where('id_nomina',$nomina->id)
+            ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_asignacion'))
+            ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
+            ->get();           
+
+            $nomina_calculation_deduccion = NominaCalculation::on(Auth::user()->database_name)
+                        ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+                        ->join('employees','employees.id','nomina_calculations.id_employee')
+                        ->where('id_nomina',$nomina->id)
+                        ->where('nomina_concepts.sign','D')
+                        ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_deduccion'))
+                        ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
+                        ->get();     
+
+            $nomina_calculation_sso = NominaCalculation::on(Auth::user()->database_name)
+                        ->join('employees','employees.id','nomina_calculations.id_employee')
+                        ->where('id_nomina',$nomina->id)
+                        ->where('id_nomina_concept',19)
+                        ->select('employees.nombres','employees.apellidos','nomina_calculations.amount')
+                        ->groupBy('employees.nombres','employees.apellidos','nomina_calculations.amount')
+                        ->get();     
+            $nomina_calculation_faov = NominaCalculation::on(Auth::user()->database_name)
+                        ->join('employees','employees.id','nomina_calculations.id_employee')
+                        ->where('id_nomina',$nomina->id)
+                        ->where('id_nomina_concept',23)
+                        ->select('employees.nombres','employees.apellidos','nomina_calculations.amount')
+                        ->groupBy('employees.nombres','employees.apellidos','nomina_calculations.amount')
+                        ->get();     
+           
+        }else{
+            return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
+        } 
+        
+        
+       
+        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion'));
+        return $pdf->stream();
+
+       
+    }
+
     function imprimirUtilidades(Request $request){
       
         $guardar = request('guardar');
