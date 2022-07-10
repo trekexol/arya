@@ -492,15 +492,15 @@ return [
             ]) : [],
         ],  
 
-        'marketingfood' => [
+        'baifa' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('MARKETINGFOOD_HOST', '127.0.0.1'),
-            'port' => env('MARKETINGFOOD_PORT', '3306'),
-            'database' => env('MARKETINGFOOD_DATABASE', 'forge'),
-            'username' => env('MARKETINGFOOD_USERNAME', 'forge'),
-            'password' => env('MARKETINGFOOD_PASSWORD', ''),
-            'unix_socket' => env('MARKETINGFOOD_SOCKET', ''),
+            'host' => env('BAIFA_HOST', '127.0.0.1'),
+            'port' => env('BAIFA_PORT', '3306'),
+            'database' => env('BAIFA_DATABASE', 'forge'),
+            'username' => env('BAIFA_USERNAME', 'forge'),
+            'password' => env('BAIFA_PASSWORD', ''),
+            'unix_socket' => env('BAIFA_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
