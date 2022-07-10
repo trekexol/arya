@@ -406,7 +406,7 @@ class QuotationController extends Controller
             return view('admin.quotations.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product','type_quotation'));
         }
     
-        return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product','type_quotation'));
+        return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product','type_quotation','company'));
     }
 
 
