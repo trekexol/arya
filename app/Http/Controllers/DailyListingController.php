@@ -218,8 +218,26 @@ class DailyListingController extends Controller
             
         }else{ // bolivares-----------------------------------------------
             
-
+           //consulta el primer movimiento
+            $detailvouchers_first =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                $query->select('id_header_voucher')
+                ->from('detail_vouchers')
+                ->where('id_account',$id_account);
+            })
+            ->whereIn('detail_vouchers.status', ['F','C'])
+            ->select('detail_vouchers.*','header_vouchers.*'
+            ,'accounts.description as account_description'
+            ,'header_vouchers.id as id_header'
+            ,'accounts.balance_previus as balance_previous'
+            ,'header_vouchers.description as header_description')
+            ->orderBy('header_vouchers.date','asc')
+            ->orderBy('header_vouchers.id','asc')->first();
  
+
+           //consulta normal
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -239,6 +257,7 @@ class DailyListingController extends Controller
             ,'header_vouchers.description as header_description')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('header_vouchers.id','asc')->get();
+            
 
            
             //busca los saldos previos de la cuenta                    
@@ -289,6 +308,7 @@ class DailyListingController extends Controller
         $primer_movimiento = true;
         $saldo = 0;
         $counterpart = "";
+
 
         foreach($detailvouchers as $detail){
            
@@ -408,7 +428,9 @@ class DailyListingController extends Controller
                     if((isset($detail->haber)) && ($detail->haber != 0)){
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
+                    
                     $saldo_anterior = $account->balance_previus / ($detail->tasa ?? 1);
+
                 } else {
 
                     $saldo_anterior = $account->balance_previus;
@@ -423,8 +445,9 @@ class DailyListingController extends Controller
                 if($detail->id_account == $id_account){
 
                     if($primer_movimiento){
-                        
-                        $detail->saldo = $saldo_anterior + $detail->debe - $detail->haber;
+                        //if($detailvouchers_first->id == $detailvouchers[0]->id){
+
+                        $detail->saldo = ($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0))+ $detail->debe - $detail->haber;
                      
                         $saldo += $detail->saldo;
     
@@ -432,7 +455,7 @@ class DailyListingController extends Controller
 
                     }else{
     
-                        $detail->saldo = $saldo_anterior + $detail->debe - $detail->haber + $saldo;                 
+                        $detail->saldo = $detail->debe - $detail->haber + $saldo;                 
                     
                         $saldo = $detail->saldo;   
                     }
@@ -465,10 +488,18 @@ class DailyListingController extends Controller
         $detailvouchers = array_reverse($detailvouchers->toArray());
         
 
+
+         if(isset($saldo_anterior) && ($saldo_anterior != 0)){
+            $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+          }else{
+            $saldo_inicial =  ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+          }
+         
+
         
         $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
                                 ,'datenow','date_begin','date_end','account','saldo_anterior'
-                                ,'detailvouchers_saldo_debe','detailvouchers_saldo_haber','saldo','id_account'));
+                                ,'detailvouchers_saldo_debe','detailvouchers_saldo_haber','saldo','id_account','saldo_inicial'));
         return $pdf->stream();
     }
    
