@@ -101,7 +101,6 @@ class DailyListingController extends Controller
 
         $id_account = request('id_account');
 
-        
         $company = Company::on(Auth::user()->database_name)->find(1);
 
         if(isset($id_account)){
@@ -152,13 +151,21 @@ class DailyListingController extends Controller
         
         $date_begin = request('date_begin');
         $date_end = request('date_end');
-
+        
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y');
 
         $pdf = App::make('dompdf.wrapper');
 
         $company = Company::on(Auth::user()->database_name)->find(1);
+
+        $period = Carbon::parse($date_begin)->format('Y');
+
+        $mesdia = Carbon::parse($date_begin)->format('m-d');
+
+        $account = Account::on(Auth::user()->database_name)->find($id_account);
+
+
 
         if($coin != "bolivares")
         {
@@ -238,9 +245,39 @@ class DailyListingController extends Controller
             ,'header_vouchers.description as header_description')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('header_vouchers.id','asc')->get();
-            
+        
+            if($account->period == $period ){
+                 
+                if($mesdia == '01-01') {
+                        
+                    $detailvouchers_saldo_debe = 0;
+                    $detailvouchers_saldo_haber = 0;
 
-           
+                } else {
+                    //busca los saldos previos de la cuenta                    
+                    $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                ->where('header_vouchers.date','<' ,$date_begin)
+                                ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                ->where('accounts.id',$id_account)
+                                ->whereIn('detail_vouchers.status', ['F','C'])
+                                ->sum('detail_vouchers.debe');
+
+                    
+                    $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                ->where('header_vouchers.date','<' ,$date_begin)
+                                ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                ->where('accounts.id',$id_account)
+                                ->whereIn('detail_vouchers.status', ['F','C'])
+                                ->sum('detail_vouchers.haber');   
+
+                }
+
+            } else {
+
             //busca los saldos previos de la cuenta                    
             $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
@@ -257,15 +294,17 @@ class DailyListingController extends Controller
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
                         ->whereIn('detail_vouchers.status', ['F','C'])
-                        ->sum('detail_vouchers.haber');       
+                        ->sum('detail_vouchers.haber');    
+  
+            }             
+                
+                        
         }
 
         
         $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
-
-        $account = Account::on(Auth::user()->database_name)->find($id_account);
 
         $account_calculate = new AccountCalculationController();
 
@@ -418,8 +457,10 @@ class DailyListingController extends Controller
                     $saldo_anterior = $account->balance_previus;
                 }
                 
-               
-                
+
+                if($account->period != $period){
+                    $saldo_anterior = 0;
+                }
                 
                 $detail->balance_previus = $saldo_anterior;
 
@@ -428,7 +469,7 @@ class DailyListingController extends Controller
 
                     if($primer_movimiento){
 
-                        $detail->saldo = number_format(($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0))+ $detail->debe - $detail->haber,2,'.','');
+                        $detail->saldo = number_format(($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0)) + $detail->debe - $detail->haber,2,'.','');
                      
                         $saldo += $detail->saldo;
     
@@ -470,10 +511,16 @@ class DailyListingController extends Controller
         
 
 
-         if(isset($saldo_anterior) && ($saldo_anterior != 0)){
-            $saldo_inicial = number_format($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+          if(isset($saldo_anterior) && ($saldo_anterior != 0)){
+              
+                 
+                $saldo_inicial = number_format($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+            
+                //$saldo_inicial = number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+   
+
           }else{
-            $saldo_inicial =  number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+                $saldo_inicial =  number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
           }
          
   
