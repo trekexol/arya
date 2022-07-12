@@ -443,14 +443,14 @@ class DailyListingController extends Controller
                 if($coin != "bolivares"){
                     
                     if((isset($detail->debe)) && ($detail->debe != 0)){
-                    $detail->debe = number_format($detail->debe / ($detail->tasa ?? 1),2,'.','');
+                    $detail->debe = $detail->debe / ($detail->tasa ?? 1);
                     }
 
                     if((isset($detail->haber)) && ($detail->haber != 0)){
-                    $detail->haber = number_format($detail->haber / ($detail->tasa ?? 1),2,'.','');
+                    $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
                     
-                    $saldo_anterior = number_format($account->balance_previus / ($detail->tasa ?? 1),2,'.','');
+                    $saldo_anterior = $account->balance_previus / ($detail->tasa ?? 1);
 
                 } else {
 
@@ -477,7 +477,7 @@ class DailyListingController extends Controller
 
                     }else{
     
-                        $detail->saldo = $detail->debe - $detail->haber + $saldo;                 
+                        $detail->saldo = number_format($detail->debe - $detail->haber + $saldo,2,'.','');                 
                     
                         $saldo = $detail->saldo;   
                     }
