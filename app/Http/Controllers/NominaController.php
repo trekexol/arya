@@ -127,6 +127,16 @@ class NominaController extends Controller
         $sum_employees_asignacion_general = 0;
         $sum_sso_patronal = 0;
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
+
+ 
+        $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+
+        if(isset($nomina->rate) && $nomina->rate == 0){
+            $nomina->rate = $bcv;
+        }
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
