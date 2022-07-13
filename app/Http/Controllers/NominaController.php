@@ -61,8 +61,10 @@ class NominaController extends Controller
         $professions = Profession::on(Auth::user()->database_name)->orderBY('name','asc')->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
 
-        return view('admin.nominas.create',compact('professions','datenow'));
+        return view('admin.nominas.create',compact('professions','datenow','bcv'));
     }
 
    
@@ -657,21 +659,22 @@ class NominaController extends Controller
            
         ]);
 
-        $users = new Nomina();
-        $users->setConnection(Auth::user()->database_name);
+        $nomina = new Nomina();
+        $nomina->setConnection(Auth::user()->database_name);
 
-        $users->id_profession = request('id_profession');
-        $users->description = request('description');
-        $users->type = request('type');
+        $nomina->id_profession = request('id_profession');
+        $nomina->description = request('description');
+        $nomina->type = request('type');
        
-        $users->date_begin = request('date_begin');
+        $nomina->date_begin = request('date_begin');
         
-        $users->date_end = request('date_end');
-        $users->status =  "1";
+        $nomina->date_end = request('date_end');
+        $nomina->status =  "1";
        
+        $nomina->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
        
 
-        $users->save();
+        $nomina->save();
 
         return redirect('/nominas')->withSuccess('Registro Exitoso!');
     }
@@ -687,8 +690,11 @@ class NominaController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
+
         
-        return view('admin.nominas.edit',compact('var','professions','datenow'));
+        return view('admin.nominas.edit',compact('var','professions','datenow','bcv'));
         
     }
 
@@ -720,6 +726,7 @@ class NominaController extends Controller
         $var->type = request('type');
         $var->date_begin = request('date_begin');
         $var->date_end = request('date_end');
+        $var->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
        
         if(request('status') == null){
             $var->status = $var_status;

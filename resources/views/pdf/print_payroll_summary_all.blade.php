@@ -37,6 +37,13 @@
   $total = 0;
   $total_asignacion = 0;
   $total_deduccion = 0;
+
+  $total_sueldo = 0;
+  $total_bono_medico = 0;
+  $total_bono_alimentacion = 0;
+  $total_sso = 0;
+  $total_faov = 0;
+  $total_final = 0;
 ?>
 
  
@@ -61,40 +68,44 @@
         $sueldo = ($nomina_calculation_asignacion[$i]->total_asignacion ?? 0) - ($nomina_calculation_deduccion[$i]->total_deduccion ?? 0);
         
         if ($nomina->type == "Segunda Quincena"){
-          $total_bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - (45) - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
-          $total = bcdiv(($sueldo), '1', 2) + 45 + bcdiv($total_bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2)
+          $bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - (45) - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
+          $total = bcdiv(($sueldo), '1', 2) + 45 + bcdiv($bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2);
         }else{
-          $total_bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
-          $total = bcdiv(($sueldo), '1', 2) + bcdiv($total_bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) 
+          $bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
+          $total = bcdiv(($sueldo), '1', 2) + bcdiv($bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2);
         }
-         ?>
+
+        $total_sueldo += $sueldo;
+        $total_bono_medico += $bono_medico;
+        $total_bono_alimentacion += 45;
+        $total_sso += $nomina_calculation_sso[$i]->amount;
+        $total_faov += $nomina_calculation_faov[$i]->amount;
+        $total_final += $total;
+
+      ?>
         <tr>
           <td style="text-align: center;"> {{ $nomina_calculation_asignacion[$i]->nombres }} {{ $nomina_calculation_asignacion[$i]->apellidos ?? '' }}</td>
           <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
-          <td style="text-align: center;">{{ number_format(bcdiv($total_bono_medico, '1', 2) , 2, ',', '.')}}</td>
+          <td style="text-align: center;">{{ number_format(bcdiv($bono_medico, '1', 2) , 2, ',', '.')}}</td>
           @if ($nomina->type == "Segunda Quincena")
           <td style="text-align: center;">{{ number_format(bcdiv(45, '1', 2) , 2, ',', '.')}}</td>
           @endif
-          <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
-          <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
-          <td style="text-align: center;">{{ number_format($total, 2, ',', '.')}}</td>
+         <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
+         <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
+         <td style="text-align: center;">{{ number_format($total, 2, ',', '.')}}</td>
         </tr>
     @endfor
-    <?php
-      $total += $total_asignacion - $total_deduccion;
-    ?>
+    
     <tr>
       <td style="text-align: center;"> </td>
-      <td style="text-align: center;"> </td>
-      <td style="text-align: center;"> </td>
-      <td style="text-align: center;"> </td>
-      <td style="text-align: center;"> </td>
-      <td style="text-align: center;"> </td>
-      <!--
-      <td style="text-align: center;">{{ number_format(bcdiv($total_asignacion, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv( $total_deduccion, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total, '1', 2) , 2, ',', '.')}}</td>-->
-      <td style="text-align: center;"></td>
+      <td style="text-align: center;">{{ number_format(bcdiv($total_sueldo ?? 0, '1', 2) , 2, ',', '.')}}</td>
+      <td style="text-align: center;">{{ number_format(bcdiv($total_bono_medico ?? 0, '1', 2) , 2, ',', '.')}}</td>
+      @if ($nomina->type == "Segunda Quincena")
+      <td style="text-align: center;">{{ number_format(bcdiv($total_bono_alimentacion, '1', 2) , 2, ',', '.')}}</td>
+      @endif
+      <td style="text-align: center;">{{ number_format(bcdiv($total_sso, '1', 2) , 2, ',', '.')}}</td>
+      <td style="text-align: center;">{{ number_format(bcdiv($total_faov, '1', 2) , 2, ',', '.')}}</td>
+      <td style="text-align: center;">{{ number_format(bcdiv($total_final ?? 0, '1', 2) , 2, ',', '.')}}</td>
     </tr>
   </table>
 <br><br>
