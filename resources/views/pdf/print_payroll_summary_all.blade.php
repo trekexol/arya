@@ -59,9 +59,15 @@
         $total_asignacion += $nomina_calculation_asignacion[$i]->total_asignacion ?? 0;
         $total_deduccion += $nomina_calculation_deduccion[$i]->total_deduccion ?? 0;
         $sueldo = ($nomina_calculation_asignacion[$i]->total_asignacion ?? 0) - ($nomina_calculation_deduccion[$i]->total_deduccion ?? 0);
-        $total_bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - (45) - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
-        $total = bcdiv(($sueldo), '1', 2) + 45 + bcdiv($total_bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2)
-      ?>
+        
+        if ($nomina->type == "Segunda Quincena"){
+          $total_bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - (45) - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
+          $total = bcdiv(($sueldo), '1', 2) + 45 + bcdiv($total_bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2)
+        }else{
+          $total_bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - $nomina_calculation_faov[$i]->amount - $nomina_calculation_sso[$i]->amount;
+          $total = bcdiv(($sueldo), '1', 2) + bcdiv($total_bono_medico, '1', 2) + bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) + bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) 
+        }
+         ?>
         <tr>
           <td style="text-align: center;"> {{ $nomina_calculation_asignacion[$i]->nombres }} {{ $nomina_calculation_asignacion[$i]->apellidos ?? '' }}</td>
           <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
