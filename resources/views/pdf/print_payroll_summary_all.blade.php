@@ -45,7 +45,9 @@
         <th style="text-align: center;">Nombres y Apellidos</th>
         <th style="text-align: center;">Total Sueldo</th>
         <th style="text-align: center;">Bono Médico</th>
+        @if ($nomina->type == "Segunda Quincena")
         <th style="text-align: center;">Bono Alimentación</th>
+        @endif
         <th style="text-align: center;">SSO</th>
         <th style="text-align: center;">FAOV</th>
         <th style="text-align: center;">Total</th>
@@ -64,7 +66,9 @@
           <td style="text-align: center;"> {{ $nomina_calculation_asignacion[$i]->nombres }} {{ $nomina_calculation_asignacion[$i]->apellidos ?? '' }}</td>
           <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
           <td style="text-align: center;">{{ number_format(bcdiv($total_bono_medico, '1', 2) , 2, ',', '.')}}</td>
+          @if ($nomina->type == "Segunda Quincena")
           <td style="text-align: center;">{{ number_format(bcdiv(45, '1', 2) , 2, ',', '.')}}</td>
+          @endif
           <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
           <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
           <td style="text-align: center;">{{ number_format($total, 2, ',', '.')}}</td>
