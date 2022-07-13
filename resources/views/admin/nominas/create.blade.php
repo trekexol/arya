@@ -60,14 +60,23 @@
                         </div>
                         <div class="form-group row">
                             <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Trabajador</label>
-                                <div class="col-md-4">
-                                    <select  id="profession"  name="id_profession" class="form-control">
-                                        @foreach($professions as $profession)
-                                                <option selected value="{{$profession->id}}">{{ $profession->name }}</option>
-                                           @endforeach
-                                       
-                                    </select>
-                                </div>
+                            <div class="col-md-4">
+                                <select  id="profession"  name="id_profession" class="form-control">
+                                    @foreach($professions as $profession)
+                                            <option selected value="{{$profession->id}}">{{ $profession->name }}</option>
+                                        @endforeach
+                                    
+                                </select>
+                            </div>
+                            <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                            <div class="col-md-3">
+                                <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($nomina->rate ?? $bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                                @error('rate')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                        
                        
@@ -94,6 +103,11 @@
 	$(function(){
         soloAlfaNumerico('description');
        
+    });
+
+    $(document).ready(function () {
+        $("#rate").mask('000.000.000.000.000,00', { reverse: true });
+        
     });
     </script>
 @endsection

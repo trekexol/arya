@@ -21,6 +21,7 @@ class CreateNominasTable extends Migration
             $table->string('type',20);
             $table->date('date_begin');
             $table->date('date_end')->nullable();
+            $table->decimal('rate',64,2);
 
             $table->string('status',1);
 
