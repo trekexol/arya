@@ -260,6 +260,9 @@ class PdfNominaController extends Controller
  
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
+        if(isset($nomina->rate)&& $nomina->rate != 0){
+            $bcv = $nomina->rate;
+        }
 
         if(isset($nomina)){
             
