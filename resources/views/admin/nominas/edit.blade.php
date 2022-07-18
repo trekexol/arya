@@ -114,27 +114,35 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
-        
-                                        <div class="col-md-4">
-                                            <select class="form-control" id="status" name="status" title="status">
-                                                @if($var->status == 1)
-                                                    <option value="1">Activo</option>
-                                                @else
-                                                    <option value="0">Inactivo</option>
-                                                @endif
-                                                <option value="nulo">----------------</option>
-                                                
-                                                <div class="dropdown">
-                                                    <option value="1">Activo</option>
-                                                    <option value="0">Inactivo</option>
-                                                </div>
-                                                
-                                                   
-                                            </select>
+                                        <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                                        <div class="col-md-3">
+                                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($var->rate ?? $bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                                            @error('rate')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
+                                       
                                 </div>
-                               
+                                <div class="form-group row">
+                                <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" id="status" name="status" title="status">
+                                            @if($var->status == 1)
+                                                <option value="1">Activo</option>
+                                            @else
+                                                <option value="0">Inactivo</option>
+                                            @endif
+                                            <option value="nulo">----------------</option>
+                                            
+                                            <div class="dropdown">
+                                                <option value="1">Activo</option>
+                                                <option value="0">Inactivo</option>
+                                            </div>
+                                        </select>
+                                    </div>
+                                </div>
                             <br>
                                 <div class="form-group row justify-content-center">
                                     <div class="form-group col-sm-2">
@@ -156,6 +164,10 @@
                     $(function(){
                         soloAlfaNumerico('description');
                        
+                    });
+                    $(document).ready(function () {
+                        $("#rate").mask('000.000.000.000.000,00', { reverse: true });
+                        
                     });
                     </script>
                 @endsection

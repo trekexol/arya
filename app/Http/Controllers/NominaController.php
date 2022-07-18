@@ -45,7 +45,7 @@ class NominaController extends Controller
     }
 
     public function searchMovementNomina($id_nomina){
-        $header = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->orderBy('id','desc')->first();
+        $header = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->where('status',1)->orderBy('id','desc')->first();
         
         if(isset($header)){
             $detail = new DetailVoucherController();
@@ -61,8 +61,10 @@ class NominaController extends Controller
         $professions = Profession::on(Auth::user()->database_name)->orderBY('name','asc')->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
 
-        return view('admin.nominas.create',compact('professions','datenow'));
+        return view('admin.nominas.create',compact('professions','datenow','bcv'));
     }
 
    
@@ -120,12 +122,21 @@ class NominaController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-        $global = new GlobalController();
-        $bcv = $global->search_bcv();
+       
         $sum_employees = 0;
         $sum_employees_asignacion_general = 0;
         $sum_sso_patronal = 0;
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
+
+ 
+        $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+
+        if(isset($nomina->rate) && $nomina->rate == 0){
+            $nomina->rate = $bcv;
+        }
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina,$employee);
@@ -154,7 +165,7 @@ class NominaController extends Controller
                                                                         ->where('description','LIKE', 'Sueldos y Salarios')
                                                                         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
 
 
         if($nomina->type == "Segunda Quincena"){
@@ -165,7 +176,7 @@ class NominaController extends Controller
             ->where('description','LIKE', 'Bono de Alimentacion')
             ->first();
 
-            $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
+            $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
         }
         
 
@@ -175,7 +186,7 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_sso->id,$nomina->id,$total_sso,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso->id,$nomina->id,$total_sso,0);
 
         /*MOVIMIENTO DE FAOV */
         $total_faov = $this->calculateAmountTotalFAOV($nomina);
@@ -183,17 +194,17 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);
 
         /*MOVIMIENTO DE Bono Medico */
                 
-        $total_bono_medico = ($sum_employees_asignacion_general * $bcv) - $amount_total_nomina - ($total_bono_alimentacion ?? 0) - $total_faov - $total_sso;
+        $total_bono_medico = ($sum_employees_asignacion_general * $nomina->rate) - $amount_total_nomina - ($total_bono_alimentacion ?? 0) - $total_faov - $total_sso;
 
         $accounts_bono_medico = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Bono Medico')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$total_bono_medico,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$total_bono_medico,0);
 
 
         /*MOVIMIENTO DE aporte patronal*/
@@ -203,14 +214,14 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
 
 
         $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,$sum_sso_patronal,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,$sum_sso_patronal,0);
 
 
 
@@ -224,7 +235,7 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Sueldos por Pagar')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
         /*------------------------ */
         
         if($nomina->type == "Segunda Quincena"){
@@ -232,7 +243,7 @@ class NominaController extends Controller
             ->where('description','LIKE', 'Bono Alimentacion por Pagar')
             ->first();
 
-            $this->add_movement($bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$total_bono_alimentacion);
+            $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$total_bono_alimentacion);
             /*------------------------ */
         }
 
@@ -240,7 +251,7 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio por pagar')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$total_sso);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$total_sso);
         /*------------------------ */
       
 
@@ -248,7 +259,7 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda por Pagar')
         ->first();
 
-        $this->add_movement($bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$total_faov);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$total_faov);
         /*------------------------ */
         
  
@@ -256,21 +267,21 @@ class NominaController extends Controller
          ->where('description','LIKE', 'Bono Medico por Pagar')
          ->first();
  
-         $this->add_movement($bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$total_bono_medico);
+         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$total_bono_medico);
          /*------------------------ */
 
          $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
          ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal por Pagar')
          ->first();
 
-         $this->add_movement($bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
+         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
 
 
          $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
          ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal por pagar')
          ->first();
 
-         $this->add_movement($bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,0,$sum_sso_patronal);
+         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,0,$sum_sso_patronal);
 
         
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina->description.' fue Exitoso!');
@@ -657,21 +668,22 @@ class NominaController extends Controller
            
         ]);
 
-        $users = new Nomina();
-        $users->setConnection(Auth::user()->database_name);
+        $nomina = new Nomina();
+        $nomina->setConnection(Auth::user()->database_name);
 
-        $users->id_profession = request('id_profession');
-        $users->description = request('description');
-        $users->type = request('type');
+        $nomina->id_profession = request('id_profession');
+        $nomina->description = request('description');
+        $nomina->type = request('type');
        
-        $users->date_begin = request('date_begin');
+        $nomina->date_begin = request('date_begin');
         
-        $users->date_end = request('date_end');
-        $users->status =  "1";
+        $nomina->date_end = request('date_end');
+        $nomina->status =  "1";
        
+        $nomina->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
        
 
-        $users->save();
+        $nomina->save();
 
         return redirect('/nominas')->withSuccess('Registro Exitoso!');
     }
@@ -687,8 +699,11 @@ class NominaController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
+
         
-        return view('admin.nominas.edit',compact('var','professions','datenow'));
+        return view('admin.nominas.edit',compact('var','professions','datenow','bcv'));
         
     }
 
@@ -720,6 +735,7 @@ class NominaController extends Controller
         $var->type = request('type');
         $var->date_begin = request('date_begin');
         $var->date_end = request('date_end');
+        $var->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
        
         if(request('status') == null){
             $var->status = $var_status;
@@ -759,7 +775,7 @@ class NominaController extends Controller
         
         NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->delete();
 
-        $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
+        $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->where('status',1)->first();
 
         if(isset($header_search)){
             $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($header_search->id);
