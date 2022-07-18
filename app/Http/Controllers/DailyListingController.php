@@ -9,6 +9,7 @@ use App\Quotation;
 use App\Anticipo;
 use App\Client;
 use App\DetailVoucher;
+use App\HeaderVoucher;
 use App\Http\Controllers\Calculations\AccountCalculationController;
 use App\Provider;
 use Carbon\Carbon;
@@ -164,88 +165,98 @@ class DailyListingController extends Controller
         $mesdia = Carbon::parse($date_begin)->format('m-d');
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
+                   
+                   //consulta normal Bs.
+                   $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                   ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                   ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                   ->whereRaw(
+                       "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
+                      [$date_begin, $date_end])
+                   ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                       $query->select('id_header_voucher')
+                       ->from('detail_vouchers')
+                       ->where('id_account',$id_account);
+                   })
+                   ->whereIn('detail_vouchers.status', ['F','C'])
+                   ->select('detail_vouchers.*','header_vouchers.*'
+                   ,'accounts.description as account_description'
+                   ,'header_vouchers.id as id_header'
+                   ,'accounts.balance_previus as balance_previous'
+                   ,'header_vouchers.description as header_description')
+                   ->orderBy('header_vouchers.date','asc')
+                   ->orderBy('header_vouchers.id','asc')->get();
+
+        if($coin != "bolivares"){
+
+  
+                if($account->period == $period ){
+                   
+                  if($mesdia == '01-01') {
+                          
+                      $detailvouchers_saldo_debe = 0;
+                      $detailvouchers_saldo_haber = 0;
+               
+                  } else {
+                      //busca los saldos previos de la cuenta                    
+                      $total_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                  ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                  ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                  ->where('header_vouchers.date','<' ,$date_begin)
+                                  ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                  ->where('accounts.id',$id_account)
+                                  ->whereIn('detail_vouchers.status', ['F','C'])
+                                  ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
+                      
+                      
+                      $total_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                  ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                  ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                  ->where('header_vouchers.date','<' ,$date_begin)
+                                  ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                  ->where('accounts.id',$id_account)
+                                  ->whereIn('detail_vouchers.status', ['F','C'])
+                                  ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first(); 
+  
+                                  $detailvouchers_saldo_debe = number_format($total_debe->debe,2,'.','');
+                                  $detailvouchers_saldo_haber = number_format($total_haber->haber,2,'.','');
 
 
+                  }
+  
 
-        if($coin != "bolivares")
-        {
-            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-            ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
-            ->whereIn('header_vouchers.id', function($query) use ($id_account){
-                $query->select('id_header_voucher')
-                ->from('detail_vouchers')
-                ->where('id_account',$id_account);
-            })
-            ->whereIn('detail_vouchers.status', ['F','C'])
-            ->select('detail_vouchers.*','header_vouchers.*'
-            ,'accounts.description as account_description'
-            ,'header_vouchers.id as id_header'
-            ,'accounts.balance_previus as balance_previous'
-            ,'header_vouchers.description as header_description')
-            ->orderBy('header_vouchers.date','asc')
-            ->orderBy('header_vouchers.id','asc')->get();
 
-            $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
-                        ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
-                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                        ->where('detail_vouchers.id_account',$id_account)
-                        ->whereIn('detail_vouchers.status', ['F','C'])
-                        ->where('header_vouchers.date','<' ,$date_begin)
-                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
-
-           
-           
-            if(isset($total_debe->debe)){
-                $detailvouchers_saldo_debe = $total_debe->debe;
-            }else{
-                $detailvouchers_saldo_debe = 0;
-            }
-           
-                
-            $total_haber =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(d.haber/d.tasa) AS haber
-                FROM accounts a
-                INNER JOIN detail_vouchers d 
-                    ON d.id_account = a.id
-                INNER JOIN header_vouchers h 
-                    ON h.id = d.id_header_voucher
-                WHERE h.date < ? AND
-                a.id = ? AND
-                (d.status = ? OR
-                d.status = ?)'
-                , [$date_begin,$id_account,'C','F']);
-                
-                if(isset($total_haber[0]->haber)){
-                    $detailvouchers_saldo_haber = $total_haber[0]->haber;
-                }else{
-                    $detailvouchers_saldo_haber = 0;
-                }
-     
+              } else {
+  
+                        //busca los saldos previos de la cuenta                    
+                        $total_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                    ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                    ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                    ->where('header_vouchers.date','<' ,$date_begin)
+                                    ->where('accounts.id',$id_account)
+                                    ->whereIn('detail_vouchers.status', ['F','C'])
+                                    ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
             
+            
+                        
+                        $total_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                    ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                    ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                    ->where('header_vouchers.date','<' ,$date_begin)
+                                    ->where('accounts.id',$id_account)
+                                    ->whereIn('detail_vouchers.status', ['F','C'])
+                                    ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first();  
+                                
+
+                                    $detailvouchers_saldo_debe = number_format($total_debe->debe,2,'.','');
+                                    $detailvouchers_saldo_haber = number_format($total_haber->haber,2,'.','');
+
+
+              } 
+
         }else{ // bolivares-----------------------------------------------
-            
-           //consulta normal
-            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-            ->whereRaw(
-                "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
-               [$date_begin, $date_end])
-            ->whereIn('header_vouchers.id', function($query) use ($id_account){
-                $query->select('id_header_voucher')
-                ->from('detail_vouchers')
-                ->where('id_account',$id_account);
-            })
-            ->whereIn('detail_vouchers.status', ['F','C'])
-            ->select('detail_vouchers.*','header_vouchers.*'
-            ,'accounts.description as account_description'
-            ,'header_vouchers.id as id_header'
-            ,'accounts.balance_previus as balance_previous'
-            ,'header_vouchers.description as header_description')
-            ->orderBy('header_vouchers.date','asc')
-            ->orderBy('header_vouchers.id','asc')->get();
-        
+
+
             if($account->period == $period ){
                  
                 if($mesdia == '01-01') {
@@ -273,8 +284,12 @@ class DailyListingController extends Controller
                                 ->where('accounts.id',$id_account)
                                 ->whereIn('detail_vouchers.status', ['F','C'])
                                 ->sum('detail_vouchers.haber');   
-
+                  
+                                $detailvouchers_saldo_debe = number_format($detailvouchers_saldo_debe,2,'.','');
+                                $detailvouchers_saldo_haber = number_format($detailvouchers_saldo_haber,2,'.','');
                 }
+
+                
 
             } else {
 
@@ -294,7 +309,12 @@ class DailyListingController extends Controller
                         ->where('header_vouchers.date','<' ,$date_begin)
                         ->where('accounts.id',$id_account)
                         ->whereIn('detail_vouchers.status', ['F','C'])
-                        ->sum('detail_vouchers.haber');    
+                        ->sum('detail_vouchers.haber');  
+
+
+                        $detailvouchers_saldo_debe = number_format($detailvouchers_saldo_debe,2,'.','');
+                        $detailvouchers_saldo_haber = number_format($detailvouchers_saldo_haber,2,'.','');
+                        
   
             }             
                 
@@ -363,7 +383,7 @@ class DailyListingController extends Controller
                 if (isset($anticipo)) {
                     $id_client = '';
                     $coin_mov = '';
-                   if ($anticipo->id_quotation != null){
+                   if ($anticipo->id_quotation != null){ //con anticipo
                         
    
                         $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
@@ -379,7 +399,7 @@ class DailyListingController extends Controller
                         
 
                         
-                        if (isset($quotation)) {
+                        if (isset($quotation)) { // descriocion  Anticipo factura
                         $detail->header_description .= ' FAC: '.$quotation->number_invoice;
                         $id_client = $quotation->id_client;
                         $coin_mov = $quotation->coin;
@@ -391,7 +411,7 @@ class DailyListingController extends Controller
                         }
                         
                         if(isset($id_client)) {
-                            $client = Client::on(Auth::user()->database_name) // buscar factura
+                            $client = Client::on(Auth::user()->database_name) // buscar cliente de factura
                             ->where('id','=',$id_client)
                             ->get()->first();
                             
@@ -402,10 +422,12 @@ class DailyListingController extends Controller
 
 
                         $detail->header_description .= '. '.$coin_mov;
+
+                        //descripcon Anticipo Compra
                         
                         
 
-                   } else {
+                   } else { // sin anticipo
 
 
 
@@ -450,36 +472,45 @@ class DailyListingController extends Controller
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
                     
-                    $saldo_anterior = $account->balance_previus / ($detail->tasa ?? 1);
+                    $saldo_anterior = $account->balance_previus / ($account->rate ?? 1);
 
                 } else {
 
                     $saldo_anterior = $account->balance_previus;
                 }
                 
+                $saldo_anterior = number_format($saldo_anterior,2,'.','');
 
                 if($account->period != $period){
                     $saldo_anterior = 0;
                 }
                 
-                $detail->balance_previus = $saldo_anterior;
 
+                $detail->balance_previus = $saldo_anterior;
+                $amount_voucher = 0;
+                $account_contrapartida = '';
+
+ 
 
                 if($detail->id_account == $id_account){
 
                     if($primer_movimiento){
 
-                        $detail->saldo = number_format(($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0)) + $detail->debe - $detail->haber,2,'.','');
                      
-                        $saldo += $detail->saldo;
-    
+                            $detail->saldo = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0) + $detail->debe - $detail->haber;
+                            $saldo += $detail->saldo;
+                
+   
+
                         $primer_movimiento = false;
 
                     }else{
     
-                        $detail->saldo = number_format($detail->debe - $detail->haber + $saldo,2,'.','');                 
-                    
-                        $saldo = $detail->saldo;   
+           
+
+                            $detail->saldo = $detail->debe - $detail->haber + $saldo;  
+
+                            $saldo = $detail->saldo;   
                     }
                     
                    /* if($counterpart == ""){
@@ -504,24 +535,30 @@ class DailyListingController extends Controller
      
                 }
 
+                    $amount_voucher = $detail->debe + $detail->haber;
+                      
+
+                    $account_contrapartida_id = DetailVoucher::on(Auth::user()->database_name) // buscar factura
+                    ->where('id_header_voucher','=',$detail->id_header)
+                    ->where('id_account','<>',$detail->id_account)
+                    ->get();
+
+                    $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id[0]->id_account);
+                    
+                    if($coin != "bolivares"){
+                    $detail->account_counterpart = $account_contrapartida->description.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
+                    } else {
+                        $detail->account_counterpart = $account_contrapartida->description;    
+                    }
         }
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
         
 
-
-          if(isset($saldo_anterior) && ($saldo_anterior != 0)){
-              
-                 
-                $saldo_inicial = number_format($saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+                $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
             
                 //$saldo_inicial = number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
-   
-
-          }else{
-                $saldo_inicial =  number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
-          }
          
   
         $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
