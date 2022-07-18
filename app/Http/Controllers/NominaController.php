@@ -58,7 +58,7 @@ class NominaController extends Controller
 
     public function create()
     {
-        $professions = Profession::on(Auth::user()->database_name)->orderBY('name','asc')->get();
+        $professions = Profession::on(Auth::user()->database_name)->orderBY('id','asc')->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
         $global = new GlobalController();
