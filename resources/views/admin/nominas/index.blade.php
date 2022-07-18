@@ -82,10 +82,10 @@
             <tr>
                 
                 <th class="text-center">Descripción</th>
-                <th class="text-center">Tipo de Nómina</th>
+                <th class="text-center">Nómina</th>
                 <th class="text-center">Desde</th>
                 <th class="text-center">Hasta</th>
-                <th class="text-center">Tipo de Empleado</th>
+                <th class="text-center">Tipo de Nómina</th>
                <th class="text-center"></th>
               
             </tr>

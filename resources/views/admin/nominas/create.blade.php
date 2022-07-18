@@ -23,7 +23,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="type" class="col-md-2 col-form-label text-md-right">Tipo Nómina:</label>
+                            <label for="type" class="col-md-2 col-form-label text-md-right">Nómina:</label>
                             <div class="col-md-4">
                                 <select class="form-control" name="type" id="type">
                                     <option value="Primera Quincena">Primera Quincena</option>
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Trabajador</label>
+                            <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Nomina</label>
                             <div class="col-md-4">
                                 <select  id="profession"  name="id_profession" class="form-control">
                                     @foreach($professions as $profession)
