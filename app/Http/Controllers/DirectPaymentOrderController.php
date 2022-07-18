@@ -110,15 +110,18 @@ class DirectPaymentOrderController extends Controller
             $amount = str_replace(',', '.', str_replace('.', '', request('amount')));
             $rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
-           /* if($coin != 'bolivares'){
-                $amount = $amount * $rate;
-            }*/
 
             if($rate == 0){
                 return redirect('/directpaymentorders')->withDanger('La tasa no puede ser cero!');
             }
 
             $total_amount = $this->returnTotalAmount($request);  
+
+            
+            if($coin != 'bolivares'){
+                $amount = number_format($amount * $rate,2,'.','');
+                $total_amount = number_format( $total_amount * $rate,2,'.','');
+            }
 
 
             /*$check_amount = $this->check_amount($account);
