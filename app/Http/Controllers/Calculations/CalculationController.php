@@ -76,7 +76,9 @@ class CalculationController extends Controller
 
 
 
-                } else {
+                } else { // normal
+
+                     /// calcular
 
                     if(isset($coin) && $coin == 'bolivares'){
                         $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
@@ -138,8 +140,9 @@ class CalculationController extends Controller
     }
     
     public function verificateAccount($account,$date_begin,$date_end)
-    {
-       
+    { 
+        $period = Carbon::parse($date_begin)->format('Y');
+
         if($account->code_one != 0)
         {                      
             if($account->code_two != 0)
@@ -156,7 +159,7 @@ class CalculationController extends Controller
                                         $account = $this->calculation_superavit($account,4,'bolivares',$date_begin,$date_end);
                                     }else{
                                         /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */                                                   
-                                        $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
+ /*                                       $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
                                         ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                         ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                         ->where('accounts.code_one', $account->code_one)
@@ -164,6 +167,7 @@ class CalculationController extends Controller
                                         ->where('accounts.code_three', $account->code_three)
                                         ->where('accounts.code_four', $account->code_four)
                                         ->where('accounts.code_five', $account->code_five)
+                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                         ->whereIn('detail_vouchers.status', ['F','C'])
                     
                                         ->whereRaw(
@@ -181,20 +185,44 @@ class CalculationController extends Controller
                                         ->where('accounts.code_three', $account->code_three)
                                         ->where('accounts.code_four', $account->code_four)
                                         ->where('accounts.code_five', $account->code_five)
+                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                         ->whereIn('detail_vouchers.status', ['F','C'])
-                    
                                         ->whereRaw(
                                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
                                         [$date_begin, $date_end])
                                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(haber) as total'))->first();   
-
+*/
                                         
                                         /*---------------------------------------------------*/
 
-                                
-
+                                        $total_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                        ->where('accounts.id',$account->id)
+                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                        ->whereIn('detail_vouchers.status', ['F','C'])
+                                        ->whereRaw(
+                                            "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
+                                            [$date_begin, $date_end])                                        
+                                        ->sum('detail_vouchers.debe');
+        
+                            
+                                        $total_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                        ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                        ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                        ->where('accounts.id',$account->id)
+                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+                                        ->whereIn('detail_vouchers.status', ['F','C'])
+                                        ->whereRaw(
+                                            "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
+                                            [$date_begin, $date_end])                                        
+                                        ->sum('detail_vouchers.haber');   
+ /*                                            
                                         $account->debe = $total_debe->total;
                                         $account->haber = $total_haber->total;
+*/
+                                        $account->debe = $total_debe;
+                                        $account->haber = $total_haber;
                                     }
                                 }else
                                 {
@@ -210,8 +238,8 @@ class CalculationController extends Controller
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
                                                                 ->where('accounts.code_four', $account->code_four)
+                                                                ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                                 ->whereIn('detail_vouchers.status', ['F','C'])
-                                            
                                                                 ->whereRaw(
                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
                                             [$date_begin, $date_end])
@@ -224,8 +252,8 @@ class CalculationController extends Controller
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
                                                                 ->where('accounts.code_four', $account->code_four)
+                                                                ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                                 ->whereIn('detail_vouchers.status', ['F','C'])
-                                            
                                                                 ->whereRaw(
                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
                                             [$date_begin, $date_end])
@@ -236,6 +264,7 @@ class CalculationController extends Controller
                                                                 ->where('accounts.code_two', $account->code_two)
                                                                 ->where('accounts.code_three', $account->code_three)
                                                                 ->where('accounts.code_four', $account->code_four)
+                                                                ->where('accounts.period','LIKE' ,'%'.$period.'%')
                                                                 ->sum('balance_previus');   
                                             /*---------------------------------------------------*/
 
@@ -261,6 +290,7 @@ class CalculationController extends Controller
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
+                                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                         ->whereIn('detail_vouchers.status', ['F','C'])
                                     
                                                         ->whereRaw(
@@ -274,6 +304,7 @@ class CalculationController extends Controller
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
+                                                        ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                         ->whereIn('detail_vouchers.status', ['F','C'])
                                                         ->whereRaw(
                                                         "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
@@ -284,6 +315,7 @@ class CalculationController extends Controller
                                                         ->where('accounts.code_one', $account->code_one)
                                                         ->where('accounts.code_two', $account->code_two)
                                                         ->where('accounts.code_three', $account->code_three)
+                                                        ->where('accounts.period','LIKE' ,'%'.$period.'%')
                                                         ->sum('balance_previus');   
                                     /*---------------------------------------------------*/                               
             
@@ -306,6 +338,7 @@ class CalculationController extends Controller
                                                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
+                                                            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                             ->whereIn('detail_vouchers.status', ['F','C'])
                                                             ->whereRaw(
                                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
@@ -318,6 +351,7 @@ class CalculationController extends Controller
                                                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
+                                                            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                                             ->whereIn('detail_vouchers.status', ['F','C'])
                                                             ->whereRaw(
                                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
@@ -327,6 +361,7 @@ class CalculationController extends Controller
                             $total_balance = DB::connection(Auth::user()->database_name)->table('accounts')
                                                             ->where('accounts.code_one', $account->code_one)
                                                             ->where('accounts.code_two', $account->code_two)
+                                                            ->where('accounts.period','LIKE' ,'%'.$period.'%')
                                                             ->sum('balance_previus'); 
                         /*---------------------------------------------------*/
                         
@@ -347,6 +382,7 @@ class CalculationController extends Controller
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
+                                            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                             ->whereIn('detail_vouchers.status', ['F','C'])
                                             ->whereRaw(
                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
@@ -359,6 +395,7 @@ class CalculationController extends Controller
                                             ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
                                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                             ->where('accounts.code_one', $account->code_one)
+                                            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                                             ->whereIn('detail_vouchers.status', ['F','C'])
                                             ->whereRaw(
                                             "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)", 
@@ -367,6 +404,7 @@ class CalculationController extends Controller
 
                 $total_balance = DB::connection(Auth::user()->database_name)->table('accounts')
                                             ->where('accounts.code_one', $account->code_one)
+                                            ->where('accounts.period','LIKE' ,'%'.$period.'%')
                                             ->sum('balance_previus'); 
                 /*---------------------------------------------------*/
                                            
@@ -386,6 +424,8 @@ class CalculationController extends Controller
 
 
             $account_new->balance_previus = $this->check_cierre($account,$date_begin);
+             
+            /*$account_new->balance_previus = 0;*/
 
            
             return $account_new;
@@ -419,6 +459,8 @@ class CalculationController extends Controller
         }else{
             return $account->balance_previus;
         }
+
+        /*return $account->balance_previus;*/
         /*------------------------ */
     }
 
