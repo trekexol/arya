@@ -211,7 +211,7 @@
                                             </span>
                                         @enderror
                                     </div>
-                                    <label for="asignacion_general" class="col-md-2 col-form-label text-md-right">Asignación General</label>
+                                    <label for="asignacion_general" class="col-md-2 col-form-label text-md-right">Asignación General $</label>
 
                                     <div class="col-md-4">
                                         <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ number_format($var->asignacion_general ?? 0, 2, ',', '.')}}" autocomplete="asignacion_general">
@@ -291,7 +291,7 @@
                                 </div>
                               
                                 <div class="form-group row">
-                                    <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Trabajador</label>
+                                    <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Nómina</label>
                                         <div class="col-md-4">
                                             <select  id="profession"  name="profession_id" class="form-control">
                                                 @foreach($professions as $profession)
@@ -307,7 +307,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    <label for="monto_pago" class="col-md-2 col-form-label text-md-right">Monto Pago</label>
+                                    <label for="monto_pago" class="col-md-2 col-form-label text-md-right">Salario Bs.</label>
         
                                     <div class="col-md-4">
                                         <input id="monto_pago" type="text" class="form-control @error('monto_pago') is-invalid @enderror" name="monto_pago" value="{{ number_format($var->monto_pago, 2, ',', '.')}}"  required autocomplete="monto_pago">

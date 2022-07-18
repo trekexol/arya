@@ -78,14 +78,23 @@ class CalculationController extends Controller
 
                 } else { // normal
 
-                     /// calcular
+                     /// calcular ************************************************************************
 
-                    if(isset($coin) && $coin == 'bolivares'){
+                    /*if(isset($coin) && $coin == 'bolivares'){
                         $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
                     
                     }else{
                         $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
-                    }
+                    }*/
+
+
+
+
+
+
+
+
+
 
                 $account->balance_previus = $account_calculate->balance_previus;
                 $account->debe = $account_calculate->debe;
