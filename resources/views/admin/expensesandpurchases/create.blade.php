@@ -26,11 +26,10 @@
                 <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras..</div>
 
                 <div class="card-body">
-
                         
                         <div class="form-group row">
                             <label for="providers" class="col-md-2 col-form-label text-md-right">Proveedor:</label>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <input id="provider" type="text" class="form-control @error('provider') is-invalid @enderror" name="provider" value="{{ $provider->razon_social ?? '' }}" readonly required autocomplete="provider">
     
                                 @error('provider')
@@ -39,10 +38,11 @@
                                     </span>
                                 @enderror
                             </div>
-                           
+                            <a href="#" onclick="searchprovider();" title="Cambiar Proveedor"><i class="fa fa-eye"></i></a> 
+
                             <label for="date-begin" class="col-md-3 col-form-label text-md-right">Fecha de Factura:</label>
-                            <div class="col-md-3">
-                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $expense->date ?? $datenow }}" readonly autocomplete="date-begin">
+                            <div class="col-md-2 left">
+                                <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $expense->date ?? $datenow }}" autocomplete="date-begin">
     
                                 @error('date')
                                     <span class="invalid-feedback" role="alert">
@@ -56,7 +56,7 @@
                             <label for="invoice" class="col-md-2 col-form-label text-md-right">Factura de Compra:</label>
 
                             <div class="col-md-3">
-                                <input id="invoice" type="text" class="form-control @error('invoice') is-invalid @enderror" name="invoice" value="{{ $expense->invoice ?? old('invoice') }}" readonly autocomplete="invoice">
+                                <input id="invoice" type="text" class="form-control @error('invoice') is-invalid @enderror" name="invoice" value="{{ $expense->invoice ?? old('invoice') }}" autocomplete="invoice">
 
                                 @error('invoice')
                                     <span class="invalid-feedback" role="alert">
@@ -67,7 +67,7 @@
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $expense->serie ?? old('serie') }}" readonly autocomplete="serie">
+                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $expense->serie ?? old('serie') }}" autocomplete="serie">
 
                                 @error('serie')
                                     <span class="invalid-feedback" role="alert">
@@ -82,8 +82,8 @@
                            
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
-                            <div class="col-md-2">
-                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $expense->observation ?? old('observation') }}" readonly autocomplete="observation">
+                            <div class="col-md-4">
+                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $expense->observation ?? old('observation') }}" autocomplete="observation">
 
                                 @error('observation')
                                     <span class="invalid-feedback" role="alert">
@@ -99,15 +99,14 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                 
                             </div>
-                            <a href="#" onclick="refreshrate()" title="tasaactual"><i class="fa fa-redo-alt"></i></a>  
-                                    <label  class="col-md-2 col-form-label text-md-right h6">Tasa actual:</label>
-                                    <div class="col-md-2 col-form-label text-md-left">
-                                        <label for="tasaactual" id="tasaacutal">{{ number_format($bcv, 2, ',', '.')}}</label>
-                            </div>
+                            <a href="#" onclick="refreshrate()" title="tasaactual"><i class="fa fa-redo-alt"></i></a> 
+                             <label  class="col-md-2">Tasa BCV: {{ number_format($bcv, 2, ',', '.')}}</label>
+
                                     
                         </div>
-                        
+
                         <form method="POST" action="{{ route('expensesandpurchases.store_detail') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_expense" type="hidden" class="form-control @error('id_expense') is-invalid @enderror" name="id_expense" value="{{ $expense->id ?? -1}}" readonly required autocomplete="id_expense">
@@ -198,18 +197,23 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
+                                    <label id="coinlabel" for="coin" class="col-md-1 col-form-label text-md-right">Moneda:</label>
         
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <select class="form-control" name="coin" id="coin">
-                                            <option value="bolivares">Bolívares</option>
+                                            
                                             @if($coin == 'dolares')
                                                 <option selected value="dolares">Dolares</option>
+                                                <option value="bolivares">Bolívares</option> 
                                             @else 
-                                                <option value="dolares">Dolares</option>
+                                               <option value="dolares">Dolares</option>
+                                               <option selected value="bolivares">Bolívares</option>
                                             @endif
                                         </select>
                                     </div>
+                                        <div class="col-md-2">
+                                        <button type="button" onclick="guardarcambios()" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
+                                        </div>
 
                                 </div>
 
@@ -394,7 +398,7 @@
                             </div>
                             <div class="form-group row mb-0">
                                 @if (empty($expense->date_delivery_note))
-                                <div class="col-sm-3 offset-sm-1">
+                                <div class="col-sm-3">
                                     @if($suma == 0)
                                         <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-success" title="facturar">Orden de Compra</a>  
                                     @else
@@ -405,7 +409,10 @@
                                 <div class="col-sm-2">
                                     <a id="btnpayment" href="{{ route('expensesandpurchases.create_payment',[$expense->id,$coin]) }}" name="btnpayment" class="btn btn-info" title="Registrar">Registrar</a>  
                                 </div>
-                                <div class="col-sm-3  dropdown mb-4">
+                                <div class="col-sm-3 offset-sm-1">
+                                    <a id="btnpayment" href="{{ route('expensesandpurchases.index_historial') }}" class="btn btn-info" title="Ver Compras">Ver Listado de Compras</a>  
+                                </div>
+                                <div class="col-sm-3">
                                     <button class="btn btn-dark" type="button"
                                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                         aria-expanded="false">
@@ -417,6 +424,8 @@
                                         <a href="{{ route('export',$expense->id) }}" class="dropdown-item bg-info text-white h5">Descargar Plantilla Excel</a> 
                                         <a href="{{ route('export.guideaccount') }}" class="dropdown-item bg-dark text-white h5">Descargar Guia de Cuentas Excel</a> 
                                         <a href="{{ route('export.guideinventory') }}" class="dropdown-item bg-success text-white h5">Descargar Guia de Inventario Excel</a> 
+                                       
+                                       
                                         <form id="fileForm" method="POST" action="{{ route('import') }}" enctype="multipart/form-data" >
                                         @csrf
                                             <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
@@ -425,7 +434,10 @@
                                             
                                         </form>
                                     </div> 
+  
                                 </div> 
+
+                                
                             </div>
                 </div>
             </div>
@@ -488,6 +500,26 @@
             $("#amount_product").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
             
         });
+
+        function searchprovider(){
+            var old_action = document.getElementById("formUpdate").action;
+            document.getElementById("formUpdate").action = "{{ route('expensesandpurchases.selectproviderexpense',$expense->id) }}";
+            document.getElementById("formUpdate").submit();
+            document.getElementById("formUpdate").action = old_action;
+        }
+        function guardarcambios() {
+
+            // let rate = document.getElementById("rate").value;
+            let observation = document.getElementById("observation").value;
+            //let coin = document.getElementById("coin").value;
+            let invoice = document.getElementById("invoice").value;
+            let serie = document.getElementById("serie").value;
+            let date = document.getElementById("date-begin").value;
+
+
+            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date;
+
+        }
 
         $(document).on('click','.delete',function(){
             let id = $(this).attr('data-id');
