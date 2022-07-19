@@ -156,7 +156,7 @@
                             </div>
                             <div class="col-md-2">
                             <button type="submit" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
-                        </div>
+                            </div>
                     </form>
                         <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf

@@ -262,6 +262,23 @@ class ExpensesAndPurchaseController extends Controller
 
     }
 
+
+    public function updateexpense($id_quotation,$coin,$observation,$invoice,$serie,$date)
+    {   
+       
+        ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id_quotation)
+                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date]);
+
+
+        /*$historial_quotation = new HistorialQuotationController();
+
+        $historial_quotation->registerAction($var,"quotation","Actualizó la Compra");*/
+
+       // return view('admin.expensesandpurchases.createexpense',compact('datenow','provider'));
+        return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+        
+    }
+
     public function retencion_islr($id_expense,$coin)
     {
         $pdf = App::make('dompdf.wrapper');
@@ -709,7 +726,28 @@ class ExpensesAndPurchaseController extends Controller
             return view('admin.expensesandpurchases.selectprovider',compact('providers'));
     }
     
+    public function selectproviderexpense(Request $request,$id)
+    {
+            $providers = Provider::on(Auth::user()->database_name)->get();
+            
+            $coin = $request->coin_hidde;
+            $id_expense = $id;
+
+            return view('admin.expensesandpurchases.selectproviderexpense',compact('providers','id_expense','coin'));
+    }
     
+    public function updateproviderexpense($id_expense,$id_provider,$coin)
+    {
+        $var = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
+        
+        $var->id_provider = $id_provider;
+       
+        $var->save();
+
+        return redirect('/expensesandpurchases/register/'.$id_expense.'/'.$coin.'')->withSuccess('Proveedor Actualizado Con Exito !!');
+       
+    }
+
     public function selectinventary($id_expense,$coin,$type,$account = null ,$subaccount = null) 
     {
         if($type == 'mercancia' || $type == 'MERCANCIA'){
