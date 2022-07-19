@@ -517,6 +517,17 @@
             let date = document.getElementById("date-begin").value;
 
 
+            if (observation == ''){
+                observation = '-1';
+            }
+            if (invoice == ''){
+                invoice = '-1';
+            }
+            if (serie == ''){
+                serie = '-1';
+            }
+
+
             window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date;
 
         }

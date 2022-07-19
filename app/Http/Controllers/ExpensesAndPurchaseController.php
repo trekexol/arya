@@ -263,9 +263,19 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function updateexpense($id_quotation,$coin,$observation,$invoice,$serie,$date)
+    public function updateexpense($id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date)
     {   
        
+        if ($observation == '-1'){
+            $observation = '';
+        }
+        if ($invoice == '-1'){
+            $invoice = '';
+        }
+        if ($serie == '-1'){
+            $serie = '';
+        }
+
         ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id_quotation)
                                 ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date]);
 
