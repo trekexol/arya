@@ -11,7 +11,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases.indexdeliverynote') }}" role="tab" aria-controls="home" aria-selected="true">Ordenes de Compra</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('expensesandpurchases.index_historial') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas de Compra</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('expensesandpurchases.index_historial') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas de Compra / Gastos</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
@@ -25,7 +25,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Gastos y Compras</h2>
+          <h2>Gastos y Compras por Procesar</h2>
       </div>
       <div class="col-md-6">
         <a href="{{ route('expensesandpurchases.create')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar un Gasto o Compra</a>

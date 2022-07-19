@@ -1024,6 +1024,7 @@ class ExpensesAndPurchaseController extends Controller
         $total_pay_form = request('total_pay_form');
 
         $date_payment = request('date_payment_form');
+        $date_payment_expense = request('date_payment_expense');
 
 
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
@@ -1852,7 +1853,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 $header_voucher->description = "Pago de Bienes o servicios.";
-                $header_voucher->date = $date_payment ?? $datenow;
+                $header_voucher->date = $date_payment_expense ?? $datenow;
                 
             
                 $header_voucher->status =  "1";
@@ -2173,7 +2174,7 @@ class ExpensesAndPurchaseController extends Controller
         $coin = request('coin');
 
         $date_payment = request('date_payment');
-
+ 
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
 
         if($coin != 'bolivares'){
