@@ -88,7 +88,7 @@
                                 <select class="form-control" name="typeinvoice" id="typeinvoice">
                                     @if (isset($typeinvoice))
                                         @if ($typeinvoice == 'notas')
-                                            <option selected value="notas">Cobradas</option>
+                                            <option selected value="notas">Cobrados</option>
                                         @elseif($typeinvoice == 'facturas')
                                             <option selected value="facturas">Recibos de Condominio</option>
                                         @else

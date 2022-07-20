@@ -52,6 +52,9 @@
   </tr> 
 
     <?php 
+        
+        $a_uni2[] = array('','0','',0,0,'','');
+
         foreach ($quotations as $quotation) {
 
           if(isset($coin) && $coin != 'bolivares'){
@@ -98,7 +101,7 @@
            if ($a_uni2[$q][0] == $a_uni2[$k][0]) {
               $a_uni2[$q][3] = $a_uni2[$q][3]+$a_uni2[$k][3];
               $a_uni2[$q][4] = $a_uni2[$q][4]+$a_uni2[$k][4];
-              $a_uni2[$k][2]=0; 
+              $a_uni2[$k][1] = '0'; 
             }
 
         }
@@ -115,8 +118,8 @@
 
 
   @for ($q=0;$q<count($a_uni2);$q++)
-    
-    @if($a_uni2[$q][2] != 0)
+     
+  @if($a_uni2[$q][1] != '0')
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $a_uni2[$q][0]}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $a_uni2[$q][1]}}</th>
@@ -125,7 +128,7 @@
       <th style="text-align: right; font-weight: normal;">{{ number_format($a_uni2[$q][4], 2, ',', '.') }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $a_uni2[$q][5] }}</th>
     </tr> 
-    @endif
+   @endif
   @endfor
   <tr>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
