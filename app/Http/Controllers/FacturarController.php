@@ -71,12 +71,14 @@ class FacturarController extends Controller
                                             ->where('code_four', 2)
                                             ->where('code_five', '<>',0)
                                             ->where('description','not like', 'Punto de Venta%')
+                                            ->orderBy('description','ASC')
                                             ->get();
             $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
                                             ->where('code_four', 1)
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
                                             ->get();
@@ -311,12 +313,14 @@ class FacturarController extends Controller
                                             ->where('code_four', 2)
                                             ->where('code_five', '<>',0)
                                             ->where('description','not like', 'Punto de Venta%')
+                                            ->orderBy('description','ASC')
                                             ->get();
              $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
                                             ->where('code_four', 1)
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
              $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
                                             ->get();
