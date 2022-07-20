@@ -9,10 +9,10 @@
     </li>
     @endif
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt','index') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
-      </li>
-      <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt_resumen','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Recibos</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt','index') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt_resumen','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Recibos</a>
     </li>
   </ul>
 
@@ -20,7 +20,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form id="formPost" method="POST" action="{{ route('receipt.store_accounts_receivable_receipt') }}">
+                <form id="formPost" method="POST" action="{{ route('receipt.store_accounts_receivable_receipt_resumen') }}">
                     @csrf
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
@@ -65,7 +65,7 @@
                             @endif
                             
                             <div id="client_label3" class="form-group col-sm-1">
-                                <a id="route_select" href="{{ route('receipt.selectownersreceipt') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
+                                <a id="route_select" href="{{ route('receipt.selectownersreceiptresumen') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
                             </div>
                            @endif
                             <!--<div class="col-sm-3  dropdown mb-4">
@@ -126,7 +126,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('receipt.accounts_receivable_pdf_receipt',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('receipt.accounts_receivable_pdf_receipt_resumen',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>

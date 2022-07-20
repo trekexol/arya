@@ -4,11 +4,14 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Relación de Gastos</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable','index') }}" role="tab" aria-controls="profile" aria-selected="false">Relaciones de Gastos</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Recibos de Condominio</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt','index') }}" role="tab" aria-controls="profile" aria-selected="false">Recibos de Condominio</a>
       </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('receipt.accounts_receivable_receipt_resumen','index') }}" role="tab" aria-controls="profile" aria-selected="false">Resumen de Recibos</a>
+    </li>
   </ul>
 
 <div class="container">

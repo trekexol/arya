@@ -29,7 +29,28 @@
                 <div class="card-header" >Gasto o Compra {{ $retorno ?? 'almacenada' }} con Exito</div>
                 
                 <div class="card-body" >
-                       
+                    <div class="form-group row">
+                        <label for="date_payment" class="col-md-2 col-form-label text-md-right">Fecha de Factura:</label>
+                        <div class="col-md-4">
+                            <input id="date_payment" type="date" class="form-control @error('date_payment') is-invalid @enderror" name="date_payment" value="{{ $expense->date ?? '' }}" readonly autocomplete="date_payment">
+
+                            @error('date_payment')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <label for="date_payment_expense" class="col-md-2 col-form-label text-md-right">Fecha de Pago:</label>
+                        <div class="col-md-3">
+                            <input id="date_payment_expense" type="date" class="form-control @error('date_payment') is-invalid @enderror" name="date_payment_expense" value="{{ $expense->date_payment ?? '' }}" readonly autocomplete="date_payment_expense">
+
+                            @error('date_payment_expense')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>  
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
                             <div class="col-md-4">

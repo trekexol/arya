@@ -46,7 +46,7 @@
                                 @enderror
                             </div>
                             <label for="date_payment_expense" class="col-md-2 col-form-label text-md-right">Fecha de Pago:</label>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input id="date_payment_expense" type="date" class="form-control @error('date_payment') is-invalid @enderror" name="date_payment_expense" value="{{ $expense->date_payment ?? $datenow }}" required autocomplete="date_payment_expense">
 
                                 @error('date_payment_expense')

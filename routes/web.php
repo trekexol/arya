@@ -666,6 +666,7 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('selectcondominiumsreceipt/{type?}','ReceiptController@selectcondominiumsreceipt')->name('receipt.selectcondominiumsreceipt');
     Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
     Route::get('selectownersreceiptunique/{client?}/{type?}/{date?}/{owner}','ReceiptController@selectownersreceiptunique')->name('receipt.selectownersreceiptunique');
+    Route::get('selectownersreceiptresumen/{type?}','ReceiptController@selectownersreceiptresumen')->name('receipt.selectownersreceiptresumen'); 
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
 
@@ -753,6 +754,11 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::post('storeaccounts_receivable_receipt','ReceiptController@store_accounts_receivable_receipt')->name('receipt.store_accounts_receivable_receipt');
     Route::get('accounts_receivablepdf_receipt/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt')->name('receipt.accounts_receivable_pdf_receipt');
     
+    Route::get('accountsreceivable_receipt_resumen/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable_receipt_resumen')->name('receipt.accounts_receivable_receipt_resumen');
+    Route::post('storeaccounts_receivable_receipt_resumen','ReceiptController@store_accounts_receivable_receipt_resumen')->name('receipt.store_accounts_receivable_receipt_resumen');
+    Route::get('accounts_receivablepdf_receipt_resumen/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt_resumen')->name('receipt.accounts_receivable_pdf_receipt_resumen');
+    
+
     Route::get('envioreceiptclients/{type?}','ReceiptController@envioreceiptclients')->name('receipt.envioreceiptclients'); // opcion generar recibo a clientes
 
 
@@ -853,7 +859,6 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
 
     Route::get('selectinventary/{id_expense}/{coin}/{type}/{account?}/{subaccount?}','ExpensesAndPurchaseController@selectinventary')->name('expensesandpurchases.selectinventary');
    
-
     Route::get('expensevoucher/{id_expense}/{coin}','ExpensesAndPurchaseController@create_expense_voucher')->name('expensesandpurchases.create_expense_voucher');
 
     Route::get('registerpaymentafter/{id_expense}/{coin}','ExpensesAndPurchaseController@create_payment_after')->name('expensesandpurchases.create_payment_after');
