@@ -27,7 +27,7 @@
 <body>
 
   <br>
-  <h4 style="color: black; text-align: center">RESUMEN DE RELACIÓN DE GASTOS</h4>
+  <h4 style="color: black; text-align: center">RELACIONES DE GASTOS</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h5>
    
   <?php 

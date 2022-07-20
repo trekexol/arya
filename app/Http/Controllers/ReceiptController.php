@@ -353,6 +353,14 @@ class ReceiptController extends Controller
         return view('admin.receipt.selectownersreceipt',compact('clients','type'));
     }
     
+    public function selectownersreceiptresumen($type = null) // clientes propietarios
+    {
+        $clients     = Owners::on(Auth::user()->database_name)->orderBy('name','asc')->get();
+        
+    
+        return view('admin.receipt.selectownersreceiptresumen',compact('clients','type'));
+    }
+
     public function selectownersreceiptunique($client,$type,$datenow,$owner) //,$type = null,$datenow = null,$owners = null clientes propietario unique
     {
 
@@ -8561,5 +8569,541 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
         return $pdf->stream();
                  
     }
+
+
+/**************************** */
+
+  ///RECIBOS DE CONDOMINIO RESUMEN PDF//////////////////////////////////////////////////////////////
+
+  public function index_accounts_receivable_receipt_resumen($typeperson,$id_client_or_vendor = null)
+  {        
+
+      //$userAccess = new UserAccessController();
+
+      //if($userAccess->validate_user_access($this->modulo)){
+          $date = Carbon::now();
+          $datenow = $date->format('Y-m-d');   
+          $client = null; 
+          $vendor = null; 
+
+
+          if(isset($typeperson) && $typeperson == 'Cliente'){
+              if(isset($id_client_or_vendor)){
+                  $client    = Owners::on(Auth::user()->database_name)->find($id_client_or_vendor);
+              }
+          }else if (isset($typeperson) && $typeperson == 'Vendedor'){
+              if(isset($id_client_or_vendor)){
+                  $vendor    = Vendor::on(Auth::user()->database_name)->find($id_client_or_vendor);
+              }
+          }
+          
+          return view('admin.receipt.index_accounts_receivable_receipt_resumen',compact('client','datenow','typeperson','vendor'));
+
+  }
+
+
+  public function store_accounts_receivable_receipt_resumen(Request $request)
+  {
+      
+      $date_end = request('date_end');
+      $type = request('type');
+      $id_client = request('id_client');
+      $id_vendor = request('id_vendor');
+      $typeinvoice = request('typeinvoice');
+      $coin = request('coin');
+      $client = null;
+      $vendor = null;
+      $typeperson = 'ninguno';
+
+      if($type != 'todo'){
+          if(isset($id_client)){
+              $client    = Owners::on(Auth::user()->database_name)->find($id_client);
+              $typeperson = 'Cliente';
+              $id_client_or_vendor = $id_client;
+          }
+          if(isset($id_vendor)){
+              $vendor    = Vendor::on(Auth::user()->database_name)->find($id_vendor);
+              $typeperson = 'Vendedor';
+              $id_client_or_vendor = $vendor;
+          }
+      }
+
+      return view('admin.receipt.index_accounts_receivable_receipt_resumen',compact('coin','typeinvoice','date_end','client','vendor','typeperson'));
+  }
+
+  function accounts_receivable_pdf_receipt_resumen($coin,$date_end,$typeinvoice,$typeperson,$id_client_or_vendor = null)
+  {
+      
+      $pdf = App::make('dompdf.wrapper');
+      $quotations = null;
+      
+      $date = Carbon::now();
+      $datenow = $date->format('d-m-Y'); 
+      if(empty($date_end)){
+          $date_end = $datenow;
+
+          $date_consult = $date->format('Y-m-d'); 
+      }else{
+          $date_end = Carbon::parse($date_end)->format('d-m-Y');
+
+          $date_consult = Carbon::parse($date_end)->format('Y-m-d');
+      }
+      
+      $period = $date->format('Y'); 
+      
+      if (Auth::user()->role_id  == '11'){ //////////////////////////propietario/////////////////////////////////////
+          $email = Auth::user()->email;
+          $id_owner = Owners::on(Auth::user()->database_name)->where('email','=',$email)->get()->first();
+     
+          if(isset($typeperson) && ($typeperson == 'Cliente')){
+              if(isset($coin) && $coin == 'bolivares'){
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','condominiums.name as name_client','condominiums.type_code','condominiums.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                           ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.id_client','=',$id_owner->id)
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          ->where('receipts.id_client',$id_client_or_vendor)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }else{
+                  //PARA CUANDO EL REPORTE ESTE EN DOLARES
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                           ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.id_client','=',$id_owner->id)
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          ->where('receipts.id_client',$id_client_or_vendor)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }
+          }else if(isset($typeperson) && $typeperson == 'Vendedor'){
+              
+  
+          }else{
+              
+              if(isset($coin) && $coin == 'bolivares'){
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                     
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                          ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.id_client','=',$id_owner->id)
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+  
+                      
+                  }
+              }else{
+                  
+                  //PARA CUANDO EL REPORTE ESTE EN DOLARES
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                      ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                      ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.id_client','=',$id_owner->id)
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                          ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.id_client','=',$id_owner->id)
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }
+          }
+     
+      } else { //////////////////////////normal/////////////////////////////////////
+
+          if(isset($typeperson) && ($typeperson == 'Cliente')){
+              if(isset($coin) && $coin == 'bolivares'){
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','condominiums.name as name_client','condominiums.type_code','condominiums.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                           ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          ->where('receipts.id_client',$id_client_or_vendor)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }else{
+                  //PARA CUANDO EL REPORTE ESTE EN DOLARES
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      ->where('receipts.id_client',$id_client_or_vendor)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                           ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          ->where('receipts.id_client',$id_client_or_vendor)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }
+          }else if(isset($typeperson) && $typeperson == 'Vendedor'){
+              
+  
+          }else{
+              
+              if(isset($coin) && $coin == 'bolivares'){
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                       ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                     
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                          ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+  
+                      
+                  }
+              }else{
+                  
+                  //PARA CUANDO EL REPORTE ESTE EN DOLARES
+                  if(isset($typeinvoice) && ($typeinvoice == 'notas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                      ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_delivery_note','<>',null)
+                      ->where('receipts.date_billing',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_delivery_note','desc')
+                      ->get();
+                  }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                      ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                      ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                      ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                      ->whereIn('receipts.status',['P'])
+                      ->where('receipts.type',['R'])
+                      ->where('receipts.amount','<>',null)
+                      ->where('receipts.date_quotation','<=',$date_consult)
+                      ->where('receipts.date_billing','<>',null)
+                      
+                      ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                      ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                      ->orderBy('receipts.date_billing','desc')
+                      ->get();
+                  }else
+                  {
+                      $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
+                                          ->leftjoin('owners', 'owners.id','=','receipts.id_client')
+                                          ->leftjoin('vendors', 'vendors.id','=','receipts.id_vendor')
+                                          ->leftjoin('anticipos', 'anticipos.id_quotation','=','receipts.id')
+                                          ->whereIn('receipts.status',['P'])
+                                          ->where('receipts.type',['R'])
+                                          ->where('receipts.amount','<>',null)
+                                          ->where('receipts.date_quotation','<=',$date_consult)
+                                          
+                                          ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
+                                          ->groupBy('receipts.date_billing','receipts.observation','owners.personcontact','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
+                                          ->orderBy('receipts.date_quotation','desc')
+                                          ->get();
+                  }
+              }
+          }
+
+          
+      }   // fin del else propietario         
+     
+      
+      $pdf = $pdf->loadView('admin.receipt.accounts_receivable_receipt_resumen',compact('coin','quotations','datenow','date_end'));
+      return $pdf->stream();
+               
+  }
 
 }
