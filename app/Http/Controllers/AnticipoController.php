@@ -221,6 +221,7 @@ class AnticipoController extends Controller
                                             ->where('code_three', 1)
                                             ->whereIn('code_four', [1, 2])
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
@@ -246,6 +247,7 @@ class AnticipoController extends Controller
                                             ->where('code_three', 1)
                                             ->whereIn('code_four', [1, 2])
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
@@ -285,6 +287,7 @@ class AnticipoController extends Controller
                                             ->where('code_three',1)
                                             ->whereIn('code_four', [1, 2])
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
@@ -641,6 +644,7 @@ class AnticipoController extends Controller
                                             ->where('code_three',1)
                                             ->whereIn('code_four', [1, 2])
                                             ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
                                             ->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
