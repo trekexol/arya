@@ -48,7 +48,7 @@
     <th style="text-align: center;">Por Cobrar</th>
     @endif
 
-    <th style="text-align: center; width:4%;">Status</th>
+    <th style="text-align: center; width:10%;">Status</th>
   </tr> 
 
     <?php 
@@ -91,8 +91,23 @@
           if(isset($quotation->date_quotation)){
             $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
           }
-           
-          $a_uni2[] = array($quotation->cedula_rif ?? '',$quotation->name_client ?? '',$quotation->direction ?? '',1,number_format($por_cobrar, 2, '.', ''),'',$quotation->personcontact ?? '');     
+          
+          $status = '';
+
+
+          if ($quotation->status == 'C' ){
+          $status = 'Cobrada';
+          } 
+
+          if ($quotation->status == 'P'){
+            if(Auth::user()->role_id  == '11'){
+            $status = 'Por Pagar';
+            } else {
+              $status = 'Por Cobrar';  
+            }
+          }
+
+          $a_uni2[] = array($quotation->cedula_rif ?? '',$quotation->name_client ?? '',$quotation->direction ?? '',1,number_format($por_cobrar, 2, '.', ''),$status,$quotation->personcontact ?? '');     
 
       }
 
