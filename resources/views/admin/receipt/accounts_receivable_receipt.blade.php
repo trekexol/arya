@@ -89,7 +89,20 @@
       if(isset($quotation->date_quotation)){
         $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
       }
-    
+      $status = '';
+
+
+      if ($quotation->status == 'C' ){
+      $status = 'Cobrada';
+      } 
+
+      if ($quotation->status == 'P'){
+        if(Auth::user()->role_id  == '11'){
+        $status = 'Por Pagar';
+        } else {
+          $status = 'Por Cobrar';  
+        }
+      }
     ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $quotation->date_quotation ?? ''}}</th>
@@ -100,7 +113,7 @@
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ '' }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $status }}</th>
     </tr> 
   @endforeach 
 
