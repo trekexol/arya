@@ -50,7 +50,7 @@
     @else 
     <th style="text-align: center;">Por Cobrar</th>
     @endif
-    <th style="text-align: center; width:3%;">Status</th>
+    <th style="text-align: center; width:10%;">Status</th>
   </tr> 
   @foreach ($quotations as $quotation)
     <?php 
@@ -92,9 +92,14 @@
       $status = '';
 
 
-      if ($quotation->status == 'C' ){
+      if ($quotation->status == 'C' & $quotation->verified == 1){
       $status = 'Cobrada';
       } 
+
+      if ($quotation->status == 'C' & $quotation->verified == 0){
+      $status = 'Por Verificar';
+      } 
+
 
       if ($quotation->status == 'P'){
         if(Auth::user()->role_id  == '11'){
