@@ -989,7 +989,7 @@ class GlobalController extends Controller
                 }
     
     
-                    if ($transaccion <= 0) {
+                    if ($transaccion < 0) {
     
                        $msg = "La cantidad es mayor a la disponible en inventario";
                 
