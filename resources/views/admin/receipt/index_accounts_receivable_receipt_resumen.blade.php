@@ -55,18 +55,18 @@
                                         @endif
                                     </select>
                                 </div>
-                         
-                            @if (isset($client))
-                                <label id="client_label1" for="clients" class="col-sm-2 text-md-right">Propietario:</label>
-                                <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
-                            @endif
-                            @if (isset($vendor))
-                                <label id="vendor_label2" name="id_vendor" value="{{ $vendor->id }}" for="vendors" class="col-sm-3">{{ $vendor->name }}</label>
-                            @endif
-                            
-                            <div id="client_label3" class="form-group col-sm-1">
-                                <a id="route_select" href="{{ route('receipt.selectownersreceiptresumen') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
-                            </div>
+                                
+                                    @if (isset($client))
+                                        <label id="client_label1" for="clients" class="col-sm-2 text-md-right">Propietario:</label>
+                                        <label id="client_label2" name="id_client" value="{{ $client->id }}" for="clients" class="col-sm-3">{{ $client->name }}</label>
+                                    @endif
+                                    @if (isset($vendor))
+                                        <label id="vendor_label2" name="id_vendor" value="{{ $vendor->id }}" for="vendors" class="col-sm-3">{{ $vendor->name }}</label>
+                                    @endif
+                                    
+                                    <div id="client_label3" class="form-group col-sm-1">
+                                        <a id="route_select" href="{{ route('receipt.selectownersreceiptresumen') }}" title="Seleccionar Propietario"><i class="fa fa-eye"></i></a>  
+                                    </div>
                            @endif
                             <!--<div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
@@ -92,14 +92,26 @@
                                         @elseif($typeinvoice == 'facturas')
                                             <!--<option selected value="facturas">Recibos de Condominio</option>-->
                                         @else
-                                            <option selected value="todo">Todos</option>
+                                            @if(Auth::user()->role_id  != '11')
+                                            <option selected value="todo">Por Cobrar</option>
+                                            @else
+                                            <option selected value="todo">Por Pagar</option>
+                                            @endif       
                                         @endif
                                         <option disabled value="todo">-----------------</option>
-                                        <option value="todo">Todos</option>
-                                        <option value="notas">Cobrados</option>
+                                            @if(Auth::user()->role_id  != '11')
+                                            <option value="todo">Por Cobrar</option>
+                                            @else
+                                            <option value="todo">Por Pagar</option>
+                                            @endif  
+                                            <option value="notas">Cobrados</option>
                                        <!-- <option value="facturas">Recibos de Condominio</option> -->
                                     @else
-                                        <option selected value="todo">Todos</option>
+                                        @if(Auth::user()->role_id  != '11')
+                                        <option selected value="todo">Por Cobrar</option>
+                                        @else
+                                        <option selected value="todo">Por Pagar</option>
+                                        @endif  
                                         <option value="notas">Cobrados</option>
                                        <!-- <option value="facturas">Recibos de Condominio</option> -->
                                     @endif

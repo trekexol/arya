@@ -44,13 +44,13 @@
                                 <div class="col-sp-2 offset-sp-1">
                                     <select class="form-control" name="type" id="type">
                                         @if (isset($client))
-                                            <option value="todo">Todo</option>
+                                            <option value="todo">Todos</option>
                                             <option selected value="cliente">Por Propietario</option>
                                         @elseif (isset($vendor))
-                                            <option value="todo">Todo</option>
+                                            <option value="todo">Todos</option>
                                             <option value="cliente">Por Propietario</option>
                                         @else
-                                            <option selected value="todo">Todo</option>
+                                            <option selected value="todo">Todos</option>
                                             <option value="cliente">Por Propietario</option>
                                         @endif
                                     </select>
@@ -90,18 +90,18 @@
                                         @if ($typeinvoice == 'notas')
                                             <option selected value="notas">Cobrados</option>
                                         @elseif($typeinvoice == 'facturas')
-                                            <option selected value="facturas">Recibos de Condominio</option>
+                                            <option selected value="facturas">Por Verificar</option>
                                         @else
-                                            <option selected value="todo">Todos</option>
+                                            <option selected value="todo">Por Cobrar</option>
                                         @endif
                                         <option disabled value="todo">-----------------</option>
-                                        <option value="todo">Todos</option>
+                                        <option value="todo">Por Cobrar</option>
                                         <option value="notas">Cobrados</option>
-                                        <option value="facturas">Recibos de Condominio</option>
+                                        <option value="facturas">Por Verificar</option>
                                     @else
-                                        <option selected value="todo">Todos</option>
+                                        <option selected value="todo">Por Cobrar</option>
                                         <option value="notas">Cobrados</option>
-                                        <option value="facturas">Recibos de Condominio</option>
+                                        <option value="facturas">Por Verificar</option>
                                     @endif
                                 </select>
                             </div>
