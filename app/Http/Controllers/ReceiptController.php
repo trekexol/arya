@@ -8137,7 +8137,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         ->where('receipts.id_client',$id_client_or_vendor)
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','condominiums.name as name_client','condominiums.type_code','condominiums.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8154,7 +8157,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8171,7 +8177,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }else{
@@ -8192,7 +8201,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8209,7 +8221,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8226,7 +8241,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }
@@ -8251,7 +8269,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8267,7 +8288,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8284,7 +8308,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
     
                         
@@ -8307,7 +8334,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8323,7 +8353,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8339,7 +8372,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }
@@ -8380,7 +8416,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8396,7 +8435,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }else{
@@ -8416,7 +8458,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8432,7 +8477,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8448,7 +8496,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }
@@ -8472,7 +8523,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8487,7 +8541,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8503,7 +8560,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
     
                         
@@ -8525,7 +8585,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_delivery_note','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                         $quotations = DB::connection(Auth::user()->database_name)->table('receipts')
@@ -8540,7 +8603,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                         
                         ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                         ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                        ->orderBy('receipts.date_billing','desc')
+                        
+                        ->orderBy('owners.direction','asc')
+                        
+                        
                         ->get();
                     }else
                     {
@@ -8555,7 +8621,10 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
                                             
                                             ->select('receipts.date_billing','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name as name_vendor','receipts.observation','owners.direction','owners.name as name_client','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.amount','receipts.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                             ->groupBy('receipts.date_billing','receipts.observation','owners.direction','owners.type_code','receipts.observation','owners.direction','owners.cedula_rif','receipts.date_delivery_note','receipts.retencion_islr','receipts.retencion_iva','receipts.bcv','receipts.number_invoice','receipts.number_delivery_note','receipts.date_quotation','receipts.id','receipts.serie','vendors.name','receipts.observation','owners.direction','owners.name','receipts.amount','receipts.amount_with_iva')
-                                            ->orderBy('receipts.date_quotation','desc')
+                                            
+                                            ->orderBy('owners.direction','asc')
+                                            
+                                            
                                             ->get();
                     }
                 }

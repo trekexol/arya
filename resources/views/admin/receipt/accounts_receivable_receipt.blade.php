@@ -40,7 +40,6 @@
   <tr>
     <th style="text-align: center; width:9%;">Fecha</th>
     <th style="text-align: center; width:3%;">N°</th>
-    <th style="text-align: center;">Observación</th>
     <th style="text-align: center; width:2%;">ID Propietario</th>
     <th style="text-align: center; width:22%;">Propietario</th>
     <th style="text-align: center; width:2%;">Apartamento</th>
@@ -95,7 +94,6 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $quotation->date_quotation ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->number_invoice ?? $quotation->number_delivery_note}}</th>
-      <th style="text-align: center; font-weight: normal;">{{ $quotation->observation ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->cedula_rif ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->direction ?? ''}}</th>
@@ -107,7 +105,6 @@
   @endforeach 
 
   <tr>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
