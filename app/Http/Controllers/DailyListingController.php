@@ -548,7 +548,7 @@ class DailyListingController extends Controller
                     if(empty($account_contrapartida)) {
                         $description_contrapartida = $account->description;
                     } else{
-                        $description_contrapartida =$account_contrapartida->description;
+                        $description_contrapartida = $account_contrapartida->description;
                     }
 
 
