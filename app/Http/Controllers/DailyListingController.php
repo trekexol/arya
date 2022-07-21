@@ -544,11 +544,18 @@ class DailyListingController extends Controller
                     ->get();
 
                     $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id[0]->id_account);
-                    
+                     
+                    if(empty($account_contrapartida)) {
+                        $description_contrapartida = $account->description;
+                    } else{
+                        $description_contrapartida =$account_contrapartida->description;
+                    }
+
+
                     if($coin != "bolivares"){
-                    $detail->account_counterpart = $account_contrapartida->description.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
+                    $detail->account_counterpart = $description_contrapartida.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
                     } else {
-                        $detail->account_counterpart = $account_contrapartida->description;    
+                        $detail->account_counterpart = $description_contrapartida;    
                     }
         }
 
