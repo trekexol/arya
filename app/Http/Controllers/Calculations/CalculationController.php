@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App;
 use App\Account;
+use App\Company;
 use App\DetailVoucher;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -420,6 +421,7 @@ class CalculationController extends Controller
         }else{
             return $account->balance_previus;
         } */
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
         $id_account = $account->id;
 
@@ -428,6 +430,8 @@ class CalculationController extends Controller
         $period = Carbon::parse($date_begin)->format('Y');
     
         $mesdia = Carbon::parse($date_begin)->format('m-d');
+        
+        $saldo_anterior = 0;
 
         if($account->period == $period ){
               
@@ -489,7 +493,26 @@ class CalculationController extends Controller
 
         }             
 
-    $account->balance_previus = $account->balance_previus + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+    if($period != $company->period){ // si es diferente al periodo actual que busque el saldo anterior en historial
+
+        $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
+        ->where('id_account', $account->id)
+        ->where('period',$period)
+        ->get()->first();
+
+        if (empty($ultimo_historial)) {
+            $saldo_anterior = 0;
+        } else {
+            $saldo_anterior = $ultimo_historial->balance_previous;
+        }
+       
+        
+
+    } else {
+        $saldo_anterior = $account->balance_previus;
+    }
+
+    $account->balance_previus = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
 
     return $account->balance_previus;
     
@@ -526,7 +549,8 @@ class CalculationController extends Controller
         }*/
         /*------------------------ */
 
-
+        $company = Company::on(Auth::user()->database_name)->find(1);
+        
         $id_account = $account->id;
 
         $coin = $account->coin;
@@ -596,8 +620,28 @@ class CalculationController extends Controller
 
         }             
 
-    $account->balance_previus = $account->balance_previus + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
 
+        if($period != $company->period){ // si es diferente al periodo actual que busque el saldo anterior en historial
+
+            $ultimo_historial = DB::connection(Auth::user()->database_name)->table('account_historials')
+            ->where('id_account', $account->id)
+            ->where('period',$period)
+            ->get()->first();
+    
+            if (empty($ultimo_historial)) {
+                $saldo_anterior = 0;
+            } else {
+                $saldo_anterior = $ultimo_historial->balance_previous;
+            }
+           
+            
+    
+        } else {
+            $saldo_anterior = $account->balance_previus;
+        }
+    
+        $account->balance_previus = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+    
     return $account->balance_previus;
 
     }

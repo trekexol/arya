@@ -375,7 +375,7 @@ Route::group(["prefix"=>'accounts'],function(){
 
     Route::get('register/{id_account}','AccountController@createlevel')->name('accounts.createlevel');
 
-    Route::get('movementaccount/{id_account}/{coin?}','AccountController@movements')->name('accounts.movements');
+    Route::get('movementaccount/{id_account}/{coin?}/{period?}','AccountController@movements')->name('accounts.movements');
 
     Route::get('movementheader/{id}/{type}/{id_account}','AccountController@header_movements')->name('accounts.header_movements');
 
