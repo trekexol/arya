@@ -543,8 +543,10 @@ class DailyListingController extends Controller
                     ->where('id_account','<>',$detail->id_account)
                     ->get();
 
+                    if(!empty($account_contrapartida_id)) {
                     $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id[0]->id_account);
-                     
+                    }
+
                     if(empty($account_contrapartida)) {
                         $description_contrapartida = $account->description;
                     } else{
