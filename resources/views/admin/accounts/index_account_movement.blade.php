@@ -7,15 +7,34 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <div class="row py-lg-2">
-        <div class="col-sm-8 h4">
-            Listado de Comprobantes Contables detallados de la <br>cuenta: Nº {{ $account->code_one }}.{{ $account->code_two }}.{{ $account->code_three }}.{{ $account->code_four }}.{{ $account->code_five }} / {{ $account->description }}
+    <div class="row py-lg-12">
+        <div class="col-sm-12 h4">
+            Listado de Comprobantes Contables detallados de la cuenta: Nº {{ $account->code_one }}.{{ $account->code_two }}.{{ $account->code_three }}.{{ $account->code_four }}.{{ $account->code_five }} / {{ $account->description }}
         </div>
+    </div>
+
+    <div class="row py-lg-12">
         <div class="col-sm-4">
             <a href="{{ route('accounts') }}" class="btn btn-light2"><i class="fas fa-eye" ></i>
-                &nbsp Plan de Cuentas
+                &nbsp Volver al Plan de Cuentas
             </a>
         </div>
+
+           Periodo: &nbsp
+        
+            <select class="form-control col-sm-1" name="period" id="period">
+                @for ($i = 0; $i < count($periodselect); $i++)
+                
+                    @if ($period == $periodselect[$i])
+                    <option selected value="{{ $periodselect[$i] }}">{{ $periodselect[$i] }}</option>
+                    @else
+                    <option value="{{ $periodselect[$i] }}">{{ $periodselect[$i] }}</option>
+                    @endif
+
+                @endfor
+
+            </select>
+     
     </div>
     <!-- Page Heading -->
   </div>
@@ -28,6 +47,8 @@
     <div class="card-body">
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <input id="input_id" type="hidden" name="input_id" autocomplete="input_id" value="{{$account->id}}">
+            <input id="input_coin" type="hidden" name="input_coin" autocomplete="input_coin" value="{{$coin}}">
             <thead>
             <tr>
                 <th style="width: 11%;">Fecha</th>
@@ -58,13 +79,13 @@
  
                   
                             if ($cont0 <= 0){
-                            $saldos += $account->balance_previus + $row->debe - $row->haber;    
+                            $saldos += $balance_previus + $row->debe - $row->haber;    
                             } else{
                             $saldos += $row->debe - $row->haber;        
                             }
 
                             if ($cont0 <= 0){
-                            $saldos_USD += $account->balance_previus/$account->rate + ($row->debe/$row->tasa) - $row->haber/$row->tasa;    
+                            $saldos_USD += $balance_previus/$account->rate + ($row->debe/$row->tasa) - $row->haber/$row->tasa;    
                             } else{
                             $saldos_USD += ($row->debe/$row->tasa) - $row->haber/$row->tasa;        
                             }
@@ -211,12 +232,12 @@
                     <td></td>
                     @if(isset($var->accounts['coin']))
                         @if(($var->tasa)) 
-                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}<br>${{number_format($account->balance_previus/($account->rate ?? 1), 2, ',', '.')}}</td>
+                        <td>{{number_format($balance_previus, 2, ',', '.')}}<br>${{number_format($balance_previus/($account->rate ?? 1), 2, ',', '.')}}</td>
                         @else
-                        <td>{{number_format($account->balance_previus, 2, ',', '.')}}</td>
+                        <td>{{number_format($balance_previus, 2, ',', '.')}}</td>
                         @endif
                     @else
-                       <td>{{number_format($account->balance_previus, 2, ',', '.')}}</td>
+                       <td>{{number_format($balance_previus, 2, ',', '.')}}</td>
                     @endif
                 </tr>
             </tfoot>
@@ -235,5 +256,16 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+
+    $("#period").on('change',function(){
+        
+        var period = $(this).val();
+        var account = $('#input_id').val();
+        var coin = $('#input_coin').val();
+
+       window.location = "{{route('accounts.movements', '')}}"+"/"+account+"/"+coin+"/"+period;
+
+    });
+
     </script> 
 @endsection

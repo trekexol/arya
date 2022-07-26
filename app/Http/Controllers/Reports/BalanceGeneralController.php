@@ -65,13 +65,11 @@ class BalanceGeneralController extends Controller
     {
         
         $pdf = App::make('dompdf.wrapper');
-
         
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
         $period = $date->format('Y'); 
         $detail_old = DetailVoucher::on(Auth::user()->database_name)->orderBy('created_at','asc')->first();
-
 
         if(isset($date_begin)){
             $from = $date_begin;
@@ -94,7 +92,6 @@ class BalanceGeneralController extends Controller
       
         $accounts_all = $global->calculate_all($coin,$date_begin,$date_end,$type);
       
-       
         $accounts = $accounts_all->filter(function($account)
         {
             if($account->code_one <= 3){
