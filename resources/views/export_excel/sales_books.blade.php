@@ -167,7 +167,7 @@
       <td style="text-align: center; font-weight: normal;">{{''}}</td><!--CA-->
 
       @if (isset($coin) && ($coin == 'bolivares'))
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_exento ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
@@ -179,7 +179,7 @@
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
         
       @else
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount / $quotation->bcv ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva / $quotation->bcv ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_exento / $quotation->bcv ?? 0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
         <td style="text-align: right; font-weight: normal;">{{ $quotation->iva_percentage }}</td><!--16A -->
