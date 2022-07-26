@@ -541,10 +541,10 @@ class DailyListingController extends Controller
                     $account_contrapartida_id = DetailVoucher::on(Auth::user()->database_name) // buscar factura
                     ->where('id_header_voucher','=',$detail->id_header)
                     ->where('id_account','<>',$detail->id_account)
-                    ->get();
+                    ->get()->first();
 
                     if(!empty($account_contrapartida_id)) {
-                    $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id[0]->id_account);
+                    $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id->id_account);
                     }
 
                     if(empty($account_contrapartida)) {
