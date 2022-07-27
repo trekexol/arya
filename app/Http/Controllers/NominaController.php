@@ -178,23 +178,25 @@ class NominaController extends Controller
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
         }
-        
 
-        /*MOVIMIENTO DE SSO */
         $total_sso = $this->calculateAmountTotalSSO($nomina);
+        $total_faov = $this->calculateAmountTotalFAOV($nomina);
+/*
+        /*MOVIMIENTO DE SSO 
+        
         $accounts_sso = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso->id,$nomina->id,$total_sso,0);
 
-        /*MOVIMIENTO DE FAOV */
-        $total_faov = $this->calculateAmountTotalFAOV($nomina);
+        /*MOVIMIENTO DE FAOV 
+        
         $accounts_faov = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio')
         ->first();
 
-        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);*/
 
         /*MOVIMIENTO DE Bono Medico */
         
@@ -235,7 +237,7 @@ class NominaController extends Controller
         ->where('description','LIKE', 'Sueldos por Pagar')
         ->first();
 
-        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina);
+        $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos_por_pagar->id,$nomina->id,0,$amount_total_nomina - $total_faov - $total_sso);
         /*------------------------ */
         
         if($nomina->type == "Segunda Quincena"){
