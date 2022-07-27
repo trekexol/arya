@@ -130,8 +130,7 @@ class NominaController extends Controller
 
         $global = new GlobalController();
         $bcv = $global->search_bcv();
-
- 
+       
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
         if(isset($nomina->rate) && $nomina->rate == 0){
@@ -142,9 +141,10 @@ class NominaController extends Controller
             $this->addNominaCalculation($nomina,$employee);
             $sum_employees ++;
             $sum_employees_asignacion_general += $employee->asignacion_general;
-            $sum_sso_patronal += ($employee->monto_pago * 12)/52 * ($lunes * 0.10);;
+            $sum_sso_patronal += ($employee->monto_pago * 12)/52 * ($lunes * 0.10);
         }
 
+        
 
         $amount_total_nomina = $this->calculateAmountTotalNomina($nomina);
 

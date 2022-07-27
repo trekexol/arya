@@ -299,6 +299,10 @@ class PdfNominaController extends Controller
                         ->select('employees.nombres','employees.apellidos','nomina_calculations.amount')
                         ->groupBy('employees.nombres','employees.apellidos','nomina_calculations.amount')
                         ->get();     
+
+            $nominaController = new NominaController();
+
+            $lunes = $nominaController->calcular_cantidad_de_lunes($nomina);
            
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
@@ -306,7 +310,7 @@ class PdfNominaController extends Controller
         
         
        
-        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion'));
+        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion'));
         return $pdf->stream();
 
        
