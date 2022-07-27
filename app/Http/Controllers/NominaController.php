@@ -197,9 +197,9 @@ class NominaController extends Controller
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov->id,$nomina->id,$total_faov,0);
 
         /*MOVIMIENTO DE Bono Medico */
-                
-        $total_bono_medico = ($sum_employees_asignacion_general * $nomina->rate) - $amount_total_nomina - ($total_bono_alimentacion ?? 0) - $total_faov - $total_sso;
-
+        
+        $total_bono_medico = ($sum_employees_asignacion_general * $nomina->rate) - $amount_total_nomina - ($total_bono_alimentacion ?? 0) + $total_faov + $total_sso;
+       
         $accounts_bono_medico = DB::connection(Auth::user()->database_name)->table('accounts')
         ->where('description','LIKE', 'Bono Medico')
         ->first();
@@ -300,13 +300,13 @@ class NominaController extends Controller
                                                     ->where('nomina_concepts.sign',"A")
                                                     ->sum('nomina_calculations.amount');
 
-        $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+       /* $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
                                                     ->where('id_nomina',$nomina->id)
                                                     ->where('nomina_concepts.sign',"D")
-                                                    ->sum('nomina_calculations.amount');
+                                                    ->sum('nomina_calculations.amount');*/
 
                                             
-        return $amount_total_asignacion - $amount_total_deduccion;
+        return $amount_total_asignacion;/* - $amount_total_deduccion;*/
 
     }
 
