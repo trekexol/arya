@@ -213,14 +213,14 @@ class NominaController extends Controller
                         
        
         $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal')
+        ->where('description','LIKE', 'Aportes al FAOV Patronal')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
 
 
         $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal')
+        ->where('description','LIKE', 'Aportes al SSO Patronal')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,$sum_sso_patronal,0);
@@ -250,7 +250,7 @@ class NominaController extends Controller
         }
 
         $accounts_sso_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio por pagar')
+        ->where('description','LIKE', 'Retencion por Aporte al SSO empleados por pagar')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$total_sso);
@@ -258,7 +258,7 @@ class NominaController extends Controller
       
 
         $accounts_faov_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda por Pagar')
+        ->where('description','LIKE', 'Retencion por Aporte al FAOV empleados por Pagar')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$total_faov);
@@ -273,14 +273,14 @@ class NominaController extends Controller
          /*------------------------ */
 
          $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal por Pagar')
+         ->where('description','LIKE', 'Aportes por Pagar al FAOV Patronal')
          ->first();
 
          $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
 
 
          $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal por pagar')
+         ->where('description','LIKE', 'Aportes por Pagar al SSO Patronal')
          ->first();
 
          $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,0,$sum_sso_patronal);
