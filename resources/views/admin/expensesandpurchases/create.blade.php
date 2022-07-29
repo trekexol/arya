@@ -40,7 +40,7 @@
                             </div>
                             <a href="#" onclick="searchprovider();" title="Cambiar Proveedor"><i class="fa fa-eye"></i></a> 
 
-                            <label for="date-begin" class="col-md-3 col-form-label text-md-right">Fecha de Factura:</label>
+                            <label for="date-begin" class="col-md-3 col-form-label text-md-right">Fecha:</label>
                             <div class="col-md-2 left">
                                 <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $expense->date ?? $datenow }}" autocomplete="date-begin">
     

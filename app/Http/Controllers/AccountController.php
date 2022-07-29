@@ -677,10 +677,12 @@ class AccountController extends Controller
         ]);
 
         $var = Account::on(Auth::user()->database_name)->findOrFail($id);
+        
+        $rate = request('rate');
 
         $sin_formato_balance_previus = str_replace(',', '.', str_replace('.', '', request('balance_previus')));
         $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
-            
+
         $var->description = request('description');
        
 

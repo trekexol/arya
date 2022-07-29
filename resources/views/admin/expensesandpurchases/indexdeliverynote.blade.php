@@ -54,6 +54,7 @@
             <thead>
             <tr> 
                 <th class="text-center"></th>
+                <th class="text-center">Orden</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha del Gasto o Compra</th>
@@ -72,6 +73,7 @@
                             <a href="{{ route('expensesandpurchases.create_detail',[$expense->id,$expense->coin])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             <a href="{{ route('expensesandpurchases.createdeliverynote',[$expense->id,$expense->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                            </td>
+                           <td class="text-center">{{$expense->id}}</td>
                             <td class="text-center">{{$expense->serie}}</td>
                             <td class="text-center">{{ $expense->providers['razon_social']}}</td>
                             <td class="text-center">{{$expense->date}}</td>
