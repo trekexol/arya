@@ -79,7 +79,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
-                <th>N°</th>
+                <th>Orden</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
