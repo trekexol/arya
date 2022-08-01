@@ -1479,7 +1479,7 @@ Route::group(["prefix"=>'anticiposlic'],function(){
     Route::post('storeprovider', 'AnticipoLicController@store_provider')->name('anticiposlic.store_provider');
 
     Route::delete('delete','AnticipoLicController@delete_anticipo')->name('anticiposlic.delete');
-    Route::delete('deleteprovider','AnticipoLicController@delete_anticipo_provider')->name('anticipos.delete_provider');
+    Route::delete('deleteprovider','AnticipoLicController@delete_anticipo_provider')->name('anticiposlic.delete_provider');
 });
 
 

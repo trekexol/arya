@@ -28,7 +28,44 @@ class EmployeeController extends Controller
    public function index()
    {
        $user= auth()->user();
-       $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id' ,'DESC')->get();
+       $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')
+       ->orderBy('status' ,'DESC')
+       ->orderBy('nombres' ,'ASC')
+       ->get();
+       
+       $estatus = '';
+
+        foreach ($employees as $employee){
+
+            if ($employee->status == 1) {
+                $estatus = 'Activo';
+            }
+            if ($employee->status == 0 || $employee->status == 'X') {
+                $estatus = 'Inactivo';
+            }
+            if ($employee->status == 2) {
+                $estatus = 'Reposo';
+            }
+            if ($employee->status == 3) {
+                $estatus = 'Reposo Pre/Pos Parto';
+            }
+            if ($employee->status == 4) {
+                $estatus = 'Vacaciones';
+            }
+            if ($employee->status == 5) {
+                $estatus = 'Liquidado';
+            }                                            
+            if ($employee->status == 6) {
+                $estatus = 'De Permiso';
+            }
+            if ($employee->status == 7) {
+                $estatus = 'Año Sabatico';
+            }
+            $nomina_type = Nomina_types::on(Auth::user()->database_name)->find($employee->profession_id);
+           
+            $employee->status = $estatus;
+            $employee->profession_id = $nomina_type->name;
+        }
       
        return view('admin.employees.index',compact('employees'));
    }
