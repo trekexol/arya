@@ -77,7 +77,7 @@
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                 <tr> 
-                    <th>ID.</th>
+                    <th>ID</th>
                     <th>Nombre / Razón Social</th>
                     <th>Nombre Comercial</th>
                     <th>Cedula o Rif</th>
