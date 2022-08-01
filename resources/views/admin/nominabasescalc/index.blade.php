@@ -96,7 +96,7 @@
                         @csrf
                        
                          <div class="form-group row">
-                            <label for="login" class="col-sm-3 col-form-label">Sueldo Mínimo (Bajo) en Bs: </label>
+                            <label for="login" class="col-sm-3 col-form-label">Sueldo Mínimo Bs: </label>
             
                             <div class="col-sm-2">
                                 <input id="salary_min" type="text" class="form-control @error('salary_min') is-invalid @enderror" name="salary_min" value="{{number_format($nominabases->salary_min ?? 0, 2, ',', '.') ?? ''}}" required autocomplete="salary_min" autofocus>
@@ -107,7 +107,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="login" class="col-sm-3 col-form-label">Sueldo Mínimo (Bajo) USD: </label>
+                            <label for="login" class="col-sm-3 col-form-label">Asignación Mínima USD: </label>
             
                             <div class="col-sm-2">
                                 <input id="salary_min_USD" type="text" class="form-control @error('salary_min_USD') is-invalid @enderror" name="salary_min_USD" value="{{ number_format($nominabases->salary_min_USD ?? 0, 2, ',', '.') ?? '' }}" autocomplete="salary_min_USD" autofocus>
@@ -120,7 +120,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="login" class="col-sm-3 col-form-label">Sueldo Máximo (Alto) en Bs: </label>
+                            <label for="login" class="col-sm-3 col-form-label">Sueldo Máximo Bs: </label>
             
                             <div class="col-sm-2">
                                 <input id="salary_max" type="text" class="form-control @error('salary_max') is-invalid @enderror" name="salary_max" value="{{ number_format($nominabases->salary_max ?? 0, 2, ',', '.') ?? '' }}" autocomplete="salary_max" autofocus>
@@ -131,7 +131,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="login" class="col-sm-3 col-form-label">Sueldo Máximo (Alto) USD: </label>
+                            <label for="login" class="col-sm-3 col-form-label">Asignación Máxima USD: </label>
             
                             <div class="col-sm-2">
                                 <input id="salary_max_USD" type="text" class="form-control @error('salary_max_USD') is-invalid @enderror" name="salary_max_USD" value="{{ number_format($nominabases->salary_max_USD ?? 0, 2, ',', '.') ?? '' }}" autocomplete="salary_max_USD" autofocus>
@@ -149,7 +149,7 @@
 
 
                            <div class="form-group row">
-                            <label for="login" class="col-sm-3 col-form-label">Monto de Cestatickets en Bs: </label>
+                            <label for="login" class="col-sm-3 col-form-label">Monto de Cestatickets Bs: </label>
                 
                             <div class="col-sm-2">
                                 <input id="amount_cesta" type="text" class="form-control @error('amount_cesta') is-invalid @enderror" name="amount_cesta" value="{{ number_format($nominabases->amount_cestatickets ?? 0, 2, ',', '.') ?? '' }}" required autocomplete="amount_cesta" autofocus>
@@ -261,7 +261,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label class="col-sm-3 col-form-label ">% S.S.O - Empresa:</label>
+                            <label class="col-sm-3 col-form-label ">% S.S.O - Patronal:</label>
             
                             <div class="col-sm-2">
                                 <input id="sso_company" type="sso_company" class="form-control @error('sso_company') is-invalid @enderror" name="sso_company" value="{{ number_format($nominabases->sso_company ?? 0, 2, ',', '.') ?? '' }}" required autocomplete="sso_company" autofocus>
@@ -283,7 +283,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label class="col-sm-3 col-form-label ">% F.A.O.V - Empresa:</label>
+                            <label class="col-sm-3 col-form-label ">% F.A.O.V - Patronal:</label>
                             <div class="col-sm-2">
                                 <input id="faov_company" type="text" class="form-control @error('faov_company') is-invalid @enderror" name="faov_company" value="{{ number_format($nominabases->faov_company ?? 0, 2, ',', '.') ?? '' }}" required autocomplete="faov_company" autofocus>
                                 @error('faov_company')
@@ -304,7 +304,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label class="col-sm-3 col-form-label ">% P.I.E - Company:</label>
+                            <label class="col-sm-3 col-form-label ">% P.I.E - Patronal:</label>
                             <div class="col-sm-2">
                                 <input id="pie_company" type="text" class="form-control @error('pie_company') is-invalid @enderror" name="pie_company" value="{{ number_format($nominabases->pie_company ?? 0, 2, ',', '.') ?? '' }}" required autocomplete="pie_company" autofocus>
             

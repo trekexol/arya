@@ -41,8 +41,9 @@
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
-                <th>Celular</th>
-                <th>Monto de Pago</th>
+                <th>Tipo de Nómina</th>
+                <th>Salario</th>
+                <th>Estatus</th>
                 <th></th>
             </tr>
             </thead>
@@ -55,8 +56,9 @@
                             <td>{{$employee->id_empleado}}</td>
                             <td>{{$employee->nombres}}</td>
                             <td>{{$employee->apellidos}}</td>
-                            <td>{{$employee->telefono1}}</td>
+                            <td>{{$employee->profession_id}}</td>
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
+                            <td>{{$employee->status}}</td>
                             <td>
                                 <a href="employees/{{$employee->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 <a href="#" class="delete" data-id-employee={{$employee->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  

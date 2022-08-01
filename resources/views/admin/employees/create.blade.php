@@ -169,6 +169,24 @@
                             
                         </div>
                         <div class="form-group row">
+                            
+                            <label for="salarytype" class="col-md-2 col-form-label text-md-right">Tipo de Salario</label>
+ 
+                             <div class="col-md-4">
+                             <select class="form-control" id="salarytype_id" name="salarytype_id">
+                                 @foreach($salarytype as $var)
+                                     @if($var->id == 2)
+                                       <option selected value="{{ $var->id}}">{{ $var->name }}</option>
+                                     @else
+                                       <option value="{{ $var->id}}">{{ $var->name }}</option>
+                                     @endif     
+                                 @endforeach
+                               
+                             </select>
+                             </div>
+ 
+                         </div> 
+                        <div class="form-group row">
                             <label for="monto_pago" class="col-md-2 col-form-label text-md-right">Salario Bs.</label>
 
                             <div class="col-md-3">
@@ -181,7 +199,7 @@
                                 @enderror
                             </div>
 
-                            <label for="asignacion_general" class="col-md-3 col-form-label text-md-right">Asignación General $</label>
+                            <label for="asignacion_general" class="col-md-3 col-form-label text-md-right">Asignación General USD</label>
                             <div class="col-md-4">
                                 <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ old('asignacion_general') }}" autocomplete="asignacion_general">
 
@@ -242,31 +260,9 @@
                             </select>
                             </div>
                         </div>
-
-               
-
-                        
-                       <div class="form-group row">
-                            
-                           <label for="salarytype" class="col-md-2 col-form-label text-md-right">Tipo de Salario</label>
-
-                            <div class="col-md-4">
-                            <select class="form-control" id="salarytype_id" name="salarytype_id">
-                                @foreach($salarytype as $var)
-                                    @if($var->id == 2)
-                                      <option selected value="{{ $var->id}}">{{ $var->name }}</option>
-                                    @else
-                                      <option value="{{ $var->id}}">{{ $var->name }}</option>
-                                    @endif     
-                                @endforeach
-                              
-                            </select>
-                            </div>
-
-                        </div> 
                         
                         <div class="form-group row">
-                            <label for="dias_pres_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Prestaciones Acum.</label>
+                            <label for="dias_pres_acumulado" class="col-md-2 col-form-label text-md-right">Dias de Prestaciones Acumuladas.</label>
 
                             <div class="col-md-2">
                                 <input id="dias_pres_acumulado" type="text" class="form-control @error('dias_pres_acumulado') is-invalid @enderror" name="dias_pres_acumulado" value="{{ old('dias_pres_acumulado') ?? 0 }}"  autocomplete="dias_pres_acumulado">
@@ -277,7 +273,9 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="dias_vaca_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Vacaciones Acum.</label>
+                            <div class="col-md-1">
+                            </div>
+                            <label for="dias_vaca_acumulado" class="col-md-3 col-form-label text-md-right">Dias de Vacaciones Acumuladas.</label>
 
                             <div class="col-md-2">
                                 <input id="dias_vaca_acumulado" type="text" class="form-control @error('dias_vaca_acumulado') is-invalid @enderror" name="dias_vaca_acumulado" value="{{ old('dias_vaca_acumulado') ?? 0 }}" autocomplete="dias_vaca_acumulado">
@@ -302,7 +300,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="intereses_prest_acumulado" class="col-md-2 col-form-label text-md-right">Intereses de Prestaciones Acum.</label>
+                            <label for="intereses_prest_acumulado" class="col-md-2 col-form-label text-md-right">Intereses de Prestaciones Acumuladas.</label>
 
                             <div class="col-md-4">
                                 <input id="intereses_prest_acumulado" type="text" class="form-control @error('intereses_prest_acumulado') is-invalid @enderror" name="intereses_prest_acumulado" value="{{ old('intereses_prest_acumulado') ?? 0 }}" autocomplete="intereses_prest_acumulado">
