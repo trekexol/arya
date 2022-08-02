@@ -9,7 +9,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Arya Software</title>
+    <title>Arya Software
+      
+    </title>
 
     @yield('header')
 

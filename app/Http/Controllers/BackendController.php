@@ -16,7 +16,7 @@ class BackendController extends Controller
     {
         $this->middleware('auth');
     }
-
+ 
     /**
      * Show the application dashboard.
      *
@@ -166,7 +166,6 @@ class BackendController extends Controller
                 $totalGastoPieChart = abs($GastoPieChart->debe + $GastoPieChart->balance_previus - $GastoPieChart->haber);
             /*------------------------------ */
 
-           
 
             return view('admin.index',compact('account_activo','account_pasivo','account_patrimonio','account_ingresos'
             ,'account_costos','account_gastos','account_cuentas_por_pagar','account_cuentas_por_cobrar','account_prestamos'
@@ -175,6 +174,7 @@ class BackendController extends Controller
 
            
         }else{
+            
             return view('admin.page_home');
         }
     }

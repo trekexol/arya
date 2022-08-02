@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalController extends Controller
 {
+
+    
     public function procesar_anticipos($quotation,$total_pay)
     {
         
@@ -1150,5 +1152,6 @@ class GlobalController extends Controller
         }
     }
    // fin funcion para subir imagenes
+
    
 }
