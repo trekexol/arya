@@ -213,29 +213,20 @@ class NominaController extends Controller
                         
        
         $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-<<<<<<< Updated upstream
         ->where('description','LIKE', 'Gasto por Aporte al FAOV Patronal')
-=======
-        ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal')
->>>>>>> Stashed changes
+
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,$amount_total_nomina * 0.02,0);
 
 
         $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-<<<<<<< Updated upstream
+
         ->where('description','LIKE', 'Gasto por Aporte al SSO Patronal')
-=======
-        ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal')
->>>>>>> Stashed changes
+
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,$sum_sso_patronal,0);
-
-
-
-
 
 
 

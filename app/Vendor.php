@@ -18,5 +18,5 @@ class Vendor extends Model
     public function users(){
         return $this->belongsTo('App\Permission\Models\User','user_id');
     }
-
+ 
 }

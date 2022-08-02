@@ -16,6 +16,8 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
+    protected $police = 'hh'; 
+
     /**
      * Register any authentication / authorization services.
      *
