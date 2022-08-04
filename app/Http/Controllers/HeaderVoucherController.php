@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\HeaderVoucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class HeaderVoucherController extends Controller
@@ -144,16 +145,25 @@ class HeaderVoucherController extends Controller
 
     if(isset($id)){
         $var = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
+
     }
    
     if(isset($var)){
+        $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('tasa_comp')));
+
         $var->reference = request('reference_header');
         $var->description = request('description');
         $var->date = request('date');
-        
-    
+
         $var->save();
     
+        $tasa = floatval($valor_sin_formato_rate);
+
+        DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+        ->where('id_header_voucher', '=', $var->id)
+        ->update(['tasa' => $tasa]);
+        
+
         return redirect('/detailvouchers/register/'.$coin.'/'.$var->id.'')->withSuccess('Actualizacion Exitosa!');
         
     }else{

@@ -27,23 +27,22 @@
 
 
   <br><br><br><br><br><br><br><br><br>
-  <h4 style="color: black">FACTURA DE COMPRA <span>N° de Orden</span> : {{ str_pad($expense->id, 6, "0", STR_PAD_LEFT)}}</h4>
+  <h4 style="color: black">FACTURA DE COMPRA. <span>Orden</span>: {{ str_pad($expense->id, 6, "0", STR_PAD_LEFT)}}</h4>
 
  
    
  
 <table>
+  @if (isset($company->franqueo_postal))
   <tr>
-    <th style="font-weight: normal; width: 40%;">Concesión Postal:</th>
-    <th style="font-weight: normal;">Nº {{ $company->franqueo_postal ?? ''}}</th>
-   
+    <th style="font-weight: normal; width: 20%;">Concesión Postal:</th>
+    <th style="font-weight: normal; width: 40%;">Nº {{ $company->franqueo_postal ?? ''}}</th>
   </tr>
+  @endif
+
   <tr>
-    
       <td style="width: 40%;">Fecha de Emisión:</td>
       <td>{{ $expense->date }}</td>
-    
-  
   </tr>
   
 </table>

@@ -63,7 +63,7 @@
                             <label for="invoice" class="col-md-2 col-form-label text-md-right">Factura de Compra:</label>
 
                             <div class="col-md-3">
-                                <input id="invoice" type="text" class="form-control @error('invoice') is-invalid @enderror" name="invoice" value="{{ old('invoice') }}" required autocomplete="invoice">
+                                <input id="invoice" type="text" class="form-control @error('invoice') is-invalid @enderror" name="invoice" value="{{ old('invoice') }}" autocomplete="invoice">
 
                                 @error('invoice')
                                     <span class="invalid-feedback" role="alert">
@@ -74,7 +74,7 @@
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" required autocomplete="serie">
+                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" autocomplete="serie">
 
                                 @error('serie')
                                     <span class="invalid-feedback" role="alert">

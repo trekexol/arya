@@ -36,11 +36,13 @@
 
  
 <table>
+  @if (isset($company->franqueo_postal))
   <tr>
-    <th style="font-weight: normal; width: 40%;">Concesión Postal:</th>
-    <th style="font-weight: normal;">Nº {{ $company->franqueo_postal ?? ''}}</th>
-   
+    <th style="font-weight: normal; width: 20%;">Concesión Postal:</th>
+    <th style="font-weight: normal; width: 40%;">Nº {{ $company->franqueo_postal ?? ''}}</th>
   </tr>
+  @endif
+
   <tr>
     <td style="width: 40%;">Fecha de Emisión:</td>
     <td>{{ $expense->date_delivery_note }}</td>
