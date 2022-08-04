@@ -36,6 +36,9 @@ $suma_haber = 0;
 
                         <input type="hidden" name="coin" value="{{$coin ?? 'bolivares'}}" readonly>
                         <input type="hidden" name="id_header" value="{{$header->id ?? null}}" readonly>
+                        <input type="hidden" id="tasa_comp" name="tasa_comp" value="{{ number_format($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, 10, ',', '.') }}">
+
+                        
                         @if (isset($tasa_calculada) && $tasa_calculada != 0)
                             <input type="hidden" name="tasa_calculada" value="{{bcdiv($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, '1', 2)}}" readonly>
                         @else
@@ -152,7 +155,7 @@ $suma_haber = 0;
                         </div>
                         <label for="rate" class="col-md-1 col-form-label text-md-right">Tasa:</label>
                         <div class="col-md-2">
-                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, 10, ',', '.') }}"  required readonly autocomplete="rate">
+                            <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($tasa_calculada ?? $detailvouchers_last->tasa ?? $bcv, 10, ',', '.') }}"  required autocomplete="rate">
                             @error('rate')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -472,6 +475,12 @@ $suma_haber = 0;
         document.getElementById("headerForm").action =  "{{route('headervouchers.update')}}";
         document.getElementById("headerForm").submit();
     }
+
+
+    $("#rate").on('change',function(){
+        $("#tasa_comp").val($(this).val());
+    
+    });
 
     $(document).on('click','.delete',function(){
          

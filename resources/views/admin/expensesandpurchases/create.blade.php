@@ -406,26 +406,34 @@
                                     @endif
                                 </div>
                                 @endif
-                                <div class="col-sm-2">
-                                    <a id="btnpayment" href="{{ route('expensesandpurchases.create_payment',[$expense->id,$coin]) }}" name="btnpayment" class="btn btn-info" title="Registrar">Registrar</a>  
+                                <div class="col-sm-3">
+                                    <a id="btnpayment" href="{{ route('expensesandpurchases.create_payment',[$expense->id,$coin]) }}" name="btnpayment" class="btn btn-info" title="Registrar">Registrar Factura de Compra</a>  
                                 </div>
-                                <div class="col-sm-3 offset-sm-1">
+                                <div class="col-sm-3">
+                                    <a id="btnpayment" href="{{ route('expensesandpurchases.indexdeliverynote') }}" class="btn btn-success" title="Ver Compras">Ver Listado de Ordenes</a>  
+                                </div>
+                                <div class="col-sm-3">
                                     <a id="btnpayment" href="{{ route('expensesandpurchases.index_historial') }}" class="btn btn-info" title="Ver Compras">Ver Listado de Compras</a>  
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group row ">
+                                <div class="col-sm-9">
                                 </div>
                                 <div class="col-sm-3">
                                     <button class="btn btn-dark" type="button"
                                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                         aria-expanded="false">
                                         <i class="fas fa-bars"></i>
-                                        Opciones
+                                        Opciones de Importación
                                     </button>
                                     <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
                                         
                                         <a href="{{ route('export',$expense->id) }}" class="dropdown-item bg-info text-white h5">Descargar Plantilla Excel</a> 
                                         <a href="{{ route('export.guideaccount') }}" class="dropdown-item bg-dark text-white h5">Descargar Guia de Cuentas Excel</a> 
                                         <a href="{{ route('export.guideinventory') }}" class="dropdown-item bg-success text-white h5">Descargar Guia de Inventario Excel</a> 
-                                       
-                                       
+                                    
+                                    
                                         <form id="fileForm" method="POST" action="{{ route('import') }}" enctype="multipart/form-data" >
                                         @csrf
                                             <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
@@ -434,10 +442,8 @@
                                             
                                         </form>
                                     </div> 
-  
-                                </div> 
 
-                                
+                                </div> 
                             </div>
                 </div>
             </div>
