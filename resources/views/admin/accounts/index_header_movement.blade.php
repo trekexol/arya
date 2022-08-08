@@ -67,7 +67,6 @@
                         <td>Factura: {{ $var->id_invoice }}</td>
                     @elseif(isset($var->id_expense))
                         <td>Gasto o Compra: {{ $var->id_expense }}</td>
-                        <td>
                     @elseif(isset($var->id_header_voucher)) 
                         <td>Otro</td>
                     @endif
