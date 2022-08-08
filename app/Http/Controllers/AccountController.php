@@ -243,7 +243,7 @@ class AccountController extends Controller
             ->where('detail_vouchers.status','C')
             ->where('detail_vouchers.id_account',$id_account)
             ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
-            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo')
+            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo','header_vouchers.reference as reference')
             ->orderBy('header_vouchers.date','desc')
             ->orderBy('detail_vouchers.id','desc')
             ->get();
@@ -256,7 +256,7 @@ class AccountController extends Controller
             ->where('detail_vouchers.status','C')
             ->where('detail_vouchers.id_account',$id_account)
             ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
-            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo')
+            ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo','header_vouchers.reference as reference')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('detail_vouchers.id','asc')
             ->get();
@@ -364,23 +364,26 @@ class AccountController extends Controller
                 
                 $var = null;
                 $type = $detailvouchers[0]['headers']->description;
+                $reference = $detailvouchers[0]['headers']->reference;
             }
             else if($type == 'invoice'){
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_invoice',$id)->get();
                 $var = Quotation::on(Auth::user()->database_name)->find($id);
                 $type = 'Factura';
+                $reference = $detailvouchers[0]['headers']->reference;
             }else{
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('status','C')->where('id_header_voucher',$id)->orderBy('id','desc')->get();
                 
                 $var = null;
                 $type = $detailvouchers[0]['headers']->description;
+                $reference = $detailvouchers[0]['headers']->reference;
             }
             
          }else if($users_role == '2'){
             return view('admin.index');
         }
         
-        return view('admin.accounts.index_header_movement',compact('detailvouchers','type','var','id_account'));
+        return view('admin.accounts.index_header_movement',compact('detailvouchers','type','var','id_account','reference'));
     }
  
    /**

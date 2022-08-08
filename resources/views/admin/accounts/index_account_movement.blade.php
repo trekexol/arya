@@ -53,9 +53,7 @@
             <tr>
                 <th style="width: 11%;">Fecha</th>
                 <th>Tipo de Movimiento</th>
-                
-                <th>Referencia</th>
-              
+                <th>Comprobante</th>
                 <th>Descripción</th>
                 <th>Debe</th>
                 <th>Haber</th>
@@ -103,7 +101,13 @@
 
                     ?>               
                     @foreach ($detailvouchers as $var)
-
+                     <?php
+                     if (isset($var->reference)) {
+                     $reference = 'Referencia: '.$var->reference.'.'; 
+                     } else {
+                     $reference = '';                        
+                     }
+                     ?>
                     <tr>
                     <td>{{ date_format(date_create($var->date ?? ''),"d-m-Y")}}</td>
 
@@ -136,24 +140,23 @@
 
                        @if (isset($var->quotations['number_invoice']))
                        
-                        <td>{{$var->description ?? ''}} fact({{ $var->quotations['number_invoice'] }})  / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} fact({{ $var->quotations['number_invoice'] }})  / {{$var->accounts['description'] ?? ''}} {{$reference}}</td>
                     
                        @elseif(isset($var->quotations['number_delivery_note']))
                        
-                        <td>{{$var->description ?? ''}} nota({{ $var->quotations['number_delivery_note'] }})  / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} nota({{ $var->quotations['number_delivery_note'] }})  / {{$var->accounts['description'] ?? ''}} {{$reference}}</td>
                       
                        @endif
-                        
-                        
+   
                     @elseif (isset($var->id_expense))
                         
-                        <td>{{$var->description ?? ''}} Compra({{ $var->id_expense }}) / {{$var->accounts['description'] ?? ''}}</td>
+                        <td>{{$var->description ?? ''}} Compra({{ $var->id_expense }}) / {{$var->accounts['description'] ?? ''}} {{$reference}}</td>
                    
                     @elseif (isset($var->id_anticipo))
-                        <td>{{$var->description ?? ''}} {{ $var->id_anticipo ?? '' }}</td>                   
+                        <td>{{$var->description ?? ''}} {{ $var->id_anticipo ?? '' }} {{$reference}}</td>                   
                     @else
                         
-                     <td>{{$var->description ?? ''}}</td>
+                     <td>{{$var->description ?? ''}} {{$reference}}</td>
 
                     @endif
                    
