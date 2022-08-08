@@ -64,20 +64,15 @@
                     <td>{{$var->accounts['description'] ?? ''}}</td>
                     
                     @if(isset($var->id_invoice))
-                        <td>Factura</td>
-                        <td>
-                        {{ $var->id_invoice }}
-                        </td>
+                        <td>Factura: {{ $var->id_invoice }}</td>
                     @elseif(isset($var->id_expense))
-                        <td>Gasto o Compra</td>
+                        <td>Gasto o Compra: {{ $var->id_expense }}</td>
                         <td>
-                        {{ $var->id_expense }}
-                        </td>
                     @elseif(isset($var->id_header_voucher)) 
                         <td>Otro</td>
-                        <td class="text-center"><a href="{{ route('detailvouchers.create',['bolivares',$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
-
                     @endif
+
+                    <td class="text-center"><a href="{{ route('detailvouchers.create',['bolivares',$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
 
                    
                     @if (isset($var->id_invoice))
