@@ -9,7 +9,7 @@ use App\Employee;
 use App\Estado;                 //IMPORTANTE NOMBRE DE LA CLASE
 use App\Municipio;              //IMPORTANTE NOMBRE DE LA CLASE
 use App\Parroquia;              //IMPORTANTE NOMBRE DE LA CLASE
-
+use App\NominaType;
 use App\Position;                 
 use App\SalaryType;              
 use App\Profession;
@@ -61,10 +61,9 @@ class EmployeeController extends Controller
             if ($employee->status == 7) {
                 $estatus = 'Año Sabatico';
             }
-            $nomina_type = Nomina_types::on(Auth::user()->database_name)->find($employee->profession_id);
-           
+            $nomina_type = NominaType::on(Auth::user()->database_name)->find($employee->nomina_type_id);
             $employee->status = $estatus;
-            $employee->profession_id = $nomina_type->name;
+            $employee->nomina_type_id_name = $nomina_type->name;
         }
       
        return view('admin.employees.index',compact('employees'));
@@ -83,12 +82,12 @@ class EmployeeController extends Controller
        $estados            = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
        $municipios         = Municipio::on(Auth::user()->database_name)->get();
        $parroquias         = Parroquia::on(Auth::user()->database_name)->get();
-     
+       $nomina_type        = NominaType::on(Auth::user()->database_name)->get();    
        $position           = Position::on(Auth::user()->database_name)->get();
        $salarytype         = Salarytype::on(Auth::user()->database_name)->get();
        $profession         = Profession::on(Auth::user()->database_name)->get();
        $centro_costo       = Branch::on(Auth::user()->database_name)->orderBy('description','asc')->get();
-       return view('admin.employees.create',compact('estados','municipios','parroquias','position','salarytype','profession','centro_costo'));
+       return view('admin.employees.create',compact('estados','municipios','parroquias','position','salarytype','profession','centro_costo','nomina_type'));
    }
 
    /**
@@ -113,7 +112,7 @@ class EmployeeController extends Controller
         'fecha_nacimiento'         =>'required',
         
         'position_id'         =>'required',
-        'profession_id'         =>'required',
+        'nomina_type'         =>'required',
 
         'asignacion_general'         =>'required',
         
@@ -137,8 +136,7 @@ class EmployeeController extends Controller
     $users->position_id = request('position_id');
     $users->salary_types_id = request('salary_types_id');
     $users->profession_id = request('profession_id');
-
-
+    $users->nomina_type_id = request('nomina_type');
     $users->id_empleado = $request->type_code.request('id_empleado');
     $users->amount_utilities = request('amount_utilities');
 
@@ -217,9 +215,10 @@ class EmployeeController extends Controller
         $positions           = Position::on(Auth::user()->database_name)->get();
         $salarytypes         = Salarytype::on(Auth::user()->database_name)->get();
         $professions         = Profession::on(Auth::user()->database_name)->get();
+        $nomina_type         = NominaType::on(Auth::user()->database_name)->get(); 
         $centro_costo        = Branch::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
-        return view('admin.employees.edit',compact('var','estados','municipios','parroquias','positions','salarytypes','professions','centro_costo'));
+        return view('admin.employees.edit',compact('var','estados','municipios','parroquias','positions','salarytypes','professions','centro_costo','nomina_type'));
   
    }
 
@@ -246,7 +245,7 @@ class EmployeeController extends Controller
         'fecha_nacimiento'         =>'required',
         
         'position_id'         =>'required',
-        'profession_id'         =>'required',
+        'nomina_type'         =>'required',
         'asignacion_general'         =>'required',
 
         'estado'         =>'required',
@@ -268,9 +267,8 @@ class EmployeeController extends Controller
 
     $users->position_id = request('position_id');
     $users->salary_types_id = request('salary_types_id');
-    $users->profession_id = request('profession_id');
-
-
+    //$users->profession_id = request('profession_id');
+    $users->nomina_type_id = request('nomina_type');
     $users->code_employee = request('code_employee');
     $users->amount_utilities = request('amount_utilities');
 

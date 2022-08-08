@@ -15,10 +15,10 @@
                 </div>
                 <div class="row py-lg-2">
                     <div class="col-md-6">
-                        Tipo de Empleado: {{ $var->professions['name'] }} 
+                        Tipo de Nómina: {{ $nomina_type_id_name }} 
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ route('employees.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
+                        <!--<a href="{{ ''/*route('employees.create') */}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>-->
                     </div>
                     <div class="col-md-2">
                         <a href="{{ route('nominas')}}" class="btn btn-danger float-md-right" role="button" aria-pressed="true">Volver</a>

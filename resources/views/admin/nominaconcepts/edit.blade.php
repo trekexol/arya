@@ -7,7 +7,7 @@
         <!-- Page Heading -->
         <div class="row py-lg-2">
             <div class="col-md-6">
-                <h2>Editar Nómina</h2>
+                <h2>Editar Concepto</h2>
             </div>
 
         </div>
@@ -114,7 +114,7 @@
                                            
                                     </select>
                                 </div>
-                                <label for="type" class="col-md-2 col-form-label text-md-right">Tipo Nómina:</label>
+                                <label for="type" class="col-md-2 col-form-label text-md-right">Tipo:</label>
                                 <div class="col-md-3">
                                     <select class="form-control" id="type" name="type" title="type">
                                         
@@ -126,9 +126,10 @@
                                             <option value="Primera Quincena">Primera Quincena</option>
                                             <option value="Segunda Quincena">Segunda Quincena</option>
                                             <option value="Semanal">Semanal</option>
+                                            <option value="Quincenal">Quincenal</option>
                                             <option value="Mensual">Mensual</option>
                                             <option value="Especial">Especial</option>
-                                            <option value="Quincenal">Quincenal</option>
+                                            
                                         </div>
                                         
                                         

@@ -18,6 +18,7 @@ class CreateEmployeesTable extends Migration
             $table->unsignedBigInteger('position_id');
             $table->unsignedBigInteger('salary_types_id');
             $table->unsignedBigInteger('profession_id');
+            $table->unsignedBigInteger('nomina_type_id'); // nuevo
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('municipio_id');
             $table->unsignedBigInteger('parroquia_id');
