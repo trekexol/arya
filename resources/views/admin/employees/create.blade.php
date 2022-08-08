@@ -252,8 +252,8 @@
                             <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Nómina</label>
 
                             <div class="col-md-4">
-                            <select class="form-control" id="profession_id" name="profession_id">
-                                @foreach($profession as $var)
+                            <select class="form-control" id="nomina_type" name="nomina_type">
+                                @foreach($nomina_type as $var)
                                     <option value="{{ $var->id }}">{{ $var->name }}</option>
                                 @endforeach
                               

@@ -7,6 +7,7 @@ use App\DetailVoucher;
 use App\Employee;
 use App\HeaderVoucher;
 use App\Nomina;
+use App\NominaType;
 use App\NominaCalculation;
 use App\NominaConcept;
 use App\Profession;
@@ -33,14 +34,19 @@ class NominaController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         if($users_role == '1'){
-           $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id', 'desc')->get();
-          
+           $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('id', 'desc')->get();
+           
+           foreach ($nominas as $key => $nomina) {
+                $nomina_type = NominaType::on(Auth::user()->database_name)->find($nomina->nomina_type_id);
+                $nomina->nomina_type_id_name = $nomina_type->name;
+           }
+
         }elseif($users_role == '2'){
             return view('admin.index');
         }
 
     
-        return view('admin.nominas.index',compact('nominas'));
+        return view('admin.nominas.index',compact('nominas','nomina_type'));
       
     }
 
@@ -58,13 +64,14 @@ class NominaController extends Controller
 
     public function create()
     {
-        $professions = Profession::on(Auth::user()->database_name)->orderBY('id','asc')->get();
+        /*$professions = Profession::on(Auth::user()->database_name)->orderBY('id','asc')->get();*/
+        $nomina_type = NominaType::on(Auth::user()->database_name)->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
         $global = new GlobalController();
         $bcv = $global->search_bcv();
 
-        return view('admin.nominas.create',compact('professions','datenow','bcv'));
+        return view('admin.nominas.create',compact('nomina_type','datenow','bcv'));
     }
 
    
@@ -73,13 +80,21 @@ class NominaController extends Controller
 
         $var  = Nomina::on(Auth::user()->database_name)->find($id);
 
-        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$var->id_profession)->get();
+        $employees = Employee::on(Auth::user()->database_name)
+        ->where('status','!=','X')
+        ->where('status','!=','0')
+        ->where('nomina_type_id',$var->nomina_type_id)->get();
+
+
+        $nomina_type = NominaType::on(Auth::user()->database_name)->find($var->nomina_type_id);
+        $nomina_type_id_name = $nomina_type->name;
+    
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
        // dd($var);
-        return view('admin.nominas.selectemployee',compact('var','employees','datenow'));
+        return view('admin.nominas.selectemployee',compact('var','employees','datenow','nomina_type_id_name'));
         
     }
 
@@ -101,14 +116,12 @@ class NominaController extends Controller
         //Chequea si hay calculos previos y pregunta si se desea recalcular la nomina
         if(isset($check_exist_calculation)){
           
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
-            if($users_role == '1'){
-                $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id', 'desc')->get();
-                $exist_nomina_calculation = $nomina;
-             }elseif($users_role == '2'){
-                 return view('admin.index');
-             }
+
+            $nominas      =   Nomina::on(Auth::user()->database_name)
+            ->where('status','!=','X')
+            ->orderBy('id', 'desc')->get();
+            $exist_nomina_calculation = $nomina;
+
      
          
              return view('admin.nominas.index',compact('nominas','exist_nomina_calculation'));
@@ -117,7 +130,10 @@ class NominaController extends Controller
 
         
         
-        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('profession_id',$nomina->id_profession)->get();
+        $employees = Employee::on(Auth::user()->database_name)
+        ->where('status','!=','X')
+        ->where('status','!=','0')
+        ->where('nomina_type_id',$nomina->nomina_type_id)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -126,11 +142,15 @@ class NominaController extends Controller
         $sum_employees = 0;
         $sum_employees_asignacion_general = 0;
         $sum_sso_patronal = 0;
+
+
+
+
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
 
         $global = new GlobalController();
-        $bcv = $global->search_bcv();
-       
+        $bcv = floatval($global->search_bcv());
+        
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
         if(isset($nomina->rate) && $nomina->rate == 0){
@@ -142,9 +162,7 @@ class NominaController extends Controller
             $sum_employees ++;
             $sum_employees_asignacion_general += $employee->asignacion_general;
             $sum_sso_patronal += ($employee->monto_pago * 12)/52 * ($lunes * 0.10);
-        }
-
-        
+        }    
 
         $amount_total_nomina = $this->calculateAmountTotalNomina($nomina);
 
@@ -160,10 +178,16 @@ class NominaController extends Controller
     
         $header_voucher->save();
 
+
+
         /*MOVIMIENTO DE SUELDOS */
+        
+        
         $accounts_sueldos = DB::connection(Auth::user()->database_name)->table('accounts')
-                                                                        ->where('description','LIKE', 'Sueldos y Salarios')
-                                                                        ->first();
+            ->where('code_one','=','6')
+            ->where('description','LIKE', 'Sueldos y Salarios')
+            ->first();
+        
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_nomina,0);
 
@@ -179,6 +203,7 @@ class NominaController extends Controller
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$total_bono_alimentacion,0);
         }
 
+ 
         $total_sso = $this->calculateAmountTotalSSO($nomina);
         $total_faov = $this->calculateAmountTotalFAOV($nomina);
 /*
@@ -249,7 +274,7 @@ class NominaController extends Controller
         }
 
         $accounts_sso_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
-        ->where('description','LIKE', 'Retencion por Aportes al Seguro Social Obligatorio por pagar')
+        ->where('description','LIKE', 'Retencion por Aporte al SSO empleados por Pagar')
         ->first();
 
         $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$total_sso);
@@ -272,14 +297,14 @@ class NominaController extends Controller
          /*------------------------ */
 
          $accounts_aporte_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Aportes al Fondo de Ahorro Obligatorio para la Vivienda Patronal por Pagar')
+         ->where('description','LIKE', 'Aportes por Pagar al FAOV Patronal')
          ->first();
 
          $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$amount_total_nomina * 0.02);
 
 
          $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
-         ->where('description','LIKE', 'Aportes al Seguro Social Obligatorio Patronal por pagar')
+         ->where('description','LIKE', 'Aportes por Pagar al SSO Patronal')
          ->first();
 
          $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_patronal->id,$nomina->id,0,$sum_sso_patronal);
@@ -296,17 +321,16 @@ class NominaController extends Controller
     public function calculateAmountTotalNomina($nomina){
 
        
-        $amount_total_asignacion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-                                                    ->where('id_nomina',$nomina->id)
-                                                    ->where('nomina_concepts.sign',"A")
-                                                    ->sum('nomina_calculations.amount');
+        $amount_total_asignacion = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+        ->where('id_nomina',$nomina->id)
+        ->sum('amount');
+        
 
        /* $amount_total_deduccion = NominaCalculation::join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
                                                     ->where('id_nomina',$nomina->id)
                                                     ->where('nomina_concepts.sign',"D")
                                                     ->sum('nomina_calculations.amount');*/
-
-                                            
+                                     
         return $amount_total_asignacion;/* - $amount_total_deduccion;*/
 
     }
@@ -314,10 +338,11 @@ class NominaController extends Controller
     public function calculateAmountTotalSSO($nomina){
 
        
-        $amount_total_sso = NominaCalculation::where('id_nomina',$nomina->id)
+        $amount_total_sso =  DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+                                            ->where('id_nomina',$nomina->id)
                                             ->where('id_nomina_concept',19)
-                                            ->sum('nomina_calculations.amount');
-   
+                                            ->sum('amount');
+
         return $amount_total_sso;
 
     }
@@ -325,9 +350,11 @@ class NominaController extends Controller
     public function calculateAmountTotalFAOV($nomina){
 
        
-        $amount_total_faov = NominaCalculation::where('id_nomina',$nomina->id)
+        $amount_total_faov = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+                                            ->where('id_nomina',$nomina->id)
                                             ->where('id_nomina_concept',23)
-                                            ->sum('nomina_calculations.amount');
+                                            ->sum('amount');
+
    
         return $amount_total_faov;
 
@@ -660,7 +687,7 @@ class NominaController extends Controller
        
         $data = request()->validate([
            
-            'id_profession'     =>'required',
+            'nomina_type'     =>'required',
             'description'       =>'required|max:60',
             'type'              =>'required',
             'date_begin'        =>'required',
@@ -672,7 +699,7 @@ class NominaController extends Controller
         $nomina = new Nomina();
         $nomina->setConnection(Auth::user()->database_name);
 
-        $nomina->id_profession = request('id_profession');
+        $nomina->nomina_type_id = request('nomina_type');
         $nomina->description = request('description');
         $nomina->type = request('type');
        
@@ -696,7 +723,8 @@ class NominaController extends Controller
 
         $var  = Nomina::on(Auth::user()->database_name)->find($id);
 
-        $professions = Profession::on(Auth::user()->database_name)->orderBY('name','asc')->get();
+        /*$professions = Profession::on(Auth::user()->database_name)->orderBY('name','asc')->get();*/
+        $nomina_type = NominaType::on(Auth::user()->database_name)->get();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
@@ -704,7 +732,7 @@ class NominaController extends Controller
         $bcv = $global->search_bcv();
 
         
-        return view('admin.nominas.edit',compact('var','professions','datenow','bcv'));
+        return view('admin.nominas.edit',compact('var','nomina_type','datenow','bcv'));
         
     }
 
@@ -719,8 +747,8 @@ class NominaController extends Controller
       
 
         $data = request()->validate([
-           
-            'id_profession'         =>'required',
+
+            'nomina_type'     =>'required',
             'description'         =>'required|max:255',
             'type'         =>'required',
             'date_begin'         =>'required|max:255',
@@ -731,7 +759,7 @@ class NominaController extends Controller
 
         $var          = Nomina::on(Auth::user()->database_name)->findOrFail($id);
 
-        $var->id_profession = request('id_profession');
+        $var->nomina_type_id = request('nomina_type');
         $var->description = request('description');
         $var->type = request('type');
         $var->date_begin = request('date_begin');

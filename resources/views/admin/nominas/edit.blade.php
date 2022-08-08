@@ -100,16 +100,16 @@
                                 <div class="form-group row">
                                     <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Trabajador</label>
                                         <div class="col-md-4">
-                                            <select  id="profession"  name="id_profession" class="form-control">
-                                                @foreach($professions as $profession)
-                                                    @if ( $var->id_profession == $profession->id)
-                                                        <option selected style="backgroud-color:blue;" value="{{$profession->id}}"><strong>{{ $profession->name }}</strong></option>
+                                            <select  id="nomina_type"  name="nomina_type" class="form-control">
+                                                @foreach($nomina_type as $type)
+                                                    @if ( $var->nomina_type_id == $type->id)
+                                                        <option selected style="backgroud-color:blue;" value="{{$type->id}}"><strong>{{ $type->name }}</strong></option>
                                                     @endif
                                                 @endforeach
                                                 <option class="hidden" disabled data-color="#A0522D" value="-1">------------------</option>
-                                                @foreach($professions as $profession)
-                                                    <option value="{{ $profession['id'] }}" >
-                                                        {{ $profession['name'] }}
+                                                @foreach($nomina_type as $type)
+                                                    <option value="{{ $type['id'] }}" >
+                                                        {{ $type['name'] }}
                                                     </option>
                                                 @endforeach
                                             </select>

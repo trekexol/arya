@@ -61,9 +61,9 @@
                         <div class="form-group row">
                             <label for="profession" class="col-md-2 col-form-label text-md-right">Tipo de Nomina</label>
                             <div class="col-md-4">
-                                <select  id="profession"  name="id_profession" class="form-control">
-                                    @foreach($professions as $profession)
-                                            <option selected value="{{$profession->id}}">{{ $profession->name }}</option>
+                                <select  id="nomina_type"  name="nomina_type" class="form-control">
+                                    @foreach($nomina_type as $type)
+                                            <option selected value="{{$type->id}}">{{ $type->name }}</option>
                                         @endforeach
                                     
                                 </select>

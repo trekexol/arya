@@ -2,6 +2,54 @@
 
 @section('content')
 
+<?php 
+
+$pres_active = '';
+$utili_active = '';
+$vaca_active = '';
+$liqui_active = '';
+
+        if ($type == 'prestaciones'){
+            $pres_active = 'active';
+        }
+        if ($type == 'utilidades'){
+            $utili_active = 'active';
+        }
+        if ($type == 'vacaciones'){
+            $vaca_active = 'active';
+        }
+        if ($type == 'liquidaciones'){
+            $liqui_active = 'active';
+        }
+
+?>
+<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+    <a class="nav-link  font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('nominas') }}" role="tab" aria-controls="home" aria-selected="true">Nóminas</a>
+    </li>
+    <li class="nav-item" role="presentation">
+    <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaconcepts') }}" role="tab" aria-controls="profile" aria-selected="false">Conceptos de Nómina</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominabasescalc') }}" role="tab" aria-controls="profile" aria-selected="false">Bases de Cálculo</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('employees') }}" role="tab" aria-controls="profile" aria-selected="false">Empleados</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {{$pres_active}} font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaparts','prestaciones') }}" role="tab" aria-controls="profile" aria-selected="false">Prestaciones</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {{$utili_active}} font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaparts','utilidades') }}" role="tab" aria-controls="profile" aria-selected="false">Utilidades</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {{$vaca_active}} font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaparts','vacaciones') }}" role="tab" aria-controls="profile" aria-selected="false">Vacaciones</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link {{$liqui_active}} font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaparts','liquidaciones') }}" role="tab" aria-controls="profile" aria-selected="false">Liquidaciones</a>
+    </li>
+</ul>
+
 <!-- container-fluid -->
 <div class="container-fluid">
 
@@ -17,7 +65,7 @@
         @if ($type == 'vacaciones')
         <h2>Vacaciones de Empleados</h2>
         @endif
-        @if ($type == 'liquidacion')
+        @if ($type == 'liquidaciones')
         <h2>Liquidación de Empleados</h2>
         @endif  
         
