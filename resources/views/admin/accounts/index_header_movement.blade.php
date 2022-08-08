@@ -42,10 +42,9 @@
                 <th>Nº</th>
                 <th>Cuenta</th>
                 <th>Tipo de Movimiento</th>
-                
-                <th>Referencia</th>
-              
+                <th>Comprobante</th>
                 <th>Descripción</th>
+                <th>Referencia</th>
                 <th>Debe</th>
                 <th>Haber</th>
                
@@ -76,12 +75,10 @@
                         </td>
                     @elseif(isset($var->id_header_voucher)) 
                         <td>Otro</td>
-                        <td>
-                        {{ $var->id_header_voucher }}
-                        </td>
+                        <td class="text-center"><a href="{{ route('detailvouchers.create',['bolivares',$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
+
                     @endif
-                    
-                                   
+
                    
                     @if (isset($var->id_invoice))
                         
@@ -94,6 +91,11 @@
                         
                         <td>{{$var->headers['description'] ?? ''}}</td>
                     @endif
+
+                         <td>
+                        {{ $reference  }}
+                        </td>
+                                
                    
                     @if(isset($var->accounts['coin']))
                         @if(($var->debe != 0) && ($var->tasa))
