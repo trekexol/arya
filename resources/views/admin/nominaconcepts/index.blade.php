@@ -65,15 +65,13 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                <th class="text-center">Abreviatura</th>
-                <th class="text-center">Descripción</th>
-                <th class="text-center">Signo</th>
-                <th class="text-center">Tipo de Nómina</th>
-                <th class="text-center">Fórmula Mensual</th>
-                <th class="text-center">Fórmula Semanal</th>
-                <th class="text-center">Fórmula Quincenal</th>
-                <th class="text-center">Calcular Nómina</th>
-               <th class="text-center"></th>
+                <th class="text-center" style="width: 1%;">ID</th>
+                <th class="text-center" style="width: 1%;">Concepto</th>
+                <th class="text-center" style="width: 20%;">Descripción</th>
+                <th class="text-center" style="width: 1%;">Signo/Tipo</th>
+                <th class="text-center">Fórmula<br>Mensual - Quincenal - Semanal</th>
+                <th class="text-center" style="width: 1%;">Calcular con Nómina</th>
+                <th class="text-center"></th>
               
             </tr>
             </thead>
@@ -83,19 +81,27 @@
                 @else
                     @foreach ($nominaconcepts as $nominaconcept)
                     <tr>
-
+                    <td class="text-center font-weight-bold">{{$nominaconcept->id}}</td>
                     <td class="text-center font-weight-bold">{{$nominaconcept->abbreviation}}</td>
                     <td class="text-center">{{$nominaconcept->description}}</td>
                     @if($nominaconcept->sign == "A")
-                        <td class="text-center">Asignación</td>
+                        <td class="text-center">Asignación<br>{{$nominaconcept->type}}</td>
                     @else
-                        <td class="text-center">Deducción</td>
+                        <td class="text-center">Deducción<br>{{$nominaconcept->type}}</td>
                     @endif
                     
-                    <td class="text-center">{{$nominaconcept->type}}</td>
-                    <td class="text-center">{{$nominaconcept->formulasm['description'] ?? ''}}</td>
-                    <td class="text-center">{{$nominaconcept->formulass['description'] ?? ''}}</td>
-                    <td class="text-center">{{$nominaconcept->formulasq['description'] ?? ''}}</td>
+                    
+                    <td class="text-left">
+                        <b>Q</b> = {{$nominaconcept->formulasq['description'] ?? ''}}<br>
+                        <b>M</b> = {{$nominaconcept->formulasm['description'] ?? ''}}<br>
+                        <b>S</b> = {{$nominaconcept->formulass['description'] ?? ''}}<br>
+                        <span style="font-size: 10pt;"><b>Cuenta Contable</b> = {{'1.1.2.1.001 Sueldos y Salarios con Retencion'}}</span>
+                        
+                    </td>
+
+                    <!--<td class="text-center">{{ ''/*$nominaconcept->formulasm['description'] ?? ''*/}}</td>-->
+                    <!--<td class="text-center">{{ ''/*$nominaconcept->formulass['description'] ?? ''*/}}</td>-->
+                    <!--<td class="text-center">{{ ''/*$nominaconcept->formulasq['description'] ?? ''*/}}</td>--> 
                    
                     @if($nominaconcept->calculate == "S")
                         <td class="text-center">Si</td>
@@ -105,6 +111,9 @@
                     @if (Auth::user()->role_id  == '1')
                         <td class="text-center">
                             <a href="{{route('nominaconcepts.edit',$nominaconcept->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                            
+                            <a href="#" title="Este concepto afecta las Prestaciones"><i class="fa fa-address-card"></i></a>
+            
                         </td>
                     @endif
                     </tr>

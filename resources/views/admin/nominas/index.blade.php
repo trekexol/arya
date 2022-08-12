@@ -95,13 +95,16 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                
+                <th class="text-center">ID</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Nómina</th>
-                <th class="text-center">Desde</th>
-                <th class="text-center">Hasta</th>
-                <th class="text-center">Tipo de Nómina</th>
-               <th class="text-center"></th>
+                <th class="text-center" style="width:11%">Desde</th>
+                <th class="text-center" style="width:11%">Hasta</th>
+                <th class="text-center" style="width:10%">Tipo de Nómina</th>
+                <th class="text-center">Ver</th>
+                <th class="text-center">Calcular</th>
+               <th class="text-center" style="width:8%">PDF</th>
+               <th class="text-center">Acción</th>
               
             </tr>
             </thead>
@@ -112,27 +115,37 @@
                 @else
                     @foreach ($nominas as $key => $nomina)
                     <tr>
-                    
+                    <td class="text-center">{{$nomina->id}}</td>
                     <td class="text-center">{{$nomina->description}}</td>
                     <td class="text-center">{{$nomina->type}}</td>
                     <td class="text-center">{{$nomina->date_begin}}</td>
                     <td class="text-center">{{$nomina->date_end}}</td>
                     <td class="text-center">{{$nomina->nomina_type_id_name}}</td>
-                   
-                    @if (Auth::user()->role_id  == '1')
-                        <td class="text-center">
-                            <a href="{{route('nominas.calculate',$nomina->id) }}" title="Calcular Nomina"><i class="fa fa-calculator"></i></a>  
-                           
-                            <a href="{{route('nominas.searchMovementNomina',$nomina->id) }}" title="Ver Movimiento Contable Nomina"><i class="fa fa-search"></i></a>  
-                           
-                            <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>  
-                            <a href="{{route('nominas.edit',$nomina->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                            <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" target="_blank" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
-                            <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" target="_blank" onclick="" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
-                            <a href="{{route('nominas.print_payrool_summary_all',$nomina->id)}}" target="_blank" onclick="" title="Reporte de la Nomina"><i class="fa fa-print"></i></a>  
-                            <a href="#" class="delete" data-id-nomina={{$nomina->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                        </td>
-                    @endif
+                    
+                    <td class="text-center">
+                        <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a> 
+                    </td>
+
+                    <td class="text-center">  
+                        <a href="{{route('nominas.calculate',$nomina->id) }}" title="Recalcular Conceptos de Nómina"><i class="fa fa-calculator"></i> </a>   
+                        @if ($nomina->check_exist == 'Existe')
+                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Recrear Asiento Contable"><i class="fa fa-list-alt" style="color: green"></i></a>      
+                        <a href="{{route('nominas.searchMovementNomina',$nomina->id) }}" title="Ver Movimiento Contable Nomina"><i class="fa fa-search"></i></a>  
+                        @else
+                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Crear Asiento Contable"><i class="fa fa-list-alt" ></i></a>     
+                        @endif    
+                    </td>
+
+                    <td class="text-center">    
+                    <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" target="_blank" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
+                    <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" target="_blank" onclick="" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
+                    <a href="{{route('nominas.print_payrool_summary_all',$nomina->id)}}" target="_blank" onclick="" title="Reporte de la Nomina"><i class="fa fa-print"></i></a>  
+                    </td>  
+                    
+                    <td class="text-center">
+                        <a href="{{route('nominas.edit',$nomina->id) }}" title="Editar"><i class="fa fa-edit"></i></a>
+                        <a href="#" class="delete" data-id-nomina={{$nomina->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                    </td>
                     </tr>
                     @endforeach
                 @endif
@@ -182,11 +195,37 @@
             </div>
             <div class="modal-body">
             
-                <h5 class="text-center">Seguro desea Eliminar los cálculos y hacerlos nuevamente?</h5>
+                <h5 class="text-center">Seguro desea Eliminar los cálculos y hacerlos nuevamente? Nota: (Se perderán los conceptos que no esten programados con el cálculo de la nómina) </h5>
                 
             </div>
             <div class="modal-footer">
                 <a href="{{ route('nominas.recalculate',$exist_nomina_calculation->id) }}" type="submit" class="btn btn-info">Recalcular</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+           
+        </div>
+    </div>
+  </div>
+
+@endif
+
+@if (isset($exist_nomina_calculationcont))
+<div class="modal modal-danger fade" id="recalculateModalcont" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelcont">Recrear comprobante Contable de la Nómina: {{$exist_nomina_calculationcont->id_nomina}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            
+                <h5 class="text-center">Seguro desea recrear los comprobantes nuevamente? </h5>
+                
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('nominas.recalculatecont',$exist_nomina_calculationcont->id_nomina) }}" type="submit" class="btn btn-info">Recrear</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
            
@@ -218,6 +257,10 @@
 
     if("{{isset($exist_nomina_calculation)}}"){
         $('#recalculateModal').modal('show'); // abrir
+    }
+
+    if("{{isset($exist_nomina_calculationcont)}}"){
+        $('#recalculateModalcont').modal('show'); // abrir
     }
    
     </script> 

@@ -26,6 +26,7 @@ class CreateNominaConceptsTable extends Migration
             $table->string('type',20);
             $table->string('sign',1);
             $table->string('calculate',1);
+            $table->string('prestations',1);
 
             $table->decimal('minimum',64,2)->nullable();
             $table->decimal('maximum',64,2)->nullable();

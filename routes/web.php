@@ -547,9 +547,15 @@ Route::group(["prefix"=>'nominas'],function(){
     Route::get('selectemployee/{id}','NominaController@selectemployee')->name('nominas.selectemployee');
 
     Route::get('calculate/{id}','NominaController@calculate')->name('nominas.calculate');
+    
+    Route::get('calculatecont/{id}','NominaController@calculatecont')->name('nominas.calculatecont');
+
     Route::get('searchmovement/{id}','NominaController@searchMovementNomina')->name('nominas.searchMovementNomina');
 
     Route::get('recalculate/{id}','NominaController@recalculate')->name('nominas.recalculate');
+
+    Route::get('recalculatecont/{id}','NominaController@recalculatecont')->name('nominas.recalculatecont');
+    
 });
 
 
@@ -1022,6 +1028,9 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('select_client_note_det','ReportDeliveryNoteController@select_client_note_det')->name('reports.select_client_note_det'); //dacson nota de entrega
     Route::get('select_vendor_note_det','ReportDeliveryNoteController@select_vendor_note_det')->name('reports.select_vendor_note_det'); // dacson nota de entrega 
 
+    Route::get('select_client_fac_det','ReportDeliveryFacController@select_client_fac_det')->name('reports.select_client_fac_det'); //dacson nota de entrega
+    Route::get('select_vendor_fac_det','ReportDeliveryFacController@select_vendor_fac_det')->name('reports.select_vendor_fac_det'); // dacson nota de entrega 
+
     Route::get('debtstopay/{id_provider?}','Report2Controller@index_debtstopay')->name('reports.debtstopay');
     Route::post('storedebtstopay','Report2Controller@store_debtstopay')->name('reports.store_debtstopay');
     Route::get('debtstopaypdf/{coin}/{date_end}/{id_provider?}','Report2Controller@debtstopay_pdf')->name('reports.debtstopay_pdf');
@@ -1087,6 +1096,11 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('accounts_receivable_note_det/{typepersone}/{id_client_or_vendor?}','ReportDeliveryNoteController@index_accounts_receivable_note_det')->name('reports.accounts_receivable_note_det'); // dacson (report note delivery)
     Route::post('storeaccounts_receivable_note_det','ReportDeliveryNoteController@store_accounts_receivable_note_det')->name('reports.store_accounts_receivable_note_det'); // dacson (report note delivery)
     Route::get('accounts_receivable_note_det_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryNoteController@accounts_receivable_note_det_pdf')->name('reports.accounts_receivable_note_det_pdf');
+
+
+    Route::get('accounts_receivable_fac_det/{typepersone}/{id_client_or_vendor?}','ReportDeliveryFacController@index_accounts_receivable_fac_det')->name('reports.accounts_receivable_fac_det'); // dacson (report note delivery)
+    Route::post('storeaccounts_receivable_fac_det','ReportDeliveryFacController@store_accounts_receivable_fac_det')->name('reports.store_accounts_receivable_fac_det'); // dacson (report note delivery)
+    Route::get('accounts_receivable_fac_det_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryFacController@accounts_receivable_fac_det_pdf')->name('reports.accounts_receivable_fac_det_pdf');
 
 
 });
@@ -1288,6 +1302,8 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
     Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');
     Route::post('accountreceivablenotedetail','Exports\Reports\AccountReceivableNoteDetailExportController@exportExcel')->name('export_reports.account_receivable_note_det');
+
+    Route::post('accountreceivablefacdetail','Exports\Reports\AccountReceivableFacDetailExportController@exportExcel')->name('export_reports.account_receivable_fac_det');
 
     Route::post('payment_cobro','Exports\Reports\PaymentCobroExportController@exportExcel')->name('export_reports.payment_cobro');
     Route::post('payment_expense','Exports\Reports\PaymentExpenseExportController@exportExcel')->name('export_reports.payment_expense');

@@ -63,7 +63,12 @@
                             <div class="col-md-4">
                                 <select  id="nomina_type"  name="nomina_type" class="form-control">
                                     @foreach($nomina_type as $type)
+                                            @if ($type->id == 1)
                                             <option selected value="{{$type->id}}">{{ $type->name }}</option>
+                                            @else
+                                            <option value="{{$type->id}}">{{ $type->name }}</option>
+                                            @endif
+                                            
                                         @endforeach
                                     
                                 </select>
