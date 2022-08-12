@@ -110,12 +110,12 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" onclick="pdf();" class="btn btn-primary">
-                                   Ver Recibo
+                                   Vista Previa del Recibo
                                 </button>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <button type="submit" name="guardar" value="guardar" class="btn btn-info">
-                                   Guardar y descargar recibo
+                                   Guardar y descargar PDF de Recibo
                                 </button>
                             </div>
                             <div class="col-md-2">

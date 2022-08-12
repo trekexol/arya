@@ -73,7 +73,16 @@ $liqui_active = '';
       <div class="col-md-6" style="display: none;">
         <a href="{{ route('employees.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
       </div>
+      @if ($type == 'vacaciones')
+    
+      <div class="col-md-6">
+        <a href="{{ route('nominas.create_recibo_vacaciones')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Crear Recibo de Vacacioens</a>   
+      </div>
+
+      @endif
     </div>
+
+
   </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -171,7 +180,7 @@ $liqui_active = '';
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>
-                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            <!--<a href="{{ ''/*route('pdf.quotation',[$employee->id]) */}}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> -->
                             </td>
                             @endif
                             @if ($type == 'liquidacion')

@@ -146,7 +146,7 @@
                                             <option value="{{ $formula_m->id }}">{{ $formula_m->description }}</option>
                                             @endif
                                         @endforeach
-                                    <option value="nulo">----------------</option>
+                                    <option value="">----------------</option>
                                     
                                     <div class="dropdown">
                                         @foreach ($formulas as $m)
@@ -167,7 +167,7 @@
                                             <option value="{{ $formula_s->id }}">{{ $formula_s->description }}</option>
                                             @endif
                                         @endforeach
-                                    <option value="nulo">----------------</option>
+                                    <option value="">----------------</option>
                                     
                                     <div class="dropdown">
                                         @foreach ($formulas as $s)
@@ -188,7 +188,7 @@
                                             <option value="{{ $formula_q->id }}">{{ $formula_q->description }}</option>
                                             @endif
                                          @endforeach
-                                     <option value="nulo">----------------</option>
+                                     <option value="">----------------</option>
                                      
                                      <div class="dropdown">
                                          @foreach ($formulas as $s)

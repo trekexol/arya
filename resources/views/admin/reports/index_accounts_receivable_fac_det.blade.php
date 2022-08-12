@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form id="formPost" method="POST" action="{{ route('reports.store_accounts_receivable_note_det') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.store_accounts_receivable_fac_det') }}">
                     @csrf
 
                 <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
@@ -14,7 +14,7 @@
 
 
                 <div class="card-header text-center h4">
-                       Notas de Entrega Detalle
+                       Facturas Detalle
                 </div>
 
                 <div class="card-body">
@@ -106,34 +106,32 @@
                                 <select class="form-control" name="typeinvoice" id="typeinvoice">
                                     @if (isset($typeinvoice))
                                         @if ($typeinvoice == 'notast')
-                                            <option selected value="notast">Notas de Entrega</option>
+                                            <option selected value="notast">Facturas con Nota de Entrega</option>
                                         @elseif($typeinvoice == 'notas')
-                                            <option selected value="notas">Notas Sin Facturar</option>                                            
-                                        @elseif($typeinvoice == 'saldada')
-                                            <option selected value="saldada">Notas Saldadas</option>
+                                            <option selected value="notas">Facturas sin Nota de Entrega</option>                                            
                                         @elseif($typeinvoice == 'notase')
-                                            <option selected value="notase">Notas Eliminadas</option>
+                                            <option selected value="notase">Facturas Reversadas</option>
                                         @elseif($typeinvoice == 'facturasc')
-                                            <option selected value="facturasc">Notas Facturadas y Cobradas</option>
+                                            <option selected value="facturasc">Facturas Cobradas</option>
                                         @elseif($typeinvoice == 'facturas')
-                                            <option selected value="facturas">Notas Facturadas Pendientes</option>
+                                            <option selected value="facturas">Facturas Pendientes por Cobrar</option>
                                         @endif
                                         <option disabled value="todo">-----------------</option>
                                         <option value="todo">Todo</option>
-                                        <option value="notast">Notas de Entrega</option>
-                                        <option value="notas">Notas Sin Facturar</option>
-                                        <option value="saldada">Notas Saldadas</option>
-                                        <option value="notase">Notas Eliminadas</option>
-                                        <option value="facturasc">Notas Facturadas y Cobradas</option>
-                                        <option value="facturas">Notas Facturadas Pendientes</option>
+                                        <option value="facturasc">Facturas Cobradas</option>
+                                        <option value="facturas">Facturas Pendientes por Cobrar</option>
+                                        <option value="notast">Facturas con Nota de Entrega</option>
+                                        <option value="notas">Facturas sin Nota de Entrega</option>
+                                        <option value="notase">Facturas Reversadas</option>
+
                                     @else
                                         <option selected value="todo">Todo</option>
-                                        <option value="notast">Notas de Entrega</option>
-                                        <option value="notas">Notas Sin Facturar</option> 
-                                        <option value="saldada">Notas Saldadas</option>
-                                        <option value="notase">Notas Eliminadas</option>
-                                        <option value="facturasc">Notas Facturadas y Cobradas</option>
-                                        <option value="facturas">Notas Facturadas Pendientes</option>
+                                        <option value="facturasc">Facturas Cobradas</option>
+                                        <option value="facturas">Facturas Pendientes por Cobrar</option>
+                                        <option value="notast">Facturas con Nota de Entrega</option>
+                                        <option value="notas">Facturas sin Nota de Entrega</option>
+                                        <option value="notase">Facturas Reversadas</option>
+
                                         
                                     @endif
                                 </select>
@@ -147,7 +145,7 @@
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
 
-                            <iframe class="embed-responsive-item" src="{{route('reports.accounts_receivable_note_det_pdf',[$coin ?? 'bolivares',$date_end ?? '',$typeinvoice ?? 'todo',$typepersone ?? 'todo', $id_client_or_vendor ?? 'nada-index',$date_frist ?? '0000-00-00'])}}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{route('reports.accounts_receivable_fac_det_pdf',[$coin ?? 'bolivares',$date_end ?? '',$typeinvoice ?? 'todo',$typepersone ?? 'todo', $id_client_or_vendor ?? 'nada-index',$date_frist ?? '0000-00-00'])}}" allowfullscreen></iframe>
                             -
                             </div>                                      
                         
@@ -176,7 +174,7 @@
         document.getElementById("coin_form").value = document.getElementById("coin").value;
         var old_action = document.getElementById("formPost").action;
         
-        document.getElementById("formPost").action = "{{ route('export_reports.account_receivable_note_det') }}";
+        document.getElementById("formPost").action = "{{ route('export_reports.account_receivable_fac_det') }}";
         document.getElementById("formPost").submit();
         document.getElementById("formPost").action = old_action;
     }
@@ -191,14 +189,14 @@
         $("#vendor_label2").html('');
         $("#client_label2").show();
         $("#client_label3").show();
-        document.getElementById("route_select").href = "{{ route('reports.select_client_note_det') }}";
+        document.getElementById("route_select").href = "{{ route('reports.select_client_fac_det') }}";
     }else if(vendor != 0){
         
         $("#client_label1").show();
         $("#client_label1").html('Vendedor:');
         $("#client_label2").show();
         $("#client_label3").show();
-        document.getElementById("route_select").href = "{{ route('reports.select_vendor_note_det') }}";
+        document.getElementById("route_select").href = "{{ route('reports.select_vendor_fac_det') }}";
     }else{
         $("#client_label2").html('');
         $("#client_label2").val('');
@@ -231,7 +229,7 @@
                 $("#client_label1").html('Vendedor:');
                 $("#client_label2").show();
                 $("#client_label3").show();
-                document.getElementById("route_select").href = "{{ route('reports.select_vendor_note_det') }}";
+                document.getElementById("route_select").href = "{{ route('reports.select_vendor_fac_det') }}";
             }
             
             if(type == 'cliente'){
@@ -242,7 +240,7 @@
                 $("#client_label1").html('Cliente:');
                 $("#client_label2").show();
                 $("#client_label3").show();
-                document.getElementById("route_select").href = "{{ route('reports.select_client_note_det') }}";
+                document.getElementById("route_select").href = "{{ route('reports.select_client_fac_det') }}";
             }
         });
 
