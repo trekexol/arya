@@ -142,6 +142,24 @@
                             </div>
                         </div>
                         <div class="form-group row">
+
+                            <label for="sign" class="col-md-2 col-form-label text-md-right">Afectar a Prestaciones:</label>
+                            <div class="col-md-2">
+                                <select class="form-control" name="calculate" id="calculate">
+                                    <option value="N">No</option>
+                                    <option value="S">Si</option>
+                                </select>
+                            </div>
+
+                            <label for="sign" class="col-md-2 col-form-label text-md-right">Afectar a Prestaciones:</label>
+                            <div class="col-md-2">
+                                <select class="form-control" name="calculate" id="calculate">
+                                    <option value="N">No</option>
+                                    <option value="S">Si</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="maximum" class="col-md-2 col-form-label text-md-right">Máximo:</label>
 
                             <div class="col-md-4">
