@@ -147,14 +147,36 @@
   </tr> 
 </table>
 <table style="width: 100%;">
+  <?php 
+   $lote = '';
+   $date_expirate = '';
+   $discount = 0;
+
+      foreach ($inventories_quotations as $var){
+
+          $lote .= $var->lote;
+          $date_expirate .= $var->date_expirate;
+
+          $discount += $var->discount;
+      
+      }
+  
+  
+  ?>
   <tr>
     <th style="text-align: center; ">Código</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Cantidad</th>
+    @if($lote != '')
     <th style="text-align: center; ">Lote</th>
+    @endif
+    @if($date_expirate != '')
     <th style="text-align: center; ">Fecha Venc</th> 
+    @endif
     <th style="text-align: center; ">P.V.J.</th>
+    @if($discount > 0)
     <th style="text-align: center; ">Desc</th>
+    @endif
     <th style="text-align: center; ">Total</th>
   </tr> 
   @foreach ($inventories_quotations as $var)
@@ -169,15 +191,19 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
-
+       
+      @if (isset($var->lote))
       <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
-
- 
+      @endif
+      
+      @if (isset($var->date_expirate))
       <th style="text-align: center; font-weight: normal;">{{ $var->date_expirate}}</th>
-
+      @endif
 
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price / ($bcv ?? 1), 2, ',', '.')  }}</th>
+      @if($var->discount > 0)
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
+      @endif
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
