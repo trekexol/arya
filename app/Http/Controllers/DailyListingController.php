@@ -9,6 +9,7 @@ use App\Quotation;
 use App\Anticipo;
 use App\Client;
 use App\DetailVoucher;
+use App\ExpensePayment;
 use App\HeaderVoucher;
 use App\Http\Controllers\Calculations\AccountCalculationController;
 use App\Provider;
@@ -365,6 +366,41 @@ class DailyListingController extends Controller
                 ->where('id','=',$detail->id_anticipo)
                 ->get()->first();  
                 
+            if($detail->reference == null){
+
+                if ($detail->id_expense != null) {
+                   
+                    $referencia = ExpensePayment::on(Auth::user()->database_name) // buscar referencia
+                    ->where('id_expense','=',$detail->id_expense)->get();  
+                    
+                    if(count($referencia) > 1){
+                        
+                        $detail->reference = '';
+                        $count = 0;
+                        foreach ($referencia as $refe) {
+                               
+                                if ($count >= 1){
+                                    
+                                    $detail->reference .= ' / ';
+
+                                    $detail->reference .= $refe->reference;
+                                
+                                } else {
+
+                                    $detail->reference .= $refe->reference;    
+                                }
+                               $count++;
+                        }
+
+                   } else {
+                    $detail->reference = $referencia[0]->reference;
+                   }    
+                    
+                    
+                }
+            }
+
+
 
 
             if (isset($quotation)) {

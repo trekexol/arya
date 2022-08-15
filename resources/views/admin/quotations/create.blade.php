@@ -128,7 +128,7 @@
 
                             <div class="col-md-4">
                                 <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}"  autocomplete="note">
-
+                                
                                 @error('note')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
