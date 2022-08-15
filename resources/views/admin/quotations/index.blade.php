@@ -97,11 +97,13 @@
             <thead>
             <tr> 
                 <th class="text-center"></th>
-                <th class="text-center">N° de Control/Serie</th>
+                <th class="text-center">ID</th>
+                <th class="text-center" style="width: 11%">Fecha de Cotización</th>
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Vendedor</th>
-                <th class="text-center">Transp. / Tipo de Entrega</th>
-                <th class="text-center">Fecha de Cotización</th>
+                <th class="text-center">Observaciones</th>
+                <th class="text-center">Transp./Tipo de Entrega</th>
+                
                 <th class="text-center"></th>
                
             </tr>
@@ -117,11 +119,12 @@
                                 <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
                                 <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
                             </td>
-                            <td class="text-center">{{$quotation->serie ?? ''}}</td>
+                            <td class="text-center">{{ $quotation->id ?? ''}}</td>
+                            <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
+                            <td class="text-center">{{ $quotation->observation ?? ''}}</td>
                             <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
-                            <td class="text-center">{{ $quotation->date_quotation ?? ''}}</td>
                             <td>
                             <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                             </td>                
