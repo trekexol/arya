@@ -272,9 +272,16 @@
     <th style="text-align: left; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9); border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; "></th>
   </tr> 
-  
-  
 </table>
+@if(isset($quotation->note))
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal; font-size: small;">
+     Nota: {{$quotation->note ?? ''}} 
+    </td>
+  </tr>
+</table>
+@endif
 
 </body>
 </html>

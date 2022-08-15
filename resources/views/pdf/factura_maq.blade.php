@@ -249,9 +249,16 @@ body{
     <td style="text-align: left;  width: 21%; border-top-color: white; border-right-color: white;"></td>
     <td style="text-align: right;  width: 21%; "></td>
   </tr> 
-  
-  
 </table>
+@if(isset($quotation->note))
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal; font-size: small;">
+     Nota: {{$quotation->note ?? ''}} 
+    </td>
+  </tr>
+</table>
+@endif
 
 </body>
 </html>
