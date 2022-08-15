@@ -40,8 +40,9 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                
+                <th>ID</th>
                 <th>Descripción</th>
+                <th>Tipo</th>
                 <th></th>
               
             </tr>
@@ -52,9 +53,9 @@
                 @else
                     @foreach ($nomina_formulas as $key => $nomina_formula)
                     <tr>
-                    
-                    <td>{{$nomina_formula->description}}</td>
-                    
+                        <td>{{$nomina_formula->id}}</td>
+                        <td>{{$nomina_formula->description}}</td>
+                        <td>{{$nomina_formula->type}}</td>
                     @if (Auth::user()->role_id  == '1')
                         <td>
                             <a href="{{route('nominaformulas.edit',$nomina_formula->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  

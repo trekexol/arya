@@ -165,7 +165,15 @@
   </tr> 
   
 </table>
-
+@if(isset($quotation->note))
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal; font-size: small;">
+     Nota: {{$quotation->note ?? ''}} 
+    </td>
+  </tr>
+</table>
+@endif
 <div style="color: black;font-size: 9pt; text-align: center;">Original Cliente</div>
 <table>
   <tr>
@@ -304,6 +312,15 @@
   <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);">{{ number_format($total, 2, ',', '.') }}</th>
   </tr> 
 </table>
+@if(isset($quotation->note))
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal; font-size: small;">
+     Nota: {{$quotation->note ?? ''}} 
+    </td>
+  </tr>
+</table>
+@endif
 <div style="color: black;font-size: 9pt; text-align: center;">Copia (Sin Derecho a Crédito Fiscal)</div>
 
 <table>
@@ -445,6 +462,15 @@
     </tr> 
 
 </table>
+@if(isset($quotation->note))
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal; font-size: small;">
+     Nota: {{$quotation->note ?? ''}} 
+    </td>
+  </tr>
+</table>
+@endif
 <div style="color: black;font-size: 9pt; text-align: center;">Copia Contabilidad (Sin Derecho a Crédito Fiscal)</div>
 
 </body>

@@ -36,7 +36,7 @@
                 <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
                 @endif 
                 <div class="card-body" >
-                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type) }}" enctype="multipart/form-data" >
+                    <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type ?? 'Cotización') }}" enctype="multipart/form-data" >
                         @method('PATCH')
                         @csrf()
                         <input id="coinhidden2" type="hidden" class="form-control @error('coin') is-invalid @enderror" name="coin2" value="{{ $coin ?? 'bolivares' }}" readonly autocomplete="coin">
