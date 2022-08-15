@@ -29,6 +29,8 @@
                                     <option value="Q">Quincenal</option>
                                     <option value="S">Semanal</option>
                                     <option value="M">Mensual</option>
+                                    <option value="E">Especial</option>
+                                    <option value="A">Asignación General</option>
                                 </select>
                             </div>
                         </div>

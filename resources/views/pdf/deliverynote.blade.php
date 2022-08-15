@@ -108,12 +108,24 @@
   </tr> 
 </table>
 <table style="width: 100%;">
+  <?php 
+   $discount = 0;  
+
+      foreach ($inventories_quotations as $var){
+          $discount += $var->discount;
+      }
+  
+  ?>
+
+
   <tr>
     <th style="text-align: center; ">Código</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Cantidad</th>
     <th style="text-align: center; ">P.V.J.</th>
+    @if($discount > 0)
     <th style="text-align: center; ">Desc</th>
+    @endif
     <th style="text-align: center; ">Total</th>
   </tr> 
   @foreach ($inventories_quotations as $var)
@@ -130,7 +142,9 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price , 2, ',', '.')  }}</th>
+      @if($discount > 0)
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
+      @endif
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 

@@ -143,17 +143,17 @@
                         </div>
                         <div class="form-group row">
 
-                            <label for="sign" class="col-md-2 col-form-label text-md-right">Afectar a Prestaciones:</label>
+                            <label for="sign" class="col-md-4 col-form-label text-md-right">Dividir entre Asignación:</label>
                             <div class="col-md-2">
-                                <select class="form-control" name="calculate" id="calculate">
+                                <select class="form-control" name="asignation" id="asignation">
                                     <option value="N">No</option>
                                     <option value="S">Si</option>
                                 </select>
                             </div>
 
-                            <label for="sign" class="col-md-2 col-form-label text-md-right">Afectar a Prestaciones:</label>
+                            <label for="sign" class="col-md-4 col-form-label text-md-right">Afectar a Prestaciones:</label>
                             <div class="col-md-2">
-                                <select class="form-control" name="calculate" id="calculate">
+                                <select class="form-control" name="prestation" id="prestation">
                                     <option value="N">No</option>
                                     <option value="S">Si</option>
                                 </select>

@@ -150,7 +150,7 @@
   <?php 
    $lote = '';
    $date_expirate = '';
-   $discount = 0;
+   $discount = 0;  
 
       foreach ($inventories_quotations as $var){
 
@@ -158,9 +158,7 @@
           $date_expirate .= $var->date_expirate;
 
           $discount += $var->discount;
-      
       }
-  
   
   ?>
   <tr>

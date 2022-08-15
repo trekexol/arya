@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Gasto o Compra</h3></div>
+                <div class="card-header" ><h3>Registrar Pago para Compra/Gasto</h3></div>
                 <form method="POST" action="{{ route('expensesandpurchases.store_expense_credit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
