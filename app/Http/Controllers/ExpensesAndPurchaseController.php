@@ -2068,7 +2068,7 @@ class ExpensesAndPurchaseController extends Controller
                 }
                 
                 /*Modifica la cotizacion */
-                    $expense->date_payment = $date_payment ?? $datenow;
+                    $expense->date_payment = $date_payment_expense ?? $datenow;
 
                     $expense->iva_percentage = $iva_percentage;
 
