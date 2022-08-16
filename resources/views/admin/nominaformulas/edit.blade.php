@@ -62,15 +62,21 @@
                                                 <option value="M">Mensual</option>
                                             @elseif ($var->type == "S")
                                                 <option value="S">Semanal</option>
+                                            @elseif ($var->type == "S")
+                                                <option value="E">Especial</option>
+                                            @elseif ($var->type == "S")
+                                                <option value="A">Asignación General</option>
                                             @endif
                                                 
                                            
-                                            <option value="nulo">----------------</option>
+                                            <option value="T">Ninguna</option>
                                             
                                             <div class="dropdown">
                                                 <option value="Q">Quincenal</option>
                                                 <option value="M">Mensual</option>
                                                 <option value="S">Semanal</option>
+                                                <option value="E">Especial</option>
+                                                <option value="A">Asignación General</option>
                                             </div>
                                             
                                                
