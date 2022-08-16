@@ -15,4 +15,10 @@ class NominaConcept extends Model
     public function formulass(){
         return $this->belongsTo('App\Permission\Models\NominaFormula','id_formula_s');
     }
+    public function formulase(){
+        return $this->belongsTo('App\Permission\Models\NominaFormula','id_formula_e');
+    }
+    public function formulasa(){
+        return $this->belongsTo('App\Permission\Models\NominaFormula','id_formula_a');
+    }
 }

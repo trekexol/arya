@@ -34,19 +34,18 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-        <div class="col-md-6">
-            <h2>Conceptos de Nóminas Registradas</h2>
+        <div class="col-md-4">
+            <h2>Conceptos de Nóminas</h2>
         </div>
-       
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
-        <div class="col-md-6">
-            <a href="{{ route('nominaconcepts.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Concepto de Nómina</a>
+        <div class="col-md-4">
+            <a href="{{ route('nominaformulas')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Crear Formula</a>
+         
+        </div>   
+        <div class="col-md-4">
+            <a href="{{ route('nominaconcepts.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Crear Concepto de Nómina</a>
          
         </div>
-        @endif
-       
-            
-       
+        
     </div>
 
   </div>
@@ -69,7 +68,7 @@
                 <th class="text-center" style="width: 1%;">Concepto</th>
                 <th class="text-center" style="width: 20%;">Descripción</th>
                 <th class="text-center" style="width: 1%;">Signo/Tipo</th>
-                <th class="text-center">Fórmula<br>Mensual - Quincenal - Semanal</th>
+                <th class="text-center">Fórmula<br>Mensual - Quincenal - Semanal - Especial - Asignación General</th>
                 <th class="text-center" style="width: 1%;">Calcular con Nómina</th>
                 <th class="text-center"></th>
               
@@ -92,9 +91,22 @@
                     
                     
                     <td class="text-left">
+                        @if (isset($nominaconcept->formulasq['description']))
                         <b>Q</b> = {{$nominaconcept->formulasq['description'] ?? ''}}<br>
+                        @endif
+                        @if (isset($nominaconcept->formulasm['description']))
                         <b>M</b> = {{$nominaconcept->formulasm['description'] ?? ''}}<br>
+                        @endif
+                        @if (isset($nominaconcept->formulass['description']))
                         <b>S</b> = {{$nominaconcept->formulass['description'] ?? ''}}<br>
+                        @endif
+                        @if (isset($nominaconcept->formulase['description']))
+                        <b>E</b> = {{$nominaconcept->formulase['description'] ?? ''}}<br>
+                        @endif
+                        @if (isset($nominaconcept->formulasa['description']))
+                        <b>A</b> = {{$nominaconcept->formulasa['description'] ?? ''}}<br>
+                        @endif
+                        
                         <span style="font-size: 10pt;"><b>Cuenta Contable</b> = {{'1.1.2.1.001 Sueldos y Salarios con Retencion'}}</span>
                         
                     </td>
@@ -129,8 +141,8 @@
 @section('javascript')
     <script>
     $('#dataTable').DataTable({
-        "ordering": false,
-        "order": [],
+        "ordering": true,
+        "order": [1,'desc'],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
     </script> 
