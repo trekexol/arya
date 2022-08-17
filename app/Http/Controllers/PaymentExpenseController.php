@@ -58,6 +58,10 @@ class PaymentExpenseController extends Controller
             ->where('detail_vouchers.status','C')
             ->get()->first();
 
+            if ($movements->rate <= 0 ){
+                $movements->rate = 1;
+            }
+
             $payment_expense->rate = $movements->rate;
 
         }
