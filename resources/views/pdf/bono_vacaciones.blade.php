@@ -30,8 +30,14 @@
 
 <body>
 
+  <table id="top">
+    <tr>
+      <th class="small" style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold; font-size: 8pt;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" width="93" height="60" class="d-inline-block align-top" alt="">
+      </th>
+      <th class="small" style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold; font-size: 8pt;"><h6>{{Auth::user()->company->razon_social ?? ''}}</h6> </h6>{{Auth::user()->company->code_rif ?? ''}}</h6> </th>    </tr> 
+  </table>
 
-  <br><br><br><br><br><br><br><br><br>
+  <br>
   <div class="text-center h4">Recibo de Vacaciones</div>
 
  
@@ -45,7 +51,7 @@
 <table style="width: 100%;">
   <tr>
     <th style="width: 28%; border-right: none;">Nombre de la Empresa:</th>
-    <th style="width: 72%;" class="font-weight-normal">{{ $company->razon_social ?? ''}}</th>
+    <th style="width: 72%;" class="font-weight-normal">{{ Auth::user()->company->razon_social ?? ''}}</th>
   </tr>
 </table>
 
@@ -54,7 +60,7 @@
 <table style="width: 100%;">
   <tr>
     <th style="width: 28%; ">Domicilio Fiscal:</th>
-    <th style="width: 72%;" class="font-weight-normal">{{ $company->address ?? ''}}</th>
+    <th style="width: 72%;" class="font-weight-normal">{{ Auth::user()->company->address ?? ''}}</th>
   </tr>
 </table>
 
@@ -75,14 +81,15 @@
     <th class="text-center">Fecha de Ingreso</th>
     <th class="text-center">Motivo del Recibo</th>
     <th class="text-center">Fecha de Inicio</th>
-    <th class="text-center">Fecha de Regreso</th>
+    <th class="text-center">Fecha de Fin</th>
   </tr>
-  <tr>
+  <tr>date_format(date_create($quotationsorigin[0]['date_billing']),"d-m-Y")
+
     <td class="text-center font-weight-normal">{{ $employee->id_empleado }}</td>
-    <td class="text-center font-weight-normal">{{ $employee->fecha_ingreso }}</td>
+    <td class="text-center font-weight-normal">{{ date_format(date_create($employee->fecha_ingreso),"d-m-Y") }}</td>
     <td class="text-center font-weight-normal">Vacaciones</td>
-    <td class="text-center font-weight-normal">{{ $employee->date_begin }}</td>
-    <td class="text-center font-weight-normal">{{ $employee->date_end }}</td>
+    <td class="text-center font-weight-normal">{{ date_format(date_create($employee->date_begin),"d-m-Y") }}</td>
+    <td class="text-center font-weight-normal">{{ date_format(date_create($employee->date_end),"d-m-Y") }}</td>
   </tr>  
 </table>
 

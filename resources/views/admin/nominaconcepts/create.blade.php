@@ -83,8 +83,8 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="formula_m" id="formula_m">
                                     <option value="">Seleccionar Formula</option>
-                                    @if (isset($formulas))
-                                        @foreach ($formulas as $var)
+                                    @if (isset($formulam))
+                                        @foreach ($formulam as $var)
                                             
                                                 <option value="{{ $var->id }}">{{ $var->description }}</option>
                                            
@@ -117,8 +117,8 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="formula_q" id="formula_q">
                                     <option value="">Seleccionar Formula</option>
-                                    @if (isset($formulas))
-                                        @foreach ($formulas as $var)
+                                    @if (isset($formulaq))
+                                        @foreach ($formulaq as $var)
                                             
                                                 <option value="{{ $var->id }}">{{ $var->description }}</option>
                                             
@@ -128,6 +128,42 @@
                             </div>
                             <label for="formula_q" class="col-md-2 col-form-label text-md-right">(15 dias)</label>
                         </div>
+                       
+                        <div class="form-group row">
+                            <label for="formula_q" class="col-md-2 col-form-label text-md-right">Fórmula Especial:</label>
+
+                            <div class="col-md-6">
+                                <select class="form-control" name="formula_s" id="formula_s">
+                                    <option value="">Seleccionar Formula</option>
+                                    @if (isset($formulae))
+                                        @foreach ($formulae as $var)
+                                            
+                                                <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                            
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Especial)</label>
+                        </div>
+                        <div class="form-group row">
+                            <label for="formula_q" class="col-md-2 col-form-label text-md-right">Fórmula Asignación:</label>
+
+                            <div class="col-md-6">
+                                <select class="form-control" name="formula_a" id="formula_a">
+                                    <option value="">Seleccionar Formula</option>
+                                    @if (isset($formulaa))
+                                        @foreach ($formulaa as $var)
+                                            
+                                                <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                            
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Asignación General)</label>
+                        </div>
+
                         <div class="form-group row">
                             <label for="minimum" class="col-md-2 col-form-label text-md-right">Mínimo:</label>
 

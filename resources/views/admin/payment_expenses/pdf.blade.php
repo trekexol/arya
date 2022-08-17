@@ -68,9 +68,14 @@
   </table>
    <br><br><br>
   <table style="width: 100%;">
+    
     <tr>
-      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Pago:</th>
-      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $header_id ?? ''}}</th>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">ID del pago:</th>
+      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $payment->id ?? ''}}</th>
+    </tr> 
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Orden:</th>
+      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $payment->id_expense ?? ''}}</th>
     </tr> 
     <tr>
       <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Número de Factura:</th>
@@ -91,7 +96,11 @@
     <tr>
       <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Fecha del Cobro:</th>
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $payment_created_at ?? ''}}</th>
-    </tr> 
+    </tr>
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Comprobante:</th>
+      <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $header_id ?? ''}}</th>
+    </tr>  
   </table>
 
 

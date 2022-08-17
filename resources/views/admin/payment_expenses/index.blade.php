@@ -5,18 +5,19 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases') }}" role="tab" aria-controls="home" aria-selected="true">Gastos y Compras</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases') }}" role="tab" aria-controls="home" aria-selected="true">Por Procesar</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases.indexdeliverynote') }}" role="tab" aria-controls="home" aria-selected="true">Ordenes de Compra</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('expensesandpurchases.index_historial') }}" role="tab" aria-controls="profile" aria-selected="false">Historial</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('expensesandpurchases.index_historial') }}" role="tab" aria-controls="profile" aria-selected="false">Facturas de Compra / Gastos</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
     </li>
 </ul>
+
 
 
 <!-- container-fluid -->
@@ -27,12 +28,12 @@
       <div class="col-md-2">
           <h2>Pagos</h2>
       </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <a href="{{ route('expensesandpurchases.index_historial')}}" class="btn btn-info btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-file-alt"></i>
                 </span>
-                <span class="text">Gastos o Compras</span>
+                <span class="text">Volver a Gastos o Compras</span>
             </a>
         </div>
         <div class="col-md-2 offset-sm-1">
@@ -69,13 +70,15 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
-                <th class="text-center">Fecha</th>
-                <th class="text-center">Nº</th>
-                <th class="text-center">Nº Compra</th>
-                <th class="text-center">Referencia</th>
-                <th class="text-center">Proveedor</th>
-                <th class="text-center">Tipo de Pago</th>
+                <th class="text-center" width="11%">Fecha</th>
+                <th class="text-center" width="1%">ID</th>
+                <th class="text-center" width="1%">Orden</th>
+                <th class="text-center" width="1%">Factura</th>
+                <th class="text-center" width="1%">Ctrl/Serie</th>
+                <th class="text-center" width="1%">Tipo de Pago</th>
                 <th class="text-center">Cuenta</th>
+                <th class="text-center" width="1%">Referencia</th>
+                <th class="text-center">REF</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center" width="5%"></th>
             </tr>
@@ -84,19 +87,20 @@
             <tbody>
                 @if (empty($payment_expenses))
                 @else  
-                    @foreach ($payment_expenses as $payment_expense)
-                        <tr>
+                    @foreach ($payment_expenses as $payment_expense)   
+                    <tr>
                             <td class="text-center font-weight-bold">{{$payment_expense->created_at->format('d-m-Y')}}</td>
                             
                             <td class="text-center font-weight-bold">
                                 <a href="{{ route('payment_expenses.movement',$payment_expense->id_expense) }}" title="Ver Movimiento" class="font-weight-bold text-dark">{{ $payment_expense->id }}</a>
                             </td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->id_expense}}</td>
-                            
-                            <td class="text-center font-weight-bold">{{ $payment_expense->reference}}</td>
-                            <td class="text-center font-weight-bold">{{ $payment_expense->razon_social ?? ''}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->invoice}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->serie}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->type}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->description_account ?? ''}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->reference}}</td>
+                            <td class="text-center font-weight-bold">{{number_format(bcdiv($payment_expense->amount/$payment_expense->rate,'1',2), 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($payment_expense->amount, 2, ',', '.')}}</td>
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_expense->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
