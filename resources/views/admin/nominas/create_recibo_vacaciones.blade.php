@@ -95,7 +95,7 @@
                             <label for="lph" class="col-md-2 col-form-label text-md-right">L.P.H (Opcional) Monto:</label>
 
                             <div class="col-md-4">
-                                <input id="lph" type="text" class="form-control @error('lph') is-invalid @enderror" name="lph" autocomplete="lph">
+                                <input id="lph" type="text" class="form-control @error('lph') is-invalid @enderror" name="lph" autocomplete="lph" value="0"> 
 
                                 @error('lph')
                                     <span class="invalid-feedback" role="alert">
