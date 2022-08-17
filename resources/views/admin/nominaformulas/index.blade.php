@@ -43,6 +43,7 @@
                 <th>ID</th>
                 <th>Descripción</th>
                 <th>Tipo</th>
+                <th>Contenida en:</th>
                 <th></th>
               
             </tr>
@@ -56,6 +57,7 @@
                         <td>{{$nomina_formula->id}}</td>
                         <td>{{$nomina_formula->description}}</td>
                         <td>{{$nomina_formula->type}}</td>
+                        <td>{{$nomina_formula->concepts}}</td>
                     @if (Auth::user()->role_id  == '1')
                         <td>
                             <a href="{{route('nominaformulas.edit',$nomina_formula->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
@@ -73,7 +75,7 @@
 @section('javascript')
     <script>
     $('#dataTable').DataTable({
-        "ordering": false,
+        "ordering": true,
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });

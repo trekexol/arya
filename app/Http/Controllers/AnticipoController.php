@@ -748,13 +748,37 @@ class AnticipoController extends Controller
                         ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')
                         ->where('h.id_anticipo',$var->id)
                         ->where('d.haber',0)
-                        ->update([ 'd.debe' => $var->amount, 'd.tasa' => $var->rate,'d.id_account' => $var->id_account,'h.date' => $var->date]);
+                        ->update([ 'd.debe' => $var->amount, 'd.tasa' => $var->rate,'h.date' => $var->date]);
+
+        if(isset($var->id_provider)) {
+            DB::connection(Auth::user()->database_name)->table('detail_vouchers as d')
+            ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')
+            ->where('h.id_anticipo',$var->id)
+            ->where('d.debe',0)
+            ->update(['d.id_account' => $var->id_account]);
+
+        }
+
+
+                        
+
         
         DB::connection(Auth::user()->database_name)->table('detail_vouchers as d')
                         ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')
                         ->where('h.id_anticipo',$var->id)
                         ->where('d.debe',0)
                         ->update([ 'd.haber' => $var->amount , 'd.tasa' => $var->rate]);
+
+        if (isset($var->id_client)){
+        
+            DB::connection(Auth::user()->database_name)->table('detail_vouchers as d')
+            ->join('header_vouchers as h', 'h.id', '=', 'd.id_header_voucher')
+            ->where('h.id_anticipo',$var->id)
+            ->where('d.haber',0)
+            ->update(['d.id_account' => $var->id_account]);
+
+
+        }
         //------------------
         
        

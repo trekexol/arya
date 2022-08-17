@@ -57,26 +57,37 @@
                                     <div class="col-md-4">
                                         <select class="form-control" id="type" name="type" title="type">
                                             @if ($var->type == "Q")
-                                                <option value="Q">Quincenal</option>
+                                                <option selected value="Q">Quincenal</option>
                                             @elseif ($var->type == "M")
-                                                <option value="M">Mensual</option>
+                                                <option selected value="M">Mensual</option>
                                             @elseif ($var->type == "S")
-                                                <option value="S">Semanal</option>
+                                                <option selected value="S">Semanal</option>
                                             @elseif ($var->type == "S")
-                                                <option value="E">Especial</option>
+                                                <option selected value="E">Especial</option>
                                             @elseif ($var->type == "S")
-                                                <option value="A">Asignación General</option>
+                                                <option selected value="A">Asignación General</option>
                                             @endif
                                                 
                                            
                                             <option value="T">Ninguna</option>
                                             
                                             <div class="dropdown">
+                                            @if ($var->type != "Q")
                                                 <option value="Q">Quincenal</option>
+                                            @endif
+                                            @if ($var->type != "M")
                                                 <option value="M">Mensual</option>
+                                            @endif
+                                            @if ($var->type != "S")
                                                 <option value="S">Semanal</option>
+                                            @endif
+                                            @if ($var->type != "S")
                                                 <option value="E">Especial</option>
+                                            @endif
+                                            @if ($var->type != "S")
                                                 <option value="A">Asignación General</option>
+                                            @endif
+
                                             </div>
                                             
                                                

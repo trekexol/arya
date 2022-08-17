@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\NominaFormula;
+use App\NominaConcept;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,13 +24,39 @@ class NominaFormulaController extends Controller
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $nomina_formulas      =   NominaFormula::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-    
+        $nomina_formulas      =   NominaFormula::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+        
+        foreach ($nomina_formulas as $formula) {
+            $concepts = '';
+            $concept = '';
+            $cont = 0;
+            $concepts =  NominaConcept::on(Auth::user()->database_name)
+            ->where('id_formula_q',$formula->id)
+            ->Orwhere('id_formula_m',$formula->id)
+            ->Orwhere('id_formula_s',$formula->id)
+            ->Orwhere('id_formula_e',$formula->id)
+            ->Orwhere('id_formula_a',$formula->id)
+            ->get();
+
+
+
+            foreach ($concepts->unique('abbreviation') as $cncpt) {
+                
+                if($cont >= 1 ){ 
+                    $concept .= ', '.$cncpt->abbreviation;
+                } else {
+                    $concept .= $cncpt->abbreviation;
+                }
+
+                $cont++;
+            }
+
+            
+            $formula->concepts = $concept;
+        }
+        
+
         return view('admin.nominaformulas.index',compact('nomina_formulas'));
       
     }

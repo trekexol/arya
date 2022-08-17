@@ -58,13 +58,13 @@
                                         @if (isset($anticipo->clients['name']))
                                             <a href="{{ route('anticipos.selectclient',$anticipo->id) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>                                    
                                         @else
-                                            <a href="{{ route('anticipos.selectprovider',$anticipo->id) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>
+                                            <a href="{{ route('anticipos.selectprovider',$anticipo->id) }}" title="Seleccionar Proveedor"><i class="fa fa-eye"></i></a>
                                         @endif
                                       </div>
                                 </div>
                                 @if (isset($invoices_to_pay) && (count($invoices_to_pay)>0))
                                 <div class="form-group row">
-                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Factura/Nota de E.</label>
+                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Factura/NE: </label>
                                     <div class="col-md-5">
                                         <select  id="id_quotation"  name="id_quotation" class="form-control" width="20">
                                             @if (empty($anticipo->id_quotation) || (isset($client)))
@@ -98,17 +98,17 @@
                                 </div>
                                 @elseif(isset($expenses_to_pay) && (count($expenses_to_pay)>0))
                                 <div class="form-group row">
-                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Factura/Nota de E.</label>
+                                    <label for="clients" class="col-md-3 col-form-label text-md-right">Factura de Compra:</label>
                                     <div class="col-md-5">
                                         <select  id="id_expense"  name="id_expense" class="form-control" width="20">
                                         @if (empty($anticipo->id_expense) || (isset($provider)))
-                                            <option selected value="">Anticipo al Cliente</option>
+                                            <option selected value="">Anticipo al Proveedor</option>
                                         @else
-                                            <option selected value="{{ $anticipo->expenses['id'] }}">Numero Compra: {{$anticipo->expenses['id'] ?? ''}} - Ctrl/Serie: {{ $anticipo->expenses['serie'] ?? ''}}</option>
+                                            <option selected value="{{ $anticipo->expenses['id'] }}">Orden: {{$anticipo->expenses['id']}} - Factura: {{$anticipo->expenses['invoice'] ?? ''}} - Ctrl/Serie: {{ $anticipo->expenses['serie'] ?? ''}}</option>
                                             <option disabled>------------------------------</option>
                                         @endif
                                             @foreach($expenses_to_pay as $invoice)
-                                                <option  value="{{$invoice->id}}"> - Ctrl/Serie: {{ $invoice->serie ?? ''}} - {{ $invoice->observation ?? ''}}</option>
+                                                <option  value="{{$invoice->id}}">Orden: {{$anticipo->expenses['id']}} - Factura: {{$anticipo->expenses['invoice'] ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - {{ $invoice->observation ?? ''}}</option>
                                             @endforeach
         
                                         </select>
