@@ -12,7 +12,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Anticipo</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Anticipo a Proveedor</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('anticipos.store_provider') }}">
@@ -43,7 +43,7 @@
                                 <select  id="id_expense"  name="id_expense" class="form-control">
                                     <option selected value="-1">Seleccione una Gasto o Compra</option>
                                     @foreach($expenses as $expense)
-                                            <option  value="{{$expense->id}}">{{ $expense->providers['razon_social'] ?? ''}} - {{ $expense->serie ?? '' }}</option>
+                                            <option  value="{{$expense->id}}"> Orden: {{$expense->id}} - Factura: {{ $expense->invoice ?? '' }} - Ctrl/Serie: {{ $expense->serie ?? '' }} - Monto: {{$expense->amount_with_iva}}</option>
                                     @endforeach
                                 </select>
                             </div>
