@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Employee;
 use App\NominaConcept;
 use App\NominaFormula;
+use App\Account;
 use App\Profession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,12 +28,20 @@ class NominaConceptController extends Controller
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $nominaconcepts      =   NominaConcept::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
+
+        $nominaconcepts      =   NominaConcept::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+        
+        if (isset($nominaconcepts)){
+            foreach ($nominaconcepts as $nominaconcept) {
+            
+                $accounts = Account::on(Auth::user()->database_name)->orderBy('code_one', 'asc')
+                ->where('description','LIKE','%'.$nominaconcept->account_name.'%')
+                ->get()->first();
+
+                $nominaconcept->account_code = $accounts->code_one.'.'.$accounts->code_two.'.'.$accounts->code_three.'.'.$accounts->code_four.'.'.str_pad($accounts->code_five, 3, "0", STR_PAD_LEFT); 
+            }
+        }
     
         return view('admin.nominaconcepts.index',compact('nominaconcepts'));
       
@@ -43,10 +52,30 @@ class NominaConceptController extends Controller
        
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        $formulas = NominaFormula::on(Auth::user()->database_name)->orderBy('id','asc')->get();
+        
+        $formulam = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','M')
+        ->orderBy('id','asc')->get();
+
+        $formulaq = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','Q')
+        ->orderBy('id','asc')->get();
+
+        $formulas = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','S')
+        ->orderBy('id','asc')->get();
+
+        $formulae = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','E')
+        ->orderBy('id','asc')->get();
+
+        $formulaa = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','A')
+        ->orderBy('id','asc')->get();
 
 
-        return view('admin.nominaconcepts.create',compact('datenow','formulas'));
+
+        return view('admin.nominaconcepts.create',compact('datenow','formulam','formulaq','formulas','formulae','formulaa'));
     }
 
     public function store(Request $request)

@@ -106,9 +106,9 @@
                         @if (isset($nominaconcept->formulasa['description']))
                         <b>A</b> = {{$nominaconcept->formulasa['description'] ?? ''}}<br>
                         @endif
-                        
-                        <span style="font-size: 10pt;"><b>Cuenta Contable</b> = {{'1.1.2.1.001 Sueldos y Salarios con Retencion'}}</span>
-                        
+                        @if (isset($nominaconcept->account_name))
+                        <span style="font-size: 10pt;"><b>Cuenta Contable</b> = {{$nominaconcept->account_code}} {{$nominaconcept->account_name}}</span>
+                        @endif
                     </td>
 
                     <!--<td class="text-center">{{ ''/*$nominaconcept->formulasm['description'] ?? ''*/}}</td>-->

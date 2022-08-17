@@ -36,14 +36,30 @@ class PaymentExpenseController extends Controller
                                     "(DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(expense_payments.created_at, '%Y-%m-%d') <= ?)", 
                                     [$datebeginyear, $datenow])
                                 ->where('expense_payments.status',1)
-                                ->select('expense_payments.*','providers.razon_social as razon_social','accounts.description as description_account')
+                                ->select('expense_payments.*','providers.razon_social as razon_social','accounts.description as description_account','expenses_and_purchases.invoice as invoice','expenses_and_purchases.serie as serie')
                                 ->orderBy('expense_payments.created_at','desc')->get();
+
+
 
         foreach($payment_expenses as $payment_expense){
 
             $type = $this->asignar_payment_type($payment_expense->payment_type);
 
             $payment_expense->type = $type;
+
+
+            $movements = ExpensesAndPurchase::on(Auth::user()->database_name) // buscando rate para el detalle del pago
+            ->join('detail_vouchers', 'detail_vouchers.id_expense', '=', 'expenses_and_purchases.id')
+            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
+            ->join('accounts','accounts.id','detail_vouchers.id_account')
+            ->join('providers','providers.id','expenses_and_purchases.id_provider')
+            ->where('expenses_and_purchases.id',$payment_expense->id_expense)
+            ->where('header_vouchers.description','LIKE','Pago%')
+            ->where('detail_vouchers.status','C')
+            ->get()->first();
+
+            $payment_expense->rate = $movements->rate;
+
         }
             
         
