@@ -67,7 +67,7 @@
         @endif
         </div>
         <div class="table-responsive">
-        <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
+        <table class="table table-light2 table-bordered" style="font-size: 11pt;" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
                 <th class="text-center" width="11%">Fecha</th>
@@ -75,9 +75,9 @@
                 <th class="text-center" width="1%">Orden</th>
                 <th class="text-center" width="1%">Factura</th>
                 <th class="text-center" width="1%">Ctrl/Serie</th>
-                <th class="text-center" width="1%">Tipo de Pago</th>
+                <th class="text-center" width="1%">Proveedor</th>
                 <th class="text-center">Cuenta</th>
-                <th class="text-center" width="1%">Referencia</th>
+                <th class="text-center" width="1%">Comp.</th>
                 <th class="text-center">REF</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center" width="5%"></th>
@@ -97,10 +97,10 @@
                             <td class="text-center font-weight-bold">{{ $payment_expense->id_expense}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->invoice}}</td>
                             <td class="text-center font-weight-bold">{{ $payment_expense->serie}}</td>
-                            <td class="text-center font-weight-bold">{{ $payment_expense->type}}</td>
-                            <td class="text-center font-weight-bold">{{ $payment_expense->description_account ?? ''}}</td>
-                            <td class="text-center font-weight-bold">{{ $payment_expense->reference}}</td>
-                            <td class="text-center font-weight-bold">{{number_format(bcdiv($payment_expense->amount/$payment_expense->rate,'1',2), 2, ',', '.')}}</td>
+                            <td class="text-center font-weight-bold">{{ $payment_expense->razon_social ?? ''}}</td>
+                            <td class="text-left font-weight-bold"><b>Cuenta:</b> {{$payment_expense->description_account ?? ''}}<br><b>Tipo:</b> {{ $payment_expense->type}}<br><b>Referencia:</b> {{ $payment_expense->reference}}</td>
+                            <td class="text-center"><a href="{{ route('detailvouchers.create',['bolivares',$payment_expense->comprobante ?? '']) }}" title="Ver comprobante contable">{{ $payment_expense->comprobante ?? '' }}</a></td>
+                            <td class="text-right font-weight-bold">{{number_format(bcdiv($payment_expense->amount/$payment_expense->rate,'1',2), 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($payment_expense->amount, 2, ',', '.')}}</td>
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_expense->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>

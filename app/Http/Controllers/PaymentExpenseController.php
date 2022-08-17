@@ -61,6 +61,7 @@ class PaymentExpenseController extends Controller
                 $movements->tasa = 1;
             } 
 
+            $payment_expense->comprobante = $movements->id_header_voucher;
             $payment_expense->rate = $movements->tasa;
 
         }
