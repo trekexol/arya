@@ -115,6 +115,8 @@ class NominaConceptController extends Controller
         $users->id_formula_q = request('formula_q');
         $users->id_formula_e = request('formula_e');
         $users->id_formula_a = request('formula_a');
+        $users->asignation = request('asignation');
+        $users->prestations = request('prestations');
 
         $valor_sin_formato_minimum = str_replace(',', '.', str_replace('.', '', request('minimum')));
         $valor_sin_formato_maximum = str_replace(',', '.', str_replace('.', '', request('maximum')));
@@ -140,13 +142,32 @@ class NominaConceptController extends Controller
 
         $var  = NominaConcept::on(Auth::user()->database_name)->find($id);
 
-        $formulas  = NominaFormula::on(Auth::user()->database_name)->orderBy('description','asc')->get();
+
+        $formulam = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','M')
+        ->orderBy('id','asc')->get();
+
+        $formulaq = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','Q')
+        ->orderBy('id','asc')->get();
+
+        $formulas = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','S')
+        ->orderBy('id','asc')->get();
+
+        $formulae = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','E')
+        ->orderBy('id','asc')->get();
+
+        $formulaa = NominaFormula::on(Auth::user()->database_name)
+        ->where('type','A')
+        ->orderBy('id','asc')->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
        // dd($var);
-        return view('admin.nominaconcepts.edit',compact('var','datenow','formulas'));
+        return view('admin.nominaconcepts.edit',compact('var','datenow','formulam','formulaq','formulas','formulae','formulaa'));
         
     }
 
@@ -194,6 +215,8 @@ class NominaConceptController extends Controller
         $var->id_formula_q = request('formula_q');
         $var->id_formula_e = request('formula_e');
         $var->id_formula_a = request('formula_a');
+        $var->asignation = request('asignation');
+        $var->prestations = request('prestations');
 
         $valor_sin_formato_minimum = str_replace(',', '.', str_replace('.', '', request('minimum')));
         $valor_sin_formato_maximum = str_replace(',', '.', str_replace('.', '', request('maximum')));

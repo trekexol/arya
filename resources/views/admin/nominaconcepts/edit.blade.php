@@ -141,7 +141,7 @@
     
                                 <div class="col-md-6">
                                     <select class="form-control" id="formula_m" name="formula_m" title="formula_mensual">
-                                        @foreach ($formulas as $formula_m)
+                                        @foreach ($formulam as $formula_m)
                                             @if ($var->id_formula_m == $formula_m->id)
                                             <option value="{{ $formula_m->id }}">{{ $formula_m->description }}</option>
                                             @endif
@@ -149,13 +149,14 @@
                                     <option value="">----------------</option>
                                     
                                     <div class="dropdown">
-                                        @foreach ($formulas as $m)
+                                        @foreach ($formulam as $m)
                                             <option value="{{ $m->id }}">{{ $m->description }}</option>
                                         @endforeach
                                     </div>
 
                                 </select>
                                 </div>
+                                <label for="formula_q" class="col-md-2 col-form-label text-md-right">(30 dias)</label>
                             </div>
                             <div class="form-group row">
                                 <label for="formula_s" class="col-md-2 col-form-label text-md-right">Fórmula Semanal:</label>
@@ -177,13 +178,14 @@
                                     
                                 </select>
                                 </div>
+                                <label for="formula_q" class="col-md-2 col-form-label text-md-right">(4 Semanas)</label>
                             </div>
                             <div class="form-group row">
                                 <label for="formula_q" class="col-md-2 col-form-label text-md-right">Fórmula Quincenal:</label>
     
                                 <div class="col-md-6">
                                     <select class="form-control" id="formula_q" name="formula_q" title="formula_quincenal">
-                                         @foreach ($formulas as $formula_q)
+                                         @foreach ($formulaq as $formula_q)
                                             @if ($var->id_formula_q == $formula_q->id)
                                             <option value="{{ $formula_q->id }}">{{ $formula_q->description }}</option>
                                             @endif
@@ -191,41 +193,127 @@
                                      <option value="">----------------</option>
                                      
                                      <div class="dropdown">
-                                         @foreach ($formulas as $s)
+                                         @foreach ($formulaq as $s)
                                              <option value="{{ $s->id }}">{{ $s->description }}</option>
                                          @endforeach
                                      </div>
                                      
                                  </select>
                                  </div>
+                                 <label for="formula_q" class="col-md-2 col-form-label text-md-right">(15 dias)</label>
                             </div>
                             <div class="form-group row">
-                                <label for="minimum" class="col-md-2 col-form-label text-md-right">Mínimo:</label>
+                                <label for="formula_e" class="col-md-2 col-form-label text-md-right">Fórmula Especial:</label>
     
-                                <div class="col-md-4">
-                                    <input id="minimum" type="text" class="form-control @error('minimum') is-invalid @enderror" name="minimum"  value="{{ $var->minimum }}" maxlength="60" required autocomplete="off" placeholder='0,00' >
-    
-                                    @error('minimum')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" id="formula_e" name="formula_e" title="Formula Especial">
+                                         @foreach ($formulae as $formula_q)
+                                            @if ($var->id_formula_e == $formula_q->id)
+                                            <option value="{{ $formula_q->id }}">{{ $formula_q->description }}</option>
+                                            @endif
+                                         @endforeach
+                                     <option value="">----------------</option>
+                                     
+                                     <div class="dropdown">
+                                         @foreach ($formulae as $s)
+                                             <option value="{{ $s->id }}">{{ $s->description }}</option>
+                                         @endforeach
+                                     </div>
+                                     
+                                 </select>
+                                 </div>
+                                 <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Especial)</label>
                             </div>
                             <div class="form-group row">
-                                <label for="maximum" class="col-md-2 col-form-label text-md-right">Máximo:</label>
+                                <label for="formula_a" class="col-md-2 col-form-label text-md-right">Fórmula Asignación:</label>
     
-                                <div class="col-md-4">
-                                    <input id="maximum" type="text" class="form-control @error('maximum') is-invalid @enderror" name="maximum"  value="{{ $var->maximum }}" maxlength="60" required autocomplete="off" placeholder='0,00'>
-    
-                                    @error('maximum')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-control" id="formula_a" name="formula_a" title="Fórmula Asignación General">
+                                         @foreach ($formulaa as $formula_q)
+                                            @if ($var->id_formula_a == $formula_q->id)
+                                            <option value="{{ $formula_q->id }}">{{ $formula_q->description }}</option>
+                                            @endif
+                                         @endforeach
+                                     <option value="">----------------</option>
+                                     
+                                     <div class="dropdown">
+                                         @foreach ($formulaa as $s)
+                                             <option value="{{ $s->id }}">{{ $s->description }}</option>
+                                         @endforeach
+                                     </div>
+                                     
+                                 </select>
+                                 </div>
+                                 <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Asignación General)</label>
                             </div>
-                               
+
+                            <div class="form-group row">
+
+                                    <label for="sign" class="col-md-4 col-form-label text-md-right">Calcular Asignación con Nómina:</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" name="asignation" id="asignation">
+                                            @if($var->asignation == "N")
+                                            <option value="N">No</option>
+                                            @else
+                                                <option value="S">Si</option>
+                                            @endif
+                                            <option value="N">----------------</option>
+                                            
+                                            <div class="dropdown">
+                                                <option value="N">No</option>
+                                                <option value="S">Si</option>
+                                            </div>
+                                        </select>
+                                    </div>
+
+
+                                    <label for="sign" class="col-md-4 col-form-label text-md-right">Afectar a Prestaciones:</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" name="prestations" id="prestations">
+                                            @if($var->prestations == "N")
+                                            <option value="N">No</option>
+                                            @else
+                                                <option value="S">Si</option>
+                                            @endif
+                                            <option value="N">----------------</option>
+                                            
+                                            <div class="dropdown">
+                                                <option value="N">No</option>
+                                                <option value="S">Si</option>
+                                            </div>
+                                        </select>
+                                    </div>
+                            </div>
+
+                            <div style="display: none;">
+                                    <div class="form-group row">
+                                        <label for="minimum" class="col-md-2 col-form-label text-md-right">Mínimo:</label>
+            
+                                        <div class="col-md-4">
+                                            <input id="minimum" type="text" class="form-control @error('minimum') is-invalid @enderror" name="minimum"  value="{{ $var->minimum }}" maxlength="60" required autocomplete="off" placeholder='0,00' >
+            
+                                            @error('minimum')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="maximum" class="col-md-2 col-form-label text-md-right">Máximo:</label>
+            
+                                        <div class="col-md-4">
+                                            <input id="maximum" type="text" class="form-control @error('maximum') is-invalid @enderror" name="maximum"  value="{{ $var->maximum }}" maxlength="60" required autocomplete="off" placeholder='0,00'>
+            
+                                            @error('maximum')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                            </div>
+
                             <br>
                                 <div class="form-group row justify-content-center">
                                     <div class="form-group col-sm-2">

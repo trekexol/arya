@@ -48,7 +48,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="sign" class="col-md-2 col-form-label text-md-right">Calcular <br>con Nómina:</label>
+                            <label for="sign" class="col-md-2 col-form-label text-md-right">Calcular Automático<br>al crear Nómina:</label>
                             <div class="col-md-2">
                                 <select class="form-control" name="calculate" id="calculate">
                                     <option value="N">No</option>
@@ -133,7 +133,7 @@
                             <label for="formula_q" class="col-md-2 col-form-label text-md-right">Fórmula Especial:</label>
 
                             <div class="col-md-6">
-                                <select class="form-control" name="formula_s" id="formula_s">
+                                <select class="form-control" name="formula_e" id="formula_e">
                                     <option value="">Seleccionar Formula</option>
                                     @if (isset($formulae))
                                         @foreach ($formulae as $var)
@@ -164,22 +164,10 @@
                             <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Asignación General)</label>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="minimum" class="col-md-2 col-form-label text-md-right">Mínimo:</label>
 
-                            <div class="col-md-4">
-                                <input id="minimum" type="text" class="form-control @error('minimum') is-invalid @enderror" name="minimum"  value="0.00" maxlength="60" required autocomplete="off" placeholder='0,00'>
-
-                                @error('minimum')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
                         <div class="form-group row">
 
-                            <label for="sign" class="col-md-4 col-form-label text-md-right">Dividir entre Asignación:</label>
+                            <label for="sign" class="col-md-4 col-form-label text-md-right">Calcular Asignación con Nómina:</label>
                             <div class="col-md-2">
                                 <select class="form-control" name="asignation" id="asignation">
                                     <option value="N">No</option>
@@ -189,26 +177,41 @@
 
                             <label for="sign" class="col-md-4 col-form-label text-md-right">Afectar a Prestaciones:</label>
                             <div class="col-md-2">
-                                <select class="form-control" name="prestation" id="prestation">
+                                <select class="form-control" name="prestations" id="prestations">
                                     <option value="N">No</option>
                                     <option value="S">Si</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="maximum" class="col-md-2 col-form-label text-md-right">Máximo:</label>
+                        <div style="display: none;">
+                                <div class="form-group row" >
+                                    <label for="minimum" class="col-md-2 col-form-label text-md-right">Monto Mínimo (Opcional):</label>
 
-                            <div class="col-md-4">
-                                <input id="maximum" type="text" class="form-control @error('maximum') is-invalid @enderror" name="maximum"  value="9999999999.99" maxlength="60" required autocomplete="off" placeholder='0,00'>
+                                    <div class="col-md-4">
+                                        <input id="minimum" type="text" class="form-control @error('minimum') is-invalid @enderror" name="minimum"  value="0" maxlength="60" required autocomplete="off" placeholder='0,00'>
 
-                                @error('maximum')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                                        @error('minimum')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="maximum" class="col-md-2 col-form-label text-md-right">Monto Máximo (Opcional):</label>
+
+                                    <div class="col-md-4">
+                                        <input id="maximum" type="text" class="form-control @error('maximum') is-invalid @enderror" name="maximum"  value="0" maxlength="60" required autocomplete="off" placeholder='0,00'>
+
+                                        @error('maximum')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
                         </div>
-                    <br>
+                                <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
