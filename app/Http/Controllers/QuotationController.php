@@ -47,7 +47,8 @@ class QuotationController extends Controller
 
    public function index($coin = null)
    {
-        
+        $photo = '';
+
         if($this->userAccess->validate_user_access($this->modulo)){
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
             ->where('date_billing','=',null)
