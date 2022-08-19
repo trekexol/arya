@@ -154,7 +154,11 @@
                         <div class="form-group row">
                             @if (empty($quotation->date_delivery_note))
                             <div class="col-sm-3 offset-sm-1">
+                                @if($photo_product == 1)
+                                <a onclick="pdf(2);" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar Nota de Entrega</a>  
+                                @else
                                 <a onclick="pdf();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Guardar Nota de Entrega</a>  
+                                @endif
                             </div>
                             <div class="col-sm-3">
                                 <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Guardar Media Carta</a>  
@@ -278,15 +282,17 @@
         let date = document.getElementById("date-begin").value; 
 
         var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
- 
+
     }
 
     function pdfmediacarta3(valor) {
+
         let inputIva = document.getElementById("iva").value; 
         let date = document.getElementById("date-begin").value; 
-
+       
+        
         var nuevaVentana= window.open("{{ route('pdf.deliverynotemediacarta',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
- 
+
     }
 
     function calculate() {

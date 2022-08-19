@@ -190,11 +190,11 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
        
-      @if (isset($var->lote))
+      @if ($lote != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
       @endif
       
-      @if (isset($var->date_expirate))
+      @if ($date_expirate != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->date_expirate}}</th>
       @endif
 
