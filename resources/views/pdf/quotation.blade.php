@@ -114,17 +114,39 @@
     <th style="text-align: center; width: 100%;">Productos</th>
   </tr> 
 </table>
-<?php 
 
-  $total = 0;
-?>
 <table style="width: 100%;">
+  <?php 
+  $lote = '';
+  $date_expirate = '';
+  $discount = 0;  
+  $total = 0;
+     foreach ($inventories_quotations as $var){
+
+         $lote .= $var->lote;
+         $date_expirate .= $var->date_expirate;
+
+         $discount += $var->discount;
+     }
+ 
+ ?>
   <tr>
-    <th style="text-align: center; ">Código</th>
+    <th style="text-align: center; ">Código {{$photo}}</th>
     <th style="text-align: center; ">Descripción</th>
+    @if($photo == 1)
+    <th style="text-align: center; ">Foto</th>
+    @endif
     <th style="text-align: center; ">Cantidad</th>
+    @if($lote != '')
+    <th style="text-align: center; ">Lote</th>
+    @endif
+    @if($date_expirate != '')
+    <th style="text-align: center; ">Fecha Venc</th> 
+    @endif
     <th style="text-align: center; ">P.V.J.</th>
+    @if($discount > 0)
     <th style="text-align: center; ">Desc</th>
+    @endif
     <th style="text-align: center; ">Total</th>
   </tr> 
   @foreach ($inventories_quotations as $var)
@@ -140,9 +162,21 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
+      @if($var->photo_product && $photo == 1)
+      <th style="text-align: center; font-weight: normal;"><img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}"></th>
+      @endif
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
+      @if (isset($var->lote))
+      <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
+      @endif
+      
+      @if (isset($var->date_expirate))
+      <th style="text-align: center; font-weight: normal;">{{ $var->date_expirate}}</th>
+      @endif
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
+      @if($discount > 0)
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
+      @endif
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 

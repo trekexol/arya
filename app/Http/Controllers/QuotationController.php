@@ -62,14 +62,38 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
-            return view('admin.quotations.index',compact('quotations','company','coin','clients','datenow'));
+            foreach ($quotations as $quotation){
+
+                $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                ->where('quotation_products.id_quotation',$quotation->id)
+                ->where('quotation_products.status','1')
+                ->where('products.photo_product','!=', null)
+                
+               // ->select('products.*')
+                ->first();    
+               
+                if($inventories_quotations){
+
+                    $photo = true; 
+                    $quotation->photo = $photo;
+                }else{
+                    $photo = false;
+                    $quotation->photo = $photo;
+
+                }
+            }
+
+
+
+            
+            return view('admin.quotations.index',compact('quotations','company','coin','clients','datenow','photo'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
 
       
    }
-
    /**
     * Show the form for creating a new resource.
     *

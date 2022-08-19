@@ -93,7 +93,7 @@ class PDF2Controller extends Controller
         
     }
     
-    function printQuotation($id_quotation,$coin = null)
+    function printQuotation($id_quotation,$coin = null,$photo = null)
     {
       
 
@@ -241,7 +241,7 @@ class PDF2Controller extends Controller
             
             // $lineas_cabecera = $company->format_header_line;
 
-            $pdf = $pdf->loadView('pdf.quotation',compact('company','quotation','inventories_quotations','bcv','coin'));
+            $pdf = $pdf->loadView('pdf.quotation',compact('company','quotation','inventories_quotations','bcv','coin','photo'));
             return $pdf->stream();
     
         }else{
@@ -403,7 +403,7 @@ class PDF2Controller extends Controller
     }
 
 
-    function deliverynote($id_quotation,$coin,$iva,$date)
+    function deliverynote($id_quotation,$coin,$iva,$date,$valor = null)
     {
       
         $pdf = App::make('dompdf.wrapper');
@@ -564,7 +564,7 @@ class PDF2Controller extends Controller
                 $this->aggregate_movement_mercancia($quotation,$price_cost_total);
                 
                 $pdf = $pdf->loadView('pdf.deliverynote',compact('quotation','inventories_quotations','bcv','company'
-                                                                ,'total_retiene_iva','total_retiene_islr','coin','retiene_iva'));
+                                                                ,'total_retiene_iva','total_retiene_islr','coin','retiene_iva','valor'));
                 return $pdf->stream();
          
             }else{
@@ -811,7 +811,7 @@ class PDF2Controller extends Controller
         
     }
 
-    function deliverynotemediacarta($id_quotation,$coin,$iva,$date_delivery)
+    function deliverynotemediacarta($id_quotation,$coin,$iva,$date_delivery,$valor = null)
     {
       
 
@@ -971,7 +971,7 @@ class PDF2Controller extends Controller
                 $this->aggregate_movement_mercancia($quotation,$price_cost_total);
                 
                 $pdf = $pdf->loadView('pdf.deliverynotemediacarta',compact('quotation','inventories_quotations','bcv','company'
-                                                                ,'retiene_iva','total_retiene_islr'));
+                                                                ,'retiene_iva','total_retiene_islr','valor'));
                 return $pdf->stream();
          
             }else{

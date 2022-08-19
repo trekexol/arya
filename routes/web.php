@@ -616,8 +616,8 @@ Route::group(["prefix"=>'invoices'],function(){
  Route::group(["prefix"=>'pdf'],function(){
     Route::get('factura/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura')->name('pdf');
 
-    Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
-    Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
+    Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
+    Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
     
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
@@ -635,7 +635,7 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('order/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@order')->name('pdf.order');
 
-    Route::get('quotation/{id_quotation}/{coin?}','PDF2Controller@printQuotation')->name('pdf.quotation');
+    Route::get('quotation/{id_quotation}/{coin?}/{photo?}','PDF2Controller@printQuotation')->name('pdf.quotation');
    
     Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
 

@@ -112,24 +112,36 @@
             <tbody>
                 @if (empty($quotations))
                 @else  
-                    @foreach ($quotations as $quotation)
-                        <tr>
-                            <td>
-                                <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
-                                <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
-                            </td>
-                            <td class="text-center">{{ $quotation->id ?? ''}}</td>
-                            <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
-                            <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
-                            <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
-                            <td class="text-center">{{ $quotation->observation ?? ''}}</td>
-                            <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
-                            <td>
-                            <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>                
-                        </tr>     
-                    @endforeach   
+                @foreach ($quotations as $quotation)
+                <tr>
+                    <td>
+                        <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                        
+                        @if($quotation->photo == true)
+                        <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares',$quotation->photo]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a> 
+
+                        
+                        @else
+                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+
+                        @endif
+                        
+                        
+                        <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
+                    </td>
+                    <td class="text-center">{{ $quotation->id ?? ''}}</td>
+                    <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
+                    <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
+                    <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
+                    <td class="text-center">{{ $quotation->observation ?? ''}}</td>
+                    <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
+                    <td>
+                    <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                    </td>                
+                </tr>     
+            @endforeach
+
                 @endif
             </tbody>
         </table>
