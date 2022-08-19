@@ -150,6 +150,7 @@
                       
                         
                         <br>
+                        <br>
                         <div class="form-group row">
                             @if (empty($quotation->date_delivery_note))
                             <div class="col-sm-3 offset-sm-1">
@@ -167,11 +168,24 @@
                             </div>
                             @else
                             <div class="col-sm-3 offset-sm-1">
-                                <a onclick="pdf();" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="Guardar">Ver Nota de Entrega</a>  
+                                <button class="btn btn-info" type="button"
+                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                    Ver/Imprimir 
+                                </button>
+                                <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="cursor: pointer">
+                                    <a onclick="pdf(1);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega</a>  
+                                    @if($photo_product == 1)
+                                    <a onclick="pdf(2);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega con Foto</a>  
+                                    @endif
+                                    <a onclick="pdfmediacarta3(1);" id="btnfacturarmedia" name="btnfacturarmedia" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta</a>  
+                                    <a onclick="pdfmediacarta3(2);" id="btnfacturarmedia" name="btnfacturarmedia" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta por Tres</a>  
+
+                                </div> 
                             </div>
-                            <div class="col-sm-3">
-                                <a onclick="pdfmediacarta3();" id="btnfacturarmedia" name="btnfacturarmedia" class="btn btn-info" title="Guardar">Ver Media Carta</a>  
-                            </div>
+                          
+        
                             <div class="col-sm-3">
                                 <a href="{{ route('quotations.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="">Listar Notas de Entrega</a>  
                             </div>                           
@@ -181,7 +195,6 @@
                             @endif
                             
                         </div>
-                        
                     
                 </div>
             </div>
@@ -258,20 +271,21 @@
 
     calculate();
 
-    function pdf() {
+
+    function pdf(valor) {
         let inputIva = document.getElementById("iva").value; 
 
         let date = document.getElementById("date-begin").value; 
 
-        var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+        var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
  
     }
 
-    function pdfmediacarta3() {
+    function pdfmediacarta3(valor) {
         let inputIva = document.getElementById("iva").value; 
         let date = document.getElementById("date-begin").value; 
 
-        var nuevaVentana= window.open("{{ route('pdf.deliverynotemediacarta',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+        var nuevaVentana= window.open("{{ route('pdf.deliverynotemediacarta',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
  
     }
 

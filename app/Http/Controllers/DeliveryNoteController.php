@@ -112,7 +112,7 @@ class DeliveryNoteController extends Controller
 
 
 
-    public function createdeliverynote($id_quotation,$coin,$type = null)
+    public function createdeliverynote($id_quotation,$coin,$type = null,$photo_product = null)
     {   
         
          $quotation = null;
@@ -146,6 +146,7 @@ class DeliveryNoteController extends Controller
 
             $total_retiene_islr = 0;
             $retiene_islr = 0;
+            $photo_product = false;
 
             foreach($inventories_quotations as $var){
                 if(isset($coin) && ($coin != 'bolivares')){
@@ -171,7 +172,13 @@ class DeliveryNoteController extends Controller
 
                 }
 
+                if($var->photo_product != null){
+                    $photo_product = true;
+                }
+
             }
+
+       
 
             $quotation->total_factura = $total;
             $quotation->base_imponible = $base_imponible;
@@ -202,7 +209,7 @@ class DeliveryNoteController extends Controller
             /*-------------- */
              
      
-             return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr','type'));
+             return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr','type','photo_product'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
