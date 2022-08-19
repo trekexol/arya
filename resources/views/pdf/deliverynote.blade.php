@@ -153,15 +153,19 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      @if($var->photo_product && $valor == 2)
-      <th style="text-align: center; font-weight: normal;"><img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}"></th>
+      @if($valor == 2)
+        @if(isset($var->photo_product))
+        <th style="text-align: center; font-weight: normal;"><img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}"></th>
+        @else
+        <th style="text-align: center; font-weight: normal;"></th>
+        @endif
       @endif
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
-      @if (isset($var->lote))
+      @if ($lote != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
       @endif
       
-      @if (isset($var->date_expirate))
+      @if ($date_expirate != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->date_expirate}}</th>
       @endif
 
