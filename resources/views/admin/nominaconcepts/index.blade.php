@@ -67,10 +67,10 @@
                 <th class="text-center" style="width: 1%;">ID</th>
                 <th class="text-center" style="width: 1%;">Concepto</th>
                 <th class="text-center" style="width: 20%;">Descripción</th>
-                <th class="text-center" style="width: 1%;">Signo/Tipo</th>
+                <th class="text-center" style="width: 1%;">Signo-Tipo</th>
                 <th class="text-center">Fórmula<br>Mensual - Quincenal - Semanal - Especial - Asignación General</th>
                 <th class="text-center" style="width: 1%;">Calcular con Nómina</th>
-                <th class="text-center"></th>
+                <th class="text-center" style="width: 5%;"></th>
               
             </tr>
             </thead>
@@ -80,13 +80,13 @@
                 @else
                     @foreach ($nominaconcepts as $nominaconcept)
                     <tr>
-                    <td class="text-center font-weight-bold">{{$nominaconcept->id}}</td>
+                    <td class="text-center font-weight-bold">{{$nominaconcept->id}}<br>O:{{$nominaconcept->order}}</td>
                     <td class="text-center font-weight-bold">{{$nominaconcept->abbreviation}}</td>
                     <td class="text-center">{{$nominaconcept->description}}</td>
                     @if($nominaconcept->sign == "A")
-                        <td class="text-center">Asignación<br>{{$nominaconcept->type}}</td>
+                        <td class="text-center">(Asignación)<br>{{$nominaconcept->type}}</td>
                     @else
-                        <td class="text-center">Deducción<br>{{$nominaconcept->type}}</td>
+                        <td class="text-center">(Deducción)<br>{{$nominaconcept->type}}</td>
                     @endif
                     
                     
@@ -107,7 +107,7 @@
                         <b>A</b> = {{$nominaconcept->formulasa['description'] ?? ''}}<br>
                         @endif
                         @if (isset($nominaconcept->account_name))
-                        <span style="font-size: 10pt;"><b>Cuenta Contable</b> = {{$nominaconcept->account_code}} {{$nominaconcept->account_name}}</span>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code}} {{$nominaconcept->account_name}}</span>
                         @endif
                     </td>
 
@@ -120,14 +120,17 @@
                     @else
                         <td class="text-center">No</td>
                     @endif
-                    @if (Auth::user()->role_id  == '1')
-                        <td class="text-center">
-                            <a href="{{route('nominaconcepts.edit',$nominaconcept->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                            
-                            <a href="#" title="Este concepto afecta las Prestaciones"><i class="fa fa-address-card"></i></a>
-            
-                        </td>
-                    @endif
+
+                    <td class="text-center">
+                        <a href="{{route('nominaconcepts.edit',$nominaconcept->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                        @if ($nominaconcept->prestations == 'S')
+                        <i class="fa fa-address-card" title="Este concepto afecta las Prestaciones" style="color: #4e73df"></i>
+                        @endif
+                        @if ($nominaconcept->asignation == 'S')
+                        <i class="fa fa-address-card" title="Este concepto calculará Asignación" style="color: darkgreen"></i>
+                        @endif
+                    </td>
+
                     </tr>
                     @endforeach
                 @endif

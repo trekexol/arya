@@ -714,7 +714,7 @@ class NominaController extends Controller
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
 
 
-		$variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes];
+		$variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general];
         //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
 		$total = $this->resolver($operacion,$variables);
 

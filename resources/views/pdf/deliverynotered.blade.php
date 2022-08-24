@@ -97,11 +97,7 @@
 
 <table style="width: 100%;">
   <tr>
-  @if($valor == 3)
-  <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; <span style="color: red;">{{ $quotation->observation ?? ''}}</span></th>
-  @else
-  <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; {{ $quotation->observation ?? ''}} </th>
-  @endif
+  <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; <span style="color: red">{{ $quotation->observation ?? ''}} <span></th>
 </tr>
   
 </table>

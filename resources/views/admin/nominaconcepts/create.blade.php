@@ -163,6 +163,30 @@
                             </div>
                             <label for="formula_q" class="col-md-2 col-form-label text-md-right">(Asignación General)</label>
                         </div>
+                        <div class="form-group row">
+                            <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+
+                            <div class="col-md-6">
+                                <select class="form-control" name="cuenta_contable" id="cuenta_contable">
+                                    <option value="">Seleccionar Cuenta Contable</option>
+                                    @if (isset($accounts))
+                                        @foreach ($accounts as $account)
+                                            
+                                                <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                            
+                                        @endforeach
+                                    @endif
+                                    @if (isset($accounts_two))
+                                    @foreach ($accounts_two as $account_two)
+                                        
+                                            <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                        
+                                    @endforeach
+                                @endif
+                                </select>
+                            </div>
+
+                        </div>
 
 
                         <div class="form-group row">
@@ -183,6 +207,8 @@
                                 </select>
                             </div>
                         </div>
+
+
                         <div style="display: none;">
                                 <div class="form-group row" >
                                     <label for="minimum" class="col-md-2 col-form-label text-md-right">Monto Mínimo (Opcional):</label>
@@ -235,9 +261,5 @@
         $("#maximum").mask('000.000.000.000.000,00', { reverse: true });
     });
 
-	$(function(){
-        soloAlfaNumerico('description');
-       
-    });
     </script>
 @endsection

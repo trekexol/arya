@@ -420,12 +420,10 @@
                             <div class="form-group row mb-0">
                                
                                 <div id="divDeliveryNote" class="col-sm-3">
-                                    @if($suma == 0)
-                                        <a onclick="validate()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar">Nota de Entrega</a>  
-                                    @else
+                                    
                                         <a onclick="deliveryNoteSend()" id="btnSendNote" name="btnfacturar" class="btn btn-info" title="facturar"> Nota de Entrega</a>  
-                                    @endif
-                                </div>
+                                
+                                    </div>
                           
                                 <div id="divFacturar" class="col-sm-3">
                                     @if($suma == 0)

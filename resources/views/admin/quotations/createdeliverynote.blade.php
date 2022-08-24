@@ -180,6 +180,7 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="cursor: pointer">
                                     <a onclick="pdf(1);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega</a>  
+                                    <a onclick="pdf(3);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE Observación Red</a>  
                                     @if($photo_product == 1)
                                     <a onclick="pdf(2);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega con Foto</a>  
                                     @endif
