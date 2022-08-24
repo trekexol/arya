@@ -72,10 +72,26 @@ class NominaConceptController extends Controller
         $formulaa = NominaFormula::on(Auth::user()->database_name)
         ->where('type','A')
         ->orderBy('id','asc')->get();
+    
+        $accounts = '';
 
+        $accounts = Account::on(Auth::user()->database_name)
+        ->where('code_one','2')
+        ->where('code_two','1')
+        ->where('code_three','2')
+        ->where('code_four','2')
+        ->orderBy('id', 'asc')
+        ->get();
 
+        $accounts_two = Account::on(Auth::user()->database_name)
+        ->where('code_one','6')
+        ->where('code_two','1')
+        ->where('code_three','1')
+        ->where('code_four','1')
+        ->orderBy('id', 'asc')
+        ->get();
 
-        return view('admin.nominaconcepts.create',compact('datenow','formulam','formulaq','formulas','formulae','formulaa'));
+        return view('admin.nominaconcepts.create',compact('datenow','formulam','formulaq','formulas','formulae','formulaa','accounts','accounts_two'));
     }
 
     public function store(Request $request)
@@ -115,6 +131,7 @@ class NominaConceptController extends Controller
         $users->id_formula_q = request('formula_q');
         $users->id_formula_e = request('formula_e');
         $users->id_formula_a = request('formula_a');
+        $users->account_name = request('cuenta_contable');
         $users->asignation = request('asignation');
         $users->prestations = request('prestations');
 
@@ -163,11 +180,29 @@ class NominaConceptController extends Controller
         ->where('type','A')
         ->orderBy('id','asc')->get();
 
+        $accounts = '';
+
+        $accounts = Account::on(Auth::user()->database_name)
+        ->where('code_one','2')
+        ->where('code_two','1')
+        ->where('code_three','2')
+        ->where('code_four','2')
+        ->orderBy('id', 'asc')
+        ->get();
+
+        $accounts_two = Account::on(Auth::user()->database_name)
+        ->where('code_one','6')
+        ->where('code_two','1')
+        ->where('code_three','1')
+        ->where('code_four','1')
+        ->orderBy('id', 'asc')
+        ->get();
+
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
        // dd($var);
-        return view('admin.nominaconcepts.edit',compact('var','datenow','formulam','formulaq','formulas','formulae','formulaa'));
+        return view('admin.nominaconcepts.edit',compact('var','datenow','formulam','formulaq','formulas','formulae','formulaa','accounts','accounts_two'));
         
     }
 
@@ -215,6 +250,7 @@ class NominaConceptController extends Controller
         $var->id_formula_q = request('formula_q');
         $var->id_formula_e = request('formula_e');
         $var->id_formula_a = request('formula_a');
+        $var->account_name = request('cuenta_contable');
         $var->asignation = request('asignation');
         $var->prestations = request('prestations');
 
