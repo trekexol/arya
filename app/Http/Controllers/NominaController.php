@@ -602,7 +602,12 @@ class NominaController extends Controller
                         $tiene_calculo = true;
                         $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$vars);
                     }
-                }
+                }/*else if(($nomina->type == "Asignacion")){ //crear un id_formula_t para la especial
+                    if(isset($nominaconcept->id_formula_a)){
+                        $tiene_calculo = true;
+                        $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$vars);
+                    }
+                }*/
 
                 $vars->amount = $amount;
                 $vars->status =  "1";

@@ -56,9 +56,9 @@
         
                                     <div class="col-md-4">
                                         @if(isset($var->coin))
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) / ($var->rate ?? 1) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) / ($var->rate ?? 1) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @else
-                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" readonly name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
+                                            <input id="balance_previus" type="text" class="form-control @error('balance_previus') is-invalid @enderror" name="balance_previus" value="{{ number_format(bcdiv( ($var->balance_previus ?? 0) , '1', 2), 2, ',', '.')}}"  required autocomplete="balance_previus">
                                         @endif
                                     
                                         @error('balance_previus')

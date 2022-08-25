@@ -263,7 +263,7 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function updateexpense($id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date)
+    public function updateexpense($id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date,$rate)
     {   
        
         if ($observation == '-1'){
@@ -275,9 +275,10 @@ class ExpensesAndPurchaseController extends Controller
         if ($serie == '-1'){
             $serie = '';
         }
+        $sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate));
 
         ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id_quotation)
-                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date]);
+                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date,'rate'=>$sin_formato_rate]);
 
 
         /*$historial_quotation = new HistorialQuotationController();

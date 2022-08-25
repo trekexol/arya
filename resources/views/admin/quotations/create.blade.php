@@ -198,7 +198,7 @@
                             </div>
 
                         </div>
-                        <div class="custom-control custom-switch">
+                        <div class="custom-switch">
                             <input type="checkbox" class="custom-control-input" id="customSwitches">
                             <label id="id_scan_auto" class="custom-control-label" for="customSwitches">Activar Agregar Automático</label>
                         </div>
