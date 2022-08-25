@@ -93,7 +93,7 @@
                             </div>
                             <label for="rate" class="col-md-1 col-form-label text-md-right">Tasa:</label>
                             <div class="col-md-2">
-                                <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ $expense->rate ?? $bcv }}" required autocomplete="rate">
+                                <input  id="rate" type="text" onkeyup="noespac(this)" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($expense->rate ?? $bcv, 10, ',', '.') }}" required autocomplete="rate">
                                 @error('rate')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -102,7 +102,7 @@
                                  
                             </div>
                             <a href="#" onclick="refreshrate()" title="tasaactual"><i class="fa fa-redo-alt"></i></a> 
-                             <label  class="col-md-2">Tasa BCV: {{ number_format($bcv, 2, ',', '.')}}</label>
+                             <label  class="col-md-2">Tasa BCV: {{ number_format($bcv, 10, ',', '.')}}</label>
 
                                     
                         </div>
@@ -493,8 +493,10 @@
         } );
 
         $(document).ready(function () {
-            $("#rate").mask('000.000.000.000.000,00', { reverse: true });
-            
+           /* $("#rate").mask('0,0000000000', { reverse: true });*/
+ 
+
+
         });
 
         $(document).ready(function () {
@@ -506,6 +508,16 @@
             $("#amount_product").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
             
         });
+        
+        function noespac(e) {
+            
+            e.value = e.value.replace(/\./g, ',');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
 
         function searchprovider(){
             var old_action = document.getElementById("formUpdate").action;
@@ -521,7 +533,7 @@
             let invoice = document.getElementById("invoice").value;
             let serie = document.getElementById("serie").value;
             let date = document.getElementById("date-begin").value;
-
+            let rate = document.getElementById("rate").value;
 
             if (observation == ''){
                 observation = '-1';
@@ -532,9 +544,12 @@
             if (serie == ''){
                 serie = '-1';
             }
+            
+            if (rate == ''){
+                rate = 1;
+            }
 
-
-            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date;
+            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate;
 
         }
 

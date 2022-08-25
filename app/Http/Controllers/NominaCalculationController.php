@@ -213,7 +213,65 @@ class NominaCalculationController extends Controller
         return $cantidad_de_dias_lunes;
     }
 
- 
+    public function calcularopracion($operador1,$operador2,$operacion = '+') {
+        switch ($operacion) {
+            case '**':
+                $result = $operador1*$operador2;
+                break;
+            case '*':
+                $result = $operador1*$operador2;
+                break;
+            case '/':
+                if ($operador2 != 0) {
+                    $result = $operador1/$operador2;
+                } else {
+                    $result = 0;
+                }
+                break;
+            case '+':
+                $result = $operador1+$operador2;
+                break;
+            case '-':
+                $result = $operador1-$operador2;
+                break;
+            default:
+                $result = $operador1+$operador2;
+                break;
+        }
+        return $result;
+    }
+
+    public function resolver($operacion,$a_variables) {
+        $a_param2 = ['',''];
+        $return = 0;
+        foreach ($a_variables as $key => $value) {
+            $sustituir = '{{'.$key.'}}';
+            $operacion = str_replace($sustituir, $value,$operacion);
+        }
+        $a_param = explode(' ', $operacion);
+        if (count($a_param) <3 ) {
+            $return = $a_param[0];
+        } else {
+            $return = $this->calcularopracion($a_param[0],$a_param[2],$a_param[1]);
+    
+            $j = 0;
+            $a_param2 = ['',''];
+            $tope = count($a_param);
+            for ($i=3; $i < $tope ; $i++) { 
+                if ($j > 1) {
+                    $return = $this->calcularopracion($return,$a_param2[1],$a_param2[0]);
+                    $a_param2 = ['',''];
+                    $j=0;
+                }
+                $a_param2[$j] = $a_param[$i];
+                $j += 1; 
+            }
+        }
+        if ($a_param2[1] != '') {
+            $return = $this->calcularopracion($return,$a_param2[1],$a_param2[0]);
+        }
+        return $return;
+    }
 
     public function addNominaCalculation($nomina,$nominaconcept,$employee,$nomina_calculation)
     {

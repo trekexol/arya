@@ -536,7 +536,7 @@ class AccountController extends Controller
             $valor_sin_formato = str_replace(',', '.', str_replace('.', '', request('balance_previus')));
             $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
-            $var->balance_previus =$valor_sin_formato;
+            $var->balance_previus = $valor_sin_formato;
             $var->rate = $valor_sin_formato_rate;
 
             if(request('coin') != 'BsS'){
@@ -684,7 +684,7 @@ class AccountController extends Controller
         $rate = request('rate');
 
         $sin_formato_balance_previus = str_replace(',', '.', str_replace('.', '', request('balance_previus')));
-        $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+        //$sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
         $var->description = request('description');
        
@@ -699,7 +699,9 @@ class AccountController extends Controller
             $var->coin = null;
            // $var->balance_previus = $sin_formato_balance_previus;
         }
-        $var->rate = $sin_formato_rate;
+            
+        $var->balance_previus = $sin_formato_balance_previus;
+        $var->rate = request('rate');
     
         $var->save();
 
