@@ -67,7 +67,7 @@
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-md-3">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $expense->serie ?? old('serie') }}" autocomplete="serie">
+                                <input id="serie" onkeyup="noslash(this)" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $expense->serie ?? old('serie') }}" autocomplete="serie">
 
                                 @error('serie')
                                     <span class="invalid-feedback" role="alert">
@@ -515,6 +515,14 @@
             e.value = e.value.replace(/[A-Z]/g, '');
             e.value = e.value.replace(/[a-z]/g, '');
         
+            return e.value;
+            
+        }
+
+
+        function noslash(e) {
+            
+            e.value = e.value.replace(/\//g, '');
             return e.value;
             
         }
