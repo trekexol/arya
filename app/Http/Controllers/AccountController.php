@@ -684,7 +684,7 @@ class AccountController extends Controller
         $rate = request('rate');
 
         $sin_formato_balance_previus = str_replace(',', '.', str_replace('.', '', request('balance_previus')));
-        //$sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+        $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
         $var->description = request('description');
        
@@ -700,8 +700,8 @@ class AccountController extends Controller
            // $var->balance_previus = $sin_formato_balance_previus;
         }
             
-        $var->balance_previus = $sin_formato_balance_previus;
-        $var->rate = request('rate');
+        $var->balance_previus = $valor_sin_formato;
+        $var->rate = $sin_formato_rate;
     
         $var->save();
 
