@@ -700,7 +700,7 @@ class AccountController extends Controller
            // $var->balance_previus = $sin_formato_balance_previus;
         }
             
-        $var->balance_previus = $valor_sin_formato;
+        $var->balance_previus = $sin_formato_balance_previus;
         $var->rate = $sin_formato_rate;
     
         $var->save();

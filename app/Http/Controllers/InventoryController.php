@@ -298,6 +298,7 @@ class InventoryController extends Controller
         //Si la taza es automatica
         if($company->tiporate_id == 1){
             $bcv = $global->search_bcv();
+
         }else{
             //si la tasa es fija
             $bcv = $company->rate;

@@ -131,8 +131,8 @@
                             <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa</label>
 
                             <div class="col-md-4">
-                                <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" value="{{ number_format($bcv ?? 0, 2, ',', '.')}}" name="rate" required autocomplete="rate">
-
+                                <input  id="rate" type="text" onkeyup="noespac(this)" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($bcv ?? 0, 10, ',', '.') }}" required autocomplete="rate">
+                    
                                 @error('rate')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -173,10 +173,15 @@
             
         });
 
-        $(document).ready(function () {
-            $("#rate").mask('000.000.000.000.000.000.000,00', { reverse: true });
+        function noespac(e) {
             
-        });
+            e.value = e.value.replace(/\./g, ',');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
 
     </script>
 @endsection
