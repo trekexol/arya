@@ -49,15 +49,6 @@ class InventoryController extends Controller
         ->select('products.id as id_inventory','products.*')  
         ->get();   
         
-        
-       /* $accounts = Account::on(Auth::user()->database_name)
-        ->orWhere('description', 'LIKE','Bancos')
-        ->orWhere('description', 'LIKE','Caja')
-        ->orWhere('description', 'LIKE','Cuentas por Pagar Comerciales')
-        ->orWhere('description', 'LIKE','Capital Social Suscrito y Pagado')
-        ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
-        ->orderBY('description','asc')->pluck('description','id')->toArray();*/
-
         foreach ($inventories as $inventorie) {
             
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
@@ -71,7 +62,7 @@ class InventoryController extends Controller
 
 
 
-   public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
+   public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_account = 'todas')
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
@@ -92,12 +83,59 @@ class InventoryController extends Controller
                 ->orWhere('type','COMBO')
                 ->orWhere('type','MATERIAP');
         })
-
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
         ->get();     
        
-         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','id_account'));
+                
+        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
+        ->Where('code_one',1)
+        ->Where('code_two',1)
+        ->Where('code_three',3)
+        ->Where('code_four',1)
+        ->Where('level',5)
+        ->orderBY('description','asc')->get(); 
+
+
+
+         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','id_account','accounts'));
+   }
+
+  
+    public function getinventory(Request $request, $id_account = 'todas'){
+
+         if($request->ajax()){
+            try{
+
+                
+                if($id_account == 'todas') {
+                    $cond = '!=';
+                    $id_account = 'r';
+                
+                } else {
+                    $cond = '=';
+                    
+                }
+
+                $inventories = Product::on(Auth::user()->database_name)
+                ->where(function ($query){
+                    $query->where('type','MERCANCIA')
+                        ->orWhere('type','COMBO')
+                        ->orWhere('type','MATERIAP');
+                })
+                ->where('products.status',1)
+                ->where('products.id_account',$cond,$id_account)
+                ->select('products.*')  
+                ->get();    
+                 
+
+               return response()->json($inventories);
+
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+        }
+
    }
 
    public function storemovements(Request $request)
@@ -109,6 +147,7 @@ class InventoryController extends Controller
         $type = request('type');
         $coin = request('coin');
         $id_inventory = request('id_inventories');
+        $id_account = request('id_account');
         $global = new GlobalController();
         
    
@@ -131,14 +170,23 @@ class InventoryController extends Controller
 
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
-        ->get();     
+        ->get();    
+        
+        
+        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
+        ->Where('code_one',1)
+        ->Where('code_two',1)
+        ->Where('code_three',3)
+        ->Where('code_four',1)
+        ->Where('level',5)
+        ->orderBY('description','asc')->get(); 
        
-        return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
+        return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','accounts','id_account'));
     }
 
 
    
-    public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos') 
+    public function movements_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_account = 'todas') 
    {
  
         $pdf = App::make('dompdf.wrapper');
@@ -176,6 +224,15 @@ class InventoryController extends Controller
                 
             }
 
+            if($id_account == 'todas') {
+                $cond3 = '!=';
+                $id_account = 'r';
+            
+            } else {
+                $cond3 = '=';
+                
+            }
+
         
 
         $inventories = InventoryHistories::on(Auth::user()->database_name) 
@@ -184,6 +241,7 @@ class InventoryController extends Controller
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
         ->where('inventory_histories.id_product',$cond2,$id_inventory)
+        ->where('products.id_account',$cond3,$id_account)
         ->orderBy('inventory_histories.id' ,'ASC')
         ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
         ->get();     

@@ -321,7 +321,9 @@ Route::group(["prefix"=>'inventories'],function(){
   
     Route::get('movements','InventoryController@indexmovements')->name('inventories.movement');
     Route::post('storemovements','InventoryController@storemovements')->name('reports.storemovements');
-    Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}','InventoryController@movements_pdf')->name('reports.movements_pdf');
+    Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}/{id_account}','InventoryController@movements_pdf')->name('reports.movements_pdf');
+    
+    Route::get('getinventory/{id_account?}','InventoryController@getinventory')->name('inventories.getinventory');
 });
 
 Route::group(["prefix"=>'modelos'],function(){
