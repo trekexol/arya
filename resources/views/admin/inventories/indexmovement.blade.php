@@ -88,6 +88,29 @@
                                     
                                 </select>
                             </div>
+                            <div class="col-sm-3">
+                                <select class="form-control" name="id_account" id="id_account">
+                                    
+                             
+                                            @if (isset($id_inventory)) 
+                                                   <option value="todos">Todas</option>
+                                                    @foreach ($inventories as $var)
+                                                        @if($id_inventory == $var->id_inventory)
+                                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                        @else
+                                                       <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                       @endif
+                                                    @endforeach      
+                                            @else
+                                                    <option selected value="todos">Todos</option>     
+                                                    @foreach ($inventories as $var)
+                                                    <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                    @endforeach                                    
+
+                                            @endif
+                                </select>
+                            </div>
+
                             <div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"

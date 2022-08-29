@@ -154,12 +154,12 @@
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-right">{{ number_format($var->amount ?? 0, 2, ',', '.')}}</td> 
-                            <td class="text-right">{{number_format($var->price ?? 0, 2, ',', '.') }}</td>
+                            <td class="text-right">{{number_format($var->price_buy ?? 0, 2, ',', '.') }}</td>
                             
                             @if($var->money == "D")
-                            <td class="text-center">Dolar</td>
+                            <td class="text-center">USD</td>
                             @else
-                            <td class="text-center">Bolívar</td>
+                            <td class="text-center">Bs</td>
                             @endif
 
                             <td class="text-center">

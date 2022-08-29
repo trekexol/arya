@@ -47,7 +47,16 @@ class InventoryController extends Controller
         ->orderBy('id' ,'DESC')
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
-        ->get();     
+        ->get();   
+        
+        
+       /* $accounts = Account::on(Auth::user()->database_name)
+        ->orWhere('description', 'LIKE','Bancos')
+        ->orWhere('description', 'LIKE','Caja')
+        ->orWhere('description', 'LIKE','Cuentas por Pagar Comerciales')
+        ->orWhere('description', 'LIKE','Capital Social Suscrito y Pagado')
+        ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
+        ->orderBY('description','asc')->pluck('description','id')->toArray();*/
 
         foreach ($inventories as $inventorie) {
             
@@ -88,7 +97,7 @@ class InventoryController extends Controller
         ->select('products.id as id_inventory','products.*')  
         ->get();     
        
-         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory'));
+         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','id_account'));
    }
 
    public function storemovements(Request $request)
