@@ -476,9 +476,6 @@ class InventoryController extends Controller
     }
 
 
-   
-
-
     public function store_decrease_inventory(Request $request)
     {
    
@@ -504,6 +501,7 @@ class InventoryController extends Controller
         $id_inventory = request('id_inventory');
 
         if($valor_sin_formato_amount_new > 0){
+            
             if($valor_sin_formato_amount_new <= $amount_old){
 
                 $inventory = Product::on(Auth::user()->database_name)->findOrFail($id_inventory);
@@ -520,38 +518,44 @@ class InventoryController extends Controller
                 $inventory->save();*/
 
                 $date = Carbon::now();
-                $datenow = $date->format('Y-m-d');   
+                $datenow = $date->format('Y-m-d');
+                
+               // $counterpart = request('Subcontrapartida');
 
                 $global = new GlobalController; 
                 $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
 
-                $header_voucher  = new HeaderVoucher();
+               // if($counterpart != 'Seleccionar'){
 
-                $header_voucher->description = "Disminucion de Inventario";
-                $header_voucher->date = $datenow;
+                    $header_voucher  = new HeaderVoucher();
+                    $header_voucher->setConnection(Auth::user()->database_name);
+
+                    $header_voucher->description = "Disminucion de Inventario";
+                    $header_voucher->date = $datenow;
+                    
+                    $header_voucher->status =  "1";
                 
-                $header_voucher->status =  "1";
-            
-                $header_voucher->save();
+                    $header_voucher->save();
 
-                if($inventory->money == 'Bs'){
-                    $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
-                }else{
-                    $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
-                }
+                    if($inventory->money == 'Bs'){
+                        $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
+                    }else{
+                        $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
+                    }
 
-                if ($inventory->id_account == null) {
-                    $inventory->id_account = 17; 
-                }
-                
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
-                                    $id_user,0,$total);
+                    if ($inventory->id_account == null) {
+                        $inventory->id_account = 17; 
+                    }
+                    
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
+                                        $id_user,0,$total);
 
-                $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
+                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Gastos de ajuste de inventario%')->first();  
 
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
-                                    $id_user,$total,0);
-            
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
+                                      $id_user,$total,0);
+               // }
+
                 return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
             
             }else{
@@ -559,7 +563,7 @@ class InventoryController extends Controller
 
             }
         }else{
-            return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
+            return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir debe ser mayor a cero!');
 
         }
 
