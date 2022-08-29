@@ -31,7 +31,7 @@ class InventoriesMovementExportController extends Controller
         return Excel::download($export, 'historial_inventario.xlsx');
     }
 
-    public function movements_pdf($coin,$date_frist,$date_end,$type,$id_inventory) 
+    public function movements_pdf($coin,$date_frist,$date_end,$type,$id_inventory,$id_account) 
    {
     
         $pdf = App::make('dompdf.wrapper');
@@ -68,6 +68,14 @@ class InventoriesMovementExportController extends Controller
             }
 
         
+            if($id_account == 'todas') {
+                $cond3 = '!=';
+                $id_account = 'r';
+            
+            } else {
+                $cond3 = '=';
+                
+            }
 
         $inventories = InventoryHistories::on(Auth::user()->database_name)
         ->join('inventories','inventories.id','inventory_histories.id_product')     
@@ -76,7 +84,7 @@ class InventoriesMovementExportController extends Controller
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
         ->where('inventory_histories.id_product',$cond2,$id_inventory)
-
+        ->where('products.id_account',$cond3,$id_account)
         //->where('inventory_histories.status','A')
         //->select('inventory_histories.id as id_inventory','inventory_histories.amount_real as amount_real','products.id as id','products.code_comercial as code_comercial','products.description as description','products.price as price','products.photo_product as photo_product')       
         ->orderBy('inventory_histories.id' ,'ASC')
