@@ -92,19 +92,19 @@
                                 <select class="form-control" name="id_account" id="id_account">
                                     
                              
-                                            @if (isset($id_inventory)) 
-                                                   <option value="todos">Todas</option>
-                                                    @foreach ($inventories as $var)
-                                                        @if($id_inventory == $var->id_inventory)
-                                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                            @if (isset($accounts)) 
+                                                   <option value="todas">Todas</option>
+                                                    @foreach ($accounts as $var)
+                                                        @if($id_account == $var->id)
+                                                        <option selected value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
                                                         @else
-                                                       <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                       <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
                                                        @endif
                                                     @endforeach      
                                             @else
-                                                    <option selected value="todos">Todos</option>     
-                                                    @foreach ($inventories as $var)
-                                                    <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                    <option selected value="todas">Todas</option>     
+                                                    @foreach ($accounts as $var)
+                                                    <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
                                                     @endforeach                                    
 
                                             @endif
@@ -186,7 +186,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory])}}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory,$id_account ?? 'todas'])}}" allowfullscreen></iframe>
                             </div>                                      
                         
                         </div>
@@ -213,17 +213,58 @@
             document.getElementById("formPost").submit();
             document.getElementById("formPost").action = old_action;
         }
-        
-        /*$("#product").on('change',function(){
-            
-            product = $(this).val();
-            
-            $("#client_label2").val('');
+              
+           $("#id_account").on('change',function(){
+                var id_account = $(this).val();
+                $("#id_inventories").val("");
+                getinventory(id_account);
 
-        }); */
+
+                //alert(id_account);
+            });
+
+        function getinventory(id_account){
+            // alert(`../municipio/list/${estado_id}`);
+            $.ajax({
+                url:`../inventories/getinventory/${id_account}`,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let inventories = $("#id_inventories");
+                    let htmlOptions = '';
+
+                    // console.clear();
+                    if(response.length > 0){
+                        
+                        htmlOptions = `<option value='todos'>Todos</option>`;
+
+                        response.forEach((item, index, object)=>{
+                            let {id,description,code_comercial} = item;
+                            htmlOptions += `<option value='${id}'>${code_comercial} - ${description}</option>`
+                           
+                        });
+                    } else {
+                         htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    inventories.html('');
+                    inventories.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
+	
 
         
         </script> 
         
 
 @endsection
+
