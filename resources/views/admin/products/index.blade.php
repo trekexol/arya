@@ -142,12 +142,13 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
-                <th class="text-center negro">ID</th>
+                <th class="text-center negro" width="1%">ID</th>
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Tipo</th>
                 <th class="text-center">Precio</th>
-                <th class="text-center">Moneda</th>
+                <th class="text-center">Costo</th>
+                <th class="text-center" width="1%">Moneda</th>
                 <th class="text-center">Foto</th>
                 <th class="text-center" width="1%">(S)</th>
               
@@ -165,11 +166,12 @@
                             <td class="text-center">{{$product->description}}</td>
                             <td class="text-center">{{$product->type}}</td>
                             <td class="text-right">{{number_format($product->price, 2, ',', '.')}}</td>
+                            <td class="text-right">{{number_format($product->price_buy, 2, ',', '.')}}</td>
                             
                             @if ($product->money == 'Bs')
-                              <td class="text-center">Bolivares</td>
+                              <td class="text-center">Bs</td>
                             @else
-                              <td class="text-center">Dolares</td>
+                              <td class="text-center">USD</td>
                             @endif
                            
             
