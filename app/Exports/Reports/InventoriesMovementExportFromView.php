@@ -21,7 +21,7 @@ class InventoriesMovementExportFromView implements FromView
     {
         $report = new InventoriesMovementExportController();
         
-        return $report->movements_pdf($this->request->coin ?? 'dolares',$this->request->date_begin ?? 'todo',$this->request->date_end ?? 'todo',$this->request->type ?? 'todo',$this->request->id_inventories ?? 'todos');
+        return $report->movements_pdf($this->request->coin ?? 'dolares',$this->request->date_begin ?? 'todo',$this->request->date_end ?? 'todo',$this->request->type ?? 'todo',$this->request->id_inventories ?? 'todos',$this->request->id_account ?? 'todas');
     }
 
     
