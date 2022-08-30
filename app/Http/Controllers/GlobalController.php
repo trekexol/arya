@@ -735,7 +735,7 @@ class GlobalController extends Controller
             $inventories_quotations = DB::connection(Auth::user()->database_name)
             ->table('inventory_histories')
             ->where('id_product','=',$id_product)
-            ->where('branch','=',$sucursal)
+            ->where('id_branch','=',$sucursal)
             ->select('amount_real')
             ->get()->last();
         }

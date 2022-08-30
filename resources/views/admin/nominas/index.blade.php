@@ -118,8 +118,8 @@
                     <td class="text-center">{{$nomina->id}}</td>
                     <td class="text-center">{{$nomina->description}}</td>
                     <td class="text-center">{{$nomina->type}}</td>
-                    <td class="text-center">{{$nomina->date_begin}}</td>
-                    <td class="text-center">{{$nomina->date_end}}</td>
+                    <td class="text-center">{{ date_format(date_create($nomina->date_begin),"d-m-Y")}}</td>
+                    <td class="text-center">{{date_format(date_create($nomina->date_end),"d-m-Y")}}</td>
                     <td class="text-center">{{$nomina->nomina_type_id_name}}</td>
                     
                     <td class="text-center">

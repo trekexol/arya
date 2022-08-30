@@ -17,6 +17,7 @@ use App\ProductPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Unique;
 
 class ProductController extends Controller
 {
@@ -190,6 +191,15 @@ class ProductController extends Controller
         $var->subsegment_id= request('Subsegment');
         $var->unit_of_measure_id = request('unit_of_measure_id');
         $var->code_comercial = request('code_comercial');
+        
+        $product_exist  =   Product::on(Auth::user()->database_name)->where('code_comercial',request('code_comercial'))->first();
+        
+        if (!empty($product_exist)) {
+            
+           return redirect('/products/register')->withSuccess('El Codigo Comercial '.request('code_comercial').' Ya se encuentra registrado!');  
+           //return \redirect()->route('products.create');
+        }
+
         $var->type = request('type');
         $var->description = request('description');
 
