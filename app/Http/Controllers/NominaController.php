@@ -598,9 +598,9 @@ class NominaController extends Controller
                     }
 
                 }else if(($nomina->type == "Especial")){ //crear un id_formula_t para la especial
-                    if(isset($nominaconcept->id_formula_m)){
+                    if(isset($nominaconcept->id_formula_e)){
                         $tiene_calculo = true;
-                        $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$vars);
+                        $amount = $this->formula($nominaconcept->id_formula_e,$employee,$nomina,$vars);
                     }
                 }/*else if(($nomina->type == "Asignacion")){ //crear un id_formula_t para la especial
                     if(isset($nominaconcept->id_formula_a)){
@@ -686,7 +686,7 @@ class NominaController extends Controller
     public function formula($id_formula,$employee,$nomina,$nomina_calculation)
     {
 
-        
+       // $global = new GlobalController();
         $lunes = 0;
         $hours = 0;
         $days = 0;
@@ -710,6 +710,7 @@ class NominaController extends Controller
                 $cestaticket = $nomina_calculation->cantidad;
             }
         }
+        
 
         $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($id_formula);
         
@@ -717,10 +718,11 @@ class NominaController extends Controller
 
 
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
-
+        
+        //$tasa = $global->search_bcv();
 
 		$variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general];
-        //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
+        //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados];
 		$total = $this->resolver($operacion,$variables);
 
 
