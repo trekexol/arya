@@ -234,7 +234,7 @@
                         <input type="hidden" name="id_creditnote" value="{{$creditnote->id}}" readonly>
 
                         <div class="form-group row">
-                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total de la Nota de Crédito</label>
+                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total de la Nota de Dédito</label>
                             <div class="col-md-4">
                                 <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly  required autocomplete="total_pay"> 
                            
@@ -247,7 +247,7 @@
                         </div>
                         <br>
                       
-            <form method="POST" action="{{ route('creditnotes.storefactura') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('debitnotes.storefactura') }}" enctype="multipart/form-data">
                 @csrf   
 
                         <input type="hidden" name="id_creditnote" value="{{$creditnote->id}}" readonly>
@@ -300,18 +300,18 @@
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="btn btn-primary">
-                                    Guardar Nota de Credito
+                                    Guardar Nota de Débito
                                  </button>
                             </div>
                             
                             <div class="col-md-2">
                             @if(isset($creditnote->date_delivery_note))
-                                 <a href="{{ route('creditnotes.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                 <a href="{{ route('debitnotes.indexdeliverynote') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                             @else
                                 @if (isset($is_after) && ($is_after == false))
                                     <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
                                 @else
-                                    <a href="{{ route('creditnotes.create',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                    <a href="{{ route('debitnotes.create',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 @endif
                             @endif
                              </div>
@@ -365,7 +365,7 @@
         });
         $("#coin").on('change',function(){
             coin = $(this).val();
-            window.location = "{{route('creditnotes.createfacturar', [$creditnote->id,''])}}"+"/"+coin;
+            window.location = "{{route('debitnotes.createfacturar', [$creditnote->id,''])}}"+"/"+coin;
         });
 
         $("#date-begin").on('change',function(){
@@ -476,7 +476,6 @@
                     var total_islr_retencion = document.getElementById("total_retiene_islr").value;
                 //------------------------------------
 
-                var total_pay = total_pay;
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 

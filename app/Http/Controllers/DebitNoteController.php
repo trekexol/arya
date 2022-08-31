@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Client;
 use App\Company;
 use App\DetailVoucher;
-use App\Http\Controllers\Historial\HistorialcreditnoteController;
+use App\Http\Controllers\Historial\HistorialdebitnoteController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\Product;
 use App\Multipayment;
-use App\CreditNote;
+use App\DebitNote;
+use App\DebitNoteDetail;
 use App\CreditCoteDetail;
-use App\CreditNoteDetail;
-use App\Permission\Models\Product;
 use App\Quotation;
 use App\Transport;
 use App\Vendor;
@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class CreditNoteController extends Controller
+class DebitNoteController extends Controller
 {
     public $userAccess;
     public $modulo = 'Cotizacion';
@@ -38,10 +38,10 @@ class CreditNoteController extends Controller
    {
         
         if($this->userAccess->validate_user_access($this->modulo)){
-            $creditnotes = CreditNote::on(Auth::user()->database_name)->where('status','1')->orderBy('id' ,'DESC')
+            $creditnotes = DebitNote::on(Auth::user()->database_name)->where('status','1')->orderBy('id' ,'DESC')
             ->get();
 
-            return view('admin.credit_notes.index',compact('creditnotes'));
+            return view('admin.debit_notes.index',compact('creditnotes'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -52,11 +52,11 @@ class CreditNoteController extends Controller
    {
         
         if($this->userAccess->validate_user_access($this->modulo)){
-            $creditnotes = CreditNote::on(Auth::user()->database_name)->where('status','C')->orderBy('id' ,'DESC')
+            $creditnotes = DebitNote::on(Auth::user()->database_name)->where('status','C')->orderBy('id' ,'DESC')
             ->get();
 
             $historial = "historial";
-            return view('admin.credit_notes.index',compact('creditnotes','historial'));
+            return view('admin.debit_notes.index',compact('creditnotes','historial'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -94,7 +94,7 @@ class CreditNoteController extends Controller
             $vendor = Vendor::on(Auth::user()->database_name)->find($id_vendor);
         }
 
-        return view('admin.credit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports'));
+        return view('admin.debit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports'));
     }
 
 
@@ -106,16 +106,17 @@ class CreditNoteController extends Controller
             $creditnote = null;
                 
             if(isset($id_creditnote)){
-                $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+                $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
             }
 
             if(isset($creditnote) && ($creditnote->status == 1)){
+
                 $inventories_creditnotes = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('credit_note_details', 'products.id', '=', 'credit_note_details.id_inventory')
-                                ->where('credit_note_details.id_credit_note',$id_creditnote)
-                                ->whereIn('credit_note_details.status',['1','C'])
-                                ->select('products.*','credit_note_details.price as price','credit_note_details.id_inventory as id_inventory','credit_note_details.rate as rate','credit_note_details.id as credit_note_details_id','products.code_comercial as code','credit_note_details.discount as discount',
-                                'credit_note_details.amount as amount_creditnote','credit_note_details.exento as exento')
+                                ->join('debit_note_details', 'products.id', '=', 'debit_note_details.id_inventory')
+                                ->where('debit_note_details.id_debit_note',$id_creditnote)
+                                ->whereIn('debit_note_details.status',['1','C'])
+                                ->select('products.*','debit_note_details.price as price','debit_note_details.id_inventory as id_inventory','debit_note_details.rate as rate','debit_note_details.id as credit_note_details_id','products.code_comercial as code','debit_note_details.discount as discount',
+                                'debit_note_details.amount as amount_creditnote','debit_note_details.exento as exento')
                                 ->get(); 
             
                 
@@ -142,9 +143,9 @@ class CreditNoteController extends Controller
                 }
                 
         
-                return view('admin.credit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product'));
+                return view('admin.debit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product'));
             }else{
-                return redirect('/creditnotes')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/debitnotes')->withDanger('No es posible ver esta cotizacion');
             } 
             
         }else{
@@ -158,18 +159,18 @@ class CreditNoteController extends Controller
         $creditnote = null;
                 
         if(isset($id_creditnote)){
-            $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+            $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
         }
 
         if(isset($creditnote) && ($creditnote->status == 1)){
             
                 $product = null;
                 $inventories_creditnotes = DB::connection(Auth::user()->database_name)->table('products')
-                                ->join('credit_note_details', 'products.id', '=', 'credit_note_details.id_inventory')
-                                ->where('credit_note_details.id_credit_note',$id_creditnote)
-                                ->whereIn('credit_note_details.status',['1','C'])
-                                ->select('products.*','credit_note_details.id_inventory as id_inventory','credit_note_details.price as price','credit_note_details.rate as rate','credit_note_details.id as credit_note_details_id','products.code_comercial as code','credit_note_details.discount as discount',
-                                'credit_note_details.amount as amount_creditnote','credit_note_details.exento as exento')
+                                ->join('debit_note_details', 'products.id', '=', 'debit_note_details.id_inventory')
+                                ->where('debit_note_details.id_debit_note',$id_creditnote)
+                                ->whereIn('debit_note_details.status',['1','C'])
+                                ->select('products.*','debit_note_details.price as price','debit_note_details.id_inventory as id_inventory','debit_note_details.rate as rate','debit_note_details.id as credit_note_details_id','products.code_comercial as code','debit_note_details.discount as discount',
+                                'debit_note_details.amount as amount_creditnote','debit_note_details.exento as exento')
                                 ->get(); 
                 
                 if(isset($id_inventory)){
@@ -208,13 +209,13 @@ class CreditNoteController extends Controller
                     }
                     
 
-                    return view('admin.credit_notes.create',compact('bcv_creditnote_product','creditnote','inventories_creditnotes','inventory','bcv','datenow','coin'));
+                    return view('admin.debit_notes.create',compact('bcv_creditnote_product','creditnote','inventories_creditnotes','inventory','bcv','datenow','coin'));
 
                 }else{
-                    return redirect('/creditnotes')->withDanger('El Producto no existe');
+                    return redirect('/debitnotes')->withDanger('El Producto no existe');
                 } 
         }else{
-            return redirect('/creditnotes')->withDanger('La cotizacion no existe');
+            return redirect('/debitnotes')->withDanger('La cotizacion no existe');
         } 
 
     }
@@ -243,8 +244,9 @@ class CreditNoteController extends Controller
     
             }
     
+
         
-        $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
 
         $rate = $creditnote->rate;
         
@@ -267,11 +269,11 @@ class CreditNoteController extends Controller
             ->select('products.*','products.id as id_inventory')
             ->orderBy('products.code_comercial','desc')
             ->get();
-
-            return view('admin.credit_notes.selectservice',compact('type','services','id_creditnote','coin','bcv','rate'));
+            
+            return view('admin.debit_notes.selectservice',compact('type','services','id_creditnote','coin','bcv','rate'));
         }
     
-        return view('admin.credit_notes.selectinventary',compact('type','inventories','id_creditnote','coin','bcv','rate'));
+        return view('admin.debit_notes.selectinventary',compact('type','inventories','id_creditnote','coin','bcv','rate'));
     }
 
 
@@ -293,7 +295,7 @@ class CreditNoteController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');    
 
-            return view('admin.credit_notes.create',compact('clients','vendors','datenow','transports','vendor'));
+            return view('admin.debit_notes.create',compact('clients','vendors','datenow','transports','vendor'));
     }
 
     public function selectvendor($id_client)
@@ -302,10 +304,10 @@ class CreditNoteController extends Controller
 
                 $vendors     = vendor::on(Auth::user()->database_name)->get();
         
-                return view('admin.credit_notes.selectvendor',compact('vendors','id_client'));
+                return view('admin.debit_notes.selectvendor',compact('vendors','id_client'));
 
             }else{
-                return redirect('/creditnotes/registercreditnote')->withDanger('Seleccione un Cliente primero');
+                return redirect('/debitnotes/registercreditnote')->withDanger('Seleccione un Cliente primero');
             }
 
         
@@ -315,7 +317,7 @@ class CreditNoteController extends Controller
     {
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
     
-        return view('admin.credit_notes.selectclient',compact('clients'));
+        return view('admin.debit_notes.selectclient',compact('clients'));
     }
     
     public function selectInvoice()
@@ -326,7 +328,7 @@ class CreditNoteController extends Controller
                                     ->where('status','P')
                                     ->get();
 
-        $route = 'creditnotes.createcreditnote';
+        $route = 'debitnotes.createcreditnote';
     
         return view('admin.selects.selectinvoice',compact('quotations','route'));
     }
@@ -349,7 +351,7 @@ class CreditNoteController extends Controller
         //dd($request);
         if((isset($id_invoice)) || (isset($id_client))){
             
-                $var = new CreditNote();
+                $var = new DebitNote();
                 $var->setConnection(Auth::user()->database_name);
 
                 if(isset($id_invoice)){
@@ -390,11 +392,11 @@ class CreditNoteController extends Controller
                 $var->save();
 
 
-                return redirect('creditnotes/register/'.$var->id.'/bolivares');
+                return redirect('debitnotes/register/'.$var->id.'/bolivares');
 
             
         }else{
-            return redirect('/creditnotes/registercreditnote')->withDanger('Debe Seleccionar una Factura o un Cliente');
+            return redirect('/debitnotes/registercreditnote')->withDanger('Debe Seleccionar una Factura o un Cliente');
         } 
 
         
@@ -416,10 +418,10 @@ class CreditNoteController extends Controller
         ]);
 
         
-        $var = new CreditNoteDetail();
+        $var = new DebitNoteDetail();
         $var->setConnection(Auth::user()->database_name);
 
-        $var->id_credit_note = request('id_creditnote');
+        $var->id_debit_note = request('id_creditnote');
         
         $var->id_inventory = request('id_inventory');
 
@@ -439,12 +441,12 @@ class CreditNoteController extends Controller
 
         $coin = request('coin');
 
-        $creditnote = CreditNote::on(Auth::user()->database_name)->find($var->id_credit_note);
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find($var->id_debit_note);
 
         $var->rate = $creditnote->rate;
 
         if($var->id_inventory == -1){
-            return redirect('creditnotes/register/'.$var->id_credit_note.'')->withDanger('No se encontro el producto!');
+            return redirect('debitnotes/register/'.$var->id_debit_note.'')->withDanger('No se encontro el producto!');
            
         }
 
@@ -465,7 +467,7 @@ class CreditNoteController extends Controller
         $var->discount = request('discount');
 
         if(($var->discount < 0) || ($var->discount > 100)){
-            return redirect('creditnotes/register/'.$var->id_credit_note.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('El descuento debe estar entre 0% y 100%!');
+            return redirect('debitnotes/register/'.$var->id_debit_note.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('El descuento debe estar entre 0% y 100%!');
         }
         
         $var->status =  1;
@@ -476,19 +478,19 @@ class CreditNoteController extends Controller
             $this->recalculatecreditnote($creditnote->id);
         }
 
-        return redirect('creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
+        return redirect('debitnotes/register/'.$var->id_debit_note.'/'.$coin.'')->withSuccess('Producto agregado Exitosamente!');
     }
    
     public function edit($id)
     {
-        $creditnote = CreditNote::on(Auth::user()->database_name)->find($id);
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find($id);
     
-        return view('admin.credit_notes.edit',compact('creditnote'));
+        return view('admin.debit_notes.edit',compact('creditnote'));
     
     }
     public function editcreditnoteproduct($id,$coin = null)
     {
-            $creditnote_product = CreditNoteDetail::on(Auth::user()->database_name)->find($id);
+            $creditnote_product = DebitNoteDetail::on(Auth::user()->database_name)->find($id);
         
             if(isset($creditnote_product)){
 
@@ -515,9 +517,9 @@ class CreditNoteController extends Controller
                     $rate = $creditnote_product->rate;
                 }
 
-                return view('admin.credit_notes.edit_product',compact('rate','coin','creditnote_product','inventory','bcv'));
+                return view('admin.debit_notes.edit_product',compact('rate','coin','creditnote_product','inventory','bcv'));
             }else{
-                return redirect('/creditnotes')->withDanger('No se Encontro el Producto!');
+                return redirect('/debitnotes')->withDanger('No se Encontro el Producto!');
             }
         
         
@@ -527,7 +529,7 @@ class CreditNoteController extends Controller
     public function update(Request $request, $id)
     {
 
-        $vars =  CreditNote::on(Auth::user()->database_name)->find($id);
+        $vars =  DebitNote::on(Auth::user()->database_name)->find($id);
 
         $vars_status = $vars->status;
         $vars_exento = $vars->exento;
@@ -555,7 +557,7 @@ class CreditNoteController extends Controller
         
         ]);
 
-        $var = CreditNote::on(Auth::user()->database_name)->findOrFail($id);
+        $var = DebitNote::on(Auth::user()->database_name)->findOrFail($id);
 
         $var->segment_id = request('segment_id');
         $var->subsegment_id= request('sub_segment_id');
@@ -598,7 +600,7 @@ class CreditNoteController extends Controller
         $var->save();
 
        
-        return redirect('/creditnotes')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/debitnotes')->withSuccess('Actualizacion Exitosa!');
     }
 
     public function updatecreditnoteproduct(Request $request, $id)
@@ -612,7 +614,7 @@ class CreditNoteController extends Controller
             ]);
 
         
-            $var = CreditNoteDetail::on(Auth::user()->database_name)->findOrFail($id);
+            $var = DebitNoteDetail::on(Auth::user()->database_name)->findOrFail($id);
 
             $price_old = $var->price;
             $amount_old = $var->amount;
@@ -654,7 +656,7 @@ class CreditNoteController extends Controller
 
           
 
-            return redirect('/creditnotes/register/'.$var->id_credit_note.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
+            return redirect('/debitnotes/register/'.$var->id_debit_note.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
         
     }
 
@@ -663,17 +665,17 @@ class CreditNoteController extends Controller
     { 
         $sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate));
 
-        $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
 
-        CreditNoteDetail::on(Auth::user()->database_name)->where('id_creditnote',$id_creditnote)
+        DebitNoteDetail::on(Auth::user()->database_name)->where('id_creditnote',$id_creditnote)
                                 ->update(['rate' => $sin_formato_rate]);
     
 
-        CreditNote::on(Auth::user()->database_name)->where('id',$id_creditnote)
+        DebitNote::on(Auth::user()->database_name)->where('id',$id_creditnote)
                                 ->update(['bcv' => $sin_formato_rate]);
 
         
-        return redirect('/creditnotes/register/'.$id_creditnote.'/'.$coin.'')->withSuccess('Actualizacion de Tasa Exitosa!');
+        return redirect('/debitnotes/register/'.$id_creditnote.'/'.$coin.'')->withSuccess('Actualizacion de Tasa Exitosa!');
     
     }
 
@@ -681,19 +683,19 @@ class CreditNoteController extends Controller
     public function deleteProduct(Request $request)
     {
         
-        $creditnote_product = CreditNoteDetail::on(Auth::user()->database_name)->find(request('id_creditnote_product_modal')); 
+        $creditnote_product = DebitNoteDetail::on(Auth::user()->database_name)->find(request('id_creditnote_product_modal')); 
         
         if(isset($creditnote_product) && $creditnote_product->status == "C"){
             
-                CreditNoteDetail::on(Auth::user()->database_name)
-                ->join('inventories','inventories.id','creditnote_products.id_inventory')
+                DebitNoteDetail::on(Auth::user()->database_name)
+                ->join('inventories','inventories.id','debitnote_products.id_inventory')
                 ->join('products','products.id','inventories.product_id')
                 ->where(function ($query){
                     $query->where('products.type','MERCANCIA')
                         ->orWhere('products.type','COMBO');
                 })
-                ->where('creditnote_products.id',$creditnote_product->id)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+creditnote_products.amount'), 'creditnote_products.status' => 'X']);
+                ->where('debitnote_products.id',$creditnote_product->id)
+                ->update(['inventories.amount' => DB::raw('inventories.amount+debitnote_products.amount'), 'debitnote_products.status' => 'X']);
                
                 $this->recalculatecreditnote($creditnote_product->id_creditnote);
         }else{
@@ -704,7 +706,7 @@ class CreditNoteController extends Controller
 
        
 
-        return redirect('/creditnotes/register/'.request('id_creditnote_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa!!');
+        return redirect('/debitnotes/register/'.request('id_creditnote_modal').'/'.request('coin_modal').'')->withDanger('Eliminacion exitosa!!');
         
     }
 
@@ -713,20 +715,20 @@ class CreditNoteController extends Controller
         $creditnote = null;
                  
         if(isset($id_creditnote)){
-             $creditnote = CreditNote::on(Auth::user()->database_name)->findOrFail($id_creditnote);
+             $creditnote = DebitNote::on(Auth::user()->database_name)->findOrFail($id_creditnote);
         }else{
-            return redirect('/creditnotes')->withDanger('No llega el numero de la cotizacion');
+            return redirect('/debitnotes')->withDanger('No llega el numero de la cotizacion');
         } 
  
          if(isset($creditnote)){
            
             $inventories_creditnotes = DB::connection(Auth::user()->database_name)->table('products')
-                                                            ->join('creditnote_products', 'products.id', '=', 'creditnote_products.id_inventory')
-                                                            ->where('creditnote_products.id_creditnote',$creditnote->id)
-                                                            ->whereIn('creditnote_products.status',['1','C'])
-                                                            ->select('products.*','creditnote_products.price as price','creditnote_products.rate as rate','creditnote_products.discount as discount',
-                                                            'creditnote_products.amount as amount_creditnote','creditnote_products.retiene_iva as retiene_iva_creditnote'
-                                                            ,'creditnote_products.islr as islr_creditnote')
+                                                            ->join('debitnote_products', 'products.id', '=', 'debitnote_products.id_inventory')
+                                                            ->where('debitnote_products.id_creditnote',$creditnote->id)
+                                                            ->whereIn('debitnote_products.status',['1','C'])
+                                                            ->select('products.*','debitnote_products.price as price','debitnote_products.rate as rate','debitnote_products.discount as discount',
+                                                            'debitnote_products.amount as amount_creditnote','debitnote_products.retiene_iva as retiene_iva_creditnote'
+                                                            ,'debitnote_products.islr as islr_creditnote')
                                                             ->get(); 
 
             $total= 0;
@@ -786,31 +788,31 @@ class CreditNoteController extends Controller
     public function deletecreditnote(Request $request)
     {
         
-        $creditnote = CreditNote::on(Auth::user()->database_name)->find(request('id_creditnote_modal')); 
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find(request('id_creditnote_modal')); 
 
     
         $this->deleteAllProducts($creditnote->id);
 
         DB::connection(Auth::user()->database_name)->table('detail_vouchers')
         ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
-        ->where('header_vouchers.id_credit_note','=',$creditnote->id)
+        ->where('header_vouchers.id_debit_note','=',$creditnote->id)
         ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
 
         $creditnote->delete(); 
 
         
-        return redirect('/creditnotes')->withDanger('Eliminacion exitosa!!');
+        return redirect('/debitnotes')->withDanger('Eliminacion exitosa!!');
         
     }
 
     public function deleteAllProducts($id_credit_note)
     {
-        $credit_note_products = CreditNoteDetail::on(Auth::user()->database_name)->where('id_credit_note',$id_credit_note)->get(); 
+        $credit_note_products = DebitNoteDetail::on(Auth::user()->database_name)->where('id_debit_note',$id_credit_note)->get(); 
         
         if(isset($credit_note_products)){
             foreach($credit_note_products as $credit_note_product){
                 if(isset($credit_note_product) && $credit_note_product->status == "C"){
-                    CreditNoteDetail::on(Auth::user()->database_name)
+                    DebitNoteDetail::on(Auth::user()->database_name)
                         ->join('inventories','inventories.id','credit_note_products.id_inventory')
                         ->join('products','products.id','inventories.product_id')
                         ->where(function ($query){
@@ -829,7 +831,7 @@ class CreditNoteController extends Controller
         
         $id_creditnote = $request->id_creditnote_modal;
 
-        $creditnote = CreditNote::on(Auth::user()->database_name)->findOrFail($id_creditnote);
+        $creditnote = DebitNote::on(Auth::user()->database_name)->findOrFail($id_creditnote);
 
         $exist_multipayment = Multipayment::on(Auth::user()->database_name)
                             ->where('id_creditnote',$creditnote->id)
@@ -853,7 +855,7 @@ class CreditNoteController extends Controller
             }
         }else{
             
-            return redirect('/creditnotes/facturado/'.$creditnote->id.'/bolivares/'.$exist_multipayment->id_header.'');
+            return redirect('/debitnotes/facturado/'.$creditnote->id.'/bolivares/'.$exist_multipayment->id_header.'');
         }
        
         return redirect('invoices')->withSuccess('Reverso de Factura Exitosa!');
@@ -864,7 +866,7 @@ class CreditNoteController extends Controller
 
         
         if(isset($id_header)){
-            $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+            $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
 
             //aqui reversamos todo el movimiento del multipago
             DB::connection(Auth::user()->database_name)->table('detail_vouchers')
@@ -880,16 +882,16 @@ class CreditNoteController extends Controller
 
             //aqui aumentamos el inventario y cambiamos el status de los productos que se reversaron
             DB::connection(Auth::user()->database_name)->table('multipayments')
-                ->join('creditnote_products', 'creditnote_products.id_creditnote','=','multipayments.id_creditnote')
-                ->join('inventories','inventories.id','creditnote_products.id_inventory')
+                ->join('debitnote_products', 'debitnote_products.id_creditnote','=','multipayments.id_creditnote')
+                ->join('inventories','inventories.id','debitnote_products.id_inventory')
                 ->join('products','products.id','inventories.product_id')
                 ->where(function ($query){
                     $query->where('products.type','MERCANCIA')
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('multipayments.id_header','=',$id_header)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+creditnote_products.amount') ,
-                        'creditnote_products.status' => 'X']);
+                ->update(['inventories.amount' => DB::raw('inventories.amount+debitnote_products.amount') ,
+                        'debitnote_products.status' => 'X']);
     
 
             //aqui le cambiamos el status a todas las facturas a X de reversado
