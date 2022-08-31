@@ -195,6 +195,7 @@
                 <a class="collapse-item" href="{{route('quotations.indexdeliverynote')}}" > <i class="fas fa-sort-amount-up-alt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Notas de Entrega</strong></a>
                 <a class="collapse-item" href="{{route('orders.index')}}" > <i class="fab fa-product-hunt fa-sm fa-fw mr-2 text-blue-400"></i><strong>Pedidos</strong></a>
                 <a class="collapse-item" href="{{route('creditnotes')}}" > <i class="fas fa-credit-card fa-sm fa-fw mr-2 text-blue-400"></i><strong>Notas de Crédito</strong></a>
+                <a class="collapse-item" href="{{route('debitnotes')}}" > <i class="fas fa-credit-card fa-sm fa-fw mr-2 text-blue-400"></i><strong>Notas de Débito</strong></a>
                 <a class="collapse-item" href="{{route('payments')}}" > <i class="fas fa-coins fa-sm fa-fw mr-2 text-blue-400"></i><strong>Cobros</strong></a>
                 <a class="collapse-item" href="{{route('directchargeorders.create')}}" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Orden de Cobro</strong></a>
                 <a class="collapse-item" href="#" > <i class="fas fa-dollar-sign fa-sm fa-fw mr-2 text-black-400"></i><strong>Recibos de Cobro</strong></a>

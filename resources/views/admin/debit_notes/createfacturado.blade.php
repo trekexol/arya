@@ -26,12 +26,12 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" >Nota de Credito</div>
+                <div class="card-header" >Nota de Dédito </div>
                 
                 <div class="card-body" >
                         
                     <div class="form-group row">
-                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Factura:</label>
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Nota de Debito:</label>
                         <div class="col-md-4">
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $creditnote->quotations->number_invoice}}" readonly>
                         </div>
@@ -220,11 +220,11 @@
                             </div> 
                            
                             <div class="col-md-3">
-                                <a href="{{ route('movements.creditnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                                <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div>
                            
                             <div class="col-md-2">
-                                <a href="{{ route('creditnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Facturas</a>  
+                                <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Facturas</a>  
                             </div>
                         </div>
                         
@@ -239,7 +239,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Eliminar Nota de Credito</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Nota de Dédito</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -279,7 +279,7 @@
 
             $("#coin").on('change',function(){
                 coin = $(this).val();
-                window.location = "{{route('creditnotes.createfacturado', [$creditnote->id,''])}}"+"/"+coin;
+                window.location = "{{route('debitnotes.createfacturado', [$creditnote->id,''])}}"+"/"+coin;
             });
 
             $(document).on('click','.delete',function(){
@@ -289,7 +289,7 @@
             });
             function pdf() {
                 
-                var nuevaVentana= window.open("{{ route('pdf',[$creditnote->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+                var nuevaVentana= window.open("{{ route('pdf.debitnotemediacarta',[$creditnote->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
         
             }
             function pdf_media() {

@@ -620,6 +620,8 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
+
+    Route::get('debitnotemediacarta/{id_quotation}/{coin}','PDF2Controller@debitnotemediacarta')->name('pdf.debitnotemediacarta');
     
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
@@ -1283,8 +1285,50 @@ Route::group(["prefix"=>'creditnotes'],function(){
 
 });
 
+
+Route::group(["prefix"=>'debitnotes'],function(){
+    Route::get('/','DebitNoteController@index')->name('debitnotes');
+    Route::get('register/{id_creditnote}/{coin}','DebitNoteController@create')->name('debitnotes.create');
+    Route::post('store','DebitNoteController@store')->name('debitnotes.store');
+    Route::delete('{id}/delete','DebitNoteController@destroy')->name('debitnotes.delete');
+    Route::get('historial','DebitNoteController@index_historial')->name('debitnotes.historial');
+   
+    Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}','DebitNoteController@createcreditnote')->name('debitnotes.createcreditnote');
+    Route::get('selectclient','DebitNoteController@selectclient')->name('debitnotes.selectclient');
+    Route::get('selectvendor/{id_client}','DebitNoteController@selectvendor')->name('debitnotes.selectvendor');
+
+
+    Route::get('selectproduct/{id_creditnote}/{coin}/{type}','DebitNoteController@selectproduct')->name('debitnotes.selectproduct');
+    Route::get('registerproduct/{id_creditnote}/{coin}/{id_product}','DebitNoteController@createproduct')->name('debitnotes.createproduct');
+
+
+    Route::post('storeproduct','DebitNoteController@storeproduct')->name('debitnotes.storeproduct');
+
+    Route::get('facturar/{id_creditnote}/{coin}','DebitNoteDetailController@createfacturar')->name('debitnotes.createfacturar');
+
+    Route::post('storefactura','DebitNoteDetailController@storefactura')->name('debitnotes.storefactura');
+    Route::get('facturado/{id_creditnote}/{coin}/{reverso?}','DebitNoteDetailController@createfacturado')->name('debitnotes.createfacturado');
+
+    Route::get('listinventory/{var?}','DebitNoteController@listinventory')->name('debitnotes.listinventory');
+
+
+    Route::get('creditnoteproduct/{id}/{coin}/edit','DebitNoteController@editcreditnoteproduct')->name('debitnotes.productedit');
+    Route::patch('productupdate/{id}/update','DebitNoteController@updatecreditnoteproduct')->name('debitnotes.productupdate');
+
+    Route::get('refreshrate/{id_creditnote}/{coin}/{rate}','DebitNoteController@refreshrate')->name('debitnotes.refreshrate');
+
+    Route::delete('deleteproduct','DebitNoteController@deleteProduct')->name('debitnotes.deleteProduct');
+    Route::delete('deletecreditnote','DebitNoteController@deletecreditnote')->name('debitnotes.deletecreditnote');
+
+    Route::get('selectinvoice','DebitNoteController@selectinvoice')->name('debitnotes.selectinvoice');
+
+});
+
+
+
 Route::group(["prefix"=>'movements'],function(){
     Route::get('creditnote/{id_creditnote}/{coin?}','CreditNoteDetailController@movements')->name('movements.creditnote');
+    Route::get('creditnote/{id_creditnote}/{coin?}','DebitNoteDetailController@movements')->name('movements.debitnote');
 });
 
 Route::group(["prefix"=>'accounting_adjustments'],function(){
