@@ -72,7 +72,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
-             
+                <th>ID</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Cédula o Rif</th>
@@ -88,7 +88,7 @@
                 @else  
                     @foreach ($vendors as $vendor)
                         <tr>
-                            
+                            <td>{{$vendor->id}}</td>
                             <td>{{$vendor->name}}</td>
                             <td>{{$vendor->surname}}</td>
                             <td>{{$vendor->cedula_rif}}</td>

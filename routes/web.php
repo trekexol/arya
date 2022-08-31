@@ -771,7 +771,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
 
  });
- Route::group(["prefix"=>'receipts'],function(){
+ Route::group(["prefix"=>'receiptc'],function(){
  
  });
 
