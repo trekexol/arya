@@ -514,10 +514,14 @@ class DebitNoteController extends Controller
 
                              $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_cuentas_por_cobrar->id,$id_invoice,$user_id,$importe,0);
                          }
-         
+                             
+                   
+
                          if(isset($id_account)){
-                             $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', $id_account)->first();
-                 
+                             $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like','%'.$id_account.'%')->first();
+                              
+                             dd($id_account.'--'.$account_subsegmento->id);
+
                              if(isset($account_subsegmento)){
                                  $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,0,$importe);
                              }

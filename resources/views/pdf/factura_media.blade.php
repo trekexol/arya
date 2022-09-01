@@ -257,7 +257,7 @@
 <table style="width: 100%;">
   <tr style="width: 100%; border-color: white;">
     <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal;">
-     NOTA: ESTA FACTURA DEBER SER CANCELADA SEGUN LA TASA BCV DEL DÍA DE PAGO 
+     NOTA: ESTA FACTURA DEBE SER CANCELADA SEGUN LA TASA BCV DEL DÍA DE PAGO. 
     </td>
   </tr>
 </table>
