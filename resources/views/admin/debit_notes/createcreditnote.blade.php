@@ -79,7 +79,7 @@
                             </div> 
                         </div> 
                         <div id="invoiceform" class="form-group row">
-                            <label for="invoices" class="col-md-2 col-form-label text-md-right">Factura</label>
+                            <label for="invoices" class="col-md-2 col-form-label text-md-right">Factura:</label>
                             <div class="col-md-3">
                                 <input id="invoice" type="text" class="form-control @error('invoice') is-invalid @enderror" name="invoice" value="{{ $invoice->number_invoice ?? '' }}" readonly required autocomplete="invoice">
     
@@ -91,6 +91,17 @@
                             </div>
                             <div class="form-group col-md-1">
                                 <a href="{{ route('debitnotes.selectinvoice') }}" title="Seleccionar Factura"><i class="fa fa-eye"></i></a>  
+                            </div>
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
+
+                            <div class="col-md-4">
+                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ old('note') }}"  autocomplete="note">
+
+                                @error('note')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
@@ -129,22 +140,17 @@
                         </div>
                        
                         <div class="form-group row">
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura </label>
 
-                            <div class="col-md-4">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ old('note') }}"  autocomplete="note">
-
-                                @error('note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <label for="account" class="col-md-2 col-form-label text-md-right">Cuenta:</label>
+                            <div class="col-md-3">
+                                <select class="form-control" id="account" name="account" required>
+                                    <option selected value="Diferencial Cambiario">Diferencial Cambiario</option>
+                                    <option value="Cliente">Ventas por Bienes</option>
+                                </select>
                             </div>
-                           
-                        </div>
-                        <div class="form-group row">
-                           
-                            <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones</label>
+                            <div class="form-group col-md-1">
+                            </div>
+                            <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
                             <div class="col-md-4">
                                 <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ old('observation') }}" autocomplete="observation">
@@ -155,6 +161,41 @@
                                     </span>
                                 @enderror
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="importe" class="col-md-2 col-form-label text-md-right">Monto(Opcional):</label>
+
+                            <div class="col-md-2">
+                                <input id="importe" type="text" class="form-control @error('importe') is-invalid @enderror" name="importe" value="{{ old('importe') }}" autocomplete="importe">
+
+                                @error('importe')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div> 
+                            
+                            <label for="moneda" class="col-md-2 col-form-label text-md-right">Moneda:</label>
+                            <div class="col-md-2">
+                            <select class="form-control" id="coin" name="coin" required>
+                                <option selected value="bolivares">Bolivares</option>
+                                <option value="dolares">Dolares</option>
+                            </select>
+                           </div>   
+
+                            <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+
+                            <div class="col-md-2">
+                                <input onkeyup="numeric(this)" id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($tasa ?? old('rate'), 10, ',', '.') }}" autocomplete="rate">
+
+                                @error('rate')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>  
+
+ 
                         </div>
                         
                         <br>
@@ -211,5 +252,21 @@
             }
             
        });
+
+       $(document).ready(function () {
+            $("#importe").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+
+
+        function numeric(e) {
+            
+            e.value = e.value.replace(/\./g, ',');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
     </script>
 @endsection

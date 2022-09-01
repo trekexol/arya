@@ -877,6 +877,7 @@ class QuotationController extends Controller
 
         $var->observation = request('observation');
         $var->note = request('note');
+        $var->number_pedido = request('pedido');
        
     
         $var->save();

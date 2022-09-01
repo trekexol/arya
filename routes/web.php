@@ -1293,7 +1293,7 @@ Route::group(["prefix"=>'debitnotes'],function(){
     Route::delete('{id}/delete','DebitNoteController@destroy')->name('debitnotes.delete');
     Route::get('historial','DebitNoteController@index_historial')->name('debitnotes.historial');
    
-    Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}','DebitNoteController@createcreditnote')->name('debitnotes.createcreditnote');
+    Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}/{tasa?}','DebitNoteController@createcreditnote')->name('debitnotes.createcreditnote');
     Route::get('selectclient','DebitNoteController@selectclient')->name('debitnotes.selectclient');
     Route::get('selectvendor/{id_client}','DebitNoteController@selectvendor')->name('debitnotes.selectvendor');
 

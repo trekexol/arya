@@ -8,10 +8,12 @@ use App\DetailVoucher;
 use App\Http\Controllers\Historial\HistorialdebitnoteController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\Account;
 use App\Product;
 use App\Multipayment;
 use App\DebitNote;
 use App\DebitNoteDetail;
+use App\HeaderVoucher;
 use App\CreditCoteDetail;
 use App\Quotation;
 use App\Transport;
@@ -38,10 +40,14 @@ class DebitNoteController extends Controller
    {
         
         if($this->userAccess->validate_user_access($this->modulo)){
-            $creditnotes = DebitNote::on(Auth::user()->database_name)->where('status','1')->orderBy('id' ,'DESC')
+            $creditnotes = DebitNote::on(Auth::user()->database_name)->whereIn('status',['1','C'])->orderBy('id' ,'DESC')
             ->get();
 
+
+
+
             return view('admin.debit_notes.index',compact('creditnotes'));
+        
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -69,17 +75,20 @@ class DebitNoteController extends Controller
     * @return \Illuminate\Http\Response
     */
     
-    public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null)
+    public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null,$tasa = null)
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();
-
+ 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');   
         
         $invoice = null;
+
                 
         if(isset($id_invoice) && is_numeric($id_invoice)){
+            
             $invoice = Quotation::on(Auth::user()->database_name)->find($id_invoice);
+
         }
 
         $client = null;
@@ -94,7 +103,7 @@ class DebitNoteController extends Controller
             $vendor = Vendor::on(Auth::user()->database_name)->find($id_vendor);
         }
 
-        return view('admin.debit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports'));
+        return view('admin.debit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports','tasa'));
     }
 
 
@@ -347,10 +356,22 @@ class DebitNoteController extends Controller
         $id_invoice = request('id_invoice');
         $id_client  = request('id_client');
         $id_vendor  = request('id_vendor');
+        $id_account  = request('id_account');
+        $coin = request('coin');
+        $rate_form = request('rate');
+        $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate_form));
         
-        //dd($request);
-        if((isset($id_invoice)) || (isset($id_client))){
+        $importe = str_replace(',', '.', str_replace('.', '', request('importe')));
+       
+        if ($coin == 'dolares') {
             
+            $importe =  $importe * $valor_sin_formato_rate;
+
+        }
+
+        //dd($request);
+        if((isset($id_invoice)) || (isset($id_client))){    
+
                 $var = new DebitNote();
                 $var->setConnection(Auth::user()->database_name);
 
@@ -375,24 +396,154 @@ class DebitNoteController extends Controller
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
 
-                //Si la taza es automatica
-                if($company->tiporate_id == 1){
-                    $bcv = $global->search_bcv();
-                }else{
-                    //si la tasa es fija
-                    $bcv = $company->rate;
+
+                if ($rate_form){
+
+                    $var->rate = $valor_sin_formato_rate;
+                } else {
+                    $var->rate = $global->search_bcv();
                 }
 
-                $var->rate = bcdiv($bcv, '1', 2);
-
-                $var->coin = 'bolivares';
+                $var->coin = $coin;
         
-                $var->status =  1;
+                $var->amount = $importe;
+                $var->amount_with_iva = $importe;
+        
+                $var->status =  '1';
             
                 $var->save();
 
+                
+                if (request('importe')) { // si monto esta logeado
+                
 
-                return redirect('debitnotes/register/'.$var->id.'/bolivares');
+                    $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
+                    ->where('id_quotation', '=', $id_invoice)
+                    ->orderBy('id','desc')
+                    ->first();
+
+                    $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
+                    ->where('id', '=', $id_invoice)
+                    ->first();
+                   
+                    if (!empty($quotation)){
+                        DB::connection(Auth::user()->database_name)->table('debit_notes')
+                        ->where('id_quotation', '=', $id_invoice)
+                        ->update(['id_client' => $quotation->id_client,'id_vendor' => $quotation->id_vendor]);
+                    }
+                    
+
+                    $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                    ->where('id_quotation', '=', $id_invoice)
+                    ->where('status','!=','X')
+                    ->get();
+
+                    $conteo = count($quotation_products);
+                    
+                    foreach ($quotation_products as $quotation) {
+
+                        
+                        $var = new DebitNoteDetail();
+                        $var->setConnection(Auth::user()->database_name);
+
+                        $var->id_debit_note = $id_debit_note_last->id;
+                        $var->id_inventory = $quotation->id_inventory;
+                        $var->islr = false;
+                        $exento = 1;
+
+                        if($exento == null){
+                            $var->exento = false;
+                        }else{
+                            $var->exento = true;
+                        }
+                
+                        $coin = request('coin');
+
+                        $var->rate = $valor_sin_formato_rate;
+            
+
+                        $cost = $importe / $conteo;
+                
+                        if($coin == 'dolares'){
+                            $cost_sin_formato = ($cost) * $valor_sin_formato_rate;
+                        }else{
+                            $cost_sin_formato = $cost;
+                        }
+                
+                        $var->price = $cost_sin_formato;
+                        
+                        $var->amount = 1;
+                
+                        $var->discount = 0;
+                        
+                        $var->status =  '1';
+                    
+                        $var->save();
+                     
+                    }
+
+                } // fin importe
+                
+
+                     //armando comprobantes//////////////////////////////////////////////////////
+
+                     $date = Carbon::now();
+                     $datenow = $date->format('Y-m-d');
+                     $date_payment = request('date'); 
+                     $user       =   auth()->user();
+                     $user_id = $user->id; 
+  
+  
+  
+                         $header_voucher  = new HeaderVoucher();
+                         $header_voucher->setConnection(Auth::user()->database_name);
+                         $header_voucher->description = "Nota de Debito ".$id_debit_note_last->id;
+                         $header_voucher->date = $date_payment;
+                         $header_voucher->status =  "1";
+                         //$header_voucher->id_credit_note = $creditnote->id;
+                     
+                         $header_voucher->save();
+         
+                         /*Busqueda de Cuentas*/
+         
+                         //Cuentas por Cobrar Clientes
+         
+                         $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
+                     
+                         if(isset($account_cuentas_por_cobrar)){
+
+                             $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_cuentas_por_cobrar->id,$id_invoice,$user_id,$importe,0);
+                         }
+         
+                         if(isset($id_account)){
+                             $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', $id_account)->first();
+                 
+                             if(isset($account_subsegmento)){
+                                 $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,0,$importe);
+                             }
+                         }
+                         
+  
+                         //Debito Fiscal IVA por Pagar
+         
+                         /*$account_debito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'Debito Fiscal IVA por Pagar')->first();
+                         
+                         if($base_imponible != 0){
+                             $total_iva = ($base_imponible * $iva_percentage)/100;
+         
+                             if(isset($account_cuentas_por_cobrar)){
+                                 $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$user_id,0,$total_iva);
+                             }
+                         } */
+         
+                         /*$account_descuento_pago = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+                         
+                         if(isset($account_descuento_pago)){
+                             $this->add_movement($bcv,$header_voucher->id,$account_descuento_pago->id,$user_id,0,$sin_formato_grandtotal);
+                         }*/              
+                
+ 
+                return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
 
             
         }else{
@@ -401,6 +552,44 @@ class DebitNoteController extends Controller
 
         
     }
+
+
+    public function add_movement($bcv,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
+
+        $detail = new DetailVoucher();
+        $detail->setConnection(Auth::user()->database_name);
+
+
+        $detail->id_account = $id_account;
+        $detail->id_header_voucher = $id_header;
+        $detail->user_id = $id_user;
+        $detail->tasa = $bcv;
+        $detail->id_invoice = $id_invoice;
+
+      /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+        $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+       
+        $detail->debe = $debe;
+        $detail->haber = $haber;
+       
+      
+        $detail->status =  "C";
+
+         /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+         
+            $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+            if($account->status != "M"){
+                $account->status = "M";
+                $account->save();
+            }
+         
+    
+        $detail->save();
+
+    }
+
 
 
     public function storeproduct(Request $request)
@@ -777,6 +966,7 @@ class DebitNoteController extends Controller
            
             $creditnote->amount = $total * ($rate ?? 1);
             $creditnote->base_imponible = $base_imponible * ($rate ?? 1);
+      
             $creditnote->amount_iva = $base_imponible * $creditnote->iva_percentage / 100;
             $creditnote->amount_with_iva = ($creditnote->amount + $creditnote->amount_iva);
             
@@ -795,7 +985,7 @@ class DebitNoteController extends Controller
 
         DB::connection(Auth::user()->database_name)->table('detail_vouchers')
         ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
-        ->where('header_vouchers.id_debit_note','=',$creditnote->id)
+        ->where('header_vouchers.description','LIKE','%Nota de Debito '.$creditnote->id.'%')
         ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
 
         $creditnote->delete(); 
@@ -813,14 +1003,14 @@ class DebitNoteController extends Controller
             foreach($credit_note_products as $credit_note_product){
                 if(isset($credit_note_product) && $credit_note_product->status == "C"){
                     DebitNoteDetail::on(Auth::user()->database_name)
-                        ->join('inventories','inventories.id','credit_note_products.id_inventory')
-                        ->join('products','products.id','inventories.product_id')
+                        ->join('inventories','inventories.id','debit_note_details.id_inventory')
+                        ->join('products','products.id','products.product_id')
                         ->where(function ($query){
                             $query->where('products.type','MERCANCIA')
                                 ->orWhere('products.type','COMBO');
                         })
-                        ->where('credit_note_products.id',$credit_note_product->id)
-                        ->update(['inventories.amount' => DB::raw('inventories.amount+credit_note_products.amount'), 'credit_note_products.status' => 'X']);
+                        ->where('debit_note_details.id',$credit_note_product->id)
+                        ->update(['credit_note_products.status' => 'X']);
                 }
             }
         }

@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Facturar</h3></div>
+                <div class="card-header" ><h3>Nota de Débito</h3></div>
                 
                 <div class="card-body" >
 

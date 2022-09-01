@@ -49,10 +49,12 @@
                             <div class="form-group col-md-1">
                                 <a href="{{ route('quotations.selectclient',$type) }}" title="Seleccionar Cliente"><i class="fa fa-eye"></i></a>  
                             </div>
+
+                        </div>
                            @if($type == 'factura' || $type == 'Nota de Entrega')
                             <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" autocomplete="serie">
 
                                 @error('serie')
