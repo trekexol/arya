@@ -358,6 +358,7 @@ class DebitNoteController extends Controller
         $id_vendor  = request('id_vendor');
         $id_account  = request('id_account');
         $coin = request('coin');
+        
         $rate_form = request('rate');
         $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate_form));
         
@@ -367,7 +368,9 @@ class DebitNoteController extends Controller
             
             $importe =  $importe * $valor_sin_formato_rate;
 
-        }
+        } 
+
+
 
         //dd($request);
         if((isset($id_invoice)) || (isset($id_client))){    
@@ -439,10 +442,10 @@ class DebitNoteController extends Controller
                     ->get();
 
                     $conteo = count($quotation_products);
+                  
                     
                     foreach ($quotation_products as $quotation) {
 
-                        
                         $var = new DebitNoteDetail();
                         $var->setConnection(Auth::user()->database_name);
 
@@ -456,21 +459,14 @@ class DebitNoteController extends Controller
                         }else{
                             $var->exento = true;
                         }
-                
-                        $coin = request('coin');
-
+                        
                         $var->rate = $valor_sin_formato_rate;
             
 
                         $cost = $importe / $conteo;
+            
                 
-                        if($coin == 'dolares'){
-                            $cost_sin_formato = ($cost) * $valor_sin_formato_rate;
-                        }else{
-                            $cost_sin_formato = $cost;
-                        }
-                
-                        $var->price = $cost_sin_formato;
+                        $var->price = $cost;
                         
                         $var->amount = 1;
                 
@@ -514,14 +510,10 @@ class DebitNoteController extends Controller
 
                              $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_cuentas_por_cobrar->id,$id_invoice,$user_id,$importe,0);
                          }
-                             
-                   
-
+         
                          if(isset($id_account)){
                              $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like','%'.$id_account.'%')->first();
-                              
-                             dd($id_account.'--'.$account_subsegmento->id);
-
+                 
                              if(isset($account_subsegmento)){
                                  $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,0,$importe);
                              }

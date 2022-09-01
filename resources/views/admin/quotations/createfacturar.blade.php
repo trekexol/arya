@@ -36,15 +36,17 @@
                         <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
-                        <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
-                        <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
+                        <input type="text" name="price_cost_total" value="{{$price_cost_total}}" readonly>
+                        <input id="user_id" type="text" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                        
-                        <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
-                        <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
+                        <input type="text" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
+                        <input type="text" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
 
-                        <input type="hidden" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
+                        <input type="text" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
                         
-                        <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
+                        <input type="text" id="IGTF_input_pre_credit" name="IGTF_input_pre">
+
+                        <input type="text" id="debitnote_input_pre_credit" name="debitnote_input_pre">
 
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
@@ -271,6 +273,22 @@
                                 </select>
                             </div>
                         </div>
+
+                        @if ($total_debit_notes > 0) 
+                        <div class="form-group row debitnote" style="display: visible;" >
+                        @else
+                        <div class="form-group row debitnote" style="display: none;" >
+                        @endif
+
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">Notas De Débito:</label>
+
+                            <div class="col-md-3">
+                                <input id="debitnote_input" type="text" class="form-control @error('debitnote_input') is-invalid @enderror" name="debitnote_input" value="{{ number_format($total_debit_notes ?? 0, 2, ',', '.') ?? 0}}" readonly>
+                            </div>
+                        </div>
+
+
+
                         @if ($quotation->IGTF_amount > 0) 
                         <div class="form-group row IGTF" style="display: visible;" >
                         @else
@@ -358,28 +376,28 @@
                         <input type="hidden" name="coin" value="{{$coin}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
-                        <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
+                        <input type="text" name="price_cost_total" value="{{$price_cost_total}}" readonly>
 
                         <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                        <input type="hidden" id="amount_of_payments" name="amount_of_payments"  readonly>
+                        <input type="text" id="amount_of_payments" name="amount_of_payments"  readonly>
 
                          <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                         <input type="hidden" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 }}" readonly>
+                         <input type="text" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 }}" readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="base_imponible_form" name="base_imponible_form"  readonly>
+                        <input type="text" id="base_imponible_form" name="base_imponible_form"  readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura }}" readonly>
+                        <input type="text" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura }}" readonly>
                         
                         <!--Total de la factura sin restarle nada que se va a realizar-->
-                        <input type="hidden" id="grandtotal_form" name="grandtotal_form"  readonly>
+                        <input type="text" id="grandtotal_form" name="grandtotal_form"  readonly>
                         
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="text" id="total_pay_form" name="total_pay_form"  readonly>
                           
                         <!--IGTF-->
-                        <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
+                        <input type="text" id="total_pay_form_before" name="total_pay_form_before">
 
                         <input id="IGTF_input_pre" type="hidden" name="IGTF_input_pre">
                         <input id="IGTF_input_store" type="hidden" name="IGTF_input_store" value="0">
@@ -387,6 +405,7 @@
                         <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
                         <input id="total_pay_before" type="hidden" name="total_pay_before">
                         <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
+                        <input id="debitnote_input_form" type="text"  name="debitnote_input_form">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -948,7 +967,7 @@
  
                         <div class="col-md ">
                             <button id="saveinvoice" type="submit" class="btn btn-primary">
-                                Guardar Factura
+                                Guardar Factura/Cobro
                              </button>
                         </div>
                         <div class="col-md-3">
@@ -1098,72 +1117,6 @@
         }    
         /*------------fin Saldar contra anticipo---------*/
 
-
-
-      /*  function calculateTotalIGTF(){
-            
-            let IGTF_percentage = "<?php echo $company->IGTF_percentage ?? 3 ?>";     
-
-            let coin = "<?php echo $coin ?? 'bolivares' ?>";     
-
-
-            let amount_dolar_form = document.getElementById("amount_dolar").value; 
-
-            if (amount_dolar_form === '') {
-                amount_dolar_form = 0;
-            }
-
-            var amount_dolar_format = amount_dolar_form.replace(/[$.]/g,'');
-
-            var amount_dolar = amount_dolar_format.replace(/[,]/g,'.');    
-
-           
-            let grandtotal_form = document.getElementById("grandtotal_form").value; 
-
-            var grandtotal_format = grandtotal_form.replace(/[$.]/g,'');
-
-            var grandtotal = grandtotal_format.replace(/[,]/g,'.');  
-
-
-            if(coin == 'bolivares'){
-                let quotation_bcv = "<?php echo $quotation->bcv ?? 0 ?>";  
-                var total_IGTF = ((parseFloat(amount_dolar) * parseFloat(IGTF_percentage)) / 100) * parseFloat(quotation_bcv);
-            }else{
-                var total_IGTF = (parseFloat(amount_dolar) * parseFloat(IGTF_percentage)) / 100;
-            }
-           
-            //calculo retencion IVA
-            let inputIva = document.getElementById("iva").value; 
-            let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
-
-            var total_iva_exento =  parseFloat(totalIvaMenos);
-
-            let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
-            var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
-
-            //----------------------------
-
-            var total_islr_retencion = document.getElementById("total_retiene_islr").value;
-              
-                
-            var total_with_IGTF = parseFloat(total_IGTF) + parseFloat(grandtotal) - calc_retencion_iva - total_islr_retencion;
-
-
-            
-            document.getElementById("IGTF_total").value = total_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-            document.getElementById("total_pay_form").value =  total_with_IGTF.toFixed(2);
-
-            document.getElementById("grandtotal_form").value = total_with_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-            document.getElementById("IGTF_amount_form").value =  total_IGTF.toFixed(2);
-
-            document.getElementById("total_pay").value = total_with_IGTF.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2}); 
-          
-            
-          
-
-        } */
     </script>
     <script type="text/javascript">
 
@@ -1176,12 +1129,14 @@
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
 
-                let totalFactura = "<?php echo $quotation->total_factura   ?>";       
+                let totalFactura = "<?php echo $quotation->total_factura ?>";       
                 
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
-                let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
+                let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible   ; ?>") / 100;  
+                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible ; ?>") / 100;  
+
+                let total_debitnotes = "<?php echo $total_debit_notes;?>";
 
 
                 /*Toma la Base y la envia por form*/
@@ -1245,7 +1200,7 @@
                     document.getElementById("anticipo_form2").value = 0;
                 }
                
-                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
+                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo + parseFloat(total_debitnotes);
                 //retencion de iva
 
                 let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
@@ -1285,6 +1240,10 @@
 
                 document.getElementById("IGTF_input_pre").value =  IGTF_input;
                 document.getElementById("IGTF_input_pre_credit").value =  IGTF_input;
+
+                document.getElementById("debitnote_input_form").value =  total_debitnotes;
+                document.getElementById("debitnote_input_pre_credit").value =  total_debitnotes;
+
 
                 document.getElementById("IGTF_general").value =  IGTF_general.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 

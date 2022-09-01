@@ -374,12 +374,17 @@
                             </div>
                             <div class="form-group row mb-0">
                                 <div class="col-sm-4">
-                                    @if($suma == 0)
-                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>
-                                     
+                                    @if (isset($inventories_creditnotes))
+                                        <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
+                                        
                                     @else
                                         <a href="{{ route('debitnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
                                       
+                                    @endif
+                                </div>
+                                <div class="col-sm-4">
+                                    @if (isset($inventories_creditnotes))
+                                    <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                                     @endif
                                 </div>
                                
