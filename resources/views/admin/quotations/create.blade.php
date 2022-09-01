@@ -24,6 +24,8 @@
 <div class="container" >
     <div class="row justify-content-center" >
         <div class="col-md-12" >
+            
+
             <div class="card">
                 
                 @if($type == 'Nota de Entrega')
@@ -35,6 +37,7 @@
                 @if($type != 'Nota de Entrega' && $type != 'factura')            
                 <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
                 @endif 
+
                 <div class="card-body" >
                     <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type ?? 'Cotización') }}" enctype="multipart/form-data" >
                         @method('PATCH')
@@ -53,6 +56,17 @@
                                     </span>
                                 @enderror
                             </div>
+                            <label for="pedido" class="col-sm-2 col-form-label text-md-right">Pedido:</label>
+
+                            <div class="col-md-2">
+                                <input id="pedido" type="text" class="form-control @error('pedido') is-invalid @enderror" name="pedido" value="{{ $quotation->number_pedido ?? '' }}" autocomplete="pedido">
+
+                                @error('pedido')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                             <label for="serie" class="col-sm-2 col-form-label text-md-right">N° de Control/Serie:</label>
 
                             <div class="col-sm-2">
@@ -64,8 +78,32 @@
                                     </span>
                                 @enderror
                             </div>  
+                           
+                        </div>
+
+                        <div class="form-group row">
+
+                            <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
+                            <div class="col-md-3">
+                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly autocomplete="client">
+                                @error('client')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <a href="#" onclick="searchClient();" title="Cambiar Cliente"><i class="fa fa-eye"></i></a>  
+
+                            <label for="vendor" class="col-md-2 col-form-label text-md-right">Vendedor:</label>
+                            <div class="col-md-2">
+                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }} {{ $quotation->vendors['surname'] ?? '' }}" readonly autocomplete="vendor">
+                                @error('vendor')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                             @isset($branches)
-                            <label for="serie" class="col-sm-2 col-form-label text-md-right">Sucursal:</label>
 
                             <div class="col-sm-2">
                                 
@@ -84,30 +122,7 @@
                                     @enderror                              
                             </div>          
                             @endisset
-                        </div>
 
-                        <div class="form-group row">
-
-                            <label for="client" class="col-md-2 col-form-label text-md-right">Cliente:</label>
-                            <div class="col-md-3">
-                                <input id="client" type="text" class="form-control @error('client') is-invalid @enderror" name="client" value="{{ $quotation->clients['name'] ?? '' }}" readonly autocomplete="client">
-                                @error('client')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <a href="#" onclick="searchClient();" title="Cambiar Cliente"><i class="fa fa-eye"></i></a>  
-
-                            <label for="vendor" class="col-md-2 col-form-label text-md-right">Vendedor:</label>
-                            <div class="col-md-3">
-                                <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $quotation->vendors['name'] ?? old('vendor') }} {{ $quotation->vendors['surname'] ?? '' }}" readonly autocomplete="vendor">
-                                @error('vendor')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
                         </div>
                         
                         
@@ -197,6 +212,9 @@
                                 <label for="tasaactual" id="tasaacutal">{{ number_format(bcdiv(($bcv), '1', 2), 2, ',', '.')}}</label>
                             </div>
 
+
+
+                            
                         </div>
                         <div class="custom-switch">
                             <input type="checkbox" class="custom-control-input" id="customSwitches">

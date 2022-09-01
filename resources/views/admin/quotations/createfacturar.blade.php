@@ -945,23 +945,25 @@
                         </div>
                         <br>
                         <div class="form-group row" id="enviarpagos">
-                            <div class="col-md-2">
-                            </div>   
+ 
                         <div class="col-md ">
                             <button id="saveinvoice" type="submit" class="btn btn-primary">
                                 Guardar Factura
                              </button>
                         </div>
+                        <div class="col-md-3">
+                            <a href="{{ route('debitnotes.createcreditnote',[$quotation->id,'m','m',$quotation->bcv]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Crear Nota de Débito</a>
+                        </div>  
                         <div>     
                             <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
                             <input type="hidden" id="anticipo_form2" name="anticipo_form2">
                         </div>
 
-                        @if(isset($quotation->date_delivery_note) && $anticipos_sum > 0)
+                        
                         <div class="col-sm-3">       
                                 <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota con Anticipos</a>
                         </div>
-                        @endif
+                      
                         @if(isset($quotation->date_delivery_note))    
                         <div class="col-sm-3">     
                                 <button type="submit" onmouseover="cambioderuta()" onmouseout="restauraruta()" id="cob_anticipo_saldar" name="cob_anticipo_saldar" class="btn btn-info" title="cob_anticipo_saldar">

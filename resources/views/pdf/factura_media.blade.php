@@ -79,6 +79,7 @@
     <th style="text-align: center; " >Teléfono</th>
     <th style="text-align: center; ">RIF/CI</th>
     <th style="text-align: center; ">N° Control / Serie</th>
+    <th style="text-align: center; ">N° Pedido</th>
     <th style="text-align: center; ">Nota de Entrega</th>
     <th style="text-align: center; ">Transp./Tipo de Entrega</th>
    
@@ -87,6 +88,7 @@
     <td style="text-align: center; ">{{ $quotation->clients['phone1'] }}</td>
     <td style="text-align: center; ">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
     <td style="text-align: center; ">{{ $quotation->serie }}</td>
+    <td style="text-align: center; ">{{ $quotation->number_pedido }}</td>
     <td style="text-align: center; ">{{ $quotation->number_delivery_note }}</td>
     <td style="text-align: center; ">{{ $quotation->transports['placa'] ?? '' }}</td>
     
