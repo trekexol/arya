@@ -33,7 +33,7 @@ class InvoiceController extends Controller
  
     
  
-    public function index()
+    public function index($id_quotation = null,$number_pedido = null)
     {
         if($this->userAccess->validate_user_access($this->modulo)){
 
@@ -43,7 +43,10 @@ class InvoiceController extends Controller
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                             ->where('date_billing','<>',null)
                                             ->get();
-            
+            if(isset($id_quotation)) {
+                $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
+
+            }
     
             return view('admin.invoices.index',compact('quotations','datenow'));
         }else{

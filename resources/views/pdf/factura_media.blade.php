@@ -48,7 +48,7 @@
     <tr>
      @if (isset($quotation->credit_days))
       <td style="width: 10%;">Fecha de Emisión:</td>
-      <td style="width: 10%;">{{ date_format(date_create($quotation->date_billing),"d-m-Y") }} | Dias de Crédito: {{ $quotation->credit_days }}</td>
+      <td style="width: 10%;">{{ date_format(date_create($quotation->date_billing),"d-m-Y") }}</td>
     
     @else
       <td style="width: 10%;">Fecha de Emisión:</td>
@@ -235,7 +235,7 @@
  
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: white; border-right-color: white;" ></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL BS</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($monto_m, '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr>

@@ -87,6 +87,7 @@
             <tr> 
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
+                <th class="text-center">Pedido</th>
                 <th class="text-center">Nota</th>
                 <th class="text-center">Ctrl/Serie</th>
                 <th class="text-center">Cliente</th>
@@ -101,7 +102,10 @@
             
             <tbody>
                 @if (empty($quotations))
-                @else  
+                @else 
+                <?php   
+                $cont = 0;
+                ?>
                     @foreach ($quotations as $quotation)
                     <?php 
                         $amount_bcv = 1;
@@ -133,6 +137,7 @@
                                     <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="font-weight-bold text-dark">{{ $quotation->number_invoice }}</a>
                                 </td>
                             @endif
+                            <td class="text-center"><input style="display:none" none; id="pedido{{$cont}}" data-pedido="{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedidoedit2" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"> <div style="display: block; cursor:pointer;" class="pedidoedit{{$cont}}"> <span data-pedido="{{$cont}}" class="pedidoedit">{{ $quotation->number_pedido ?? 0 }}</span> </div></td>
                             <td class="text-center font-weight-bold">{{$quotation->number_delivery_note ?? ''}}</td>
                             <td class="text-center font-weight-bold" style="width:11%;">{{$quotation->serie ?? ''}}</td>
                             <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
@@ -160,11 +165,11 @@
                             @else
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
                                 @else
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
                                 <td>
@@ -172,7 +177,10 @@
                                 </td>
                             @endif
                             
-                        </tr>     
+                        </tr>   
+                        <?php   
+                        $cont++;
+                        ?>   
                     @endforeach   
                 @endif
             </tbody>
@@ -204,5 +212,29 @@
             $("#btnRegistrar").hide();
             
         }
+     $(document).on('click','.pedidoedit',function(){
+        let id_pedido = $(this).attr('data-pedido');
+        /*var valinput = $('#'+id_pedido).val();*/
+        
+       $('.pedidoedit'+id_pedido).hide();
+
+       $('#pedido'+id_pedido).show();
+       $('#pedido'+id_pedido).focus();
+    });
+    
+    $(document).on('blur','.pedidoedit2',function(){
+        let id_pedido = $(this).attr('data-pedido');
+        let id_quotation = $(this).attr('data-quotation');
+        var valinput = $('#pedido'+id_pedido).val();
+
+        var url = "{{ route('invoices') }}"+"/"+id_quotation+"/"+valinput;
+
+        window.location.href = url;
+       /*  $('#pedido'+id_pedido).hide();
+        $('.pedidoedit'+id_pedido).show();*/
+
+    });
+
+
     </script>
 @endsection

@@ -60,6 +60,7 @@ class FacturarController extends Controller
            
             
             $anticipos_sum_dolares = 0;
+            
             if(isset($total_dolar_anticipo[0]->dolar)){
                 $anticipos_sum_dolares = $total_dolar_anticipo[0]->dolar;
             }
@@ -92,6 +93,12 @@ class FacturarController extends Controller
                                                             ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                             ->get(); 
 
+
+            $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
+
              $total= 0;
              $base_imponible= 0;
              $price_cost_total= 0;
@@ -105,6 +112,7 @@ class FacturarController extends Controller
 
              $total_mercancia= 0;
              $total_servicios= 0;
+             $total_debit_notes = 0;
 
              foreach($inventories_quotations as $var){
 
@@ -170,15 +178,18 @@ class FacturarController extends Controller
                     $bcv = null;
                     //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
-                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->bolivares;
                  }else{
                     $bcv = $quotation->bcv;
                      //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando 
                     $anticipos_sum_bolivares =   $this->anticipos_bolivares_to_dolars($quotation);
-                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->dolar; 
                  }
              }else{
                 $bcv = null;
+                $total_debit_notes = $notasdedebito[0]->bolivares; 
              }
              
 
@@ -206,7 +217,7 @@ class FacturarController extends Controller
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc'));
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -315,6 +326,7 @@ class FacturarController extends Controller
                                             ->where('description','not like', 'Punto de Venta%')
                                             ->orderBy('description','ASC')
                                             ->get();
+
              $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
@@ -322,8 +334,15 @@ class FacturarController extends Controller
                                             ->where('code_five', '<>',0)
                                             ->orderBy('description','ASC')
                                             ->get();
-             $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+
+            $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
                                             ->get();
+            
+            $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
+          
 
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                                             ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
@@ -344,6 +363,7 @@ class FacturarController extends Controller
 
              $total_retiene_islr = 0;
              $retiene_islr = 0;
+             $total_debit_notes = 0;
 
              foreach($inventories_quotations as $var){
                  //Se calcula restandole el porcentaje de descuento (discount)
@@ -372,7 +392,7 @@ class FacturarController extends Controller
                 }else{
                     $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
                 }
-             }
+            }
 
              $quotation->total_factura = $total;
              $quotation->base_imponible = $base_imponible;
@@ -386,14 +406,17 @@ class FacturarController extends Controller
                     //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                    $total_debit_notes = $notasdedebito[0]->bolivares; 
                  }else{
                     $bcv = $quotation->bcv;
                      //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
                     $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
-                 }
+                    $total_debit_notes = $notasdedebito[0]->bolivares;
+                }
              }else{
                 $bcv = null;
+                $total_debit_notes = $notasdedebito[0]->bolivares; 
              }
              
 
@@ -421,7 +444,7 @@ class FacturarController extends Controller
 
             $is_after = false;
      
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc'));
+             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 

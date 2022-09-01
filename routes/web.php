@@ -606,7 +606,7 @@ Route::group(["prefix"=>'nominacalculations'],function(){
 });
 
 Route::group(["prefix"=>'invoices'],function(){
-    Route::get('/','InvoiceController@index')->name('invoices');
+    Route::get('/{id_quotation?}/{number_pedido?}','InvoiceController@index')->name('invoices');
 
     Route::get('movementinvoice/{id_invoice}/{coin?}','InvoiceController@movementsinvoice')->name('invoices.movement');
 
