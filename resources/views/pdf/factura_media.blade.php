@@ -117,7 +117,11 @@
           <th style="text-align: center; ">Tipo de Pago</th>
           <th style="text-align: center; ">Cuenta</th>
           <th style="text-align: center; ">Referencia</th>
-          <th style="text-align: center; ">Dias de Credito</th>
+          @if ($company->id == 1)
+          <th style="text-align: center; ">Días de Crédito: {{ $quotation->credit_days }} Días Continuos</th>
+          @else
+          <th style="text-align: center; ">Días de Crédito {{ $quotation->credit_days }} Días</th>
+          @endif 
           <th style="text-align: center; ">Monto</th>
         </tr>
 
@@ -247,11 +251,23 @@
 
   
 </table>
+
+
+@if($company->id == 1)
+<table style="width: 100%;">
+  <tr style="width: 100%; border-color: white;">
+    <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal;">
+     NOTA: ESTA FACTURA DEBER SER CANCELADA SEGUN LA TASA BCV DEL DÍA DE PAGO 
+    </td>
+  </tr>
+</table>
+@endif
+
 @if(isset($quotation->note))
 <table style="width: 100%;">
   <tr style="width: 100%; border-color: white;">
     <td align="left" style="text-align: left; align: left; border-color: white;  font-weight: normal;">
-     Nota: {{$quotation->note ?? ''}} 
+     NOTA 2: {{$quotation->note ?? ''}} 
     </td>
   </tr>
 </table>
