@@ -226,7 +226,7 @@
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Sub Total</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
@@ -254,24 +254,34 @@
   </tr> 
   @endif
  
+  @if (isset($coin) && ($coin == 'bolivares'))
+
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL </th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL {{($coin == 'bolivares') ? 'Bs.' : ' USD'}}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
   </tr> 
+
+  @endif
+
   @if (isset($coin) && ($coin != 'bolivares'))
   <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">MONTO TOTAL {{($coin == 'bolivares') ? '' : ' USD'}}</th>
+    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"> </th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">MONTO TOTAL {{($coin == 'bolivares') ? 'Bs.' : ' USD'}}</th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; border-right-color: black; font-size: small;">{{($coin == 'bolivares') ? '' : '$'}}{{ number_format(bcdiv($total_coin , '1', 2), 2, ',', '.') }}</th>
+  </tr> 
+  <tr>
+    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;">Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL Bs.</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">{{ number_format(bcdiv($total , '1', 2), 2, ',', '.') }}</th>
   </tr> 
   @endif
   
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: black; border-right-color: white;" ></th>
-    <th style="text-align: left; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9); border-right-color: white; font-size: small;"></th>
+    <th style="text-align: left; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9); border-right-color: black; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; "></th>
-  </tr> 
+  </tr>
 </table>
 @if(isset($quotation->note))
 <table style="width: 100%;">
