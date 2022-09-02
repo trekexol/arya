@@ -740,6 +740,9 @@ class FacturarController extends Controller
         $IGTF_input = request('IGTF_input_pre');
         $IGTF_input_check = request('IGTF_input_store');
 
+        $debitnote = request('debitnote_input_pre');
+        
+
         if ($IGTF_input_check == 0) {
             $IGTF_input = 0;
         }
@@ -1748,6 +1751,10 @@ class FacturarController extends Controller
 
             }
             
+            //incluyendo el todal de debit note en el total asiento cuanta por cobrar
+
+            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
+
 
             if($coin != 'bolivares'){
                 $anticipo =  $anticipo * $bcv;
@@ -1823,7 +1830,7 @@ class FacturarController extends Controller
             $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first(); 
             
             if(isset($account_cuentas_por_cobrar)){
-                $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,0,$sin_formato_grandtotal);
+                $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,0,($sin_formato_grandtotal));
             }
             
             

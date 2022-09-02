@@ -46,7 +46,7 @@
                         
                         <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
 
-                        <input type="hidden" id="debitnote_input_pre_credit" name="debitnote_input_pre">
+                        <input type="hidden" id="debitnote_input_pre_credit" name="debitnote_input_pre_credit">
 
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
@@ -406,7 +406,7 @@
                         <input id="total_pay_before" type="hidden" name="total_pay_before">
                         <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
-                        <input id="debitnote_input_form" type="hidden"  name="debitnote_input_form">
+                        <input id="debitnote_input_pre" type="hidden"  name="debitnote_input_pre">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -1136,17 +1136,22 @@
                 let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
                 let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible ; ?>") / 100;  
+                
+                let total_debit_notes = "<?php echo $total_debit_notes ?>";
 
-                let total_debitnotes = "<?php echo $total_debit_notes;?>";
 
 
-
+                    if (total_debit_notes < 0) {
+                        total_debit_notes = 0;
+                    }
+   
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
 
                 var montoFormat = base_imponible_form.replace(/[$.]/g,'');
 
                 var montoFormat_base_imponible_form = montoFormat.replace(/[,]/g,'.');    
+
 
                 document.getElementById("base_imponible_form").value =  montoFormat_base_imponible_form;
                 /*-----------------------------------*/
@@ -1163,7 +1168,7 @@
                 var total_iva_exento =  parseFloat(totalIvaMenos);
 
                 var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-               
+                
 
                 //document.getElementById("retencion").value = parseFloat(totalIvaMenos);
                 //------------------------------
@@ -1173,13 +1178,18 @@
 
                 var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
                 var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
-                
-                // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
-                var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
+                var total_debit_notes_dos_decimales = parseFloat(total_debit_notes).toFixed(2);
                 
 
-                var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                var debitnote_format = total_debit_notes.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+            
+
+                // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
+
+                var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento);
                 
+                var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
                 
                 document.getElementById("grand_total").value = grand_totalformat;
 
@@ -1202,7 +1212,8 @@
                     document.getElementById("anticipo_form2").value = 0;
                 }
                
-                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
+                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo  + parseFloat(total_debit_notes_dos_decimales);
+
                 //retencion de iva
 
                 let porc_retencion_iva = "<?php echo $client->percentage_retencion_iva ?>";
@@ -1232,8 +1243,7 @@
 
                 var IGTF_input = calc_porc.toFixed(2);
 
-
-
+                
                 document.getElementById("total_pay").value =  total_payformat;
          
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
@@ -1243,8 +1253,8 @@
                 document.getElementById("IGTF_input_pre").value =  IGTF_input;
                 document.getElementById("IGTF_input_pre_credit").value =  IGTF_input;
 
-                document.getElementById("debitnote_input_form").value =  total_debitnotes;
-                document.getElementById("debitnote_input_pre_credit").value =  total_debitnotes;
+                document.getElementById("debitnote_input_pre").value = total_debit_notes_dos_decimales;
+                document.getElementById("debitnote_input_pre_credit").value = total_debit_notes_dos_decimales;
 
 
                 document.getElementById("IGTF_general").value =  IGTF_general.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
@@ -1257,8 +1267,8 @@
 
                 document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
                
-                document.getElementById("grandtotal_form").value = grand_totalformat;
-                document.getElementById("grandtotal_form_credit").value = grand_totalformat;
+                document.getElementById("grandtotal_form").value = grand_totalformat ;
+                document.getElementById("grandtotal_form_credit").value = grand_totalformat ;
 
                 //Quiere decir que el monto total a pagar es negativo o igual a cero
                 if(total_pay.toFixed(2) <= 0){
@@ -1398,7 +1408,7 @@
                 if ($(this).is(':checked')) {
                     $(".IGTF").show(); 
 
-                    var val_input = document.getElementById("IGTF_input_pre").value;
+                    var val_input = document.getElementById("").value;
                     var val_general = document.getElementById("IGTF_general").value;   
                     var IGTF_general_form = document.getElementById("IGTF_general_form").value;
 
