@@ -1140,11 +1140,12 @@
                 let total_debit_notes = "<?php echo $total_debit_notes ?>";
 
 
-
-                    if (total_debit_notes < 0) {
-                        total_debit_notes = 0;
+                    if (total_debit_notes == '') {
+                        total_debit_notes = 0.00;
                     }
-   
+
+
+
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
 
