@@ -404,7 +404,7 @@
                         <input id="IGTF_general" type="hidden" name="IGTF_general">
                         <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
                         <input id="total_pay_before" type="hidden" name="total_pay_before">
-                        <input id="IGTF_porc" type="text" name="IGTF_porc" value="{{$igtfporc}}">
+                        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
                         <input id="debitnote_input_form" type="hidden"  name="debitnote_input_form">
 
