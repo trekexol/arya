@@ -99,6 +99,7 @@ class FacturarController extends Controller
             ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
             ->get();
 
+
              $total= 0;
              $base_imponible= 0;
              $price_cost_total= 0;
@@ -191,6 +192,10 @@ class FacturarController extends Controller
                 $bcv = null;
                 $total_debit_notes = $notasdedebito[0]->bolivares; 
              }
+
+             if (count($notasdedebito) <= 0){
+                $total_debit_notes = 0;
+            }
              
 
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
@@ -418,6 +423,11 @@ class FacturarController extends Controller
                 $bcv = null;
                 $total_debit_notes = $notasdedebito[0]->bolivares; 
              }
+
+             if (count($notasdedebito) <= 0){
+                $total_debit_notes = 0;
+             }
+             
              
 
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
