@@ -69,7 +69,9 @@ class PaymentExpenseExportController extends Controller
                                 ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
                                 ->join('accounts', 'accounts.id','=','expense_payments.id_account')
                                 ->where('expenses_and_purchases.amount','<>',null)
-                                ->where('expenses_and_purchases.date','<=',$date_consult)
+                                ->whereRaw(
+                                    "(DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') <= ?)", 
+                                    [$date_begin, $date_consult])
                                 ->where('expenses_and_purchases.id_provider',$id_provider)
                                 
                                 ->select('expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
@@ -83,7 +85,9 @@ class PaymentExpenseExportController extends Controller
                     ->join('expense_payments', 'expense_payments.id_expense','=','expenses_and_purchases.id')
                     ->join('accounts', 'accounts.id','=','expense_payments.id_account')
                     ->where('expenses_and_purchases.amount','<>',null)
-                    ->where('expenses_and_purchases.date','<=',$date_consult)
+                    ->whereRaw(
+                        "(DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') <= ?)", 
+                        [$date_begin, $date_consult])
                     ->select('expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
                     ->orderBy('expense_payments.id','desc')
                     ->get();

@@ -20,10 +20,7 @@
     text-align: left;
   }
 
-  .condicion {
-    border: none;
-    border-width: 0px; 
-  }
+  
 
   </style>
 </head>
