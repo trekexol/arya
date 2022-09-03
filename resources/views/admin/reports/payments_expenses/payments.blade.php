@@ -39,7 +39,7 @@
   <tr>
     <th class="text-center">Nº</th>
     <th class="text-center">Nº Compra</th>
-
+    <th class="text-center">Fecha</th>
     <th class="text-center">Proveedor</th>
     <th class="text-center">Referencia del Pago</th>
     <th class="text-center">Tipo de Pago</th>
@@ -56,6 +56,7 @@
                   {{ $expense_payment->id }}
               </td>
               <td class="text-center ">{{$expense_payment->id_expense ?? ''}}</td>
+              <td class="text-center ">{{date_format(date_create($expense_payment->created_at),"d-m-Y")}}</td>
               <td class="text-center ">{{$expense_payment->name_provider ?? ''}}</td>
               <td class="text-center ">{{ $expense_payment->reference ?? ''}}</td>
               <td class="text-center ">{{ $expense_payment->payment_type ?? ''}}</td>
@@ -66,6 +67,7 @@
       @endforeach   
   @endif
   <tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
