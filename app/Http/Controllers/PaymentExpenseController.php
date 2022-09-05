@@ -53,7 +53,7 @@ class PaymentExpenseController extends Controller
             ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
             ->where('expenses_and_purchases.id',$payment_expense->id_expense)
             ->where('header_vouchers.description','LIKE','Pago de Bienes%')
-            ->where('detail_vouchers.status','C')
+            ->whereIn('detail_vouchers.status',['C','N',1])
             ->select('detail_vouchers.*')
             ->get()->first();
 
