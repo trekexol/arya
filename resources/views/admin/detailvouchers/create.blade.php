@@ -68,7 +68,7 @@ $suma_haber = 0;
                                 <button type="submit" class="btn btn-primary" title="Agregarheader">Registrar Comprobante</button>  
                             </div>
                             <div class="col-sm-2">
-                               <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Deshabilitar</a>  
+                               <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Eliminar</a>  
                             </div>
                            
                             <div class="col-sm-1">
