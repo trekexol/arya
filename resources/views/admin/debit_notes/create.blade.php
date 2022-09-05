@@ -54,19 +54,20 @@
                                 </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
+                        <div class="form-group row" >
+                            
+                                <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
 
-                            <div class="col-md-3">
-                                <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $creditnote->serie ?? '' }}" readonly required autocomplete="serie">
+                                <div class="col-md-3">
+                                    <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ $creditnote->serie ?? '' }}" readonly required autocomplete="serie">
 
-                                @error('serie')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                           
+                                    @error('serie')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
                             <label for="vendor" class="col-md-3 col-form-label text-md-right">Vendedor:</label>
                             <div class="col-md-4">
                                 <input id="vendor" type="text" class="form-control @error('vendor') is-invalid @enderror" name="vendor" value="{{ $creditnote->vendors['name'] ?? $creditnote->quotations->vendors['name']  ?? '' }}" readonly required autocomplete="vendor">
@@ -81,17 +82,19 @@
                         
                         
                         <div class="form-group row">
-                            <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte/ Tipo de Entrega:</label>
-                            <div class="col-md-4">
-                                <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $creditnote->transports['placa'] ?? old('transport') }}" readonly required autocomplete="transport"> 
-                           
-                                @error('transport')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div style="display: none">
+                                    <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte/ Tipo de Entrega:</label>
+                                    <div class="col-md-4">
+                                        <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $creditnote->transports['placa'] ?? old('transport') }}" readonly required autocomplete="transport"> 
+                                
+                                        @error('transport')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                             </div>
-                            <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
+                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
                             <div class="col-md-4">
                                 <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ $creditnote->observation ?? old('observation') }}" readonly required autocomplete="observation">

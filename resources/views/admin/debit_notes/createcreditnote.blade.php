@@ -46,7 +46,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
+                            <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie (Opcional):</label>
 
                             <div class="col-md-3 ">
                                 <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" autocomplete="serie">
@@ -66,17 +66,20 @@
                                     <option id="typeclient" value="Cliente">Cliente</option>
                                 </select>
                             </div> 
-                            <label for="transports" class="col-md-2 offset-sm-1 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
+                            <div style="display: none">
+                                    <label for="transports" class="col-md-2 offset-sm-1 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
-                            <div class="col-md-3">
-                                <select class="form-control" id="id_transport" name="id_transport">
-                                    <option selected value="-1">Ninguno</option>
-                                    @foreach($transports as $var)
-                                        <option value="{{ $var->id }}">{{ $var->placa }}</option>
-                                    @endforeach
-                                
-                                </select>
+                                    <div class="col-md-3">
+                                        <select class="form-control" id="id_transport" name="id_transport">
+                                            <option selected value="-1">Ninguno</option>
+                                            @foreach($transports as $var)
+                                                <option value="{{ $var->id }}">{{ $var->placa }}</option>
+                                            @endforeach
+                                        
+                                        </select>
+                                    </div>      
                             </div> 
+
                         </div> 
                         <div id="invoiceform" class="form-group row">
                             <label for="invoices" class="col-md-2 col-form-label text-md-right">Factura:</label>
@@ -92,7 +95,7 @@
                             <div class="form-group col-md-1">
                                 <a href="{{ route('debitnotes.selectinvoice') }}" title="Seleccionar Factura"><i class="fa fa-eye"></i></a>  
                             </div>
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota al Pie de Nota de Débito:</label>
 
                             <div class="col-md-4">
                                 <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ old('note') }}"  autocomplete="note">

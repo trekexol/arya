@@ -57,12 +57,24 @@ class PaymentExpenseController extends Controller
             ->select('detail_vouchers.*')
             ->get()->first();
 
-            if ($movements->tasa <= 0 ){
-                $movements->tasa = 1;
-            } 
+            if(isset($movements)){
 
+                if ($movements->tasa <= 0 ){
+                    $movements->tasa = 1;
+                }
+
+                
             $payment_expense->comprobante = $movements->id_header_voucher;
             $payment_expense->rate = $movements->tasa;
+
+            } else {
+
+                      $payment_expense->comprobante = 0;
+                      $payment_expense->rate = 1;      
+            }
+              
+
+
 
         }
             
