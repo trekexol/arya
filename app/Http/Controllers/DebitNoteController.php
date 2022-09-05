@@ -429,13 +429,15 @@ class DebitNoteController extends Controller
         
                 $var->status =  '1';
             
-               // $var->save();
+                $var->save();
+
+
                  
-               dd('no entra');
+               //dd('no entra');
                 if ($importe != null && $importe > 0) { // si monto esta logeado
                 
-                   dd('entra');
-                   /* $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
+                   
+                    $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
                     ->where('id_quotation', '=', $id_invoice)
                     ->orderBy('id','desc')
                     ->first();
@@ -491,12 +493,12 @@ class DebitNoteController extends Controller
                     
                         $var->save();
                      
-                    }*/
+                    }
 
 
                     //armando comprobantes//////////////////////////////////////////////////////
 
-                    /*$date = Carbon::now();
+                    $date = Carbon::now();
                     $datenow = $date->format('Y-m-d');
                     $date_payment = request('date'); 
                     $user       =   auth()->user();
@@ -530,12 +532,16 @@ class DebitNoteController extends Controller
                         if(isset($account_subsegmento)){
                             $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,0,$importe);
                         }
-                    }*/
+                    }
 
-                } // fin importe
-                           
- 
-                //return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
+
+                   return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
+
+                } else { // fin importe
+                 
+                    return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
+                  
+                }
 
             
         }else{
