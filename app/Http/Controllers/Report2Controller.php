@@ -135,14 +135,15 @@ class Report2Controller extends Controller
 
     public function index_sales_books()
     {
-        
+        $global = new GlobalController();
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');    
-        
-        $datebeginyear = $date->firstOfYear()->format('Y-m-d');
+        $datenow = $date->format('Y-m-d');   
+
+        $datebeginyear = $global->data_first_month_day();
+        //$datebeginyear = $date->firstOfYear()->format('Y-m-d');
 
         return view('admin.reports.index_sales_books',compact('datebeginyear','datenow'));
       
