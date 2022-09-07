@@ -1897,7 +1897,7 @@ class FacturarController extends Controller
             if($quotation->amount_with_iva != $sin_formato_grandtotal & $quotation->amount != $sin_formato_amount) {
             $quotation->amount_with_iva = $sin_formato_grandtotal;
             }
-            
+
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
@@ -2034,6 +2034,9 @@ class FacturarController extends Controller
             $historial_quotation = new HistorialQuotationController();
 
             $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
+
+            
+
 
             return redirect('quotations/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
 
