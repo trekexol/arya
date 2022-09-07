@@ -16,6 +16,11 @@
                 
                 <div class="card-body">
                         <div class="form-group row">
+                            <label for="date_begin" class="col-sm-1 col-form-label text-md-right">Desde:</label>
+
+                            <div class="col-sm-3">
+                                <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  date('Y-m-d', strtotime($date_begin ?? $datenow ?? '')) }}" required autocomplete="date_begin">
+                            </div>
                             <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
 
                             <div class="col-sm-3">
@@ -73,7 +78,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('report_payment_expenses.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeperson ?? 'ninguno',$provider->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('report_payment_expenses.pdf',[$coin ?? 'bolivares',$date_begin ?? $datenow,$date_end ?? $datenow,$typeperson ?? 'ninguno',$provider->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
