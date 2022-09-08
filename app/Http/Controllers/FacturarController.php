@@ -1894,10 +1894,8 @@ class FacturarController extends Controller
             $quotation->amount =  $sin_formato_amount;
             $quotation->amount_iva =  $sin_formato_amount_iva;
             
-            if($quotation->amount_with_iva != $sin_formato_grandtotal & $quotation->amount != $sin_formato_amount) {
-            $quotation->amount_with_iva = $sin_formato_grandtotal;
-            }
-            
+            $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
+     
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
