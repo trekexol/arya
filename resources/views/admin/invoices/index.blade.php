@@ -43,7 +43,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-2">
-          <h2>Facturas</h2>
+          <h2>Facturas.</h2>
       </div>
         <div class="col-md-2">
             <a href="{{ route('payments')}}" class="btn btn-info btn-icon-split">
