@@ -100,17 +100,17 @@ class QuotationController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    
+  
     public function createquotation($type = null)
     {
+        
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');   
         
         $user   =   auth()->user();
-
-
+        
         if(isset($user->id_branch)){
             $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
         }else{
@@ -128,6 +128,7 @@ class QuotationController extends Controller
         }else{
             $client = null;
         }     
+
 
         return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type','user','client'));
    
@@ -211,7 +212,7 @@ class QuotationController extends Controller
         } 
     }
 
-
+    public $conection_logins = "logins"; 
 
     public function create($id_quotation,$coin,$type = null)
     {
@@ -281,8 +282,11 @@ class QuotationController extends Controller
                     $coin = 'dolares';
                 }
                 
-        
-                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company','branches','user_branch'));
+                
+                $login = Company::on($this->conection_logins)->find($user->id_company);
+
+                return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company','branches','user_branch','login'));
+            
             }else{
                 return redirect('/quotations/index')->withDanger('No es posible ver esta cotizacion fall');
             } 
@@ -869,7 +873,11 @@ class QuotationController extends Controller
     public function updateQuotation(Request $request, $id)
     {
       
+        $user   =   auth()->user();
 
+        $persona_entrega = request('person');
+        $ci_persona_entrega = request('ci_person');
+        
         $var = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
         $var->date_quotation = request('date_quotation');
@@ -878,11 +886,14 @@ class QuotationController extends Controller
         $var->observation = request('observation');
         $var->note = request('note');
         $var->number_pedido = request('pedido');
-       
-    
+
+        $var->person_note_delivery = $persona_entrega;
+        $var->ci_person_note_delivery = $ci_persona_entrega;
+
         $var->save();
 
         $type = request('type_f');
+
 
         $historial_quotation = new HistorialQuotationController();
 
