@@ -404,10 +404,12 @@ class PDF2Controller extends Controller
              } 
     }
 
+    public $conection_logins = "logins"; 
 
     function deliverynote($id_quotation,$coin,$iva,$date,$valor = null)
     {
-      
+        $user   =   auth()->user();
+
         $pdf = App::make('dompdf.wrapper');
     
              $quotation = null;
@@ -509,12 +511,21 @@ class PDF2Controller extends Controller
                 if(isset($coin) && ($coin != 'bolivares')){
                     $rate = $quotation->bcv;
                 }
+
+                $login = Company::on($this->conection_logins)->find($user->id_company);
+
                 $quotation->iva_percentage = $iva;
                 $quotation->amount = $total * ($rate ?? 1);
                 $quotation->base_imponible = $base_imponible * ($rate ?? 1);
                 $quotation->amount_iva = $base_imponible * $quotation->iva_percentage / 100;
                 $quotation->amount_with_iva = ($quotation->amount + $quotation->amount_iva);
                 $quotation->date_delivery_note = $date;
+                
+                if ($quotation->person_note_delivery == null) {
+                $quotation->person_note_delivery = $login->person_note_delivery;
+                $quotation->ci_person_note_delivery = $login->ci_person_note_delivery;
+                }
+
                 $quotation->save();
                 
                 

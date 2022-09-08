@@ -265,11 +265,11 @@
           <td style="border:#fff" style="width:50%; margin-left:50px;">Firma Persona que Recibe:</td>
       </tr>
       <tr style="border:#fff; width:100%">
-          <td style="border:#fff" style="width:50%">Nombre:</td>
+          <td style="border:#fff" style="width:50%">Nombre: {{$quotation->person_note_delivery}}</td>
           <td style="border:#fff" style="width:50%; margin-left:50px;">Nombre:</td>
       </tr>
       <tr style="border:#fff; width:100%">
-          <td style="border:#fff" style="width:50%">CI:</td>
+          <td style="border:#fff" style="width:50%">CI: {{$quotation->ci_person_note_delivery}}</td>
           <td style="border:#fff" style="width:50%; margin-left:50px;">CI:</td>
       <tr style="border:#fff; width:100%">
           <td style="border:#fff" style="width:50%">______________________________</td>

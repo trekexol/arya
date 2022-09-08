@@ -127,8 +127,31 @@
                         
                         
                         <div class="form-group row">
+
                             <label for="transports" class="col-md-2 col-form-label text-md-right">Transporte:</label>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <input id="transportc" type="text" class="form-control @error('transport') is-invalid @enderror" name="transportc" value="{{ $quotation->transports['type'] ?? old('transportc') }}" readonly autocomplete="transportc"> 
+                           
+                                @error('transportc')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <label for="transportcl" class="col-md-2 col-form-label text-md-right">Color:</label>
+                            <div class="col-md-1">
+                                <input id="transportcl" type="text" class="form-control @error('transport') is-invalid @enderror" name="transportcl" value="{{ $quotation->transports['color_id'] ?? old('transportcl') }}" readonly autocomplete="transportcl"> 
+                           
+                                @error('transport')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <label for="transports" class="col-md-2 col-form-label text-md-right">Placa:</label>
+                            <div class="col-md-2">
                                 <input id="transport" type="text" class="form-control @error('transport') is-invalid @enderror" name="transport" value="{{ $quotation->transports['placa'] ?? old('transport') }}" readonly autocomplete="transport"> 
                            
                                 @error('transport')
@@ -137,22 +160,9 @@
                                     </span>
                                 @enderror
                             </div>
-                            <div class="col-sm-1"></div>
 
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura:</label>
-
-                            <div class="col-md-4">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}"  autocomplete="note">
-                                
-                                @error('note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            
                         </div>
-                       
+
                         <div class="form-group row">
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
 
@@ -165,14 +175,57 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> {{$type ?? 'Cotización'}}:</h6></label>
-                            <div class="col-md-2 col-form-label text-md-left">
-                                <label for="totallabel" id="total"><h3></h3></label>
+                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Página:</label>
+
+                            <div class="col-md-4">
+                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ $quotation->note ?? old('note') }}"  autocomplete="note">
+                                
+                                @error('note')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
+                       </div>
+
+                        <div class="form-group row">
+                          
+                            <label for="person" class="col-md-2 col-form-label text-md-right">Persona que Entrega:</label>
+
+                            <div class="col-md-3">
+                                <input id="person" type="text" class="form-control @error('person') is-invalid @enderror" name="person" value="{{ $quotation->person_note_delivery ?? $login->person_note_delivery ?? old('person') }}"  autocomplete="person">
+                                
+                                @error('person')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <label for="ci_person" class="col-md-2 col-form-label text-md-right">CI. Persona que Ent:</label>
+
+                            <div class="col-md-2">
+                                <input id="ci_person" type="text" class="form-control @error('ci_person') is-invalid @enderror" name="ci_person" value="{{ $quotation->ci_person_note_delivery ?? $login->ci_person_note_delivery ?? old('ci_person') }}"  autocomplete="ci_person">
+                                
+                                @error('ci_person')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div style="display:none">
+                                <label  class="col-md-2 col-form-label text-md-right"><h6>Total de la<br> {{$type ?? 'Cotización'}}:</h6></label>
+                                <div class="col-md-2 col-form-label text-md-left">
+                                    <label for="totallabel" id="total"><h3></h3></label>
+                                </div>
+                            </div>
+                            <br>
+                            <br>
                             <div class="col-md-2">
                             <button type="submit" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
                             </div>
                     </form>
+
                         <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">
