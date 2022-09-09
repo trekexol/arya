@@ -86,7 +86,11 @@
   <tr>
     <td style="text-align: center;">{{ $quotation->clients['phone1'] ?? ''}}</td>
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
+    @if(Auth::user()->company->id != 22)
     <td style="text-align: center;">{{ $quotation->serie }}</td>
+    @else
+    <td style="text-align: center; color:red">{{ $quotation->serie }}</td>
+    @endif
     <td style="text-align: center;">Nota de Entrega</td>
     <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
     
@@ -258,7 +262,7 @@
 @endif
 <footer>
   <br>
-  <br>
+  @if(Auth::user()->company->id != 22)
   <table style="border:#fff; width:100%">
       <tr style="border:#fff; width:100%">
           <td style="border:#fff" style="width:50%">Firma Persona que Entrega:</td>
@@ -277,6 +281,18 @@
       </tr>
 
   </table>
+  @else
+
+  <table style="width:100%; font-size: 10pt;">
+    <tr>
+        <td style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b><br>{{$quotation->person_note_delivery}}<br>CI: {{$quotation->ci_person_note_delivery}}<br><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
+        <td width="25%" style="border:#000" align="center" style="font-size: 10pt;"><b>SELLO</b><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
+        <td style="border:#000" align="center" style="font-size: 10pt;"><b>RECIBIDO POR:</b><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
+
+    </tr>
+  </table>
+@endif
+
 </footer>
 </body>
 
