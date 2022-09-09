@@ -19,7 +19,10 @@
     text-align: left;
   }
 
+  
   </style>
+
+
 </head>
 
 <body>
@@ -31,8 +34,11 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr> 
   </table>
   <br>
+  @if(Auth::user()->company->id != 22)
   <h4 style="color: black">NOTA DE ENTREGA NRO: {{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
-
+  @else 
+  <h4 style="color: black">NOTA DE ENTREGA NRO: <span style="color:red">{{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}} </span></h4>
+  @endif
  
    
  
@@ -116,7 +122,9 @@
     <th style="text-align: center; width: 100%;">Productos</th>
   </tr> 
 </table>
+
 <table style="width: 100%;">
+
   <?php 
    $lote = '';
    $date_expirate = '';
@@ -131,25 +139,50 @@
       }
   
   ?>
-  <tr>
-    <th style="text-align: center; ">Código</th>
-    <th style="text-align: center; ">Descripción</th>
-    @if($valor == 2)
-    <th style="text-align: center; ">Foto</th>
-    @endif
-    <th style="text-align: center; ">Cantidad</th>
-    @if($lote != '')
-    <th style="text-align: center; ">Lote</th>
-    @endif
-    @if($date_expirate != '')
-    <th style="text-align: center; ">Fecha Venc</th> 
-    @endif
-    <th style="text-align: center; ">P.V.J.</th>
-    @if($discount > 0)
-    <th style="text-align: center; ">Desc</th>
-    @endif
-    <th style="text-align: center; ">Total</th>
-  </tr> 
+
+
+@if(Auth::user()->company->id != 22)
+        <tr>
+          <th style="text-align: center; ">Código</th>
+          <th style="text-align: center; ">Descripción</th>
+          @if($valor == 2)
+          <th style="text-align: center; ">Foto</th>
+          @endif
+          <th style="text-align: center; ">Cantidad</th>
+          @if($lote != '')
+          <th style="text-align: center; ">Lote</th>
+          @endif
+          @if($date_expirate != '')
+          <th style="text-align: center; ">Fecha Venc</th> 
+          @endif
+          <th style="text-align: center; ">P.V.J.</th>
+          @if($discount > 0)
+          <th style="text-align: center; ">Desc</th>
+          @endif
+          <th style="text-align: center; ">Total</th>
+        </tr> 
+@else
+      <tr>
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Código</th>
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Descripción</th>
+        @if($valor == 2)
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Foto</th>
+        @endif
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Cantidad</th>
+        @if($lote != '')
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Lote</th>
+        @endif
+        @if($date_expirate != '')
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Fecha Venc</th> 
+        @endif
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Precio</th>
+        @if($discount > 0)
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Desc</th>
+        @endif
+        <th style="text-align: center; background-color:darkgreen; color: #fff">Total</th>
+       </tr> 
+ @endif
+
   @foreach ($inventories_quotations as $var)
       <?php
        
@@ -261,9 +294,8 @@
   </tr>
 </table>
 @endif
-<footer>
-  <br>
-  @if(Auth::user()->company->id != 22)
+<br>
+@if(Auth::user()->company->id != 22)
   <table style="border:#fff; width:100%">
       <tr style="border:#fff; width:100%">
           <td style="border:#fff" style="width:50%">Firma Persona que Entrega:</td>
@@ -283,8 +315,7 @@
 
   </table>
   @else
-
-  <table style="width:100%; font-size: 10pt;">
+  <table class="footer" style="width:100%; font-size: 10pt;">
     <tr>
       <td style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b></td>
       <td align="center" style="border-top:#000" style="font-size: 10pt;"><b>SELLO</b></td>
@@ -298,7 +329,7 @@
           </span><br><span style="color: #fff">.</span>
       </td>
         <td width="25%" style="border:#000" align="center" style="font-size: 10pt;">
-
+  
           <span style="color: #fff">.</span><br>
           <span style="color: #fff">.</span><br>
           <span style="color: #fff">.</span><br>
@@ -309,12 +340,21 @@
           <span style="color: #fff">.</span><br>
           <span style="color: #fff">.</span><br>
         </span><br><span style="color: #fff">.</span></td>
-
+  
     </tr>
   </table>
+
 @endif
 
-</footer>
+
+
+
+
 </body>
+
+
+
+
+
 
 </html>
