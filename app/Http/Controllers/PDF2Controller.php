@@ -576,8 +576,11 @@ class PDF2Controller extends Controller
 
                 $this->aggregate_movement_mercancia($quotation,$price_cost_total);
                 
-                $pdf = $pdf->loadView('pdf.deliverynote',compact('quotation','inventories_quotations','bcv','company'
+                $pdf->loadView('pdf.deliverynote',compact('quotation','inventories_quotations','bcv','company'
                                                                 ,'total_retiene_iva','total_retiene_islr','coin','retiene_iva','valor'));
+        
+                $pdf->setOptions(['footer-center' => '[page]']);
+                
                 return $pdf->stream();
          
             }else{

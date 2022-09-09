@@ -19,7 +19,49 @@
     text-align: left;
   }
 
+  @page {
+                margin: 0cm 0cm;
+            }
+
+
+            body {
+                margin-top: 1cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                margin-bottom: 4cm;
+            }
+   .footer {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    margin-top: -65px;
+   } 
+
+  .footer {
+      bottom: 0px;
+  }
+
+  .pagenum:before {
+      content: counter(page);
+  }
+
+
+  .pagenum2:after {
+      content: counter(page);
+  }
   
+
+
+  footer {
+                position: fixed; 
+                bottom: 1cm; 
+                left: 1cm; 
+                right: 1cm;
+                height: 4cm;
+              
+               
+            }
+
   </style>
 
 
@@ -294,7 +336,6 @@
   </tr>
 </table>
 @endif
-<br>
 @if(Auth::user()->company->id != 22)
   <table style="border:#fff; width:100%">
       <tr style="border:#fff; width:100%">
@@ -315,40 +356,45 @@
 
   </table>
   @else
-  <table class="footer" style="width:100%; font-size: 10pt;">
+
+  
+
+<footer>
+
+  <table style="width:100%; font-size: 10pt;">
     <tr>
-      <td style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b></td>
-      <td align="center" style="border-top:#000" style="font-size: 10pt;"><b>SELLO</b></td>
-      <td align="center" style="border-top:#000" style="font-size: 10pt;"><b>RECIBIDO POR:</b></td>
+      <td width="40%" style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b></td>
+      <td width="30%" align="center" style="border-top:#000" style="font-size: 10pt;"><b>SELLO</b></td>
+      <td width="30%"align="center" style="border-top:#000" style="font-size: 10pt;"><b>RECIBIDO POR:</b></td>
     </tr>
     <tr>
-        <td style="border_top:#fff " style="font-size: 10pt;">
-          {{$quotation->person_note_delivery}}<br>
-          CI: {{$quotation->ci_person_note_delivery}}<br>
-          <span style="color: #fff">.</span><br>
-          </span><br><span style="color: #fff">.</span>
+      <td style="border_top:#fff " style="font-size: 10pt;">
+        {{$quotation->person_note_delivery}}<br>
+        CI: {{$quotation->ci_person_note_delivery}}<br>
+        <span style="color: #fff">.</span><br>
+        </span><br><span style="color: #fff">.</span>
       </td>
-        <td width="25%" style="border:#000" align="center" style="font-size: 10pt;">
-  
-          <span style="color: #fff">.</span><br>
-          <span style="color: #fff">.</span><br>
-          <span style="color: #fff">.</span><br>
-         </span><br><span style="color: #fff">.</span>
-      </td>
-        <td style="border:#000" align="center" style="font-size: 10pt;">
-          <span style="color: #fff">.</span><br>
-          <span style="color: #fff">.</span><br>
-          <span style="color: #fff">.</span><br>
-        </span><br><span style="color: #fff">.</span></td>
-  
-    </tr>
+      <td style="border:#000" align="center" style="font-size: 10pt;">
+        <span style="color: #fff">.</span><br>
+        <span  style="color: #fff">.</span><br>
+        <span style="color: #fff">.</span><br>
+       </span><br><span style="color: #fff">.</span>
+    </td>
+      <td style="border:#000" align="center" style="font-size: 10pt;">
+        <span style="color: #fff">.</span><br>
+        <span style="color: #fff">.</span><br>
+        <span style="color: #fff">.</span><br>
+      </span><br><span style="color: #fff">.</span></td>
+
+  </tr>
   </table>
+</footer>
+
+<div class="footer">
+  Página <span class="pagenum"></span> / <span class="pagenum2"></span> 
+</div>
 
 @endif
-
-
-
-
 
 </body>
 
