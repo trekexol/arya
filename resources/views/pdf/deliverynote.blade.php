@@ -286,9 +286,29 @@
 
   <table style="width:100%; font-size: 10pt;">
     <tr>
-        <td style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b><br>{{$quotation->person_note_delivery}}<br>CI: {{$quotation->ci_person_note_delivery}}<br><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
-        <td width="25%" style="border:#000" align="center" style="font-size: 10pt;"><b>SELLO</b><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
-        <td style="border:#000" align="center" style="font-size: 10pt;"><b>RECIBIDO POR:</b><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br><span style="color: #fff">.</span><br></span><br><span style="color: #fff">.</span></td>
+      <td style="border:#000" style="font-size: 10pt;"><b>DESPACHADO:</b></td>
+      <td align="center" style="border-top:#000" style="font-size: 10pt;"><b>SELLO</b></td>
+      <td align="center" style="border-top:#000" style="font-size: 10pt;"><b>RECIBIDO POR:</b></td>
+    </tr>
+    <tr>
+        <td style="border_top:#fff " style="font-size: 10pt;">
+          {{$quotation->person_note_delivery}}<br>
+          CI: {{$quotation->ci_person_note_delivery}}<br>
+          <span style="color: #fff">.</span><br>
+          </span><br><span style="color: #fff">.</span>
+      </td>
+        <td width="25%" style="border:#000" align="center" style="font-size: 10pt;">
+
+          <span style="color: #fff">.</span><br>
+          <span style="color: #fff">.</span><br>
+          <span style="color: #fff">.</span><br>
+         </span><br><span style="color: #fff">.</span>
+      </td>
+        <td style="border:#000" align="center" style="font-size: 10pt;">
+          <span style="color: #fff">.</span><br>
+          <span style="color: #fff">.</span><br>
+          <span style="color: #fff">.</span><br>
+        </span><br><span style="color: #fff">.</span></td>
 
     </tr>
   </table>
