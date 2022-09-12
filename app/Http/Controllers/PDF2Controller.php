@@ -579,7 +579,7 @@ class PDF2Controller extends Controller
                 $pdf->loadView('pdf.deliverynote',compact('quotation','inventories_quotations','bcv','company'
                                                                 ,'total_retiene_iva','total_retiene_islr','coin','retiene_iva','valor'));
         
-                $pdf->setOptions(['footer-center' => '[page]']);
+                /*$pdf->setOptions(['footer-center' => '[page]']);*/
                 
                 return $pdf->stream();
          
