@@ -159,7 +159,7 @@
 <tr>
   <th style="text-align: center; background-color:#5CAB44; color: #fff">Código</th>
   <th style="text-align: center; background-color:#5CAB44; color: #fff">Descripción</th>
-  @if($photo == 1)
+  @if( isset($photo) && $photo == 1)
   <th style="text-align: center; background-color:#5CAB44; color: #fff">Foto</th>
   @endif
   <th style="text-align: center; background-color:#5CAB44; color: #fff">Cantidad</th>
