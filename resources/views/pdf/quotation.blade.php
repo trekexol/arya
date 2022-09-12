@@ -33,7 +33,12 @@
     <br>
     @endfor
   @endif
-<h4 style="color: black"> Cotización NRO: {{ str_pad( $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
+
+@if(Auth::user()->company->id != 22)
+<h4 style="color: black">Cotización NRO: {{ str_pad( $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
+@else 
+<h4 style="color: black">Cotización NRO: <span style="color:red">{{ str_pad( $quotation->id, 6, "0", STR_PAD_LEFT)}} </span></h4>
+@endif
 
  
    
@@ -130,6 +135,7 @@
      }
  
  ?>
+ @if(Auth::user()->company->id != 22)
   <tr>
     <th style="text-align: center; ">Código {{$photo}}</th>
     <th style="text-align: center; ">Descripción</th>
@@ -143,12 +149,34 @@
     @if($date_expirate != '')
     <th style="text-align: center; ">Fecha Venc</th> 
     @endif
-    <th style="text-align: center; ">P.V.J.</th>
+    <th style="text-align: center; ">Precio</th>
     @if($discount > 0)
     <th style="text-align: center; ">Desc</th>
     @endif
     <th style="text-align: center; ">Total</th>
   </tr> 
+@else
+<tr>
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Código</th>
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Descripción</th>
+  @if($photo == 1)
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Foto</th>
+  @endif
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Cantidad</th>
+  @if($lote != '')
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Lote</th>
+  @endif
+  @if($date_expirate != '')
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Fecha Venc</th> 
+  @endif
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Precio</th>
+  @if($discount > 0)
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Desc</th>
+  @endif
+  <th style="text-align: center; background-color:#5CAB44; color: #fff">Total</th>
+ </tr> 
+@endif
+
   @foreach ($inventories_quotations as $var)
       <?php
       $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;

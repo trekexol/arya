@@ -54,6 +54,7 @@ class QuotationController extends Controller
             ->where('date_billing','=',null)
             ->where('date_delivery_note','=',null)
             ->where('date_order','=',null)
+            ->where('status','!=','X')
             ->get();
 
             $company = Company::on(Auth::user()->database_name)->find(1);
@@ -1150,7 +1151,9 @@ class QuotationController extends Controller
 
         //Anticipo::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->delete();
 
-        $quotation->delete(); 
+        $quotation->status = 'X';
+        
+        $quotation->save();
 
         $historial_quotation = new HistorialQuotationController();
 
