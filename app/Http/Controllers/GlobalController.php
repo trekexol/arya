@@ -580,17 +580,11 @@ class GlobalController extends Controller
         
         if(isset($quotation_products)){
             foreach($quotation_products as $quotation_product){
-                if(isset($quotation_product) && $quotation_product->status == "C"){
+                //if(isset($quotation_product) && $quotation_product->status == "C"){
                     QuotationProduct::on(Auth::user()->database_name)
-                        ->join('inventories','inventories.id','quotation_products.id_inventory')
-                        ->join('products','products.id','inventories.product_id')
-                        ->where(function ($query){
-                            $query->where('products.type','MERCANCIA')
-                                ->orWhere('products.type','COMBO');
-                        })
                         ->where('quotation_products.id',$quotation_product->id)
-                        ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount'), 'quotation_products.status' => 'X']);
-                }
+                        ->update(['quotation_products.status' => 'X']);
+                //}
             }
         }
     }

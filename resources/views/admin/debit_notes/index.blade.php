@@ -96,6 +96,7 @@
                 <th class="text-center">Moneda</th>
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs</th>
+                <th class="text-center">(S)</th>
                 <th class="text-center"></th>
                
             </tr>
@@ -118,9 +119,17 @@
                             <td class="text-center">{{ $creditnote->coin ?? ''}}</td>
                             <td class="text-center">{{ number_format($creditnote->amount_with_iva / $creditnote->rate ?? 0, 2, ',', '.')}}</td>
                             <td class="text-center">{{ number_format($creditnote->amount_with_iva ?? 0, 2, ',', '.')}}</td>
+                            @if($creditnote->status == 'C')
+                            <td class="text-center" style="color:darkgreen">{{ $creditnote->status ?? ''}}</td>
                             <td>
-                            <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>                
+                            </td>  
+                            @else
+                            <td class="text-center">P</td>
+                            <td>
+                                <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                            </td>  
+                            @endif
+              
                         </tr>     
                     @endforeach   
                 @endif
