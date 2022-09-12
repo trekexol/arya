@@ -19,7 +19,7 @@
     text-align: left;
   }
 
-  @page {
+ /* @page {
                 margin: 0cm 0cm;
             }
 
@@ -29,7 +29,7 @@
                 margin-left: 1cm;
                 margin-right: 1cm;
                 margin-bottom: 4cm;
-            }
+            }*/
    .footer {
     width: 100%;
     text-align: center;
