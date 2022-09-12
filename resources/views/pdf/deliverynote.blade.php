@@ -60,7 +60,7 @@
                 height: 4cm;
               
                
-            }
+            } 
 
   </style>
 
@@ -205,23 +205,23 @@
         </tr> 
 @else
       <tr>
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Código</th>
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Descripción</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Código</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Descripción</th>
         @if($valor == 2)
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Foto</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Foto</th>
         @endif
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Cantidad</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Cantidad</th>
         @if($lote != '')
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Lote</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Lote</th>
         @endif
         @if($date_expirate != '')
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Fecha Venc</th> 
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Fecha Venc</th> 
         @endif
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Precio</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Precio</th>
         @if($discount > 0)
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Desc</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Desc</th>
         @endif
-        <th style="text-align: center; background-color:darkgreen; color: #fff">Total</th>
+        <th style="text-align: center; background-color:#5CAB44; color: #fff">Total</th>
        </tr> 
  @endif
 
