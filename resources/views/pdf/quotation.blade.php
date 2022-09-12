@@ -137,9 +137,9 @@
  ?>
  @if(Auth::user()->company->id != 22)
   <tr>
-    <th style="text-align: center; ">Código {{$photo}}</th>
+    <th style="text-align: center; ">Código</th>
     <th style="text-align: center; ">Descripción</th>
-    @if($photo == 1)
+    @if( isset($photo) && $photo == 1)
     <th style="text-align: center; ">Foto</th>
     @endif
     <th style="text-align: center; ">Cantidad</th>
@@ -190,7 +190,7 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      @if($photo == 1)
+      @if( isset($photo) && $photo == 1)
       
           @if(isset($var->photo_product))
           <th style="text-align: center; font-weight: normal;"><img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}"></th>
