@@ -66,6 +66,10 @@ Route::group(["prefix"=>'users'],function(){
 
     Route::get('permisos/{id_user}/{name_user}','UserController@indexpermisos')->name('users.indexpermisos');
 
+    Route::get('edit','MyUserController@edit')->name('users.edituser');
+    Route::patch('update','MyUserController@update')->name('users.updateuser');
+
+
 });
 
 
