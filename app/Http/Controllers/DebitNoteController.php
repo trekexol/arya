@@ -165,6 +165,7 @@ class DebitNoteController extends Controller
 
     public function createproduct($id_creditnote,$coin,$id_inventory)
     {
+
         $creditnote = null;
                 
         if(isset($id_creditnote)){
@@ -177,7 +178,7 @@ class DebitNoteController extends Controller
                 $inventories_creditnotes = DB::connection(Auth::user()->database_name)->table('products')
                                 ->join('debit_note_details', 'products.id', '=', 'debit_note_details.id_inventory')
                                 ->where('debit_note_details.id_debit_note',$id_creditnote)
-                                ->whereIn('debit_note_details.status',['1','C'])
+                                ->where('debit_note_details.status','1')
                                 ->select('products.*','debit_note_details.price as price','debit_note_details.id_inventory as id_inventory','debit_note_details.rate as rate','debit_note_details.id as credit_note_details_id','products.code_comercial as code','debit_note_details.discount as discount',
                                 'debit_note_details.amount as amount_creditnote','debit_note_details.exento as exento')
                                 ->get(); 
@@ -423,10 +424,15 @@ class DebitNoteController extends Controller
                 }
 
                 $var->coin = $coin;
-        
+
+                if ($importe != null && $importe > 0) {
                 $var->amount = $importe;
                 $var->amount_with_iva = $importe;
-        
+                } else {
+                $var->amount = 0;
+                $var->amount_with_iva = 0;
+                }
+                
                 $var->status =  '1';
             
                 $var->save();
@@ -537,7 +543,64 @@ class DebitNoteController extends Controller
 
                    return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
 
-                } else { // fin importe
+                } else { // Sin importe 
+
+
+                    $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
+                    ->where('id_quotation', '=', $id_invoice)
+                    ->orderBy('id','desc')
+                    ->first();
+
+                    $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
+                    ->where('id', '=', $id_invoice)
+                    ->first();
+                   
+                    if (!empty($quotation)){
+                        DB::connection(Auth::user()->database_name)->table('debit_notes')
+                        ->where('id_quotation', '=', $id_invoice)
+                        ->update(['id_client' => $quotation->id_client,'id_vendor' => $quotation->id_vendor]);
+                    }
+                    
+
+                    $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                    ->where('id_quotation', '=', $id_invoice)
+                    ->where('status','!=','X')
+                    ->get();
+
+                    foreach ($quotation_products as $quotation) {
+
+                        $var = new DebitNoteDetail();
+                        $var->setConnection(Auth::user()->database_name);
+
+                        $var->id_debit_note = $id_debit_note_last->id;
+                        $var->id_inventory = $quotation->id_inventory;
+                        $var->islr = false;
+                        $exento = 1;
+
+                        if($exento == null){
+                            $var->exento = false;
+                        }else{
+                            $var->exento = true;
+                        }
+
+                        $var->rate = $valor_sin_formato_rate;
+            
+
+                        $cost = 0;
+            
+                
+                        $var->price = $cost;
+                        
+                        $var->amount = 1;
+                
+                        $var->discount = 0;
+                        
+                        $var->status =  '1';
+                    
+                        $var->save();
+                     
+                    }
+
                  
                     return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
                   
