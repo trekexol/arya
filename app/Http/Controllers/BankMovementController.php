@@ -226,6 +226,7 @@ class BankMovementController extends Controller
             'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
             'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description'
             )
+            ->orderBy('detail_vouchers.debe','desc')
             ->get();
          
         if(count($movements) > 0){
