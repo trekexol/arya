@@ -1364,6 +1364,9 @@ Route::group(["prefix"=>'export_reports'],function(){
     
     Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
     Route::post('orders','Exports\Quotations\OrderExportController@exportExcel')->name('export_reports.orders');
+    Route::post('vendor_commissions','Exports\Reports\VendorCommissionExportController@exportExcel')->name('export_reports.vendor_commissions');
+
+    
 });
 
 Route::group(["prefix"=>'mails'],function(){
@@ -1406,7 +1409,7 @@ Route::group(["prefix"=>'owners'],function(){
 Route::group(["prefix"=>'vendor_commissions'],function(){
     Route::get('menu/{typeperson}/{id_client?}','Reports\VendorCommissionController@index')->name('vendor_commissions.index');
     Route::post('store','Reports\VendorCommissionController@store')->name('vendor_commissions.store');
-    Route::get('pdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
+    Route::get('pdf/{coin}/{date_begin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
 
     Route::get('selectclient','Reports\VendorCommissionController@selectClient')->name('vendor_commissions.selectClient');
     Route::get('selectvendor','Reports\VendorCommissionController@selectVendor')->name('vendor_commissions.selectVendor');
