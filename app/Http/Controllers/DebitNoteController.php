@@ -437,17 +437,16 @@ class DebitNoteController extends Controller
             
                 $var->save();
 
+                $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
+                ->where('id_quotation', '=', $id_invoice)
+                ->orderBy('id','desc')
+                ->first();
 
                  
                //dd('no entra');
                 if ($importe != null && $importe > 0) { // si monto esta logeado
                 
                    
-                    $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
-                    ->where('id_quotation', '=', $id_invoice)
-                    ->orderBy('id','desc')
-                    ->first();
-
                     $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
                     ->where('id', '=', $id_invoice)
                     ->first();
@@ -541,68 +540,13 @@ class DebitNoteController extends Controller
                     }
 
 
-                   return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
+                   return redirect('debitnotes/register/'.$id_debit_note_last->id.'/'.request('coin'));
 
                 } else { // Sin importe 
 
 
-                    $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('debit_notes')
-                    ->where('id_quotation', '=', $id_invoice)
-                    ->orderBy('id','desc')
-                    ->first();
-
-                    $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
-                    ->where('id', '=', $id_invoice)
-                    ->first();
-                   
-                    if (!empty($quotation)){
-                        DB::connection(Auth::user()->database_name)->table('debit_notes')
-                        ->where('id_quotation', '=', $id_invoice)
-                        ->update(['id_client' => $quotation->id_client,'id_vendor' => $quotation->id_vendor]);
-                    }
-                    
-
-                    $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                    ->where('id_quotation', '=', $id_invoice)
-                    ->where('status','!=','X')
-                    ->get();
-
-                    foreach ($quotation_products as $quotation) {
-
-                        $var = new DebitNoteDetail();
-                        $var->setConnection(Auth::user()->database_name);
-
-                        $var->id_debit_note = $id_debit_note_last->id;
-                        $var->id_inventory = $quotation->id_inventory;
-                        $var->islr = false;
-                        $exento = 1;
-
-                        if($exento == null){
-                            $var->exento = false;
-                        }else{
-                            $var->exento = true;
-                        }
-
-                        $var->rate = $valor_sin_formato_rate;
-            
-
-                        $cost = 0;
-            
-                
-                        $var->price = $cost;
-                        
-                        $var->amount = 1;
-                
-                        $var->discount = 0;
-                        
-                        $var->status =  '1';
-                    
-                        $var->save();
-                     
-                    }
-
                  
-                    return redirect('debitnotes/register/'.$var->id.'/'.request('coin'));
+                    return redirect('debitnotes/register/'.$id_debit_note_last->id.'/'.request('coin'));
                   
                 }
 
@@ -1038,18 +982,19 @@ class DebitNoteController extends Controller
 
     public function deletecreditnote(Request $request)
     {
-        
-        $creditnote = DebitNote::on(Auth::user()->database_name)->find(request('id_creditnote_modal')); 
+        $id = request('id_creditnote_modal');
 
-    
-        $this->deleteAllProducts($creditnote->id);
+        $this->deleteAllProducts($id);
+
 
         DB::connection(Auth::user()->database_name)->table('detail_vouchers')
         ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
-        ->where('header_vouchers.description','LIKE','%Nota de Debito '.$creditnote->id.'%')
+        ->where('header_vouchers.description','LIKE','%Nota de Debito '.$id.'%')
         ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
+       
+        $creditnote = DebitNote::on(Auth::user()->database_name)->find(request('id_creditnote_modal')); 
 
-        $creditnote->delete(); 
+        $creditnote->delete();
 
         
         return redirect('/debitnotes')->withDanger('Eliminacion exitosa!!');
@@ -1062,16 +1007,16 @@ class DebitNoteController extends Controller
         
         if(isset($credit_note_products)){
             foreach($credit_note_products as $credit_note_product){
-                if(isset($credit_note_product) && $credit_note_product->status == "C"){
+                if($credit_note_product->status == "1"){
+                   
                     DebitNoteDetail::on(Auth::user()->database_name)
-                        ->join('inventories','inventories.id','debit_note_details.id_inventory')
-                        ->join('products','products.id','products.product_id')
-                        ->where(function ($query){
+                        ->join('products','products.id','debit_note_details.id_inventory')
+                       /* ->where(function ($query){
                             $query->where('products.type','MERCANCIA')
                                 ->orWhere('products.type','COMBO');
-                        })
+                        }) */
                         ->where('debit_note_details.id',$credit_note_product->id)
-                        ->update(['credit_note_products.status' => 'X']);
+                        ->update(['debit_note_details.status' => 'X']);
                 }
             }
         }
