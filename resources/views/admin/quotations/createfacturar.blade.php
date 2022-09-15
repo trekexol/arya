@@ -1408,8 +1408,9 @@
             $("#customSwitchesIGTFTotal").on('change', function() {
                 if ($(this).is(':checked')) {
                     $(".IGTF").show(); 
+                
+                    var val_input = document.getElementById("IGTF_input_pre").value;
 
-                    var val_input = document.getElementById("").value;
                     var val_general = document.getElementById("IGTF_general").value;   
                     var IGTF_general_form = document.getElementById("IGTF_general_form").value;
 
@@ -1433,7 +1434,7 @@
                     document.getElementById("total_pay").value = total_pay_before;
                     document.getElementById("total_pay_form").value = total_pay_form_before;
                     document.getElementById("grandtotal_form").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-                    document.getElementById("grandtotal_form_credit").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});;
+                    document.getElementById("grandtotal_form_credit").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                 }
             });
 
