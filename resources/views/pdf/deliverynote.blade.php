@@ -314,11 +314,13 @@
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">TOTAL $</th>
         <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($total, 2, ',', '.') }}</th>
       </tr> 
+      @if(Auth::user()->company->id != 22)
       <tr>
         <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;  border-left-color: black;">TOTAL Bs</th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">{{ number_format($total * $quotation->bcv, 2, ',', '.') }}</th>
-      </tr> 
+      </tr>
+      @endif 
     @endif
 
   <tr>

@@ -121,7 +121,7 @@
                                     </div>
                                 </form>
                                     <div class="col-md-2">
-                                        <a href="{{ route('debitnotes.create',[$creditnote_product->id_credit_note,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                        <a href="{{ route('debitnotes.create',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                     </div>
                                 </div>
                             
