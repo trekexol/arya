@@ -1312,7 +1312,7 @@ Route::group(["prefix"=>'debitnotes'],function(){
     Route::get('listinventory/{var?}','DebitNoteController@listinventory')->name('debitnotes.listinventory');
 
 
-    Route::get('creditnoteproduct/{id}/{coin}/edit','DebitNoteController@editcreditnoteproduct')->name('debitnotes.productedit');
+    Route::get('creditnoteproduct/{id}/{coin}','DebitNoteController@editcreditnoteproduct')->name('debitnotes.productedit');
     Route::patch('productupdate/{id}/update','DebitNoteController@updatecreditnoteproduct')->name('debitnotes.productupdate');
 
     Route::get('refreshrate/{id_creditnote}/{coin}/{rate}','DebitNoteController@refreshrate')->name('debitnotes.refreshrate');

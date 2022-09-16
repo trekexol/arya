@@ -28,10 +28,11 @@
                 <thead>
                     <tr> 
                         <th class="text-center"></th>
-                        <th class="text-center">Fecha</th>
+                        <th class="text-center" style="width:11%;">Fecha</th>
                         <th class="text-center">Nº</th>
                         <th class="text-center">Cliente</th>
                         <th class="text-center">Vendedor</th>
+                        <th class="text-center">Tasa</th>
                         <th class="text-center">REF</th>
                         <th class="text-center">Monto</th>
                         <th class="text-center">Moneda</th>
@@ -50,9 +51,9 @@
         
                                 <tr>
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route($route ?? 'creditnotes.createcreditnote',$quotation->id) }}" title="Seleccionar Factura" ><i class="fa fa-check"></i></a>
+                                        <a href="{{ route($route ?? 'creditnotes.createcreditnote',[$quotation->id,'N','N',$quotation->bcv]) }}" title="Seleccionar Factura" ><i class="fa fa-check"></i></a>
                                     </td>
-                                    <td class="text-center font-weight-bold">{{$quotation->date_billing}}</td>
+                                    <td class="text-center font-weight-bold">{{date_format(date_create($quotation->date_billing),"d-m-Y")}}</td>
                                     @if ($quotation->status == "X")
                                         <td class="text-center font-weight-bold">{{ $quotation->number_invoice }}
                                         </td>
@@ -63,6 +64,7 @@
                                     @endif
                                     <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}</td>
                                     <td class="text-center font-weight-bold">{{$quotation->vendors['name'] ?? ''}} {{$quotation->vendors['surname'] ?? ''}}</td>
+                                    <td class="text-right font-weight-bold">{{number_format($quotation->bcv, 2, ',', '.')}}</td>
                                     <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                                     <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
                                     <td class="text-center font-weight-bold">{{$quotation->coin}}</td>
