@@ -1,1 +1,3 @@
 .env
+/laravel-excel
+/node_modules

@@ -1127,8 +1127,11 @@ class PDF2Controller extends Controller
                 $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
                 
                 $company = Company::on(Auth::user()->database_name)->find(1);
+
+                $quotation_origin = Quotation::on(Auth::user()->database_name)->findOrFail($quotation->id_quotation);
                 
-                $pdf = $pdf->loadView('pdf.debitnotemediacarta',compact('quotation','inventories_quotations','bcv','company','valor'));
+                
+                $pdf = $pdf->loadView('pdf.debitnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor'));
                 return $pdf->stream();
          
             }else{

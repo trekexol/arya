@@ -67,7 +67,7 @@
     <th style="text-align: center;">Pedido</th>
     <th style="text-align: center;">N° Ctrl/Serie</th>
     <th style="text-align: center;">Condición de Pago</th>
-    <th style="text-align: center;">Transporte/Tipo de Entrega</th>
+    <th style="text-align: center;">Factura Afectada</th>
    
   </tr>
   <tr>
@@ -76,7 +76,7 @@
     <td style="text-align: center;">{{ $quotation->number_pedido ?? '' }}</td>
     <td style="text-align: center;">{{ $quotation->serie }}</td>
     <td style="text-align: center;">Nota de Débito</td>
-    <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
+    <td style="text-align: center;">{{ $quotation_origin->number_invoice ?? '' }}</td>
     
     
   </tr>
@@ -141,18 +141,27 @@
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Sub Total</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($quotation->total_factura, 2, ',', '.') }}</th>
   </tr>--> 
-
+  @if($base_imponible > 0)
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Base Imponible</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($base_imponible, 2, ',', '.') }}</th>
   </tr> 
+ @endif
+ @if(isset($retiene_iva))
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Ventas Exentas</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(($retiene_iva ?? 0), 2, ',', '.') }}</th>
-  </tr> 
+  </tr>
+  @endif
+  @if($iva > 0) 
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($iva, 2, ',', '.') }}</th>
+  </tr> 
+  @endif
+  <tr>
+    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">Nota de Débito</th>
+    <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);"></th>
   </tr> 
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">MONTO TOTAL</th>
