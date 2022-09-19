@@ -516,7 +516,6 @@ class Report2Controller extends Controller
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->orderBy('expenses_and_purchases.date','desc')
-                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -529,7 +528,6 @@ class Report2Controller extends Controller
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->orderBy('expenses_and_purchases.date','desc')
-                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }
            
@@ -544,7 +542,6 @@ class Report2Controller extends Controller
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->orderBy('expenses_and_purchases.date','desc')
-                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -556,7 +553,6 @@ class Report2Controller extends Controller
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
                                     ->orderBy('expenses_and_purchases.date','desc')
-                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }
         }
