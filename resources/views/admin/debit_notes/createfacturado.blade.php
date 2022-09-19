@@ -31,7 +31,7 @@
                 <div class="card-body" >
                         
                     <div class="form-group row">
-                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Nota de Debito:</label>
+                        <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Nota de Dédito:</label>
                         <div class="col-md-4">
                             <input id="num_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="num_factura" value="{{ $creditnote->quotations->number_invoice}}" readonly>
                         </div>
@@ -73,7 +73,7 @@
                             
                         </div>
                         <div class="form-group row">
-                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
+                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Nota:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($creditnote->amount / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
     
@@ -143,15 +143,17 @@
                         
                         
                         <div class="form-group row">
-                            <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
-                            <div class="col-md-4">
-                                <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($creditnote->anticipo / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="anticipo"> 
-                           
-                                @error('anticipo')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div style="display: none;">
+                                <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
+                                <div class="col-md-4">
+                                    <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($creditnote->anticipo / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="anticipo"> 
+                            
+                                    @error('anticipo')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
                             <label for="iva" class="col-md-2 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
@@ -202,7 +204,7 @@
                         <div class="form-group row">
                            
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Factura</a>  
+                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Nota</a>  
                             </div>
                             
                             <div class="col-sm-3  dropdown mb-4">
@@ -214,7 +216,7 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Factura Media Carta</a>  
+                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Nota Media Carta</a>  
                                     <a href="#" class="dropdown-item bg-light delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Compra</a> 
                                 </div>
                             </div> 
@@ -224,7 +226,7 @@
                             </div>
                            
                             <div class="col-md-2">
-                                <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Facturas</a>  
+                                <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Notas de Dédito</a>  
                             </div>
                         </div>
                         

@@ -515,6 +515,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.id_provider',$id_provider)
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -526,6 +528,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.id_provider',$id_provider)
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }
            
@@ -539,6 +543,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }else{
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -549,6 +555,8 @@ class Report2Controller extends Controller
                                     ->where('expenses_and_purchases.date','<=',$date_consult)
                                     ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                     ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
                                     ->get();
             }
         }
@@ -1376,6 +1384,7 @@ class Report2Controller extends Controller
                     ->where('quotations.id_client',$id_client_or_vendor)
                     ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                     ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
+                    
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
                 }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
@@ -1406,7 +1415,8 @@ class Report2Controller extends Controller
                                         
                                         ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                         ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                                        ->orderBy('quotations.date_quotation','desc')
+                                        ->orderBy('quotations.date_delivery_note','desc')
+                                        ->orderBy('quotations.date_billing','desc')
                                         ->get();
                 }
             }else{
@@ -1455,7 +1465,8 @@ class Report2Controller extends Controller
                                         
                                         ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                                         ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                                        ->orderBy('quotations.date_quotation','desc')
+                                        ->orderBy('quotations.date_delivery_note','desc')
+                                        ->orderBy('quotations.date_billing','desc')
                                         ->get();
                 }
             }
@@ -1505,7 +1516,8 @@ class Report2Controller extends Controller
                     
                     ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                     ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_quotation','desc')
+                    ->orderBy('quotations.date_delivery_note','desc')
+                    ->orderBy('quotations.date_billing','desc')
                     ->get();
                 }
             }else{
@@ -1555,7 +1567,8 @@ class Report2Controller extends Controller
                     
                     ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount / anticipos.rate) As amount_anticipo'))
                     ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                    ->orderBy('quotations.date_quotation','desc')
+                    ->orderBy('quotations.date_delivery_note','desc')
+                    ->orderBy('quotations.date_billing','desc')
                     ->get();
                 }
             }
@@ -1604,7 +1617,8 @@ class Report2Controller extends Controller
                                         
                                         ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount) As amount_anticipo'))
                                         ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                                        ->orderBy('quotations.date_quotation','desc')
+                                        ->orderBy('quotations.date_delivery_note','desc')
+                                        ->orderBy('quotations.date_billing','desc')
                                         ->get();
 
                     
@@ -1653,7 +1667,8 @@ class Report2Controller extends Controller
                                         
                                         ->select('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva', DB::raw('SUM(anticipos.amount/anticipos.rate) As amount_anticipo'))
                                         ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
-                                        ->orderBy('quotations.date_quotation','desc')
+                                        ->orderBy('quotations.date_delivery_note','desc')
+                                        ->orderBy('quotations.date_billing','desc')
                                         ->get();
                 }
             }
