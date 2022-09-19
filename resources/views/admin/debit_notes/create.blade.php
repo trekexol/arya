@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de Importe Nota de Dédito</h3></div>
+                <div class="card-header" ><h3>Registro de Importe Nota de Dédito {{ $creditnote->id ?? '' }}</h3></div>
 
                 <div class="card-body" >
                    
@@ -376,18 +376,23 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-0">
-                                <div class="col-sm-4">
+                               
                                     @if (isset($inventories_creditnotes))
-                                        <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
+                                        <div class="col-sm-4">   
+                                            <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
+                                        </div>
                                         
-                                    @else
-                                        <a href="{{ route('debitnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
+                                        <div class="col-sm-4">   
+                                            <a href="{{ route('debitnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
+                                        </div>      
                                       
                                     @endif
-                                </div>
+                                
                                 <div class="col-sm-4">
-                                    @if (isset($inventories_creditnotes))
-                                    <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                                    @if ($existe_comprobante > 0)
+                                        @if (isset($inventories_creditnotes))
+                                        <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                                        @endif
                                     @endif
                                 </div>
                                

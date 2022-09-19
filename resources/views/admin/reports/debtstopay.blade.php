@@ -39,7 +39,7 @@
   ?>
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; ">Fecha</th>
+    <th style="text-align: center; width:10%">Fecha</th>
     <th style="text-align: center; ">ID</th>
     <th style="text-align: center; ">N° Factura</th>
     <th style="text-align: center; ">Razon Rocial</th>
@@ -62,7 +62,7 @@
     $total_por_facturar += $expense->amount_with_iva;
     ?>
     <tr>
-      <th style="text-align: center; font-weight: normal;">{{ $expense->date ?? ''}}</th>
+      <th style="text-align: center; font-weight: normal; width:10%">{{ $expense->date ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->id ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->invoice ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $expense->name_provider ?? ''}}</th>

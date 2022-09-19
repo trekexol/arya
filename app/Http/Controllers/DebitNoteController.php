@@ -112,14 +112,24 @@ class DebitNoteController extends Controller
     public function create($id_creditnote,$coin)
     {
         
-        if($this->userAccess->validate_user_access($this->modulo)){
-
             $creditnote = null;
+            $existe_comprobante = 0;
                 
             if(isset($id_creditnote)){
                 $creditnote = DebitNote::on(Auth::user()->database_name)->find($id_creditnote);
-            }
 
+                $existe_comprobante = DB::connection(Auth::user()->database_name)->table('header_vouchers')
+                ->where('description','LIKE','%Nota de Debito '.$id_creditnote.'%')
+                ->where('status','!=','X')
+                ->get();
+                
+                if (count($existe_comprobante) > 0){
+                $existe_comprobante = 1;
+                } else {
+                $existe_comprobante = 0;    
+                }
+            }
+            
             if(isset($creditnote) && ($creditnote->status == 1)){
 
                 $inventories_creditnotes = DB::connection(Auth::user()->database_name)->table('products')
@@ -154,14 +164,12 @@ class DebitNoteController extends Controller
                 }
                 
         
-                return view('admin.debit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product'));
+                return view('admin.debit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product','existe_comprobante'));
             }else{
-                return redirect('/debitnotes')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/debitnotes')->withDanger('No es posible ver esta Nota de Debito');
             } 
             
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+
 
     }
 
