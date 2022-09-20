@@ -130,8 +130,13 @@
   //$total_factura = $quotation->amount_with_iva;
 
   $total_factura = $base_imponible;
-  //$iva = ($base_imponible * $quotation->iva_percentage)/100;
-  $iva = 0;
+
+  if ($base_imponible > 0) {
+  $iva = ($base_imponible * $quotation->iva_percentage)/100;
+  } else {
+  $iva = 0;    
+  }
+
   $total = $total_factura;
 
 ?>
@@ -153,7 +158,7 @@
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(($retiene_iva ?? 0), 2, ',', '.') }}</th>
   </tr>
   @endif
-  @if($iva > 0) 
+  @if($base_imponible > 0)
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($iva, 2, ',', '.') }}</th>
