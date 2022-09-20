@@ -61,12 +61,16 @@
             <select class="form-control" name="coin" id="coin">
                 @if(isset($coin))
                     @if($coin == 'bolivares')
-                        <option selected value="{{ $coin }}">Bolívares</option>
+                        <option selected value="bolivares">Bolívares</option>
                         <option value="dolares">Dólares</option>
                     @else
                         <option value="bolivares">Bolívares</option>
-                        <option selected value="{{ $coin }}">Dólares</option>
+                        <option selected value="dolares">Dólares</option>
                     @endif
+                @else
+                        <option selected value="bolivares">Bolívares</option>
+                        <option value="dolares">Dólares</option>
+
                 @endif
                 
                 
