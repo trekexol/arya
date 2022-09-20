@@ -64,27 +64,77 @@ class QuotationController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
+
+
+            
             foreach ($quotations as $quotation){
+               
+                $percentage = 0;
+                $base_imponible = 0;
+                $exento = 0;
+                $total = 0;
+                $iva = 0;
+                $total_all = 0;
 
                 $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                 ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                 ->where('quotation_products.id_quotation',$quotation->id)
                 ->where('quotation_products.status','1')
-                ->where('products.photo_product','!=', null)
-                
+                ->where('products.photo_product','!=', null) 
                // ->select('products.*')
-                ->first();    
-               
+                ->first();  
+                                
                 if($inventories_quotations){
-
                     $photo = true; 
                     $quotation->photo = $photo;
                 }else{
                     $photo = false;
                     $quotation->photo = $photo;
 
+                }  
+               
+                $inventories_quotations_pro = DB::connection(Auth::user()->database_name)->table('quotation_products') // calcular monto total
+                ->where('id_quotation',$quotation->id)
+                ->where('status','1')
+                ->get();   
+                
+
+
+                if ($quotation->bcv <= 0){
+                    $quotation->bcv = 1;
                 }
+                
+                foreach ($inventories_quotations_pro as $var){
+                
+
+                    if($coin == "dolares"){
+                        $var->price = bcdiv($var->price / $quotation->bcv, '1', 2);
+                    }
+
+                    $percentage = (($var->price * $var->amount) * $var->discount)/100;
+                     
+                    if ($var->retiene_iva == 0) {
+                        $base_imponible = ($var->price * $var->amount);
+                        $iva = ($base_imponible * 16)/100;
+                        $exento = 0;
+                    } else {
+                        $base_imponible = 0;
+                        $iva = 0;
+                        $exento = ($var->price * $var->amount);
+                    }
+
+                    $total += bcdiv($base_imponible + $exento + $iva - $percentage, '1', 2);
+                
+                }
+
+                $total_all = $total - ($quotation->anticipo ?? 0);
+                
+                $quotation->amount_with_iva = $total_all;
+
+
+
             }
+
 
 
 

@@ -60,14 +60,17 @@
         <div class="col-sm-2">
             <select class="form-control" name="coin" id="coin">
                 @if(isset($coin))
-                    <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                    <option disabled  value="{{ $coin }}">-----------</option>
-                @else
-                    <option disabled selected value="bolivares">Moneda</option>
+                    @if($coin == 'bolivares')
+                        <option selected value="{{ $coin }}">Bolívares</option>
+                        <option value="dolares">Dólares</option>
+                    @else
+                        <option value="bolivares">Bolívares</option>
+                        <option selected value="{{ $coin }}">Dólares</option>
+                    @endif
                 @endif
                 
-                <option  value="bolivares">Bolívares</option>
-                <option value="dolares">Dólares</option>
+                
+                
             </select>
         </div>
       <div class="col-sm-3">
@@ -105,8 +108,8 @@
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Vendedor</th>
                 <th class="text-center">Observaciones</th>
-                <th class="text-center">Transp./Tipo de Entrega</th>
-                
+                <th class="text-center">Monto</th>
+                <th class="text-center">Moneda</th>
                 <th class="text-center"></th>
                
             </tr>
@@ -133,13 +136,20 @@
                         
                         <a href="#" class="send" data-toggle="modal" data-id-quotation-send={{$quotation->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a> 
                     </td>
+  
                     <td class="text-center">{{ $quotation->id ?? ''}}</td>
                     <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
                     <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
                     <td class="text-center">{{ $quotation->vendors['name'] ?? ''}}</td>
                     <td class="text-center">{{ $quotation->observation ?? ''}}</td>
-                    <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
-                    <td>
+                    @if ($coin == 'dolares')
+                    <td class="text-center">{{ number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
+                    <td class="text-center">{{ 'USD' }}</td>
+                    @else 
+                    <td class="text-center">{{ number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
+                    <td class="text-center">{{ 'BS' }}</td>
+                    @endif  
+                    <td> 
                     <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                     </td>                
                 </tr>     
