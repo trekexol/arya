@@ -92,10 +92,11 @@ class FacturarController extends Controller
                                                             'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                             ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                             ->get(); 
-
-
+                                                          
             $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
             ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
             ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
             ->get();
 
@@ -345,6 +346,8 @@ class FacturarController extends Controller
             
             $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
             ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
             ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
             ->get();
           
