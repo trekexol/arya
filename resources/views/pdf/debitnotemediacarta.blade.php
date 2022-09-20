@@ -137,7 +137,7 @@
   $iva = 0;    
   }
 
-  $total = $total_factura;
+  $total = $total_factura + $iva;
 
 ?>
 
