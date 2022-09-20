@@ -3,7 +3,7 @@
 @section('content')
 
 
-<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist" style="font-size: 10pt;">
     <li class="nav-item" role="presentation">
       <a class="nav-link  font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('quotations') }}" role="tab" aria-controls="home" aria-selected="true">Cotizaciones</a>
     </li>
@@ -18,6 +18,9 @@
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
