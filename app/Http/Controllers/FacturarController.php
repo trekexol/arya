@@ -470,6 +470,7 @@ class FacturarController extends Controller
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
         $quotation->coin = request('coin');
+        $moneda = request('coin');
         $bcv = $quotation->bcv;
 
      
@@ -504,7 +505,7 @@ class FacturarController extends Controller
         $total_mercancia = request('total_mercancia_credit');
         $total_servicios = request('total_servicios_credit');
 
-        if($quotation->coin != 'bolivares'){
+        if($moneda == 'dolares'){
             $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
             $sin_formato_amount_with_iva = $sin_formato_amount_with_iva * $bcv;
             $sin_formato_base_imponible = $sin_formato_base_imponible * $bcv;
@@ -1769,7 +1770,18 @@ class FacturarController extends Controller
             $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
 
 
-            if($coin != 'bolivares'){
+            $quotation->base_imponible = $base_imponible;
+            $quotation->amount_exento =  $amount_exento;
+            $quotation->amount =  $sin_formato_amount;
+            $quotation->amount_iva =  $sin_formato_amount_iva;
+            $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
+            $quotation->iva_percentage = $iva_percentage;
+            $quotation->retencion_iva = $retencion_iva;
+            $quotation->retencion_islr = $retencion_islr;
+            $quotation->IGTF_percentage = $IGTF_porc;
+            $quotation->IGTF_amount = $IGTF_input;
+
+            if($coin == 'dolares'){
                 $anticipo =  $anticipo * $bcv;
                 $retencion_iva = $retencion_iva * $bcv;
                 $retencion_islr = $retencion_islr * $bcv;
@@ -1784,8 +1796,18 @@ class FacturarController extends Controller
                 $sub_total = $sub_total * $bcv;
 
                 $sub_total = $sub_total * $bcv;
-    
-
+ 
+                $quotation->base_imponible = $base_imponible * $bcv;
+                $quotation->amount_exento =  $amount_exento * $bcv;
+                $quotation->amount =  $sin_formato_amount;
+                $quotation->amount_iva =  $sin_formato_amount_iva * $bcv;
+                $quotation->amount_with_iva = ($base_imponible * $bcv) + ($amount_exento * $bcv) + ($sin_formato_amount_iva * $bcv);
+                $quotation->iva_percentage = $iva_percentage * $bcv;
+                $quotation->retencion_iva = $retencion_iva * $bcv;
+                $quotation->retencion_islr = $retencion_islr * $bcv;
+                $quotation->IGTF_percentage = $IGTF_porc * $bcv;
+                $quotation->IGTF_amount = $IGTF_input * $bcv;
+            
             }
 
 
@@ -1890,23 +1912,11 @@ class FacturarController extends Controller
             }
 
             /*Modifica la factura*/
- 
-           
-            $quotation->base_imponible = $base_imponible;
-            $quotation->amount_exento =  $amount_exento;
-            $quotation->amount =  $sin_formato_amount;
-            $quotation->amount_iva =  $sin_formato_amount_iva;
-            
-            $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
-     
-            $quotation->iva_percentage = $iva_percentage;
-            $quotation->retencion_iva = $retencion_iva;
-            $quotation->retencion_islr = $retencion_islr;
-            $quotation->IGTF_percentage = $IGTF_porc;
-            $quotation->IGTF_amount = $IGTF_input;
+
+
             $quotation->status = "C";
             
-            $quotation->save();
+            $quotation->save();   /// guardando factura
 
             /*---------------------- */
 
