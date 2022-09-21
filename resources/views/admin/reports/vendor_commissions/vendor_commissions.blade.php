@@ -48,9 +48,10 @@
     <th style="text-align: center; width:1%;">Ctrl/Serie</th>
     <th style="text-align: center; width:22%;">Cliente</th>
     <th style="text-align: center;">Vendedor</th>
+    <th style="text-align: center;">Total Venta</th>
     <th style="text-align: center;">Comisión</th>
     <th style="text-align: center;">Total Comisión</th>
-    <th style="text-align: center;">Total</th>
+    
   </tr> 
   @foreach ($quotations as $quotation)
     <?php 
@@ -101,9 +102,10 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->serie ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format(($quotation->comision ?? 0), 0, ',', '.')}}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(bcdiv($comision ?? 0, '1', 2), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
+      
     </tr> 
   @endforeach 
 
