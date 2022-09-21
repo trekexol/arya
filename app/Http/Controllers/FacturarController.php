@@ -1765,7 +1765,6 @@ class FacturarController extends Controller
 
             }
             
-            //incluyendo el todal de debit note en el total asiento cuanta por cobrar
 
             $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
 
@@ -1781,34 +1780,36 @@ class FacturarController extends Controller
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
 
+
             if($coin == 'dolares'){
                 $anticipo =  $anticipo * $bcv;
                 $retencion_iva = $retencion_iva * $bcv;
                 $retencion_islr = $retencion_islr * $bcv;
               
                 $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
+
                 $base_imponible = $base_imponible * $bcv;
                 $sin_formato_amount = $sin_formato_amount * $bcv;
                 $sin_formato_total_pay = $sin_formato_total_pay * $bcv;
 
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
-
+                $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
                 $sub_total = $sub_total * $bcv;
 
-                $sub_total = $sub_total * $bcv;
- 
-                $quotation->base_imponible = $base_imponible * $bcv;
+                $quotation->base_imponible = $base_imponible;
                 $quotation->amount_exento =  $amount_exento * $bcv;
                 $quotation->amount =  $sin_formato_amount;
-                $quotation->amount_iva =  $sin_formato_amount_iva * $bcv;
-                $quotation->amount_with_iva = ($base_imponible * $bcv) + ($amount_exento * $bcv) + ($sin_formato_amount_iva * $bcv);
+                $quotation->amount_iva =  $sin_formato_amount_iva;
+                $quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
                 $quotation->iva_percentage = $iva_percentage * $bcv;
-                $quotation->retencion_iva = $retencion_iva * $bcv;
-                $quotation->retencion_islr = $retencion_islr * $bcv;
+                $quotation->retencion_iva = $retencion_iva;
+                $quotation->retencion_islr = $retencion_islr;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
                 $quotation->IGTF_amount = $IGTF_input * $bcv;
             
             }
+
+            //incluyendo el todal de debit note en el total asiento cuanta por cobrar
 
 
             /*Anticipos*/
