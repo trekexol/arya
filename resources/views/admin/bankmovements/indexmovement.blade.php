@@ -258,9 +258,13 @@
                     @csrf
                     <div class="form-group col-md-8">
                         <label for="inputState">Banco</label>
-                        <select id="inputState" class="form-control">
+                        <select id="inputState" class="form-control" name="banco" id="banco">
                           <option value='0'>Seleccione..</option>
                           <option value='1'>Bancamiga</option>
+                          <option value='2'>Banesco</option>
+                          <option value='3'>Mercantil</option>
+                          <option value='4'>Chase</option>
+                          <option value='5'>BOFA</option>
                         </select>
                       </div>
 

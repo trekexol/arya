@@ -1834,10 +1834,10 @@ class BankMovementController extends Controller
 
 
 public function importmovimientos(Request $request){
-
+    $banco = $request->banco;
     $file = $request->file('file');
 
-    Excel::import(new TempMovimientosImport, $file);
+    Excel::import(new TempMovimientosImport($banco), $file);
 
 }
 
