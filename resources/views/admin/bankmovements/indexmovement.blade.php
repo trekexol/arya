@@ -12,7 +12,7 @@
 <!-- DataTales Example -->
 <div class="container-fluid">
     <div class="row py-lg-2">
-        <div class="col-sm-3 offset-sm-2  dropdown mb-4">
+        <div class="col-sm-3 offset-sm-2  dropdown mb-2">
             <button class="btn btn-success" type="button"
                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                 aria-expanded="false">
@@ -25,8 +25,12 @@
                 <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
             </div>
         </div> 
-        <div class="col-md-4">
+        <div class="col-md-2">
             <a href="{{ route('bankmovements') }}" class="btn btn-info" title="Transferencia">Bancos</a>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
         </div>
     </div>
 </div>
@@ -237,6 +241,43 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Subir Movimientos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="fileForm" method="POST" action="{{ route('importmovimientos') }}" enctype="multipart/form-data" >
+                    @csrf
+                    <div class="form-group col-md-8">
+                        <label for="inputState">Banco</label>
+                        <select id="inputState" class="form-control">
+                          <option value='0'>Seleccione..</option>
+                          <option value='1'>Bancamiga</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-12">
+                        <input id="file" type="file" value="import" name="file" class="form-control-file" accept=".xls">
+
+                      </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Importar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  </div>
 @endsection
 @section('javascript')
     <script>

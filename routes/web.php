@@ -545,7 +545,7 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
      Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
 
-    
+    Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
 });
 
 Route::group(["prefix"=>'nominas'],function(){

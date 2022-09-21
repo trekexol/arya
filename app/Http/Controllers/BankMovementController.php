@@ -20,6 +20,14 @@ use App\Vendor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\TempMovimientosImport;
+
+
+
+
+
 use Carbon\Carbon;
 
 class BankMovementController extends Controller
@@ -1822,6 +1830,16 @@ class BankMovementController extends Controller
 
 
 
+/***********CARGA MASIVA DE MOVIMIENTOS *****/
+
+
+public function importmovimientos(Request $request){
+
+    $file = $request->file('file');
+
+    Excel::import(new TempMovimientosImport, $file);
+
+}
 
 
 }
