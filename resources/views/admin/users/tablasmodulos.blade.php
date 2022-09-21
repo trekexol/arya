@@ -118,8 +118,24 @@ $('.botonenviomodulonew').click(function(e){
              
                  if(response == true){
                     alert('Asignado con Exito');
+
+                    if(tipopermiso != 'consultar'){
+
+                        var per = 'consultar';
+
+                    $("#"+nombremodulo+iduser+per).hide();
+                   $("#"+per+nombremodulo+iduser).html("<span class='badge badge-pill badge-success'>ACTIVO</span>");
+
                    $("#"+nombremodulo+iduser+tipopermiso).hide();
                    $("#"+tipopermiso+nombremodulo+iduser).html("<span class='badge badge-pill badge-success'>ACTIVO</span>");
+
+                    }else{
+
+                        $("#"+nombremodulo+iduser+tipopermiso).hide();
+                   $("#"+tipopermiso+nombremodulo+iduser).html("<span class='badge badge-pill badge-success'>ACTIVO</span>");
+                    }
+
+                  
                  }else{
                      alert('Error');
                  }
