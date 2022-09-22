@@ -24,11 +24,15 @@
 </head>
 
 <body>
-
-
-  <br>
-  <h5 style="color: black">Empresa: {{ $company->razon_social ?? ''}} </h5>
-  <h5 style="color: black"> Rif: {{ $company->code_rif ?? ''}}</h5>
+  <table>
+    <tr>
+      @if (Auth::user()->company->foto_company != '')  
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" style="max-width:93; max-height:60" class="d-inline-block align-top" alt="">
+      </th>
+      @endif
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h4>{{Auth::user()->company->code_rif ?? ''}}</h4> </h4></th>    </tr> 
+    </tr> 
+  </table>
   <h5 style="color: black;">Fecha de Emisión: {{ $datenow }}</h5>
    
   <h4 style="color: black; text-align: center">{{$titlePDF ?? 'LIBRO DIARIO'}}</h4>

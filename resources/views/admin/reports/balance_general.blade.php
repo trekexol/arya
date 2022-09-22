@@ -27,9 +27,11 @@
 <body>
   <table>
     <tr>
-      <th style="text-align: left; font-weight: normal; width: 15%; border-color: white; font-weight: bold;"> <img src="{{ asset($foto ?? 'img/northdelivery.jpg') }}" width="50%"  class="d-inline-block align-top" alt="">
+      @if (Auth::user()->company->foto_company != '')  
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" style="max-width:93; max-height:60" class="d-inline-block align-top" alt="">
       </th>
-      <th style="text-align: left; font-weight: normal; width: 85%; border-color: white; font-weight: bold;"><h4>{{$code_rif ?? ''}}  </h4></th>
+      @endif
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h4>{{Auth::user()->company->code_rif ?? ''}}</h4> </h4></th>    </tr> 
     </tr> 
   </table>
   

@@ -22,11 +22,14 @@
 </head>
 
 <body>
-  <table id="top">
+  <table>
     <tr>
+      @if (Auth::user()->company->foto_company != '')  
       <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" style="max-width:93; max-height:60" class="d-inline-block align-top" alt="">
       </th>
-      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr> 
+      @endif
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h4>{{Auth::user()->company->code_rif ?? ''}}</h4> </h4></th>    </tr> 
+    </tr> 
   </table>
   @if ($company->format_header_lines > 0) 
     @for ($i = 0; $i < $company->format_header_lines; $i++)

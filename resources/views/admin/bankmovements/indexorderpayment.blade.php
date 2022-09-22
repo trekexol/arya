@@ -45,9 +45,9 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 13%">Fecha</th>
-                                    <th class="text-center">Comprobante</th>
-                                    <th class="text-center">Codigo</th>
-                                    <th class="text-center">Cuenta</th>
+                                    <th class="text-center" style="width: 1%">Comp.</th>
+                                    <th class="text-center" style="width: 1%">Codigo</th>
+                                    <th class="text-center" style="width: 1%">Cuenta</th>
                                     <th class="text-center">Descripción</th>
                                     <th class="text-center">Debe</th>
                                     <th class="text-center">Haber</th>
@@ -63,9 +63,9 @@
                                         @foreach ($detailvouchers as $var)
                                         <tr>
                                         <td style="width: 13%">{{date('d-m-Y',strtotime($var->header_date)) ?? ''}}</td>
-                                        <td class="text-center">{{$var->id_header_voucher ?? ''}}</td>
-                                        <td>{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
-                                        <td>{{$var->account_description ?? ''}}</td>
+                                        <td class="text-center" style="width: 1%">{{$var->id_header_voucher ?? ''}}</td>
+                                        <td style="width: 1%">{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
+                                        <td style="width: 1%">{{$var->account_description ?? ''}}</td>
                                         <td>{{$var->header_description ?? ''}}</td>
                                        
                                         <td>{{ number_format($var->debe, 2, ',', '.')}}</td>

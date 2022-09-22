@@ -23,7 +23,15 @@
 </head>
 
 <body>
-  <br>
+  <table>
+    <tr>
+      @if (Auth::user()->company->foto_company != '')  
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" style="max-width:93; max-height:60" class="d-inline-block align-top" alt="">
+      </th>
+      @endif
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h4>{{Auth::user()->company->code_rif ?? ''}}</h4> </h4></th>    </tr> 
+    </tr> 
+  </table>
   <h4 style="color: black; text-align: center">HISTORIAL INVENTARIO</h4>
  <?php 
     
