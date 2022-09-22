@@ -44,7 +44,7 @@
                         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Fecha</th>
+                                    <th class="text-center" style="width: 12%">Fecha</th>
                                     <th class="text-center">Comprobante</th>
                                     <th class="text-center">Codigo</th>
                                     <th class="text-center">Cuenta</th>
@@ -312,9 +312,9 @@
 @section('javascript')
     <script>
     $('#dataTable').DataTable({
-        "ordering": false,
+        "ordering": true,
         "order": [],
-        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        'aLengthMenu': [[100, 200, 300, -1], [100, 200, 300, "All"]]
     });
 
     function pdf(id_header_voucher) {

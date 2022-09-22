@@ -155,6 +155,42 @@ class ExcelController extends Controller
     }
 
 
+    public function export_combo() // inventario 
+    {
+         $products = Product::on(Auth::user()->database_name)
+         ->where('status','1')
+         ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
+         'code_comercial','type','description','price','price_buy','money',
+         'exento','islr','special_impuesto as amount')
+         ->get();
+
+         $global = new GlobalController(); 
+
+         foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
+            
+            $buscar_num = $global->consul_prod_invt($product->id);
+
+            if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
+            
+             $product->amount = '0.00';
+
+            } else {
+                $product->amount = $buscar_num;  
+            }
+
+         }
+
+        
+         $export = new ExpensesExport([
+             ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
+              ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','moneda_d_o_bs',
+              'exento_1_o_0','islr_1_o_0','cantidad_actual'],
+              $products
+        ]);
+        
+        return Excel::download($export, 'guia_combos.xlsx');
+    }
+
 
 
     public function export($id) 

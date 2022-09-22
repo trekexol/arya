@@ -23,12 +23,33 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-      <div class="col-md-6">
-      </div>
-      <div class="col-md-6">
+      <div class="col-sm-3 offset-sm-4  dropdown mb-4">
+          <button class="btn btn-dark" type="button"
+              id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+              aria-expanded="false">
+              <i class="fas fa-bars"></i>
+              Opciones 
+          </button>
+          <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
+              <h6>Importación Masiva de Combos</h6>
+              <a href="{{ route('export.product_template_combo') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Excel</a> 
+              <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
+                @csrf
+                <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+              </form>
+              <br>
+              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Excel</a> 
+             <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
+          </div> 
+      </div> 
+
+      
+      <div class="col-sm-3">
         <a href="{{ route('combos.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Combo</a>
       </div>
     </div>
+
+
   </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
