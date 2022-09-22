@@ -44,7 +44,7 @@
                         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 12%">Fecha</th>
+                                    <th class="text-center" style="width: 13%">Fecha</th>
                                     <th class="text-center">Comprobante</th>
                                     <th class="text-center">Codigo</th>
                                     <th class="text-center">Cuenta</th>
@@ -62,7 +62,7 @@
                                     @else
                                         @foreach ($detailvouchers as $var)
                                         <tr>
-                                        <td>{{date('d-m-Y',strtotime($var->header_date)) ?? ''}}</td>
+                                        <td style="width: 13%">{{date('d-m-Y',strtotime($var->header_date)) ?? ''}}</td>
                                         <td class="text-center">{{$var->id_header_voucher ?? ''}}</td>
                                         <td>{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
                                         <td>{{$var->account_description ?? ''}}</td>
