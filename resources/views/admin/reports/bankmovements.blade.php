@@ -48,36 +48,65 @@
     <th style="text-align: center; ">Comprobante</th>
     <th style="text-align: center; ">Monto</th>
   </tr> 
-  
+  <?php
+  $total_general = 0;
+  ?>
   @for ($i = 0; $i < count($details_banks); $i++)
     <tr>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_date ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_reference ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
       <?php 
-        $i += 1;
+          $i += 1;
+          if (isset($coin) && ($coin == 'bolivares')){
+            
+            if ($details_banks[$i]->debe != 0){
+            $total_general += number_format(($details_banks[$i]->debe ?? 0), 2, '.', '');
+            } else {
+            $total_general += number_format(($details_banks[$i]->haber ?? 0), 2, '.', ''); 
+            }
+          }else{
+
+            if ($details_banks[$i]->debe != 0){
+            $total_general += number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa ?? 0), 2, '.', '');
+            } else {
+            $total_general += number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa ?? 0), 2, '.', ''); 
+            }
+          }
+
       ?>
       <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_description ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_id ?? '' }}</td>
       @if (isset($coin) && ($coin == 'bolivares'))
         @if ($details_banks[$i]->debe != 0)
-        <td style="text-align: center; ">{{ number_format(($details_banks[$i]->debe ?? 0), 2, ',', '.')}}</td>
+        <td style="text-align: right; ">{{ number_format(($details_banks[$i]->debe ?? 0), 2, ',', '.')}}</td>
         @else
-          <td style="text-align: center; ">{{ number_format(($details_banks[$i]->haber ?? 0), 2, ',', '.')}}</td>
+          <td style="text-align: right; ">{{ number_format(($details_banks[$i]->haber ?? 0), 2, ',', '.')}}</td>
         @endif
       @else
         @if ($details_banks[$i]->debe != 0)
-          <td style="text-align: center; ">{{ number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
+          <td style="text-align: right; ">{{ number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
         @else
-          <td style="text-align: center; ">{{ number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
+          <td style="text-align: right; ">{{ number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
         @endif
       @endif
-      
-      
     </tr> 
   @endfor
 
+  <tr>
+    <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
+    @if (isset($coin) && ($coin == 'bolivares'))
+    <th style="text-align: right; border-color: white;">Bs.{{ number_format(bcdiv($total_general,'1',2), 2, ',', '.')}}</th>
+    @else 
+    <th style="text-align: right; border-color: white;">${{ number_format(bcdiv($total_general,'1',2), 2, ',', '.')}}</th>
+    @endif
+  </tr>
   
 </table>
 
