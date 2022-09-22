@@ -57,7 +57,7 @@
       <td style="text-align: center; ">{{ $details_banks[$i]->header_reference ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
       <?php 
-          $i += 1;
+          //$i += 1;
           if (isset($coin) && ($coin == 'bolivares')){
             
             if ($details_banks[$i]->debe != 0){
