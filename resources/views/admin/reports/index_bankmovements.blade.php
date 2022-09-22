@@ -75,7 +75,9 @@
                                         <option disabled selected value="{{ $type }}">{{ $type }}</option>
                                         <option disabled  value="{{ $type }}">-----------</option>
                                     @endif
+                                   
                                     <option value="Todo">Todo</option>
+                                    <option value="Orden de Pago">Orden de Pago</option>
                                     <option value="Deposito">Deposito</option>
                                     <option value="Retiro">Retiro</option>
                                     <option value="Transferencia">Transferencia</option>

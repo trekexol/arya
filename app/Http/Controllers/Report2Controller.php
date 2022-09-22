@@ -718,7 +718,7 @@ class Report2Controller extends Controller
         
         if(isset($account_bank)){
 
-            if(isset($type) && ($type == 'Todo')){
+            if(isset($type) && ($type == 'Todo')){ 
                 
                     $details_banks =   DB::connection(Auth::user()->database_name)->select(
                         'SELECT d.* ,h.description as header_description,h.id as header_id, 
@@ -735,7 +735,8 @@ class Report2Controller extends Controller
 
                         WHERE d.id_header_voucher IN ( SELECT de.id_header_voucher FROM detail_vouchers de WHERE de.id_account = ? ) AND
                         (DATE_FORMAT(d.created_at, "%Y-%m-%d") >= ? AND DATE_FORMAT(d.created_at, "%Y-%m-%d") <= ?) AND
-                        (h.description LIKE "Deposito%" OR
+                        (h.description LIKE "Orden de Pago%" OR
+                        h.description LIKE "Deposito%" OR
                         h.description LIKE "Retiro%" OR
                         h.description LIKE "Transferencia%")'
                         , [$account_bank,$date_begin, $date_end]);
@@ -773,7 +774,8 @@ class Report2Controller extends Controller
                     "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)", 
                     [$date_begin, $date_end])
                 ->where(function($query) {
-                    $query->where('header_vouchers.description','LIKE','Deposito%')
+                    $query->where('header_vouchers.description','LIKE','Orden de Pago%')
+                        ->orwhere('header_vouchers.description','LIKE','Deposito%')
                         ->orwhere('header_vouchers.description','LIKE','Retiro%')
                         ->orwhere('header_vouchers.description','LIKE','Transferencia%');
                 })
