@@ -971,9 +971,11 @@
                                 Guardar Factura
                              </button>
                         </div>
+                        @if (isset($quotation->date_billing))
                         <div class="col-md-3">
                             <a href="{{ route('debitnotes.createcreditnote',[$quotation->id,'m','m',$quotation->bcv]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Crear Nota de Débito</a>
                         </div>  
+                        @endif
                         <div>     
                             <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
                             <input type="hidden" id="anticipo_form2" name="anticipo_form2">
