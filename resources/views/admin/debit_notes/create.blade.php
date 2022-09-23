@@ -382,7 +382,7 @@
                                             <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
                                         </div>
                                         
-                                        <div class="col-sm-4">   
+                                        <div class="col-sm-4" style="display: none;">   
                                             <a href="{{ route('debitnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
                                         </div>      
                                       

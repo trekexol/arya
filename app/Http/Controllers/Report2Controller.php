@@ -804,8 +804,7 @@ class Report2Controller extends Controller
                 ->get();
             }
         }
-        
-       
+
         
         $pdf = $pdf->loadView('admin.reports.bankmovements',compact('details_banks','coin','datenow','date_begin','date_end'))->setPaper('a4', 'landscape');
         return $pdf->stream();
