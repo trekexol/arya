@@ -34,64 +34,108 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h4>{{Auth::user()->company->code_rif ?? ''}}</h4> </h4></th>    </tr> 
     </tr> 
   </table>
-  <h4 style="color: black; text-align: center">MOVIMIENTOS BANCARIOS</h4>
+  <h4 style="color: black; text-align: center">MOVIMIENTOS BANCARIOS:</h4>
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h5>
    
  
 <table style="width: 100%;">
   <tr>
+    <th style="text-align: center; ">ID</th>
     <th style="text-align: center; ">Fecha</th>
     <th style="text-align: center; ">Ref</th>
     <th style="text-align: center; ">Cuenta</th>
     <th style="text-align: center; ">Contrapartida</th>
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Comprobante</th>
-    <th style="text-align: center; ">Monto</th>
+    <th style="text-align: center; ">Debe</th>
+    <th style="text-align: center; ">Haber</th>
   </tr> 
   <?php
-  $total_general = 0;
+  $total_general_debe = 0;
+  $total_general_haber = 0;
+  $cont = count($details_banks);
+  $cons = '';
+
   ?>
   @for ($i = 0; $i < count($details_banks); $i++)
-    <tr>
+  
+  <?php 
+     $account_two = 'sin condicion';
+
+
+
+      
+                if ($i == 0 and $details_banks[$i]->haber == 0){
+                  $account_two = $details_banks[1]->account_description;
+                  $cons = (1);
+
+                } 
+      
+                if ($i == 0 and $details_banks[$i]->debe == 0){
+                  $account_two = $details_banks[0]->account_description;
+                  $cons = (0);
+                } 
+
+                
+                /*if ($cons == 0 and $i > 0 and $i < $cont){
+
+                 $account_two = $details_banks[$i+1]->account_description; 
+                
+                } */
+
+                if ($cons == 1 and ($i > 0 and $i <= ($cont-1))){
+
+                $account_two = 'vv'; 
+
+                }
+
+
+              
+              
+              
+
+        //$i += 1;
+        if (isset($coin) && ($coin == 'bolivares')){
+          
+            if ($details_banks[$i]->debe == 0){
+            $total_general_haber += number_format(($details_banks[$i]->haber ?? 0), 2, '.', '');
+            }
+            if ($details_banks[$i]->haber == 0){
+              $total_general_debe += number_format(($details_banks[$i]->debe ?? 0), 2, '.', ''); 
+            }
+
+        }else{
+
+            if ($details_banks[$i]->debe == 0){
+            $total_general_haber += number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa ?? 0), 2, '.', '');
+            }
+            if ($details_banks[$i]->haber == 0){
+              $total_general_debe += number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa ?? 0), 2, '.', ''); 
+            }
+
+        }
+    
+?>
+  
+  <tr>
+    <td style="text-align: center; ">{{$details_banks[$i]->header_id}}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_date ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_reference ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
-      <?php 
-          //$i += 1;
-          if (isset($coin) && ($coin == 'bolivares')){
-            
-            if ($details_banks[$i]->debe != 0){
-            $total_general += number_format(($details_banks[$i]->debe ?? 0), 2, '.', '');
-            } else {
-            $total_general += number_format(($details_banks[$i]->haber ?? 0), 2, '.', ''); 
-            }
-          }else{
-
-            if ($details_banks[$i]->debe != 0){
-            $total_general += number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa ?? 0), 2, '.', '');
-            } else {
-            $total_general += number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa ?? 0), 2, '.', ''); 
-            }
-          }
-
-      ?>
-      <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
+      <td style="text-align: center; ">{{ $account_two ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_description ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_id ?? '' }}</td>
       @if (isset($coin) && ($coin == 'bolivares'))
-        @if ($details_banks[$i]->debe != 0)
-        <td style="text-align: right; ">{{ number_format(($details_banks[$i]->debe ?? 0), 2, ',', '.')}}</td>
-        @else
+          <td style="text-align: right; ">{{ number_format(($details_banks[$i]->debe ?? 0), 2, ',', '.')}}</td>
           <td style="text-align: right; ">{{ number_format(($details_banks[$i]->haber ?? 0), 2, ',', '.')}}</td>
-        @endif
       @else
-        @if ($details_banks[$i]->debe != 0)
           <td style="text-align: right; ">{{ number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
-        @else
           <td style="text-align: right; ">{{ number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa), 2, ',', '.')}}</td>
-        @endif
       @endif
     </tr> 
+    <?php
+    // }
+    ?>
   @endfor
 
   <tr>
@@ -101,10 +145,16 @@
     <th style="text-align: center; border-color: white;"></th>
     <th style="text-align: center; border-color: white;"></th>
     <th style="text-align: center; border-color: white;"></th>
+    <th style="text-align: center; border-color: white;"></th>
     @if (isset($coin) && ($coin == 'bolivares'))
-    <th style="text-align: right; border-color: white;">Bs.{{ number_format(bcdiv($total_general,'1',2), 2, ',', '.')}}</th>
+    <th style="text-align: right; border-color: white;">Bs.{{ number_format(bcdiv($total_general_debe,'1',2), 2, ',', '.')}}</th>
     @else 
-    <th style="text-align: right; border-color: white;">${{ number_format(bcdiv($total_general,'1',2), 2, ',', '.')}}</th>
+    <th style="text-align: right; border-color: white;">${{ number_format(bcdiv($total_general_debe,'1',2), 2, ',', '.')}}</th>
+    @endif
+    @if (isset($coin) && ($coin == 'bolivares'))
+    <th style="text-align: right; border-color: white;">Bs.{{ number_format(bcdiv($total_general_haber,'1',2), 2, ',', '.')}}</th>
+    @else 
+    <th style="text-align: right; border-color: white;">${{ number_format(bcdiv($total_general_haber,'1',2), 2, ',', '.')}}</th>
     @endif
   </tr>
   
