@@ -46,7 +46,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
+                            <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie (Opcional):</label>
 
                             <div class="col-md-3 ">
                                 <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" autocomplete="serie">
@@ -66,16 +66,18 @@
                                     <option id="typeclient" value="Cliente">Cliente</option>
                                 </select>
                             </div> 
-                            <label for="transports" class="col-md-2 offset-sm-1 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
+                            <div style="display: none">
+                                <label for="transports" class="col-md-2 offset-sm-1 col-form-label text-md-right">Transporte / Tipo de Entrega</label>
 
-                            <div class="col-md-3">
-                                <select class="form-control" id="id_transport" name="id_transport">
-                                    <option selected value="-1">Ninguno</option>
-                                    @foreach($transports as $var)
-                                        <option value="{{ $var->id }}">{{ $var->placa }}</option>
-                                    @endforeach
-                                
-                                </select>
+                                <div class="col-md-3">
+                                    <select class="form-control" id="id_transport" name="id_transport">
+                                        <option selected value="-1">Ninguno</option>
+                                        @foreach($transports as $var)
+                                            <option value="{{ $var->id }}">{{ $var->placa }}</option>
+                                        @endforeach
+                                    
+                                    </select>
+                                </div> 
                             </div> 
                         </div> 
                         <div id="invoiceform" class="form-group row">
@@ -112,65 +114,96 @@
 
                         
                         <div id="vendorform" class="form-group row">
-                           <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
-                            <div class="col-md-3">
-                                <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }}" readonly required autocomplete="id_vendor">
-
-                                    @error('id_vendor')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                            </div>
-                            <div class="form-group col-md-1">
-                                <a href="{{ route('creditnotes.selectvendor',$client->id ?? -1) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
-                            </div>
-                           
-                        </div>
-                       
-                        <div class="form-group row">
-                            <label for="note" class="col-md-2 col-form-label text-md-right">Nota Pie de Factura </label>
-
-                            <div class="col-md-4">
-                                <input id="note" type="text" class="form-control @error('note') is-invalid @enderror" name="note" value="{{ old('note') }}"  autocomplete="note">
-
-                                @error('note')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                           
-                        </div>
-                        <div class="form-group row">
-                           
-                            <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones</label>
-
-                            <div class="col-md-4">
-                                <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ old('observation') }}" autocomplete="observation">
-
-                                @error('observation')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                            <label for="vendors" class="col-md-2 col-form-label text-md-right">Vendedor</label>
+                             <div class="col-md-3">
+                                 <input id="id_vendor" type="text" class="form-control @error('id_vendor') is-invalid @enderror" name="vendor" value="{{ $vendor->name ?? $client->vendors['name'] ?? '' }}" readonly required autocomplete="id_vendor">
+ 
+                                     @error('id_vendor')
+                                         <span class="invalid-feedback" role="alert">
+                                             <strong>{{ $message }}</strong>
+                                         </span>
+                                     @enderror
+                             </div>
+                             <div class="form-group col-md-1">
+                                 <a href="{{ route('debitnotes.selectvendor',$client->id ?? -1) }}" title="Seleccionar Vendedor"><i class="fa fa-eye"></i></a>  
+                             </div>
+                            
+                         </div>
                         
-                        <br>
-                       
-                        <div class="form-group row">
-                            <div class="col-sm-3 offset-sm-4">
-                                <button type="submit" class="btn btn-info">
-                                  Registrar
-                                </button>
-                            </div>
-                            <div class="col-sm-2">
+                         <div class="form-group row">
+ 
+                             <label for="account" class="col-md-2 col-form-label text-md-right">Cuenta:</label>
+                             <div class="col-md-3">
+                                 <select class="form-control" id="id_account" name="id_account" required>
+                                     
+                                     <option selected value="Ventas por Bienes">Ventas por Bienes</option>
+                                 </select>
+                             </div>
+                             <div class="form-group col-md-1">
+                             </div>
+                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observaciones:</label>
+ 
+                             <div class="col-md-4">
+                                 <input id="observation" type="text" class="form-control @error('observation') is-invalid @enderror" name="observation" value="{{ old('observation') }}" autocomplete="observation">
+ 
+                                 @error('observation')
+                                     <span class="invalid-feedback" role="alert">
+                                         <strong>{{ $message }}</strong>
+                                     </span>
+                                 @enderror
+                             </div>
+                         </div>
+                         <div class="form-group row">
+                             <label for="importe" class="col-md-2 col-form-label text-md-right">Monto(Opcional):</label>
+ 
+                             <div class="col-md-2">
+                                 <input id="importe" type="text" class="form-control @error('importe') is-invalid @enderror" name="importe" value="{{ old('importe') }}" autocomplete="importe">
+ 
+                                 @error('importe')
+                                     <span class="invalid-feedback" role="alert">
+                                         <strong>{{ $message }}</strong>
+                                     </span>
+                                 @enderror
+                             </div> 
+                             
+                             <label for="moneda" class="col-md-2 col-form-label text-md-right">Moneda:</label>
+                             <div class="col-md-2">
+                             <select class="form-control" id="coin" name="coin" required>
+                                 <option selected value="bolivares">Bolivares</option>
+                                 <option value="dolares">Dolares</option>
+                             </select>
+                            </div>   
+ 
+                             <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+ 
+                             <div class="col-md-2">
+                                 <input onkeyup="numeric(this)" id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($tasa ?? old('rate'), 10, ',', '.') }}" autocomplete="rate">
+ 
+                                 @error('rate')
+                                     <span class="invalid-feedback" role="alert">
+                                         <strong>{{ $message }}</strong>
+                                     </span>
+                                 @enderror
+                             </div>  
+ 
+  
+                         </div>
+                         
+                         <br>
+                        
+                         <div class="form-group row">
+                             <div class="col-sm-3 offset-sm-4">
+                                 <button type="submit" class="btn btn-info">
+                                   Registrar
+                                 </button>
+                             </div>
+                             <div class="col-sm-2">
                                 <a href="{{ route('creditnotes') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
-                            </div>
-                        </div>
-                        </form>      
-                           
+                             </div>
+                         </div>
+                         </form>     
+                               
+
                    
                 </div>
             </div>
@@ -211,5 +244,22 @@
             }
             
        });
+
+
+       $(document).ready(function () {
+            $("#importe").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+
+
+        function numeric(e) {
+            
+            e.value = e.value.replace(/\./g, ',');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
     </script>
 @endsection

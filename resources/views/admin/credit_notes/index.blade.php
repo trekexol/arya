@@ -88,10 +88,15 @@
             <thead>
             <tr> 
                 <th class="text-center"></th>
-                <th class="text-center">N° de Control/Serie</th>
+                <th class="text-center">Fecha</th>
+                <th class="text-center">N°</th>
+                <th class="text-center">Factura</th>
                 <th class="text-center">Cliente</th>
                 <th class="text-center">Vendedor</th>
-                <th class="text-center">Fecha</th>
+                <th class="text-center">Moneda</th>
+                <th class="text-center">Monto USD</th>
+                <th class="text-center">Monto Bs</th>
+                <th class="text-center">(S)</th>
                 <th class="text-center"></th>
                
             </tr>
@@ -103,15 +108,28 @@
                     @foreach ($creditnotes as $creditnote)
                         <tr>
                             <td>
-                            <a href="{{ route('creditnotes.create',[$creditnote->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                                <a href="{{ route('creditnotes.create',[$creditnote->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                                 <a href="{{ route('pdf.creditnotemediacarta',[$creditnote->id,$creditnote->coin])}},ventana,left=800,top=800,height=800,width=1000,scrollbar=si,location=no,resizable=si,menubar=no" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
+                            <td class="text-center">{{ date_format(date_create($creditnote->date),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->serie ?? $creditnote->id ?? ''}}</td>
+                            <td class="text-center">{{ $creditnote->quotations['number_invoice'] ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->clients['name'] ?? $creditnote->quotations->clients['name'] ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->vendors['name'] ?? $creditnote->quotations->vendors['name'] ?? ''}}</td>
-                            <td class="text-center">{{ $creditnote->date ?? ''}}</td>
+                            <td class="text-center">{{ $creditnote->coin ?? ''}}</td>
+                            <td class="text-center">{{ number_format($creditnote->amount_with_iva / $creditnote->rate ?? 0, 2, ',', '.')}}</td>
+                            <td class="text-center">{{ number_format($creditnote->amount_with_iva ?? 0, 2, ',', '.')}}</td>
+                            @if($creditnote->status == 'C')
+                            <td class="text-center" style="color:darkgreen">{{ $creditnote->status ?? ''}}</td>
                             <td>
-                            <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>                
+                            </td>  
+                            @else
+                            <td class="text-center">P</td>
+                            <td>
+                                <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                            </td>  
+                            @endif
+              
                         </tr>     
                     @endforeach   
                 @endif

@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de Nota de Crédito</h3></div>
+                <div class="card-header" ><h3>Registro de Importe Nota de Crédito</h3></div>
 
                 <div class="card-body" >
                    
@@ -372,18 +372,29 @@
                                 </table>
                                 </div>
                             </div>
+
                             <div class="form-group row mb-0">
-                                <div class="col-sm-4">
-                                    @if($suma == 0)
-                                        <a onclick="validate()" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Credito</a>
-                                     
-                                    @else
-                                        <a href="{{ route('creditnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Credito</a>  
-                                      
-                                    @endif
-                                </div>
                                
+                                @if (isset($inventories_creditnotes))
+                                    <div class="col-sm-4">   
+                                        <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
+                                    </div>
+                                    
+                                    <div class="col-sm-4" style="display: none;">   
+                                        <a href="{{ route('creditnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
+                                    </div>      
+                                  
+                                @endif
+                            
+                            <div class="col-sm-4">
+                                @if ($existe_comprobante > 0)
+                                    @if (isset($inventories_creditnotes))
+                                    <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
+                                    @endif
+                                @endif
                             </div>
+                           
+                        </div>
                             
                 </div>
             </div>

@@ -490,12 +490,12 @@ class CreditNoteDetailController extends Controller
         
             $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_credit_note);
             
+
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
                                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                                            ->where('header_vouchers.id_credit_note',$id_credit_note)
+                                            ->where('header_vouchers.description','LIKE','%Nota de Debito '.$id_credit_note.'%')
                                             ->where('detail_vouchers.status','C')
                                             ->get();
-
           
             
             if(empty($coin)){

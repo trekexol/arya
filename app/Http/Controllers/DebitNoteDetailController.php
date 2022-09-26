@@ -505,7 +505,7 @@ class DebitNoteDetailController extends Controller
             }
          
         
-        return view('admin.movements.index_movement_creditnote',compact('detailvouchers','coin','creditnote'));
+        return view('admin.movements.index_movement_debitnote',compact('detailvouchers','coin','creditnote'));
     }
 
 }

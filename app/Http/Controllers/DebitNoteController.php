@@ -235,7 +235,7 @@ class DebitNoteController extends Controller
                     return redirect('/debitnotes')->withDanger('El Producto no existe');
                 } 
         }else{
-            return redirect('/debitnotes')->withDanger('La cotizacion no existe');
+            return redirect('/debitnotes')->withDanger('La Nota no existe');
         } 
 
     }
