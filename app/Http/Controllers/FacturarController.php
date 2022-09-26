@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
+use App\DebitNote;
+use App\CreditNote;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +96,14 @@ class FacturarController extends Controller
                                                             ->get(); 
                                                           
             $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
+
+
+            $notasdecredito = DB::connection(Auth::user()->database_name)->table('credit_notes')
             ->where('id_quotation','=',$quotation->id)
             ->where('status','!=','X')
             ->where('status','!=','C')
@@ -182,21 +192,28 @@ class FacturarController extends Controller
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
                     $total_debit_notes = $notasdedebito[0]->bolivares;
+                    $total_credit_notes = $notasdecredito[0]->bolivares;
                  }else{
                     $bcv = $quotation->bcv;
                      //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando 
                     $anticipos_sum_bolivares =   $this->anticipos_bolivares_to_dolars($quotation);
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
                     $total_debit_notes = $notasdedebito[0]->dolar; 
+                    $total_credit_notes = $notasdecredito[0]->dolar;
                  }
              }else{
                 $bcv = null;
                 $total_debit_notes = $notasdedebito[0]->bolivares; 
+                $total_credit_notes = $notasdecredito[0]->bolivares;
              }
 
              if (count($notasdedebito) <= 0){
                 $total_debit_notes = 0;
-            }
+             }
+             
+             if (count($notasdecredito) <= 0){
+                $total_credit_notes = 0;
+             }
              
 
             /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
@@ -223,7 +240,7 @@ class FacturarController extends Controller
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes'));
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes','total_credit_notes'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -351,6 +368,13 @@ class FacturarController extends Controller
             ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
             ->get();
           
+            
+            $notasdecredito = DB::connection(Auth::user()->database_name)->table('credit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
 
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                                             ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
@@ -415,20 +439,26 @@ class FacturarController extends Controller
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
                     $total_debit_notes = $notasdedebito[0]->bolivares; 
+                    $total_credit_notes = $notasdecredito[0]->bolivares; 
                  }else{
                     $bcv = $quotation->bcv;
                      //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
                     $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
-                    $total_debit_notes = $notasdedebito[0]->bolivares;
+                    $total_debit_notes = $notasdedebito[0]->dolares;
+                    $total_credit_notes = $notasdecredito[0]->dolares; 
                 }
              }else{
                 $bcv = null;
-                $total_debit_notes = $notasdedebito[0]->bolivares; 
+                $total_debit_notes = $notasdedebito[0]->bolivares;
+                $total_credit_notes = $notasdecredito[0]->bolivares;  
              }
 
              if (count($notasdedebito) <= 0){
                 $total_debit_notes = 0;
+             }
+             if (count($notasdecredito) <= 0){
+                $total_credit_notes = 0;
              }
              
              
@@ -457,7 +487,7 @@ class FacturarController extends Controller
 
             $is_after = false;
      
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes'));
+             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
@@ -755,6 +785,7 @@ class FacturarController extends Controller
         $IGTF_input_check = request('IGTF_input_store');
 
         $debitnote = request('debitnote_input_pre');
+        $creditnote = request('creditnote_input_pre');
         
 
         if ($IGTF_input_check == 0) {
@@ -1766,22 +1797,21 @@ class FacturarController extends Controller
             }
             
 
-            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
-
 
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
             $quotation->amount =  $sin_formato_amount;
             $quotation->amount_iva =  $sin_formato_amount_iva;
-            $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
+           // $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
+            $quotation->amount_with_iva = $sin_formato_grandtotal;
             $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
-
-
+    
             if($coin == 'dolares'){
+                
                 $anticipo =  $anticipo * $bcv;
                 $retencion_iva = $retencion_iva * $bcv;
                 $retencion_islr = $retencion_islr * $bcv;
@@ -1793,21 +1823,33 @@ class FacturarController extends Controller
                 $sin_formato_total_pay = $sin_formato_total_pay * $bcv;
 
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
-                $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
+                //$sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
                 $sub_total = $sub_total * $bcv;
 
                 $quotation->base_imponible = $base_imponible;
                 $quotation->amount_exento =  $amount_exento * $bcv;
                 $quotation->amount =  $sin_formato_amount;
                 $quotation->amount_iva =  $sin_formato_amount_iva;
-                $quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
+                //$quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
+                $quotation->amount_with_iva = $sin_formato_grandtotal;
                 $quotation->iva_percentage = $iva_percentage * $bcv;
                 $quotation->retencion_iva = $retencion_iva;
                 $quotation->retencion_islr = $retencion_islr;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
                 $quotation->IGTF_amount = $IGTF_input * $bcv;
             
+   
             }
+            
+            
+            if($coin == 'dolares'){
+            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
+            $sin_formato_grandtotal = $sin_formato_grandtotal  - $creditnote * $bcv;        
+            } else {
+            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
+            $sin_formato_grandtotal = $sin_formato_grandtotal  - $creditnote;
+            }
+
 
             //incluyendo el todal de debit note en el total asiento cuanta por cobrar
 
@@ -1918,6 +1960,27 @@ class FacturarController extends Controller
             $quotation->status = "C";
             
             $quotation->save();   /// guardando factura
+            
+
+            $debitnote = DebitNote::on(Auth::user()->database_name) //actualizando nota de debito
+            ->where('id_quotation',$quotation->id)
+            ->get();
+
+            if (!empty($debitnote)){
+                DB::connection(Auth::user()->database_name)->table('debit_notes')
+                ->where('id_quotation',$quotation->id)
+                ->update(['status' => 'C']);
+            }
+
+            $creditnote = CreditNote::on(Auth::user()->database_name)
+            ->where('id_quotation',$quotation->id)
+            ->get();
+
+            if (!empty($creditnote)){
+                DB::connection(Auth::user()->database_name)->table('credit_notes')
+                ->where('id_quotation', '=', $quotation->id)
+                ->update(['status' => 'C']);
+            }
 
             /*---------------------- */
 

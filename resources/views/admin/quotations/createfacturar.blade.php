@@ -47,6 +47,7 @@
                         <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
 
                         <input type="hidden" id="debitnote_input_pre_credit" name="debitnote_input_pre_credit">
+                        <input type="hidden" id="creditnote_input_pre_credit" name="creditnote_input_pre_credit">
 
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
@@ -274,13 +275,30 @@
                             </div>
                         </div>
 
+
+
+                        @if ($total_credit_notes > 0) 
+                        <div class="form-group row creditnote" style="display: visible;" >
+                        @else
+                        <div class="form-group row creditnote" style="display: none;" >
+                        @endif
+
+                            <label for="creditnote" class="col-md-2 col-form-label text-md-right">Notas de Crédito:</label>
+
+                            <div class="col-md-3">
+                                <input id="creditnote_input" type="text" class="form-control @error('creditnote_input') is-invalid @enderror" name="creditnote_input" value="{{ number_format($total_credit_notes ?? 0, 2, ',', '.') ?? 0}}" readonly>
+                            </div>
+                        </div>
+
+
+
                         @if ($total_debit_notes > 0) 
                         <div class="form-group row debitnote" style="display: visible;" >
                         @else
                         <div class="form-group row debitnote" style="display: none;" >
                         @endif
 
-                            <label for="igtf" class="col-md-2 col-form-label text-md-right">Notas De Débito:</label>
+                            <label for="debitnote" class="col-md-2 col-form-label text-md-right">Notas de Débito:</label>
 
                             <div class="col-md-3">
                                 <input id="debitnote_input" type="text" class="form-control @error('debitnote_input') is-invalid @enderror" name="debitnote_input" value="{{ number_format($total_debit_notes ?? 0, 2, ',', '.') ?? 0}}" readonly>
@@ -407,6 +425,7 @@
                         <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
                         <input id="debitnote_input_pre" type="hidden"  name="debitnote_input_pre">
+                        <input id="creditnote_input_pre" type="hidden"  name="creditnote_input_pre">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -976,16 +995,24 @@
                             <a href="{{ route('debitnotes.createcreditnote',[$quotation->id,'m','m',$quotation->bcv]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Crear Nota de Débito</a>
                         </div>  
                         @endif
+
+                        @if (isset($quotation->date_billing))
+                        <div class="col-md-3">
+                            <a href="{{ route('creditnotes.createcreditnote',[$quotation->id,'m','m',$quotation->bcv]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="facturar">Crear Nota de Crédito</a>
+                        </div>  
+                        @endif
+
                         <div>     
                             <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
                             <input type="hidden" id="anticipo_form2" name="anticipo_form2">
                         </div>
 
-                        
+                        @if (!isset($quotation->date_billing))
                         <div class="col-sm-3">       
                                 <a href="#" id="saldar" name="saldar" class="btn btn-success" title="Saldar">Saldar Nota con Anticipos</a>
                         </div>
-                      
+                        @endif
+
                         @if(isset($quotation->date_delivery_note))    
                         <div class="col-sm-3">     
                                 <button type="submit" onmouseover="cambioderuta()" onmouseout="restauraruta()" id="cob_anticipo_saldar" name="cob_anticipo_saldar" class="btn btn-info" title="cob_anticipo_saldar">
@@ -1001,7 +1028,7 @@
                             @else
 
                                 @if (isset($is_after) && ($is_after == false))
-                                    <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                             
+                                    <a href="{{ route('invoices') }}" id="btnfacturar" name="btnfacturar" class="btn btn-light" title="facturar">Volver</a>                             
                                 @else
                                     <a href="{{ route('quotations.create',[$quotation->id,$coin,$type]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
                                 @endif
@@ -1140,13 +1167,16 @@
                 let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
 
                 let total_debit_notes = "<?php echo $total_debit_notes ?>";
+                let total_credit_notes = "<?php echo $total_credit_notes ?>";
 
 
                     if (total_debit_notes == '') {
                         total_debit_notes = 0.00;
                     }
 
-
+                    if (total_credit_notes == '') {
+                        total_credit_notes = 0.00;
+                    }
 
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
@@ -1182,9 +1212,10 @@
                 var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
                 var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
                 var total_debit_notes_dos_decimales = parseFloat(total_debit_notes).toFixed(2);
-                
-
                 var debitnote_format = total_debit_notes.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                
+                var total_credit_notes_dos_decimales = parseFloat(total_credit_notes).toFixed(2);
+                var creditnote_format = total_credit_notes.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
             
 
                 // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
@@ -1215,7 +1246,7 @@
                     document.getElementById("anticipo_form2").value = 0;
                 }
                
-                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo  + parseFloat(total_debit_notes_dos_decimales);
+                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo  + parseFloat(total_debit_notes_dos_decimales) - parseFloat(total_credit_notes_dos_decimales);
 
                 //retencion de iva
 
@@ -1258,6 +1289,9 @@
 
                 document.getElementById("debitnote_input_pre").value = total_debit_notes_dos_decimales;
                 document.getElementById("debitnote_input_pre_credit").value = total_debit_notes_dos_decimales;
+
+                document.getElementById("creditnote_input_pre").value = total_credit_notes_dos_decimales;
+                document.getElementById("creditnote_input_pre_credit").value = total_credit_notes_dos_decimales;
 
 
                 document.getElementById("IGTF_general").value =  IGTF_general.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});

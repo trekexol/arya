@@ -40,7 +40,7 @@
  
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; ">ID</th>
+    <th style="text-align: center; ">N</th>
     <th style="text-align: center; ">Fecha</th>
     <th style="text-align: center; ">Ref</th>
     <th style="text-align: center; ">Cuenta</th>
@@ -53,72 +53,56 @@
   <?php
   $total_general_debe = 0;
   $total_general_haber = 0;
-  $cont = count($details_banks);
-  $cons = '';
+  $cont = 1;
+  $cont_par = 0;
 
   ?>
   @for ($i = 0; $i < count($details_banks); $i++)
   
+
   <?php 
-     $account_two = 'sin condicion';
+      $account_two = '';
+      $cont_par = $cont_par + 1;
 
 
-
-      
-                if ($i == 0 and $details_banks[$i]->haber == 0){
-                  $account_two = $details_banks[1]->account_description;
-                  $cons = (1);
-
-                } 
-      
-                if ($i == 0 and $details_banks[$i]->debe == 0){
-                  $account_two = $details_banks[0]->account_description;
-                  $cons = (0);
-                } 
-
-                
-                /*if ($cons == 0 and $i > 0 and $i < $cont){
-
-                 $account_two = $details_banks[$i+1]->account_description; 
-                
-                } */
-
-                if ($cons == 1 and ($i > 0 and $i <= ($cont-1))){
-
-                $account_two = 'vv'; 
-
-                }
-
-
-              
-              
-              
-
-        //$i += 1;
-        if (isset($coin) && ($coin == 'bolivares')){
-          
-            if ($details_banks[$i]->debe == 0){
-            $total_general_haber += number_format(($details_banks[$i]->haber ?? 0), 2, '.', '');
-            }
-            if ($details_banks[$i]->haber == 0){
-              $total_general_debe += number_format(($details_banks[$i]->debe ?? 0), 2, '.', ''); 
-            }
-
-        }else{
-
-            if ($details_banks[$i]->debe == 0){
-            $total_general_haber += number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa ?? 0), 2, '.', '');
-            }
-            if ($details_banks[$i]->haber == 0){
-              $total_general_debe += number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa ?? 0), 2, '.', ''); 
-            }
-
+        if ($cont_par == 1) {
+            $rec = $i+1;
         }
-    
-?>
+        if ($cont_par == 2) {
+            $rec = $i-1;
+            $cont_par = 0;
+        }                    
+
+
+        $account_two = $details_banks[$rec]->account_description;
+        $text_tipo = substr($details_banks[$i]->header_description,0, 5);
+        
+        if (($text_tipo == 'Depos' and $details_banks[$i]->haber == 0) or ($text_tipo == 'Retir' and $details_banks[$i]->debe == 0) or ($text_tipo == 'Trans') or ($text_tipo == 'Orden' and $details_banks[$i]->debe == 0) ) {
+
+
+              if (isset($coin) && ($coin == 'bolivares')){
+                
+                  if ($details_banks[$i]->debe == 0){
+                  $total_general_haber += number_format(($details_banks[$i]->haber ?? 0), 2, '.', '');
+                  }
+                  if ($details_banks[$i]->haber == 0){
+                    $total_general_debe += number_format(($details_banks[$i]->debe ?? 0), 2, '.', ''); 
+                  }
+
+             }else{
+
+                  if ($details_banks[$i]->debe == 0){
+                  $total_general_haber += number_format(($details_banks[$i]->haber / $details_banks[$i]->tasa ?? 0), 2, '.', '');
+                  }
+                  if ($details_banks[$i]->haber == 0){
+                    $total_general_debe += number_format(($details_banks[$i]->debe / $details_banks[$i]->tasa ?? 0), 2, '.', ''); 
+                  }
+
+              }
+  ?>
   
   <tr>
-    <td style="text-align: center; ">{{$details_banks[$i]->header_id}}</td>
+    <td style="text-align: center; ">{{$cont}}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_date ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->header_reference ?? '' }}</td>
       <td style="text-align: center; ">{{ $details_banks[$i]->account_description ?? '' }}</td>
@@ -134,7 +118,8 @@
       @endif
     </tr> 
     <?php
-    // }
+    $cont++; 
+    }
     ?>
   @endfor
 

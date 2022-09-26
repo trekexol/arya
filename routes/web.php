@@ -622,7 +622,8 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
 
     Route::get('debitnotemediacarta/{id_quotation}/{coin}','PDF2Controller@debitnotemediacarta')->name('pdf.debitnotemediacarta');
-    
+    Route::get('creditnotemediacarta/{id_quotation}/{coin}','PDF2Controller@creditnotemediacarta')->name('pdf.creditnotemediacarta');
+      
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
     Route::get('facturamedia/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura_media')->name('pdf.media');
@@ -1257,7 +1258,7 @@ Route::group(["prefix"=>'creditnotes'],function(){
     Route::delete('{id}/delete','CreditNoteController@destroy')->name('creditnotes.delete');
     Route::get('historial','CreditNoteController@index_historial')->name('creditnotes.historial');
    
-    Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}','CreditNoteController@createcreditnote')->name('creditnotes.createcreditnote');
+    Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}/{tasa?}','CreditNoteController@createcreditnote')->name('creditnotes.createcreditnote');
     Route::get('selectclient','CreditNoteController@selectclient')->name('creditnotes.selectclient');
     Route::get('selectvendor/{id_client}','CreditNoteController@selectvendor')->name('creditnotes.selectvendor');
 

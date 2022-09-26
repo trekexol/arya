@@ -16,6 +16,7 @@ use App\ExpensesAndPurchase;
 use App\ExpensesDetail;
 use App\HeaderVoucher;
 use App\DebitNote;
+use App\CreditNote;
 use App\DebitNoteDetail;
 use App\Http\Controllers\Validations\FacturaValidationController;
 use App\Inventory;
@@ -1142,7 +1143,150 @@ class PDF2Controller extends Controller
 
         
     }
+  
+    function creditnotemediacarta($id_quotation,$coin)
+    {
+      
+
+        $pdf = App::make('dompdf.wrapper');
     
+             $quotation = null;
+             $valor = 1;
+                 
+            if(isset($id_quotation)){
+                 $quotation = CreditNote::on(Auth::user()->database_name)->findOrFail($id_quotation);
+                
+
+                    if(isset($quotation->rate)){
+                        $bcv = $quotation->rate;
+                     }
+
+                                     
+            }else{
+                //return redirect('/quotations/index')->withDanger('No llega el numero de la cotizacion');
+                return redirect('creditnotes');
+            } 
+     
+             if(isset($quotation)){
+               /*
+                $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                                ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                                                                ->where('quotation_products.id_quotation',$quotation->id_quotation)
+                                                                ->whereIn('quotation_products.status',['1','C'])
+                                                                ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                                                                'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                                                                ,'quotation_products.retiene_islr as retiene_islr_quotation')
+                                                                ->get(); */
+
+
+                                                                $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                                ->join('credit_note_details', 'products.id', '=', 'credit_note_details.id_inventory')
+                                                                //->join('credit_notes', 'credit_notes.id_quotation', '=', 'credit_notes.id_inventory')
+                                                                ->where('credit_note_details.id_credit_note',$quotation->id)
+                                                                ->whereIn('credit_note_details.status',['1','C'])
+                                                                ->select('products.*','credit_note_details.*')
+                                                                ->get(); 
+
+
+
+                $total= 0;
+
+                $base_imponible= 0;
+                $price_cost_total= 0;
+
+                //este es el total que se usa para guardar el monto de todos los productos que estan exentos de iva, osea retienen iva
+                $total_retiene_iva = 0;
+                $retiene_iva = 0;
+
+                $total_retiene_islr = 0;
+                $retiene_islr = 0;
+
+                $price = 0;
+                
+                $date = Carbon::now();
+                $datenow = $date->format('Y-m-d');    
+                $anticipos_sum = 0;
+                if(isset($coin)){
+                    if($coin == 'bolivares'){
+                        $bcv = null;
+                    }else{
+                        $bcv = $quotation->rate;
+                    }
+                }else{
+                    $bcv = null;
+                }
+
+                foreach($inventories_quotations as $var){
+
+                    if(isset($coin) && ($coin != 'bolivares')){
+                        $var->price =  bcdiv(($var->price / ($var->rate ?? 1)), '1', 2);
+                    }
+
+                    //Se calcula restandole el porcentaje de descuento (discount)
+                    $percentage = (($var->price * $var->amount) * $var->discount)/100;
+
+                    $total += ($var->price * $var->amount) - $percentage;
+                    //----------------------------- 
+                    $base_imponible += ($var->price * $var->amount) - $percentage; 
+
+                    //me suma todos los precios de costo de los productos
+                    if(($var->money == 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
+                        $price_cost_total += $var->price_buy * $var->amount;
+                    }else if(($var->money != 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
+                        $price_cost_total += $var->price_buy * $var->amount * $quotation->rate;
+                    }
+                
+                }
+
+                if(isset($coin) && ($coin != 'bolivares')){
+                    $rate = $quotation->rate;
+                }
+
+                $quotation->iva_percentage = $quotation->iva_percentage;
+                $quotation->amount = $total * ($rate ?? 1);
+                $quotation->base_imponible = $base_imponible * ($rate ?? 1);
+                $quotation->amount_iva = ($base_imponible * $quotation->iva_percentage / 100) * ($rate ?? 1);
+               
+                $quotation->amount_with_iva = ($quotation->amount + $quotation->amount_iva);
+                
+                $quotation->save();
+
+                $global = new GlobalController();
+
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('credit_note_details')
+                ->where('id_credit_note', '=', $quotation->id)
+                ->where('status','!=','X')
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
+                   
+                
+  
+                if(isset($coin) && ($coin != 'bolivares')){
+                    $quotation->amount =  $quotation->amount / ($rate ?? 1);
+                    $quotation->base_imponible = $quotation->base_imponible / ($rate ?? 1);
+                    $quotation->amount_iva =    $quotation->amount_iva / ($rate ?? 1);
+                    $quotation->amount_with_iva = ( $quotation->amount_with_iva) / ($rate ?? 1);
+                }
+
+                /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
+                $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
+                
+                $company = Company::on(Auth::user()->database_name)->find(1);
+
+                $quotation_origin = Quotation::on(Auth::user()->database_name)->findOrFail($quotation->id_quotation);
+                
+                
+                $pdf = $pdf->loadView('pdf.creditnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor'));
+                return $pdf->stream();
+         
+            }else{
+                return redirect('/creditnotes')->withDanger('La nota de crédito no existe');
+            } 
+             
+        
+
+        
+    }
+
     function deliverynote_expense($id_expense,$coin,$iva,$date)
     {
       

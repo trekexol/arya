@@ -8,6 +8,8 @@ use App\DetailVoucher;
 use App\Http\Controllers\Historial\HistorialcreditnoteController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
+use App\HeaderVoucher;
+use App\Account;
 use App\Multipayment;
 use App\CreditNote;
 use App\CreditCoteDetail;
@@ -38,7 +40,7 @@ class CreditNoteController extends Controller
    {
         
         if($this->userAccess->validate_user_access($this->modulo)){
-            $creditnotes = CreditNote::on(Auth::user()->database_name)->where('status','1')->orderBy('id' ,'DESC')
+            $creditnotes = CreditNote::on(Auth::user()->database_name)->whereIn('status',['1','C'])->orderBy('id' ,'DESC')
             ->get();
 
             return view('admin.credit_notes.index',compact('creditnotes'));
@@ -69,7 +71,7 @@ class CreditNoteController extends Controller
     * @return \Illuminate\Http\Response
     */
     
-    public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null)
+    public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null,$tasa = null)
     {
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
@@ -94,7 +96,7 @@ class CreditNoteController extends Controller
             $vendor = Vendor::on(Auth::user()->database_name)->find($id_vendor);
         }
 
-        return view('admin.credit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports'));
+        return view('admin.credit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports','tasa'));
     }
 
 
@@ -107,6 +109,17 @@ class CreditNoteController extends Controller
                 
             if(isset($id_creditnote)){
                 $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+                
+                $existe_comprobante = DB::connection(Auth::user()->database_name)->table('header_vouchers')
+                ->where('description','LIKE','%Nota de Credito '.$id_creditnote.'%')
+                ->where('status','!=','X')
+                ->get();
+                
+                if (count($existe_comprobante) > 0){
+                $existe_comprobante = 1;
+                } else {
+                $existe_comprobante = 0;    
+                }
             }
 
             if(isset($creditnote) && ($creditnote->status == 1)){
@@ -142,9 +155,9 @@ class CreditNoteController extends Controller
                 }
                 
         
-                return view('admin.credit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product'));
+                return view('admin.credit_notes.create',compact('creditnote','inventories_creditnotes','datenow','bcv','coin','bcv_creditnote_product','existe_comprobante'));
             }else{
-                return redirect('/creditnotes')->withDanger('No es posible ver esta cotizacion');
+                return redirect('/creditnotes')->withDanger('No es posible ver esta Nota de Crédito');
             } 
             
         }else{
@@ -214,7 +227,7 @@ class CreditNoteController extends Controller
                     return redirect('/creditnotes')->withDanger('El Producto no existe');
                 } 
         }else{
-            return redirect('/creditnotes')->withDanger('La cotizacion no existe');
+            return redirect('/creditnotes')->withDanger('La Nota no existe');
         } 
 
     }
@@ -345,10 +358,42 @@ class CreditNoteController extends Controller
         $id_invoice = request('id_invoice');
         $id_client  = request('id_client');
         $id_vendor  = request('id_vendor');
+        $id_account  = request('id_account');
+        $coin = request('coin');
         
+        $rate_form = request('rate');
+
+        if ($rate_form <= 0){
+            $rate_form = '1,00';
+        }
+
+        $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate_form));
+        
+
+        $importe = request('importe');
+
+        if ($importe != null) { // si monto esta logeado
+
+            $importe = str_replace(',', '.', str_replace('.', '', request('importe')));
+
+                
+            if ($coin == 'dolares') {
+                
+                $importe =  $importe * $valor_sin_formato_rate;
+
+            }   
+
+        } else {
+            $importe = 0;  
+        }
+       
+     
+
+
+
         //dd($request);
-        if((isset($id_invoice)) || (isset($id_client))){
-            
+        if((isset($id_invoice)) || (isset($id_client))){    
+
                 $var = new CreditNote();
                 $var->setConnection(Auth::user()->database_name);
 
@@ -373,25 +418,130 @@ class CreditNoteController extends Controller
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
 
-                //Si la taza es automatica
-                if($company->tiporate_id == 1){
-                    $bcv = $global->search_bcv();
-                }else{
-                    //si la tasa es fija
-                    $bcv = $company->rate;
+
+                if ($rate_form){
+
+                    $var->rate = $valor_sin_formato_rate;
+                } else {
+                    $var->rate = $global->search_bcv();
                 }
 
-                $var->rate = bcdiv($bcv, '1', 2);
+                $var->coin = $coin;
 
-                $var->coin = 'bolivares';
-        
-                $var->status =  1;
+                if ($importe != null && $importe > 0) {
+                $var->amount = $importe;
+                $var->amount_with_iva = $importe;
+                } else {
+                $var->amount = 0;
+                $var->amount_with_iva = 0;
+                }
+                
+                $var->status =  '1';
             
                 $var->save();
 
+                $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('credit_notes')
+                ->where('id_quotation', '=', $id_invoice)
+                ->orderBy('id','desc')
+                ->first();
 
-                return redirect('creditnotes/register/'.$var->id.'/bolivares');
+                 
+               //dd('no entra');
 
+                    if(isset($id_invoice)){
+
+                        $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
+                        ->where('id', '=', $id_invoice)
+                        ->first();
+                    
+                        if (!empty($quotation)){
+                            DB::connection(Auth::user()->database_name)->table('credit_notes')
+                            ->where('id_quotation', '=', $id_invoice)
+                            ->update(['id_client' => $quotation->id_client,'id_vendor' => $quotation->id_vendor]);
+                        }
+                        
+
+                        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                        ->where('id_quotation', '=', $id_invoice)
+                        ->where('status','!=','X')
+                        ->get();
+
+                        $conteo = count($quotation_products);
+                    
+                        if ($importe > 0) { // si monto esta logeado
+                                        
+                            $cost = $importe / $conteo;
+                
+                            //armando comprobantes//////////////////////////////////////////////////////
+
+                            $date = Carbon::now();
+                            $datenow = $date->format('Y-m-d');
+                            $date_payment = request('date'); 
+                            $user       =   auth()->user();
+                            $user_id = $user->id; 
+                            $header_voucher  = new HeaderVoucher();
+                            $header_voucher->setConnection(Auth::user()->database_name);
+                            $header_voucher->description = "Nota de Credito ".$id_debit_note_last->id;
+                            $header_voucher->date = $date_payment;
+                            $header_voucher->status =  "1";
+                            //$header_voucher->id_credit_note = $creditnote->id;
+                            $header_voucher->save();
+                            //Busqueda de Cuentas
+                            //Cuentas por Cobrar Clientes
+                            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
+
+                            if(isset($account_cuentas_por_cobrar)){
+
+                                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_cuentas_por_cobrar->id,$id_invoice,$user_id,0,$importe);
+                            }
+
+                            if(isset($id_account)){
+                                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like','%'.$id_account.'%')->first();
+
+                                if(isset($account_subsegmento)){
+                                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,$importe,0);
+                                }
+                            }
+
+                        } else {
+                            $cost = 0;
+                        }
+                        
+                        foreach ($quotation_products as $quotation) {
+
+                            $var = new CreditNoteDetail();
+                            $var->setConnection(Auth::user()->database_name);
+
+                            $var->id_credit_note = $id_debit_note_last->id;
+                            $var->id_inventory = $quotation->id_inventory;
+                            $var->islr = false;
+                            $exento = 1;
+
+                            if($exento == null){
+                                $var->exento = false;
+                            }else{
+                                $var->exento = true;
+                            }
+
+                            $var->rate = $valor_sin_formato_rate;
+                    
+                            $var->price = $cost;
+                            
+                            $var->amount = 1;
+                    
+                            $var->discount = 0;
+                            
+                            $var->status =  '1';
+                        
+                            $var->save();
+                        
+                        }
+
+
+                    }
+
+                    return redirect('creditnotes/register/'.$id_debit_note_last->id.'/'.request('coin'));
+                  
             
         }else{
             return redirect('/creditnotes/registercreditnote')->withDanger('Debe Seleccionar una Factura o un Cliente');
@@ -400,6 +550,41 @@ class CreditNoteController extends Controller
         
     }
 
+    public function add_movement($bcv,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
+
+        $detail = new DetailVoucher();
+        $detail->setConnection(Auth::user()->database_name);
+
+
+        $detail->id_account = $id_account;
+        $detail->id_header_voucher = $id_header;
+        $detail->user_id = $id_user;
+        $detail->tasa = $bcv;
+        $detail->id_invoice = $id_invoice;
+
+      /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+        $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+       
+        $detail->debe = $debe;
+        $detail->haber = $haber;
+       
+      
+        $detail->status =  "C";
+
+         /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+         
+            $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+            if($account->status != "M"){
+                $account->status = "M";
+                $account->save();
+            }
+         
+    
+        $detail->save();
+
+    }
 
     public function storeproduct(Request $request)
     {

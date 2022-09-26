@@ -147,7 +147,7 @@
                             <label for="account" class="col-md-2 col-form-label text-md-right">Cuenta:</label>
                             <div class="col-md-3">
                                 <select class="form-control" id="id_account" name="id_account" required>
-                                    <option value="Diferencial Cambiario">Diferencial Cambiario</option>
+                                    
                                     <option selected value="Ventas por Bienes">Ventas por Bienes</option>
                                 </select>
                             </div>

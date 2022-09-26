@@ -22,8 +22,8 @@
                 &nbsp Volver
             </a>
         @else
-            <a href="{{ route('creditnotes.createfacturado',[$creditnote->id,$coin]) }}" class="btn btn-light"><i class="fas fa-undo" ></i>
-                &nbsp Volver a la Nota de Crédito
+            <a href="{{ route('debitnotes.create',[$creditnote->id,$coin]) }}" class="btn btn-light"><i class="fas fa-undo" ></i>
+                &nbsp Volver a la Nota de Débito
             </a>
         @endif
         
