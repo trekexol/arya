@@ -186,20 +186,21 @@ class FacturarController extends Controller
              }
              $anticipos_sum = 0;
              if(isset($coin)){
-                 if($coin == 'bolivares'){
-                    $bcv = null;
-                    //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
-                    $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
-                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
-                    $total_debit_notes = $notasdedebito[0]->bolivares;
-                    $total_credit_notes = $notasdecredito[0]->bolivares;
-                 }else{
+                 if($coin == 'dolares'){
                     $bcv = $quotation->bcv;
                      //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando 
                     $anticipos_sum_bolivares =   $this->anticipos_bolivares_to_dolars($quotation);
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
                     $total_debit_notes = $notasdedebito[0]->dolar; 
                     $total_credit_notes = $notasdecredito[0]->dolar;
+                 }else{
+
+                    $bcv = null;
+                    //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
+                    $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->bolivares;
+                    $total_credit_notes = $notasdecredito[0]->bolivares;
                  }
              }else{
                 $bcv = null;
@@ -433,20 +434,20 @@ class FacturarController extends Controller
              $datenow = $date->format('Y-m-d');    
              $anticipos_sum = 0;
              if(isset($coin)){
-                 if($coin == 'bolivares'){
+                 if($coin == 'dolares'){
+                    $bcv = $quotation->bcv; 
+                    //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
+                     $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
+                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
+                     $total_debit_notes = $notasdedebito[0]->dolar;
+                     $total_credit_notes = $notasdecredito[0]->dolar; 
+                 }else{
                     $bcv = null;
                     //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
                     $total_debit_notes = $notasdedebito[0]->bolivares; 
                     $total_credit_notes = $notasdecredito[0]->bolivares; 
-                 }else{
-                    $bcv = $quotation->bcv;
-                     //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
-                    $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
-                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
-                    $total_debit_notes = $notasdedebito[0]->dolares;
-                    $total_credit_notes = $notasdecredito[0]->dolares; 
                 }
              }else{
                 $bcv = null;
