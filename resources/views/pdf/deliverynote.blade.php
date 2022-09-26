@@ -172,7 +172,7 @@
    $lote = '';
    $date_expirate = '';
    $discount = 0;  
-
+   $conted = 0;
       foreach ($inventories_quotations as $var){
 
           $lote .= $var->lote;
@@ -234,6 +234,8 @@
         $total_less_percentage = ($var->price * $var->amount_quotation) - $percentage;
 
         $total_less_percentage = $total_less_percentage ;
+
+
       ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
@@ -260,6 +262,9 @@
       @endif
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
+    <?php
+            $conted += $var->amount_quotation;
+    ?>
   @endforeach 
 </table>
 
@@ -278,23 +283,23 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Sub Total</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($quotation->total_factura , 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;"><span style="font-size:9pt;">Cant.({{$conted}})</span>&nbsp;&nbsp; Sub Total</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv($quotation->total_factura, '1', 2), 2, ',', '.')}}</th>
   </tr> 
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Base Imponible</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($quotation->base_imponible , 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv($quotation->base_imponible , '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Ventas Exentas</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(($retiene_iva ?? 0) , 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv(($retiene_iva ?? 0) , '1', 2), 2, ',', '.')}}</th>
   </tr> 
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($iva, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($iva, '1', 2), 2, ',', '.') }}</th>
   </tr> 
  
   
@@ -302,26 +307,26 @@
       <tr>
         <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">TOTAL Bs</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($total, 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv($total, '1', 2), 2, ',', '.') }}</th>
       </tr> 
       @if(Auth::user()->company->id != 22)
       <tr>
         <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white; font-size: small;">TOTAL $</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($total / $quotation->bcv, 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv($total / $quotation->bcv, '1', 2), 2, ',', '.') }}</th>
       </tr> 
       @endif
     @else
       <tr>
         <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">TOTAL $</th>
-        <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($total, 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal; width: 21%;">{{  number_format(bcdiv($total, '1', 2), 2, ',', '.') }}</th>
       </tr> 
       @if(Auth::user()->company->id != 22)
       <tr>
         <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white;"> Tasa de cambio a la fecha: {{ number_format(bcdiv($quotation->bcv, '1', 2), 2, ',', '.') }} Bs.</th>
         <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;  border-left-color: black;">TOTAL Bs</th>
-        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">{{ number_format($total * $quotation->bcv, 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">{{  number_format(bcdiv($total * $quotation->bcv , '1', 2), 2, ',', '.')}}</th>
       </tr>
       @endif 
     @endif

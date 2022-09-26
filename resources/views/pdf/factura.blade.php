@@ -239,13 +239,7 @@
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($iva, '1', 2), 2, ',', '.') }}</th>
   </tr> 
-  @if ($quotation->anticipo != 0)
-  <tr>
-    <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Anticipo</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->anticipo , '1', 2), 2, ',', '.') }}</th>
-  </tr> 
-  @endif
+
 
   @if (isset($quotation->IGTF_amount) && $quotation->IGTF_amount != 0)
   <tr>

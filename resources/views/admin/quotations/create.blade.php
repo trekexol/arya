@@ -419,6 +419,7 @@
                                         @else
                                         <?php
                                             $suma = 0.00;
+                                            $conted = 0;
                                         ?>
                                        
                                             @foreach ($inventories_quotations as $var)
@@ -438,13 +439,13 @@
                                                 <td style="text-align: right">{{ $var->code}}</td>
                                                 @if(isset($var->retiene_iva) && ($var->retiene_iva == 1))
                                                     @if($var->stock <= 0 || $var->stock < $var->amount_quotation)
-                                                    <td style="text-align: right">{{ $var->description}} (E) <span style="color: red;">Stock {{ $var->stock}}</span></td>
+                                                    <td style="text-align: right">{{ $var->description}} (E) @if ($var->type != 'SERVICIO')<span style="color: red;">Stock {{ $var->stock}}</span> @endif</td>
                                                     @else
                                                     <td style="text-align: right">{{ $var->description}} (E)</td>
                                                     @endif
                                                 @else
                                                      @if($var->stock <= 0 || $var->stock < $var->amount_quotation)
-                                                     <td style="text-align: right">{{ $var->description}} <span style="color: red;">Stock {{ $var->stock}}</span></td>
+                                                     <td style="text-align: right">{{ $var->description}} @if ($var->type != 'SERVICIO')<span style="color: red;">Stock {{ $var->stock}}</span>@endif</td>
                                                      @else
                                                      <td style="text-align: right">{{ $var->description}}</td>
                                                      @endif
@@ -460,7 +461,7 @@
 
                                                 <?php
                                                     $suma += $total_less_percentage;
-                                                    
+                                                    $conted += $var->amount_quotation;
                                                 ?>
                                                     <td style="text-align: right">
                                                         <a href="{{ route('quotations.productedit',[$var->quotation_products_id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
@@ -476,7 +477,7 @@
                                             <tr>
                                                 <td style="text-align: right">-------------</td>
                                                 <td style="text-align: right">-------------</td>
-                                                <td style="text-align: right">-------------</td>
+                                                <td style="text-align: right">{{$conted}}</td>
                                                 <td style="text-align: right">-------------</td>
                                                 <td style="text-align: right">Total</td>
                                                 <td style="text-align: right">{{number_format($suma, 2, ',', '.')}}</td>
