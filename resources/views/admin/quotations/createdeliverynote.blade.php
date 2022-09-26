@@ -230,8 +230,7 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible ; ?>") / 100;  
-                
+                let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
 
                 
                 /*-----------------------------------*/
@@ -306,8 +305,7 @@
         //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
         let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
-        let totalIvaMenos = (inputIva * "<?php echo $quotation->base_imponible ; ?>") / 100;  
-
+        let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
 
         /*-----------------------------------*/
         /*Toma la Base y la envia por form*/
