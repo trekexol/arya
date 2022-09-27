@@ -78,7 +78,7 @@
   <tr>
     <th style="text-align: center;">Teléfono</th>
     <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
+    <th style="text-align: center;">N° Crtl/Serie</th>
     <th style="text-align: center;">Condición de Pago</th>
     <th style="text-align: center;">Transp./Tipo Entrega</th>
    

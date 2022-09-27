@@ -117,8 +117,9 @@ class Report2Controller extends Controller
         $users_role =   $user->role_id;
         
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');   
-        $datebeginyear = $date->firstOfYear()->format('Y-m-d');
+        $datenow = $date->format('Y-m-d');  
+
+        $datebeginyear = $date->format('Y-m-01');
 
         $accounts_banks = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->where('code_one', 1)
