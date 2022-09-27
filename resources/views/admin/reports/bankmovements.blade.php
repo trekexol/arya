@@ -54,34 +54,43 @@
   $total_general_debe = 0;
   $total_general_haber = 0;
   $cont = 1;
+  $count_regist = count($details_banks);
   $cont_par = 0;
-  $account_two = '';
+
   ?>
   @for ($i = 0; $i < count($details_banks); $i++)
   
 
   <?php 
+      $account_two = '';
       
-      $cont_par = $cont_par + 1;
-
-
-        if ($cont_par == 1) {
-            $rec = $i+1;
-            $account_two = $details_banks[$rec]->account_description;
-        
-        }
-        if ($cont_par == 2) {
-            $rec = $i-1;
-            $cont_par = 0;
-            $account_two = $details_banks[$rec]->account_description;
-        
-        }                    
-
-
+      $cont_par =  $cont_par + 1;  
 
         $text_tipo = substr($details_banks[$i]->header_description,0, 5);
+      
         
-        if (($text_tipo == 'Depos' and $details_banks[$i]->haber == 0) or ($text_tipo == 'Retir' and $details_banks[$i]->debe == 0) or ($text_tipo == 'Trans') or ($text_tipo == 'Orden' and $details_banks[$i]->debe == 0) ) {
+
+            
+              if ($cont_par == 1) {
+     
+                    $rec = $i+1;
+       
+              }
+              if ($cont_par == 2) {
+ 
+                    $rec = $i-1;
+           
+
+                  $cont_par = 0;
+              }                    
+
+           // $account_two = $details_banks[$rec]->account_description;
+            $account_two = ''; 
+
+
+
+          //if (($text_tipo == 'Depos' and $details_banks[$i]->haber == 0) or ($text_tipo == 'Retir' and $details_banks[$i]->debe == 0) or ($text_tipo == 'Trans') or ($text_tipo == 'Orden' and $details_banks[$i]->debe == 0) ) {
+
 
 
               if (isset($coin) && ($coin == 'bolivares')){
@@ -123,7 +132,7 @@
     </tr> 
     <?php
     $cont++; 
-    }
+  // }
     ?>
   @endfor
 

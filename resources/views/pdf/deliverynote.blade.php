@@ -126,11 +126,17 @@
 
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center;">Teléfono</th>
-    <th style="text-align: center;">RIF/CI</th>
-    <th style="text-align: center;">N° Control / Serie</th>
+    <th style="text-align: center; width: 16%;">Teléfono</th>
+    <th style="text-align: center; width: 15%;">RIF/CI</th>
+    <th style="text-align: center; width: 15%;">N°Ctrl-Serie</th>
+    
+    @if(Auth::user()->company->id != 22)
+    <th style="text-align: center;">N°-Pedido</th>
+    @else
+    <th style="text-align: center;">N°-Orden</th>
+    @endif
     <th style="text-align: center;">Condición de Pago</th>
-    <th style="text-align: center;">Transp./Tipo Entrega</th>
+    <th style="text-align: center;">Transporte</th>
    
   </tr>
   <tr>
@@ -138,10 +144,13 @@
     <td style="text-align: center;">{{ $quotation->clients['type_code'] ?? ''}} {{ $quotation->clients['cedula_rif'] ?? '' }}</td>
     @if(Auth::user()->company->id != 22)
     <td style="text-align: center;">{{ $quotation->serie }}</td>
+    <td style="text-align: center;">{{ $quotation->number_pedido}}</td>
+    <td style="text-align: center;">Nota de Entrega</td>
     @else
     <td style="text-align: center; color:red">{{ $quotation->serie }}</td>
+    <td style="text-align: center; color:red">{{ $quotation->number_pedido}}</td>
+    <td style="text-align: center; color:red">Contado</td>
     @endif
-    <td style="text-align: center;">Nota de Entrega</td>
     <td style="text-align: center;">{{ $quotation->transports['placa'] ?? '' }}</td>
     
     
@@ -151,7 +160,7 @@
 
 <table style="width: 100%;">
   <tr>
-  @if($valor == 3)
+  @if($valor == 3 or $valor == 4)
   <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; <span style="color: red;">{{ $quotation->observation ?? ''}}</span></th>
   @else
   <th style="font-weight: normal; font-size: medium;">Observaciones: &nbsp; {{ $quotation->observation ?? ''}} </th>
@@ -188,7 +197,7 @@
         <tr>
           <th style="text-align: center; ">Código</th>
           <th style="text-align: center; ">Descripción</th>
-          @if($valor == 2)
+          @if($valor == 2 or $valor == 4)
           <th style="text-align: center; ">Foto</th>
           @endif
           <th style="text-align: center; ">Cantidad</th>
@@ -208,7 +217,7 @@
       <tr>
         <th style="text-align: center; background-color:#5CAB44; color: #fff">Código</th>
         <th style="text-align: center; background-color:#5CAB44; color: #fff">Descripción</th>
-        @if($valor == 2)
+        @if($valor == 2 or $valor == 4)
         <th style="text-align: center; background-color:#5CAB44; color: #fff">Foto</th>
         @endif
         <th style="text-align: center; background-color:#5CAB44; color: #fff">Cantidad</th>
@@ -238,9 +247,9 @@
 
       ?>
     <tr>
-      <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
+      <th style="text-align: center; font-weight: normal; ">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      @if($valor == 2)
+      @if($valor == 2 or $valor == 4)
         @if(isset($var->photo_product))
         <th style="text-align: center; font-weight: normal;"><img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}"></th>
         @else
