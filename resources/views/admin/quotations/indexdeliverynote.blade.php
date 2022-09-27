@@ -123,7 +123,7 @@
                             <td class="text-center">{{number_format($quotation->amount_anticipo, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
                             
-                            <td class="text-center">{{number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
+                            <td class="text-center">{{number_format(bcdiv($quotation->amount_with_iva,'1',2), 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
                             @if ($quotation->coin == 'bolivares')
                             <td class="text-center font-weight-bold">Bs</td>
