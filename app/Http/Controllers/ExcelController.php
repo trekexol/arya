@@ -11,6 +11,7 @@ use App\Imports\ClientImport;
 use App\Imports\ExpensesImport;
 use App\Imports\InventoryImport;
 use App\Imports\ProductImport;
+use App\Imports\ComboImport;
 use App\Imports\ProductReadImport;
 use App\Imports\ProductUpdatePriceImport;
 use App\Imports\ProviderImport;
@@ -159,16 +160,29 @@ class ExcelController extends Controller
     {
          $products = Product::on(Auth::user()->database_name)
          ->where('status','1')
-         ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
-         'code_comercial','type','description','price','price_buy','money',
-         'exento','islr','special_impuesto as amount')
+         ->where('type','!=','COMBO')
+         ->where('type','!=','SERVICIO')
+         ->select('id as id_combo','id as precio_venta_combo','id as cantidad_producto','id as id_producto','code_comercial','description','price','price_buy')
          ->get();
 
          $global = new GlobalController(); 
 
+         $last_combo = Product::on(Auth::user()->database_name)
+         ->where('status','1')
+         ->where('type','=','COMBO')
+         ->select('id')
+         ->get()->last();
+
+         if (!empty($last_combo)) {
+            $id_last_combo = $last_combo->id + 1; 
+         } else {
+            $id_last_combo = 1;
+         }
+              
+         $cont = 0;
+
          foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
-            
-            $buscar_num = $global->consul_prod_invt($product->id);
+            /*$buscar_num = $global->consul_prod_invt($product->id);
 
             if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
             
@@ -176,15 +190,22 @@ class ExcelController extends Controller
 
             } else {
                 $product->amount = $buscar_num;  
-            }
+            }*/
+            $product->precio_venta_combo = '0';
+            $product->cantidad_producto = '0';
 
-         }
+            if ($cont == 0) {
+            $product->id_combo = $id_last_combo;  
+            } else{
+            $product->id_combo = '';    
+            } 
+
+            $cont++;
+        }  
 
         
          $export = new ExpensesExport([
-             ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
-              ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','moneda_d_o_bs',
-              'exento_1_o_0','islr_1_o_0','cantidad_actual'],
+             ['id_combo','precio_venta_combo','cantidad_producto','id_producto','codigo_comercial','descripcion','precio_producto','precio_compra_prod'],
               $products
         ]);
         
@@ -314,6 +335,20 @@ class ExcelController extends Controller
         $bcv = $global->search_bcv();
         
         return view('admin.products.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
+   }
+
+   public function import_combo(Request $request) 
+   {
+
+      
+
+            $file = $request->file('file');
+            
+            Excel::import(new ComboImport, $file);
+
+            return redirect('combos')->with('success', 'Archivo importado con Exito!');
+
+       
    }
 
    public function import_product_procesar(Request $request) 

@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
+class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
 {
     use Importable;
     /**
@@ -32,10 +32,10 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
             '*.password' => 'required',
         ])->validate();*/
 
-        $buscar_product = Product::on(Auth::user()->database_name)->find($row['id']);
+        $buscar_product = Product::on(Auth::user()->database_name)->find($row['id_producto']);
 
 
-        if (empty($buscar_product) & $row['id'] != '') {
+        if (empty($buscar_product) & $row['id_producto'] != '') {
    /*
             $product = new Product([
                 
@@ -64,8 +64,9 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
             ]);
 */
             $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
-                'id'                    => $row['id'],
-                'segment_id'            => $row['id_segmento'], 
+                'id'                    => 'AUTO',
+                'code_comercial'        =>$row['id_producto']
+                /*'segment_id'            => $row['id_segmento'], 
                 'subsegment_id'         => $row['id_subsegmento'], 
                 'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
                 'threesubsegment_id'    => $row['id_threesubsegment'] ?? null,
@@ -85,19 +86,16 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 'special_impuesto'      => 0,
                 'status'                => 1,
                 'created_at'            => $date,
-                'updated_at'            => $date
+                'updated_at'            => $date */
             ]);       
 
 
             //$product->setConnection(Auth::user()->database_name);
             
-            
+            /*
             $global = new GlobalController; 
             $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
-
-            /*if($product->status == '1'){
-                return $product;
-            }*/
+            */
             
         }
 

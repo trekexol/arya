@@ -836,6 +836,7 @@ class ComposerStaticInit2c83694681964ccf03695d9f4ebd832e
         'App\\Imports\\ExpensesImport' => __DIR__ . '/../..' . '/app/Imports/ExpensesImport.php',
         'App\\Imports\\InventoryImport' => __DIR__ . '/../..' . '/app/Imports/InventoryImport.php',
         'App\\Imports\\ProductImport' => __DIR__ . '/../..' . '/app/Imports/ProductImport.php',
+        'App\\Imports\\ComboImport' => __DIR__ . '/../..' . '/app/Imports/ComboImport.php',
         'App\\Imports\\ProductReadImport' => __DIR__ . '/../..' . '/app/Imports/ProductReadImport.php',
         'App\\Imports\\ProductUpdatePriceImport' => __DIR__ . '/../..' . '/app/Imports/ProductUpdatePriceImport.php',
         'App\\Imports\\ProviderImport' => __DIR__ . '/../..' . '/app/Imports/ProviderImport.php',
