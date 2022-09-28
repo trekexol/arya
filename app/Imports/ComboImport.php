@@ -26,11 +26,7 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
     {
         $user       =   auth()->user();
         $date = Carbon::now();
-        /*Validator::make($rows->toArray(), [
-            '*.name' => 'required',
-            '*.email' => 'required',
-            '*.password' => 'required',
-        ])->validate();*/
+
 
         $buscar_product = Product::on(Auth::user()->database_name)->find($row['id_producto']);
 
@@ -63,6 +59,8 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
                 'updated_at'            => $date,
             ]);
 */
+
+
             $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                 'id'                    => 'AUTO',
                 'code_comercial'        =>$row['id_producto']
@@ -89,9 +87,6 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
                 'updated_at'            => $date */
             ]);       
 
-
-            //$product->setConnection(Auth::user()->database_name);
-            
             /*
             $global = new GlobalController; 
             $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);

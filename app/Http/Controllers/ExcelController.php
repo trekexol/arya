@@ -17,6 +17,7 @@ use App\Imports\ProductUpdatePriceImport;
 use App\Imports\ProviderImport;
 use App\Inventory;
 use App\Product;
+use App\Company;
 use App\Provider;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
@@ -319,6 +320,7 @@ class ExcelController extends Controller
         foreach ($rows[0] as $row) {
             $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
         }
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
         $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();
 
@@ -334,18 +336,16 @@ class ExcelController extends Controller
 
         $bcv = $global->search_bcv();
         
-        return view('admin.products.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
+        return view('admin.products.index',compact('products','total_amount_for_import','contrapartidas','bcv','company'))->with(compact('file'));
    }
 
    public function import_combo(Request $request) 
    {
 
-      
-
             $file = $request->file('file');
             
-            Excel::import(new ComboImport, $file);
-
+            Excel::import(new ProductImport, $file);
+           
             return redirect('combos')->with('success', 'Archivo importado con Exito!');
 
        
