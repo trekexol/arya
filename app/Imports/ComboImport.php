@@ -32,9 +32,18 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
         ->find($row['id_combo']);
 
 
+
         if (empty($buscar_product)) {
             
-            $costo_calculado = 100;
+            $costo_calculado = 0;
+
+            foreach ($row as $row_t) {
+                 
+                if($row['id_combo'] == $row_t['id_combo']) {
+                    $costo_calculado += $row_t['cantidad_producto'] * $row_t['precio_compra_prod'];
+                }
+
+            }
  
              $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                  'id'                    => $row['id_combo'],
@@ -71,7 +80,7 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
             $combo_product = DB::connection(Auth::user()->database_name)->table('combo_products')->insert([
                 'id'                    => 'AUTO', 
                 'id_combo'              => $row['id_combo'],  
-                'id_product'            => $row['id_product'], 
+                'id_product'            => $row['id_producto'], 
                 'amount_per_product'    => $row['cantidad_producto']   
             
             ]); 
