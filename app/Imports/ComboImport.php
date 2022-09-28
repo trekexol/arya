@@ -37,9 +37,11 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
             
             $costo_calculado = 0;
 
+            $id_index = $row['id_combo'];
+
             foreach ($row as $row_t) {
                  
-                if($row['id_combo'] == $row_t['id_combo']) {
+                if($id_index == $row_t['id_combo']) {
                     $costo_calculado += $row_t['cantidad_producto'] * $row_t['precio_compra_prod'];
                 }
 
