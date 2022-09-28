@@ -84,8 +84,8 @@
                   $cont_par = 0;
               }                    
 
-           // $account_two = $details_banks[$rec]->account_description;
-            $account_two = ''; 
+            $account_two = $details_banks[$rec]->account_description;
+            //$account_two = ''; 
 
 
 

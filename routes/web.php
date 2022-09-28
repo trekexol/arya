@@ -1159,6 +1159,9 @@ Route::group(["prefix"=>'export'],function(){
     Route::get('combos','ExcelController@export_combo')->name('export.product_template_combo');
     
     Route::post('productsimport','ExcelController@import_product')->name('import_product');
+    
+    Route::post('comboimport','ExcelController@import_combo')->name('import_combo');
+
     Route::post('productsimportprocess','ExcelController@import_product_procesar')->name('import_product_procesar');
 
     Route::get('clients','ExcelController@export_client')->name('export.client_template');

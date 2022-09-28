@@ -224,6 +224,7 @@ return array(
     'App\\Imports\\ExpensesImport' => $baseDir . '/app/Imports/ExpensesImport.php',
     'App\\Imports\\InventoryImport' => $baseDir . '/app/Imports/InventoryImport.php',
     'App\\Imports\\ProductImport' => $baseDir . '/app/Imports/ProductImport.php',
+    'App\\Imports\\ComboImport' => $baseDir . '/app/Imports/ComboImport.php',
     'App\\Imports\\ProductReadImport' => $baseDir . '/app/Imports/ProductReadImport.php',
     'App\\Imports\\ProductUpdatePriceImport' => $baseDir . '/app/Imports/ProductUpdatePriceImport.php',
     'App\\Imports\\ProviderImport' => $baseDir . '/app/Imports/ProviderImport.php',

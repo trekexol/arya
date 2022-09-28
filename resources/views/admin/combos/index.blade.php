@@ -33,7 +33,7 @@
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
               <h6>Importación Masiva de Combos</h6>
               <a href="{{ route('export.product_template_combo') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Excel</a> 
-              <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
+              <form id="fileForm" method="POST" action="{{ route('import_combo') }}" enctype="multipart/form-data" >
                 @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
               </form>
@@ -159,5 +159,73 @@
     
             $('#id_combo_modal').val(id_combo);
         });
+
+        $("#file").on('change',function(){
+            
+            var file = document.getElementById("file").value;
+
+            /*Extrae la extencion del archivo*/
+            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
+                                               // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
+
+            if (basename === "" || pos < 1) {
+                alert("El archivo no tiene extension");
+            }          
+            /*-------------------------------*/     
+
+            if(basename.slice(pos + 1) == 'xlsx'){
+                
+            }else{
+                alert("Solo puede cargar archivos .xlsx");
+            }            
+               
+        });
+
+        function import_product(){
+            document.getElementById("fileForm").submit();
+        }
+
+        /*function import_product_update_price(){
+            document.getElementById("fileForm").action = "{{ route('import_product_update_price') }}";
+            document.getElementById("fileForm").submit();
+        }*/
+
+        function loadimg (url){
+        
+                const domString = url
+                //console.log(domString)
+                var ctx = canvas.getContext('2d')
+                var img = new Image()
+                img.src = domString
+                img.onload = function(){
+                document.getElementById('myImage').setAttribute('src',domString)
+                }
+        }
+
+        $("#file_form").on('change',function(){
+            
+            var file = document.getElementById("file_form").value;
+
+            /*Extrae la extencion del archivo*/
+            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
+                                               // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
+
+            if (basename === "" || pos < 1) {
+                alert("El archivo no tiene extension");
+            }          
+            /*-------------------------------*/     
+
+            if(basename.slice(pos + 1) == 'xlsx'){
+              
+            }else{
+                alert("Solo puede cargar archivos .xlsx");
+            }            
+               
+        });
+
+
+
         </script> 
 @endsection
