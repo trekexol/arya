@@ -163,14 +163,13 @@ class ExcelController extends Controller
          ->where('status','1')
          ->where('type','!=','COMBO')
          ->where('type','!=','SERVICIO')
-         ->select('id as id_combo','id as precio_venta_combo','id as cantidad_producto','id as id_producto','code_comercial','description','price','price_buy')
+         ->select('id as id_combo','id as nombre_combo','id as codigo_comercial_combo','id as precio_venta_combo','id as cantidad_producto','id as id_producto','code_comercial','description','price','price_buy')
          ->get();
 
          $global = new GlobalController(); 
 
          $last_combo = Product::on(Auth::user()->database_name)
          ->where('status','1')
-         ->where('type','=','COMBO')
          ->select('id')
          ->get()->last();
 
@@ -194,6 +193,8 @@ class ExcelController extends Controller
             }*/
             $product->precio_venta_combo = '0';
             $product->cantidad_producto = '0';
+            $product->nombre_combo = '';
+            $product->codigo_comercial_combo = '';
 
             if ($cont == 0) {
             $product->id_combo = $id_last_combo;  
@@ -206,7 +207,7 @@ class ExcelController extends Controller
 
         
          $export = new ExpensesExport([
-             ['id_combo','precio_venta_combo','cantidad_producto','id_producto','codigo_comercial','descripcion','precio_producto','precio_compra_prod'],
+             ['id_combo','nombre_combo','codigo_comercial_combo','precio_venta_combo','cantidad_producto','id_producto','codigo_comercial','descripcion','precio_producto','precio_compra_prod'],
               $products
         ]);
         
@@ -343,10 +344,17 @@ class ExcelController extends Controller
    {
 
             $file = $request->file('file');
-            
-            Excel::import(new ProductImport, $file);
-           
-            return redirect('combos')->with('success', 'Archivo importado con Exito!');
+
+                if (isset($file)) {
+                
+                    Excel::import(new ComboImport, $file);
+                
+                    return redirect('combos')->with('success', 'Archivo importado con Exito!');
+                } else {
+
+                    return redirect('combos')->with('success', 'Subir el Archivo Excel!');;   
+                }
+
 
        
    }

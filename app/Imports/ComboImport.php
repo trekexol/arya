@@ -27,72 +27,56 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
         $user       =   auth()->user();
         $date = Carbon::now();
 
-
-        $buscar_product = Product::on(Auth::user()->database_name)->find($row['id_producto']);
-
-
-        if (empty($buscar_product) & $row['id_producto'] != '') {
-   /*
-            $product = new Product([
-                
-                'id'                    => $row['id'],
-                'segment_id'            => $row['id_segmento'], 
-                'subsegment_id'         => $row['id_subsegmento'], 
-                'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
-                'threesubsegment_id'    => $row['id_threesubsegment'] ?? null, 
-                'id_account'            => null,
-                'unit_of_measure_id'    => $row['id_unidadmedida'], 
-                'code_comercial'        => $row['codigo_comercial'], 
-                'type'                  => $row['tipo_mercancia_o_servicio'], 
-                'description'           => $row['descripcion'], 
-                'price'                 => $row['precio'], 
-                'price_buy'             => $row['precio_compra'], 
-                'cost_average'          => 0, 
-                'photo_product'         => null, 
-                'money'                 => $row['moneda_d_o_bs'], 
-                'exento'                => $row['exento_1_o_0'], 
-                'islr'                  => $row['islr_1_o_0'], 
-                'id_user'               => $user->id,
-                'special_impuesto'      => 0,
-                'status'                => 1,
-                'created_at'            => $date,
-                'updated_at'            => $date,
-            ]);
-*/
+        $buscar_product = Product::on(Auth::user()->database_name)
+        ->where('type','COMBO')
+        ->find($row['id_combo']);
 
 
-            $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
-                'id'                    => 'AUTO',
-                'code_comercial'        =>$row['id_producto']
-                /*'segment_id'            => $row['id_segmento'], 
-                'subsegment_id'         => $row['id_subsegmento'], 
-                'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
-                'threesubsegment_id'    => $row['id_threesubsegment'] ?? null,
-                'id_account'            => null,
-                'unit_of_measure_id'    => $row['id_unidadmedida'], 
-                'code_comercial'        => $row['codigo_comercial'], 
-                'type'                  => $row['tipo_mercancia_o_servicio'], 
-                'description'           => $row['descripcion'], 
-                'price'                 => $row['precio'], 
-                'price_buy'             => $row['precio_compra'], 
-                'cost_average'          => 0, 
-                'photo_product'         => null, 
-                'money'                 => $row['moneda_d_o_bs'], 
-                'exento'                => $row['exento_1_o_0'], 
-                'islr'                  => $row['islr_1_o_0'], 
-                'id_user'               => $user->id,
-                'special_impuesto'      => 0,
-                'status'                => 1,
-                'created_at'            => $date,
-                'updated_at'            => $date */
-            ]);       
-
-            /*
-            $global = new GlobalController; 
-            $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
-            */
+        if (empty($buscar_product)) {
             
+            $costo_calculado = 100;
+ 
+             $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
+                 'id'                    => $row['id_combo'],
+                 'segment_id'            => 1, 
+                 'subsegment_id'         => null, 
+                 'twosubsegment_id'      => null, 
+                 'threesubsegment_id'    => null,
+                 'id_account'            => null,
+                 'unit_of_measure_id'    => 1, 
+                 'code_comercial'        => $row['codigo_comercial_combo'], 
+                 'type'                  => 'COMBO', 
+                 'description'           => $row['nombre_combo'], 
+                 'price'                 => $row['precio_venta_combo'], 
+                 'price_buy'             => $costo_calculado, 
+                 'cost_average'          => 0, 
+                 'photo_product'         => null, 
+                 'money'                 => 'D', 
+                 'exento'                => 0, 
+                 'islr'                  => 0, 
+                 'id_user'               => $user->id,
+                 'special_impuesto'      => 0,
+                 'status'                => 1,
+                 'created_at'            => $date,
+                 'updated_at'            => $date
+             ]);       
+             /*
+             $global = new GlobalController; 
+             $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
+             */
         }
+
+        if ($row['id_combo'] && $row['id_producto'] != '') {
+
+            $combo_product = DB::connection(Auth::user()->database_name)->table('combo_products')->insert([
+                'id'                    => 'AUTO', 
+                'id_combo'              => $row['id_combo'],  
+                'id_product'            => $row['id_product'], 
+                'amount_per_product'    => $row['cantidad_producto']   
+            
+            ]); 
+        }
+
 
          return;
     }
