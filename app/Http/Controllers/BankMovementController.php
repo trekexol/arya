@@ -1864,7 +1864,7 @@ public function importmovimientos(Request $request){
         dd('si');
 
     }else{
-        dd('no');
+        return response()->json(false,500);
     }
 
   
