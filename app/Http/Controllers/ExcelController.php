@@ -350,21 +350,46 @@ class ExcelController extends Controller
 
                 if (isset($file)) {
                 
-                    $costo_calculado = 0;
+                    $costo_calculado = '';
 
-                    Excel::import(new ComboImport, $file);
+                    //Excel::import(new ComboImport, $file);
              
                     $rows = Excel::toArray(new ProductReadImport, $file);
 
-                    foreach ($rows[0] as $row_t) {
-                 
-                        if($rows[0] == $row_t['id_combo']) {
-                            $costo_calculado += $row_t['cantidad_producto'] * $row_t['precio_compra_prod'];
+
+
+                    foreach ($rows[0] as $row) {
+                        
+                        if ($row['id_producto'] != ''){
+                            $products = Product::on(Auth::user()->database_name)
+                            ->select('price','price_buy','money')
+                            ->find($row['id_producto']);
+                       
+                            $precio_compra = $products->price_buy;
+                       
+                        } else {
+                            $precio_compra = 0;
                         }
-        
+              
+
+
+                        $a_filas[] = array($row['id_combo'],$row['id_producto'],$row['cantidad_producto'],$precio_compra,0);    
+                        
                     }
 
-                    dd($costo_calculado);
+                    for ($q=0;$q<count($a_filas);$q++) {
+
+                        for ($k=$q+1; $k<count($a_filas);$k++) {
+                            if ($a_filas[$q][0] == $a_filas[$k][0]) {
+                              $a_filas[$q][4] = $a_filas[$q][2]*$a_filas[$k][4];
+                              $a_filas[$k][4]=0; 
+                            }
+                
+                        }
+                    }
+
+
+                    dd($a_filas);
 
                     return redirect('combos')->with('success', 'Archivo importado con Exito!');
                 } else {

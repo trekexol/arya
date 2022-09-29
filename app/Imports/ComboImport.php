@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+
 class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
 {
     use Importable;
@@ -27,6 +28,7 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
         $user       =   auth()->user();
         $date = Carbon::now();
 
+        
         $buscar_product = Product::on(Auth::user()->database_name)
         ->where('type','COMBO')
         ->find($row['id_combo']);
