@@ -37,15 +37,7 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
             
             $costo_calculado = 0;
 
-            $id_index = $row['id_combo'];
 
-            foreach ($row as $row_t) {
-                 
-                if($id_index == $row_t['id_combo']) {
-                    $costo_calculado += $row_t['cantidad_producto'] * $row_t['precio_compra_prod'];
-                }
-
-            }
  
              $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                  'id'                    => $row['id_combo'],

@@ -96,13 +96,13 @@
           </button>
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
               <h6>Importación Masiva Productos e Inventario</h6>
-              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Excel</a> 
+              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
               <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
                 @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
               </form>
               <br>
-              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Excel</a> 
+              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</a> 
              <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
           </div> 
       </div> 
@@ -120,6 +120,83 @@
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
 
+ 
+  <div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cálculo del Costo de Inventario. Vuelva a elegir el archivo para confirmar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
+                        @csrf
+                        <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
+                                    
+                        <div class="form-group row">
+                            <div class="offset-sm-1">
+                                <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="contrapartida" class="col-sm-12 col-form-label text-md-center">El Total del costo a Cargar es: {{number_format($total_amount_for_import ?? 0, 2, ',', '.')}}</label>
+                        </div>
+                           <div class="form-group row">
+                                <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
+                                <div class="col-sm-6">
+                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                                    @error('rate')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                    @if (isset($contrapartidas))      
+                                    <label for="contrapartida" class="col-sm-4 col-form-label text-md-right">Contrapartida/Cargo:</label>
+                                
+                                    <div class="col-sm-4">
+                                    <select id="contrapartida"  name="contrapartida" class="form-control">
+                                        <option value="">Seleccionar</option>
+                                        @foreach($contrapartidas as $index => $value)
+                                            <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endforeach
+                                        </select>
+
+                                        @if ($errors->has('contrapartida_id'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('contrapartida_id') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @endif
+                                    <div class="col-sm-4">
+                                        <select  id="subcontrapartida"  name="Subcontrapartida" class="form-control">
+                                            <option value="">Seleccionar</option>
+                                        </select>
+
+                                        @if ($errors->has('subcontrapartida_id'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('subcontrapartida_id') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                            </div>  
+            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-info">Aceptar</button>
+                        </div>
+             </form>
+        </div>
+    </div>
+</div>
 
   <!-- DataTales Example -->
 <div class="card shadow mb-4">
@@ -263,91 +340,18 @@
     </div>
   </div>
 
-<div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Movimiento Contable</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
-                @csrf
-                <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
-                            
-                <div class="form-group row">
-                    <div class="offset-sm-1">
-                        <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="contrapartida" class="col-sm-12 col-form-label text-md-center">La carga de estos productos es de: {{number_format($total_amount_for_import ?? 0, 2, ',', '.')}}</label>
-                </div>
-                <div class="form-group row">
-                    <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
-                    <div class="col-sm-6">
-                        <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
-                        @error('rate')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="form-group row">
-                    @if (isset($contrapartidas))      
-                    <label for="contrapartida" class="col-sm-4 col-form-label text-md-right">Contrapartida:</label>
-                
-                    <div class="col-sm-4">
-                    <select id="contrapartida"  name="contrapartida" class="form-control">
-                        <option value="">Seleccionar</option>
-                        @foreach($contrapartidas as $index => $value)
-                            <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
-                                {{ $value }}
-                            </option>
-                        @endforeach
-                        </select>
 
-                        @if ($errors->has('contrapartida_id'))
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $errors->first('contrapartida_id') }}</strong>
-                            </span>
-                        @endif
-                    </div>
-                    @endif
-                    <div class="col-sm-4">
-                            <select  id="subcontrapartida"  name="Subcontrapartida" class="form-control">
-                                <option value="">Seleccionar</option>
-                            </select>
-
-                            @if ($errors->has('subcontrapartida_id'))
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('subcontrapartida_id') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                </div>  
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-info">Aceptar</button>
-            </div>
-            </form>
-        </div>
-    </div>
-  </div>
-  
 @endsection
 
 @section('javascript')
 
 
     <script>
-        if("{{isset($total_amount_for_import)}}"){
+        /*if("{{isset($total_amount_for_import)}}"){*/
             $('#movementModal').modal('show');
-        }
+          /* $('#movementModal').show();
+
+        /*}*/
         
     </script>
      <script>
