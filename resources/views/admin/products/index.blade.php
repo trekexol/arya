@@ -347,11 +347,11 @@
 
 
     <script>
-        /*if("{{isset($total_amount_for_import)}}"){*/
+        if("{{isset($total_amount_for_import)}}"){
             $('#movementModal').modal('show');
-          /* $('#movementModal').show();
+          /* $('#movementModal').show();*/
 
-        /*}*/
+        }
         
     </script>
      <script>
