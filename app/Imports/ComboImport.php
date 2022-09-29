@@ -72,7 +72,6 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
         if ($row['id_combo'] && $row['id_producto'] != '') {
 
             $combo_product = DB::connection(Auth::user()->database_name)->table('combo_products')->insert([
-                'id'                    => 'AUTO', 
                 'id_combo'              => $row['id_combo'],  
                 'id_product'            => $row['id_producto'], 
                 'amount_per_product'    => $row['cantidad_producto']   
