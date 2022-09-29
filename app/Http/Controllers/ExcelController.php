@@ -312,15 +312,18 @@ class ExcelController extends Controller
 
    public function import_product(Request $request) 
    {
+        $total_amount_for_import = 0;
         $file = $request->file('file');
 
+    
+
         $rows = Excel::toArray(new ProductReadImport, $file);
-      
-        $total_amount_for_import = 0;
        
         foreach ($rows[0] as $row) {
             $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
         }
+
+
         $company = Company::on(Auth::user()->database_name)->find(1);
 
         $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();
@@ -347,12 +350,26 @@ class ExcelController extends Controller
 
                 if (isset($file)) {
                 
+                    $costo_calculado = 0;
+
                     Excel::import(new ComboImport, $file);
-                
+             
+                    $rows = Excel::toArray(new ProductReadImport, $file);
+
+                    foreach ($rows[0] as $row_t) {
+                 
+                        if($rows[0] == $row_t['id_combo']) {
+                            $costo_calculado += $row_t['cantidad_producto'] * $row_t['precio_compra_prod'];
+                        }
+        
+                    }
+
+                    dd($costo_calculado);
+
                     return redirect('combos')->with('success', 'Archivo importado con Exito!');
                 } else {
 
-                    return redirect('combos')->with('success', 'Subir el Archivo Excel!');;   
+                     return redirect('combos')->with('success', 'Subir el Archivo Excel!');;   
                 }
 
 
