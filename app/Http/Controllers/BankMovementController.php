@@ -17,12 +17,15 @@ use App\Segment;
 use App\Subsegment;
 use App\UnitOfMeasure;
 use App\Vendor;
+use App\TempMovimientos;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TempMovimientosImport;
+use App\Quotation;
+use Illuminate\Support\Facades\View;
 
 
 
@@ -82,13 +85,26 @@ class BankMovementController extends Controller
                             ->orderBy('header_vouchers.id','desc')
                             ->get();
 
-        //dd($detailvouchers);
+      
         $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
+
+
+             /********MOVIMIENTOS MASIVOS ********/               
+        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)->orderBy('banco','asc')->get();
+        $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+                                            ->where('date_billing','<>',null)
+                                            ->where('number_invoice','<>',null)
+                                            ->where('status','=','P')
+                                            ->get();
+        
+    
+                                            /********* *******/
+                          
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
 
-        return view('admin.bankmovements.indexmovement',compact('eliminarmiddleware','detailvouchers','accounts','datenow'));
+        return view('admin.bankmovements.indexmovement',compact('movimientosmasivos','eliminarmiddleware','detailvouchers','accounts','datenow','quotations'));
 
        
    }
@@ -1834,12 +1850,121 @@ class BankMovementController extends Controller
 
 
 public function importmovimientos(Request $request){
+  
+    if($request->ajax()){
+        try{
+
     $banco = $request->banco;
     $file = $request->file('file');
+    $extension = $request->file('file')->extension();
 
-    Excel::import(new TempMovimientosImport($banco), $file);
+
+
+    if(($banco == '1' OR $banco == '2') AND $extension == 'xlsx'){
+        dd('si');
+
+    }else{
+        dd('no');
+    }
+
+  
+
+
+   Excel::import(new TempMovimientosImport($banco), $file);
+            
+            
+
+           
+                
+                
+               
+
+           
+
+                
+
+        }catch(\error $error){
+            return response()->json(false,500);
+        }
+    }
+  
+  
+  
+  
+  
+ 
 
 }
 
+
+
+public function facturasmovimientos(Request $request){
+    
+    $data = explode('/',$request->value);
+
+    $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+    ->where('date_billing','<>',null)
+    ->where('number_invoice','<>',null)
+    ->where('status','=','P')
+    ->where('amount_with_iva','=',$data[0])
+    ->get();
+
+    $valormovimiento = $data[0];
+    $idmovimiento = $data[1];
+
+    return View::make('admin.bankmovements.tablafactura',compact('quotations','valormovimiento','idmovimiento'))->render();
+
+
+}
+
+
+
+public function procesarfact(Request $request){
+    
+    if($request->ajax()){
+        try{
+
+            /**********VERIFICO QUE LA FACTURA EXITE Y QUE EL MOVIMIENTO Y 
+             MONTOS SEAN EXACTAMENTE IGUALES CON SUS RESPECTIVOS ID *****/
+
+
+            $quotations = Quotation::on(Auth::user()->database_name)
+            ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
+            ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
+            ->where('date_billing','<>',null)
+            ->where('number_invoice','=',$request->nrofactura)
+            ->where('status','=','P')
+            ->where('amount_with_iva','=',$request->montoiva)
+            ->where('id','=',$request->id)->first();
+       
+            
+           
+            if($quotations){
+             
+                $quotations->status = 'C';
+                $quotations->save();
+                return response()->json(true,200);
+                
+            }else{
+
+                return response()->json(false,500); 
+            }
+            
+            
+
+           
+                
+                
+               
+
+           
+
+                
+
+        }catch(\error $error){
+            return response()->json(false,500);
+        }
+    }
+}
 
 }

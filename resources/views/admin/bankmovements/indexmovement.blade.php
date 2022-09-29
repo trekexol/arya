@@ -1,7 +1,11 @@
 @extends('admin.layouts.dashboard')
 
 @section('content')
+<style>
+.error{ color: red; font-size: 1em;  }
+label.error{ color: red; font-size: 1em; }
 
+</style>
 
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -32,6 +36,7 @@
         <div class="col-md-2">
             <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
         </div>
+ 
     </div>
 </div>
 <br>
@@ -39,11 +44,21 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Listado de Movimientos de Caja y Bancos</div>
+                <nav>
+                    <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                        <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Movimientos de Caja y Bancos</a>
+                        <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Movimientos Carga Masiva</a>
+                    </div>
+                    </nav>
 
                 <div class="card-body">
                         <div class="table-responsive">
-                        <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+              
+            <!-- INICIO DE UNA SECCION DE MOVIMIENTOS -->
+                <div class="tab-content" id="nav-tabContent">  
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <table class="table table-light2 table-bordered dataTableclass"  width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th class="text-center">Fecha</th>
@@ -88,7 +103,65 @@
                                 @endif
                             </tbody>
                         </table>
-                        </div>
+                    </div>
+                
+               
+                <!-- FIN DE UNA SECCION DE MOVIMIENTOS -->    
+
+                <!-- INICIO DE UNA SECCION DE MOVIMIENTOS MASIVOS -->  
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <table class="table table-light2 table-bordered dataTableclass" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Fecha</th>
+                                    <th class="text-center">Referencia</th>
+                                    <th class="text-center">Banco</th>
+                                    <th class="text-center">Descripcion</th>
+                                    <th class="text-center">Haber</th>
+                                    <th class="text-center">Debe</th>
+                                    <th class="text-center">Accion</th>
+                                </tr>
+                                </thead>
+                                
+                                <tbody>
+                                    @if (!empty($movimientosmasivos))
+                                 
+                                        @foreach ($movimientosmasivos as $var)
+                                        <tr>
+                                        <td>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</td>
+                                        <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
+                                        <td>{{$var->banco ?? ''}}</td>
+                                        <td>{{$var->descripcion ?? ''}}</td>
+                                     
+                                       
+                                        <td>{{ $var->haber}}</td>
+                                        <td>{{ $var->debe}}</td>
+
+
+
+
+                                        <td>
+                                            @if (!empty($quotations))
+                                                @foreach($quotations as $quotation)
+                                                    @if($var->debe == $quotation->amount_with_iva)
+
+                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos}}">Match</span>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                            
+                                        </td>  
+                                        
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                </div>
+
+                <!-- FIN DE UNA SECCION DE MOVIMIENTOS MASIVOS --> 
+                </div>            
+            </div>
     </div>
 </div>
 </div>
@@ -254,24 +327,28 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="fileForm" method="POST" action="{{ route('importmovimientos') }}" enctype="multipart/form-data" >
+                <form id="fileForms" enctype="multipart/form-data" >
                     @csrf
                     <div class="form-group col-md-8">
                         <label for="inputState">Banco</label>
-                        <select id="inputState" class="form-control" name="banco" id="banco">
-                          <option value='0'>Seleccione..</option>
-                          <option value='1'>Bancamiga</option>
-                          <option value='2'>Banesco</option>
-                          <option value='3'>Mercantil</option>
-                          <option value='4'>Chase</option>
-                          <option value='5'>BOFA</option>
+                        <select class="form-control" name="banco" id="banco">
+                          <option value="">Seleccione..</option>
+                          <option value="1">Bancamiga</option>
+                          <option value="2">Banesco</option>
+                          <option value="3">Mercantil</option>
+                          <option value="4">Chase</option>
+                          <option value="5">BOFA</option>
                         </select>
+
+                        
                       </div>
+                    <div id="muestrasbanco"></div>
 
                       <div class="form-group col-md-12">
-                        <input id="file" type="file" value="import" name="file" class="form-control-file" accept=".xls">
-
+                        <input required id="file" type="file" value="import" name="file" class="form-control-file" accept=".xlsx, .csv, .txt">
+                        
                       </div>
+                      <div id="muestrasfile" ></div>
                
             </div>
             <div class="modal-footer">
@@ -282,13 +359,166 @@
         </div>
     </div>
   </div>
+
+
+
+
+
+  <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Facturas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalfacturas">
+            </div> 
+        </div>
+    </div>
+  </div>
+
+
 @endsection
 @section('javascript')
-    <script>
-    $('#dataTable').DataTable({
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <script type="text/javascript">
+
+
+
+$(document).ready(function(){
+
+
+
+/*********************************VALIDADOR DE FORMULARIO************************************/
+$("#fileForms").validate({
+  
+        rules: {
+            banco: "required",
+            file: "required",
+
+        },
+
+        messages:{
+            banco: "Seleccione un Banco",
+            file: "Agregue un Archivo",
+
+
+        },
+     
+       
+/*MODIFICANDO PARA MOSTRAR LA ALERTA EN EL LUGAR QUE DESEO CON UN DIV*/
+    errorPlacement: function(error, element) {
+
+        if(element.attr("name") == "banco") {
+        
+   
+        $("#muestrasbanco").append(error);
+     
+
+
+        }
+
+        if(element.attr("name") == "file") {
+
+ 
+        $("#muestrasfile").append(error);
+
+
+        
+
+        }
+
+        },
+
+        submitHandler: function (form) {
+
+           
+
+            $.ajax({
+            type: "post",
+            url: "{{ route('importmovimientos') }}",
+            dataType: "json",
+            data: new FormData( form ),
+            processData: false,
+            contentType: false,
+            success:(response)=>{
+             
+             if(response == true){
+                Swal.fire({
+                        icon: 'success',
+                        title: 'Exito!',
+                        text: 'Archivo cargado con exito!',
+                
+                
+                        })
+             }else{
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error a Procesar Archivo!',
+                        })
+             }
+            
+         
+            
+         
+         },
+         error:(xhr)=>{
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Error...',
+                    text: 'Error a Procesar!',
+                    });
+         }
+            });
+
+
+
+            return false; // required to block normal submit since you used ajax
+        }
+    }); ///fin $("#registro").validate({
+
+ /******************/
+
+
+
+
+$('[name="matchvalue"]').click(function(e){
+    e.preventDefault();
+   var value = $(this).data('id');
+
+    
+   var url = "{{ route('facturasmovimientos') }}";
+
+ $.post(url,{value: value,"_token": "{{ csrf_token() }}",},function(data){
+        $("#modalfacturas").empty().append(data);
+   
+      });
+
+
+
+ });
+
+ });
+
+
+
+
+    $('.dataTableclass').DataTable({
         "ordering": false,
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+
+
+
+
+
+
     </script> 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @endsection

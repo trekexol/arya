@@ -549,6 +549,13 @@ Route::group(["prefix"=>'bankmovements'],function(){
      Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
 
     Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
+
+
+
+    Route::post('facturasmovimientos','BankMovementController@facturasmovimientos')->name('facturasmovimientos');
+    Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
+
+
 });
 
 Route::group(["prefix"=>'nominas'],function(){

@@ -126,7 +126,7 @@ class ModulosController extends Controller
                         $var->$tipo  = $request->valor;
                        $var->save();
 
-                        
+                   
                         return response()->json(true,200);
 
                         }else{
