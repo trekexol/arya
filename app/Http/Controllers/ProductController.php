@@ -36,7 +36,6 @@ class ProductController extends Controller
 
         $products = Product::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('status','DESC')->orderBy('id' ,'DESC')->get();
 
-
        return view('admin.products.index',compact('products','company'));
    }
 

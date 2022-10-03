@@ -81,16 +81,115 @@
     </li>
     
   </ul>
-<div class="container-fluid">
 
+
+  <div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cálculo del Costo de Inventario. Vuelva a elegir el archivo para confirmar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
+                        @csrf
+                        <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
+                                    
+                        <div class="form-group row">
+                            <div class="offset-sm-1">
+                                <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="contrapartida" class="col-sm-12 col-form-label text-md-center">El Total del costo a Cargar es: {{number_format($total_amount_for_import ?? 0, 2, ',', '.')}}</label>
+                        </div>
+                           <div class="form-group row">
+                                <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
+                                <div class="col-sm-6">
+                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                                    @error('rate')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                    @if (isset($contrapartidas))      
+                                    <label for="contrapartida" class="col-sm-4 col-form-label text-md-right">Contrapartida/Cargo:</label>
+                                
+                                    <div class="col-sm-4">
+                                    <select id="contrapartida"  name="contrapartida" class="form-control">
+                                        <option value="">Seleccionar</option>
+                                        @foreach($contrapartidas as $index => $value)
+                                            <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endforeach
+                                        </select>
+
+                                        @if ($errors->has('contrapartida_id'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('contrapartida_id') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @endif
+                                    <div class="col-sm-4">
+                                        <select  id="subcontrapartida"  name="Subcontrapartida" class="form-control">
+                                            <option value="">Seleccionar</option>
+                                        </select>
+
+                                        @if ($errors->has('subcontrapartida_id'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('subcontrapartida_id') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                            </div>  
+            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-info">Aceptar</button>
+                        </div>
+             </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
     <!-- Page Heading -->
     <div class="row py-lg-2">
-       
+        <div class="col-sm-2 offset-sm-2  dropdown mb-2">
+            <button class="btn btn-dark" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                aria-expanded="false">
+                <i class="fas fa-bars"></i>
+                Opciones 
+            </button>
+            <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
+                <h6>Importación Masiva Productos e Inventario</h6>
+                <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
+                <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
+                  @csrf
+                  <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+                </form>
+                <br>
+                <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</a> 
+               <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
+            </div> 
+        </div> 
+    <!-- Page Heading -->
+
         <div class="col-md-4">
             <a href="{{ route('products.create')}}" class="btn btn-info  float-md-center"  role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
           </div>
        
-        <div class="col-md-2 dropdown mb-4">
+        <div class="col-md-3 dropdown mb-3">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
                 Imprimir
@@ -105,9 +204,8 @@
             <div class="col-md-6">
                 <a href="{{ ''/*route('inventories.select')*/}}" class="btn btn-success  float-md-right " role="button" aria-pressed="true">Registrar un Inventario</a>
               </div>  -->
-    </div>
-  </div>
-
+            </div>
+ </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
   @include('admin.layouts.success')   {{-- SAVE --}}
@@ -221,8 +319,45 @@
                 var nuevaVentanainventory = window.open("{{ route('pdf.inventory')}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
         
             }
-     
-            function loadimg (url){
+
+        $('#dataTable').DataTable({
+            "ordering": true,
+            "order": [],
+            'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        });
+
+        $("#file").on('change',function(){
+            
+            var file = document.getElementById("file").value;
+
+            /*Extrae la extencion del archivo*/
+            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
+                                               // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
+
+            if (basename === "" || pos < 1) {
+                alert("El archivo no tiene extension");
+            }          
+            /*-------------------------------*/     
+
+            if(basename.slice(pos + 1) == 'xlsx'){
+                
+            }else{
+                alert("Solo puede cargar archivos .xlsx");
+            }            
+               
+        });
+
+        function import_product(){
+            document.getElementById("fileForm").submit();
+        }
+
+        function import_product_update_price(){
+            document.getElementById("fileForm").action = "{{ route('import_product_update_price') }}";
+            document.getElementById("fileForm").submit();
+        }
+
+        function loadimg (url){
         
                 const domString = url
                 //console.log(domString)
@@ -232,14 +367,75 @@
                 img.onload = function(){
                 document.getElementById('myImage').setAttribute('src',domString)
                 }
+        }
 
-            }
-        $('#dataTable').DataTable({
-            "ordering": true,
-            "order": [],
-            'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        $("#file_form").on('change',function(){
+            
+            var file = document.getElementById("file_form").value;
+
+            /*Extrae la extencion del archivo*/
+            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
+                                               // (supports `\\` and `/` separators)
+            pos = basename.lastIndexOf(".");       // get last position of `.`
+
+            if (basename === "" || pos < 1) {
+                alert("El archivo no tiene extension");
+            }          
+            /*-------------------------------*/     
+
+            if(basename.slice(pos + 1) == 'xlsx'){
+              
+            }else{
+                alert("Solo puede cargar archivos .xlsx");
+            }            
+               
         });
 
+
+        $("#contrapartida").on('change',function(){
+            var contrapartida_id = $(this).val();
+            $("#subcontrapartida").val("");
+            
+            getSubcontrapartida(contrapartida_id);
+        });
+
+        function getSubcontrapartida(contrapartida_id){
+            
+            $.ajax({
+                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let subcontrapartida = $("#subcontrapartida");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                        });
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    subcontrapartida.html('');
+                    subcontrapartida.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
+
+        $("#subcontrapartida").on('change',function(){
+                var subcontrapartida_id = $(this).val();
+                var contrapartida_id    = document.getElementById("contrapartida").value;
+                
+            });
 
         </script> 
 @endsection
