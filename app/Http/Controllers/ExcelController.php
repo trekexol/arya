@@ -404,7 +404,7 @@ class ExcelController extends Controller
                 
                     $costo_calculado = '';
 
-                    //Excel::import(new ComboImport, $file);
+                    Excel::import(new ComboImport, $file);
              
                     $rows = Excel::toArray(new ProductReadImport, $file);
 

@@ -95,7 +95,8 @@
               Opciones 
           </button>
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-              <h6>Importar Productos Masivamente </h6>
+              <h6>Importar Productos Masivamente</h6>
+              <h6>(Sin Inventario)</h6>
               <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla de Productos</a> 
               <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
                 @csrf
