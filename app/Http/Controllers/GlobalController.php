@@ -622,7 +622,7 @@ class GlobalController extends Controller
 
         if($company->date_consult_bcv != $datenow){
            
-                $url = "http://www.bcv.org.ve/bcv/contactos";
+                $url = "https://www.bcv.org.ve/bcv/contactos";
             
                 $ch = curl_init( $url );
                 // Establecer un tiempo de espera
@@ -650,7 +650,7 @@ class GlobalController extends Controller
                     $urlexists = false;
                 }
                 if ($urlexists == true) { // condicion para validar consulta 
-                    $crawler = $clientg->request('GET', 'http://www.bcv.org.ve/bcv/contactos');
+                    $crawler = $clientg->request('GET', 'https://www.bcv.org.ve/bcv/contactos');
                 } else {
                     $crawler = '';   
                 }

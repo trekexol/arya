@@ -376,10 +376,11 @@ class ExcelController extends Controller
                     return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA');
                    }
 
-
+                   Excel::import(new ProductImport, $file);
+                   
                 } 
 
-                Excel::import(new ProductImport, $file);
+
 
                 return redirect('products')
                 ->with('success', 'Archivo importado con Exito!');
@@ -449,6 +450,7 @@ class ExcelController extends Controller
                     }
 
                     return redirect('combos')->with('success', 'Archivo importado con Exito!');
+
                 } else {
 
                      return redirect('combos')->with('success', 'Subir el Archivo Excel!');;   
