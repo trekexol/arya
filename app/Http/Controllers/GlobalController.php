@@ -620,7 +620,7 @@ class GlobalController extends Controller
         $datenow = $date->format('Y-m-d');    
         $clientg = new Clientg();
 
-        if($company->date_consult_bcv != $datenow){
+        //if($company->date_consult_bcv != $datenow){
            
                 $url = "https://www.bcv.org.ve/bcv/contactos";
             
@@ -668,7 +668,10 @@ class GlobalController extends Controller
                    $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza
                    $companies->rate_bcv = $bcv;
                    $companies->date_consult_bcv = $datenow;
+                  
+                   if($company->date_consult_bcv != $datenow){
                    $companies->save();
+                   }
 
                } else {
                    $bcv = $company->rate_bcv; 
@@ -681,7 +684,7 @@ class GlobalController extends Controller
             /*-------------------------- */
             return bcdiv($bcv, '1', 2);
 
-        }else{
+        /*} else{
             
             if($company->tiporate_id == 1){
                 if($company->rate_bcv != 0){
@@ -696,7 +699,7 @@ class GlobalController extends Controller
                     return 1;
                 }
             }
-        }
+        }*/
     }
 
     public function data_last_month_day() { 
