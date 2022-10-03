@@ -261,13 +261,13 @@
         ?>
         @foreach ($combo_products as $combo)
             <?php
-                if((isset($combo->products['money'])) && ($combo->products['money'] == 'D')){
+               // if((isset($combo->products['money'])) && ($combo->products['money'] == 'D')){
                     $total_price += $combo->products['price'] ?? 0;  
                     $total_price_buy += $combo->products['price_buy'] ?? 0; 
-                }else{
+                /*}else{
                     $total_price += ($combo->products['price'] ?? 0) / ($bcv ?? 1);  
                     $total_price_buy += ($combo->products['price_buy'] ?? 0) / ($bcv ?? 1); 
-                }
+                }*/
                     
             ?>
             <script>

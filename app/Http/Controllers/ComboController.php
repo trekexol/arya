@@ -32,7 +32,8 @@ class ComboController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
     
-        $combos = Product::on(Auth::user()->database_name)->orderBy('description' ,'asc')->where('status',1)->where('type',"COMBO")->get();
+        $combos = Product::on(Auth::user()->database_name)
+        ->orderBy('id' ,'desc')->where('status',1)->where('type',"COMBO")->get();
  
  
         return view('admin.combos.index',compact('combos'));
@@ -60,9 +61,15 @@ class ComboController extends Controller
 
         if(isset($combo) && $combo->type == "COMBO"){
 
-            $products = Product::on(Auth::user()->database_name)->orderBy('description' ,'asc')->where('type','not like','COMBO')->where('type','not like','SERVICIO')->get();
+            $products = Product::on(Auth::user()->database_name)
+            ->orderBy('id' ,'desc')
+            ->where('type','not like','COMBO')
+            ->where('type','not like','SERVICIO')
+            ->get();
 
-            $combo_products = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$id_combo)->get();
+            $combo_products = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$id_combo)
+            ->orderBy('id' ,'desc')
+            ->get();
 
             $company = Company::on(Auth::user()->database_name)->find(1);
 
