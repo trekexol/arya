@@ -76,12 +76,13 @@
             <thead>
             <tr> 
                
-            
-              <th class="text-center">Código</th>
+              <th class="text-center" width="1%">ID</th>
+              <th class="text-center" width="1%">Código Comercial</th>
               <th class="text-center">Descripción</th>
+              <th class="text-center" width="1%">Tipo</th>
               <th class="text-center">Precio</th>
-              <th class="text-center">Moneda</th>
-            
+              <th class="text-center">Costo</th>
+              <th class="text-center" width="1%">Moneda</th>
               <th class="text-center" width="9%"></th>
             </tr>
             </thead>
@@ -91,17 +92,19 @@
                 @else  
                     @foreach ($combos as $combo)
                         <tr>
-                           
+                            <td class="text-center">{{$combo->id}}</td>
                             <td class="text-center">{{$combo->code_comercial}}</td>
                             <td class="text-center">{{$combo->description}}</td>
-                            <td class="text-right">{{number_format($combo->price, 2, ',', '.')}}</td>
-                            
+                            <td class="text-center">{{$combo->type}}</td>
+                            <td class="text-right">{{number_format($combo->price, 2, ',', '.')}}</td>  
+                            <td class="text-right">{{number_format($combo->price_buy, 2, ',', '.')}}</td>
+           
                             @if ($combo->money == 'Bs')
-                              <td class="text-center">Bolivares</td>
+                            <td class="text-center">Bs</td>
                             @else
-                              <td class="text-center">Dolares</td>
+                            <td class="text-center">USD</td>
                             @endif
-                            
+    
                             <td class="text-center">
                               <a href="{{ route('combos.create_assign',$combo->id) }}"  title="Asignar Productos"><i class="fa fa-check"></i></a>
                               <a href="{{ route('combos.edit',$combo->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>

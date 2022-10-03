@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  
-<title>Factura</title>
+<title>Cuentas por Cobrar</title>
 <style>
   table, td, th {
     border: 1px solid black;
@@ -91,9 +91,9 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->serie ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, '.', '') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, '.', '') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, '.', '') }}</th>
     </tr> 
   
   @endforeach 
@@ -105,9 +105,9 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th> 
-    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_anticipos ?? 0), 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, '.', '') }}</th> 
+    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_anticipos ?? 0), 2, '.', '') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, '.', '') }}</th>
   </tr> 
 
 </tbody>
