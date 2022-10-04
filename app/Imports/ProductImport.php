@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\ExpensesDetail;
 use App\Product;
+use App\Account;
 use App\Http\Controllers\GlobalController;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -37,13 +38,25 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
 
             if (empty($buscar_product) & $row['id'] != '') {
 
+
+                $account = Account::on(Auth::user()->database_name)
+                ->where('description','LIKE','%Mercancia para la Venta%')
+                ->first();
+
+
+                if (isset($account)) {
+                    $id_account = $account->id;    
+                } else {
+                    $id_account = 26;
+                }
+
                 $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                     'id'                    => $row['id'],
                     'segment_id'            => $row['id_segmento'], 
                     'subsegment_id'         => $row['id_subsegmento'], 
                     'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
                     'threesubsegment_id'    => $row['id_threesubsegment'] ?? null,
-                    'id_account'            => null,
+                    'id_account'            => $id_account,
                     'unit_of_measure_id'    => $row['id_unidadmedida'], 
                     'code_comercial'        => $row['codigo_comercial'], 
                     'type'                  => $row['tipo_mercancia_o_servicio'], 
@@ -65,7 +78,8 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
 
                 //$product->setConnection(Auth::user()->database_name);
                 
-                
+
+
                 $global = new GlobalController; 
                 $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
 
@@ -74,8 +88,6 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 }*/
                 
             }
-
-
 
             return;
     }
