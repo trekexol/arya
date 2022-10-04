@@ -874,10 +874,9 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
-
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100 
-
-
+                let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;  
+                //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100 
+                
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
 
@@ -1018,8 +1017,7 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100 
-
+                let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;  
 
 
                 /*Toma la Base y la envia por form*/
@@ -1154,8 +1152,7 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100 
-
+                let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;  
 
 
 
@@ -1178,6 +1175,9 @@
 
                 //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
                 /*-----------------------------------*/
+
+
+
 
 
                 var total_iva_exento =  parseFloat(totalIvaMenos);
