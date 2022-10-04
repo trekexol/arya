@@ -513,7 +513,7 @@ class ExcelController extends Controller
                 
                     $costo_calculado = '';
 
-                    //Excel::import(new ComboImport, $file);
+                    Excel::import(new ComboImport, $file);
              
                     $rows = Excel::toArray(new ProductReadImport, $file);
 
@@ -554,7 +554,7 @@ class ExcelController extends Controller
                         if ($a_filas[$q][0] != 0){
                            
                             $total_precio_compra = $a_filas[$q][4];
-                            
+
                             Product::on(Auth::user()->database_name)->where('id',$a_filas[$q][0])->update([ 'price_buy' => $total_precio_compra]);
               
 
@@ -563,7 +563,7 @@ class ExcelController extends Controller
 
          
 
-                   // return redirect('combos')->with('success', 'Archivo importado con Exito!');
+                    return redirect('combos')->with('success', 'Archivo importado con Exito!');
 
                 } else {
 
