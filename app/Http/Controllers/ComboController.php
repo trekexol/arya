@@ -7,11 +7,10 @@ use App\ComboProduct;
 use App\Company;
 use App\Inventory;
 use App\Product;
-
 use App\Segment;
 use App\Subsegment;
 use App\ThreeSubsegment;
-use App\TwoSubSegment;
+use App\TwoSubsegment;
 use App\UnitOfMeasure;
 use Exception;
 use Illuminate\Http\Request;
@@ -83,7 +82,7 @@ class ComboController extends Controller
                 $bcv = $company->rate;
             }
             
-            return view('admin.combos.selectproduct',compact('products','id_combo','combo_products','bcv','combo'));
+            return view('admin.combos.selectproduct',compact('products','id_combo','combo_products','bcv',''));
         }else{
             return redirect('combos')->withDanger('Debe seleccionar un Combo!');
         }
