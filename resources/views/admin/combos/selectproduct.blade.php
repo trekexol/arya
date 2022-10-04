@@ -152,10 +152,10 @@
                                 <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                             </td>
                             <td>
-                                <input id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
                             </td>
-                            <td>{{$product->id}}</td>
-                            <td>{{$product->code_comercial ?? ''}}</td>
+                            <td class="text-center">{{$product->id}}</td>
+                            <td class="text-center">{{$product->code_comercial ?? ''}}</td>
                             <td>{{$product->description ?? ''}}</td>
                             <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
                             <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>

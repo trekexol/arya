@@ -266,7 +266,7 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: right; font-weight: normal; font-style:bold; border-color: white;">{{ number_format($total_amount, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; font-style:bold; border-color: white;">{{ number_format($total_amount_with_iva, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;font-style:bold; border-color: white; border-left: 1px;">{{ number_format($total_amount_exento, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal; border-color: white; font-style:bold;">{{ '' }}</th>
