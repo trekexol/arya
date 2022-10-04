@@ -52,7 +52,7 @@
                 <label for="price" class="col-md-2 col-form-label text-md-right">Precio de Venta:</label>
 
                 <div class="col-md-2">
-                    <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" required autocomplete="price">
+                    <input  style="text-align: right;" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" required autocomplete="price">
 
                     @error('price')
                         <span class="invalid-feedback" role="alert">
@@ -63,7 +63,7 @@
                 <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio de Compra:</label>
 
                 <div class="col-md-2">
-                    <input id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ old('price_buy') }}" required autocomplete="price_buy">
+                    <input  style="text-align: right;" id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ old('price_buy') }}" required autocomplete="price_buy">
 
                     @error('price_buy')
                         <span class="invalid-feedback" role="alert">
@@ -87,9 +87,9 @@
                 <th width="1%">ID</th>
                 <th width="1%">Código Comercial</th>
                 <th>Descripción</th>
-                <th>Precio</th>
-                <th>Costo</th>
-                <th width="1%">Moneda</th>
+                <th class="text-right">Costo Unidad</th>
+                <th class="text-right">Costo Total</th>
+                <th class="text-center" width="1%">Moneda</th>
                 <th>Segmento</th>
                 
                 
@@ -114,18 +114,18 @@
                                                 <td>
                                                     <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                                                 </td>
-                                                <td>
-                                                    <input id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                                <td >
+                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
                                                 </td>
-                                                <td>{{$product->id}}</td>
-                                                <td>{{$product->code_comercial ?? ''}}</td>
+                                                <td class="text-center">{{$product->id}}</td>
+                                                <td class="text-center">{{$product->code_comercial ?? ''}}</td>
                                                 <td>{{$product->description ?? ''}}</td>
-                                                <td>{{ number_format($product->price ?? 0, 3, ',', '.')}}</td>
-                                                <td>{{ number_format($product->price_buy ?? 0, 3, ',', '.')}}</td>
+                                                <td class="text-right">{{ number_format($product->price_buy ?? 0, 3, ',', '.')}}</td>
+                                                <td class="text-right">{{ number_format($product->price_buy * $productwo->amount_per_product ?? 0, 3, ',', '.')}}</td>
                                                 @if($product->money == "D")
-                                                    <td>USD</td>
+                                                    <td class="text-center">USD</td>
                                                 @else
-                                                    <td>Bs.</td>
+                                                    <td class="text-center">Bs.</td>
                                                 @endif
                                                 <td>{{$product->segments['description'] ?? ''}}</td>
                                             </tr> 
@@ -157,12 +157,12 @@
                             <td>{{$product->id}}</td>
                             <td>{{$product->code_comercial ?? ''}}</td>
                             <td>{{$product->description ?? ''}}</td>
-                            <td>{{ number_format($product->price ?? 0, 2, ',', '.')}}</td>
-                            <td>{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
+                            <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
+                            <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
                             @if($product->money == "D")
-                                <td>Dolar</td>
+                                <td class="text-center">Dolar</td>
                             @else
-                                <td>Bolívar</td>
+                                <td class="text-center">Bolívar</td>
                             @endif
                             <td>{{$product->segments['description'] ?? ''}}</td>
                         </tr>          
@@ -194,10 +194,10 @@
     
     <script>
         $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            $("#price").mask('000.000.000.000.000.000.000,000', { reverse: true });
         });
         $(document).ready(function () {
-            $("#price_buy").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            $("#price_buy").mask('000.000.000.000.000.000.000,000', { reverse: true });
         });
         
         $('#dataTable').DataTable({
@@ -222,8 +222,8 @@
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
 
             if(product.money == 'Bs'){
-                product.price = product.price / bcv;
-                product.price_buy = product.price_buy / bcv;
+                product.price = product.price;
+                product.price_buy = product.price_buy;
             }
             
             if(isChecked){
@@ -244,8 +244,8 @@
         function updateAmount(product){
            
             if(product.money == 'Bs'){
-                product.price = product.price / bcv;
-                product.price_buy = product.price_buy / bcv;
+                product.price = product.price ;
+                product.price_buy = product.price_buy;
             }
 
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
@@ -266,11 +266,11 @@
             var price_buy_form = newFormat(document.getElementById("price_buy").value); 
             
             if(isChecked){
-                document.getElementById("price").value = (parseFloat(price_form) + parseFloat(price)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + parseFloat(price_buy)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+                document.getElementById("price").value = (parseFloat(price_form) + parseFloat(price)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});
+                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + parseFloat(price_buy)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});
             }else{
-                document.getElementById("price").value = (parseFloat(price_form) + (parseFloat(price)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});   
-                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + (parseFloat(price_buy)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});   
+                document.getElementById("price").value = (parseFloat(price_form) + (parseFloat(price)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});   
+                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + (parseFloat(price_buy)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});   
             }
            
         }
@@ -317,7 +317,7 @@
             <?php
                // if((isset($combo->products['money'])) && ($combo->products['money'] == 'D')){
                     $total_price += $combo->products['price'] ?? 0;  
-                    $total_price_buy += $combo->products['price_buy'] ?? 0; 
+                    $total_price_buy += $combo->products['price_buy'] * $combo->amount_per_product ?? 0; 
                 /*}else{
                     $total_price += ($combo->products['price'] ?? 0) / ($bcv ?? 1);  
                     $total_price_buy += ($combo->products['price_buy'] ?? 0) / ($bcv ?? 1); 
@@ -335,8 +335,8 @@
         @endforeach
         <script>
             //aqui asignamos los precios
-            document.getElementById("price").value = "{{ number_format($total_price, 2, ',', '.') }}";
-            document.getElementById("price_buy").value = "{{ number_format($total_price_buy, 2, ',', '.') }}";
+            document.getElementById("price").value = "{{ number_format($total_price, 3, ',', '.') }}";
+            document.getElementById("price_buy").value = "{{ number_format($total_price_buy, 3, ',', '.') }}";
         </script> 
     @endif
 @endsection

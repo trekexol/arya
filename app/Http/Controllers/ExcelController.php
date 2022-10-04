@@ -513,7 +513,7 @@ class ExcelController extends Controller
                 
                     $costo_calculado = '';
 
-                    Excel::import(new ComboImport, $file);
+                    //Excel::import(new ComboImport, $file);
              
                     $rows = Excel::toArray(new ProductReadImport, $file);
 
@@ -530,34 +530,40 @@ class ExcelController extends Controller
                             $precio_compra = 0;
                         }
 
-                        $a_filas[] = array($row['id_combo'],$row['id_producto'],$row['cantidad_producto'],$precio_compra,$row['cantidad_producto']*$precio_compra,0);    
+                        $a_filas[] = array($row['id_combo'],$row['id_producto'],$row['cantidad_producto'],$precio_compra,$row['cantidad_producto']*$precio_compra,0,0);    
                         
                     }
+                    
+                    
 
                     for ($q=0;$q<count($a_filas);$q++) {
 
                         for ($k=$q+1; $k<count($a_filas);$k++) {
                             if ($a_filas[$q][0] == $a_filas[$k][0]) {
-                              $a_filas[$q][5] = $a_filas[$q][4]+$a_filas[$k][4];
-                              $a_filas[$k][5]=0; 
+                              $a_filas[$q][4] = $a_filas[$q][4]+$a_filas[$k][4];
+                              $a_filas[$k][0]=0; 
                             }
                 
                         }
                     }
-                     
+
+
                     for ($q=0;$q<count($a_filas);$q++) {
                         $total_precio_compra = 0;
                         
-                        if ($a_filas[$q][5] != 0){
+                        if ($a_filas[$q][0] != 0){
                            
-                            $total_precio_compra = $a_filas[$q][5];
+                            $total_precio_compra = $a_filas[$q][4];
+                            
                             Product::on(Auth::user()->database_name)->where('id',$a_filas[$q][0])->update([ 'price_buy' => $total_precio_compra]);
-
+              
 
                         }
                     }
 
-                    return redirect('combos')->with('success', 'Archivo importado con Exito!');
+         
+
+                   // return redirect('combos')->with('success', 'Archivo importado con Exito!');
 
                 } else {
 
