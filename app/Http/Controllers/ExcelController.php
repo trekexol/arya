@@ -333,8 +333,6 @@ class ExcelController extends Controller
                     if (!empty($products)){
                         return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe');
                     }
-
-
                     
                     if ($row['codigo_comercial'] == '') {
                         return redirect('products')->with('danger', 'El codigo Comercial es requerido ');
@@ -395,6 +393,116 @@ class ExcelController extends Controller
 
 
    }
+
+
+
+   public function import_inventary(Request $request) 
+   {
+        $file = $request->file('file');
+
+        $rows = Excel::toArray(new ProductReadImport, $file);
+      
+        $total_amount_for_import = 0;
+       
+        foreach ($rows[0] as $row) {
+            $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
+        }
+
+        $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();
+
+        $contrapartidas     = Account::on(Auth::user()->database_name)
+        ->orWhere('description', 'LIKE','Bancos')
+        ->orWhere('description', 'LIKE','Caja')
+        ->orWhere('description', 'LIKE','Cuentas por Pagar Comerciales')
+        ->orWhere('description', 'LIKE','Capital Social Suscrito y Pagado')
+        ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
+        ->orderBY('description','asc')->pluck('description','id')->toArray();
+
+        $global = new GlobalController();
+
+        $bcv = $global->search_bcv();
+        
+        return view('admin.inventories.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
+   }
+
+  /* public function import_inventary(Request $request) 
+   {
+        $total_amount_for_import = 0;
+        $file = $request->file('file');
+
+    
+        if(isset($file)){
+            
+            $rows = Excel::toArray(new ProductReadImport, $file);
+
+            foreach ($rows[0] as $row) {
+
+
+                if ($row['id'] != ''){
+                    
+                    $products = Product::on(Auth::user()->database_name)
+                    ->select('price','price_buy','money')
+                    ->find($row['id']);
+
+                    if (!empty($products)){
+                        return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe');
+                    }
+                    
+                    if ($row['codigo_comercial'] == '') {
+                        return redirect('products')->with('danger', 'El codigo Comercial es requerido ');
+                    }
+        
+                   if ($row['id_segmento'] == '') {
+                    return redirect('products')->with('danger', 'Id Segmento es Requerido Cree Segmento y coloque un ID, falta un producto con segmento');
+                   }
+    
+                   if ($row['id_unidadmedida'] == '') {
+                    return redirect('products')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida');
+                   }
+    
+                   if ($row['precio'] == '') {
+                    return redirect('products')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna');
+                   }
+                   if ($row['precio_compra'] == '') {
+                    return redirect('products')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna');
+                   }
+    
+
+    
+                   if ($row['moneda_d_o_bs'] == '') {
+                    return redirect('products')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares');
+                   }
+                   
+                   if ($row['descripcion'] == '') {
+                    return redirect('products')->with('danger', 'Columna descripcion el producto debe contener un nombre');
+                   }
+    
+    
+                   if ($row['tipo_mercancia_o_servicio'] == '') {
+                    return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA');
+                   }
+
+                   Excel::import(new ProductImport, $file);
+                   
+                } 
+
+
+
+                return redirect('products')
+                ->with('success', 'Archivo importado con Exito!');
+  
+            }
+
+
+
+       }else{
+            return redirect('products')->with('danger', 'Debe seleccionar un archivo');
+       }
+
+
+   } */
+
+
 
    public function import_combo(Request $request) 
    {
@@ -469,17 +577,16 @@ class ExcelController extends Controller
             $rate = str_replace(',', '.', str_replace('.', '', $request->rate));
     
             $file = $request->file('file');
-            
-            Excel::import(new ProductImport, $file);
+        
             Excel::import(new InventoryImport, $file);
 
             $movement = new MovementProductImportController();
             $movement->add_movement($subcontrapartida,$amount,$rate);
             
-            return redirect('products')->with('success', 'Archivo importado con Exito!');
+            return redirect('inventories')->with('success', 'Archivo importado con Exito!');
 
        }else{
-            return redirect('products')->with('danger', 'Debe seleccionar una cuenta de pago');
+            return redirect('inventories')->with('danger', 'Debe seleccionar una cuenta de pago');
        }
        
    }

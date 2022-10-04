@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\ExpensesDetail;
 use App\Inventory;
 use App\Product;
+use App\Http\Controllers\GlobalController;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -27,22 +28,10 @@ class InventoryImport implements ToModel,WithHeadingRow, SkipsOnError
         $user       =   auth()->user();
         $date = Carbon::now();
 
-       $inventory = new Inventory([
-            'id'                => $row['id'],
-            'product_id'        => $row['id'],
-            'id_user'           => $user->id,
-            'code'              => $row['codigo_comercial'], 
-            'amount'            => $row['cantidad_actual'],
-            'status'            => 1,
-            'created_at'        => $date,
-            'updated_at'        => $date,
-            
-        ]);
+        $global = new GlobalController; 
+        $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
 
-             
-        $inventory->setConnection(Auth::user()->database_name);
-
-        return $inventory;
+        return ;
 
     }
 

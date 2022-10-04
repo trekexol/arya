@@ -66,6 +66,7 @@ class ComboController extends Controller
             ->where('type','not like','COMBO')
             ->where('type','not like','SERVICIO')
             ->get();
+            
 
             $combo_products = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$id_combo)
             ->orderBy('id' ,'desc')
@@ -82,7 +83,7 @@ class ComboController extends Controller
                 $bcv = $company->rate;
             }
             
-            return view('admin.combos.selectproduct',compact('products','id_combo','combo_products','bcv'));
+            return view('admin.combos.selectproduct',compact('products','id_combo','combo_products','bcv','combo'));
         }else{
             return redirect('combos')->withDanger('Debe seleccionar un Combo!');
         }
