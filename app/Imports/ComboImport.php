@@ -39,8 +39,6 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
             
             $costo_calculado = 0;
 
-
- 
              $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                  'id'                    => $row['id_combo'],
                  'segment_id'            => 1, 
