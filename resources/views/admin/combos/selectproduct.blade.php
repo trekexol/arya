@@ -8,7 +8,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-sm-7">
-            <h2>Seleccione los Productos para el Combo</h2>
+            <h2>Selección de Productos Combo {{$combo->id}}</h2>
         </div>
         <div class="col-sm-3">
            <input type="button" title="Agregar" value="Guardar Cambios" class="btn btn-primary float-md-right" role="button" aria-pressed="true"  onclick="formSend();" >
@@ -83,13 +83,14 @@
             <thead>
             <tr> 
                 <th></th>
-                <th>Cantidad</th>
-                <th>Código Comercial</th>
+                <th width="1%">Cantidad</th>
+                <th width="1%">ID</th>
+                <th width="1%">Código Comercial</th>
                 <th>Descripción</th>
                 <th>Precio</th>
-                <th>Moneda</th>
+                <th>Costo</th>
+                <th width="1%">Moneda</th>
                 <th>Segmento</th>
-                <th>Sub Segmento</th>
                 
                 
             </tr>
@@ -97,8 +98,55 @@
             
             <tbody>
                 @if (empty($products))
+               
                 @else  
+
                     @foreach ($products as $product)
+                    <?php
+                    $product->enc = 0;   
+                    ?>
+                       @if(isset($combo_products))
+                            @foreach ($combo_products as $productwo)
+
+                                    @if ($productwo->id_product == $product->id) 
+
+                                            <tr>
+                                                <td>
+                                                    <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
+                                                </td>
+                                                <td>
+                                                    <input id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                                </td>
+                                                <td>{{$product->id}}</td>
+                                                <td>{{$product->code_comercial ?? ''}}</td>
+                                                <td>{{$product->description ?? ''}}</td>
+                                                <td>{{ number_format($product->price ?? 0, 2, ',', '.')}}</td>
+                                                <td>{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
+                                                @if($product->money == "D")
+                                                    <td>USD</td>
+                                                @else
+                                                    <td>Bs.</td>
+                                                @endif
+                                                <td>{{$product->segments['description'] ?? ''}}</td>
+                                            </tr> 
+                                            <?php
+                                            $product->enc = 1;
+                                            ?>   
+
+                                    @endif                                   
+        
+                            @endforeach
+                                
+                        @endif
+                            
+                    @endforeach  
+                    
+                    
+                    @foreach ($products as $product)
+
+
+                        @if ($product->enc == 0) 
+
                         <tr>
                             <td>
                                 <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
@@ -106,19 +154,25 @@
                             <td>
                                 <input id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
                             </td>
+                            <td>{{$product->id}}</td>
                             <td>{{$product->code_comercial ?? ''}}</td>
                             <td>{{$product->description ?? ''}}</td>
                             <td>{{ number_format($product->price ?? 0, 2, ',', '.')}}</td>
+                            <td>{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
                             @if($product->money == "D")
                                 <td>Dolar</td>
                             @else
                                 <td>Bolívar</td>
                             @endif
                             <td>{{$product->segments['description'] ?? ''}}</td>
-                            <td>{{$product->subsegments['description'] ?? ''}}</td> 
-                        </tr>     
+                        </tr>          
+                        @endif 
+
                     @endforeach   
                 @endif
+
+
+
             </tbody>
         </table>
         
@@ -147,8 +201,8 @@
         });
         
         $('#dataTable').DataTable({
-            "ordering": false,
-            "order": [],
+            "ordering": true,
+            "order": [[ 0, 'asc' ]],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
 

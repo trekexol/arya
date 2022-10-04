@@ -32,7 +32,6 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
             '*.password' => 'required',
         ])->validate();*/
         
-        
             $buscar_product = Product::on(Auth::user()->database_name)->find($row['id']);
 
 
