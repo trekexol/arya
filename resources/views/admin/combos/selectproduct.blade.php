@@ -120,8 +120,8 @@
                                                 <td>{{$product->id}}</td>
                                                 <td>{{$product->code_comercial ?? ''}}</td>
                                                 <td>{{$product->description ?? ''}}</td>
-                                                <td>{{ number_format($product->price ?? 0, 2, ',', '.')}}</td>
-                                                <td>{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
+                                                <td>{{ number_format($product->price ?? 0, 3, ',', '.')}}</td>
+                                                <td>{{ number_format($product->price_buy ?? 0, 3, ',', '.')}}</td>
                                                 @if($product->money == "D")
                                                     <td>USD</td>
                                                 @else
