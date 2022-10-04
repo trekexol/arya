@@ -96,8 +96,8 @@
                             <td class="text-center">{{$combo->code_comercial}}</td>
                             <td class="text-center">{{$combo->description}}</td>
                             <td class="text-center">{{$combo->type}}</td>
-                            <td class="text-right">{{number_format($combo->price, 2, ',', '.')}}</td>  
-                            <td class="text-right">{{number_format($combo->price_buy, 2, ',', '.')}}</td>
+                            <td class="text-right">{{number_format($combo->price, 3, ',', '.')}}</td>  
+                            <td class="text-right">{{number_format($combo->price_buy, 3, ',', '.')}}</td>
            
                             @if ($combo->money == 'Bs')
                             <td class="text-center">Bs</td>

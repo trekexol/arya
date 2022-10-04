@@ -168,8 +168,8 @@
                             <td class="text-center">{{$product->code_comercial}}</td>
                             <td class="text-center">{{$product->description}}</td>
                             <td class="text-center">{{$product->type}}</td>
-                            <td class="text-right">{{number_format($product->price, 2, ',', '.')}}</td>
-                            <td class="text-right">{{number_format($product->price_buy, 2, ',', '.')}}</td>
+                            <td class="text-right">{{number_format($product->price, 3, ',', '.')}}</td>
+                            <td class="text-right">{{number_format($product->price_buy, 3, ',', '.')}}</td>
                             
                             @if ($product->money == 'Bs')
                               <td class="text-center">Bs</td>

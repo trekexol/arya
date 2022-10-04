@@ -525,7 +525,7 @@
         });
 
         $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000,00', { reverse: true });
+            $("#price").mask('000.000.000.000.000,000', { reverse: true });
             
         });
         $(document).ready(function () {
@@ -537,11 +537,11 @@
             
         });
         $(document).ready(function () {
-            $("#price_buy").mask('000.000.000.000.000,00', { reverse: true });
+            $("#price_buy").mask('000.000.000.000.000,000', { reverse: true });
             
         });
         $(document).ready(function () {
-            $("#cost_average").mask('000.000.000.000.000,00', { reverse: true });
+            $("#cost_average").mask('000.000.000.000.000,000', { reverse: true });
             
         });
         $(document).ready(function () {
