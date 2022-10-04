@@ -225,14 +225,16 @@ class InventoryController extends Controller
             }
 
 
+
             if($id_account == 'todas') {
-                $cond3 = '=';
-                $id_account = null;
+                $cond3 = '!=';
+                $id_account = 'r';
             
             } else {
                 $cond3 = '=';
                 
             }
+
         
 
         $inventories = InventoryHistories::on(Auth::user()->database_name) 
@@ -247,7 +249,6 @@ class InventoryController extends Controller
         ->get();     
 
 
-        
         foreach ($inventories as $inventory) {
 
 
