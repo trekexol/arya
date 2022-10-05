@@ -24,7 +24,7 @@ class ValidarUsuarioMiddleware
         if ($users_role == 1){
             $nombreRuta = Route::currentRouteName();
             $sistemas = modulo::on($this->conection_logins)
-            ->Where('id_companies',$user->id_company)
+          
             ->where('ruta', 'like', '%'.$nombreRuta.'%')
             ->get();
 
@@ -48,7 +48,6 @@ class ValidarUsuarioMiddleware
             $sistemas = UserAccess::on($this->conection_logins)
                 ->join('modulos','modulos.id','id_modulo')
                 ->where('id_user',$user->id)
-                ->Where('modulos.id_companies',$user->id_company)
                 ->Where('modulos.estatus','1')
                 ->where('modulos.ruta', 'like', '%'.$nombreRuta.'%')
                 ->get();

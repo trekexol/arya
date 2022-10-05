@@ -39,11 +39,11 @@ class AppServiceProvider extends ServiceProvider
         if($user->role_id == 1){ //si es administrador
 
                 $sistemas = Sistemas::on($this->conection_logins)
-                ->WhereIn('id_companies',[$user->id_company])
+                ->Where('id_companies','like','%'.$user->id_company.'A%')
                 ->Where('estatus','1')
-                ->orderBy('sistema','asc')->get();
+                ->orderBy('nro_orden','asc')->get();
 
-            
+   
             $arreglo = array();
             foreach($sistemas as $sistemas){
 
@@ -52,10 +52,9 @@ class AppServiceProvider extends ServiceProvider
                 $nbsistema = $sistemas->sistema;
 
                 $modulos = Modulo::on($this->conection_logins)
-                ->WhereIn('id_companies',[$user->id_company])
                 ->Where('id_sistema',$id_sistema)
                 ->Where('estatus','1')
-                ->orderBy('name','asc')
+                ->orderBy('nro_orden','asc')
                 ->get();
 
                 $arreglom = array();
@@ -66,8 +65,9 @@ class AppServiceProvider extends ServiceProvider
                         $ruta = $modulos->ruta;
                         $name = $modulos->name;
 
+                        $idsistema = $modulos->id_sistema;
                     
-                        $arreglom[] = ['modulo' => $name, 'ruta' => $ruta, 'icono_modulo' => $modulos->icono_modulo];
+                        $arreglom[] = ['modulo' => $name, 'ruta' => $ruta, 'icono_modulo' => $modulos->icono_modulo, 'id_sistema' => $idsistema, 'nro_orden' => $modulos->nro_orden];
                     
                 
                 }
@@ -86,9 +86,7 @@ class AppServiceProvider extends ServiceProvider
             ->join('modulos','modulos.id','=','user_access.id_modulo')
             ->join('sistemas','sistemas.id_sistema','=','modulos.id_sistema')
             ->where('user_access.id_user',$user->id)
-            ->WhereIn('sistemas.id_companies',[$user->id_company])
-            //->Where('sistemas.id_companies','modulos.id_companies')
-            
+            ->Where('id_companies','like','%'.$user->id_company.'A%')
             ->Where('modulos.estatus','1')
             ->Where('sistemas.estatus','1')
             ->select('sistemas.id_sistema','sistemas.sistema','sistemas.icono_sistema','sistemas.padre')
@@ -110,7 +108,6 @@ class AppServiceProvider extends ServiceProvider
                 $modulos = UserAccess::on($this->conection_logins)
                 ->join('modulos','modulos.id','id_modulo')
                 ->where('id_user',$user->id)
-                ->WhereIn('modulos.id_companies',[$user->id_company])
                 ->Where('modulos.id_sistema',$id_sistema)
                 ->Where('modulos.estatus','1')
                 ->orderBy('name','asc')
@@ -124,9 +121,10 @@ class AppServiceProvider extends ServiceProvider
                   
                         $ruta = $modulos->ruta;
                         $name = $modulos->name;
-    
+                        $idsistema = $modulos->id_sistema;
+
                        
-                        $arreglom[] = ['modulo' => $name, 'ruta' => $ruta, 'icono_modulo' => $modulos->icono_modulo];
+                        $arreglom[] = ['modulo' => $name, 'ruta' => $ruta, 'icono_modulo' => $modulos->icono_modulo, 'id_sistema' => $idsistema, 'nro_orden' => $modulos->nro_orden];
                        
                   
                 }

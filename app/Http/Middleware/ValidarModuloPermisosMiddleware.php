@@ -19,8 +19,7 @@ class ValidarModuloPermisosMiddleware
         if ($users_role == 1){
            
             
-            $sistemas = modulo::on($this->conection_logins)
-            ->Where('id_companies',$user->id_company)
+            $sistemas = modulo::on($this->conection_logins)           
             ->where('name', $modulo)
             ->get();
 
@@ -47,7 +46,6 @@ class ValidarModuloPermisosMiddleware
                 ->where('id_user',$user->id)
                 ->Where('modulos.estatus','1')
                 ->where('modulos.name', $modulo)
-                ->where('modulos.id_companies', $user->id_company)
                 ->select('modulos.name','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->first();
           

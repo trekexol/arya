@@ -27,7 +27,7 @@
     <div class="form-group col-md-4">
         <label for="inputState">Sistemas</label>
         <select id="sistemas" class="form-control">
-          <option value="" selected>Seleccione...</option>
+          <option value="" >Seleccione...</option>
           @foreach($sistemas as $sistemas)
 
           <option value="{{$sistemas->id_sistema.','.$id_user}}">{{$sistemas->sistema}}</option>
@@ -64,13 +64,17 @@ $('#dataTable').DataTable({
 function showPlanningFormProduct(){
 
     var value = this.value;
-    //var url = "create/"+value;
+   if(value){
     var url = "{{ route('modulos.list') }}" + '/' + value;
-    //console.log(url);
+ 
 
-        $.get(url, function(data){
-            $('#tablaids').empty().append(data);
-        });
+ $.get(url, function(data){
+     $('#tablaids').empty().append(data);
+ });
+   }else{
+    $('#tablaids').empty();
+   }
+    
 }
 
 $('#sistemas').change(showPlanningFormProduct);   

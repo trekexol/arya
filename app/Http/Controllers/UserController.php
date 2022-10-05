@@ -212,9 +212,9 @@ class UserController extends Controller
     {
         
 
-        $user   = User::on(Auth::user()->database_name)->find(Auth::user()->id);
+        $user   = User::on(Auth::user()->database_name)->find($id);
        
-        if($user->id == $id){
+        if(Auth::user()->id == $id){
             $roles   = Role::on(Auth::user()->database_name)->get();
             
             $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
@@ -410,11 +410,16 @@ class UserController extends Controller
       
 
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
-            $user = User::on($this->conection_logins)->where('id',$id_user)->where('name',$name_user)->WhereNotIn('role_id',['1'])->first();
+            $user = User::on($this->conection_logins)
+                            ->where('id',$id_user)
+                            ->where('name',$name_user)
+                            ->WhereNotIn('role_id',['1'])->first();
 
             if($user){
 
-                $sistemas = Sistemas::on($this->conection_logins)->WhereIn('id_companies',[$user->id_company])->orderby('sistema','ASC')->get();
+                $sistemas = Sistemas::on($this->conection_logins)
+                            ->Where('id_companies','like','%'.$user->id_company.'A%')
+                            ->orderby('nro_orden','ASC')->get();
           
                 return view('admin.users.indexpermisos',compact('id_user','name_user','sistemas'));
               

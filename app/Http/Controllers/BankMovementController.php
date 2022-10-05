@@ -1851,40 +1851,53 @@ class BankMovementController extends Controller
 
 public function importmovimientos(Request $request){
   
+    $resp = array();
+	$resp['error'] = false;
+	$resp['msg'] = '';
+
     if($request->ajax()){
         try{
+    
+ 
+                $banco = $request->banco;
+                $file = $request->file('file');
+                $extension = $request->file('file')->extension();
 
-    $banco = $request->banco;
-    $file = $request->file('file');
-    $extension = $request->file('file')->extension();
+    
+    $import = new TempMovimientosImport($banco);
+  
 
-
-
-    if(($banco == '1' OR $banco == '2') AND $extension == 'xlsx'){
-        dd('si');
-
+    if(($banco == '1' OR $banco == 'Banco Banesco') AND $extension == 'xlsx'){
+      
+    Excel::import($import, $file);
+    $resp['error'] = $import->estatus;
+    $resp['msg'] = $import->mensaje;
+      return response()->json($resp);
+       
+    }
+    
+    elseif(($banco == '3' OR $banco == '4' OR $banco == '5') AND $extension == 'txt'){
+        Excel::import($import, $file);
+        $resp['error'] = $import->estatus;
+        $resp['msg'] = $import->mensaje;
+        return response()->json($resp);
     }else{
-        return response()->json(false,500);
+
+        $resp['error'] = false;
+        $resp['msg'] = 'Solo Admite formato archivos .txt .csv .xlsx ';
+
+        return response()->json($resp);
     }
 
   
 
-
-   Excel::import(new TempMovimientosImport($banco), $file);
-            
-            
-
-           
-                
-                
                
 
-           
-
-                
-
         }catch(\error $error){
-            return response()->json(false,500);
+            $resp['error'] = false;
+	        $resp['msg'] = 'Verifique el Archivo.';
+            
+            return response()->json($resp);
         }
     }
   
@@ -1911,13 +1924,51 @@ public function facturasmovimientos(Request $request){
 
     $valormovimiento = $data[0];
     $idmovimiento = $data[1];
+    $fechamovimiento = $data[2];
+    $bancomovimiento = $data[3];
+    
 
-    return View::make('admin.bankmovements.tablafactura',compact('quotations','valormovimiento','idmovimiento'))->render();
+    return View::make('admin.bankmovements.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento'))->render();
 
 
 }
 
 
+public function add_movementfacturas($bcv,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
+
+    $detail = new DetailVoucher();
+    $detail->setConnection(Auth::user()->database_name);
+
+
+    $detail->id_account = $id_account;
+    $detail->id_header_voucher = $id_header;
+    $detail->user_id = $id_user;
+    $detail->tasa = $bcv;
+    $detail->id_invoice = $id_invoice;
+
+  /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+    $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+
+    $detail->debe = $debe;
+    $detail->haber = $haber;
+   
+  
+    $detail->status =  "C";
+
+     /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+     
+        $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+        if($account->status != "M"){
+            $account->status = "M";
+            $account->save();
+        }
+     
+
+    $detail->save();
+
+}
 
 public function procesarfact(Request $request){
     
@@ -1926,7 +1977,7 @@ public function procesarfact(Request $request){
 
             /**********VERIFICO QUE LA FACTURA EXITE Y QUE EL MOVIMIENTO Y 
              MONTOS SEAN EXACTAMENTE IGUALES CON SUS RESPECTIVOS ID *****/
-
+     
 
             $quotations = Quotation::on(Auth::user()->database_name)
             ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
@@ -1943,6 +1994,31 @@ public function procesarfact(Request $request){
              
                 $quotations->status = 'C';
                 $quotations->save();
+
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Cobro Masivo Match de Bienes o servicios.";
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->id,Auth::user()->id,0,$request->montoiva);
+                }
+                
+                //Banco
+                
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();
+                
+                if(isset($account_subsegmento)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
+                }   
+
+
+
                 return response()->json(true,200);
                 
             }else{

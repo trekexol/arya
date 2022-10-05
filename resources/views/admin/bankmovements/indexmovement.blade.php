@@ -145,7 +145,7 @@ label.error{ color: red; font-size: 1em; }
                                                 @foreach($quotations as $quotation)
                                                     @if($var->debe == $quotation->amount_with_iva)
 
-                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos}}">Match</span>
+                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco}}">Match</span>
                                                     @endif
                                                 @endforeach
                                             @endif
@@ -334,7 +334,7 @@ label.error{ color: red; font-size: 1em; }
                         <select class="form-control" name="banco" id="banco">
                           <option value="">Seleccione..</option>
                           <option value="1">Bancamiga</option>
-                          <option value="2">Banesco</option>
+                          <option value="Banco Banesco">Banesco</option>
                           <option value="3">Mercantil</option>
                           <option value="4">Chase</option>
                           <option value="5">BOFA</option>
@@ -414,20 +414,13 @@ $("#fileForms").validate({
 
         if(element.attr("name") == "banco") {
         
-   
         $("#muestrasbanco").append(error);
-     
-
 
         }
 
         if(element.attr("name") == "file") {
 
- 
         $("#muestrasfile").append(error);
-
-
-        
 
         }
 
@@ -444,21 +437,22 @@ $("#fileForms").validate({
             data: new FormData( form ),
             processData: false,
             contentType: false,
-            success:(response)=>{
-             
-             if(response == true){
+            //success:(response)=>{
+            success:function(response){
+             if(response.error == true){
                 Swal.fire({
-                        icon: 'success',
+                        icon: 'info',
                         title: 'Exito!',
-                        text: 'Archivo cargado con exito!',
+                        html: response.msg,
                 
                 
                         })
              }else{
+               
                 Swal.fire({
-                        icon: 'error',
-                        title: 'Error...',
-                        text: 'Error a Procesar Archivo!',
+                        icon: 'info',
+                        title: 'Error..',
+                        html: response.msg,
                         })
              }
             
@@ -466,11 +460,13 @@ $("#fileForms").validate({
             
          
          },
-         error:(xhr)=>{
+         error:(response)=>{
+      
+        
             Swal.fire({
                     icon: 'error',
                     title: 'Error...',
-                    text: 'Error a Procesar!',
+                    html: response.msg,
                     });
          }
             });

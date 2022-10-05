@@ -21,7 +21,7 @@
                         <td>".$quotations['amount_with_iva']."</td>";
 
                         echo "<td>
-                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento'>Procesar</button>
+                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]'>Procesar</button>
                             </td>";
             
                        echo "</tr>";
@@ -52,11 +52,13 @@ $('.procesarfactura').click(function(e){
     var montomovimiento = valor[2];
     var id = valor[3];
     var idmovimiento = valor[4];
-
+    var fechamovimiento = valor[5];
+    var bancomovimiento = valor[6];
+    var tasa = valor[7];
     $.ajax({
         method: "POST",
         url: "{{ route('procesarfact') }}",
-        data: {montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
+        data: {tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
              
                  if(response == true){

@@ -26,7 +26,7 @@ class ModulosController extends Controller
                 $modulos = Modulo::on($this->conection_logins)
                 ->where('id_sistema',$idsistema)
                 ->where('estatus','1')
-                ->orderby('name','asc')
+                ->orderby('nro_orden','asc')
                 ->select('id','name','agregar','actualizar','eliminar')
                 ->get();
         foreach($modulos as $modulos){
