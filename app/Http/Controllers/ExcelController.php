@@ -123,10 +123,11 @@ class ExcelController extends Controller
     public function export_product() // inventario 
     {
          $products = Product::on(Auth::user()->database_name)
+         ->where('type','!=','COMBO')
          ->where('status','1')
          ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
          'code_comercial','type','description','price','price_buy','money',
-         'exento','islr','special_impuesto as amount')
+         'exento','islr')
          ->get();
 
          $global = new GlobalController(); 
@@ -149,7 +150,7 @@ class ExcelController extends Controller
          $export = new ExpensesExport([
              ['id','id_segmento','id_subsegmento','id_twosubsegment','id_threesubsegment','id_unidadmedida'
               ,'codigo_comercial','tipo_mercancia_o_servicio','descripcion','precio','precio_compra','moneda_d_o_bs',
-              'exento_1_o_0','islr_1_o_0','cantidad_actual'],
+              'exento_1_o_0','islr_1_o_0'],
               $products
         ]);
         
@@ -314,7 +315,8 @@ class ExcelController extends Controller
    {
         $total_amount_for_import = 0;
         $file = $request->file('file');
-
+        $cont = 1;
+        $msj = '';
     
         if(isset($file)){
             
@@ -323,7 +325,7 @@ class ExcelController extends Controller
 
             foreach ($rows[0] as $row) {
 
-
+                 
                 if ($row['id'] != ''){
                     
                     $products = Product::on(Auth::user()->database_name)
@@ -331,59 +333,64 @@ class ExcelController extends Controller
                     ->find($row['id']);
 
                     if (!empty($products)){
-                        return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe');
+                        $msj = '';
+                        return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe. Fila: '.$cont);
                     }
                     
                     if ($row['codigo_comercial'] == '') {
-                        return redirect('products')->with('danger', 'El codigo Comercial es requerido ');
+                        return redirect('products')->with('danger', 'El codigo Comercial es requerido. Fila: '.$cont);
                     }
         
                    if ($row['id_segmento'] == '') {
-                    return redirect('products')->with('danger', 'Id Segmento es Requerido Cree Segmento y coloque un ID, falta un producto con segmento');
+                    return redirect('products')->with('danger', 'Id Segmento es requerido cree un Segmento en el módulo de Administración y coloque el ID, falta el segmento. Fila: '.$cont);
+                   }
+                   
+                   if (is_numeric($row['id_segmento']) == false) {
+                    return redirect('products')->with('danger', 'Id Segmento debe ser numero. Fila: '.$cont);
                    }
     
                    if ($row['id_unidadmedida'] == '') {
-                    return redirect('products')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida');
+                    return redirect('products')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida. Fila: '.$cont);
                    }
     
                    if ($row['precio'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna');
+                    return redirect('products')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
                    }
                    if ($row['precio_compra'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna');
+                    return redirect('products')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
                    }
     
                    /*if ($row['exento_1_o_0'] != 0 or $row['exento_1_o_0'] != 1) {
-                    return redirect('products')->with('danger', 'Columna Excento debe ser 0 o 1');
+                    return redirect('products')->with('danger', 'Columna Excento debe ser 0 o 1. Fila: '.$cont);
                    }
     
                    if ($row['islr_1_o_0'] != 0 or $row['islr_1_o_0'] != 0) {
-                    return redirect('products')->with('danger', 'Columna islr debe ser 0 o 1');
+                    return redirect('products')->with('danger', 'Columna islr debe ser 0 o 1. Fila: '.$cont);
                    }*/
     
                    if ($row['moneda_d_o_bs'] == '') {
-                    return redirect('products')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares');
+                    return redirect('products')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares. Fila: '.$cont);
                    }
                    
                    if ($row['descripcion'] == '') {
-                    return redirect('products')->with('danger', 'Columna descripcion el producto debe contener un nombre');
+                    return redirect('products')->with('danger', 'Columna descripcion el producto debe contener un nombre. Fila: '.$cont);
                    }
     
     
                    if ($row['tipo_mercancia_o_servicio'] == '') {
-                    return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA');
+                    return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA. Fila: '.$cont);
                    }
 
-                   Excel::import(new ProductImport, $file);
+                  // Excel::import(new ProductImport, $file);
                    
                 } 
-
-
-
-                return redirect('products')
-                ->with('success', 'Archivo importado con Exito!');
   
             }
+
+           Excel::import(new ProductImport, $file);
+           
+           return redirect('products')
+            ->with('success', 'Archivo importado con Exito!');
 
 
 
@@ -425,83 +432,7 @@ class ExcelController extends Controller
         return view('admin.inventories.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
    }
 
-  /* public function import_inventary(Request $request) 
-   {
-        $total_amount_for_import = 0;
-        $file = $request->file('file');
-
-    
-        if(isset($file)){
-            
-            $rows = Excel::toArray(new ProductReadImport, $file);
-
-            foreach ($rows[0] as $row) {
-
-
-                if ($row['id'] != ''){
-                    
-                    $products = Product::on(Auth::user()->database_name)
-                    ->select('price','price_buy','money')
-                    ->find($row['id']);
-
-                    if (!empty($products)){
-                        return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe');
-                    }
-                    
-                    if ($row['codigo_comercial'] == '') {
-                        return redirect('products')->with('danger', 'El codigo Comercial es requerido ');
-                    }
-        
-                   if ($row['id_segmento'] == '') {
-                    return redirect('products')->with('danger', 'Id Segmento es Requerido Cree Segmento y coloque un ID, falta un producto con segmento');
-                   }
-    
-                   if ($row['id_unidadmedida'] == '') {
-                    return redirect('products')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida');
-                   }
-    
-                   if ($row['precio'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna');
-                   }
-                   if ($row['precio_compra'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna');
-                   }
-    
-
-    
-                   if ($row['moneda_d_o_bs'] == '') {
-                    return redirect('products')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares');
-                   }
-                   
-                   if ($row['descripcion'] == '') {
-                    return redirect('products')->with('danger', 'Columna descripcion el producto debe contener un nombre');
-                   }
-    
-    
-                   if ($row['tipo_mercancia_o_servicio'] == '') {
-                    return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA');
-                   }
-
-                   Excel::import(new ProductImport, $file);
-                   
-                } 
-
-
-
-                return redirect('products')
-                ->with('success', 'Archivo importado con Exito!');
-  
-            }
-
-
-
-       }else{
-            return redirect('products')->with('danger', 'Debe seleccionar un archivo');
-       }
-
-
-   } */
-
+ 
 
 
    public function import_combo(Request $request) 

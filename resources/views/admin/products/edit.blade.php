@@ -166,14 +166,18 @@
                                             <option value="MATERIAP">Materia Prima</option> 
                                             @elseif($product->type == "SERVICIO")
                                             <option value="SERVICIO">Servicio</option>
+                                            @elseif($product->type == "COMBO")
+                                            <option value="COMBO">Combo</option>
                                             @endif
                                            
                                             <option value="nulo">----------------</option>
                                             
                                             <div class="dropdown">
-                                                <option value="MERCANCIA">Mercancía</option>
-                                                <option value="MATERIAP">Materia Prima</option> 
                                                 <option value="SERVICIO">Servicio</option>
+                                                <option value="MERCANCIA">Mercancía</option>
+                                                <option value="MATERIAP">Materia Prima</option>
+                                                <option value="COMBO">Combo</option> 
+                                                
                                             </div>
                                             
                                             

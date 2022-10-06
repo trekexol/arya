@@ -232,6 +232,7 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
+                <th class="text-center">Tipo</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Costo</th>
                 
@@ -251,6 +252,7 @@
                             <td class="text-center">{{ $var->id ?? '' }}</td>
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
+                            <td class="text-center">{{ $var->type ?? '' }}</td>
                             <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '.')}}</td> 
                             <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
                             

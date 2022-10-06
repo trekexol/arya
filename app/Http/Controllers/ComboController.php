@@ -63,8 +63,8 @@ class ComboController extends Controller
 
             $products = Product::on(Auth::user()->database_name)
             ->orderBy('id' ,'desc')
-            ->where('type','not like','COMBO')
-            ->where('type','not like','SERVICIO')
+            ->where('type','=','MATERIAP')
+            ->Orwhere('type','=','MERCANCIA')
             ->get();
             
 

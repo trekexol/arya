@@ -52,9 +52,11 @@
                             <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
                             <div class="col-md-4">
                             <select class="form-control" name="type" id="type">
+                                <option value="SERVICIO">Servicio</option>
                                 <option value="MERCANCIA">Mercancía</option>
                                 <option value="MATERIAP">Materia Prima</option>
-                                <option value="SERVICIO">Servicio</option>
+                                <option value="COMBO">Combo</option>
+                                
                             </select>
                             </div>
                             <label for="description" class="col-md-2 col-form-label text-md-right">Descripción</label>
