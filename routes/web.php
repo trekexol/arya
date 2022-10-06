@@ -1155,6 +1155,7 @@ Route::group(["prefix"=>'export'],function(){
     Route::post('expenseimport','ExcelController@import')->name('import');
 
     Route::get('products','ExcelController@export_product')->name('export.product_template');
+    Route::get('inventary','ExcelController@export_inventary')->name('export.product_template_inventary');
     
     Route::get('combos','ExcelController@export_combo')->name('export.product_template_combo');
     

@@ -172,8 +172,8 @@
                 Opciones 
             </button>
             <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-                <h6>Importación Masiva Productos e Inventario</h6>
-                <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
+                <h6>Importación Masiva de Inventario</h6>
+                <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
                 <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
                   @csrf
                   <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
@@ -253,7 +253,7 @@
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
-                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '.')}}</td> 
+                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '')}}</td> 
                             <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
                             
                             @if($var->money == "D")
