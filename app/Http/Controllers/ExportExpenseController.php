@@ -39,6 +39,7 @@ class ExportExpenseController extends Controller
             $expense_amont=0;
             $expense_amont_iva =0;             
             $total_amont = 0;
+            $cont = 0;
 
             foreach ($expenses as  $expense) {
                 $expense->date = Carbon::parse($expense->date);
@@ -58,12 +59,19 @@ class ExportExpenseController extends Controller
                 $total_amont = $expense_amont + $expense_amont_iva;
                   
 
-                $content .= str_replace('-', '', $company->code_rif).'	'.$expense->date->format('Ym').'  '.$expense->date->format('Y-m-d').'	C	01	'.str_replace('-', '', $expense->providers['code_provider']).'	'.$expense->invoice.'	'.$expense->serie.'	'.bcdiv($total_amont,'1',2).'	'.bcdiv($expense->base_imponible,'1',2).'	'.bcdiv($expense->retencion_iva,'1',2).'	 0	'.$expense->date->format('Ym').str_pad($expense->id, 8, "0", STR_PAD_LEFT).'	'.bcdiv($total_retiene_iva,'1',2).'	'.bcdiv($expense->iva_percentage,'1',2).'	0';
-                $content .= "\n";
+                $content .= str_replace('-', '', $company->code_rif).'  '.$expense->date->format('Ym').'    '.$expense->date->format('Y-m-d').' C   01  '.str_replace('-', '', $expense->providers['code_provider']).'  '.$expense->invoice.'   '.$expense->serie.' '.bcdiv($total_amont,'1',2).'   '.bcdiv($expense->base_imponible,'1',2).'   '.bcdiv($expense->retencion_iva,'1',2).'    0   '.$expense->date->format('Ym').str_pad($expense->id, 8, "0", STR_PAD_LEFT).'    '.bcdiv($total_retiene_iva,'1',2).' '.bcdiv($expense->iva_percentage,'1',2).'   0';
                 
+                if($cont > 0){ 
+                $content .= "\n";
+                }
+
+                $cont++;
             }    
         }else{
-            $content = "No hay Compras con Retencion de IVA";
+ 
+           
+            $content = str_replace('-', '', $company->code_rif).'   '.$expense->date->format('Ym').'    0   0   0   0   0   0   0   0   0   0   0   0   0   0';
+
         }
         
         // file name to download
@@ -113,7 +121,7 @@ class ExportExpenseController extends Controller
                 $content .= '<DetalleRetencion>
                   <RifRetenido>'.str_replace("-","",$expense->providers['code_provider']).'</RifRetenido>
                   <NumeroFactura>'.$expense->invoice.'</NumeroFactura>
-                  <NumeroControl>'.$expense->serie.'</NumeroControl>
+                  <NumeroControl>'.str_replace('-', '', $expense->serie).'</NumeroControl>
                   <FechaOperacion>'.$expense->date->format('d/m/Y').'</FechaOperacion>
                   <CodigoConcepto>'.str_pad($expense->id_islr_concept, 3, "0", STR_PAD_LEFT).'</CodigoConcepto>
                   <MontoOperacion>'.bcdiv($expense->base_imponible,'1',2) .'</MontoOperacion>
@@ -124,7 +132,7 @@ class ExportExpenseController extends Controller
             
             $content .= '</RelacionRetencionesISLR>';
         }else{
-            $content = "No hay Compras con Retencion de ISLR";
+            $content = 'NO hay retenciones de ISLR para este periodo. Al declarar en el SENIAT solo seleccione la opción (No) cuando le pregunte por las Operaciones en el periodo y listo.';
         }
         
         // file name to download

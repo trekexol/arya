@@ -47,7 +47,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 if (isset($account)) {
                     $id_account = $account->id;    
                 } else {
-                    $id_account = 26;
+                    $id_account = 25;
                 }
 
                 $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
@@ -81,7 +81,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
 
 
                 $global = new GlobalController; 
-                $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
+                $global->transaction_inv('creado',$row['id'],'Importacion Masiva de Productos',0,$row['precio'],$date,1,1,0,0,0,0,0);
 
                 /*if($product->status == '1'){
                     return $product;
