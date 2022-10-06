@@ -83,9 +83,10 @@ class ExcelController extends Controller
         return Excel::download($export, 'plantilla_clientes.xlsx');
     }
 
-   /* public function export_product() // producto
+    public function export_inventary() // inventario
     {
          $products = Product::on(Auth::user()->database_name)
+         ->where('type','!=','COMBO')
          ->where('status','1')
          ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
          'code_comercial','type','description','price','price_buy','money',
@@ -116,8 +117,8 @@ class ExcelController extends Controller
               $products
         ]);
         
-        return Excel::download($export, 'guia_productos.xlsx');
-    }*/
+        return Excel::download($export, 'guia_inventario.xlsx');
+    }
     
 
     public function export_product() // inventario 
