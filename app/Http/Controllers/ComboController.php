@@ -58,19 +58,31 @@ class ComboController extends Controller
     public function create_assign($id_combo)
     {
         $combo = Product::on(Auth::user()->database_name)->find($id_combo);
-
+        $global = new GlobalController();
+        
         if(isset($combo) && $combo->type == "COMBO"){
 
             $products = Product::on(Auth::user()->database_name)
             ->orderBy('id' ,'desc')
             ->where('type','=','MATERIAP')
-            ->Orwhere('type','=','MERCANCIA')
+            ->orwhere('type','=','MERCANCIA')
             ->get();
             
+            foreach ($products as $product){
+            
+                $product->amount = $global->consul_prod_invt($product->id);
+    
+            }
 
             $combo_products = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$id_combo)
             ->orderBy('id' ,'desc')
             ->get();
+            
+
+            foreach ($combo_products as $productwo){
+            $productwo->amount = $global->consul_prod_invt($productwo->id_product);
+            }
+    
 
             $company = Company::on(Auth::user()->database_name)->find(1);
 

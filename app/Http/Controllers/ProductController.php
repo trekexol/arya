@@ -28,15 +28,40 @@ class ProductController extends Controller
 
    }
 
-   public function index()
+   public function index($type = 'todos')
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        $company = Company::on(Auth::user()->database_name)->find(1);
 
-        $products = Product::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('status','DESC')->orderBy('id' ,'DESC')->get();
+       if ($type == 'todos') {
+        $cond = '!=';
+        $valor = null;
+        } 
+        if ($type == 'MERCANCIA') {
+            $cond = '=';
+            $valor = $type;
+        }   
+        if ($type == 'MATERIAP') {
+            $cond = '=';
+            $valor = $type;
+        }
+        if ($type == 'COMBO') {
+            $cond = '=';
+            $valor = $type;
+        }   
+        if ($type == 'SERVICIO') {
+            $cond = '=';
+            $valor = $type;
+        }  
 
-       return view('admin.products.index',compact('products','company'));
+        $products = Product::on(Auth::user()->database_name)
+        ->where('type',$cond,$valor)
+        ->where('status','!=','X')
+        ->orderBy('status','DESC')
+        ->orderBy('id' ,'DESC')->get();
+
+       return view('admin.products.index',compact('products','company','type'));
    }
 
 

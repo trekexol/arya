@@ -71,7 +71,7 @@
       <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventarios</a>
+      <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
     </li>
     <li class="nav-item" role="presentation">
       <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
@@ -112,7 +112,39 @@
       <div class="col-sm-3">
         <a href="{{ route('products.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Producto </a>
       </div>
+
+      <div class="col-sm-2">
+        <select class="form-control" name="type" id="type">
+            @if(isset($type))
+                @if ($type == 'MATERIAP')
+                    <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
+                @endif
+                @if ($type == 'todos')
+                    <option disabled selected value="{{$type}}">TODOS</option>    
+                @endif
+                @if ($type == 'MERCANCIA' or $type == 'COMBO' or $type == 'SERVICIO')
+                <option disabled selected value="{{$type}}">{{$type}}</option> 
+                @endif
+                <option value="todos">-------------</option>
+                <option value="todos">TODOS</option>
+                <option value="MERCANCIA">MERCANCIA</option>
+                <option value="MATERIAP">MATERIA PRIMA</option>
+                <option value="COMBO">COMBO</option>
+                <option value="SERVICIO">SERVICIO</option>  
+            @else
+                <option value="todos">TODOS</option>
+                <option value="MERCANCIA">MERCANCIA</option>
+                <option value="MATERIAP">MATERIA PRIMA</option>
+                <option value="COMBO">COMBO</option>
+                <option value="SERVICIO">SERVICIO</option>
+            @endif
+            
+
+        </select>
     </div>
+    </div>
+
+    
   </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -367,51 +399,11 @@
                
         });
 
-
-        /*$("#contrapartida").on('change',function(){
-            var contrapartida_id = $(this).val();
-            $("#subcontrapartida").val("");
-            
-            getSubcontrapartida(contrapartida_id);
+        $("#type").on('change',function(){
+            type = $(this).val();
+            window.location = "{{route('products', [''])}}"+"/"+type;
         });
 
-        function getSubcontrapartida(contrapartida_id){
-            
-            $.ajax({
-                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
-                beforSend:()=>{
-                    alert('consultando datos');
-                },
-                success:(response)=>{
-                    let subcontrapartida = $("#subcontrapartida");
-                    let htmlOptions = `<option value='' >Seleccione..</option>`;
-                    // console.clear();
-                    if(response.length > 0){
-                        response.forEach((item, index, object)=>{
-                            let {id,description} = item;
-                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
-
-                        });
-                    }
-                    //console.clear();
-                    // console.log(htmlOptions);
-                    subcontrapartida.html('');
-                    subcontrapartida.html(htmlOptions);
-                
-                    
-                
-                },
-                error:(xhr)=>{
-                    alert('Presentamos inconvenientes al consultar los datos');
-                }
-            })
-        }
-
-        $("#subcontrapartida").on('change',function(){
-                var subcontrapartida_id = $(this).val();
-                var contrapartida_id    = document.getElementById("contrapartida").value;
-                
-            });*/
 
 
         </script> 

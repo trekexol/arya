@@ -74,20 +74,30 @@
         <div class="col-sm-2">
             <select class="form-control" name="type" id="type">
                 @if(isset($type))
-                    @if ($type == 'productos')
-                        <option disabled selected value="{{ $type }}">{{ $type }}</option>
-                        <option disabled  value="{{ $type }}">-----------</option>
-                    @else
-                        <option disabled selected value="servicios">servicios</option>
-                        <option disabled  value="servicios">-----------</option>
+                    @if ($type == 'MATERIAP')
+                        <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
                     @endif
-                    
+                    @if ($type == 'todos')
+                        <option disabled selected value="{{$type}}">TODOS</option>    
+                    @endif
+                    @if ($type == 'MERCANCIA' or $type == 'COMBO' or $type == 'SERVICIO')
+                    <option disabled selected value="{{$type}}">{{$type}}</option> 
+                    @endif
+                    <option value="todos">-------------</option>
+                    <option value="todos">TODOS</option>
+                    <option value="MERCANCIA">MERCANCIA</option>
+                    <option value="MATERIAP">MATERIA PRIMA</option>
+                    <option value="COMBO">COMBO</option>
+                    <option value="SERVICIO">SERVICIO</option>  
                 @else
-                    <option disabled selected value="productos">productos</option>
+                    <option value="todos">TODOS</option>
+                    <option value="MERCANCIA">MERCANCIA</option>
+                    <option value="MATERIAP">MATERIA PRIMA</option>
+                    <option value="COMBO">COMBO</option>
+                    <option value="SERVICIO">SERVICIO</option>
                 @endif
                 
-                <option  value="productos">productos</option>
-                <option value="servicios">servicios</option>
+
             </select>
         </div>
     
@@ -123,11 +133,12 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
+                <th class="text-center">Tipo</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Precio Bs</th>
                 <th class="text-center">Precio Moneda</th>
                 <th class="text-center">Moneda</th>
-                <th class="text-center">Foto del Producto</th>
+                <th class="text-center" width="1%">Foto del Producto</th>
                 
               
                 
@@ -146,6 +157,7 @@
                             <td>{{ $var->id }}</td>
                             <td>{{ $var->code_comercial }}</td>
                             <td>{{ $var->description}}</td>
+                            <td>{{ $var->type ?? ''}}</td>
                             <td>{{ $var->amount ?? 0}}</td>
                            
                             @if($var->money != 'Bs')

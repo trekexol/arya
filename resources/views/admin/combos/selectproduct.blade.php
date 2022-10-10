@@ -83,14 +83,15 @@
             <thead>
             <tr> 
                 <th></th>
-                <th width="1%">Cantidad</th>
-                <th width="1%">ID</th>
-                <th width="1%">Código Comercial</th>
+                <th class="text-center"width="1%">Cantidad</th>
+                <th class="text-center"width="1%">ID</th>
+                <th class="text-center"width="1%">Código Comercial</th>
                 <th>Descripción</th>
-                <th class="text-right">Costo Unidad</th>
-                <th class="text-right">Costo Total</th>
+                <th class="text-center" width="1%">Costo Unidad</th>
+                <th class="text-center" width="1%">Costo Total</th>
                 <th class="text-center" width="1%">Moneda</th>
-                <th>Segmento</th>
+                <th class="text-center" >Segmento</th>
+                <th class="text-center" width="1%">Stock</th>
                 
                 
             </tr>
@@ -128,6 +129,8 @@
                                                     <td class="text-center">Bs.</td>
                                                 @endif
                                                 <td>{{$product->segments['description'] ?? ''}}</td>
+     
+                                                <td class="text-right">{{number_format($productwo->amount ?? 0, 0, ',', '')}}</td> 
                                             </tr> 
                                             <?php
                                             $product->enc = 1;
@@ -165,6 +168,7 @@
                                 <td class="text-center">Bolívar</td>
                             @endif
                             <td>{{$product->segments['description'] ?? ''}}</td>
+                            <td class="text-right">{{number_format($product->amount ?? 0, 0, ',', '')}}</td> 
                         </tr>          
                         @endif 
 

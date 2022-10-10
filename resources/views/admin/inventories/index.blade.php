@@ -71,7 +71,7 @@
       <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventarios</a>
+      <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
@@ -163,48 +163,72 @@
 
 <div class="container-fluid">
     <!-- Page Heading -->
-    <div class="row py-lg-2">
-        <div class="col-sm-2 offset-sm-2  dropdown mb-2">
-            <button class="btn btn-dark" type="button"
-                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
-                aria-expanded="false">
-                <i class="fas fa-bars"></i>
-                Opciones 
-            </button>
-            <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-                <h6>Importación Masiva de Inventario</h6>
-                <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
-                <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
-                  @csrf
-                  <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
-                </form>
-                <br>
-                <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</a> 
-               <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
-            </div> 
-        </div> 
-    <!-- Page Heading -->
 
-        <div class="col-md-4">
-            <a href="{{ route('products.create')}}" class="btn btn-info  float-md-center"  role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
-          </div>
-       
-        <div class="col-md-3 dropdown mb-3">
+    <div class="row py-lg-2">
+        <div class="col-sm-2">
+            <button class="btn btn-dark" type="button"
+            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+            aria-expanded="false">
+            <i class="fas fa-bars"></i>
+            Opciones 
+        </button>
+        <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
+            <h6>Importación Masiva de Inventario</h6>
+            <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
+            <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
+              @csrf
+              <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+            </form>
+            <br>
+            <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</a> 
+           <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
+        </div> 
+        </div>
+        <div class="col-sm-3">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
+            aria-expanded="false">
                 Imprimir
             </button>
             <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
                 
                 <a class="dropdown-item" onclick="pdfinventory();" style="color: rgb(4, 119, 252)"> <i class="fas fa-download fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Inventario Actual</strong></a>
-            </div>
+            </div> 
         </div>
-     
-         <!--
-            <div class="col-md-6">
-                <a href="{{ ''/*route('inventories.select')*/}}" class="btn btn-success  float-md-right " role="button" aria-pressed="true">Registrar un Inventario</a>
-              </div>  -->
-            </div>
+        <div class="col-sm-3 offset-sm-2  dropdown mb-4">
+            <a href="{{ route('products.create')}}" class="btn btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
+        </div> 
+        <div class="col-sm-2">
+            <select class="form-control" name="type" id="type">
+                @if(isset($type))
+                    @if ($type == 'MATERIAP')
+                        <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
+                    @endif
+                    @if ($type == 'todos')
+                        <option disabled selected value="{{$type}}">TODOS</option>    
+                    @endif
+                    @if ($type == 'MERCANCIA' or $type == 'COMBO')
+                    <option disabled selected value="{{$type}}">{{$type}}</option> 
+                    @endif
+                    <option value="todos">-------------</option>
+                    <option value="todos">TODOS</option>
+                    <option value="MERCANCIA">MERCANCIA</option>
+                    <option value="MATERIAP">MATERIA PRIMA</option>
+                    <option value="COMBO">COMBO</option>
+                @else
+                    <option value="todos">TODOS</option>
+                    <option value="MERCANCIA">MERCANCIA</option>
+                    <option value="MATERIAP">MATERIA PRIMA</option>
+                    <option value="COMBO">COMBO</option>
+
+                @endif
+                
+
+            </select>
+        </div>
+    </div>
+
+
+       
  </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -253,7 +277,7 @@
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
-                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '')}}</td> 
+                            <td class="text-right">{{number_format($var->amount ?? 0, 0, ',', '')}}</td> 
                             <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
                             
                             @if($var->money == "D")
@@ -443,6 +467,11 @@
                 var contrapartida_id    = document.getElementById("contrapartida").value;
                 
             });
+            
+        $("#type").on('change',function(){
+            type = $(this).val();
+            window.location = "{{route('inventories', [''])}}"+"/"+type;
+        });
 
         </script> 
 @endsection
