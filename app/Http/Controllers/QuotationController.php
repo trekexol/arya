@@ -429,25 +429,39 @@ class QuotationController extends Controller
     public function selectproduct($id_quotation,$coin,$type,$type_quotation = null)
     {
 
-            $services = null;
-
             $user       =   auth()->user();
             $users_role =   $user->role_id;
      
             $global = new GlobalController();
+ 
+            if ($type == 'todos') {
+                $cond = '!=';
+                $valor = null;
+            } 
+            if ($type == 'MERCANCIA') {
+                $cond = '=';
+                $valor = $type;
+            }   
+            if ($type == 'MATERIAP') {
+                $cond = '=';
+                $valor = $type;
+            }
+            if ($type == 'COMBO') {
+                $cond = '=';
+                $valor = $type;
+            }   
+            if ($type == 'SERVICIO') {
+                $cond = '=';
+                $valor = $type;
+            }      
+
+                $inventories = Product::on(Auth::user()->database_name)
+                ->where('type',$cond,$valor)
+                ->where('status',1)
+                ->select('id as id_inventory','products.*')  
+                ->get();     
             
-            $inventories = Product::on(Auth::user()->database_name)
-            ->where(function ($query){
-                $query->where('type','MERCANCIA')
-                    ->orWhere('type','COMBO')
-                    ->orWhere('type','SERVICIO')
-                    ->orWhere('type','MATERIAP');
-            })
-    
-            ->where('products.status',1)
-            ->select('products.id as id_inventory','products.*')  
-            ->get();     
-    
+
             foreach ($inventories as $inventorie) {
                 
                 $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
@@ -470,20 +484,6 @@ class QuotationController extends Controller
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
-        }
-
-        if(($type == 'servicios') || $inventories->isEmpty()){
-
-            $type = 'servicios';
-            $services = DB::connection(Auth::user()->database_name)->table('inventories')
-            ->join('products', 'products.id', '=', 'inventories.product_id')
-            ->where('products.type','SERVICIO')
-            ->where('products.status',1)
-            ->select('products.*','inventories.id as id_inventory')
-            ->orderBy('products.code_comercial','desc')
-            ->get();
-            
-            return view('admin.quotations.selectservice',compact('type','services','id_quotation','coin','bcv','bcv_quotation_product','type_quotation'));
         }
     
         return view('admin.quotations.selectinventary',compact('type','inventories','id_quotation','coin','bcv','bcv_quotation_product','type_quotation','company'));

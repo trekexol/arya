@@ -264,7 +264,7 @@ Route::group(["prefix"=>'vendors'],function(){
 });
 
 Route::group(["prefix"=>'products'],function(){
-    Route::get('/','ProductController@index')->name('products');
+    Route::get('/{type?}','ProductController@index')->name('products');
     Route::get('register','ProductController@create')->name('products.create');
     Route::post('store','ProductController@store')->name('products.store');
 
@@ -303,7 +303,7 @@ Route::group(["prefix"=>'productsreceipt'],function(){
 
 
 Route::group(["prefix"=>'inventories'],function(){
-    Route::get('/','InventoryController@index')->name('inventories');
+    Route::get('index/{type?}','InventoryController@index')->name('inventories');
     Route::get('selectproduct','InventoryController@selectproduct')->name('inventories.select');
     Route::post('store','InventoryController@store')->name('inventories.store');
 

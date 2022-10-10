@@ -30,7 +30,7 @@ class InventoryController extends Controller
    }
 
 
-   public function index()
+   public function index($type = 'todos')
    {
 
        $user       =   auth()->user();
@@ -38,15 +38,29 @@ class InventoryController extends Controller
 
         $global = new GlobalController();
         
+
+        if ($type == 'todos') {
+            $cond = '!=';
+            $valor = null;
+        } 
+        if ($type == 'MERCANCIA') {
+            $cond = '=';
+            $valor = $type;
+        }   
+        if ($type == 'MATERIAP') {
+            $cond = '=';
+            $valor = $type;
+        }
+        if ($type == 'COMBO') {
+            $cond = '=';
+            $valor = $type;
+        }   
+
         $inventories = Product::on(Auth::user()->database_name)
-        ->where(function ($query){
-            $query->where('type','MERCANCIA')
-                ->orWhere('type','COMBO')
-                ->orWhere('type','MATERIAP');
-        })
         ->orderBy('id' ,'DESC')
-        ->where('products.status',1)
-        ->select('products.id as id_inventory','products.*')  
+        ->where('status',1)
+        ->where('type',$cond,$valor)
+        ->select('id as id_inventory','products.*')  
         ->get();   
         
         foreach ($inventories as $inventorie) {
@@ -57,7 +71,7 @@ class InventoryController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-       return view('admin.inventories.index',compact('inventories','company'));
+       return view('admin.inventories.index',compact('inventories','company','type'));
    }
 
 

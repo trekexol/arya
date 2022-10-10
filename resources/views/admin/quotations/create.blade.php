@@ -286,7 +286,7 @@
                                     <div class="form-group col-md-1">
                                         <a href="" title="Buscar Producto Por Codigo" onclick="searchCode()"><i class="fa fa-search"></i></a>  
 
-                                        <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'productos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
+                                        <a href="{{ route('quotations.selectproduct',[$quotation->id,$coin,'todos',$type]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                                         
                                     </div>
 

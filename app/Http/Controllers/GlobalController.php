@@ -719,42 +719,129 @@ class GlobalController extends Controller
     }  
 
 
+    function consul_cant_combo($id_product,$sucursal = 1){
+        
+        $combo_product = ComboProduct::on(Auth::user()->database_name)
+        ->where('combo_products.id_combo',$id_product)
+        ->get();
+        
+        if(!empty($combo_product)) {
+            foreach ($combo_product as $int_product) {
+                   
+                    if ($sucursal == 1) {
+                        $inventories_quotations = DB::connection(Auth::user()->database_name)
+                        ->table('inventory_histories')
+                        ->where('id_product','=',$int_product->id_product)
+                        ->where('id_branch','=',$sucursal)
+                        ->orwhere('id_branch',null)
+                        ->select('amount_real')
+                        ->get()->last();
+                    } else {
+                        $inventories_quotations = DB::connection(Auth::user()->database_name)
+                        ->table('inventory_histories')
+                        ->where('id_product','=',$int_product->id_product)
+                        ->where('id_branch','=',$sucursal)
+                        ->select('amount_real')
+                        ->get()->last(); 
+                    }
+
+                    if (isset($inventories_quotations)){
+                        $inventario = $inventories_quotations->amount_real;
+                    } else {
+                        $inventario = 0;
+                    }
+
+                if ($int_product->amount_per_product == 0) {
+                    $int_product->amount_per_product == 1;
+                }
+
+                $disponible = intval($inventario/$int_product->amount_per_product);
+
+                $a_producto[] = array($int_product->id_product,$disponible);
+            }
+
+                if(count($a_producto) > 0) {
+
+                    foreach ($a_producto as $clave => $fila) {
+                    $orden[$clave] = $fila[1];
+                    }
+                    
+                    array_multisort($orden, SORT_ASC, $a_producto);
+
+                  //  dd($a_producto);
+
+                    $cantidad_combos = $a_producto[0][1];
+
+                } else {
+                    $cantidad_combos = 0;
+               }
+
+        } else {
+
+            $cantidad_combos = 0;
+        }
+
+        return $cantidad_combos;
+    
+    } 
+
+
 
     function consul_prod_invt($id_product,$sucursal = 1){ // buscar solo la cantidad actual del producto
 
-        if ($sucursal == 1) {
-            $inventories_quotations = DB::connection(Auth::user()->database_name)
-            ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
-            ->select('amount_real')
-            ->get()->last(); 
-        } else {
-            $inventories_quotations = DB::connection(Auth::user()->database_name)
-            ->table('inventory_histories')
-            ->where('id_product','=',$id_product)
-            ->where('id_branch','=',$sucursal)
-            ->select('amount_real')
-            ->get()->last();
-        }
-    
-        if (empty($inventories_quotations)) {
-        $amount_real =0;
-        } else {
-            
-            //$amount_real = 888;
-             
-            if ($inventories_quotations->amount_real > 0) {
+             //dd($id_product);
+            $buscar = DB::connection(Auth::user()->database_name)
+            ->table('products')
+            ->where('id','=',$id_product)
+            ->select('type')->first(); 
 
-            $amount_real = $inventories_quotations->amount_real;
-
+            if (empty($buscar)){
+                $amount_real = 0;
             } else {
-            
-            $amount_real = 0;  
-            
+ 
+                $cantidad_combos = 0;
+
+                    if ($buscar->type == 'COMBO') {
+
+                        $cantidad_combos = $id_product;
+
+                        $amount_real = $cantidad_combos;
+
+                    } else { // tipo Mercancia y Materia prima
+
+                        if ($sucursal == 1) {
+
+                            $inventories_quotations = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->where('id_product','=',$id_product)
+                            ->select('amount_real')
+                            ->get()->last();
+
+                        } else { // prosuctos normal MATERIAP y MERCANCIA con sucursal
+
+                            $inventories_quotations = DB::connection(Auth::user()->database_name)
+                            ->table('inventory_histories')
+                            ->where('id_product','=',$id_product)
+                            ->where('id_branch','=',$sucursal)
+                            ->select('amount_real')
+                            ->get()->last();          
+                        }
+
+
+
+                        if (isset($inventories_quotations)) {
+                            if ($inventories_quotations->amount_real > 0) {
+                            $amount_real = $inventories_quotations->amount_real;
+                            } else {
+                            $amount_real = 0;  
+                            }
+                        } else {
+                            $amount_real =0;
+                        }
+
+                    }
             }
-        
-        }
-    
+
         return $amount_real;
     }
     
@@ -856,6 +943,26 @@ class GlobalController extends Controller
                                     $amount = 0;
                                     $transaccion = $amount_real;
                                     $description = 'De Nota a Factura'; 
+                            }
+    
+                    } else {
+                    $transaccion = $amount_real-$amount;
+                    }
+                    break;
+                    case 'combo':
+    
+                    if ($id_historial_inv != 0) {
+                        $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
+                        ->table('inventory_histories')
+                        ->where('id','=',$id_historial_inv)
+                        ->select('id','amount')
+                        ->get()->last();  
+                        
+                            if (!empty($inventories_quotations_hist)) {
+                                
+                                    $amount = 0;
+                                    $transaccion = $amount_real;
+                                    $description = 'COMBO De Nota a Factura'; 
                             }
     
                     } else {
@@ -1034,39 +1141,42 @@ class GlobalController extends Controller
     
                         switch ($type) {
                             case 'compra':
-                            $msg = 'La Compra fue registrada con exito';
-                            break;
+                                $msg = 'La Compra fue registrada con exito';
+                                break;
                             case 'venta';
-                            $msg = 'La Venta fue registrada con exito';
-                            break;
+                                $msg = 'La Venta fue registrada con exito';
+                                break;
                             case 'nota':
-                            $msg = 'exito';//'La Nota fue registrada con exito';
-                            break;  
+                                $msg = 'exito';//'La Nota fue registrada con exito';
+                                break; 
+                            case 'combo':
+                                $msg = 'como registrdo con exito';//'La Nota fue registrada con exito';
+                                break; 
                             case 'rev_nota':
-                            $msg = 'Reverso de Nota exitoso';
-                            break;   
+                                $msg = 'Reverso de Nota exitoso';
+                                break;   
                             case 'aju_nota':
-                            $msg = 'Eliminacion de producto de la Nota exitoso';
-                            break;   
+                                $msg = 'Eliminacion de producto de la Nota exitoso';
+                                break;   
                             case 'aju_compra':
-                            $msg = 'Ajuste de producto de Compra exitoso';
-                            break;      
+                                $msg = 'Ajuste de producto de Compra exitoso';
+                                break;      
                             case 'rev_venta':
-                            $msg = 'Reverso de Factura exitoso';
-                            break;                                           
+                                $msg = 'Reverso de Factura exitoso';
+                                break;                                           
                             case 'entrada':
-                            $msg = 'Agregado a inventario exitosamente';
-                            break;
+                                $msg = 'Agregado a inventario exitosamente';
+                                break;
                             case 'salida':
-                            $msg = 'Salida de inventario exitoso';
-                            break;
+                                $msg = 'Salida de inventario exitoso';
+                                break;
                             default:
-                            $msg = 'La operacion no es valida';
-                            break;
+                                $msg = 'La operacion no es valida';
+                                break;
                         }
                     }
     
-            } else { // condicion cantidad
+            } else { // condicion cantidad 0
                 if($type == 'creado') {
                     
                     $user       =   auth()->user();
