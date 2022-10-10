@@ -452,7 +452,7 @@ class InventoryController extends Controller
         
         $var->save(); */
         
-        return redirect('/inventories')->withSuccess('El inventario del producto: '.$var->products['description'].' fue registrado Exitosamente!');
+        return redirect('inventories/index/todos')->withSuccess('El inventario del producto: '.$var->products['description'].' fue registrado Exitosamente!');
     
 
     
@@ -546,13 +546,13 @@ class InventoryController extends Controller
             
             }
             
-            return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
+            return redirect('inventories/index/todos')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
                 
            
 
         }else{
 
-           return redirect('/inventories/createincreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
+           return redirect('inventories/index/todos/createincreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
 
         }
 
@@ -639,14 +639,14 @@ class InventoryController extends Controller
                                       $id_user,$total,0);
                // }
 
-                return redirect('/inventories')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
+                return redirect('inventories/index/todos')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
             
             }else{
-                return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir no puede ser mayor a la cantidad actual!');
+                return redirect('inventories/index/todos/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir no puede ser mayor a la cantidad actual!');
 
             }
         }else{
-            return redirect('/inventories/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir debe ser mayor a cero!');
+            return redirect('inventories/index/todos/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir debe ser mayor a cero!');
 
         }
 
@@ -761,7 +761,7 @@ class InventoryController extends Controller
    
     $var->save();
 
-    return redirect('/inventories')->withSuccess('Actualizacion Exitosa!');
+    return redirect('inventories')->withSuccess('Actualizacion Exitosa!');
     }
 
 
