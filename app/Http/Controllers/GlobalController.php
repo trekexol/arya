@@ -802,8 +802,8 @@ class GlobalController extends Controller
                 $cantidad_combos = 0;
 
                     if ($buscar->type == 'COMBO') {
-
-                        $cantidad_combos = $id_product;
+                  
+                        $cantidad_combos = $this->consul_cant_combo($id_product);
 
                         $amount_real = $cantidad_combos;
 
@@ -849,6 +849,11 @@ class GlobalController extends Controller
     function transaction_inv($type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
+
+        $buscar = DB::connection(Auth::user()->database_name)
+        ->table('products')
+        ->where('id','=',$id_product)
+        ->select('type')->first(); 
     
        // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
@@ -874,6 +879,12 @@ class GlobalController extends Controller
                     
                     $amount_real = $inventories_quotations->amount_real;
 
+                }
+
+
+                if($buscar->type == 'COMBO') {
+                    $global = new GlobalController;
+                    $amount_real = $global->consul_prod_invt($id_product);
                 }
 
                 if ($date == null) {
@@ -947,27 +958,7 @@ class GlobalController extends Controller
     
                     } else {
                     $transaccion = $amount_real-$amount;
-                    }
-                    break;
-                    case 'combo':
-    
-                    if ($id_historial_inv != 0) {
-                        $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
-                        ->table('inventory_histories')
-                        ->where('id','=',$id_historial_inv)
-                        ->select('id','amount')
-                        ->get()->last();  
-                        
-                            if (!empty($inventories_quotations_hist)) {
-                                
-                                    $amount = 0;
-                                    $transaccion = $amount_real;
-                                    $description = 'COMBO De Nota a Factura'; 
-                            }
-    
-                    } else {
-                    $transaccion = $amount_real-$amount;
-                    }    
+                    }   
                     break;          
                     case 'entrada':
                     $transaccion = $amount_real+$amount;
