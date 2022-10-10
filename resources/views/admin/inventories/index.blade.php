@@ -298,8 +298,12 @@
                             </td> 
                             
                             <td class="text-center">
+                                @if($var->type == 'COMBO')
+                                <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
+                                @else
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
                                 <a href="{{ route('inventories.create_decrease_inventory',$var->id_inventory) }}" style="color: rgb(248, 62, 62);" title="Disminuir Inventario"><i class="fa fa-minus"></i></a>
+                                @endif
                             </td>
                         </tr>     
                     @endforeach   
