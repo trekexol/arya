@@ -335,51 +335,51 @@ class ExcelController extends Controller
 
                     if (!empty($products)){
                         $msj = '';
-                        return redirect('products')->with('danger', 'El producto con id '.$row['id'].' ya existe. Fila: '.$cont);
+                        return redirect('products/index')->with('danger', 'El producto con id '.$row['id'].' ya existe. Fila: '.$cont);
                     }
                     
                     if ($row['codigo_comercial'] == '') {
-                        return redirect('products')->with('danger', 'El codigo Comercial es requerido. Fila: '.$cont);
+                        return redirect('products/index')->with('danger', 'El codigo Comercial es requerido. Fila: '.$cont);
                     }
         
                    if ($row['id_segmento'] == '') {
-                    return redirect('products')->with('danger', 'Id Segmento es requerido cree un Segmento en el módulo de Administración y coloque el ID, falta el segmento. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Id Segmento es requerido cree un Segmento en el módulo de Administración y coloque el ID, falta el segmento. Fila: '.$cont);
                    }
                    
                    if (is_numeric($row['id_segmento']) == false) {
-                    return redirect('products')->with('danger', 'Id Segmento debe ser numero. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Id Segmento debe ser numero. Fila: '.$cont);
                    }
     
                    if ($row['id_unidadmedida'] == '') {
-                    return redirect('products')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Unidad de Medida es Requerido un ID, falta un producto con unidad de medida. Fila: '.$cont);
                    }
     
                    if ($row['precio'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Columna Precio predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
                    }
                    if ($row['precio_compra'] == '') {
-                    return redirect('products')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Columna Precio de Compra predeterminado es 0 no puede ir vacia la fila o la Columna. Fila: '.$cont);
                    }
     
                    /*if ($row['exento_1_o_0'] != 0 or $row['exento_1_o_0'] != 1) {
-                    return redirect('products')->with('danger', 'Columna Excento debe ser 0 o 1. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Columna Excento debe ser 0 o 1. Fila: '.$cont);
                    }
     
                    if ($row['islr_1_o_0'] != 0 or $row['islr_1_o_0'] != 0) {
-                    return redirect('products')->with('danger', 'Columna islr debe ser 0 o 1. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Columna islr debe ser 0 o 1. Fila: '.$cont);
                    }*/
     
                    if ($row['moneda_d_o_bs'] == '') {
-                    return redirect('products')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'El tipo de moneda es D para dolares o Bs para Bolivares. Fila: '.$cont);
                    }
                    
                    if ($row['descripcion'] == '') {
-                    return redirect('products')->with('danger', 'Columna descripcion el producto debe contener un nombre. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Columna descripcion el producto debe contener un nombre. Fila: '.$cont);
                    }
     
     
                    if ($row['tipo_mercancia_o_servicio'] == '') {
-                    return redirect('products')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA. Fila: '.$cont);
+                    return redirect('products/index')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA. Fila: '.$cont);
                    }
 
                   // Excel::import(new ProductImport, $file);
@@ -390,13 +390,13 @@ class ExcelController extends Controller
 
            Excel::import(new ProductImport, $file);
            
-           return redirect('products')
+           return redirect('products/index')
             ->with('success', 'Archivo importado con Exito!');
 
 
 
        }else{
-            return redirect('products')->with('danger', 'Debe seleccionar un archivo');
+            return redirect('products/index')->with('danger', 'Debe seleccionar un archivo');
        }
 
 
@@ -521,10 +521,10 @@ class ExcelController extends Controller
             $movement = new MovementProductImportController();
             $movement->add_movement($subcontrapartida,$amount,$rate);
             
-            return redirect('inventories')->with('success', 'Archivo importado con Exito!');
+            return redirect('inventories/index')->with('success', 'Archivo importado con Exito!');
 
        }else{
-            return redirect('inventories')->with('danger', 'Debe seleccionar una cuenta de pago');
+            return redirect('inventories/index')->with('danger', 'Debe seleccionar una cuenta de pago');
        }
        
    }
@@ -536,7 +536,7 @@ class ExcelController extends Controller
        
        Excel::import(new ProductUpdatePriceImport, $file);
        
-       return redirect('products')->with('success', 'Se han actualizado los precios Correctamente');
+       return redirect('products/index')->with('success', 'Se han actualizado los precios Correctamente');
    } */
 
 
@@ -547,7 +547,7 @@ class ExcelController extends Controller
        
        Excel::import(new ProductUpdatePriceImport, $file);
        
-       return redirect('products')->with('success', 'Se han actualizado los precios Correctamente');
+       return redirect('products/index')->with('success', 'Se han actualizado los precios Correctamente');
    }
 
 
