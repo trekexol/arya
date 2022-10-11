@@ -321,8 +321,9 @@ class InventoryController extends Controller
 
 
 
-    $pdf = $pdf->loadView('admin.reports.movements',compact('coin','inventories'));
+    $pdf = $pdf->loadView('admin.reports.movements',compact('coin','inventories'))->setPaper('a4', 'landscape');
     return $pdf->stream();  
+    
 
    }
    /**

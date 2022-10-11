@@ -41,26 +41,56 @@
   ?>
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; width:9%;">Fecha</th>
-    <th style="text-align: center; width:5%;">ID</th>
-    <th style="text-align: center; width:7%;">Código.C.</th>
+    <th style="text-align: center; width:6.2%;">Fecha</th>
+    <th style="text-align: center; width:1%;">ID</th>
+    <th style="text-align: center; width:1%;">Código Comeercial</th>
     <th style="text-align: center; ">Descripción</th>
-    <th style="text-align: center; width:5%;">Tipo</th>
-    <th style="text-align: center; width:7%;">Precio-Venta</th>
-    <th style="text-align: center; width:5%;">Cant.</th>
-    <th style="text-align: center; width:5%;">Cant.Actual</th>
-    <th style="text-align: center; width:5%;">Factura</th>
-    <th style="text-align: center; width:5%;">Nota</th>
-    <th style="text-align: center; width:5%;">Sucursal</th>
+    <th style="text-align: center; width:1%;">Segmento</th>
+    <th style="text-align: center; width:1%;">Precio deVenta</th>
+    <th style="text-align: center; width:1%;">Tipo de Operación</th>
+    <th style="text-align: center; width:1%;">Cantidad Anterior</th>
+    <th style="text-align: center; width:1%;">Cantidad Operación</th>
+    <th style="text-align: center; width:1%;">Cantidad Final</th>
+    <th style="text-align: center; width:1%;">Factura</th>
+    <th style="text-align: center; width:1%;">Nota</th>
+    <th style="text-align: center; width:1%;">Sucursal</th>
   </tr>
     @foreach ($inventories as $inventory)
+    <?php
+     $cantidad_anterior = 0;
+
+     if ($inventory->type == 'entrada' || $inventory->type == 'compra' || $inventory->type == 'rev_nota' || $inventory->type == 'rev_venta' || $inventory->type == 'rev_compra' || $inventory->type == 'rev_pedido'){
+      $cantidad_anterior = $inventory->amount_real - $inventory->amount;
+       
+      if ($cantidad_anterior <= 0 ){
+        $cantidad_anterior = 0;
+       }
+     }
+
+     if ($inventory->type == 'venta' || $inventory->type == 'salida' || $inventory->type == 'nota' || $inventory->type == 'pedido'){
+      $cantidad_anterior = $inventory->amount_real + $inventory->amount;
+       
+      if ($cantidad_anterior <= 0 ){
+        $cantidad_anterior = 0;
+       }
+     }
+
+     if ($inventory->type == 'aju_nota' || $inventory->type == 'aju_compra' || $inventory->type == 'creado' || $inventory->type == 'aju_pedido'){
+      $cantidad_anterior = '-';
+     }
+
+    ?>
         <tr>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->date}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->id_product}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->code_comercial}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->description}}</td>
-          <td style="text-align: center; font-weight: normal;">{{ $inventory->type}}</td>
+          <td style="text-align: center; font-weight: normal;">{{ '' }}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->price}}</td>
+          <td style="text-align: center; font-weight: normal;">{{ $inventory->type}}</td>
+          
+          <td style="text-align: center; font-weight: normal;">{{ $cantidad_anterior }}</td>
+          
           <td style="text-align: center; font-weight: normal;">{{ $inventory->amount}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->amount_real}}</td>
           <td style="text-align: center; font-weight: normal;">{{ $inventory->invoice}}</td>
