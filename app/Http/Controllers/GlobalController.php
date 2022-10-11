@@ -1140,7 +1140,6 @@ class GlobalController extends Controller
                     
                         if ($agregar == 'true') {
                             
-
                              DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
                             'id_product' => $id_product,
                             'id_user' => $user->id,
@@ -1158,7 +1157,13 @@ class GlobalController extends Controller
                             $id_last = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
                             ->select('id')
-                            ->get()->last();                             
+                            ->get()->last(); 
+        
+                            $buscar = DB::connection(Auth::user()->database_name)
+                            ->table('products')
+                            ->where('id','=',$id_product)
+                            ->select('type')->first(); 
+                                        
 
                                 if ($type == 'nota' || $type == 'factura' || $type == 'aju_nota' || $buscar->type == 'COMBO'){
                                     DB::connection(Auth::user()->database_name)->table('quotation_products')
