@@ -53,7 +53,7 @@
                             <div class="col-md-4">
                             <select class="form-control" name="type" id="type">
                                 <option value="SERVICIO">Servicio</option>
-                                <option value="MERCANCIA">Mercancía</option>
+                                <option selected value="MERCANCIA">Mercancía</option>
                                 <option value="MATERIAP">Materia Prima</option>
                                 <option value="COMBO">Combo</option>
                                 
