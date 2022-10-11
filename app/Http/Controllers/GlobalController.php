@@ -1189,10 +1189,7 @@ class GlobalController extends Controller
                                 break;
                             case 'nota':
                                 $msg = 'exito';//'La Nota fue registrada con exito';
-                                break; 
-                            case 'combo':
-                                $msg = 'como registrdo con exito';//'La Nota fue registrada con exito';
-                                break; 
+                                break;  
                             case 'rev_nota':
                                 $msg = 'Reverso de Nota exitoso';
                                 break;   
