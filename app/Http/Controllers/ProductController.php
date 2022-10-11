@@ -30,14 +30,16 @@ class ProductController extends Controller
 
    public function index($type = 'todos')
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       $company = Company::on(Auth::user()->database_name)->find(1);
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        $company = Company::on(Auth::user()->database_name)->find(1);
 
-       if ($type == 'todos') {
+
+        if ($type == 'todos') {
         $cond = '!=';
         $valor = null;
         } 
+
         if ($type == 'MERCANCIA') {
             $cond = '=';
             $valor = $type;
@@ -321,7 +323,7 @@ class ProductController extends Controller
         $inventory->save();
 
 
-        return redirect('/products')->withSuccess('Registro Exitoso!');
+        return redirect('products/index/todos')->withSuccess('Registro Exitoso!');
     }
 
    /**
