@@ -1075,10 +1075,6 @@ class QuotationController extends Controller
             
                 QuotationProduct::on(Auth::user()->database_name)
                 ->join('products','products.id','quotation_products.id_inventory')
-                ->where(function ($query){
-                    $query->where('products.type','MERCANCIA')
-                        ->orWhere('products.type','COMBO');
-                })
                 ->where('quotation_products.id',$quotation_product->id)
                 ->update(['quotation_products.status' => 'X']);
                

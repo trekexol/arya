@@ -62,11 +62,15 @@ class InventoryController extends Controller
         ->where('type',$cond,$valor)
         ->select('id as id_inventory','products.*')  
         ->get();   
-        
-        foreach ($inventories as $inventorie) {
-            
-            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
 
+
+        foreach ($inventories as $inventorie) {
+            $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
+            if ($type == 'COMBO') {
+            $inventorie->combos_disponibles = $global->consul_cant_combo($inventorie->id_inventory);
+            } else {
+            $inventorie->combos_disponibles = 0;    
+            }
         }
 
         $company = Company::on(Auth::user()->database_name)->find(1);

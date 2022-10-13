@@ -161,6 +161,24 @@
 </div>
 
 
+<div class="modal modal-danger fade" id="movementModaltwo" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Combos Disponibles</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input id="disponible" type="text" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="{{ number_format($combos_disponibles ?? 0, 0, '.', '') }}" readonly required autocomplete="disponible">
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container-fluid">
     <!-- Page Heading -->
 
@@ -262,7 +280,7 @@
                 
                 <th class="text-center">Moneda</th>
               
-                <th class="text-center">Foto del Producto.</th>
+                <th class="text-center" style="width: 1%">Foto del Producto.</th>
                 
                 <th class="text-center"></th>
             </tr>
@@ -299,6 +317,8 @@
                             
                             <td class="text-center">
                                 @if($var->type == 'COMBO')
+                                <a href="#" onclick="crear_combo()" style="color: blue;" title="Crear Combo"><i class="fa fa-plus"></i></a>
+                                <a href="#" onclick="crear_combo()" style="color: rgb(248, 62, 62);" title="Deshacer Combo"><i class="fa fa-minus"></i></a>
                                 <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
                                 @else
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
@@ -346,6 +366,7 @@
         $('#movementModal').modal('show');
     }
     
+
 </script>
 
     <script type="text/javascript">
@@ -385,6 +406,10 @@
 
         function import_product(){
             document.getElementById("fileForm").submit();
+        }
+        
+        function crear_combo(){
+            $('#movementModaltwo').modal('show');
         }
 
         function import_product_update_price(){
