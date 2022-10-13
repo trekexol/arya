@@ -799,16 +799,6 @@ class GlobalController extends Controller
                 $amount_real = 0;
             } else {
  
-                $cantidad_combos = 0;
-
-                    if ($buscar->type == 'COMBO') {
-                  
-                        $cantidad_combos = $this->consul_cant_combo($id_product);
-
-                        $amount_real = $cantidad_combos;
-
-                    } else { // tipo Mercancia y Materia prima
-
                         if ($sucursal == 1) {
 
                             $inventories_quotations = DB::connection(Auth::user()->database_name)
@@ -827,8 +817,6 @@ class GlobalController extends Controller
                             ->get()->last();          
                         }
 
-
-
                         if (isset($inventories_quotations)) {
                             if ($inventories_quotations->amount_real > 0) {
                             $amount_real = $inventories_quotations->amount_real;
@@ -839,7 +827,7 @@ class GlobalController extends Controller
                             $amount_real =0;
                         }
 
-                    }
+                    
             }
 
         return $amount_real;
@@ -849,7 +837,7 @@ class GlobalController extends Controller
     function transaction_inv($type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
     
         $msg = 'Sin Registro';   
-
+        $global = new GlobalController;
        // $product = Inventory::on(Auth::user()->database_name)->where('id',$id_inventary)->get();
     
             if ($branch == 1) { // todas las sucurssales
@@ -931,20 +919,6 @@ class GlobalController extends Controller
 
                     break;
                     case 'venta':
-    
-
-                        $buscar = DB::connection(Auth::user()->database_name)
-                        ->table('products')
-                        ->where('id','=',$id_product)
-                        ->select('type')->first(); 
-        
-                        if($buscar->type == 'COMBO') {
-        
-                            $global = new GlobalController;
-                            $amount_real = $global->consul_prod_invt($id_product);
-                        }
-
-
 
 
                         if ($id_historial_inv != 0) {
@@ -964,45 +938,6 @@ class GlobalController extends Controller
                         } else {
                         $transaccion = $amount_real-$amount;
                         }  
-                       
-                       
-                        if($buscar->type == 'COMBO'){
-                            
-                            $user       =   auth()->user();
-
-                            $combo_products = ComboProduct::on(Auth::user()->database_name)
-                            ->where('id_combo',$id_product)
-                            ->orderBy('id' ,'desc')
-                            ->get();
-                            
-                    
-                            foreach ($combo_products as $productwo){
-                                $amount = 0;
-                                $transaccion = 0;
-
-                                $amount = $productwo->amount_per_product;
-                                $transaccion = $global->consul_prod_invt($productwo->id_product);
-
-                                $transaccion = $transaccion - $productwo->amount_per_product;
-                            
-                                 DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                                'id_product' => $productwo->id_product,
-                                'id_user' => $user->id,
-                                'id_branch' => $branch,
-                                'id_centro_costo' => $branch,
-                                'id_quotation_product' => $quotation,
-                                'id_expense_detail' => $expense,
-                                'id_combo' => $id_product,
-                                'date' => $date,
-                                'type' => $type,
-                                'price' => $price,
-                                'amount' => $amount,
-                                'amount_real' => $transaccion,
-                                'status' => 'A']);
-                            }
-
-                        }                       
-                        
                     break;          
                     case 'entrada':
                     $transaccion = $amount_real+$amount;
@@ -1158,26 +1093,20 @@ class GlobalController extends Controller
                             ->table('inventory_histories')
                             ->select('id')
                             ->get()->last(); 
-        
-                            $buscar = DB::connection(Auth::user()->database_name)
-                            ->table('products')
-                            ->where('id','=',$id_product)
-                            ->select('type')->first(); 
-                                        
 
-                                if ($type == 'nota' || $type == 'factura' || $type == 'aju_nota' || $buscar->type == 'COMBO'){
-                                    DB::connection(Auth::user()->database_name)->table('quotation_products')
-                                    ->where('id','=',$id)
-                                    ->update(['id_inventory_histories' => $id_last->id]);
-                                }
-       
-                                if ($type == 'compra' || $type == 'aju_compra'){
-                                    DB::connection(Auth::user()->database_name)->table('expenses_details')
-                                    ->where('id','=',$id)
-                                    ->update(['id_inventory_histories' => $id_last->id]);
-                                }      
+
+                            if ($type == 'nota' || $type == 'venta' || $type == 'aju_nota' || $type == 'factura'){
+                                DB::connection(Auth::user()->database_name)->table('quotation_products')
+                                ->where('id','=',$id)
+                                ->update(['id_inventory_histories' => $id_last->id]);
+                            }
+    
+                            if ($type == 'compra' || $type == 'aju_compra'){
+                                DB::connection(Auth::user()->database_name)->table('expenses_details')
+                                ->where('id','=',$id)
+                                ->update(['id_inventory_histories' => $id_last->id]);
+                                }    
                         
-
                         }
     
                         switch ($type) {
