@@ -10,8 +10,8 @@ class TempMovimientos extends Model
 
     protected $table = 'bvc_rates_social_benefits';*/
     protected $table = 'TempMovimientos';
-
+    protected $primaryKey = 'id_temp_movimientos';
     protected $fillable = [
-        'banco', 'referencia_bancaria', 'descripcion', 'fecha', 'haber','debe', 'moneda'
+        'banco', 'referencia_bancaria', 'descripcion', 'fecha', 'haber','debe', 'moneda','estatus'
     ];
 }
