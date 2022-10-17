@@ -52,7 +52,7 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                     'id'                    => $row['id'],
                     'segment_id'            => $row['id_segmento'], 
-                    'subsegment_id'         => $row['id_subsegmento'], 
+                    'subsegment_id'         => $row['id_subsegmento'] ?? null, 
                     'twosubsegment_id'      => $row['id_twosubsegment'] ?? null, 
                     'threesubsegment_id'    => $row['id_threesubsegment'] ?? null,
                     'id_account'            => $id_account,
