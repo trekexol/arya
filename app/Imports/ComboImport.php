@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\ExpensesDetail;
 use App\Product;
+use App\Account;
 use App\Http\Controllers\GlobalController;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -39,13 +40,23 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
             
             $costo_calculado = 0;
 
+            $account = Account::on(Auth::user()->database_name)
+            ->where('description','LIKE','%Mercancia para la Venta%')
+            ->first();
+
+            if (isset($account)) {
+                $id_account = $account->id;    
+            } else {
+                $id_account = 25;
+            }
+
              $product = DB::connection(Auth::user()->database_name)->table('products')->insert([
                  'id'                    => $row['id_combo'],
                  'segment_id'            => 1, 
                  'subsegment_id'         => null, 
                  'twosubsegment_id'      => null, 
                  'threesubsegment_id'    => null,
-                 'id_account'            => null,
+                 'id_account'            => $id_account,
                  'unit_of_measure_id'    => 1, 
                  'code_comercial'        => $row['codigo_comercial_combo'], 
                  'type'                  => 'COMBO', 
@@ -62,11 +73,11 @@ class ComboImport implements ToModel,WithHeadingRow, SkipsOnError
                  'status'                => 1,
                  'created_at'            => $date,
                  'updated_at'            => $date
-             ]);       
-             /*
+             ]);  
+
              $global = new GlobalController; 
-             $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
-             */
+             $global->transaction_inv('creado',$row['id_combo'],'Importacion Masiva de Combos',0,$row['precio_venta_combo'],$date,1,1,0,0,0,0,0);
+
         }
 
         if ($row['id_combo'] && $row['id_producto'] != '') {

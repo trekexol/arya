@@ -38,6 +38,9 @@ Auth::routes();
 
 Route::get('/home/{coin?}', 'BackendController@index')->name('home');
 
+Route::get('/suspended', 'SuspendedController@index')->name('suspended');
+
+
 Route::group(["prefix"=>'users'],function(){
     Route::get('/','UserController@index')->name('users');
     Route::get('register','UserController@create')->name('users.create');
@@ -319,6 +322,8 @@ Route::group(["prefix"=>'inventories'],function(){
     Route::post('storedecreaseinventory','InventoryController@store_decrease_inventory')->name('inventories.store_decrease_inventory');
     Route::get('createdecreaseinventory/{id_inventario}','InventoryController@create_decrease_inventory')->name('inventories.create_decrease_inventory');
   
+    Route::post('storeinventorycombo','InventoryController@store_inventory_combo')->name('inventories.store_inventory_combo');
+
     Route::get('movements','InventoryController@indexmovements')->name('inventories.movement');
     Route::post('storemovements','InventoryController@storemovements')->name('reports.storemovements');
     Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}/{id_account}','InventoryController@movements_pdf')->name('reports.movements_pdf');
@@ -1457,6 +1462,8 @@ Route::group(["prefix"=>'report_anticipos'],function(){
     Route::get('selectclient','Reports\AnticipoReportController@selectClient')->name('report_anticipos.selectClient');
     Route::get('selectProvider','Reports\AnticipoReportController@selectProvider')->name('report_anticipos.selectProvider');
 });
+
+
 
 /////////////////////////////////////////EMPRESA LICORES///////////////////////////////////////////////
 Route::group(["prefix"=>'quotationslic'],function(){

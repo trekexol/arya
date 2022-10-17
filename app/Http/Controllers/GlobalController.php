@@ -1103,7 +1103,76 @@ class GlobalController extends Controller
                                 DB::connection(Auth::user()->database_name)->table('expenses_details')
                                 ->where('id','=',$id)
                                 ->update(['id_inventory_histories' => $id_last->id]);
-                                }    
+                            }  
+                                
+                    //PRODUCTO COMBO 
+                    
+                    $buscar = Product::on(Auth::user()->database_name)
+                    ->where('status','!=','X')
+                    ->select('type')
+                    ->find($id_product);
+
+                    if($buscar->type == 'COMBO'){ // producto combo
+                                 
+                            $user     =   auth()->user();
+                            
+                            $combo_products = ComboProduct::on(Auth::user()->database_name)
+                            ->where('id_combo',$id_product)
+                            ->orderBy('id' ,'desc')
+                            ->get();
+
+                            
+                        if(!empty($combo_products)) {
+
+                            for ($q=0;$q<$amount;$q++) {
+
+
+                                foreach ($combo_products as $productwo){
+                                    $amount_interno = 0;
+                                    $transaccion = 0;
+    
+                                    $amount_interno = $productwo->amount_per_product;
+    
+                                    $transaccion_interna = $global->consul_prod_invt($productwo->id_product);
+                                      
+                                    if ($type == 'venta' || $type == 'salida' || $type == 'nota' || $type == 'rev_compra') {
+                                    $transaccion_interna = $transaccion_interna - $productwo->amount_per_product;
+                                    }
+
+                                    if ($type == 'compra' || $type == 'entrada' || $type == 'rev_nota' || $type == 'rev_venta') {
+                                    $transaccion_interna = $transaccion_interna + $productwo->amount_per_product;
+                                    }
+
+
+
+
+                                    if ($amount_real > 0) {
+
+                                        DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                                        'id_product' => $productwo->id_product,
+                                        'id_user' => $user->id,
+                                        'id_branch' => $branch,
+                                        'id_centro_costo' => $branch,
+                                        'id_quotation_product' => $quotation,
+                                        'id_expense_detail' => $expense,
+                                        'id_combo' => $id_product,
+                                        'date' => $date,
+                                        'type' => $type,
+                                        'price' => $price,
+                                        'amount' => $amount_interno,
+                                        'amount_real' => $transaccion_interna,
+                                        'status' => 'A']);
+                                    }
+                                }
+                            }
+          
+
+                        }
+                           
+                    }       
+                    ////fin PRODUCTO COMBO
+
+
                         
                         }
     

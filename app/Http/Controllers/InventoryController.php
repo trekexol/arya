@@ -66,8 +66,8 @@ class InventoryController extends Controller
 
         foreach ($inventories as $inventorie) {
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
-            if ($type == 'COMBO') {
-            $inventorie->combos_disponibles = $global->consul_cant_combo($inventorie->id_inventory);
+            if ($inventorie->type == 'COMBO') {
+            $inventorie->combos_disponibles = $global->consul_cant_combo($inventorie->id_inventory,1);
             } else {
             $inventorie->combos_disponibles = 0;    
             }
@@ -658,7 +658,98 @@ class InventoryController extends Controller
     
     }
 
+     
+    
+    public function store_inventory_combo(Request $request)
+    {
+        
+          /*  $data = request()->validate([
                 
+                'disponible'    =>'required',
+                'id_product'    =>'required'
+                
+            ]); */
+        
+            $type_add = request('type_add');
+            $id_product = request('id_product');
+            $cantidad_disponible = request('cant_disponible');
+            $cantidad_actual = request('cant_actual');
+            $description = request('name_combo');
+            $serie = request('serie');
+
+            $cantidad = str_replace(',', '.', str_replace('.', '', request('disponible')));
+  
+
+ 
+            $inventory = Product::on(Auth::user()->database_name)->find($id_product);
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');   
+            $counterpart = request('Subcontrapartida');
+            $agregar = 'true';
+          
+            if($type_add == '1') {
+                if($cantidad_disponible <= 0) {
+                    $agregar == 'false';
+                    return redirect('inventories/index/todos')->withDanger('No pose inventario suficiente para realizar el combo ID '.$id_product.' Código '.$serie.' '.$description.'. Revisar en los productos del combo y agregue primero al inventario la cantidad de productos que se requiere para la elavoración del combo.');
+                    exit;
+                }
+
+                if($cantidad_disponible < $cantidad){
+                    $agregar == 'false';
+                    return redirect('inventories/index/todos')->withDanger('No hay disponibilidad para la cantidad de combos ingresados ID '.$id_product.' '.$serie.' '.$description.'. Intente con una cantidad menor');
+                    exit;
+                }
+
+                if($cantidad == 0) {
+                    $agregar == 'false';
+                    return redirect('inventories/index/todos')->withDanger('Para agregar un combo al inventario la cantidad debe ser mayor a cero');
+                    exit;
+                }
+            }
+            if($type_add == '0') {
+
+                if( $cantidad_actual < $cantidad){
+                    $agregar == 'false';
+                    return redirect('inventories/index/todos')->withDanger('La cantidad que desea rebajar del combo ID'.$id_product.' Código '.$serie.' '.$description.' es mayor a la cantidad actual');
+                    exit;
+                }
+
+                if($cantidad == 0) {
+                    $agregar == 'false';
+                    return redirect('inventories/index/todos')->withDanger('Para deshacer un combo y regresar sus productos a inventario la cantidad debe ser mayor a cero');
+                    exit;
+                }
+            }
+                   
+            
+
+                if ($agregar == 'true'){
+
+                    $global = new GlobalController; 
+
+                    if($type_add == '1') {
+                        $transaccion = $global->transaction_inv('entrada',$inventory->id,'Entrada de Inventario tipo Combo',$cantidad,$inventory->price,$datenow,1,1,0,0,0,0,0);
+                    } 
+
+                    if($type_add == '0') {
+                        $transaccion = $global->transaction_inv('salida',$inventory->id,'Salida de Inventario tipo Combo',$cantidad,$inventory->price,$datenow,1,1,0,0,0,0,0);
+                    } 
+
+                    if($transaccion != ''){   
+                    return redirect('inventories/index/todos')->withSuccess($transaccion); 
+                    } 
+
+                } else {
+
+                    return redirect('inventories/index/todos')->withDanger('Transacción no disponible');
+
+                }
+
+
+
+    }
+
 
     public function add_movement($tasa,$id_header,$id_account,$id_user,$debe,$haber){
 

@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Arya Software
+    <title>Arya Software 
       
     </title>
 
@@ -51,7 +51,7 @@
                 <!-- Topbar -->
                 @include('admin.layouts.dashboard_topbar')
                 <!-- End of Topbar -->
-
+               
                 <!-- Begin Page Content -->
 
                 @yield('content')
@@ -92,7 +92,7 @@
                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                  <a class="btn btn-primary" href="{{ route('logout') }}"onclick="event.preventDefault();
                  document.getElementById('logout-form').submit();">
-                 Cerrar Sesión
+                 Cerrar Sesión 
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                   @csrf
@@ -139,6 +139,12 @@
                 if ($(".sidebar").hasClass("toggled")) {
                 $('.sidebar .collapse').collapse('hide');
             };
+            
+            id_company = $("#id_company").val();
+            if (id_company == '1' || id_company == '3') {
+            window.location.href = "{{ route('suspended')}}";
+            }
+
         </script>
 
   @yield('piechart')

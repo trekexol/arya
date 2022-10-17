@@ -127,25 +127,10 @@ class ExcelController extends Controller
          ->where('type','!=','COMBO')
          ->where('status','1')
          ->select('id','segment_id','subsegment_id','twosubsegment_id','threesubsegment_id','unit_of_measure_id',
-         'code_comercial','type','description','price','price_buy','money',
-         'exento','islr')
+         'code_comercial','type','description','price','price_buy','money','exento','islr')
          ->get();
 
-         $global = new GlobalController(); 
-
-         foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
-            
-            $buscar_num = $global->consul_prod_invt($product->id);
-
-            if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
-            
-             $product->amount = '0.00';
-
-            } else {
-                $product->amount = $buscar_num;  
-            }
-
-         }
+         $global = new GlobalController();
 
         
          $export = new ExpensesExport([
@@ -154,8 +139,8 @@ class ExcelController extends Controller
               'exento_1_o_0','islr_1_o_0'],
               $products
         ]);
-        
-        return Excel::download($export, 'guia_productos.xlsx');
+
+         return Excel::download($export, 'guia_productos.xlsx');
     }
 
 

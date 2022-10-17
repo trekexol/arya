@@ -43,7 +43,6 @@ class ProductImport implements ToModel,WithHeadingRow, SkipsOnError
                 ->where('description','LIKE','%Mercancia para la Venta%')
                 ->first();
 
-
                 if (isset($account)) {
                     $id_account = $account->id;    
                 } else {
