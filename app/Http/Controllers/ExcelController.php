@@ -373,11 +373,11 @@ class ExcelController extends Controller
                    }
 
                 } 
-                $concatena .=  ' - '.$row['id'];
+                //$concatena .=  ' - '.$row['id'];
                
             }
 
-          /* Excel::import(new ProductImport, $file);*/
+           Excel::import(new ProductImport, $file);
            
            return redirect('products/index')
             ->with('success', 'Archivo importado con Exito!'.$concatena);
