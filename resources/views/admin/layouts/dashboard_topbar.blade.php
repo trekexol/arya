@@ -1,5 +1,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-light topbar mb-4 static-top shadow">
-        <!-- Sidebar Toggle (Topbar) -->
+       
+     <input id="id_company" type="hidden" value="{{Auth::user()->company->id ?? ''}}">
+    <!-- Sidebar Toggle (Topbar) -->
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
         </button>
@@ -8,12 +10,15 @@
         <nav class="navbar navbar-light" style="list-style: none;">
             <li>
             <a class="navbar-brand text-secondary" href="#">
+
                 <img src="{{ asset(Auth::user()->company->foto_company ?? '') }}" width="auto" height="60" class="d-inline-block align-top" alt="">                
                 
             </a>
            </li>
            <li style="position: static;">{{Auth::user()->company->razon_social ?? ''}} </li>
         </nav>
+
+        
             
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">

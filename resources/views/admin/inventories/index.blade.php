@@ -166,13 +166,35 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Combos Disponibles</h5>
+                <h5 class="modal-title" id="exampleModalLabelcombo">Crear Combo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <input id="disponible" type="text" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="{{ number_format($combos_disponibles ?? 0, 0, '.', '') }}" readonly required autocomplete="disponible">
+            <form id="inventarycombo" name="inventarycombo" method="POST" action="{{ route('inventories.store_inventory_combo') }}" enctype="multipart/form-data" >
+                @csrf
+                <input id="type_add" type="hidden" name="type_add" value="1">
+                <input id="id_product" type="hidden" name="id_product">
+                <input id="cant_disponible" type="hidden" name="cant_disponible">
+                <input id="cant_actual" type="hidden" name="cant_actual">
+                <input id="name_combo" type="hidden" name="name_combo">
+                <input id="serie" type="hidden" name="serie">
+                                
+                <div class="modal-body">
+                    <h6 class="modal-title" id="exampleModalLabelmed2"></h6>
+                    <br>
+                    <h6 class="modal-title" id="exampleModalLabelmed"></h6>
+                <br>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                       <span id="type_add_text"></span>
+                     </div> 
+                    <div class="col-sm-4">
+                   <input id="disponible" style="text-align: center" type="number" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="0" required>
+                   </div> 
+                </div> 
+                <br>
+                <button type="submit" class="btn btn-info"> <span id="type_add_button"></span></button>
             </div>
         </div>
     </div>
@@ -290,7 +312,14 @@
                 @if (empty($inventories))
                 @else  
                     @foreach ($inventories as $var)
-                        <tr>
+                     <?php
+                     if (isset($var->description)){
+                     $descripcion = $var->description;
+                     } else {
+                        $descripcion = '';
+                     }
+                     ?>    
+                    <tr>
                             <td class="text-center">{{ $var->id ?? '' }}</td>
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
@@ -317,8 +346,8 @@
                             
                             <td class="text-center">
                                 @if($var->type == 'COMBO')
-                                <a href="#" onclick="crear_combo()" style="color: blue;" title="Crear Combo"><i class="fa fa-plus"></i></a>
-                                <a href="#" onclick="crear_combo()" style="color: rgb(248, 62, 62);" title="Deshacer Combo"><i class="fa fa-minus"></i></a>
+                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span> 
+                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span> 
                                 <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
                                 @else
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
@@ -408,9 +437,66 @@
             document.getElementById("fileForm").submit();
         }
         
-        function crear_combo(){
-            $('#movementModaltwo').modal('show');
-        }
+        $(document).on('click','.inv_combo',function(){
+    
+                var desc = $(this).attr("data-desc");
+                var serie = $(this).attr("data-serie");
+                var id_combo = $(this).attr("data-id_combo");
+                var cantidad_combos = $(this).attr("data-cantidad_combos");
+                var cantidad_actual = $(this).attr("data-cantidad_actual");
+
+                $('#id_product').val(id_combo);
+                $('#movementModaltwo').modal('show');
+                $('#exampleModalLabelcombo').html('Crear Combo ID: '+id_combo+' '+desc);
+                $('#exampleModalLabelmed').show();
+                $('#exampleModalLabelmed').html('Combos Disponibles: '+cantidad_combos);
+                $('#exampleModalLabelmed2').html('Inventario Actual: '+cantidad_actual);
+                $('#disponible').val(cantidad_combos);
+                $('#cant_disponible').val(cantidad_combos);
+                $('#cant_actual').val(cantidad_actual);
+                $('#serie').val(serie);
+                $('#name_combo').val(desc);
+                $('#type_add').val('1');
+                $('#type_add_text').html('Ingrese la cantidad a crear:');
+                $('#type_add_button').html('Agregar al Inventario del Combo');
+                
+
+        });
+
+        $(document).on('click','.inv_combo_des',function(){
+    
+                var desc = $(this).attr("data-desc");
+                var serie = $(this).attr("data-serie");
+                var id_combo = $(this).attr("data-id_combo");
+                var cantidad_combos = $(this).attr("data-cantidad_combos");
+                var cantidad_actual = $(this).attr("data-cantidad_actual");
+                
+                $('#id_product').val(id_combo);
+                $('#movementModaltwo').modal('show');
+                $('#exampleModalLabelcombo').html('Deshacer Combo ID: '+id_combo+' '+serie+' '+desc);
+                $('#exampleModalLabelmed').hide();
+                $('#exampleModalLabelmed2').html('Inventario Actual: '+cantidad_actual);
+                $('#disponible').val(0);
+                $('#type_add').val('0');
+                $('#cant_disponible').val(cantidad_combos);
+                $('#cant_actual').val(cantidad_actual);
+                $('#serie').val(serie);
+                $('#name_combo').val(desc);
+                $('#type_add_text').html('Ingrese la cantidad a devolver:');
+                $('#type_add_button').html('Disminuir Inventario del Combo ');
+
+        });
+
+
+
+
+        /*function valida_form_combo(){
+            
+            alert('finca');
+            exit;
+            document.getElementById("inventarycombo").submit();
+            
+        } */
 
         function import_product_update_price(){
             document.getElementById("fileForm").action = "{{ route('import_product_update_price') }}";
