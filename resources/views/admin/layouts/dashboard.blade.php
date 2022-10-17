@@ -141,7 +141,7 @@
             };
             
             id_company = $("#id_company").val();
-            if (id_company == '1' || id_company == '3') {
+            if (id_company == '1' || id_company == '6') {
             window.location.href = "{{ route('suspended')}}";
             }
 
