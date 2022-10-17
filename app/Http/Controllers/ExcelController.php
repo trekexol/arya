@@ -307,7 +307,8 @@ class ExcelController extends Controller
         if(isset($file)){
             
             $rows = Excel::toArray(new ProductReadImport, $file);
-
+             
+            $concatena = '';
 
             foreach ($rows[0] as $row) {
 
@@ -321,6 +322,10 @@ class ExcelController extends Controller
                     if (!empty($products)){
                         $msj = '';
                         return redirect('products/index')->with('danger', 'El producto con id '.$row['id'].' ya existe. Fila: '.$cont);
+                    }
+
+                    if ($row['id'] <= 0) {
+                        return redirect('products/index')->with('danger', 'El valor del id debe ser mayor a cero. Fila: '.$cont);
                     }
                     
                     if ($row['codigo_comercial'] == '') {
@@ -367,16 +372,15 @@ class ExcelController extends Controller
                     return redirect('products/index')->with('danger', 'Falta una fila por Tipo de Mercancia, MERCANCIA,SERVICIO,MATERIA PRIMA. Fila: '.$cont);
                    }
 
-                  // Excel::import(new ProductImport, $file);
-                   
                 } 
-  
+                $concatena .=  ' - '.$row['id'];
+               
             }
 
-           Excel::import(new ProductImport, $file);
+          /* Excel::import(new ProductImport, $file);*/
            
            return redirect('products/index')
-            ->with('success', 'Archivo importado con Exito!');
+            ->with('success', 'Archivo importado con Exito!'.$concatena);
 
 
 
