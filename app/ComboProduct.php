@@ -10,4 +10,5 @@ class ComboProduct extends Model
         return $this->belongsTo('App\Product','id_product');
     }
 
+
 }

@@ -56,28 +56,33 @@
                                     <label for="segment_id" class="col-md-2 col-form-label text-md-right">Segmento</label>
                                     <div class="col-md-4">   
                                         <select id="segment" name="segment" class="form-control" required>
+                                            @if ( isset($subsegments) )
                                             @foreach($segments as $segment)
                                                 @if ( $combo->segment_id == $segment->id   )
                                                     <option  selected style="backgroud-color:blue;" value="{{ $segment->id }}"><strong>{{ $segment->description }}</strong></option>
                                                 @endif
                                             @endforeach
+                                            @endif
                                             <option class="hidden" disabled data-color="#A0522D" value="-1">------------------</option>
+                                            @if ( isset($segments) )
                                             @foreach($segments as $var2)
                                                 <option value="{{ $var2->id }}" >
                                                     {{ $var2->description }}
                                                 </option>
                                             @endforeach
+                                            @endif
                                         </select>
                                     </div> 
                                     <label for="subsegment" class="col-md-2 col-form-label text-md-right">Sub Segmento</label>
                                     <div class="col-md-4">
-                                        <select id="subsegment" name="Subsegment" class="form-control" required>
-                                            @foreach($subsegments as $subsegment)
-                                                @if ( $combo->subsegment_id == $subsegment->id   )
-                                                    <option  selected style="backgroud-color:blue;" value="{{ $subsegment->id }}"><strong>{{ $subsegment->description }}</strong></option>
-                                                @endif
+                                        <select id="subsegment" name="Subsegment" class="form-control">
+                                            @if ( isset($subsegments) )
+                                                @foreach($subsegments as $subsegment)
+                                                    @if ( $combo->subsegment_id == $subsegment->id   )
+                                                        <option  selected style="backgroud-color:blue;" value="{{ $subsegment->id }}"><strong>{{ $subsegment->description }}</strong></option>
+                                                    @endif
                                             @endforeach
-                                           
+                                            @endif
                                         </select>
                                     </div> 
                             </div>
@@ -92,9 +97,11 @@
                                                 @endif
                                                 <option disabled  style="backgroud-color:blue;"><strong>------------</strong></option>
                                                 <option style="backgroud-color:blue;" value="null"><strong>Ninguno</strong></option>
+                                                @if ( isset($twosubsegments) )
                                                 @foreach($twosubsegments as $twosubsegment)
                                                     <option style="backgroud-color:blue;" value="{{ $twosubsegment->id }}"><strong>{{ $twosubsegment->description }}</strong></option>
                                                 @endforeach
+                                                @endif
                                         </select>
                                     </div> 
                                     <label for="threesubsegment" class="col-md-2 col-form-label text-md-right">Tercer Sub Segmento</label>
@@ -107,9 +114,11 @@
                                                 @endif
                                                 <option disabled  style="backgroud-color:blue;"><strong>------------</strong></option>
                                                 <option style="backgroud-color:blue;" value="null"><strong>Ninguno</strong></option>
+                                                @if ( isset($threesubsegments) )
                                                 @foreach($threesubsegments as $threesubsegment)
                                                     <option style="backgroud-color:blue;" value="{{ $threesubsegment->id }}"><strong>{{ $threesubsegment->description }}</strong></option>
                                                 @endforeach
+                                                @endif
                                         </select>
                                     </div> 
                             </div>

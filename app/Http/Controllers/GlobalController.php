@@ -1116,55 +1116,59 @@ class GlobalController extends Controller
                                         
                                     $user     =   auth()->user();
                                     
+                                
+                                
+                                if ($type == 'salida' || $type == 'entrada') {
+                                   
                                     $combo_products = ComboProduct::on(Auth::user()->database_name)
                                     ->where('id_combo',$id_product)
                                     ->orderBy('id' ,'desc')
                                     ->get();
 
                                     
-                                if(!empty($combo_products)) {
+                                    if(!empty($combo_products)) {
 
-                            
-                                        foreach ($combo_products as $productwo){
-                                            $amount_interno = 0;
-                                            $transaccion = 0;
-                                            $mov_trans = '';
-                                            $type_interno = '';
-
-                                            $amount_interno = $productwo->amount_per_product;
-            
-                                            $transaccion_interna = $global->consul_prod_invt($productwo->id_product);
-                                            
-                                            if ($type == 'salida') {
-                                                $type_interno = 'entrada';
-                                                $transaccion_interna = $transaccion_interna + $productwo->amount_per_product;
-                                            }else {
-                                                $type_interno = 'salida';
-                                                $transaccion_interna = $transaccion_interna - $productwo->amount_per_product;
-                                            }
-
-
-                                                $mov_trans = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
-                                                'id_product' => $productwo->id_product,
-                                                'id_user' => $user->id,
-                                                'id_branch' => $branch,
-                                                'id_centro_costo' => $branch,
-                                                'id_quotation_product' => $quotation,
-                                                'id_expense_detail' => $expense,
-                                                'id_combo' => $id_product,
-                                                'date' => $date,
-                                                'type' => $type_interno,
-                                                'price' => $price,
-                                                'amount' => $amount_interno,
-                                                'amount_real' => $transaccion_interna,
-                                                'status' => 'A']);
-
-                                        
-                                    }
-                
-
-                                }
                                 
+                                            foreach ($combo_products as $productwo){
+                                                $amount_interno = 0;
+                                                $transaccion = 0;
+                                                $mov_trans = '';
+                                                $type_interno = '';
+
+                                                $amount_interno = $productwo->amount_per_product;
+                
+                                                $transaccion_interna = $global->consul_prod_invt($productwo->id_product);
+                                                
+                                                if ($type == 'salida') {
+                                                    $type_interno = 'entrada';
+                                                    $transaccion_interna = $transaccion_interna + $productwo->amount_per_product;
+                                                }else {
+                                                    $type_interno = 'salida';
+                                                    $transaccion_interna = $transaccion_interna - $productwo->amount_per_product;
+                                                }
+
+
+                                                    $mov_trans = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                                                    'id_product' => $productwo->id_product,
+                                                    'id_user' => $user->id,
+                                                    'id_branch' => $branch,
+                                                    'id_centro_costo' => $branch,
+                                                    'id_quotation_product' => $quotation,
+                                                    'id_expense_detail' => $expense,
+                                                    'id_combo' => $id_product,
+                                                    'date' => $date,
+                                                    'type' => $type_interno,
+                                                    'price' => $price,
+                                                    'amount' => $amount_interno,
+                                                    'amount_real' => $transaccion_interna,
+                                                    'status' => 'A']);
+
+                                            
+                                        }
+                    
+
+                                    }
+                                }
                             }       
                             ////fin PRODUCTO COMBO
 

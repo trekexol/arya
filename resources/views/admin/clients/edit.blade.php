@@ -33,7 +33,7 @@
                         <div class="form-group row">
                             <label for="type_code" class="col-md-2 col-form-label text-md-right">Código, Cédula / Rif:</label>
     
-                                <div class="col-md-1">
+                                <div class="col-md-2">
                                     <select class="form-control" name="type_code" id="type_code">
                                         <option value="{{ $var->type_code }}">{{ $var->type_code }}</option>
                                         <option value="nulo" disabled>----------------</option>
@@ -41,6 +41,10 @@
                                         <option value="G-">G-</option>
                                         <option value="V-">V-</option>
                                         <option value="E-">E-</option>
+                                        <option value="O-">O-</option>
+                                        <option value="ID-">ID-</option>
+                                        <option value="DNI-">DNI-</option>
+                                        <option value="NIT-">NIT-</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
