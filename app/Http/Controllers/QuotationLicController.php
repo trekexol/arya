@@ -75,6 +75,7 @@ class QuotationLicController extends Controller
 
         $transports = Transport::on(Auth::user()->database_name)->get();
         $drivers = Driver::on(Auth::user()->database_name)->get();
+        $company = Company::on(Auth::user()->database_name)->find(1);
        /* $last_number = Quotation::on(Auth::user()->database_name)
         ->where('number_invoice','<>',NULL)->orderBy('number_invoice','desc')->first();
 
@@ -88,7 +89,7 @@ class QuotationLicController extends Controller
         } */
 
 
-        return view('admin.quotationslic.createquotation',compact('datenow','transports','drivers'));
+        return view('admin.quotationslic.createquotation',compact('datenow','transports','drivers','company'));
     }
 
     public function createquotationclient($id_client)
@@ -105,8 +106,9 @@ class QuotationLicController extends Controller
             $drivers = Driver::on(Auth::user()->database_name)->get();
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
+            $company = Company::on(Auth::user()->database_name)->find(1);
 
-            return view('admin.quotationslic.createquotation',compact('client','datenow','transports','drivers'));
+            return view('admin.quotationslic.createquotation',compact('client','datenow','transports','drivers','company'));
         }else{
             return redirect('/quotationslic')->withDanger('El Cliente no existe');
         }
@@ -130,7 +132,9 @@ class QuotationLicController extends Controller
                 $drivers        = Driver::on(Auth::user()->database_name)->get();
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');
-                return view('admin.quotationslic.createquotation',compact('client','vendor','datenow','transports','drivers'));
+                $company = Company::on(Auth::user()->database_name)->find(1);
+
+                return view('admin.quotationslic.createquotation',compact('client','vendor','datenow','transports','drivers','company'));
             }else{
                 return redirect('/quotationslic')->withDanger('El Vendedor no existe');
             }

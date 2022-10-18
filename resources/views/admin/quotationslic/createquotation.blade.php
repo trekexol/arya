@@ -23,7 +23,7 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header text-center font-weight-bold h3">Crear de Cotización </div>
+                    <div class="card-header text-center font-weight-bold h3">Crear Cotización </div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('quotationslic.store') }}" enctype="multipart/form-data">
@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="input-group mb-3">
-                                        <input id="iva_percibido" type="text" class="form-control @error('iva_percibido') is-invalid @enderror"  value="10" name="Iva_Percibido" autocomplete="iva_percibido">
+                                        <input id="iva_percibido" type="text" class="form-control @error('iva_percibido') is-invalid @enderror"  value="{{$company->iba_percibido_porc}}" name="Iva_Percibido" autocomplete="iva_percibido">
                                         <div class="input-group-append">
                                             <span class="input-group-text">%</span>
                                         </div>
