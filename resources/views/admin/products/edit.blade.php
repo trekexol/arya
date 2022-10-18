@@ -55,8 +55,49 @@
                 <div class="container py-2">
                     <div class="row">
                         <div class="col-12 ">
+                         
+                         
                             <form >
-                               
+                                <div class="form-group row">
+                                <label for="description" class="col-md-2 col-form-label text-md-right">Descripción</label>
+        
+                                <div class="col-md-4">
+                                    <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $product->description }}" required autocomplete="description">
+    
+                                    @error('description')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" id="type" name="type" title="type">
+                                        @if($product->type == "MERCANCIA")
+                                            <option value="MERCANCIA">Mercancía</option>
+                                        @elseif($product->type == "MATERIAP")
+                                        <option value="MATERIAP">Materia Prima</option> 
+                                        @elseif($product->type == "SERVICIO")
+                                        <option value="SERVICIO">Servicio</option>
+                                        @elseif($product->type == "COMBO")
+                                        <option value="COMBO">Combo</option>
+                                        @endif
+                                       
+                                        <option value="nulo">----------------</option>
+                                        
+                                        <div class="dropdown">
+                                            <option value="SERVICIO">Servicio</option>
+                                            <option value="MERCANCIA">Mercancía</option>
+                                            <option value="MATERIAP">Materia Prima</option>
+                                            <option value="COMBO">Combo</option> 
+                                            
+                                        </div>
+                                        
+                                        
+                                    </select>
+                                </div>
+                               </div>  
+
                                 <div class="form-group row">
                                         <label for="segment_id" class="col-md-2 col-form-label text-md-right">Segmento</label>
                                         <div class="col-md-4">   
@@ -154,47 +195,7 @@
                                         @enderror
                                     </div>
                                 </div>
-        
-                               
-                                <div class="form-group row">
-                                    <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" id="type" name="type" title="type">
-                                            @if($product->type == "MERCANCIA")
-                                                <option value="MERCANCIA">Mercancía</option>
-                                            @elseif($product->type == "MATERIAP")
-                                            <option value="MATERIAP">Materia Prima</option> 
-                                            @elseif($product->type == "SERVICIO")
-                                            <option value="SERVICIO">Servicio</option>
-                                            @elseif($product->type == "COMBO")
-                                            <option value="COMBO">Combo</option>
-                                            @endif
-                                           
-                                            <option value="nulo">----------------</option>
-                                            
-                                            <div class="dropdown">
-                                                <option value="SERVICIO">Servicio</option>
-                                                <option value="MERCANCIA">Mercancía</option>
-                                                <option value="MATERIAP">Materia Prima</option>
-                                                <option value="COMBO">Combo</option> 
-                                                
-                                            </div>
-                                            
-                                            
-                                        </select>
-                                    </div>
-                                    <label for="description" class="col-md-2 col-form-label text-md-right">descripción</label>
-        
-                                    <div class="col-md-4">
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $product->description }}" required autocomplete="description">
-        
-                                        @error('description')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
+    
                                 <div class="form-group row">
                                     <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
         

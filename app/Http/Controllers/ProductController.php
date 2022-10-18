@@ -505,7 +505,7 @@ class ProductController extends Controller
 
     $var->save();
 
-    return redirect('/products')->withSuccess('Actualizacion Exitosa!');
+    return redirect('/products/index/todos')->withSuccess('Actualizacion Exitosa!');
     }
 
 

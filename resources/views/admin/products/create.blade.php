@@ -49,16 +49,7 @@
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" readonly required autocomplete="id_user">
                        
                         <div class="form-group row">
-                            <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
-                            <div class="col-md-4">
-                            <select class="form-control" name="type" id="type">
-                                <option value="SERVICIO">Servicio</option>
-                                <option selected value="MERCANCIA">Mercancía</option>
-                                <option value="MATERIAP">Materia Prima</option>
-                                <option value="COMBO">Combo</option>
-                                
-                            </select>
-                            </div>
+                            
                             <label for="description" class="col-md-2 col-form-label text-md-right">Descripción</label>
 
                             <div class="col-md-4">
@@ -70,6 +61,18 @@
                                     </span>
                                 @enderror
                             </div>
+                            
+                            <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
+                            <div class="col-md-4">
+                            <select class="form-control" name="type" id="type">
+                                <option value="SERVICIO">Servicio</option>
+                                <option selected value="MERCANCIA">Mercancía</option>
+                                <option value="MATERIAP">Materia Prima</option>
+                                <option value="COMBO">Combo</option>
+                                
+                            </select>
+                            </div>
+
                         </div>
                        
                         <div class="form-group row">
@@ -329,9 +332,12 @@
                             <select id="id_account"  name="id_account" class="form-control" required>
                                 <option value="">Seleccione una Cuenta</option>
                                 @foreach($accounts as $account)
-                                    <option value="{{ $account->id }}">
-                                        {{ $account->description }}
-                                    </option>
+                                    
+                                    @if($account->description == 'Mercancia para la Venta')
+                                    <option selected value="{{ $account->id }}">{{ $account->description }}</option>
+                                    @else
+                                    <option value="{{ $account->id }}">{{ $account->description }}</option>
+                                    @endif
                                 @endforeach
                                 </select>
 

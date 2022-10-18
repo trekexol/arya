@@ -50,10 +50,30 @@
                                         <option selected value="G-">G-</option>
                                         <option value="">----------</option>
                                     @endif
+                                    @if ($var->code_provider[0] == 'O')
+                                    <option selected value="O-">O-</option>
+                                    <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'ID')
+                                    <option selected value="ID-">ID-</option>
+                                    <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'DNI')
+                                    <option selected value="DNI-">DNI-</option>
+                                    <option value="">----------</option>
+                                    @endif
+                                    @if ($var->code_provider[0] == 'NIT')
+                                    <option selected value="NIT-">NIT-</option>
+                                    <option value="">----------</option>
+                                    @endif
                                     <option value="V-">V-</option>
-                                    <option value="E-">E-</option>
                                     <option value="J-">J-</option>
                                     <option value="G-">G-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="O-">O-</option>
+                                    <option value="ID-">ID-</option>
+                                    <option value="DNI-">DNI-</option>
+                                    <option value="NIT-">NIT-</option>
                                 </select>
                             </div>
                             @php
@@ -64,6 +84,14 @@
                                 }if(substr($var->code_provider, 0, 2) == 'J-'){
                                     $code_filter = substr($var->code_provider,2);
                                 }if(substr($var->code_provider, 0, 2) == 'G-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'O-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'ID-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'DNI-'){
+                                    $code_filter = substr($var->code_provider,2);
+                                }if(substr($var->code_provider, 0, 2) == 'NIT-'){
                                     $code_filter = substr($var->code_provider,2);
                                 }
                             @endphp

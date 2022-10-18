@@ -34,9 +34,13 @@
                             <div class="col-md-1 col-sm-1">
                                 <select id="type_code" name="type_code" class="select2_single form-control">
                                     <option value="V-">V-</option>
-                                    <option value="E-">E-</option>
                                     <option value="J-">J-</option>
                                     <option value="G-">G-</option>
+                                    <option value="E-">E-</option>
+                                    <option value="O-">O-</option>
+                                    <option value="ID-">ID-</option>
+                                    <option value="DNI-">DNI-</option>
+                                    <option value="NIT-">NIT-</option>
                                 </select>
                             </div>
                             <div class="col-md-3">

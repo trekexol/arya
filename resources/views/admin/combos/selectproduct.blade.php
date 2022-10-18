@@ -92,6 +92,7 @@
                 <th class="text-center" width="1%">Moneda</th>
                 <th class="text-center" >Segmento</th>
                 <th class="text-center" width="1%">Stock</th>
+                <th class="text-left" width="1%">Unidad/M</th>
                 
                 
             </tr>
@@ -131,6 +132,7 @@
                                                 <td>{{$product->segments['description'] ?? ''}}</td>
      
                                                 <td class="text-right">{{number_format($productwo->amount ?? 0, 0, ',', '')}}</td> 
+                                                <td class="text-left" style="text-align: left;">{{$product->unit_of_measure_id ?? ''}}</td> 
                                             </tr> 
                                             <?php
                                             $product->enc = 1;
@@ -169,6 +171,7 @@
                             @endif
                             <td>{{$product->segments['description'] ?? ''}}</td>
                             <td class="text-right">{{number_format($product->amount ?? 0, 0, ',', '')}}</td> 
+                            <td class="text-left" style="text-align: left;">{{$product->unit_of_measure_id ?? ''}}</td> 
                         </tr>          
                         @endif 
 

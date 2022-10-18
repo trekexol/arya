@@ -69,9 +69,12 @@ class ComboController extends Controller
             ->get();
             
             foreach ($products as $product){
-            
+                
+                $unidad_medida = UnitOfMeasure::on(Auth::user()->database_name)->find($product->unit_of_measure_id);
+                $product->unit_of_measure_id = $unidad_medida->description;
+
                 $product->amount = $global->consul_prod_invt($product->id);
-    
+                
             }
 
             $combo_products = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$id_combo)
@@ -80,7 +83,8 @@ class ComboController extends Controller
             
 
             foreach ($combo_products as $productwo){
-            $productwo->amount = $global->consul_prod_invt($productwo->id_product);
+
+                $productwo->amount = $global->consul_prod_invt($productwo->id_product);
             }
     
 
@@ -416,13 +420,13 @@ class ComboController extends Controller
     
         $var->segment_id = request('segment');
         $var->subsegment_id= request('Subsegment');
-        if(request('twoSubsegment') == 'null'){
+        if(request('twoSubsegment') == 'null' || request('twoSubsegment') == null){
             $var->twosubsegment_id= null;
         }else{
             $var->twosubsegment_id= request('twoSubsegment');
         }
     
-        if(request('threeSubsegment') == 'null'){
+        if(request('threeSubsegment') == 'null' || request('threeSubsegment') == null){
             $var->threesubsegment_id= null;
         }else{
             $var->threesubsegment_id= request('threeSubsegment');
@@ -472,7 +476,7 @@ class ComboController extends Controller
         
         $var->save();
     
-        return redirect('/products')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/combos')->withSuccess('Actualizacion Exitosa!');
     }
   
 
