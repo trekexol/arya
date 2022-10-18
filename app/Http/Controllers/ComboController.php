@@ -372,11 +372,23 @@ class ComboController extends Controller
           $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
          
           $subsegments  = Subsegment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
-  
-          $twosubsegments  = TwoSubsegment::on(Auth::user()->database_name)->where('subsegment_id',$combo->subsegment_id)->orderBY('description','asc')->get();
+          
+          if (isset($combo->subsegment_id)) {
+            $twosubsegments  = TwoSubsegment::on(Auth::user()->database_name)->where('subsegment_id',$combo->subsegment_id)->orderBY('description','asc')->get(); 
+          } else {
+            $twosubsegments  = null;
+          }
+          
+          
+          if (isset($combo->twosubsegment_id)) {
+            $threesubsegments  = ThreeSubsegment::on(Auth::user()->database_name)->where('twosubsegment_id',$combo->twosubsegment_id)->orderBY('description','asc')->get();
        
-          $threesubsegments  = ThreeSubsegment::on(Auth::user()->database_name)->where('twosubsegment_id',$combo->twosubsegment_id)->orderBY('description','asc')->get();
-       
+          } else {
+            $threesubsegments  = null;
+          }
+          
+
+    
           $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
   
           //dd($product->subsegment_id);
