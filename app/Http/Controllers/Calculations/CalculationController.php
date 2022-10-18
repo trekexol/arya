@@ -43,7 +43,7 @@ class CalculationController extends Controller
                        if ($account->coin == '$'){
                         $account_calculate =  $this->verificateAccountDolar($account,$date_begin,$date_end);
                         
-                        $account->balance_previus = $account_calculate->balance_previus * $tasa;
+                        $account->balance_previus = $account_calculate->balance_previus;
                         $account->debe = $account_calculate->debe * $tasa;
                         $account->haber = $account_calculate->haber * $tasa;
                     
@@ -61,7 +61,7 @@ class CalculationController extends Controller
                        if ($account->coin ==  '$'){
                        $account_calculate = $this->verificateAccount($account,$date_begin,$date_end);
                        
-                       $account->balance_previus = $account_calculate->balance_previus / $tasa;
+                       $account->balance_previus = $account_calculate->balance_previus;
                        $account->debe = $account_calculate->debe / $tasa ;
                        $account->haber = $account_calculate->haber / $tasa ;
                     
@@ -235,7 +235,7 @@ class CalculationController extends Controller
 
                                             $account->debe = $total_debe->total;
                                             $account->haber = $total_haber->total;
-                                            $account->balance_previus = $total_balance + $total_debe->total - $total_haber->total;
+                                            $account->balance_previus = $total_balance;
 
                                         }
                                     }                          
@@ -286,7 +286,7 @@ class CalculationController extends Controller
             
                                     $account->debe = $total_debe->total;
                                     $account->haber = $total_haber->total;      
-                                    $account->balance_previus = $total_balance + $total_debe->total - $total_haber->total;
+                                    $account->balance_previus = $total_balance;
                                 
                                 }
                                 }
@@ -330,7 +330,7 @@ class CalculationController extends Controller
                         
                         $account->debe = $total_debe->total;
                         $account->haber = $total_haber->total;
-                        $account->balance_previus = $total_balance + $total_debe->total - $total_haber->total;
+                        $account->balance_previus = $total_balance;
                     }                                       
                 }
             }else{
@@ -374,7 +374,7 @@ class CalculationController extends Controller
                                           
                 $account->debe = $total_debe->total;
                 $account->haber = $total_haber->total;           
-                $account->balance_previus = $total_balance + $total_debe->total - $total_haber->total;
+                $account->balance_previus = $total_balance;
                 
             }
             }
