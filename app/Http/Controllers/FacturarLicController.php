@@ -91,7 +91,7 @@ class FacturarLicController extends Controller
 
             $company = Company::on(Auth::user()->database_name)->find(1);
             $tax_1   = $company->tax_1;
-            $tax_3   = $company->tax_3;
+            $tax_3   = $company->iba_percibido_porc;
 
 
             $total= 0;
@@ -330,7 +330,7 @@ class FacturarLicController extends Controller
       
              $company = Company::on(Auth::user()->database_name)->find(1);
              $tax_1   = $company->tax_1;
-             $tax_3   = $company->tax_3;
+             $tax_3   = $company->iba_percibido_porc;
              $igtfporc = $company->IGTF_porc;
              $base_imponible_pcb    = $company->iba_percibido_porc;
              $iva                   = $tax_1;
