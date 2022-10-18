@@ -100,13 +100,13 @@ class CompaniesController extends Controller
 
         $companies->tax_2           = str_replace(',', '.', str_replace('.', '', request('Impuesto_2')));
         $companies->tax_3           = str_replace(',', '.', str_replace('.', '', request('Impuesto_3')));
+        $companies->iba_percibido_porc  = request('iva_p');
         $companies->retention_islr  = str_replace(',', '.', str_replace('.', '', request('Retencion_ISRL')));
         $companies->tipoinv_id      = request('Tipo_Inventario');
         $companies->tiporate_id     = request('rate_type');
         $companies->rate            = str_replace(',', '.', str_replace('.', '', request('Tasa')));
         $companies->rate_petro      = str_replace(',', '.', str_replace('.', '', request('Tasa_Petro')));
         $companies->period          = request('Periodo');
-
         $companies->status          = '1';
         $companies->pie_pagina     = request('pie_pagina');
         $companies->message_from_email     = request('message_from_email');
@@ -128,6 +128,7 @@ class CompaniesController extends Controller
 
         $companies->tax_2           = str_replace(',', '.', str_replace('.', '', request('Impuesto_2')));
         $companies->tax_3           = str_replace(',', '.', str_replace('.', '', request('Impuesto_3')));
+        $companies->iba_percibido_porc  = request('iva_p');
         $companies->retention_islr  = str_replace(',', '.', str_replace('.', '', request('Retencion_ISRL')));
         $companies->tipoinv_id      = request('Tipo_Inventario');
         $companies->tiporate_id     = request('rate_type');
@@ -149,7 +150,7 @@ class CompaniesController extends Controller
     {
         $company            = Company::on("logins")->find($id);
 
-        $urlToGet ='http://www.bcv.org.ve/tasas-informativas-sistema-bancario';
+        $urlToGet ='https://www.bcv.org.ve/tasas-informativas-sistema-bancario';
         $pageDocument = @file_get_contents($urlToGet);
         preg_match_all('|<div class="col-sm-6 col-xs-6 centrado"><strong> (.*?) </strong> </div>|s', $pageDocument, $cap);
 

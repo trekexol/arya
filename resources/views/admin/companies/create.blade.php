@@ -151,6 +151,18 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="iva_p" class="col-sm-2 col-form-label ">Iva Percibido %:</label>
+                            <div class="col-sm-4">
+                                <input id="iva_p" type="text" class="form-control @error('iva_p') is-invalid @enderror" name="iva_p" value="{{ $company->iba_percibido_porc ?? 0 }}"  autocomplete="iva_p">
+
+                                @error('iva_p')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <div class="col-sm-2">
                                 <label for="tipo_inv">Tipo de Inventario:</label>
                             </div>
