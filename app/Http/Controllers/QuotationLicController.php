@@ -199,7 +199,7 @@ class QuotationLicController extends Controller
 
                 $company = Company::find(1);
                 $tax_1   = $company->tax_1;
-                $tax_3   = $company->tax_3;
+                $tax_3   = $company->iba_percibido_porc;
 
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
