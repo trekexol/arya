@@ -17,11 +17,15 @@ use App\Segment;
 use App\Subsegment;
 use App\UnitOfMeasure;
 use App\Vendor;
+use App\Imports\TempMovimientosImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 use Carbon\Carbon;
-
+use App\Quotation;
+use App\TempMovimientos;
 class BankMovementController extends Controller
 {
 
@@ -73,11 +77,6 @@ class BankMovementController extends Controller
                             ->orderBy('header_vouchers.id','desc')
                             ->get();
 
-<<<<<<< Updated upstream
-        //dd($detailvouchers);
-        $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
-
-=======
 
         $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
@@ -96,18 +95,11 @@ class BankMovementController extends Controller
 
                                             /********* *******/
 
->>>>>>> Stashed changes
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-        return view('admin.bankmovements.indexmovement',compact('eliminarmiddleware','detailvouchers','accounts','datenow'));
+        return view('admin.bankmovements.indexmovement',compact('eliminarmiddleware','detailvouchers','accounts','datenow','movimientosmasivos','quotations'));  
 
-<<<<<<< Updated upstream
-      
-       
-=======
-
->>>>>>> Stashed changes
    }
 
 
@@ -1671,12 +1663,6 @@ class BankMovementController extends Controller
 
         return $var;
    }
-<<<<<<< Updated upstream
-  
-  
-=======
-
->>>>>>> Stashed changes
 
    public function edit($id)
    {
@@ -1801,7 +1787,7 @@ class BankMovementController extends Controller
              }
 
             return response()->json($respuesta,200);
-        }catch(Throwable $th){
+        }catch(\Throwable $th){
             return response()->json(false,500);
         }
     }
@@ -1822,7 +1808,7 @@ class BankMovementController extends Controller
                                                                     ->where('code_five', '<>',0)
                                                                     ->orderBy('description','asc')->get();
             return response()->json($subcontrapartidas,200);
-        }catch(Throwable $th){
+        }catch(\Throwable $th){
             return response()->json(false,500);
         }
     }
@@ -1831,8 +1817,6 @@ class BankMovementController extends Controller
 
 
 
-<<<<<<< Updated upstream
-=======
 /***********CARGA MASIVA DE MOVIMIENTOS *****/
 
 
@@ -1854,7 +1838,7 @@ public function importmovimientos(Request $request){
     $import = new TempMovimientosImport($banco);
 
 
-    if(($banco == '1' OR $banco == 'Banco Banesco') AND $extension == 'xlsx'){
+    if(($banco == 'Bancamiga' OR $banco == 'Banco Banesco') AND $extension == 'xlsx'){
 
     Excel::import($import, $file);
     $resp['error'] = $import->estatus;
@@ -1863,7 +1847,7 @@ public function importmovimientos(Request $request){
 
     }
 
-    elseif(($banco == '3' OR $banco == '4' OR $banco == '5') AND $extension == 'txt'){
+    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA') AND $extension == 'txt'){
         Excel::import($import, $file);
         $resp['error'] = $import->estatus;
         $resp['msg'] = $import->mensaje;
@@ -2071,7 +2055,7 @@ public function listcontrapartidanew(Request $request, $id_var = null){
             return response()->json($subcontrapartidas,200);
 
 
-        }catch(Throwable $th){
+        }catch(\Throwable $th){
             return response()->json(false,500);
         }
     }
@@ -2261,7 +2245,6 @@ public function procesarcontrapartidanew(Request $request){
     }
 }
 
->>>>>>> Stashed changes
 
 
 }

@@ -338,11 +338,11 @@ label.error{ color: red; font-size: 1em; }
                         <label for="inputState">Banco</label>
                         <select class="form-control" name="banco" id="banco">
                           <option value="">Seleccione..</option>
-                          <option value="1">Bancamiga</option>
+                          <option value="Bancamiga">Bancamiga</option>
                           <option value="Banco Banesco">Banesco</option>
-                          <option value="3">Mercantil</option>
-                          <option value="4">Chase</option>
-                          <option value="5">BOFA</option>
+                          <option value="Mercantil">Mercantil</option>
+                          <option value="Chase">Chase</option>
+                          <option value="BOFA">BOFA</option>
                         </select>
 
                         

@@ -35,7 +35,7 @@ class TempMovimientosImport implements  ToCollection
         $contadorerror = 0;
         
 
-       if($this->banco == 1){
+       if($this->banco == 'Bancamiga'){
 
       
                 foreach($rows as $row){
@@ -53,7 +53,7 @@ class TempMovimientosImport implements  ToCollection
                     /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
                     $vali   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','bancamiga')
+                                ->where('banco','Bancamiga')
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('moneda','bolivares')->first();
 
@@ -61,7 +61,7 @@ class TempMovimientosImport implements  ToCollection
 
 
                     $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','bancamiga')
+                                ->where('banco','Bancamiga')
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('fecha',$arr)
                                 ->where('moneda','bolivares')
@@ -73,7 +73,7 @@ class TempMovimientosImport implements  ToCollection
                     if(!$vali AND !$vali2){
                                     $Client = TempMovimientos::Create([
                                 
-                                        'banco'                   => 'bancamiga',
+                                        'banco'                   => 'Bancamiga',
                                         'referencia_bancaria'     => $row[2], 
                                         'descripcion'             => $row[3],
                                         'fecha'                   => $arr, 
@@ -200,7 +200,7 @@ class TempMovimientosImport implements  ToCollection
        }//fin  elseif($this->banco == 2)
 
 
-       elseif($this->banco == 3){
+       elseif($this->banco == 'Mercantil'){
 
   
                 foreach($rows as $row){
@@ -213,9 +213,10 @@ class TempMovimientosImport implements  ToCollection
             /******DEFINIENDO EL TIPO DE MONEDA ***/
             if($row[1] == 'USD'){
                 $moneda = 'dolares';
-
+                $banco = 'Banco Mercantil Dolares';
             }else{
                 $moneda = 'bolivares';
+                $banco = 'Banco Mercantil';
             }
    
                      /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
@@ -240,7 +241,7 @@ class TempMovimientosImport implements  ToCollection
                      /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
                      $vali   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco','mercantil')
+                     ->where('banco',$banco)
                      ->where('referencia_bancaria',$row[4])
                      ->where('moneda',$moneda)->first();
 
@@ -248,7 +249,7 @@ class TempMovimientosImport implements  ToCollection
 
 
          $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco','mercantil')
+                     ->where('banco',$banco)
                      ->where('referencia_bancaria',$row[4])
                      ->where('fecha',$fechacompleta)
                      ->where('haber',$haber)
@@ -260,7 +261,7 @@ class TempMovimientosImport implements  ToCollection
 
             $Client = TempMovimientos::Create([
                     
-                'banco'                   => 'mercantil',
+                'banco'                   => $banco,
                 'referencia_bancaria'     => $row[4], 
                 'descripcion'             => $row[6],
                 'fecha'                   => $fechacompleta, 
@@ -297,7 +298,7 @@ class TempMovimientosImport implements  ToCollection
        } ///fin        elseif($this->banco == 3)
        
        
-       elseif($this->banco == 4){
+       elseif($this->banco == 'Chase'){
 
 
         foreach($rows as $row){
@@ -327,7 +328,7 @@ class TempMovimientosImport implements  ToCollection
    
    
             $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                        ->where('banco','chase')
+                        ->where('banco','Chase')
                         ->where('fecha',$fechacompleta)
                         ->where('haber',$haber)
                         ->where('debe',$debe)
@@ -338,7 +339,7 @@ class TempMovimientosImport implements  ToCollection
 
                 $Client = TempMovimientos::Create([
             
-                    'banco'                   => 'chase',
+                    'banco'                   => 'Chase',
                     'referencia_bancaria'     => NULL, 
                     'descripcion'             => $row[2],
                     'fecha'                   => $fechacompleta, 
@@ -390,7 +391,7 @@ class TempMovimientosImport implements  ToCollection
         }//fin foreach
 }//fin elseif($this->banco == 4)
 
-elseif($this->banco == 5){
+elseif($this->banco == 'BOFA'){
 
   
    
