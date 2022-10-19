@@ -557,8 +557,9 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
     Route::get('listcontrapartidanew/{type_var?}','BankMovementController@listcontrapartidanew')->name('listcontrapartidanew');
     Route::post('procesarcontrapartidanew','BankMovementController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
+    Route::post('guardartransferencia','BankMovementController@guardartransferencia')->name('guardartransferencia');
 
-
+    
 });
 
 Route::group(["prefix"=>'nominas'],function(){

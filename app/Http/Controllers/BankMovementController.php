@@ -1925,12 +1925,45 @@ public function facturasmovimientos(Request $request){
 
         return View::make('admin.bankmovements.tablafactura',compact('contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
 
+    }elseif($tipo == 'transferencia'){
+
+        $montohaber = $data[5];
+        $referenciamovimiento = $data[6];
+        $moneda = $data[7];
+        $descripcionbanco = $data[8];
+        
+        $account = Account::on(Auth::user()->database_name)->where('description', $bancomovimiento)->first();
+
+        if(isset($account)){
+
+            $counterparts     =     DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                        ->where('code_two', 1)
+                                        ->where('code_three', 1)
+                                        ->whereIn('code_four', [1,2])
+                                        ->where('code_five','<>',0)
+                                        ->orderBY('description','asc')
+                                        ->get();
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $global = new GlobalController();
+            //Si la taza es automatica
+            if($company->tiporate_id == 1){
+                $bcv = $global->search_bcv();
+            }else{
+                //si la tasa es fija
+                $bcv = $company->rate;
+            }
+        return View::make('admin.bankmovements.tablafactura',compact('bcv','account','datenow','counterparts','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
+
     }
 
 
 
-}
+        }
 
+}
 
 public function add_movementfacturas($bcv,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
 
@@ -2074,6 +2107,8 @@ public function procesarcontrapartidanew(Request $request){
     if($request->ajax()){
         try{
 
+            $global = new GlobalController();
+            $bcv = $global->search_bcv();
 
             if($request->valorhaber == 0){
                 ///BANCO POR DEBE
@@ -2118,11 +2153,13 @@ public function procesarcontrapartidanew(Request $request){
                 $header_voucher->date = $request->fechamovimiento;
                 $header_voucher->status =  "1";
                 $header_voucher->save();
+                
+                $global = new GlobalController();
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas(0,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valordebe,0);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valordebe,0);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -2130,7 +2167,7 @@ public function procesarcontrapartidanew(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas(0,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
 
                 }
 
@@ -2196,7 +2233,7 @@ public function procesarcontrapartidanew(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas(0,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valorhaber);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valorhaber);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -2204,7 +2241,7 @@ public function procesarcontrapartidanew(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas(0,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
 
                 }
 
@@ -2246,5 +2283,118 @@ public function procesarcontrapartidanew(Request $request){
 }
 
 
+
+
+public function guardartransferencia(Request $request)
+{
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+        $resp = array();
+        $resp['error'] = false;
+        $resp['msg'] = '';
+
+        if($request->ajax()){
+            try{
+                $account = request('id_account');
+                $contrapartida = request('id_counterpart');
+                $coin = request('coin');
+
+                if($account != $contrapartida){
+
+                    $amount = str_replace(',', '.', str_replace('.', '', request('amount')));
+                    $rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+            
+                    if($coin != 'bolivares'){
+                        $amount = $amount * $rate;
+                    }
+            
+            
+                        $header = new HeaderVoucher();
+                        $header->setConnection(Auth::user()->database_name);
+            
+                        $header->reference = request('reference');
+                        $header->description = "Transferencia " . request('description');
+                        $header->date = request('date');
+                        $header->status =  "1";
+            
+                        $header->save();
+            
+            
+                        $movement = new DetailVoucher();
+                        $movement->setConnection(Auth::user()->database_name);
+            
+                        $movement->id_header_voucher = $header->id;
+                        $movement->id_account = $account;
+                        $movement->user_id = request('user_id');
+                        $movement->debe = 0;
+                        $movement->haber = $amount;
+                        $movement->tasa = $rate;
+                        $movement->status = "C";
+            
+                        $movement->save();
+            
+                        $movement_counterpart = new DetailVoucher();
+                        $movement_counterpart->setConnection(Auth::user()->database_name);
+            
+                        $movement_counterpart->id_header_voucher = $header->id;
+                        $movement_counterpart->id_account = $contrapartida;
+                        $movement_counterpart->user_id = request('user_id');
+                        $movement_counterpart->debe = $amount;
+                        $movement_counterpart->haber = 0;
+                        $movement_counterpart->tasa = $rate;
+                        $movement_counterpart->status = "C";
+            
+                        $movement_counterpart->save();
+            
+            
+                        $verification = Account::on(Auth::user()->database_name)->findOrFail($account);
+            
+                        if($verification->status != "M"){
+                            $verification->status = "M";
+                            $verification->save();
+                        }
+            
+                        $verification2 = Account::on(Auth::user()->database_name)->findOrFail($contrapartida);
+            
+                        if($verification2->status != "M"){
+                            $verification2->status = "M";
+                            $verification2->save();
+                        }
+
+                        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
+                $movimientosmasivos->estatus = 1;
+                $movimientosmasivos->save();
+            
+            
+                        $resp['error'] = True;
+                        $resp['msg'] = 'Transferencia Exitosa';
+        
+                        return response()->json($resp);
+        
+            
+                 
+            
+                }else{
+                    $resp['error'] = False;
+                    $resp['msg'] = 'No se puede realizar una transferencia a la misma cuenta';
+    
+                    return response()->json($resp);               
+                 }
+    
+            }catch(\error $error){
+                return response()->json(false,500);
+            }
+        }
+
+
+
+ 
+
+    
+
+}else{
+    return redirect('/bankmovements'.request('id_account').'')->withDanger('No Tiene Permiso!');
+}
+}
 
 }

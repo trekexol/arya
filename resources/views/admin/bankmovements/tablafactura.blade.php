@@ -134,10 +134,30 @@ elseif($tipo == 'contra'){
     </button>
 </div>
 <div class="modal-body" >
-
-    <div id="form4">
-
-            <form id='pruebaform'>
+    <div class="table-responsive-xl">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                  <th scope="col">Banco</th>
+                  <th scope="col">Descripcion</th>
+                  <th scope="col">Moneda</th>
+                  <th scope="col">Haber</th>
+                  <th scope="col">Debe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <th scope="row">{{$bancomovimiento}}</th>
+                    <td>{{$descripcionbanco}}</td>
+                    <td>{{$moneda}}</td>
+                    <td>{{$montohaber}}</td>
+                    <td>{{$valormovimiento}}</td>
+                  </tr>
+              </tbody>
+        </table>
+      </div>
+   
+            <form id='pruebaform' >
                 @csrf
 
         <input type="hidden" name="valordebe" value='{{$valormovimiento}}'>
@@ -149,19 +169,10 @@ elseif($tipo == 'contra'){
         <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
         <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
 
-        <div class="form-group row clonardiv">
-
-              <label for="contrapartida" class="col-md-2 col-form-label text-md-right">
-           Contrapartida: Monto Haber: {{$montohaber}} Monto Debe: {{$valormovimiento}}
-              </label>
-
-              <div class="col-md-4 field_wrapper" >
+        <div class="field_wrapper">
 
 
-
-
-
-              </div>
+       
 
           </div>
 
@@ -169,7 +180,7 @@ elseif($tipo == 'contra'){
           <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
 
             </form>
-      </div>
+     
 
 
 
@@ -192,11 +203,34 @@ elseif($tipo == 'contra'){
         if(contadordiv < maxField){  //si son mayor a 10 no permite mas campos
         var camposelect = "#selecontra"+x;
         var valor = x;
-        var fieldHTML = '<div class="col" id='+x+'><br><select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>';
-        var fieldca = '<br><select  id="account_counterpart'+x+'"  name="valorcontra[]" class="form-control account_counterpart" required> <option value="">Seleccionar</option> @if (isset($accounts_inventory)) @foreach ($accounts_inventory as $var) <option value="{{ $var->id }}">{{ $var->description }}</option> @endforeach @endif</select> <input type="text" class="form-control form-control-sm" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" /> <br> <a href="javascript:void(0);" class="remove_button btn btn-outline-danger" title="Eliminar Campo">Eliminar</a></div>';
-        $('.procesarcontrapartida').show();
-        $(wrapper).append(fieldHTML+fieldca);
+ 
+       
+        var camposopcionales = '<div class="form-row" id="dinamicosdiv'+x+'">'+
+            '<div class="form-group col-md-3">'+
+                '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
+                '</div>'+
+                '<div class="form-group col-md-3">'+
+           
+                    '<select  id="account_counterpart'+x+'"  name="valorcontra[]" class="form-control  account_counterpart" required> <option value="">Seleccionar</option> @if (isset($accounts_inventory)) @foreach ($accounts_inventory as $var) <option value="{{ $var->id }}">{{ $var->description }}</option> @endforeach @endif</select>'+
+                       
+                        '</div>'+
 
+                        '<div class="form-group col-md-3">'+
+                            
+                            '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
+                            '</div>'+
+                            '<div class="form-group col-md-3">'+
+                            
+                            '<button class="remove_button btn btn-outline-danger" value='+x+'>Eliminar</button>'+
+                            
+                            '</div>'+
+                            '</div>';
+       
+       
+       
+        $('.procesarcontrapartida').show();
+        //$(wrapper).append(fieldHTML+fieldca);
+        $(wrapper).append(camposopcionales);
         $(camposelect).on('change',function(){
 
            var contrapartida_id = $(this).val();
@@ -252,7 +286,9 @@ elseif($tipo == 'contra'){
 
         $(wrapper).on('click', '.remove_button', function(e){
             e.preventDefault();
-            $(this).parent('div').remove();
+            valor = $(this).val();
+            $("#dinamicosdiv"+valor).remove();
+            $("#dinamicos"+valor).remove();
 
            contadordiv--;
            if(contadordiv == 0){
@@ -322,6 +358,162 @@ $('.procesarcontrapartida').click(function(e){
 
 <?php
 
+}elseif($tipo == 'transferencia'){
+
+ 
+                            
+                            if($valormovimiento == 0){
+                                $monto = $montohaber;
+                                $tipo = "HABER";
+                            }elseif($montohaber == 0){
+                                $monto = $valormovimiento;
+                                $tipo = "DEBE";
+                            }
+                                
+
+                            
+
+?>
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Transferencias entre Caja y Bancos</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" >
+    <div class="table-responsive-xl">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                  <th scope="col">Transferir desde</th>
+                  <th scope="col">Número de Referencia</th>
+                  <th scope="col">Fecha Transferenca</th>
+                  <th scope="col">Moneda</th>
+                  <th scope="col">Tasa</th>
+                  <th scope="col">Monto de la Transferencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <th scope="row">{{$account->description}}</th>
+                    <td>{{$referenciamovimiento}}</td>
+                    <td>{{ $fechamovimiento}}</td>
+                    <td>{{$moneda}}</td>
+                    <td>{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}</td>
+                    <td> {{$monto}}</td>
+                  </tr>
+              </tbody>
+        </table>
+      </div>
+
+      <form method="POST" id="procesartransf">
+        @csrf
+        <input id="id_account" type="hidden" class="form-control @error('id_account') is-invalid @enderror" name="id_account" value="{{ $account->id }}" required autocomplete="id_account" autofocus>
+        <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
+        <input id="type_movement" type="hidden" class="form-control @error('type_movement') is-invalid @enderror" name="type_movement" value="TR" required autocomplete="type_movement" autofocus>
+        <input id="date_begin" type="hidden" class="form-control @error('date_begin') is-invalid @enderror" name="date" value="{{ $fechamovimiento ?? old('date_begin') }}" required autocomplete="date_begin">
+        <input id="reference" type="hidden" class="form-control @error('reference') is-invalid @enderror" name="reference" value="{{ $referenciamovimiento }}" required autocomplete="reference">
+        <input class="form-control" type="hidden" name="coin" value="{{$moneda}}" id="coin">
+        <input id="rate" type="hidden" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+        <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" placeholder="0,00" name="amount" value="{{$monto}}" required autocomplete="amount">
+        <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+
+       
+    
+        <div class="form-group row">
+            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir:</label>
+
+            <div class="col-md-6">
+            <select class="form-control" id="id_counterpart" name="id_counterpart" required>
+                <option value="">Selecciona una Cuenta</option>
+                @foreach($counterparts as $var)
+                    <option value="{{ $var->id }}">{{ $var->description }}</option>
+                @endforeach
+              
+            </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary  btn-sm procesartransferencia">
+                    Guardar Transferencia
+                 </button>
+                </div>
+        </div>
+     
+    
+    </form>
+
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+      
+
+
+        $('.procesartransferencia').click(function(e){
+      e.preventDefault();
+      $('.procesartransferencia').prop( 'disabled', true );
+    $.ajax({
+        method: "POST",
+        url: "{{ route('guardartransferencia') }}",
+        data: $('#procesartransf').serialize(),
+             success:(response)=>{
+
+                if(response.error == true){
+                    $('.procesarcontrapartida').prop( 'disabled', false );
+
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: response.msg,
+
+
+                        })
+             }else{
+                $('.procesarcontrapartida').prop( 'disabled', false );
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Error..',
+                        html: response.msg,
+                        })
+             }
+
+
+
+
+             },
+             error:(xhr)=>{
+                $('.procesarcontrapartida').prop( 'disabled', false );
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error a Procesar!',
+                        });
+             }
+         })
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+    });
+    </script>
+<?php 
 }
+
 ?>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
