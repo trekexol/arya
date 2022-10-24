@@ -108,13 +108,20 @@
                         </div>
                            <div class="form-group row">
                                 <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
-                                <div class="col-sm-6">
+                                <div class="col-sm-3">
                                     <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
                                     @error('rate')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                </div>
+                                <label for="rate" class="col-sm-2 col-form-label text-md-right">Moneda:</label>
+                                <div class="col-sm-4">
+                                    <select id="coin"  name="coin" class="form-control">
+                                        <option selected value="dolares">Dolares</option>
+                                        <option value="bolivares">Bolivares</option>
+                                    </select>  
                                 </div>
                             </div>
                             <div class="form-group row">

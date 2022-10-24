@@ -507,11 +507,13 @@ class ExcelController extends Controller
             $rate = str_replace(',', '.', str_replace('.', '', $request->rate));
     
             $file = $request->file('file');
-        
+
+            $coin = request('coin');
+
             Excel::import(new InventoryImport, $file);
 
             $movement = new MovementProductImportController();
-            $movement->add_movement($subcontrapartida,$amount,$rate);
+            $movement->add_movement($subcontrapartida,$amount,$rate,$coin);
             
             return redirect('inventories/index')->with('success', 'Archivo importado con Exito!');
 
