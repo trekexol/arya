@@ -303,6 +303,11 @@ class ExcelController extends Controller
         $file = $request->file('file');
         $cont = 1;
         $msj = '';
+
+        if (!isset($file)){
+            return redirect('products/index/todos')->with('danger', 'Para importar productos debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');    
+        }
+
     
         if(isset($file)){
             
@@ -397,7 +402,11 @@ class ExcelController extends Controller
    {
        
     
-       $file = $request->file('file');
+        $file = $request->file('file');
+
+        if (!isset($file)){
+            return redirect('inventories/index')->with('danger', 'Para importar debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');    
+        }
 
         $rows = Excel::toArray(new ProductReadImport, $file);
       
@@ -432,6 +441,11 @@ class ExcelController extends Controller
    {
 
             $file = $request->file('file');
+
+            if (!isset($file)){
+                return redirect('combos')->with('danger', 'Para importar Combos debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');    
+            }
+    
 
                 if (isset($file)) {
                 
@@ -500,6 +514,8 @@ class ExcelController extends Controller
 
    public function import_product_procesar(Request $request) 
    {
+
+
        if(isset($request->Subcontrapartida)){
 
             $subcontrapartida = $request->Subcontrapartida;
