@@ -395,7 +395,9 @@ class ExcelController extends Controller
 
    public function import_inventary(Request $request) 
    {
-        $file = $request->file('file');
+       
+    
+       $file = $request->file('file');
 
         $rows = Excel::toArray(new ProductReadImport, $file);
       
@@ -420,7 +422,8 @@ class ExcelController extends Controller
         $bcv = $global->search_bcv();
         
         return view('admin.inventories.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
-   }
+       
+    }
 
  
 
@@ -518,15 +521,6 @@ class ExcelController extends Controller
        
    }
 
-   /*public function import_product_update_price(Request $request) //producto
-   {
-       
-       $file = $request->file('file');
-       
-       Excel::import(new ProductUpdatePriceImport, $file);
-       
-       return redirect('products/index')->with('success', 'Se han actualizado los precios Correctamente');
-   } */
 
 
    public function import_product_update_price(Request $request) // INVENTARIO
@@ -536,7 +530,7 @@ class ExcelController extends Controller
        
        Excel::import(new ProductUpdatePriceImport, $file);
        
-       return redirect('products/index')->with('success', 'Se han actualizado los precios Correctamente');
+       return redirect('products/index/todos')->with('success', 'Se han actualizado los precios Correctamente');
    }
 
 

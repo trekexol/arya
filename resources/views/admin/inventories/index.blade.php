@@ -180,22 +180,23 @@
                 <input id="name_combo" type="hidden" name="name_combo">
                 <input id="serie" type="hidden" name="serie">
                                 
-                <div class="modal-body">
-                    <h6 class="modal-title" id="exampleModalLabelmed2"></h6>
+                    <div class="modal-body">
+                        <h6 class="modal-title" id="exampleModalLabelmed2"></h6>
+                        <br>
+                        <h6 class="modal-title" id="exampleModalLabelmed"></h6>
                     <br>
-                    <h6 class="modal-title" id="exampleModalLabelmed"></h6>
-                <br>
-                <div class="form-group row">
-                    <div class="col-sm-6">
-                       <span id="type_add_text"></span>
-                     </div> 
-                    <div class="col-sm-4">
-                   <input id="disponible" style="text-align: center" type="number" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="0" required>
-                   </div> 
-                </div> 
-                <br>
-                <button type="submit" class="btn btn-info"> <span id="type_add_button"></span></button>
-            </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                        <span id="type_add_text"></span>
+                        </div> 
+                        <div class="col-sm-4">
+                    <input id="disponible" style="text-align: center" type="number" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="0" required>
+                    </div> 
+                    </div> 
+                    <br>
+                    <button type="submit" class="btn btn-info"> <span id="type_add_button"></span></button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -215,13 +216,16 @@
         <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
             <h6>Importación Masiva de Inventario</h6>
             <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
-            <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
-              @csrf
-              <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
-            </form>
-            <br>
-            <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</a> 
-           <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
+                <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
+                @csrf
+                <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+                
+                <br>
+                <br>
+                <button type="submit" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</button>
+                </form>
+            <!-- <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5"></a> 
+           <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
         </div> 
         </div>
         <div class="col-sm-3">
@@ -433,9 +437,7 @@
                
         });
 
-        function import_product(){
-            document.getElementById("fileForm").submit();
-        }
+
         
         $(document).on('click','.inv_combo',function(){
     
@@ -487,21 +489,6 @@
 
         });
 
-
-
-
-        /*function valida_form_combo(){
-            
-            alert('finca');
-            exit;
-            document.getElementById("inventarycombo").submit();
-            
-        } */
-
-        function import_product_update_price(){
-            document.getElementById("fileForm").action = "{{ route('import_product_update_price') }}";
-            document.getElementById("fileForm").submit();
-        }
 
         function loadimg (url){
         

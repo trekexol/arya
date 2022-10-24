@@ -694,7 +694,7 @@ class GlobalController extends Controller
 
             return bcdiv($bcv, '1', 2);*/
 
-            $bcv = 8.28;            
+            $bcv = 8.40;            
             return   $bcv;
 
 
