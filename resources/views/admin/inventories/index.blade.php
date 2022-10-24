@@ -100,7 +100,7 @@
                                     
                         <div class="form-group row">
                             <div class="offset-sm-1">
-                                <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file">
+                                <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file" required>
                             </div>
                         </div>
                         <div class="form-group row">
