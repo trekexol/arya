@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MovementProductImportController extends Controller
 {
-    public function add_movement($id_account,$amount,$rate){
+    public function add_movement($id_account,$amount,$rate,$coin){
 
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
@@ -23,12 +23,19 @@ class MovementProductImportController extends Controller
 
         $user       =   auth()->user();
 
-        $header_voucher->description = "Incremento de Inventario";
+        $header_voucher->description = "Incremento de Inventario de Forma Masiva";
         $header_voucher->date = $datenow;
     
         $header_voucher->status =  "1";
     
         $header_voucher->save();
+
+
+        if ($coin == 'dolares'){
+            $rate = $rate;
+        } else {
+            $rate = 1;
+        }
 
         $detail = new DetailVoucher();
         $detail->setConnection(Auth::user()->database_name);
@@ -40,7 +47,7 @@ class MovementProductImportController extends Controller
         $detail->tasa = $rate;
 
      
-        $detail->debe = $amount;
+        $detail->debe = $amount*$rate;
         $detail->haber = 0;
       
         $detail->status =  "C";
@@ -58,7 +65,7 @@ class MovementProductImportController extends Controller
 
 
         $detail2->debe = 0;
-        $detail2->haber = $amount;
+        $detail2->haber = $amount*$rate;
       
         $detail2->status =  "C";
 
