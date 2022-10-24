@@ -179,14 +179,15 @@
                                     Ver/Imprimir 
                                 </button>
                                 <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="cursor: pointer">
-                                    <a onclick="pdf(1);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega</a>  
-                                    <a onclick="pdf(3);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE Observación Red</a>  
+                                    <a onclick="pdf(1);" id="btnfacturar1" name="btnfacturar1" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega</a>  
+                                    <a onclick="pdf(5);" id="btnfacturar5" name="btnfacturar5" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE (Solo Dolares)</a>  
+                                    <a onclick="pdf(3);" id="btnfacturar3" name="btnfacturar3" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE Observación Red</a>  
                                     @if($photo_product == 1)
-                                    <a onclick="pdf(2);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega con Foto</a>  
-                                    <a onclick="pdf(4);" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE Observación Red con Foto</a> 
+                                    <a onclick="pdf(2);" id="btnfacturar2" name="btnfacturar2" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Nota de Entrega con Foto</a>  
+                                    <a onclick="pdf(4);" id="btnfacturar4" name="btnfacturar4" class="dropdown-item bg-light text-black h5" title="Guardar">Ver NE Observación Red con Foto</a> 
                                     @endif
-                                    <a onclick="pdfmediacarta3(1);" id="btnfacturarmedia" name="btnfacturarmedia" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta</a>  
-                                    <a onclick="pdfmediacarta3(2);" id="btnfacturarmedia" name="btnfacturarmedia" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta por Tres</a>  
+                                    <a onclick="pdfmediacarta3(1);" id="btnfacturarmedia1" name="btnfacturarmedia1" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta</a>  
+                                    <a onclick="pdfmediacarta3(2);" id="btnfacturarmedia2" name="btnfacturarmedia2" class="dropdown-item bg-light text-black h5" title="Guardar">Ver Media Carta por Tres</a>  
 
                                 </div> 
                             </div>
@@ -280,7 +281,12 @@
     function pdf(valor) {
         let inputIva = document.getElementById("iva").value; 
         let date = document.getElementById("date-begin").value;
-        var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+        if (valor == 5) {
+            var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,'dolares','',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");    
+            
+        } else {
+            var nuevaVentana= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/"+valor,"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+        }
     }
 
     function pdfmediacarta3(valor) {
