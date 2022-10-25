@@ -1358,7 +1358,7 @@ class Report2Controller extends Controller
 
     function accounts_receivable_pdf($coin,$date_end,$typeinvoice,$typeperson,$id_client_or_vendor = null)
     {
-        
+ 
         $pdf = App::make('dompdf.wrapper');
         $quotations = null;
         

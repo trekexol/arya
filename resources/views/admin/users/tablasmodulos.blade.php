@@ -117,7 +117,13 @@ $('.botonenviomodulonew').click(function(e){
              success:(response)=>{
              
                  if(response == true){
-                    alert('Asignado con Exito');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: 'Asignado Con Exito',
+                
+                
+                        })
 
                     if(tipopermiso != 'consultar'){
 
@@ -137,7 +143,13 @@ $('.botonenviomodulonew').click(function(e){
 
                   
                  }else{
-                     alert('Error');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: 'Error al Asignar Permiso',
+                
+                
+                        })
                  }
                 
              
@@ -145,7 +157,13 @@ $('.botonenviomodulonew').click(function(e){
              
              },
              error:(xhr)=>{
-                 alert('Error');
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: 'Error al Asignar Permiso',
+                
+                
+                        })
              }
          })
 
@@ -164,4 +182,5 @@ $('#dataTable').DataTable({
         });
   
     </script> 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
