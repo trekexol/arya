@@ -83,7 +83,6 @@ class ModulosController extends Controller
 
     public function insert(Request $request)
     {
-
         if($request->ajax()){
             try{
               
@@ -167,5 +166,160 @@ class ModulosController extends Controller
     
       
     }
+
+
+
+    public function insertmasivo(Request $request)
+    {
+
+        if($request->ajax()){
+            try{
+                if(isset($request->iduser) && isset($request->idsistema)){
+                    
+                    
+
+                    $modulos = Modulo::on($this->conection_logins)
+                    ->where('id_sistema',$request->idsistema)
+                    ->where('estatus','1')
+                    ->orderby('nro_orden','asc')
+                    ->get();
+            foreach($modulos as $modulos){
+
+                $validarmodulo = UserAccess::on($this->conection_logins)
+                ->where('id_user',$request->iduser)
+                ->where('id_modulo',$modulos->id);
+                
+
+                if($validarmodulo->count() == 1){
+                    $validarmodulo = UserAccess::on($this->conection_logins)
+                ->where('id_user',$request->iduser)
+                ->where('id_modulo',$modulos->id)
+                ->update(["agregar" => 1, "actualizar" => 1, "eliminar" => 1]);
+                }else{
+
+                $var = new UserAccess();
+                $var->setConnection($this->conection_logins);
+                $var->id_user = $request->iduser;
+                $var->id_modulo = $modulos->id;
+                $var->agregar  = 1;
+                $var->actualizar  = 1;
+                $var->eliminar  = 1;
+               $var->save();
+                }
+        
+    
+               
+
+       
+            }
+      
+                 
+            return response()->json(true,200);
+
+
+             
+
+                
+              
+                   
+         
+                 }else{
+                   
+                    return response()->json(false,500);
+                 }
+
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+              
+               
+
+            }
+        }
+      
+       
+
+
+        public function eliminarmasivo(Request $request)
+    {
+
+        if($request->ajax()){
+            try{
+                if(isset($request->iduser) && isset($request->idsistema)){
+
+
+                    $modulos = Modulo::on($this->conection_logins)
+                    ->where('id_sistema',$request->idsistema)
+                    ->where('estatus','1')
+                    ->orderby('nro_orden','asc')
+                    ->get();
+            foreach($modulos as $modulos){
+
+              
+                $user_access = UserAccess::on($this->conection_logins)->where('id_user',$request->iduser)
+                ->where('id_modulo',$modulos->id)->delete();
+
+            }
+      
+                 
+            return response()->json(true,200);
+
+
+             
+
+                
+              
+                   
+         
+                 }else{
+                   
+                    return response()->json(false,500);
+                 }
+
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+              
+               
+
+            }
+
+
+
+        
+    }
+      
+
+    public function eliminarpermiso(Request $request)
+    {
+
+        if($request->ajax()){
+            try{
+                if(isset($request->iduser) && isset($request->id)){
+
+
+
+              
+                $user_access = UserAccess::on($this->conection_logins)->where('id_user',$request->iduser)
+                ->where('id_modulo',$request->id)->delete();
+
+      
+                 
+            return response()->json(true,200);
+
+         
+                 }else{
+                   
+                    return response()->json(false,500);
+                 }
+
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+              
+               
+
+            }
+    }   
     
 }

@@ -1631,5 +1631,9 @@ Route::group(["prefix"=>"modulos"],function(){
     Route::get('modulos/{id_sistema?}','ModulosController@list')->name('modulos.list');
     Route::post('insert','ModulosController@insert')->name('modulos.insert');
     Route::delete('delete','ModulosController@destroy')->name('modulos.delete');
+    Route::post('insertmasivo','ModulosController@insertmasivo')->name('modulos.insertmasivo');
+    Route::delete('eliminarmasivo','ModulosController@eliminarmasivo')->name('modulos.eliminarmasivo');
+    Route::delete('eliminarpermiso','ModulosController@eliminarpermiso')->name('modulos.eliminarpermiso');
+
 
 });

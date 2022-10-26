@@ -5,8 +5,8 @@
         <th>Consultar</th>
         <th>Agregar</th>
         <th>Modificar</th>
-        <th>Eliminar</th>
-        
+        <th>Eliminar</th>   
+        <th></th>       
     </tr>
     </thead>
     <tbody>
@@ -80,7 +80,7 @@
                         }
 
 
-
+                    echo "<td><button type='button' class='btn btn-outline-warning btn-sm eliminarpermiso' value='$modulos[id]/$idusuario'>Quitar Permiso</button></td>";
 
                        echo "</tr>";
 
@@ -117,13 +117,7 @@ $('.botonenviomodulonew').click(function(e){
              success:(response)=>{
              
                  if(response == true){
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Exito!',
-                        html: 'Asignado Con Exito',
-                
-                
-                        })
+              
 
                     if(tipopermiso != 'consultar'){
 
@@ -165,12 +159,60 @@ $('.botonenviomodulonew').click(function(e){
                 
                         })
              }
+         })     
+
+
+});
+
+
+
+
+$('.eliminarpermiso').click(function(e){
+      e.preventDefault();
+    
+      var nroactas = $(this).val().split('/');
+      var id = nroactas[0];
+      var iduser = nroactas[1];
+;
+
+
+    $.ajax({
+        method: "POST",
+        url: "{{ route('modulos.eliminarpermiso') }}",
+        data: {id: id, iduser: iduser, "_method": "DELETE", "_token": "{{ csrf_token() }}"},
+             success:(response)=>{
+             
+                 if(response == true){
+              
+
+                
+
+                  
+                 }else{
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: 'Error al Asignar Permiso',
+                
+                
+                        })
+                 }
+                
+             
+                
+             
+             },
+             error:(xhr)=>{
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: 'Error al Asignar Permiso',
+                
+                
+                        })
+             }
          })
 
-
-
-
-     
 
 
 });
@@ -178,7 +220,7 @@ $('.botonenviomodulonew').click(function(e){
 $('#dataTable').DataTable({
             "ordering": false,
             "order": [],
-            'aLengthMenu': [[10, 20, 30, -1], [10, 20, 30, "All"]]
+            'aLengthMenu': [[100], ["All"]]
         });
   
     </script> 
