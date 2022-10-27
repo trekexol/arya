@@ -30,7 +30,11 @@ class NominaConceptController extends Controller
         $users_role =   $user->role_id;
 
 
-        $nominaconcepts      =   NominaConcept::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+        $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
+         /*->orderBy('id', 'asc')
+       ->orderBy('type', 'asc')
+        ->orderBy('calculate', 'desc')*/
+        ->get();
         
         if (isset($nominaconcepts)){
             foreach ($nominaconcepts as $nominaconcept) {
@@ -39,7 +43,13 @@ class NominaConceptController extends Controller
                 ->where('description','LIKE','%'.$nominaconcept->account_name.'%')
                 ->get()->first();
 
-                $nominaconcept->account_code = $accounts->code_one.'.'.$accounts->code_two.'.'.$accounts->code_three.'.'.$accounts->code_four.'.'.str_pad($accounts->code_five, 3, "0", STR_PAD_LEFT); 
+                if(!empty($accounts)){
+                    $nominaconcept->account_code = $accounts->code_one.'.'.$accounts->code_two.'.'.$accounts->code_three.'.'.$accounts->code_four.'.'.str_pad($accounts->code_five, 3, "0", STR_PAD_LEFT); 
+                } else {
+                    $nominaconcept->account_code = ''; 
+                }
+
+                
             }
         }
     

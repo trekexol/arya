@@ -61,15 +61,18 @@
    
     <div class="card-body">
         <div class="table-responsive">
-        <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table style="font-size: 10pt;" class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+        
             <thead>
             <tr>
                 <th class="text-center" style="width: 1%;">ID</th>
                 <th class="text-center" style="width: 1%;">Concepto</th>
                 <th class="text-center" style="width: 20%;">Descripción</th>
-                <th class="text-center" style="width: 1%;">Signo-Tipo</th>
-                <th class="text-center">Fórmula<br>Mensual - Quincenal - Semanal - Especial - Asignación General</th>
-                <th class="text-center" style="width: 1%;">Calcular con Nómina</th>
+                <th class="text-center" style="width: 1%;">Signo</th>
+                <th class="text-center" style="width: 1%;">Tipo</th>
+                <th class="text-center">Fórmula<br>M: Mensual - Q: Quincenal - S: Semanal - E: Especial - A: Asignación General</th>
+                <th class="text-center" style="width: 1%;">Cálculo</th>
+                <th class="text-center" style="width: 1%;">Auto</th>
                 <th class="text-center" style="width: 5%;"></th>
               
             </tr>
@@ -80,14 +83,15 @@
                 @else
                     @foreach ($nominaconcepts as $nominaconcept)
                     <tr>
-                    <td class="text-center font-weight-bold">{{$nominaconcept->id}}<br>O:{{$nominaconcept->order}}</td>
+                    <td class="text-center font-weight-bold">{{$nominaconcept->id}}</td>
                     <td class="text-center font-weight-bold">{{$nominaconcept->abbreviation}}</td>
                     <td class="text-center">{{$nominaconcept->description}}</td>
                     @if($nominaconcept->sign == "A")
-                        <td class="text-center">(Asignación)<br>{{$nominaconcept->type}}</td>
+                        <td class="text-center">A</td>
                     @else
-                        <td class="text-center">(Deducción)<br>{{$nominaconcept->type}}</td>
+                        <td class="text-center">D</td>
                     @endif
+                    <td class="text-center">{{$nominaconcept->type}}</td>
                     
                     
                     <td class="text-left">
@@ -114,7 +118,14 @@
                     <!--<td class="text-center">{{ ''/*$nominaconcept->formulasm['description'] ?? ''*/}}</td>-->
                     <!--<td class="text-center">{{ ''/*$nominaconcept->formulass['description'] ?? ''*/}}</td>-->
                     <!--<td class="text-center">{{ ''/*$nominaconcept->formulasq['description'] ?? ''*/}}</td>--> 
-                   
+                    <td class="text-center">
+                        @if ($nominaconcept->prestations == 'S')
+                        P <i class="fa fa-address-card" title="Este concepto afecta las Prestaciones" style="color: #4e73df"></i>
+                        @endif
+                        @if ($nominaconcept->asignation == 'S')
+                        A <i class="fa fa-address-card" title="Este concepto calculará Asignación General" style="color: darkgreen"></i>
+                        @endif           
+                    </td>
                     @if($nominaconcept->calculate == "S")
                         <td class="text-center">Si</td>
                     @else
@@ -123,18 +134,28 @@
 
                     <td class="text-center">
                         <a href="{{route('nominaconcepts.edit',$nominaconcept->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
-                        @if ($nominaconcept->prestations == 'S')
-                        <i class="fa fa-address-card" title="Este concepto afecta las Prestaciones" style="color: #4e73df"></i>
-                        @endif
-                        @if ($nominaconcept->asignation == 'S')
-                        <i class="fa fa-address-card" title="Este concepto calculará Asignación" style="color: darkgreen"></i>
-                        @endif
+
+                        <br>
+                        O:{{$nominaconcept->order}}
                     </td>
 
                     </tr>
                     @endforeach
                 @endif
             </tbody>
+            <!-- <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                    <th>Salary</th>
+                    <th>Salary</th>
+                    <th>Salary</th>
+                </tr>
+            </tfoot>-->
         </table>
         </div>
     </div>
@@ -144,9 +165,38 @@
 @section('javascript')
     <script>
     $('#dataTable').DataTable({
+        /*initComplete: function () {
+            this.api()
+                .columns()
+                .every(function () {
+                    var column = this;
+                    var select = $('<select><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+ 
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+ 
+                    column
+                        .data()
+                        .unique()
+                        .sort()
+                        .each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>');
+                        });
+                });
+        },*/
+    
         "ordering": true,
-        "order": [1,'desc'],
-        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        "order": [[3,'asc'],[6,'desc'],[7,'desc']],
+
+        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]],
+
+
     });
+
+
+    
     </script> 
 @endsection
