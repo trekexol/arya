@@ -201,7 +201,7 @@
 
                             <label for="asignacion_general" class="col-md-3 col-form-label text-md-right">Asignación General USD</label>
                             <div class="col-md-4">
-                                <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ old('asignacion_general') }}" autocomplete="asignacion_general">
+                                <input id="asignacion_general" type="text" class="form-control @error('asignacion_general') is-invalid @enderror" name="asignacion_general" value="{{ 0 ?? old('asignacion_general') }}" autocomplete="asignacion_general">
 
                                 @error('asignacion_general')
                                     <span class="invalid-feedback" role="alert">
