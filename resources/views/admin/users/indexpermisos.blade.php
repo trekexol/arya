@@ -39,7 +39,7 @@
   
 </div>
   <div class="form-group col-md-2" >
-    <a href="{{ route('users.createAssignModules',['id_user' => $id_user] ?? 'users') }}" class="btn btn-danger">
+    <a href="{{ route('users') }}" class="btn btn-danger">
         Volver
     </a>
   </div>

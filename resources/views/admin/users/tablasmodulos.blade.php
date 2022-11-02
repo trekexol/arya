@@ -1,3 +1,4 @@
+<div id="otratabla">
 <table class="table table-light2 table-bordered" id="dataTable" >
     <thead>
     <tr> 
@@ -10,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-       
+       <input type="hidden" class="idsistema" id="idsistema" name="idsistema" value="{{$idsistema.','.$idusuario}}"/>
             <?php 
                 
                 foreach($arreglom as $modulos){
@@ -95,11 +96,11 @@
       
     </tbody>
 </table>
-
+</div>
 
 
     <script>
-
+ var value = $("#idsistema").val();
 
 $('.botonenviomodulonew').click(function(e){
       e.preventDefault();
@@ -173,7 +174,11 @@ $('.eliminarpermiso').click(function(e){
       var nroactas = $(this).val().split('/');
       var id = nroactas[0];
       var iduser = nroactas[1];
-;
+
+     
+      console.log(value);
+      var urls = "{{ route('modulos.list') }}" + '/' + value;
+
 
 
     $.ajax({
@@ -185,7 +190,10 @@ $('.eliminarpermiso').click(function(e){
                  if(response == true){
               
 
-                
+                $.get(urls, function(data){
+              
+              $('#otratabla').empty().append(data);
+                     })
 
                   
                  }else{

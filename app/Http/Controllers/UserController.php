@@ -158,8 +158,8 @@ class UserController extends Controller
 
        
         if($user->role_id != '1'){
-            
-            return redirect('/users/createassignmodules/'.$user->id.'')->withSuccess('Registro de Usuario Exitoso!');
+       
+            return redirect('/users/permisos/'.$user->id.'/'.$user->name.'')->withSuccess('Registro de Usuario Exitoso!');
            
         }else{
             return redirect('/users')->withSuccess('Registro Exitoso!');

@@ -50,8 +50,8 @@ Route::group(["prefix"=>'users'],function(){
     Route::delete('delete','UserController@destroy')->name('users.delete');
     Route::patch('{id}/update','UserController@update')->name('users.update');
 
-    Route::get('createassignmodules/{id_user}','UserController@createAssignModules')->name('users.createAssignModules');
-    Route::post('assignmodules', 'UserController@assignModules')->name('users.assignModules');
+    //Route::get('createassignmodules/{id_user}','UserController@createAssignModules')->name('users.createAssignModules');
+    //Route::post('assignmodules', 'UserController@assignModules')->name('users.assignModules');
 
 
 

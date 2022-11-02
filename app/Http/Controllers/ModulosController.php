@@ -51,7 +51,7 @@ class ModulosController extends Controller
            
 
 
-                return response()->json(View::make('admin.users.tablasmodulos',compact('arreglom','idusuario'))->render());
+                return response()->json(View::make('admin.users.tablasmodulos',compact('arreglom','idusuario','idsistema'))->render());
 
           
 

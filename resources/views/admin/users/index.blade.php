@@ -67,7 +67,7 @@
                     @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1 || $actualizarmiddleware == 1 || $eliminarmiddleware == 1)
                         <td class="text-center">
                             @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
-                            <a href="{{ route('users.createAssignModules',$user->id)}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                            <a href="{{ route('users.indexpermisos',['id_user' => $user->id, 'name_user' => $user->name]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             @endif
                             @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == 1)
                             <a href="{{ route('users.edit',$user->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
