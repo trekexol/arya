@@ -394,8 +394,11 @@ class DailyListingController extends Controller
 
                    } else {
 
-                    if(!empty($referencia)){
-                        $detail->reference = $referencia[0]->reference;
+                    $referenciab = ExpensePayment::on(Auth::user()->database_name) // buscar referencia
+                    ->where('id_expense','=',$detail->id_expense)->first();
+
+                        if(!empty($referenciab)){
+                            $detail->reference = $referenciab;
                         }else{
                             $detail->reference = '';    
                         } 
