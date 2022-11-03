@@ -44,7 +44,7 @@
                                     <label for="description" class="col-md-2 col-form-label text-md-right">Descripción </label>
         
                                     <div class="col-md-4">
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $var->description }}" maxlength="60" required autocomplete="description">
+                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $var->description }}" maxlength="300" required autocomplete="description">
         
                                         @error('description')
                                             <span class="invalid-feedback" role="alert">

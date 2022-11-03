@@ -7,6 +7,7 @@ use App\Nomina;
 use App\NominaCalculation;
 use App\NominaConcept;
 use App\NominaFormula;
+use App\NominaBasesCalcs;
 use App\Profession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -121,11 +122,12 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation = new NominaCalculation();
         $nomina_calculation->setConnection(Auth::user()->database_name);
-
+        $amount = request('monto');
 
         $nomina_calculation->id_nomina = request('id_nomina');
         $nomina_calculation->id_nomina_concept = request('id_nomina_concept');
         $nomina_calculation->id_employee = request('id_employee');
+
        
         $nomina_calculation->number_receipt = 0;
         
@@ -134,7 +136,7 @@ class NominaCalculationController extends Controller
         $nomina = Nomina::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina);
         $employee = Employee::on(Auth::user()->database_name)->find($nomina_calculation->id_employee);
         $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina_concept);
-
+        $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
         
         
         $days = request('days');
@@ -177,7 +179,6 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation->status =  "1";
 
-        $amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation);
 
         if(isset($amount)){
             $nomina_calculation->amount = $amount;
@@ -185,8 +186,6 @@ class NominaCalculationController extends Controller
             $nomina_calculation->amount = 0;
         }
        
-       
-
         $nomina_calculation->save();
 
         return redirect('/nominacalculations/index/'.$nomina_calculation->id_nomina.'/'.$nomina_calculation->id_employee.'')->withSuccess('Registro Exitoso!');
@@ -273,36 +272,36 @@ class NominaCalculationController extends Controller
         return $return;
     }
 
-    public function addNominaCalculation($nomina,$nominaconcept,$employee,$nomina_calculation)
+    public function addNominaCalculation($nomina,$nominaconcept,$employee,$nomina_calculation,$nominabases)
     {
         
         $amount = -1;
 
             if(($nomina->type == "Primera Quincena") || ($nomina->type == "Segunda Quincena")){
                 if(isset($nominaconcept->id_formula_q)){
-                    $amount = $this->formula($nominaconcept->id_formula_q,$employee,$nomina,$nomina_calculation);
+                    $amount = $this->formula($nominaconcept->id_formula_q,$employee,$nomina,$nomina_calculation,$nominabases);
                 }
                 
             }else if($nomina->type == "Mensual"){
                 if(isset($nominaconcept->id_formula_m)){
-                    $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$nomina_calculation);
+                    $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$nomina_calculation,$nominabases);
                 }
 
             }else if($nomina->type == "Especial"){
 
                     if(isset($nominaconcept->id_formula_e)){
-                        $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$nomina_calculation);
+                        $amount = $this->formula($nominaconcept->id_formula_m,$employee,$nomina,$nomina_calculation,$nominabases);
                     }
 
             }else if($nomina->type == "Semanal"){
                 if(isset($nominaconcept->id_formula_s)){
-                    $amount = $this->formula($nominaconcept->id_formula_s,$employee,$nomina,$nomina_calculation);
+                    $amount = $this->formula($nominaconcept->id_formula_s,$employee,$nomina,$nomina_calculation,$nominabases);
                 }
             }
            
             if ($nomina->asignation == 'S') {
                 
-                $amount = $this->formula($nominaconcept->id_formula_a,$employee,$nomina,$nomina_calculation);
+                $amount = $this->formula($nominaconcept->id_formula_a,$employee,$nomina,$nomina_calculation,$nominabases);
             }
 
 
@@ -314,7 +313,7 @@ class NominaCalculationController extends Controller
     
 
 
-    public function formula($id_formula,$employee,$nomina,$nomina_calculation)
+    public function formula($id_formula,$employee,$nomina,$nomina_calculation,$nominabases)
     {
 
         
@@ -349,7 +348,7 @@ class NominaCalculationController extends Controller
 
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
 
-		$variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general];
+		$variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general,"cestatickets"=>$nominabases->amount_cestatickets];
         //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
 		$total = $this->resolver($operacion,$variables);
 
@@ -359,84 +358,6 @@ class NominaCalculationController extends Controller
         } else {
             $total = 0; 
         }
-
-       /* if($id_formula == 1){
-            //{{sueldo}} * 12 / 52 * {{lunes}} * 0.04
-            $lunes = $this->calcular_cantidad_de_lunes($nomina);
-            $total = ($employee->monto_pago * 12)/52 * ($lunes * 0.04);
-            
-        }else if($id_formula == 2){
-            //{{sueldo}} * 12 / 52 * {{lunes}} * 0.04 * 5 / 5
-            $lunes = $this->calcular_cantidad_de_lunes($nomina);
-            $total = (($employee->monto_pago * 12)/52) * (($lunes * 0.04) * 5)/5 ;
-            
-        }else if($id_formula == 3){
-            //{{sueldo}} / 30 * 7.5
-            $total = ($employee->monto_pago * 30) * 7.5 ;
-            
-        }else if($id_formula == 4){
-            //{{sueldo}} * 0.01 / 2
-            $total = ($employee->monto_pago * 0.01)/2 ;
-            
-        }else if($id_formula == 5){
-            //{{sueldo}} * 0.01 / 4
-            $total = ($employee->monto_pago * 0.01) / 4 ;
-            
-        }else if($id_formula == 6){
-            //{{sueldo}} / 2
-            $total = ($employee->monto_pago)/2 ;
-            
-        }else if($id_formula == 7){
-            //{{sueldo}} 
-            $total = ($employee->monto_pago) ;
-            
-        }else if($id_formula == 8){
-            //{{sueldo}} / 30 / 8 * 1.6 / {{horas}} 
-            $total = (($employee->monto_pago / 30)/8 * 1.6) / $hours ;
-            
-        }else if($id_formula == 9){
-            //{{sueldo}} / 30 / 8 * 1.8 / {{horas}}
-            $total = (($employee->monto_pago / 30)/8 * 1.8) / $hours ;
-            
-        }else if($id_formula == 10){
-            //{{sueldo}} / 30*1.5 *{{dias}}
-            $total = ($employee->monto_pago / 30) * 1.5 * $days;
-            
-        }else if($id_formula == 11){
-            //{{sueldo}} / 30 * 1.5 * {{diasferiados}}
-            $total = ($employee->monto_pago / 30) * 1.5 * $days;
-            
-        }else if($id_formula == 12){
-            //{{cestaticket}} / 2
-            $total = $cestaticket / 2;
-            
-        }else if($id_formula == 13){
-            //{{sueldo}} * 0.03
-            $total = $employee->monto_pago * 0.03;
-            
-        }else if($id_formula == 14){
-            //{{sueldo}} * 12 / 52 * {{lunes}} * 0.005
-            $lunes = $this->calcular_cantidad_de_lunes($nomina);
-            $total = ($employee->monto_pago * 12)/52 * $lunes * 0.005;
-            
-        }else if($id_formula == 15){
-            //{{sueldo}} * 12 / 52 * {{lunes}} * 0.004
-            $lunes = $this->calcular_cantidad_de_lunes($nomina);
-            $total = ($employee->monto_pago * 12)/52 * $lunes * 0.004;
-            
-        }else if($id_formula == 16){
-            //{{sueldo}} / 30 * {{dias_faltados}}
-            
-            $total = ($employee->monto_pago / 30) * $days;
-            
-        }else if($id_formula == 17){
-            //{{sueldo}} / 4
-            
-            $total = ($employee->monto_pago / 4);
-            
-        }else{
-            return -1;
-        }*/
 
         return $total;
     }
@@ -489,8 +410,7 @@ class NominaCalculationController extends Controller
         $nomina = Nomina::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina);
         $employee = Employee::on(Auth::user()->database_name)->find($nomina_calculation->id_employee);
         $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina_concept);
-
-        
+        $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);  
         
         $days = request('days');
         $hours = request('hours');
@@ -532,7 +452,7 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation->status =  "1";
 
-        $amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation);
+        $amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation,$nominabases);
 
         if(isset($amount)){
             $nomina_calculation->amount = $amount;
@@ -544,13 +464,13 @@ class NominaCalculationController extends Controller
         $nomina_calculation->save();
 
 
-        return redirect('/nominacalculations/index/'.$nomina_calculation->id_nomina.'/'.$nomina_calculation->id_employee.'')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/nominacalculations/index/'.$nomina_calculation->id_nomina.'/'.$nomina_calculation->id_employee.'')->withSuccess('Actualización Exitosa!');
   
     }
 
 
 
-    public function listformula(Request $request, $id_concept = null){
+    public function listformula(Request $request, $id_concept = null,$id_nomina = null,$id_employe = null){
         //validar si la peticion es asincrona
         if($request->ajax()){
             try{
@@ -559,7 +479,32 @@ class NominaCalculationController extends Controller
                                                         ->where('nomina_concepts.id', $id_concept)
                                                         ->select('nomina_formulas.description as description')
                                                         ->get(); 
-                                                      
+                
+  
+                $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+                $employee = Employee::on(Auth::user()->database_name)->find($id_employe);
+                $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+                $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($id_concept);
+                $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($nomina_concept->id_formula_q);
+                
+                $operacion = $nominaconcepts->description;
+
+                $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+                $variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general,"cestatickets"=>$nominabases->amount_cestatickets];
+                //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
+                $total = $this->resolver($operacion,$variables);
+
+
+                if($total){
+                    $total = $total;
+                } else {
+                    $total = 0; 
+                }
+                
+                $formula_q[0]->amount = $total;
+  
+
                 return response()->json($formula_q,200);
             }catch(Throwable $th){
                 return response()->json(false,500);
@@ -567,7 +512,7 @@ class NominaCalculationController extends Controller
         }
         
     }
-    public function listformulamensual(Request $request, $id_concept = null){
+    public function listformulamensual(Request $request, $id_concept = null,$id_nomina = null,$id_employe = null){
         //validar si la peticion es asincrona
         if($request->ajax()){
             try{
@@ -576,6 +521,30 @@ class NominaCalculationController extends Controller
                                                         ->where('nomina_concepts.id', $id_concept)
                                                         ->select('nomina_formulas.description as description')
                                                         ->get(); 
+
+                $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+                $employee = Employee::on(Auth::user()->database_name)->find($id_employe);
+                $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+                $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($id_concept);
+                $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($nomina_concept->id_formula_m);
+                
+                $operacion = $nominaconcepts->description;
+
+                $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+                $variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general,"cestatickets"=>$nominabases->amount_cestatickets];
+                //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
+                $total = $this->resolver($operacion,$variables);
+
+
+                if($total){
+                    $total = $total;
+                } else {
+                    $total = 0; 
+                }
+                
+                $formula_q[0]->amount = $total;
+                                                          
                                                    
                 return response()->json($formula_q,200);
             }catch(Throwable $th){
@@ -584,7 +553,7 @@ class NominaCalculationController extends Controller
         }
         
     }
-    public function listformulasemanal(Request $request, $id_concept = null){
+    public function listformulasemanal(Request $request, $id_concept = null,$id_nomina = null,$id_employe = null){
         //validar si la peticion es asincrona
         if($request->ajax()){
             try{
@@ -593,7 +562,30 @@ class NominaCalculationController extends Controller
                                                         ->where('nomina_concepts.id', $id_concept)
                                                         ->select('nomina_formulas.description as description')
                                                         ->get(); 
-                                                   
+                
+                $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+                $employee = Employee::on(Auth::user()->database_name)->find($id_employe);
+                $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+                $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($id_concept);
+                $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($nomina_concept->id_formula_s);
+                
+                $operacion = $nominaconcepts->description;
+
+                $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+                $variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general,"cestatickets"=>$nominabases->amount_cestatickets];
+                //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
+                $total = $this->resolver($operacion,$variables);
+
+
+                if($total){
+                    $total = $total;
+                } else {
+                    $total = 0; 
+                }
+                
+                $formula_q[0]->amount = $total;  
+
                 return response()->json($formula_q,200);
             }catch(Throwable $th){
                 return response()->json(false,500);
@@ -602,6 +594,47 @@ class NominaCalculationController extends Controller
         
     }
 
+
+    public function listformulaespecial(Request $request, $id_concept = null,$id_nomina = null,$id_employe = null){
+        //validar si la peticion es asincrona
+        if($request->ajax()){
+            try{
+                $formula_e = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
+                                                        ->join('nomina_formulas', 'nomina_formulas.id', '=', 'nomina_concepts.id_formula_e')
+                                                        ->where('nomina_concepts.id', $id_concept)
+                                                        ->select('nomina_formulas.description as description')
+                                                        ->get(); 
+                
+                $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
+                $employee = Employee::on(Auth::user()->database_name)->find($id_employe);
+                $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+                $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($id_concept);
+                $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($nomina_concept->id_formula_e);
+                
+                $operacion = $nominaconcepts->description;
+
+                $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+                $variables = ["sueldo"=>$employee->monto_pago,"lunes"=>$lunes,"tasa"=>$nomina->rate,"asignacion"=>$employee->asignacion_general,"cestatickets"=>$nominabases->amount_cestatickets];
+                //$variables = ["sueldo"=>$monto_pago, "horas"=>0, "dias"=>0, "horas_trabajadas"=>$horas_trabajadas, "horas_faltadas"=>$horas_faltadas, "dias_trabajados"=>$dias_trabajados, "dias_faltados"=>$dias_faltados,  "lunes"=>$lunes];
+                $total = $this->resolver($operacion,$variables);
+
+
+                if($total){
+                    $total = $total;
+                } else {
+                    $total = 0; 
+                }
+                
+                $formula_e[0]->amount = $total;               
+
+                return response()->json($formula_e,200);
+            }catch(Throwable $th){
+                return response()->json(false,500);
+            }
+        }
+        
+    }
 
 
 

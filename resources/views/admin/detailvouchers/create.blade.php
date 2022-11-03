@@ -299,31 +299,35 @@ $suma_haber = 0;
                                    
                                     </tr>
                                     @endforeach
-                                    <tr>
-                                        
-                                        @if(bcdiv($suma_debe, '1', 2) == bcdiv($suma_haber, '1', 2))
-                                            <td style="color: rgb(84, 196, 84)">El comprobante está cuadrado</td>
-                                            <td>Total</td>
-                                            <td>{{ number_format($suma_debe, 2, ',', '.') }}</td>
-                                            <td>{{ number_format($suma_haber, 2, ',', '.') }}</td>
-                                        @else
-                                            <td style="color: red">El comprobante está descuadrado {{bcdiv($suma_debe, '1', 2)}}/{{ bcdiv($suma_haber, '1', 2)}}</td>
-                                            <td>Total</td>
-                                            @if (bcdiv($suma_debe, '1', 2) > bcdiv($suma_haber, '1', 2))
-                                                <td>{{number_format($suma_debe, 2, ',', '.')}}  <br><div style="color: red"> - {{ number_format($suma_debe - $suma_haber, 2, ',', '.')}}</div></td>
-                                                <td>{{number_format($suma_haber, 2, ',', '.')}}</td>
-                                            @else
-                                                <td>{{number_format($suma_debe, 2, ',', '.')}}</td>
-                                                <td>{{number_format($suma_haber, 2, ',', '.')}} <br><div style="color: red"> - {{ number_format($suma_haber - $suma_debe, 2, ',', '.')}}</div></td>
-                                            @endif
-                                            
-                                        @endif
-                                            <td>
-                                          </td>
-                                       
-                                        </tr>
+
                                 @endif
                             </tbody>
+                        <tfoot>
+                            <tr>
+                                        
+                                @if(bcdiv($suma_debe, '1', 2) == bcdiv($suma_haber, '1', 2))
+                                    <td style="color: rgb(84, 196, 84)">El comprobante está cuadrado</td>
+                                    <td>Total</td>
+                                    <td>{{ number_format($suma_debe, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($suma_haber, 2, ',', '.') }}</td>
+                                @else
+                                    <td style="color: red">El comprobante está descuadrado {{bcdiv($suma_debe, '1', 2)}}/{{ bcdiv($suma_haber, '1', 2)}}</td>
+                                    <td>Total</td>
+                                    @if (bcdiv($suma_debe, '1', 2) > bcdiv($suma_haber, '1', 2))
+                                        <td>{{number_format($suma_debe, 2, ',', '.')}}  <br><div style="color: red"> - {{ number_format($suma_debe - $suma_haber, 2, ',', '.')}}</div></td>
+                                        <td>{{number_format($suma_haber, 2, ',', '.')}}</td>
+                                    @else
+                                        <td>{{number_format($suma_debe, 2, ',', '.')}}</td>
+                                        <td>{{number_format($suma_haber, 2, ',', '.')}} <br><div style="color: red"> - {{ number_format($suma_haber - $suma_debe, 2, ',', '.')}}</div></td>
+                                    @endif
+                                    
+                                @endif
+                                    <td>
+                                  </td>
+                               
+                                </tr>
+
+                        </tfoot>
                         </table>
                         </div>
                     </div>
@@ -550,8 +554,8 @@ $suma_haber = 0;
 @section('consulta')
     <script>
         $('#dataTable').DataTable({
-            "ordering": false,
-            "order": [],
+            "ordering": true,
+            "order": [[2],[3],[0,'asc']],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
         
