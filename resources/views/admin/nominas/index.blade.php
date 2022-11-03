@@ -188,14 +188,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina: {{$exist_nomina_calculation->description ?? ''}}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina {{$exist_nomina_calculation->id}}: {{$exist_nomina_calculation->description ?? ''}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
             
-                <h5 class="text-center">Seguro desea Eliminar los cálculos y hacerlos nuevamente? Nota: (Se perderán los conceptos que no esten programados con el cálculo de la nómina) </h5>
+                <h5 class="text-center">Seguro desea volver a calcular la nómina? Nota: (Se perderán los conceptos que no esten programados con el cálculo automático de la nómina) </h5>
                 
             </div>
             <div class="modal-footer">
@@ -214,7 +214,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabelcont">Recrear comprobante Contable de la Nómina: {{$exist_nomina_calculationcont->id_nomina}}</h5>
+                <h5 class="modal-title" id="exampleModalLabelcont">Recrear comprobante Contable de la Nómina {{$exist_nomina_calculationcont->id}}: {{$exist_nomina_calculationcont->description}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -225,7 +225,7 @@
                 
             </div>
             <div class="modal-footer">
-                <a href="{{ route('nominas.recalculatecont',$exist_nomina_calculationcont->id_nomina) }}" type="submit" class="btn btn-info">Recrear</a>
+                <a href="{{ route('nominas.recalculatecont',$exist_nomina_calculationcont->id) }}" type="submit" class="btn btn-info">Recrear</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
            

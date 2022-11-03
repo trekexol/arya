@@ -605,9 +605,10 @@ Route::group(["prefix"=>'nominacalculations'],function(){
     Route::get('delete/{id}','NominaCalculationController@destroy')->name('nominacalculations.delete');
     Route::patch('update/{id}','NominaCalculationController@update')->name('nominacalculations.update');
 
-    Route::get('listformula/{id?}','NominaCalculationController@listformula')->name('nominacalculations.listformula');
-    Route::get('listformulamensual/{id?}','NominaCalculationController@listformulamensual')->name('nominacalculations.listformulamensual');
-    Route::get('listformulasemanal/{id?}','NominaCalculationController@listformulasemanal')->name('nominacalculations.listformulasemanal');
+    Route::get('listformula/{id?}/{id_nomina?}/{id_empleado?}','NominaCalculationController@listformula')->name('nominacalculations.listformula');
+    Route::get('listformulamensual/{id?}/{id_nomina?}/{id_empleado?}','NominaCalculationController@listformulamensual')->name('nominacalculations.listformulamensual');
+    Route::get('listformulasemanal/{id?}/{id_nomina?}/{id_empleado?}','NominaCalculationController@listformulasemanal')->name('nominacalculations.listformulasemanal');
+    Route::get('listformulaespecial/{id?}/{id_nomina?}/{id_empleado?}','NominaCalculationController@listformulaespecial')->name('nominacalculations.listformulaespecial');
 });
 
 Route::group(["prefix"=>'invoices'],function(){

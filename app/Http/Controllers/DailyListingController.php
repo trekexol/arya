@@ -393,7 +393,12 @@ class DailyListingController extends Controller
                         }
 
                    } else {
-                    $detail->reference = $referencia[0]->reference;
+
+                    if(!empty($referencia)){
+                        $detail->reference = $referencia[0]->reference;
+                        }else{
+                            $detail->reference = '';    
+                        } 
                    }    
                     
                     

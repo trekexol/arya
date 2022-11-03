@@ -133,19 +133,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
       
 
-      <script>
-            $("body").toggleClass("sidebar-toggled");
-                $(".sidebar").toggleClass("toggled");
-                if ($(".sidebar").hasClass("toggled")) {
-                $('.sidebar .collapse').collapse('hide');
-            };
-            
-            id_company = $("#id_company").val();
-            if (id_company == '1') {
-            window.location.href = "{{ route('suspended')}}";
-            }
+        <script>
+          $("body").toggleClass("sidebar-toggled");
+              $(".sidebar").toggleClass("toggled");
+              if ($(".sidebar").hasClass("toggled")) {
+              $('.sidebar .collapse').collapse('hide');
+          };
+          /* suspender
+          id_company = $("#id_company").val();
+          if (id_company == '1') {
+          window.location.href = "{{ route('suspended')}}";
+          }*/
 
-        </script>
+      </script>
+
 
   @yield('piechart')
   @yield('javascript1')
