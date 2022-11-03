@@ -400,7 +400,7 @@ class DailyListingController extends Controller
                     ->first();
 
                         if(!empty($referenciab)){
-                            $detail->reference = $referenciab;
+                            $detail->reference = $referenciab->reference;
                         }else{
                             $detail->reference = '';    
                         } 
