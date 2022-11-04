@@ -322,7 +322,7 @@ class NominaController extends Controller
     public function recalculatecont($id_nomina)
     {
         $this->deleteNominacont($id_nomina);
-
+        
        return $this->calculatecont($id_nomina);
     }
 
@@ -1128,15 +1128,18 @@ class NominaController extends Controller
         
         $header_id = HeaderVoucher::on(Auth::user()->database_name)
         ->where('id_nomina',$id_nomina)
+        ->where('status','!=','X')
         ->first();
+
+        $detail = DetailVoucher::on(Auth::user()->database_name)
+        ->where('id_header_voucher',$header_id->id)
+        ->update(['status' => 'X']);
 
         $header = HeaderVoucher::on(Auth::user()->database_name)
         ->where('id_nomina',$id_nomina)
         ->update(['status' => 'X']);
 
-        $detail = DetailVoucher::on(Auth::user()->database_name)
-        ->where('id_header_voucher',$header_id->id)
-        ->update(['status' => 'X']);
+
     
     }
 
