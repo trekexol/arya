@@ -162,7 +162,7 @@
                         </div>  
                         <div class="form-group row">
                             
-                            <label for="amount" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+                            <label for="amount" class="col-md-2 col-form-label text-md-right">Monto:</label>
 
                             <div class="col-md-4">
                                 <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ old('amount') }}" required autocomplete="amount">
