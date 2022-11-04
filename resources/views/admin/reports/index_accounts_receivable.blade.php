@@ -46,7 +46,12 @@
                                         <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
                                         <option disabled  value="{{ $coin }}">-----------</option>
                                     @else
-                                        <option disabled selected value="bolivares">Moneda</option>
+                                        @if (Auth::user()->company->id == '1')
+                                        <option selected value="dolares">Dólares</option>
+                                        @else
+                                        <option selected value="bolivares">Bolívares</option>
+                                        @endif
+                                      
                                     @endif
                                     
                                     <option  value="bolivares">Bolívares</option>
@@ -94,9 +99,15 @@
                                         <option value="notas">Notas de Entrega</option>
                                         <option value="facturas">Facturas</option>
                                     @else
+                                        @if (Auth::user()->company->id == '1')
+                                        <option value="todo">Facturas y Notas de Entrega</option>
+                                        <option value="notas">Notas de Entrega</option>
+                                        <option selected value="facturas">Facturas</option>
+                                        @else
                                         <option selected value="todo">Facturas y Notas de Entrega</option>
                                         <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
+                                        <option value="facturas">Facturas</option>                                     
+                                        @endif
                                     @endif
                                 </select>
                             </div>
@@ -115,7 +126,15 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
+                            @if (Auth::user()->company->id == '1')
+                            <?php
+                            $typeinvoice = 'facturas';
+                            ?>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'dolares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            @else
                             <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            @endif
+                            
                           </div>
                         
                         </div>
