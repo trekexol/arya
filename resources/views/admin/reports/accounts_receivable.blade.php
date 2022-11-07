@@ -64,19 +64,19 @@
         $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
         $diferencia_en_dias = 0;
         $validator_date = '';
-        $credit_days = '';
+
 
         if(isset($quotation->credit_days)){
             $date_defeated = date("Y-m-d",strtotime($quotation->date_billing."+ $quotation->credit_days days")); 
-            
+
+            $datenow = date_format(date_create($datenow),"Y-m-d");
+
             $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $datenow);
             $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated); 
 
             $validator_date = $shippingDate->lessThan($currentDate);
             $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
-            $credit_days = $quotation->credit_days;
 
-            
             
         }
 
@@ -132,7 +132,7 @@
       </td>
        @else
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-          Pendiente {{$credit_days}} 
+          Pendiente {{''}} 
       </td>
       @endif
     </tr> 
