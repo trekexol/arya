@@ -101,11 +101,52 @@ class NominaController extends Controller
         $employees = Employee::on(Auth::user()->database_name)
         ->where('status','!=','X')
         ->where('status','!=','0')
+        ->where('status','!=','5')
         ->where('nomina_type_id',$var->nomina_type_id)->get();
 
 
         $nomina_type = NominaType::on(Auth::user()->database_name)->find($var->nomina_type_id);
         $nomina_type_id_name = $nomina_type->name;
+
+        foreach ($employees as $employee) {
+
+            $amount_total_otras_asignaciones = 0;
+            $amount_total_otras_deducciones = 0;
+            $amount_total_asignacion_m_deducciones = 0;
+         
+            $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+            ->where('id_nomina',$id)
+            ->where('id_employee',$employee->id)
+            ->get();
+
+            foreach($calculos_nomina as $calculos) {
+                    
+                    $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
+                    ->find($calculos->id_nomina_concept);
+
+                    // Total Asignaciones
+                    if ($concepto->sign == 'A'){
+                        $amount_total_otras_asignaciones += $calculos->amount;
+                    } else {
+                        $amount_total_otras_asignaciones += 0;
+                    }
+
+                    // total Deducciones
+                    if ($concepto->sign == 'D') {
+                        $amount_total_otras_deducciones += $calculos->amount;
+                    } else {
+                        $amount_total_otras_deducciones += 0;                        
+                    }
+
+            }
+
+            $amount_total_asignacion_m_deducciones = $amount_total_otras_asignaciones - $amount_total_otras_deducciones;
+
+            $employee->asignaciones = $amount_total_otras_asignaciones;
+            $employee->deducciones = $amount_total_otras_deducciones;
+            $employee->monto_pago = $amount_total_asignacion_m_deducciones;
+
+        }
     
 
         $date = Carbon::now();
@@ -175,13 +216,8 @@ class NominaController extends Controller
        
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina_actual,$employee);
-   
-        }    
-        // Calcular Asignacion
-
-        foreach($employees as $employee){
-        
-    
+            
+            // Calcular conceptos de Asignacion
             $amount_total_otras_asignaciones = 0;
             $amount_total_otras_deducciones = 0;
             $amount_total_asignacion_m_deducciones = 0;
@@ -190,75 +226,87 @@ class NominaController extends Controller
             $conteo = 0;
             $asignacion_general_calculate = 0;
 
-            $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
-            ->where('id_nomina',$nomina_actual->id)
-            ->where('id_employee',$employee->id)
-            ->get();
 
-            foreach($calculos_nomina as $calculos) {
-                    
-                    $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
-                    ->find($calculos->id_nomina_concept);
-
-                    // Total Asignaciones
-                    if ($concepto->sign == 'A'){
-                        $amount_total_otras_asignaciones += $calculos->amount;
-                    } else {
-                        $amount_total_otras_asignaciones += 0;
-                    }
-
-                    // total Deducciones
-                    if ($concepto->sign == 'D') {
-                        $amount_total_otras_deducciones += $calculos->amount;
-                    } else {
-                        $amount_total_otras_deducciones += 0;                        
-                    }
-
-                    if($concepto->asignation == 'S'){
-                        $conceptos_asignacion[] = array($concepto->id,$calculos->id,$concepto->type); 
-                    }
-            }
-
-
-            if (isset($conceptos_asignacion)){
-                for ($q=0;$q<count($conceptos_asignacion);$q++) {
-                  
-                    if ($conceptos_asignacion[$q][2] == 'Quincenal'){
-                    $asignacion_general_calculate = $employee->asignacion_general/2;
+                    $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+                    ->where('id_nomina',$nomina_actual->id)
+                    ->where('id_employee',$employee->id)
+                    ->get();
+    
+                    foreach($calculos_nomina as $calculos) {
+                            
+                            $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
+                            ->find($calculos->id_nomina_concept);
+    
+                            // Total Asignaciones
+                            if ($concepto->sign == 'A'){
+                                $amount_total_otras_asignaciones += $calculos->amount;
+                            } else {
+                                $amount_total_otras_asignaciones += 0;
+                            }
+    
+                            // total Deducciones
+                            if ($concepto->sign == 'D') {
+                                $amount_total_otras_deducciones += $calculos->amount;
+                            } else {
+                                $amount_total_otras_deducciones += 0;                        
+                            }
+    
+                            if($concepto->asignation == 'S'){
+                                $conceptos_asignacion[] = array($concepto->id,$calculos->id,$concepto->type); 
+                            }
                     }
     
-                    if ($conceptos_asignacion[$q][2] == 'Mensual' or $conceptos_asignacion[$q][2] == 'Especial' or $conceptos_asignacion[$q][2] == 'Asignacion'){
-                    $asignacion_general_calculate = $employee->asignacion_general;
-                    }
-
-                    if ($conceptos_asignacion[$q][2] == 'Semanal'){
-                    $asignacion_general_calculate = $employee->asignacion_general/4;
-                    }
-
-                } 
-            }
-             
-
-            $amount_total_asignacion_m_deducciones = $amount_total_otras_asignaciones - $amount_total_otras_deducciones;
-            $asignacion_general = $asignacion_general_calculate * $nomina_actual->rate;
-            $monto_total_asignacion = $asignacion_general - $amount_total_asignacion_m_deducciones;
+    
+                    if (isset($conceptos_asignacion)){
+                        for ($q=0;$q<count($conceptos_asignacion);$q++) {
+                        
+                            if ($conceptos_asignacion[$q][2] == 'Quincenal'){
+                            $asignacion_general_calculate = $employee->asignacion_general/2;
+                            }
             
-            
-            if (isset($conceptos_asignacion)){
+                            if ($conceptos_asignacion[$q][2] == 'Mensual' or $conceptos_asignacion[$q][2] == 'Especial' or $conceptos_asignacion[$q][2] == 'Asignacion'){
+                            $asignacion_general_calculate = $employee->asignacion_general;
+                            }
+    
+                            if ($conceptos_asignacion[$q][2] == 'Semanal'){
+                            $asignacion_general_calculate = $employee->asignacion_general/4;
+                            }
+    
+                        } 
+                    }
+                    
+                   // cuadrar los calculos para otras asignaciones generales
+    
+                    $amount_total_asignacion_m_deducciones = $amount_total_otras_asignaciones - $amount_total_otras_deducciones;
+                    $asignacion_general = $asignacion_general_calculate * $nomina_actual->rate;
+                    $monto_total_asignacion = $asignacion_general - $amount_total_asignacion_m_deducciones;
+                    
+                    
+                    if (isset($conceptos_asignacion)){
+                
+                        for ($q=0;$q<count($conceptos_asignacion);$q++) {
+                            if($employee->asignacion_general > 0) {
+    
+                            $agrega = NominaCalculation::on(Auth::user()->database_name)
+                            ->where('id',$conceptos_asignacion[$q][1])
+                            ->update(['amount' => $monto_total_asignacion]);
+                            
+                            } else {
+
+                                $elimina = NominaCalculation::on(Auth::user()->database_name)
+                                ->where('id',$conceptos_asignacion[$q][1])
+                                ->where('id_employee',$employee->id)
+                                ->delete();
+  
+                            }
+    
+                        } 
+                    }
+           
+        }    
+
+
         
-                for ($q=0;$q<count($conceptos_asignacion);$q++) {
-
-                    $agrega = NominaCalculation::on(Auth::user()->database_name)
-                    ->where('id',$conceptos_asignacion[$q][1])
-                    ->where('id_employee',$employee->id)
-                    ->update(['amount' => $monto_total_asignacion]);
-
-                } 
-            }
-
-
-        }
-
 
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina_actual->description.' fue Exitoso!');
         
@@ -322,7 +370,7 @@ class NominaController extends Controller
     public function recalculatecont($id_nomina)
     {
         $this->deleteNominacont($id_nomina);
-        
+
        return $this->calculatecont($id_nomina);
     }
 
@@ -370,7 +418,7 @@ class NominaController extends Controller
                         $amount_total_asignacion += 0;
                     }
 
-                    if($concepto->account_name == 'Bono Alimentacion' and $concepto->sign == 'A'){
+                    if($concepto->account_name == 'Bono de Alimentacion' and $concepto->sign == 'A'){
                         $amount_total_bono_alim += $calculos->amount;
                     } else {
                         $amount_total_bono_alim += 0;
@@ -406,7 +454,7 @@ class NominaController extends Controller
                         
                     }
 
-                    if($concepto->account_name == 'Retencion por Aporte Paro Forzoso por Pagar' and $concepto->sign == 'D'){
+                    if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
                         $amount_total_deduccion_pie += $calculos->amount;
                     } else {
                         $amount_total_deduccion_pie += 0;
@@ -421,7 +469,7 @@ class NominaController extends Controller
                     }
                     
                     // Otras Asignaciones
-                    if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
+                    if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
                        $amount_total_otras_asignaciones += $calculos->amount;
                     } else {
                        $amount_total_otras_asignaciones = 0;
@@ -429,7 +477,7 @@ class NominaController extends Controller
                     }
 
                     // Deducciones diferentes
-                    if (($concepto->account_name != 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte Paro Forzoso por Pagar' and $concepto->account_name != 'Retencion por Aporte al INCES por Pagar') and $concepto->sign == 'D') {
+                    if (($concepto->account_name != 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al PIE por Pagar' and $concepto->account_name != 'Retencion por Aporte al INCES por Pagar') and $concepto->sign == 'D') {
                         $amount_total_otras_deducciones += $calculos->amount;
                     } else {
                         $amount_total_otras_deducciones += 0;
@@ -515,7 +563,7 @@ class NominaController extends Controller
             
             $accounts_alimentacion_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','2')
-            ->where('description','LIKE', 'Bono Alimentacion por Pagar')
+            ->where('description','LIKE', 'Bono de Alimentacion por Pagar')
             ->first();
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion_por_pagar->id,$nomina->id,0,$amount_total_bono_alim);
@@ -585,7 +633,7 @@ class NominaController extends Controller
         if ($amount_total_deduccion_pie > 0){
             $accounts_faov_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','2')
-            ->where('description','LIKE', 'Retencion por Aporte Paro Forzoso por Pagar')
+            ->where('description','LIKE', 'Retencion por Aporte al PIE por Pagar')
             ->first();
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$amount_total_deduccion_pie);
        
@@ -821,7 +869,8 @@ class NominaController extends Controller
                         $tiene_calculo = true;
                         $amount = $this->formula($nominaconcept->id_formula_e,$employee,$nomina,$vars);
                     }
-                }else if(($nomina->type == "Asignacion")){ //crear un id_formula_t para la especial
+                }else if(($nomina->type == "Asignacion")){ //crear un id_formula_t para la asignacion
+                    
                     if(isset($nominaconcept->id_formula_a)){
                         $tiene_calculo = true;
                         $amount = $this->formula($nominaconcept->id_formula_a,$employee,$nomina,$vars);
@@ -830,6 +879,10 @@ class NominaController extends Controller
 
                 $vars->amount = $amount;
                 $vars->status =  "1";
+/*
+                if ($nominaconcept->asignation == 'S' and $employee->asignacion_general <= 0) {
+                    $tiene_calculo = false;   
+                } */
             
                 if($tiene_calculo == true){
                     $vars->save();

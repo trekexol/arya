@@ -10,7 +10,12 @@
         <div class="card-body h4">
                 <div class="row py-lg-2">
                     <div class="col-md-6">
-                        Nómina: {{ $var->description }} 
+                        Nómina {{ $var->id }}: {{ $var->description }} 
+                    </div>
+                </div>
+                <div class="row py-lg-2">
+                    <div class="col-md-6">
+                        Nómina: {{ $var->type }}
                     </div>
                 </div>
                 <div class="row py-lg-2">
@@ -55,32 +60,55 @@
                 <th class="text-center">Cedula</th>
                 <th class="text-center">Nombres</th>
                 <th class="text-center">Apellidos</th>
-                <th class="text-center">Celular</th>
-                <th class="text-center">Monto de Pago</th>
-               
+                <th class="text-center">Asignaciones</th>
+                <th class="text-center">Deducciones</th>
+                <th class="text-center">Total a Pagar</th>
                 <th></th>
             </tr>
             </thead>
             
             <tbody>
                 @if (empty($employees))
-                @else  
+                @else 
+                
+                <?php 
+                $total_asignaciones = 0;
+                $total_deducciones = 0;
+                $total_a_pagar = 0;
+                ?>
                     @foreach ($employees as $employee)
                         <tr>
                             <td class="text-center">{{$employee->id_empleado}}</td>
                             <td class="text-center">{{$employee->nombres}}</td>
                             <td class="text-center">{{$employee->apellidos}}</td>
-                            <td class="text-center">{{$employee->telefono1}}</td>
+                            <td class="text-center">{{number_format($employee->asignaciones, 2, ',', '.')}}</td>
+                            <td class="text-center">{{number_format($employee->deducciones, 2, ',', '.')}}</td>
                             <td class="text-center">{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
                             
                            
                             <td class="text-center">
                                 <a href="{{route('nominacalculations',[$var->id,$employee->id]) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>  
                            </td>
-                        </tr>     
+                        </tr>
+                        <?php 
+                        $total_asignaciones += number_format($employee->asignaciones, 2, '.', '');
+                        $total_deducciones += number_format($employee->deducciones, 2, '.', '');
+                        $total_a_pagar += number_format($employee->monto_pago, 2, '.', '');
+                        ?>
                     @endforeach   
                 @endif
             </tbody>
+            <tfoot>
+                <tr> 
+                    <th class="text-center"></th>
+                    <th class="text-center"></th>
+                    <th class="text-center"></th>
+                    <th class="text-center"><strong>{{number_format($total_asignaciones,2,'.','')}}</strong></th>
+                    <th class="text-center"><strong>{{number_format($total_deducciones,2,'.','')}}</strong></th>
+                    <th class="text-center"><strong>{{number_format($total_a_pagar,2,'.','')}}</strong></th>
+                    <th></th>
+                </tr>
+            </tfoot>
         </table>
         </div>
     </div>
