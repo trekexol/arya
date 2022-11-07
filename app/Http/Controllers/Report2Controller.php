@@ -1675,8 +1675,8 @@ class Report2Controller extends Controller
                 }
             }
         }
-        
-        $pdf = $pdf->loadView('admin.reports.accounts_receivable',compact('coin','quotations','datenow','date_end'));
+
+        $pdf = $pdf->loadView('admin.reports.accounts_receivable',compact('coin','quotations','datenow','date_end'))->setPaper('letter', 'landscape');
         return $pdf->stream();
                  
     }

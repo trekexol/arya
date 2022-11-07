@@ -138,9 +138,9 @@
 @endsection
 @section('validacion')
     <script>
-        $("#days_form").hide();
+       /* $("#days_form").hide();
         $("#hours_form").hide();
-        $("#cantidad_form").hide();
+        $("#cantidad_form").hide();*/
 
         $(document).ready(function () {
             $("#amount").mask('000.000.000.000.000,00', { reverse: true });
@@ -185,6 +185,7 @@
                 $("#formula_div_m").hide();
                 $("#formula_div_s").hide();
                 $("#formula_div_e").hide();
+                
                 document.getElementById("selector_q").checked = false;
                 document.getElementById("selector_m").checked = false;
                 document.getElementById("selector_s").checked = false;

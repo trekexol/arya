@@ -113,6 +113,7 @@ class NominaController extends Controller
             $amount_total_otras_asignaciones = 0;
             $amount_total_otras_deducciones = 0;
             $amount_total_asignacion_m_deducciones = 0;
+            $amount_salary = 0;
          
             $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
             ->where('id_nomina',$id)
@@ -125,11 +126,19 @@ class NominaController extends Controller
                     ->find($calculos->id_nomina_concept);
 
                     // Total Asignaciones
-                    if ($concepto->sign == 'A'){
+                    if ($concepto->account_name != 'Sueldos y Salarios' and $concepto->sign == 'A'){
                         $amount_total_otras_asignaciones += $calculos->amount;
                     } else {
                         $amount_total_otras_asignaciones += 0;
                     }
+
+                    // Total Asignaciones
+                    if ($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                        $amount_salary += $calculos->amount;
+                    } else {
+                        $amount_salary += 0;
+                    }
+                    
 
                     // total Deducciones
                     if ($concepto->sign == 'D') {
@@ -140,11 +149,12 @@ class NominaController extends Controller
 
             }
 
-            $amount_total_asignacion_m_deducciones = $amount_total_otras_asignaciones - $amount_total_otras_deducciones;
+            $amount_total_asignacion_m_deducciones = ($amount_salary + $amount_total_otras_asignaciones) - $amount_total_otras_deducciones;
 
             $employee->asignaciones = $amount_total_otras_asignaciones;
             $employee->deducciones = $amount_total_otras_deducciones;
             $employee->monto_pago = $amount_total_asignacion_m_deducciones;
+            $employee->amount_salary = $amount_salary;
 
         }
     
@@ -289,6 +299,7 @@ class NominaController extends Controller
     
                             $agrega = NominaCalculation::on(Auth::user()->database_name)
                             ->where('id',$conceptos_asignacion[$q][1])
+                            ->where('id_employee',$employee->id)
                             ->update(['amount' => $monto_total_asignacion]);
                             
                             } else {

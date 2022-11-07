@@ -59,9 +59,10 @@
             <tr> 
                 <th class="text-center">Cedula</th>
                 <th class="text-center">Nombres</th>
-                <th class="text-center">Apellidos</th>
-                <th class="text-center">Asignaciones</th>
+                <th class="text-center">Monto</th>
                 <th class="text-center">Deducciones</th>
+                <th class="text-center">Salario Neto</th>
+                <th class="text-center">Otras Asignaciones</th>
                 <th class="text-center">Total a Pagar</th>
                 <th></th>
             </tr>
@@ -75,14 +76,17 @@
                 $total_asignaciones = 0;
                 $total_deducciones = 0;
                 $total_a_pagar = 0;
+                $total_amount_salary = 0;
+                $total_amount_salary_neto = 0;
                 ?>
                     @foreach ($employees as $employee)
                         <tr>
                             <td class="text-center">{{$employee->id_empleado}}</td>
-                            <td class="text-center">{{$employee->nombres}}</td>
-                            <td class="text-center">{{$employee->apellidos}}</td>
-                            <td class="text-center">{{number_format($employee->asignaciones, 2, ',', '.')}}</td>
+                            <td class="text-center">{{$employee->nombres}} {{$employee->apellidos}}</td>
+                            <td class="text-center">{{number_format($employee->amount_salary, 2, ',', '.')}}</td>
                             <td class="text-center">{{number_format($employee->deducciones, 2, ',', '.')}}</td>
+                            <td class="text-center">{{number_format($employee->amount_salary - $employee->deducciones, 2, ',', '.')}}</td>
+                            <td class="text-center">{{number_format($employee->asignaciones, 2, ',', '.')}}</td>
                             <td class="text-center">{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
                             
                            
@@ -91,6 +95,8 @@
                            </td>
                         </tr>
                         <?php 
+                        $total_amount_salary += number_format($employee->amount_salary, 2, '.', '');
+                        $total_amount_salary_neto += number_format($employee->amount_salary - $employee->deducciones, 2, '.', '');
                         $total_asignaciones += number_format($employee->asignaciones, 2, '.', '');
                         $total_deducciones += number_format($employee->deducciones, 2, '.', '');
                         $total_a_pagar += number_format($employee->monto_pago, 2, '.', '');
@@ -100,11 +106,12 @@
             </tbody>
             <tfoot>
                 <tr> 
-                    <th class="text-center"></th>
-                    <th class="text-center"></th>
-                    <th class="text-center"></th>
+                    <th class="text-center">Totales</th>
+                    <th class="text-center">...</th>
+                    <th class="text-center">{{number_format($total_amount_salary,2,'.','')}}</th>
+                    <th class="text-center">{{number_format($total_deducciones,2,'.','')}}</th>
+                    <th class="text-center"><strong>{{number_format($total_amount_salary_neto,2,'.','')}}</strong></th>
                     <th class="text-center"><strong>{{number_format($total_asignaciones,2,'.','')}}</strong></th>
-                    <th class="text-center"><strong>{{number_format($total_deducciones,2,'.','')}}</strong></th>
                     <th class="text-center"><strong>{{number_format($total_a_pagar,2,'.','')}}</strong></th>
                     <th></th>
                 </tr>

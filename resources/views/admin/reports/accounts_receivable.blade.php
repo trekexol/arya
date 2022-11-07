@@ -54,10 +54,32 @@
     <th style="text-align: center;">Total</th>
     <th style="text-align: center;">Abono</th>
     <th style="text-align: center;">Por Cobrar</th>
+    <th style="text-align: center;">Status</th>
   </tr> 
   @foreach ($quotations as $quotation)
     <?php 
     
+
+        $amount_bcv = 1;
+        $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
+        $diferencia_en_dias = 0;
+        $validator_date = '';
+        $credit_days = '';
+
+        if(isset($quotation->credit_days)){
+            $date_defeated = date("Y-m-d",strtotime($quotation->date_billing."+ $quotation->credit_days days")); 
+            
+            $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $datenow);
+            $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated); 
+
+            $validator_date = $shippingDate->lessThan($currentDate);
+            $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
+            $credit_days = $quotation->credit_days;
+
+            
+            
+        }
+
       if(isset($coin) && $coin != 'bolivares'){
 
         $quotation->amount_with_iva = ($quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0)) / ($quotation->bcv ?? 1);
@@ -104,6 +126,15 @@
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
+      @if (($diferencia_en_dias >= 0) && ($validator_date))
+      <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
+          Vencida ({{$diferencia_en_dias}} dias)
+      </td>
+       @else
+      <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
+          Pendiente {{$credit_days}} 
+      </td>
+      @endif
     </tr> 
   @endforeach 
 
@@ -117,6 +148,7 @@
     <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th> 
     <th style="text-align: right; font-weight: normal;">{{ number_format(($total_anticipos ?? 0), 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
   </tr> 
 </table>
 
