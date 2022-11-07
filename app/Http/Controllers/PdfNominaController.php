@@ -233,8 +233,8 @@ class PdfNominaController extends Controller
                                                     ->where('nomina_concepts.sign','D')
                                                     ->select('employees.nombres','employees.apellidos',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_deduccion'))
                                                     ->groupBy('employees.nombres','employees.apellidos')
-                                                    ->get();           
-
+                                                    ->get();       
+        
            
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
@@ -303,6 +303,18 @@ class PdfNominaController extends Controller
             $nominaController = new NominaController();
 
             $lunes = $nominaController->calcular_cantidad_de_lunes($nomina);
+
+
+
+            $nomina_calculations = NominaCalculation::on(Auth::user()->database_name)
+            ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
+            ->join('employees','employees.id','nomina_calculations.id_employee')
+            ->where('nomina_concepts.sign','A')
+            ->where('id_nomina',$nomina->id)
+            ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_asignacion'))
+            ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
+            ->get();  
+
            
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
@@ -310,7 +322,7 @@ class PdfNominaController extends Controller
         
         
        
-        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion'));
+        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion','nomina_calculations'));
         return $pdf->stream();
 
        

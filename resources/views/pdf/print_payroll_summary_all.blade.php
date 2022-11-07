@@ -127,7 +127,40 @@
     </tr>
   </table>
 <br><br>
+<br><br>
 
+
+<table style="width: 100%;">
+  <tr>
+    <th style="text-align: center;">Nombres y Apellidos</th>
+    <th style="text-align: center;">Total Sueldo</th>
+    <th style="text-align: center;">Bono Médico</th>
+    @if ($nomina->type == "Segunda Quincena")
+    <th style="text-align: center;">Bono Alimentación</th>
+    @endif
+    <th style="text-align: center;">SSO</th>
+    <th style="text-align: center;">SSO <br>Patronal</th>
+    <th style="text-align: center;">FAOV</th>
+    <th style="text-align: center;">FAOV Patronal</th>
+    <th style="text-align: center;">Total</th>
+  
+  </tr>
+@foreach ($nomina_calculations as $nomina_calc)
+<tr>
+  <td style="text-align: center;"> {{ $nomina_calc->nombres}}</td>
+  <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
+  <td style="text-align: center;">{{ number_format(bcdiv($bono_medico, '1', 2) , 2, ',', '.')}}</td>
+  @if ($nomina->type == "Segunda Quincena")
+  <td style="text-align: center;">{{ number_format(bcdiv(45, '1', 2) , 2, ',', '.')}}</td>
+  @endif
+ <td style="text-align: center;">{{''}}</td>
+ <td style="text-align: center;">{{''}}</td>
+ <td style="text-align: center;">{{''}}</td>
+ <td style="text-align: center;">{{''}}</td>
+ <td style="text-align: center;">{{''}}</td>
+</tr>
+@endforeach 
+</table>
 
 </body>
 </html>
