@@ -612,93 +612,62 @@ class GlobalController extends Controller
         }
     }     
 
+
+
+
     public function search_bcv()
     {
-        
-    
 
-
-       /* 
-       //metodo curl
-       
-       $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+        $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d H:i:s');    
 
-        $clientg = new Clientg();
+       // $clientg = new Clientg();
 
-        //if($company->date_consult_bcv != $datenow){
-           
-                $url = "https://www.bcv.org.ve";
+        if($company->date_consult_bcv != $datenow){
+     
+            $url = "https://s3.amazonaws.com/dolartoday/data.json";
             
-                $ch = curl_init( $url );
-                // Establecer un tiempo de espera
-                curl_setopt( $ch, CURLOPT_TIMEOUT, 3 );
-                curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 3 );
-                // Establecer NOBODY en true para hacer una solicitud tipo HEAD
-                curl_setopt( $ch, CURLOPT_NOBODY, true );
-                // Permitir seguir redireccionamientos
-                curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-                // Recibir la respuesta como string, no output
-                curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-                // Descomentar si tu servidor requiere un user-agent, referrer u otra configuración específica
-                // $agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36';
-                // curl_setopt($ch, CURLOPT_USERAGENT, $agent)
-                $data = curl_exec( $ch );
-                // Obtener el código de respuesta
-                $httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-                //cerrar conexión
-                curl_close( $ch );
-                // Aceptar solo respuesta 200 (Ok), 301 (redirección permanente) o 302 (redirección temporal)
-                $accepted_response = array( 200, 301, 302 );
-                if( in_array( $httpcode, $accepted_response ) ) {
-                    $urlexists = true;
-                } else {
-                    $urlexists = false;
-                }
-                if ($urlexists == true) { // condicion para validar consulta 
-                    $crawler = $clientg->request('GET', 'https://www.bcv.org.ve');
-                } else {
-                    $crawler = '';   
-                }
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+            $data = curl_exec( $ch );
+            curl_close( $ch );
+            $datos = json_decode($data, true); 
+            $datos['USD']['promedio_real'];
 
-            if ($crawler != '') {
+            if($datos['USD']['promedio_real'] > 0){
 
-               $contact = $crawler->filter("[class='col-sm-6 col-xs-6 centrado']")->last();      
-               dd($contact);
-               if (count($contact) > 0) {
+                $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza
+                $companies->rate_bcv = $datos['USD']['promedio_real'];
+                $companies->date_consult_bcv = $datenow;
+                $companies->save();
+                $bcv = $datos['USD']['promedio_real'];
+            }else {
+                
+                $bcv = $company->rate_bcv;    
+             }
 
-                   $rateconsult = $contact->text();
-                   $bcv = str_replace(',', '.', str_replace('.', '',$rateconsult));
-                   $bcv = bcdiv($bcv, '1', 2);  
+             return bcdiv($bcv, '1', 2);
 
-                   $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza
-
-                  
-                   if($company->date_consult_bcv != $datenow){
-
-                        $companies->rate_bcv = $bcv;
-                        $companies->date_consult_bcv = $datenow;
-                        $companies->save();
-                   }
-
-             
-
-               } else {
-                   $bcv = $company->rate_bcv; 
-               }
-
-            } else {
-               $bcv = $company->rate_bcv;    
-            }
-
-            return bcdiv($bcv, '1', 2);*/
+        }else{
           
-            $bcv = 8.77;            
-            return   $bcv;
-
-
+            if($company->tiporate_id == 1){
+                if($company->rate_bcv != 0){
+                    return bcdiv($company->rate_bcv, '1', 2);
+                }else{
+                    return 1;
+                }
+            }else{
+                if($company->rate_bcv != 0){
+                    return bcdiv($company->rate, '1', 2);
+                }else{
+                    return 1;
+                }
+            }
+        }
     }
+
 
     public function data_last_month_day() { 
         $month = date('m');
