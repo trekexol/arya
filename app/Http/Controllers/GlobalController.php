@@ -620,11 +620,14 @@ class GlobalController extends Controller
 
         $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d H:i:s');    
-
+        $datenow = $date->format('Y-m-d H:i:s');   
+        
+        $datenow_verf = $date->format('Y-m-d 15:30:00');   
+        $datenow_verf2 = $date->format('Y-m-d 15:32:00');   
        // $clientg = new Clientg();
 
-        if($company->date_consult_bcv != $datenow){
+       if($company->date_consult_bcv >= $datenow_verf and $company->date_consult_bcv <= $datenow_verf2){
+     
      
             $url = "https://s3.amazonaws.com/dolartoday/data.json";
             
