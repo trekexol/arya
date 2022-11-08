@@ -624,9 +624,13 @@ class GlobalController extends Controller
         
         $datenow_verf = $date->format('Y-m-d 15:30:00');   
         $datenow_verf2 = $date->format('Y-m-d 15:32:00');   
-       // $clientg = new Clientg();
+ 
+        $datenow_normal = $date->format('Y-m-d');   
+        $datenow_normal_verf = date_format(date_create($company->date_consult_bcv),"Y-m-d");  
+        
+        // $clientg = new Clientg();
 
-       if($company->date_consult_bcv >= $datenow_verf and $company->date_consult_bcv <= $datenow_verf2){
+       if($company->date_consult_bcv >= $datenow_verf and $company->date_consult_bcv <= $datenow_verf2 || $datenow_normal != $datenow_normal_verf){
      
      
             $url = "https://s3.amazonaws.com/dolartoday/data.json";
