@@ -526,7 +526,7 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::post('storetransfer','BankMovementController@storetransfer')->name('bankmovements.storetransfer');
 
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
-    
+
     Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
     
     Route::post('orderpaymentlist/pdfAccount','OrderPaymentListController@pdfAccountOrdenDePago')->name('bankmovements.pdfAccountOrdenDePago');
@@ -971,7 +971,7 @@ Route::group(["prefix"=>'pdfnomina'],function(){
     Route::get('printnominacalculation/{id_nomina}/{id_employee}','PdfNominaController@print_nomina_calculation')->name('nominas.print_nomina_calculation');
     Route::get('printnominacalculationall/{id_nomina}','PdfNominaController@print_nomina_calculation_all')->name('nominas.print_nomina_calculation_all');
     Route::get('printpayroolsummary/{id_nomina}','PdfNominaController@print_payrool_summary')->name('nominas.print_payrool_summary');
-    Route::get('printpayroolsummaryall/{id_nomina}','PdfNominaController@print_payrool_summary_all')->name('nominas.print_payrool_summary_all');
+    Route::get('printpayroolsummaryall/{id_nomina}','PdfNominaController@print_payrool_summary_all')->name('nominas.a');
    
  });
 
@@ -1145,8 +1145,15 @@ Route::group(["prefix"=>'taxes'],function(){
 });
 
 Route::group(["prefix"=>'directchargeorders'],function(){
-    Route::get('/','DirectChargeOrderController@create')->name('directchargeorders.create');
 
+        
+    Route::get('directchargeorders','DirectChargeOrderController@index')->name('directchargeorders.index');
+
+    Route::get('/','DirectChargeOrderController@create')->name('directchargeorders.create');
+    Route::get('ocdelete/{id}','DirectChargeOrderController@destroy')->name('directchargeorders.delete');
+    Route::get('directchargeorderPaymentPdfDetail/{id_header_voucher}','DirectChargeOrderController@orderPaymentPdfDetail')->name('directchargeorders.directchargeorderPaymentPdfDetail');
+
+   
     Route::post('store','DirectChargeOrderController@store')->name('directchargeorders.store');
     Route::get('listbeneficiary/{type_var?}','DirectChargeOrderController@listbeneficiary')->name('directchargeorders.listbeneficiary');
     Route::get('listcontrapartida/{type_var?}','DirectChargeOrderController@listcontrapartida')->name('directchargeorders.listcontrapartida');

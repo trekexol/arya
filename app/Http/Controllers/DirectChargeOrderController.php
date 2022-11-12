@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App;
 use App\Account;
 use App\BankMovement;
 use App\BankVoucher;
@@ -19,6 +19,95 @@ use Illuminate\Support\Facades\Auth;
 
 class DirectChargeOrderController extends Controller
 {
+
+    public function index()
+    {
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        if($users_role == '1'){
+
+             $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+                                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+                                 ->where('header_vouchers.status','LIKE','1')
+                                 ->where(function ($query) {
+                                     $query->where('header_vouchers.description','LIKE','Orden de Cobro%');
+                                 })
+                                 
+                                 ->select('detail_vouchers.*','header_vouchers.description as header_description', 
+                                 'header_vouchers.reference as header_reference','header_vouchers.date as header_date',
+                                 'accounts.description as account_description','accounts.code_one as account_code_one',
+                                 'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
+                                 'accounts.code_four as account_code_four','accounts.code_five as account_code_five')
+                                 ->orderBy('header_vouchers.id','desc')
+                                 ->get();
+ 
+             //dd($detailvouchers);
+ 
+             $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
+ 
+             $date = Carbon::now();
+             $datenow = $date->format('Y-m-d'); 
+ 
+             return view('admin.directchargeorder.index',compact('detailvouchers','accounts','datenow'));
+ 
+         }else{
+             return redirect('/directchargeorders')->withDanger('No Tiene Acceso!');
+        }
+    }
+ 
+   
+
+    public function destroy($id){
+        if(isset($id)){
+            $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
+    
+            $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header->id)
+                ->update(['status' => 'X']);
+    
+            $header->status = "X";
+            $header->save();
+    
+            return redirect('/directchargeorders')->withSuccess('Se deshabilitó con éxito el movimiento!');
+           
+           }else{
+            return redirect('/directchargeorders')->withDanger('Debe buscar un movimiento primero !!');
+           
+           }
+      }
+
+      public function orderPaymentPdfDetail($id_header_voucher)
+      {
+          
+          $pdf = App::make('dompdf.wrapper');
+   
+          $date = Carbon::now();
+          $datenow = $date->format('Y-m-d');    
+         
+           $movements = DetailVoucher::on(Auth::user()->database_name)
+               ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
+               ->join('accounts','accounts.id','detail_vouchers.id_account')
+               //->leftJoin('charge_orders','charge_orders.id','header_vouchers.id_charge_orders')
+               //->leftJoin('clients','clients.id','payment_orders.id_client')
+               //->leftJoin('providers','providers.id','payment_orders.id_provider')
+               ->where('header_vouchers.id',$id_header_voucher)
+               ->where('detail_vouchers.status','C')
+               ->select('header_vouchers.description', 'header_vouchers.id as header_id',
+               'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
+               'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description'
+              // ,'clients.name as client_name','providers.razon_social as provider_name'
+              // ,'providers.code_provider as code_provider'
+               ,'header_vouchers.reference as reference_order','header_vouchers.date as date_order'
+               ,'header_vouchers.id as id_order')
+               ->get();
+           
+          
+          $pdf = $pdf->loadView('admin.bankmovements.reports.directchargeorder_payment_pdf',compact('movements','datenow'));
+          return $pdf->stream();
+                   
+      }
+
+
     public function create()
    {
         $accounts = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
