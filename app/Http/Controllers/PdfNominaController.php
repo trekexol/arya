@@ -6,6 +6,7 @@ use App;
 use App\Employee;
 use App\Nomina;
 use App\NominaCalculation;
+use App\NominaBasesCalcs;
 use App\NominaConcept;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -265,56 +266,169 @@ class PdfNominaController extends Controller
         }
 
         if(isset($nomina)){
-            
-           
-            $nomina_calculation_asignacion = NominaCalculation::on(Auth::user()->database_name)
-            ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-            ->join('employees','employees.id','nomina_calculations.id_employee')
-            ->where('nomina_concepts.sign','A')
-            ->where('id_nomina',$nomina->id)
-            ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_asignacion'))
-            ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
-            ->get();           
+             
+            $employees = Employee::on(Auth::user()->database_name)
+            ->where('status','!=','X')
+            ->where('status','!=','0')
+            ->where('status','!=','5')
+            ->where('nomina_type_id',$nomina->nomina_type_id)
+            ->orderby('nombres', 'asc')
+            ->get();
 
-            $nomina_calculation_deduccion = NominaCalculation::on(Auth::user()->database_name)
-                        ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-                        ->join('employees','employees.id','nomina_calculations.id_employee')
-                        ->where('id_nomina',$nomina->id)
-                        ->where('nomina_concepts.sign','D')
-                        ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_deduccion'))
-                        ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
-                        ->get();     
-
-            $nomina_calculation_sso = NominaCalculation::on(Auth::user()->database_name)
-                        ->join('employees','employees.id','nomina_calculations.id_employee')
-                        ->where('id_nomina',$nomina->id)
-                        ->where('id_nomina_concept',19)
-                        ->select('employees.nombres','employees.apellidos','nomina_calculations.amount')
-                        ->groupBy('employees.nombres','employees.apellidos','nomina_calculations.amount')
-                        ->get();     
-            $nomina_calculation_faov = NominaCalculation::on(Auth::user()->database_name)
-                        ->join('employees','employees.id','nomina_calculations.id_employee')
-                        ->where('id_nomina',$nomina->id)
-                        ->where('id_nomina_concept',23)
-                        ->select('employees.nombres','employees.apellidos','nomina_calculations.amount')
-                        ->groupBy('employees.nombres','employees.apellidos','nomina_calculations.amount')
-                        ->get();     
 
             $nominaController = new NominaController();
-
             $lunes = $nominaController->calcular_cantidad_de_lunes($nomina);
+            $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+
+            //// nuevo metodo
+            foreach($employees as $employee){
+
+                $amount_total_asignacion = 0;
+
+                $amount_total_deduccion_sso = 0;
+                $amount_total_deduccion_faov = 0;
+                $amount_total_deduccion_pie = 0;
+                $amount_total_deduccion_ince = 0;
+
+                $total_sso_patronal = 0;
+                $total_faov_patronal = 0;
+                $total_pie_patronal = 0;
+
+                $amount_total_bono_medico = 0;
+                $amount_total_bono_alim = 0;
+                $amount_total_bono_transporte = 0;
+
+                $amount_total_otras_asignaciones = 0;
+                $amount_total_otras_deducciones = 0;
+
+                $amount_total_asignacion_general = 0;
+                $amount_total_asignacion_m_deducciones = 0;
+
+
+                $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
+                ->where('id_nomina',$nomina->id)
+                ->where('id_employee',$employee->id)
+                ->get();
+
+
+                foreach($calculos_nomina as $calculos) {
+                        $concepto = '';
+                        
+                        $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
+                        ->find($calculos->id_nomina_concept);
+
+
+                        if (!empty($concepto)){
+
+                            // Sueldo
+                            if($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                                $amount_total_asignacion += $calculos->amount;
+                            } else {
+                                $amount_total_asignacion += 0;
+                            }
+
+                            if($concepto->account_name == 'Bono de Alimentacion' and $concepto->sign == 'A'){
+                                $amount_total_bono_alim += $calculos->amount;
+                            } else {
+                                $amount_total_bono_alim += 0;
+                            }
+
+                            // Asignaciones Generales
+                            if($concepto->account_name == 'Bono Medico' and $concepto->sign == 'A'){
+                                $amount_total_bono_medico += $calculos->amount;
+                            } else {
+                                $amount_total_bono_medico += 0;
+
+                            }
+
+                            if($concepto->account_name == 'Bono de Transporte' and $concepto->sign == 'A'){
+                                $amount_total_bono_transporte += $calculos->amount;
+                            } else {
+                                $amount_total_bono_transporte += 0;
+                                
+                            }
+
+                            // retenciones
+                            if($concepto->account_name == 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->sign == 'D'){
+                                $amount_total_deduccion_sso += $calculos->amount;
+                            } else {
+                                $amount_total_deduccion_sso += 0;
+                                
+                            }
+
+                            if($concepto->account_name == 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->sign == 'D'){
+                                $amount_total_deduccion_faov += $calculos->amount;
+                            } else {
+                                $amount_total_deduccion_faov += 0;
+                                
+                            }
+
+                            if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
+                                $amount_total_deduccion_pie += $calculos->amount;
+                            } else {
+                                $amount_total_deduccion_pie += 0;
+                                
+                            }
+
+                            if($concepto->account_name == 'Retencion por Aporte al INCES por Pagar' and $concepto->sign == 'D'){
+                                $amount_total_deduccion_ince += $calculos->amount;
+                            } else {
+                                $amount_total_deduccion_ince += 0;
+                                
+                            }
+                            
+                            // Otras Asignaciones
+                            if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
+                            $amount_total_otras_asignaciones += $calculos->amount;
+                            } else {
+                            $amount_total_otras_asignaciones += 0;
+                            
+                            }
+
+                            // Deducciones diferentes
+                            if (($concepto->account_name != 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al PIE por Pagar' and $concepto->account_name != 'Retencion por Aporte al INCES por Pagar') and $concepto->sign == 'D') {
+                                $amount_total_otras_deducciones += $calculos->amount;
+                            } else {
+                                $amount_total_otras_deducciones += 0;
+                                
+                            }
 
 
 
-            $nomina_calculations = NominaCalculation::on(Auth::user()->database_name)
-            ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
-            ->join('employees','employees.id','nomina_calculations.id_employee')
-            ->where('nomina_concepts.sign','A')
-            ->where('id_nomina',$nomina->id)
-            ->select('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_asignacion'))
-            ->groupBy('employees.nombres','employees.apellidos','employees.asignacion_general','employees.monto_pago')
-            ->get();  
+                        } else {
+                            
+                            $amount_total_asignacion += 0;
+                            $amount_total_otras_deducciones += 0;
+                            $amount_total_otras_asignaciones += 0;
+                            $amount_total_deduccion_ince += 0;
+                            $amount_total_deduccion_pie += 0;
+                            $amount_total_deduccion_faov += 0;
+                            $amount_total_deduccion_sso += 0;
+                            $amount_total_bono_transporte += 0;
+                            $amount_total_bono_medico += 0;
+                            $amount_total_bono_alim += 0;
 
+                        }
+
+                    }
+
+                    //$amount_total_asignacion_general = $amount_total_asignacion + $amount_total_otras_asignaciones;
+                    $amount_total_asignacion_m_deducciones = $amount_total_asignacion - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
+
+
+                    $employee->asignacion = $amount_total_asignacion;
+                    $employee->otras_deducciones = $amount_total_otras_deducciones;
+                    $employee->otras_asignaciones = $amount_total_otras_asignaciones;
+                    $employee->deduccion_ince = $amount_total_deduccion_ince;
+                    $employee->deduccion_pie = $amount_total_deduccion_pie;
+                    $employee->deduccion_faov = $amount_total_deduccion_faov;
+                    $employee->deduccion_sso = $amount_total_deduccion_sso;
+                    $employee->bono_transporte = $amount_total_bono_transporte;
+                    $employee->bono_medico = $amount_total_bono_medico;
+                    $employee->bono_alim = $amount_total_bono_alim;
+                    //$employee->total_asignacion_general = $amount_total_asignacion_general;
+                    $employee->total_asignacion_m_deducciones = $amount_total_asignacion_m_deducciones;
+            }
            
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
@@ -322,7 +436,7 @@ class PdfNominaController extends Controller
         
         
        
-        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','nomina_calculation_sso','nomina_calculation_faov','bcv','datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion','nomina_calculations'));
+        $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','bcv','datenow','nomina','nominabases','employees'))->setPaper('letter', 'landscape');
         return $pdf->stream();
 
        
