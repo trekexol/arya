@@ -5,8 +5,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  
-<title>Resumen de Nomina</title>
+<title>Resumen de Nómina Detallado</title>
 <style>
+  body{
+    font-size: 9pt;
+  }
   table, td, th {
     border: 1px solid black;
   }
@@ -14,6 +17,7 @@
   table {
     border-collapse: collapse;
     width: 50%;
+    /*font-family: Arial, Helvetica, sans-serif;*/
   }
   
   th {
@@ -27,139 +31,142 @@
 </head>
 
 <body>
-
-
-  <br><br><br><br>
-  <h5 style="color: black">{{ $nomina->description }}</h5>
-  <h5 style="color: black">fecha desde: {{ \Carbon\Carbon::parse($nomina->date_begin)->format('d-m-Y')}} , Fecha hasta {{ \Carbon\Carbon::parse($nomina->date_end)->format('d-m-Y') }}</h5>
- <?php 
- 
-  $total = 0;
-  $total_asignacion = 0;
-  $total_deduccion = 0;
-
-  $total_sueldo = 0;
-  $total_bono_medico = 0;
-  $total_bono_alimentacion = 0;
-  $total_sso = 0;
-  $total_faov = 0;
-  $total_final = 0;
-
-  $total_sso_patronal = 0;
-  $total_faov_patronal = 0;
-?>
-
- 
-    <table style="width: 100%;">
-      <tr>
-        <th style="text-align: center;">Nombres y Apellidos</th>
-        <th style="text-align: center;">Total Sueldo</th>
-        <th style="text-align: center;">Bono Médico</th>
-        @if ($nomina->type == "Segunda Quincena")
-        <th style="text-align: center;">Bono Alimentación</th>
-        @endif
-        <th style="text-align: center;">SSO</th>
-        <th style="text-align: center;">SSO <br>Patronal</th>
-        <th style="text-align: center;">FAOV</th>
-        <th style="text-align: center;">FAOV Patronal</th>
-        <th style="text-align: center;">Total</th>
-      
-      </tr>
-   
-    @for ($i = 0; $i < count($nomina_calculation_asignacion); $i++)
-      <?php
-        $total_asignacion += $nomina_calculation_asignacion[$i]->total_asignacion ?? 0;
-        $total_deduccion += $nomina_calculation_deduccion[$i]->total_deduccion ?? 0;
-        $sueldo = ($nomina_calculation_asignacion[$i]->total_asignacion ?? 0); /*- ($nomina_calculation_deduccion[$i]->total_deduccion ?? 0);*/
-
-        $sso_patronal = ($nomina_calculation_asignacion[$i]->monto_pago * 12)/52 * (($lunes) * 0.10);
-        
-        $faov_patronal = bcdiv($sueldo * 0.02, '1', 2);
-        
-        if ($nomina->type == "Segunda Quincena"){
-          $bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo - (45) + $nomina_calculation_faov[$i]->amount + $nomina_calculation_sso[$i]->amount;
-          $total = bcdiv(($sueldo), '1', 2) + 45 + bcdiv($bono_medico, '1', 2); - bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) - bcdiv($nomina_calculation_sso[$i]->amount, '1', 2);
-        }else{
-          
-          $bono_medico = (($nomina_calculation_deduccion[$i]->asignacion_general ?? 0) * $bcv) - $sueldo + $nomina_calculation_faov[$i]->amount + $nomina_calculation_sso[$i]->amount;
-          $total = bcdiv(($sueldo), '1', 2) + bcdiv($bono_medico, '1', 2) - bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) - bcdiv($nomina_calculation_sso[$i]->amount, '1', 2);
-          
-        }
-
-        $total_sueldo += $sueldo;
-        $total_bono_medico += $bono_medico;
-        $total_bono_alimentacion += 45;
-        $total_sso += $nomina_calculation_sso[$i]->amount;
-        $total_faov += $nomina_calculation_faov[$i]->amount;
-        $total_final += $total;
-
-        $total_sso_patronal += $sso_patronal;
-        $total_faov_patronal += $faov_patronal;
-
-      ?>
-        <tr>
-          <td style="text-align: center;"> {{ $nomina_calculation_asignacion[$i]->nombres }} {{ $nomina_calculation_asignacion[$i]->apellidos ?? '' }}</td>
-          <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
-          <td style="text-align: center;">{{ number_format(bcdiv($bono_medico, '1', 2) , 2, ',', '.')}}</td>
-          @if ($nomina->type == "Segunda Quincena")
-          <td style="text-align: center;">{{ number_format(bcdiv(45, '1', 2) , 2, ',', '.')}}</td>
-          @endif
-         <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_sso[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
-         <td style="text-align: center;">{{ number_format(bcdiv($sso_patronal, '1', 2) , 2, ',', '.')}}</td>
-         <td style="text-align: center;">{{ number_format(bcdiv($nomina_calculation_faov[$i]->amount, '1', 2) , 2, ',', '.')}}</td>
-         <td style="text-align: center;">{{ number_format( $faov_patronal, 2, ',', '.')}}</td>
-         <td style="text-align: center;">{{ number_format($total, 2, ',', '.')}}</td>
-        </tr>
-    @endfor
-    
+  <table id="top">
     <tr>
-      <td style="text-align: center;"> </td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_sueldo ?? 0, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_bono_medico ?? 0, '1', 2) , 2, ',', '.')}}</td>
-      @if ($nomina->type == "Segunda Quincena")
-      <td style="text-align: center;">{{ number_format(bcdiv($total_bono_alimentacion, '1', 2) , 2, ',', '.')}}</td>
-      @endif
-      <td style="text-align: center;">{{ number_format(bcdiv($total_sso, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_sso_patronal, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_faov, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_faov_patronal, '1', 2) , 2, ',', '.')}}</td>
-      <td style="text-align: center;">{{ number_format(bcdiv($total_final ?? 0, '1', 2) , 2, ',', '.')}}</td>
-    </tr>
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" width="93" height="60" class="d-inline-block align-top" alt="">
+      </th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr> 
   </table>
-<br><br>
-<br><br>
-
-
+  <br>
+  <span><b>Nómina: {{ $nomina->id }}</b></span>
+  <br>
+  <span><b>Descripcción: {{ $nomina->description }}</b></span>
+  <br>
+  <span><b>Fecha desde: {{ \Carbon\Carbon::parse($nomina->date_begin)->format('d-m-Y')}} , Fecha hasta {{ \Carbon\Carbon::parse($nomina->date_end)->format('d-m-Y') }}</b></span>
+  <br>
+  <br>
 <table style="width: 100%;">
+  <tbody>
   <tr>
+    <th style="text-align: center; width:10%;">CI</th>
     <th style="text-align: center;">Nombres y Apellidos</th>
-    <th style="text-align: center;">Total Sueldo</th>
-    <th style="text-align: center;">Bono Médico</th>
-    @if ($nomina->type == "Segunda Quincena")
-    <th style="text-align: center;">Bono Alimentación</th>
-    @endif
-    <th style="text-align: center;">SSO</th>
-    <th style="text-align: center;">SSO <br>Patronal</th>
-    <th style="text-align: center;">FAOV</th>
-    <th style="text-align: center;">FAOV Patronal</th>
-    <th style="text-align: center;">Total</th>
+    <th style="text-align: center; width:1%;">Monto</th>
+    <th style="text-align: center; width:1%;">Bono<br>Médico</th>
+    <th style="text-align: center; width:1%;">Bono<br>Alimentación</th>
+    <th style="text-align: center; width:1%;">Bono<br>Transporte</th>
+    <th style="text-align: center; width:1%;">SSO</th>
+    <th style="text-align: center; width:1%;">FAOV</th>
+    <th style="text-align: center; width:1%;">PIE</th>
+    <th style="text-align: center; width:1%;">SSO<br>Patronal</th>
+    <th style="text-align: center; width:1%;">FAOV<br>Patronal</th>
+    <th style="text-align: center; width:1%;">PIE<br>Patronal</th>
+    <th style="text-align: center; width:1%;">Total<br>Deducciones</th>
+    <th style="text-align: center; width:1%;">Total<br>Monto Neto</th>
+    <th style="text-align: center; width:1%;">Total<br>Asignaciones</th>
+    <th style="text-align: center; width:1%;">Total<br>General</th>
+
   
   </tr>
-@foreach ($nomina_calculations as $nomina_calc)
-<tr>
-  <td style="text-align: center;"> {{ $nomina_calc->nombres}}</td>
-  <td style="text-align: center;">{{ number_format(bcdiv(($sueldo), '1', 2) , 2, ',', '.')}}</td>
-  <td style="text-align: center;">{{ number_format(bcdiv($bono_medico, '1', 2) , 2, ',', '.')}}</td>
-  @if ($nomina->type == "Segunda Quincena")
-  <td style="text-align: center;">{{ number_format(bcdiv(45, '1', 2) , 2, ',', '.')}}</td>
+
+<?php
+  $total_asignacion_global = 0;
+  $total_bono_medico_global = 0;
+  $total_bono_alim_global = 0;
+  $total_bono_transporte_global = 0;
+  $total_deduccion_sso_global = 0;
+  $total_deduccion_faov_global = 0;
+  $total_deduccion_pie_global = 0;
+  $total_sso_patronal_global = 0;
+  $total_faov_patronal_global = 0;
+  $total_pie_patronal_global = 0;
+  $total_deducciones_global = 0;
+  $total_monto_neto_global = 0;
+  $total_otras_asignaciones_global = 0;
+  $total_total_general_global = 0;
+?>
+
+@foreach ($employees as $employee)
+<?php
+$total_sso_patronal = 0;
+$total_faov_patronal = 0;
+$total_pie_patronal = 0;
+
+$deducciones = 0;
+$monto_neto = 0;
+$otras_asignaciones = 0;
+$total_general = 0;
+
+$total_sso_patronal = (($employee->asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
+$total_faov_patronal = $employee->asignacion * ($nominabases->faov_company/100);
+$total_pie_patronal =  (($employee->asignacion * 12)/52) * $lunes * ($nominabases->pie_company/100);
+
+$deducciones = $employee->deduccion_sso+$employee->deduccion_faov+$employee->deduccion_pie+$employee->deduccion_ince+$employee->otras_deducciones;
+$monto_neto = $employee->total_asignacion_m_deducciones;
+$otras_asignaciones = $employee->bono_medico+$employee->bono_alim+$employee->bono_transporte+$employee->otras_asignaciones;
+$total_general = $monto_neto+$otras_asignaciones;
+
+?>
+  @if ($employee->asignacion > 0)
+    <tr>
+      <td style="text-align: center;"> {{$employee->id_empleado}}</td>
+      <td style="text-align: center;"> {{$employee->nombres}} {{$employee->apellidos}}</td>
+      <td style="text-align: right;">{{ number_format($employee->asignacion, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->bono_medico, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->bono_alim, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->bono_transporte, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->deduccion_sso, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->deduccion_faov, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($employee->deduccion_pie, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($total_sso_patronal, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($total_faov_patronal, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($total_pie_patronal, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($deducciones, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($monto_neto, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($otras_asignaciones, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($total_general, 2, ',', '.')}}</td>
+    </tr>
+
+<?php
+$total_asignacion_global += number_format($employee->asignacion, 2, '.', '');
+$total_bono_medico_global += number_format($employee->bono_medico, 2, '.', '');
+$total_bono_alim_global += number_format($employee->bono_alim, 2, '.', '');
+$total_bono_transporte_global += number_format($employee->bono_transporte, 2, '.', '');
+$total_deduccion_sso_global += number_format($employee->deduccion_sso, 2, '.', '');
+$total_deduccion_faov_global += number_format($employee->deduccion_faov, 2, '.', '');
+$total_deduccion_pie_global += number_format($employee->deduccion_pie, 2, '.', '');
+$total_sso_patronal_global += number_format($total_sso_patronal, 2, '.', '');
+$total_faov_patronal_global += number_format($total_faov_patronal, 2, '.', '');
+$total_pie_patronal_global += number_format($total_pie_patronal, 2, '.', '');
+$total_deducciones_global += number_format($deducciones, 2, '.', '');
+$total_monto_neto_global += number_format($monto_neto, 2, '.', '');
+$total_otras_asignaciones_global += number_format($otras_asignaciones, 2, '.', '');
+$total_total_general_global += number_format($total_general, 2, '.', '');
+?>
+
   @endif
- <td style="text-align: center;">{{''}}</td>
- <td style="text-align: center;">{{''}}</td>
- <td style="text-align: center;">{{''}}</td>
- <td style="text-align: center;">{{''}}</td>
- <td style="text-align: center;">{{''}}</td>
-</tr>
-@endforeach 
+@endforeach
+  </tbody>
+  <tfoot>
+    <tr>
+      <th style="text-align: right;"></th>
+      <th style="text-align: center;">Total..</th>
+      <th style="text-align: right;">{{ number_format($total_asignacion_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_bono_medico_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_bono_alim_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_bono_transporte_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_deduccion_sso_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_deduccion_faov_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_deduccion_pie_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_sso_patronal_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_faov_patronal_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_pie_patronal_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_deducciones_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_monto_neto_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_otras_asignaciones_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_total_general_global, 2, ',', '.')}}</th>
+    </tr>
+  </tfoot>
+
 </table>
 
 </body>
