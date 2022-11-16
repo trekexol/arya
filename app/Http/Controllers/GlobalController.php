@@ -630,7 +630,7 @@ class GlobalController extends Controller
         
         // $clientg = new Clientg();
 
-       if($company->date_consult_bcv >= $datenow_verf and $company->date_consult_bcv <= $datenow_verf2 || $datenow_normal != $datenow_normal_verf){
+       if($datenow_normal != $datenow_normal_verf){
      
      
             $url = "https://s3.amazonaws.com/dolartoday/data.json";
@@ -666,6 +666,7 @@ class GlobalController extends Controller
                     return 1;
                 }
             }else{
+                
                 if($company->rate_bcv != 0){
                     return bcdiv($company->rate, '1', 2);
                 }else{
