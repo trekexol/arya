@@ -169,7 +169,6 @@
                                     @enderror
                                 </div>
                             @endif
-                            
                             <div class="col-md-1">
                                 <a href="{{ route('anticipos.selectanticipo_provider',[$expense->id_provider,$coin,$expense->id]) }}" title="Productos"><i class="fa fa-eye"></i></a>  
                             </div>

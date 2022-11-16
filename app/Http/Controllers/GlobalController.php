@@ -640,7 +640,7 @@ class GlobalController extends Controller
             curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
             $data = curl_exec( $ch );
             curl_close( $ch );
-            $datos = json_decode($data, true); 
+            $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data), true); 
             $datos['USD']['promedio_real'];
 
             if($datos['USD']['promedio_real'] > 0){
