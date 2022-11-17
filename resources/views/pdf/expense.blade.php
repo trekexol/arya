@@ -181,10 +181,13 @@
  // $total = $expense->sub_total + $iva;
 
  // $total_petro = ($total - $expense->anticipo)/ 159765192.04;
-
+ $amount_with_iva_des = 0;
  $expense->sub_total = $expense->amount;
 
- $expense->amount_with_iva = ($expense->amount_with_iva / ($bcv ?? 1)); //+ ($expense->retencion_iva / ($bcv ?? 1)) + ($expense->retencion_islr / ($bcv ?? 1));
+ $expense->amount_with_iva = ($expense->amount_with_iva / ($bcv ?? 1));
+ 
+ $amount_with_iva_des = (($expense->amount_with_iva - $expense->discount) / ($bcv ?? 1));
+ //+ ($expense->retencion_iva / ($bcv ?? 1)) + ($expense->retencion_islr / ($bcv ?? 1));
 ?>
 
 <table style="width: 100%;">
@@ -213,7 +216,21 @@
     <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); font-size: small;">MONTO TOTAL</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->amount_with_iva, 2, ',', '.') }}</th>
   </tr> 
-  
+
+  @if ($expense->discount > 0)
+  <tr>
+    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); font-size: small;">DESCUENTO {{$expense->porc_discount}}%</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->discount / ($bcv ?? 1), 2, ',', '.') }}</th>
+  </tr> 
+
+  <tr>
+    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); font-size: small;">MONTO TOTAL CON DESCUENTO</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($amount_with_iva_des, 2, ',', '.') }}</th>
+  </tr> 
+
+  @endif
+
+
 </table>
 
 </body>
