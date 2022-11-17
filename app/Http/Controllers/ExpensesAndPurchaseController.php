@@ -308,10 +308,6 @@ class ExpensesAndPurchaseController extends Controller
     
             $company = Company::on(Auth::user()->database_name)->find(1);
                   
-            /*$expense_details = ExpensesDetail::on(Auth::user()->database_name)
-                                ->where('id_expense',$expense->id)
-                                ->where('islr',1)->sum('amount * price');*/
-
             $expense_details =  DB::connection(Auth::user()->database_name)->select('SELECT SUM(amount * price) AS total
                                 FROM expenses_details
                                 WHERE id_expense = ? AND
@@ -1023,10 +1019,12 @@ class ExpensesAndPurchaseController extends Controller
         $iva_percentage = request('iva_form');
         $sin_formato_total_pay = request('total_pay_form');
         $total_pay_form = request('total_pay_form');
+        
+        $porc_descuento = request('porc_descuento_form');
 
+        $descuento = request('descuento_form');
         $date_payment = request('date_payment_form');
         $date_payment_expense = request('date_payment_expense');
-
 
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
@@ -2019,10 +2017,9 @@ class ExpensesAndPurchaseController extends Controller
                 $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
                 if(isset($account_cuentas_por_pagar_proveedores)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,$sin_formato_grandtotal,0);
-                }
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,$sin_formato_grandtotal-$descuento,0);
+                } 
 
-               
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');   
 
@@ -2064,8 +2061,21 @@ class ExpensesAndPurchaseController extends Controller
                     $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
                     if(isset($account_cuentas_por_pagar_proveedores)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal);
+                        $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal-$descuento);
                     }
+
+
+                    if($descuento > 0){
+                        $account_descount = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Compras')->first(); 
+                            
+                        if(isset($account_descount)){
+                            $this->add_movement($bcv,$header_voucher->id,$account_descount->id,$expense->id,$user_id,0,$descuento);
+                        } 
+                    }
+                   
+
+
+
                 }
                 
                 /*Modifica la cotizacion */
@@ -2086,7 +2096,8 @@ class ExpensesAndPurchaseController extends Controller
                     $expense->amount_iva =  $sin_formato_amount_iva;
                     $expense->amount_with_iva =  $sin_formato_grandtotal;
                     $iva_percentage = $iva_percentage;
-                   
+                    $expense->porc_discount = $porc_descuento;
+                    $expense->discount = $descuento;
                     $expense->status = "C";
 
                     $expense->coin = $coin;
@@ -2149,7 +2160,9 @@ class ExpensesAndPurchaseController extends Controller
         $sin_formato_amount_with_iva = str_replace(',', '.', str_replace('.', '', request('grand_total')));
          
         $retencion_iva_check = request('retencion_iva_check');
-        
+        $porc_descuento_general = request('porc_descuento_general'); 
+        $sin_formato_descuento_general = str_replace(',', '.', str_replace('.', '', request('descuento_general'))); 
+
         if(isset($retencion_iva_check)){
             $sin_formato_iva_retencion = str_replace(',', '.', str_replace('.', '', request('iva_retencion')));
         }else{
@@ -2188,6 +2201,7 @@ class ExpensesAndPurchaseController extends Controller
             $sin_formato_islr_retencion = $sin_formato_islr_retencion * $expense->rate;
             $sin_formato_anticipo = $sin_formato_anticipo * $expense->rate;
             $sin_formato_total_pay = $sin_formato_total_pay * $expense->rate;
+            $sin_formato_descuento_general = $sin_formato_descuento_general * $expense->rate;
         }
 
         $id_islr_concept = request('id_islr_concept_credit');
@@ -2204,6 +2218,8 @@ class ExpensesAndPurchaseController extends Controller
         $expense->retencion_iva =  $sin_formato_iva_retencion;
         $expense->retencion_islr =  $sin_formato_islr_retencion;
         $expense->anticipo =  $sin_formato_anticipo;
+        $expense->porc_discount =$porc_descuento_general;
+        $expense->discount = $sin_formato_descuento_general;
 
         $credit = request('credit');
 
@@ -2282,8 +2298,17 @@ class ExpensesAndPurchaseController extends Controller
         $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
         if(isset($account_cuentas_por_pagar_proveedores)){
-            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva);
+            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva-$sin_formato_descuento_general);
         }
+
+        if($sin_formato_descuento_general > 0){
+            $account_descount = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Compras')->first(); 
+                
+            if(isset($account_descount)){
+                $this->add_movement($expense->rate,$header_voucher->id,$account_descount->id,$expense->id,$user_id,0,$sin_formato_descuento_general);
+            } 
+        }
+       
 
         $historial_expense = new HistorialExpenseController();
 

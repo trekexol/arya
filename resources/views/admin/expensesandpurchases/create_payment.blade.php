@@ -58,7 +58,7 @@
                         </div>
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($expense->total_factura, 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
     
                                 @error('total_factura')
@@ -67,6 +67,9 @@
                                     </span>
                                 @enderror
                             </div>
+
+
+
                             <label for="base_imponible" class="col-md-2 col-form-label text-md-right">Base Imponible:</label>
                             <div class="col-md-3">
                                 <input id="base_imponible" type="text" class="form-control @error('base_imponible') is-invalid @enderror" name="base_imponible" value="{{ number_format($expense->base_imponible, 2, ',', '.') ?? 0 }}" readonly required autocomplete="base_imponible">
@@ -77,6 +80,8 @@
                                 @enderror
                             </div>
                         </div>
+
+
 
                         <div class="form-group row">
                             <label for="iva_amount" class="col-md-2 col-form-label text-md-right">Monto de Iva</label>
@@ -192,7 +197,52 @@
                             
                             
                         </div>
-             
+                        <div class="form-group row">
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-switch">
+                                        @if($expense->porc_discount > 0)
+                                        <input type="checkbox" class="custom-control-input" id="checkdescuento" checked>
+                                        <label class="custom-control-label" id="forcheckdescuento" for="checkdescuento">Descuento General Aplicado</label>
+                                        @else
+                                        <input type="checkbox" class="custom-control-input" id="checkdescuento">
+                                        <label class="custom-control-label" id="forcheckdescuento" for="checkdescuento">Aplicar Descuento General</label>
+                                        @endif
+                                    </div>
+                                </div>
+                     
+                        </div>
+
+                        @if($expense->porc_discount > 0)
+                        <div id="div_descuento">
+                        @else
+                        <div id="div_descuento" style="display: none;">
+                        @endif
+                        
+                         
+                            <div class="form-group row">
+
+                                <label for="porc_descuento_general" class="col-md-2 col-form-label text-md-right">Descuento %</label>
+                                <div class="col-md-1">
+                                    <input id="porc_descuento_general" type="text" class="form-control @error('porc_descuento_general') is-invalid @enderror" name="porc_descuento_general" placeholder="0,00" value="{{$expense->porc_discount ?? 0}}" autocomplete="porc_descuento_general"> 
+                                </div>    
+                            </div>
+                            <div class="form-group row">
+                                <label for="descuento_general" class="col-md-2 col-form-label text-md-right">Monto Descuento</label>
+                                <div class="col-md-3">
+                                    <input id="descuento_general" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0,00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general"> 
+                            
+                                    @error('descuento_general')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                            
                         <input type="hidden" name="id_expense" value="{{$expense->id}}" readonly>
 
                         <div class="form-group row">
@@ -258,6 +308,8 @@
 
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="hidden" id="descuento_form" name="descuento_form" value="0" readonly>
+                        <input type="hidden" id="porc_descuento_form" name="porc_descuento_form" value="{{ $expense->porc_discount }}" readonly>
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
@@ -874,8 +926,9 @@
 
                 //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;  
 
-                let totalFactura = "<?php echo $expense->total_factura ?>";       
+                let totalFactura = "<?php echo $expense->total_factura ?>";
 
+                let discount = "<?php echo $expense->discount ?>";
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
@@ -895,8 +948,9 @@
 
                 var montoFormat = sub_total_form.replace(/[$.]/g,'');
 
-                var montoFormat_sub_total_form = montoFormat.replace(/[,]/g,'.');    
+                var montoFormat_sub_total_form = montoFormat.replace(/[,]/g,'.'); 
 
+    
                 //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
                 /*-----------------------------------*/
 
@@ -970,7 +1024,7 @@
                 }
 
 
-                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
+                var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo - discount;
 
                 // var total_pay = parseFloat(totalFactura) + total_iva_exento - inputAnticipo;
 
@@ -978,7 +1032,7 @@
 
                 var total_islr_retencion = document.getElementById("total_retiene_islr").value;
 
-                var total_pay = total_pay - total_iva_retencion - total_islr_retencion;
+                var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
@@ -1291,11 +1345,122 @@
                 
             });
 
-       
+            $("#porc_descuento_general").on('change',function(){ 
+                let inputIva = document.getElementById("iva").value; 
 
-       
+                let totalFactura = "<?php echo $expense->total_factura ?>";       
+                let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;
+                var total_iva_exento =  parseFloat(totalIvaMenos); 
 
-   
+                var porc_discount = $("#porc_descuento_general").val();
+
+                var total_pay = parseFloat(totalFactura);
+
+              
+                var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
+                var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
+
+                var grand_total = (parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento));
+             
+                var total_discount = ((grand_total * porc_discount)/100);
+
+
+                var total_whit_discount = grand_total - ((grand_total * porc_discount)/100);
+
+///total de la factura
+
+                document.getElementById("total_pay").value = total_whit_discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+                document.getElementById("total_pay_form").value = total_whit_discount.toFixed(2);
+
+                document.getElementById("descuento_form").value = total_discount.toFixed(2);
+
+                /*alert(total_whit_discount);
+                alert(total_whit_discount.toFixed(2));*/
+
+                var grand_totalformat_m_discount = total_discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+            
+                $("#descuento_general").val(grand_totalformat_m_discount);
+                $("#porc_descuento_form").val(porc_discount);
+                
+                
+            });
+  
+
+
+            $("#checkdescuento").on('change', function() {
+            if ($(this).is(':checked')) {
+                switchStatus = $(this).is(':checked');
+                $("#div_descuento").show();
+                document.getElementById("forcheckdescuento").innerHTML = "Descuento General Aplicado";
+                let porc_discount = "<?php echo $expense->porc_discount ?>";
+                let discount = "<?php echo $expense->discount ?>";
+                
+                if (porc_discount > 0){
+                
+                    let inputIva = document.getElementById("iva").value; 
+
+                    let totalFactura = "<?php echo $expense->total_factura ?>";       
+                    let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;
+                    var total_iva_exento =  parseFloat(totalIvaMenos); 
+
+                    var total_pay = parseFloat(totalFactura);
+                    var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
+                    var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
+
+                    var grand_total = (parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento));
+
+                    var total_discount = ((grand_total * porc_discount)/100);
+
+
+                    var total_whit_discount = grand_total - ((grand_total * porc_discount)/100);
+
+                    ///total de la factura
+
+                    document.getElementById("total_pay").value = total_whit_discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+                    document.getElementById("total_pay_form").value = total_whit_discount.toFixed(2);
+
+                    document.getElementById("descuento_form").value = total_discount.toFixed(2);
+
+                    /*alert(total_whit_discount);
+                    alert(total_whit_discount.toFixed(2));*/
+
+                    var grand_totalformat_m_discount = total_whit_discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+                    $("#descuento_general").val(grand_totalformat_m_discount);
+                    $("#porc_descuento_form").val(porc_discount);
+                }
+                
+
+
+
+            }else {
+            switchStatus = $(this).is(':checked');
+            let inputIva = document.getElementById("iva").value; 
+
+            let totalFactura = "<?php echo $expense->total_factura ?>";       
+            let totalIvaMenos = (inputIva * "<?php echo $expense->base_imponible; ?>") / 100;
+            var total_iva_exento =  parseFloat(totalIvaMenos); 
+            var total_pay = parseFloat(totalFactura);
+            var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
+            var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
+
+            var grand_total = (parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento));
+
+            document.getElementById("total_pay").value = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+            document.getElementById("total_pay_form").value = grand_total.toFixed(2);
+            document.getElementById("descuento_form").value = 0;
+            $("#porc_descuento_form").val(0);
+
+            var grand_totalformat_m_discount = 0;
+
+            $("#descuento_general").val(0);
+
+            $("#div_descuento").hide();
+                document.getElementById("forcheckdescuento").innerHTML = "Aplicar Descuento General";
+            }
+        });
 
 
 

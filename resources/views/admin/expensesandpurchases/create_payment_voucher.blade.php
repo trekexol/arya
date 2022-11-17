@@ -151,6 +151,36 @@
                             </div>
                             
                         </div>
+
+                        @if($expense->porc_discount > 0)
+                        <div id="div_descuento">
+                        @else
+                        <div id="div_descuento" style="display: none;">
+                        @endif
+                        
+                         
+                            <div class="form-group row">
+
+                                <label for="porc_descuento_general" class="col-md-2 col-form-label text-md-right">Descuento %</label>
+                                <div class="col-md-1">
+                                    <input id="porc_descuento_general" type="text" class="form-control @error('porc_descuento_general') is-invalid @enderror" name="porc_descuento_general" placeholder="0,00" value="{{$expense->porc_discount ?? 0}}" autocomplete="porc_descuento_general" readonly> 
+                                </div>    
+                            </div>
+                            <div class="form-group row">
+                                <label for="descuento_general" class="col-md-2 col-form-label text-md-right">Monto Descuento</label>
+                                <div class="col-md-3">
+                                    <input id="descuento_general" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0,00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general" readonly> 
+                            
+                                    @error('descuento_general')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total Pagado:</label>
                             <div class="col-md-3">
