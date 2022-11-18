@@ -874,6 +874,7 @@ class ExpensesAndPurchaseController extends Controller
             'amount'        =>'required',
             'description'   =>'required',
             'price'         =>'required',
+            'Account'       =>'required'
             
         
         ]);
@@ -1021,8 +1022,8 @@ class ExpensesAndPurchaseController extends Controller
         $total_pay_form = request('total_pay_form');
         
         $porc_descuento = request('porc_descuento_form');
-
         $descuento = request('descuento_form');
+
         $date_payment = request('date_payment_form');
         $date_payment_expense = request('date_payment_expense');
 
@@ -2017,7 +2018,7 @@ class ExpensesAndPurchaseController extends Controller
                 $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
                 if(isset($account_cuentas_por_pagar_proveedores)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,$sin_formato_grandtotal-$descuento,0);
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,$sin_formato_grandtotal,0);
                 } 
 
                 $date = Carbon::now();
@@ -2061,7 +2062,7 @@ class ExpensesAndPurchaseController extends Controller
                     $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
                     if(isset($account_cuentas_por_pagar_proveedores)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal-$descuento);
+                        $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal);
                     }
 
 
@@ -2298,7 +2299,7 @@ class ExpensesAndPurchaseController extends Controller
         $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first(); 
                     
         if(isset($account_cuentas_por_pagar_proveedores)){
-            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva-$sin_formato_descuento_general);
+            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva);
         }
 
         if($sin_formato_descuento_general > 0){
