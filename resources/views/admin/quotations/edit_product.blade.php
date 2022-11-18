@@ -102,7 +102,7 @@
                                      <label for="discount" class="col-md-2 col-form-label text-md-right">Descuento</label>
                     
                                      <div class="col-md-1">
-                                         <input id="discount" type="text" class="form-control @error('discount') is-invalid @enderror" name="discount" value="{{ number_format($quotation_product->discount, 0, ',', '.') }}" required autocomplete="discount">
+                                         <input id="discount" type="text" onkeyup="noespac(this)" class="form-control @error('discount') is-invalid @enderror" name="discount" value="{{ $quotation_product->discount }}" autocomplete="discount">
             
                                          @error('discount')
                                              <span class="invalid-feedback" role="alert">
@@ -133,10 +133,7 @@
  @endsection
  @section('validacion')
     <script>    
-      $(document).ready(function () {
-            $("#discount").mask('000', { reverse: true });
-            
-        });
+
         $(document).ready(function () {
             $("#amount").mask('000000000000', { reverse: true });
             
@@ -163,6 +160,16 @@
             }
         });
 
+        function noespac(e) {
+            
+            e.value = e.value.replace(/\,/g, '.');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
+      
 
         function validacion() {
 
