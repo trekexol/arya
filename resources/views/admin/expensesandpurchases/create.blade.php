@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras..</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras.</div>
 
                 <div class="card-body">
                         
@@ -121,7 +121,7 @@
                                     <div class="col-md-4">
                                        
                                         <select id="type_form"  name="type_form" class="form-control" required>
-                                            <option value="-1">Seleccionar</option>
+                                            <option value="">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
                                             
                                             @if (
@@ -182,7 +182,7 @@
                                 
                                     <div class="col-md-4">
                                         <select  id="account"  name="Account" class="form-control" required>
-                                            <option value="-1">Seleccionar</option>
+                                            <option value="">Seleccionar</option>
                                             @if (isset($accounts_inventory))
                                                 @foreach ($accounts_inventory as $var)
                                                     <option value="{{ $var->id }}" {{ $subaccount == $var->id ? 'selected' : '' }}>{{ $var->description }}</option>
