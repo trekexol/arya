@@ -376,7 +376,7 @@
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="discount" >Descuento</label>
-                                        <input id="discount_product" type="text" class="form-control  @error('discount') is-invalid @enderror" name="discount" value="0" required autocomplete="discount">
+                                        <input id="discount_product" type="text" onkeyup="noespac(this)" class="form-control  @error('discount') is-invalid @enderror" name="discount" value="0" autocomplete="discount">
         
                                         @error('discount')
                                             <span class="invalid-feedback" role="alert">
@@ -454,7 +454,7 @@
                                                 
                                                 <td style="text-align: right">{{ $var->amount_quotation}}</td>
                                                 <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
-                                                <td style="text-align: right">{{number_format($var->discount, 0, '', '.')}}%</td>
+                                                <td style="text-align: right">{{$var->discount}}%</td>
                                                 
                                                 <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
                                                
@@ -628,7 +628,7 @@
 
 
         $(document).ready(function () {
-            $("#discount_product").mask('000', { reverse: true });
+            //$("#discount_product").mask('000', { reverse: true });
             
         });
         
@@ -733,7 +733,15 @@
             window.location = "{{route('quotations.create', [$quotation->id,''])}}"+"/"+coin;
         });
 
-
+        function noespac(e) {
+            
+            e.value = e.value.replace(/\,/g, '.');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
       
 
     function sendProduct(){

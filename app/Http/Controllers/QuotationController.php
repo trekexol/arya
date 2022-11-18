@@ -718,7 +718,7 @@ class QuotationController extends Controller
 
         $var->discount = request('discount');
 
-        if(($var->discount < 0) || ($var->discount > 100)){
+        if(($var->discount < 0.00) || ($var->discount > 100.00)){
             return redirect('quotations/register/'.$var->id_quotation.'/'.$coin.'/'.$var->id_inventory.'')->withDanger('El descuento debe estar entre 0% y 100%!');
         }
         

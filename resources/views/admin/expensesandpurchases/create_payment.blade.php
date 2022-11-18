@@ -103,8 +103,8 @@
                             <div class="form-group row">
 
                                 <label for="porc_descuento_general" class="col-md-2 col-form-label text-md-right">Descuento %</label>
-                                <div class="col-md-1">
-                                    <input id="porc_descuento_general" type="text" class="form-control @error('porc_descuento_general') is-invalid @enderror" name="porc_descuento_general" placeholder="0,00" value="{{$expense->porc_discount ?? 0}}" autocomplete="porc_descuento_general"> 
+                                <div class="col-md-2">
+                                    <input id="porc_descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('porc_descuento_general') is-invalid @enderror" name="porc_descuento_general" placeholder="0.00" value="{{$expense->porc_discount ?? 0}}" autocomplete="porc_descuento_general"> 
                                 </div>    
                             </div>
                             <div class="form-group row">
@@ -254,7 +254,7 @@
                         <input type="hidden" name="id_expense" value="{{$expense->id}}" readonly>
 
                         <div class="form-group row">
-                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Pagar</label>
+                            <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total</label>
                             <div class="col-md-4">
                                 <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly  required autocomplete="total_pay"> 
                            
@@ -862,6 +862,18 @@
 
 @section('consulta')
     <script>
+
+
+        function noespac(e) {
+            
+            e.value = e.value.replace(/\,/g, '.');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+        
+            return e.value;
+            
+        }
+
         $("#credit").hide();
         $("#formenviarcredito").hide();
         var switchStatus = false;
