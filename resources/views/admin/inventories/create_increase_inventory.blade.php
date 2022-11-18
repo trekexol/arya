@@ -150,7 +150,7 @@
                             <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
                         
                             <div class="col-md-4">
-                            <select id="contrapartida"  name="contrapartida" class="form-control">
+                            <select id="contrapartida"  name="contrapartida" class="form-control" required>
                                 <option value="">Seleccione una Contrapartida</option>
                                 @foreach($contrapartidas as $index => $value)
                                     <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
@@ -167,7 +167,7 @@
                             </div>
                             @endif
                             <div class="col-md-4">
-                                    <select  id="subcontrapartida"  name="Subcontrapartida" class="form-control">
+                                    <select  id="subcontrapartida"  name="Subcontrapartida" class="form-control" required>
                                         <option value="">Seleccionar</option>
                                     </select>
 
