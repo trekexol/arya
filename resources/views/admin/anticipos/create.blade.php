@@ -48,9 +48,16 @@
                                     if ($invoice->number_invoice > 0){
                                     $num_fac = 'Factura: '.$invoice->number_invoice;
                                     }
+                                   
                                     if ($invoice->number_delivery_note > 0){
                                     $num_fac = 'Nota de Entrega: '.$invoice->number_delivery_note;
                                     }
+
+                                    if ($invoice->number_invoice > 0 and $invoice->number_delivery_note > 0){
+                                    $num_fac = 'Factura: '.$invoice->number_invoice.' Nota de Entrega: '.$invoice->number_delivery_note;
+                                    }
+                                   
+           
                                     ?>
                                         <option  value="{{$invoice->id}}"> {{$num_fac ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - {{ $invoice->observation ?? ''}}</option>
                                     @endforeach
