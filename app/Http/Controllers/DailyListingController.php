@@ -6,6 +6,8 @@ use App;
 use App\Account;
 use App\Company;
 use App\Quotation;
+use App\QuotationPayment;
+
 use App\Anticipo;
 use App\Client;
 use App\DetailVoucher;
@@ -421,7 +423,20 @@ class DailyListingController extends Controller
                 ->get()->first();
                 
                 $detail->header_description .= '. '.$client->name.'. '.$quotation->coin;
+            
+                $referenciab = QuotationPayment::on(Auth::user()->database_name) // buscar referencia
+                ->where('id_quotation','=',$quotation->id)  
+                ->first();
+
+                if($referenciab != null ){
+
+                         $detail->reference = $referenciab->reference;
+                   
+                }
                 
+
+
+
 
             } else {
 
