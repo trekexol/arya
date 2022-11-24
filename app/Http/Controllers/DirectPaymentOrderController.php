@@ -175,6 +175,42 @@ class DirectPaymentOrderController extends Controller
 
                 $movement_counterpart->save();
 
+              
+                $movement = new DetailVoucher();
+                $movement->setConnection(Auth::user()->database_name);
+
+                $movement->id_header_voucher = $header->id;
+                $movement->id_account = $account;
+                $movement->user_id = request('user_id');
+                $movement->debe = 0;
+                $movement->haber = $total_amount;
+                $movement->tasa = $rate;
+                $movement->status = "C";
+            
+                $movement->save();
+                
+                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+                $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+                $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
+
+                if($account->status != "M"){
+                    $account->status = "M";
+                    $account->save();
+                }
+
+
 
                 if($request->amount_of_payments > 1){
 
