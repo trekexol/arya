@@ -34,7 +34,7 @@
             <div class="card">
                 
                 <div class="card-header text-center font-weight-bold h3">Ordenes de Pago Directo</div>
-                <div class="card-body">
+                <div class="card-body" style="height: auto;">
                     <form id="formEnviar" method="POST" action="{{ route('directpaymentorders.store') }}" enctype="multipart/form-data">
                         @csrf
                        <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
@@ -210,7 +210,7 @@
                           @enderror
                       </div>
                       <div class="col-sm-1">
-                        <span class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</span>
+                        <span class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</span>
                       </div>
                   </div>
                 
@@ -265,7 +265,7 @@
                       <label for="amount2" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
 
                       <div class="col-md-4">
-                          <input id="amount2" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount2" value="{{ old('amount2') }}" required autocomplete="amount2">
+                          <input id="amount2" type="text" class="form-control @error('amount2') is-invalid @enderror" name="amount2" value="{{ old('amount2') }}" required autocomplete="amount2">
 
                           @error('amount2')
                               <span class="invalid-feedback" role="alert">
@@ -273,19 +273,19 @@
                               </span>
                           @enderror
                       </div>
-                      <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                      <label for="rate2" class="col-md-2 col-form-label text-md-right">Tasa:</label>
 
                       <div class="col-md-2">
-                          <input id="rate2" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate2" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
+                          <input id="rate2" type="text" class="form-control @error('rate2') is-invalid @enderror" name="rate2" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate2">
 
-                          @error('rate')
+                          @error('rate2')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
                       </div>
                       <div class="col-sm-1">
-                        <span class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</span>
+                        <span class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</span>
                       </div>
                   </div>
                  
@@ -338,30 +338,30 @@
                   </div>  
                   <div class="form-group row">
                       
-                      <label for="amount" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+                      <label for="amount3" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
 
                       <div class="col-md-4">
-                          <input id="amount3" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount3" value="{{ old('amount') }}" required autocomplete="amount">
+                          <input id="amount3" type="text" class="form-control @error('amount3') is-invalid @enderror" name="amount3" value="{{ old('amount3') }}" required autocomplete="amount3">
 
-                          @error('amount')
+                          @error('amount3')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
                       </div>
-                      <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                      <label for="rate3" class="col-md-2 col-form-label text-md-right">Tasa:</label>
 
                       <div class="col-md-2">
-                          <input id="rate3" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate3" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
+                          <input id="rate3" type="text" class="form-control @error('rate3') is-invalid @enderror" name="rate3" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate3">
 
-                          @error('rate')
+                          @error('rate3')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
                       </div>
                       <div class="col-sm-1">
-                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</a>
+                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</a>
                       </div>
                   </div>
                  
@@ -415,33 +415,258 @@
                       <label for="amount" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
 
                       <div class="col-md-4">
-                          <input id="amount4" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount4" value="{{ old('amount') }}" required autocomplete="amount">
+                          <input id="amount4" type="text" class="form-control @error('amount4') is-invalid @enderror" name="amount4" value="{{ old('amount4') }}" required autocomplete="amount4">
 
-                          @error('amount')
+                          @error('amount4')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
                       </div>
-                      <label for="rate" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+                      <label for="rate4" class="col-md-2 col-form-label text-md-right">Tasa:</label>
 
                       <div class="col-md-2">
-                          <input id="rate4" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate4" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate">
+                          <input id="rate4" type="text" class="form-control @error('rate4') is-invalid @enderror" name="rate4" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate4">
 
-                          @error('rate')
+                          @error('rate4')
                               <span class="invalid-feedback" role="alert">
                                   <strong>{{ $message }}</strong>
                               </span>
                           @enderror
                       </div>
                       <div class="col-sm-1">
-                        <span class="badge badge-pill badge-danger puntero2 ocultar2" onclick="deleteForm();">Eliminar</span>
+                        <span class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</span>
                       </div>
                   </div>
                  
                 </div>
               </div>
 
+
+             
+              <div id="form5" class="item clonar2">
+                <div class="form-group">
+                    
+                 
+                  <div class="form-group row">
+                     
+                      <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
+                      <div class="col-md-4">
+                          <select id="type_form5"  name="type_form5" class="form-control" required>
+
+                          <option value="-1">Seleccione una Contrapartida</option>
+                          @foreach($contrapartidas as $index => $value)
+                              
+                              @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio' && $value != 'Resultados Anteriores')
+                                  <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                      {{ $value }}
+                                  </option>
+                              @endif
+
+
+                          @endforeach
+                          </select>
+
+                      </div>
+                      <div class="col-md-4">
+                          <select  id="account_counterpart5"  name="Account_counterpart5" class="form-control" required>
+                              <option value="">Seleccionar</option>
+                              @if (isset($accounts_inventory))
+                                  @foreach ($accounts_inventory as $var)
+                                      <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                  @endforeach
+                              @endif
+                          </select>
+
+                          @if ($errors->has('account'))
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $errors->first('account') }}</strong>
+                              </span>
+                          @endif
+                      </div>
+                    
+                  </div>  
+                  <div class="form-group row">
+                      
+                      <label for="amount5" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+
+                      <div class="col-md-4">
+                          <input id="amount5" type="text" class="form-control @error('amount5') is-invalid @enderror" name="amount5" value="{{ old('amount5') }}" required autocomplete="amount5">
+
+                          @error('amount5')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <label for="rate5" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+
+                      <div class="col-md-2">
+                          <input id="rate5" type="text" class="form-control @error('rate5') is-invalid @enderror" name="rate5" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate5">
+
+                          @error('rate5')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <div class="col-sm-1">
+                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</a>
+                      </div>
+                  </div>
+                 
+                </div>
+              </div>
+
+
+              <div id="form6" class="item clonar2">
+                <div class="form-group">
+                    
+                 
+                  <div class="form-group row">
+                     
+                      <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
+                      <div class="col-md-4">
+                          <select id="type_form6"  name="type_form6" class="form-control" required>
+
+                          <option value="-1">Seleccione una Contrapartida</option>
+                          @foreach($contrapartidas as $index => $value)
+                              
+                              @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio' && $value != 'Resultados Anteriores')
+                                  <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                      {{ $value }}
+                                  </option>
+                              @endif
+
+
+                          @endforeach
+                          </select>
+
+                      </div>
+                      <div class="col-md-4">
+                          <select  id="account_counterpart6"  name="Account_counterpart6" class="form-control" required>
+                              <option value="">Seleccionar</option>
+                              @if (isset($accounts_inventory))
+                                  @foreach ($accounts_inventory as $var)
+                                      <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                  @endforeach
+                              @endif
+                          </select>
+
+                          @if ($errors->has('account'))
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $errors->first('account') }}</strong>
+                              </span>
+                          @endif
+                      </div>
+                    
+                  </div>  
+                  <div class="form-group row">
+                      
+                      <label for="amount6 class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+
+                      <div class="col-md-4">
+                          <input id="amount6" type="text" class="form-control @error('amount6') is-invalid @enderror" name="amount6" value="{{ old('amount6') }}" required autocomplete="amount6">
+
+                          @error('amount6')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <label for="rate6" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+
+                      <div class="col-md-2">
+                          <input id="rate6" type="text" class="form-control @error('rate6') is-invalid @enderror" name="rate6" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate6">
+
+                          @error('rate6')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <div class="col-sm-1">
+                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</a>
+                      </div>
+                  </div>
+                 
+                </div>
+              </div>
+
+
+              <div id="form7" class="item clonar2">
+                <div class="form-group">
+                    
+                 
+                  <div class="form-group row">
+                     
+                      <label for="contrapartida" class="col-md-2 col-form-label text-md-right">Contrapartida:</label>
+                      <div class="col-md-4">
+                          <select id="type_form7"  name="type_form7" class="form-control" required>
+
+                          <option value="-1">Seleccione una Contrapartida</option>
+                          @foreach($contrapartidas as $index => $value)
+                              
+                              @if ($value != 'Bancos' && $value != 'Efectivo en Caja' && $value != 'Superavit o Deficit' && $value != 'Otros Ingresos' && $value != 'Resultado del Ejercicio' && $value != 'Resultados Anteriores')
+                                  <option value="{{ $index }}" {{ old('type_form') == $index ? 'selected' : '' }}>
+                                      {{ $value }}
+                                  </option>
+                              @endif
+
+
+                          @endforeach
+                          </select>
+
+                      </div>
+                      <div class="col-md-4">
+                          <select  id="account_counterpart7"  name="Account_counterpart7" class="form-control" required>
+                              <option value="">Seleccionar</option>
+                              @if (isset($accounts_inventory))
+                                  @foreach ($accounts_inventory as $var)
+                                      <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                  @endforeach
+                              @endif
+                          </select>
+
+                          @if ($errors->has('account'))
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $errors->first('account') }}</strong>
+                              </span>
+                          @endif
+                      </div>
+                    
+                  </div>  
+                  <div class="form-group row">
+                      
+                      <label for="amount" class="col-md-2 col-form-label text-md-right">Monto del Retiro:</label>
+
+                      <div class="col-md-4">
+                          <input id="amount7" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount7" value="{{ old('amount') }}" required autocomplete="amount7">
+
+                          @error('amount7')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <label for="rate7" class="col-md-2 col-form-label text-md-right">Tasa:</label>
+
+                      <div class="col-md-2">
+                          <input id="rate7" type="text" class="form-control @error('rate7') is-invalid @enderror" name="rate7" value="{{ number_format($bcv, 2, ',', '.')}}"  autocomplete="rate7">
+
+                          @error('rate7')
+                              <span class="invalid-feedback" role="alert">
+                                  <strong>{{ $message }}</strong>
+                              </span>
+                          @enderror
+                      </div>
+                      <div class="col-sm-1">
+                        <a href="#" class="badge badge-pill badge-danger puntero2 ocultar2" style="cursor: pointer" onclick="deleteForm();">Eliminar</a>
+                      </div>
+                  </div>
+                 
+                </div>
+              </div>
                         <div class="form-group row">
                             <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
 
@@ -491,7 +716,9 @@
         $("#form2").hide();
         $("#form3").hide();
         $("#form4").hide();
-
+        $("#form5").hide();
+        $("#form6").hide();
+        $("#form7").hide();
         
     //AGREGAREMOS OTRO FORMULARIO DE PAGO
     
@@ -505,7 +732,7 @@
 
     //AGREGAR FORMULARIOS
     function addForm() {
-        
+   
         if(number_form < 7){
             number_form += 1; 
         }
@@ -612,6 +839,32 @@
             
         });
 
+
+        $(document).ready(function () {
+            $("#amount5").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#rate5").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+
+        $(document).ready(function () {
+            $("#amount6").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#rate6").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#amount7").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
+        $(document).ready(function () {
+            $("#rate7").mask('000.000.000.000.000.000.000,00', { reverse: true });
+            
+        });
         $("#coin").on('change',function(){
             var coin = $(this).val();
 
@@ -917,6 +1170,122 @@
         }
 
 
+        $("#type_form5").on('change',function(){
+            var contrapartida_id = $(this).val();
+            $("#account_counterpart5").val("");
+            
+            getSubcontrapartida5(contrapartida_id);
+        });
+
+        function getSubcontrapartida5(contrapartida_id){
+            
+            $.ajax({
+                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let subcontrapartida = $("#account_counterpart5");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            htmlOptions += `<option value='${id}' {{ old('account_counterpart') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                        });
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    subcontrapartida.html('');
+                    subcontrapartida.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
+
+        $("#type_form6").on('change',function(){
+            var contrapartida_id = $(this).val();
+            $("#account_counterpart6").val("");
+            
+            getSubcontrapartida6(contrapartida_id);
+        });
+
+        function getSubcontrapartida6(contrapartida_id){
+            
+            $.ajax({
+                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let subcontrapartida = $("#account_counterpart6");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            htmlOptions += `<option value='${id}' {{ old('account_counterpart') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                        });
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    subcontrapartida.html('');
+                    subcontrapartida.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
+
+        $("#type_form7").on('change',function(){
+            var contrapartida_id = $(this).val();
+            $("#account_counterpart7").val("");
+            
+            getSubcontrapartida7(contrapartida_id);
+        });
+
+        function getSubcontrapartida7(contrapartida_id){
+            
+            $.ajax({
+                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let subcontrapartida = $("#account_counterpart7");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            htmlOptions += `<option value='${id}' {{ old('account_counterpart') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                        });
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    subcontrapartida.html('');
+                    subcontrapartida.html(htmlOptions);
+                
+                    
+                
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
 
 	$(function(){
         soloNumeros('xtelf_local');

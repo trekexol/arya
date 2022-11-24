@@ -74,6 +74,7 @@ class OrderPaymentListController extends Controller
                                 'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
                                 'accounts.code_four as account_code_four','accounts.code_five as account_code_five')
                                 ->orderBy('header_vouchers.id','desc')
+                                ->orderBy('detail_vouchers.debe','desc')
                                 ->get();
 
             //dd($detailvouchers);
