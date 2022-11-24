@@ -175,57 +175,33 @@ class DirectPaymentOrderController extends Controller
 
                 $movement_counterpart->save();
 
-              
 
-                if($request->amount_of_payments >= 2){
-                    if($this->storeMore($request,$header) != 'ok'){
-                        return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
-                    }
+                if($request->amount_of_payments > 1){
+
+                    //$this->storeMore($request,$header);
+                    
+                  
+                        return $this->storeMore($request,$header);
+                 
+
+                } else {
+                    return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');
                 }
+ /*
 
-                $movement = new DetailVoucher();
-                $movement->setConnection(Auth::user()->database_name);
-
-                $movement->id_header_voucher = $header->id;
-                $movement->id_account = $account;
-                $movement->user_id = request('user_id');
-                $movement->debe = 0;
-                $movement->haber = $total_amount;
-                $movement->tasa = $rate;
-                $movement->status = "C";
-            
-                $movement->save();
-                
-                $account = Account::on(Auth::user()->database_name)->findOrFail($account);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
-
-                $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
-
-                $account = Account::on(Auth::user()->database_name)->findOrFail($movement->id_account);
-
-                if($account->status != "M"){
-                    $account->status = "M";
-                    $account->save();
-                }
             
                 
                 return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');
 
-           /* }else{
+             }else{
                 return redirect('/directpaymentorders'.request('id_account').'')->withDanger('El saldo de la Cuenta '.$check_amount->description.' es menor al monto del retiro!');
             }*/
 
+
+
+
         }else{
-            return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
+            return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta! 1. '.$request->amount_of_payments.' Cont: '.$contrapartida.' Banco: '.$account);
         }
     }
 
@@ -289,7 +265,7 @@ class DirectPaymentOrderController extends Controller
             }
 
             if($rate2 == 0){
-                return 'La tasa no puede ser cero!';
+                return 'La tasa no puede ser cero 2!';
             }
 
 
@@ -315,7 +291,7 @@ class DirectPaymentOrderController extends Controller
 
 
         }else{
-            return "No se puede hacer un movimiento a la misma cuenta!";
+            return "No se puede hacer un movimiento a la misma cuenta! 2";
         }
         
         }
@@ -335,7 +311,7 @@ class DirectPaymentOrderController extends Controller
                 }
     
                 if($rate3 == 0){
-                    return 'La tasa no puede ser cero!';
+                    return 'La tasa no puede ser cero 3!';
                 }
     
                 /*$check_amount3 = $this->check_amount3($account3);
@@ -366,7 +342,7 @@ class DirectPaymentOrderController extends Controller
                   
     
             }else{
-                return "No se puede hacer un movimiento a la misma cuenta!";
+                return "No se puede hacer un movimiento a la misma cuenta! 3. ";
             }
             
             }
@@ -386,10 +362,12 @@ class DirectPaymentOrderController extends Controller
                     }
         
                     if($rate4 == 0){
-                        return 'La tasa no puede ser cero!';
+                        return 'La tasa no puede ser cero 4!';
                     }
         
-                
+                    /*$check_amount4 = $this->check_amount4($account4);
+                    se desabilita esta validacion por motivos que el senor nestor queria ingresar datos y que queden en negativo
+                    if($check_amount4->saldo_actual >= $amount4){*/
         
                         $movement_counterpart = new DetailVoucher();
                         $movement_counterpart->setConnection(Auth::user()->database_name);
@@ -411,14 +389,158 @@ class DirectPaymentOrderController extends Controller
                             $account->save();
                         }
         
-                    
+        
+                      
         
                 }else{
-                    return "No se puede hacer un movimiento a la misma cuenta!";
+                    return "No se puede hacer un movimiento a la misma cuenta! 3. ";
                 }
                 
                 }
-        return 'ok';
+                if($request->amount_of_payments >= 5){
+
+                    $account = request('account');
+                    $contrapartida5 = request('Account_counterpart5');
+                    $coin = request('coin');
+            
+                    if($account != $contrapartida5){
+            
+                        $amount5 = str_replace(',', '.', str_replace('.', '', request('amount5')));
+                        $rate5 = str_replace(',', '.', str_replace('.', '', request('rate5')));
+            
+                        if($coin != 'bolivares'){
+                            $amount5 = $amount5 * $rate5;
+                        }
+            
+                        if($rate5 == 0){
+                            return 'La tasa no puede ser cero 5!';
+                        }
+
+                            $movement_counterpart = new DetailVoucher();
+                            $movement_counterpart->setConnection(Auth::user()->database_name);
+            
+                            $movement_counterpart->id_header_voucher = $header->id;
+                            $movement_counterpart->id_account = $contrapartida5;
+                            $movement_counterpart->user_id = request('user_id');
+                            $movement_counterpart->debe = $amount5;
+                            $movement_counterpart->haber = 0;
+                            $movement_counterpart->tasa = $rate5;
+                            $movement_counterpart->status = "C";
+            
+                            $movement_counterpart->save();
+            
+                            $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida5);
+            
+                            if($account->status != "M"){
+                                $account->status = "M";
+                                $account->save();
+                            }
+            
+            
+                          
+            
+                    }else{
+                        return "No se puede hacer un movimiento a la misma cuenta! 5. ";
+                    }
+                    
+                    }
+                    
+                    if($request->amount_of_payments >= 6){
+
+                        $account = request('account');
+                        $contrapartida6 = request('Account_counterpart6');
+                        $coin = request('coin');
+                
+                        if($account != $contrapartida6){
+                
+                            $amount6 = str_replace(',', '.', str_replace('.', '', request('amount6')));
+                            $rate6 = str_replace(',', '.', str_replace('.', '', request('rate6')));
+                
+                            if($coin != 'bolivares'){
+                                $amount6 = $amount6 * $rate6;
+                            }
+                
+                            if($rate6 == 0){
+                                return 'La tasa no puede ser cero 6!';
+                            }
+    
+                                $movement_counterpart = new DetailVoucher();
+                                $movement_counterpart->setConnection(Auth::user()->database_name);
+                
+                                $movement_counterpart->id_header_voucher = $header->id;
+                                $movement_counterpart->id_account = $contrapartida6;
+                                $movement_counterpart->user_id = request('user_id');
+                                $movement_counterpart->debe = $amount6;
+                                $movement_counterpart->haber = 0;
+                                $movement_counterpart->tasa = $rate6;
+                                $movement_counterpart->status = "C";
+                
+                                $movement_counterpart->save();
+                
+                                $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida6);
+                
+                                if($account->status != "M"){
+                                    $account->status = "M";
+                                    $account->save();
+                                }
+                
+                
+                              
+                
+                        }else{
+                            return "No se puede hacer un movimiento a la misma cuenta! 6. ";
+                        }
+                        
+                        }
+
+                        if($request->amount_of_payments >= 7){
+
+                            $account = request('account');
+                            $contrapartida7 = request('Account_counterpart7');
+                            $coin = request('coin');
+                    
+                            if($account != $contrapartida7){
+                    
+                                $amount7 = str_replace(',', '.', str_replace('.', '', request('amount7')));
+                                $rate7 = str_replace(',', '.', str_replace('.', '', request('rate7')));
+                    
+                                if($coin != 'bolivares'){
+                                    $amount7 = $amount7 * $rate7;
+                                }
+                    
+                                if($rate7 == 0){
+                                    return 'La tasa no puede ser cero 7!';
+                                }
+        
+                                    $movement_counterpart = new DetailVoucher();
+                                    $movement_counterpart->setConnection(Auth::user()->database_name);
+                    
+                                    $movement_counterpart->id_header_voucher = $header->id;
+                                    $movement_counterpart->id_account = $contrapartida7;
+                                    $movement_counterpart->user_id = request('user_id');
+                                    $movement_counterpart->debe = $amount7;
+                                    $movement_counterpart->haber = 0;
+                                    $movement_counterpart->tasa = $rate7;
+                                    $movement_counterpart->status = "C";
+                    
+                                    $movement_counterpart->save();
+                    
+                                    $account = Account::on(Auth::user()->database_name)->findOrFail($contrapartida7);
+                    
+                                    if($account->status != "M"){
+                                        $account->status = "M";
+                                        $account->save();
+                                    }
+                    
+                    
+                                  
+                    
+                            }else{
+                                return "No se puede hacer un movimiento a la misma cuenta! 7. ";
+                            }
+                            
+                            }
+        return redirect('/bankmovements/orderpaymentlist')->withSuccess('Registro Exitoso!');;
     }
 
     public function check_amount($id_account)
