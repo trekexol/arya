@@ -273,6 +273,7 @@ class OrderPaymentListController extends Controller
             ,'providers.code_provider as code_provider'
             ,'payment_orders.reference as reference_order','payment_orders.date as date_order'
             ,'payment_orders.id as id_order')
+            ->orderBY('detail_vouchers.debe','desc')
             ->get();
         
        
