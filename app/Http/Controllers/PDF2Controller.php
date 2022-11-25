@@ -1076,7 +1076,7 @@ class PDF2Controller extends Controller
                 foreach($inventories_quotations as $var){
 
                     if(isset($coin) && ($coin != 'bolivares')){
-                        $var->price =  bcdiv(($var->price / ($var->rate ?? 1)), '1', 2);
+                        $var->price =  ($var->price / ($var->rate ?? 1));
                     }
 
                     //Se calcula restandole el porcentaje de descuento (discount)
