@@ -133,7 +133,7 @@
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
       @if (($diferencia_en_dias >= 0) && ($validator_date))
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-          <span style="color: rgb(110, 104, 13)" >Vencida</span> ({{$diferencia_en_dias}} dias)
+          <span style="color: rgb(201, 9, 9)" >Vencida</span> ({{$diferencia_en_dias}} dias)
       </td>
        @else
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
