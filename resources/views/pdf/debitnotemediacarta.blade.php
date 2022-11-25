@@ -109,6 +109,8 @@
   @foreach ($inventories_quotations as $var)
       <?php
       
+      $var->price = $var->price * $bcv;
+
       $percentage = (($var->price * $var->amount) * $var->discount)/100;
 
       $total_less_percentage = ($var->price * $var->amount) - $percentage;
@@ -118,9 +120,10 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 0, '', '.') }}</th>
+      
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(bcdiv($total_less_percentage, '1', 2), 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
 </table>
