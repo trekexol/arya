@@ -1117,12 +1117,12 @@ class PDF2Controller extends Controller
                    
                 
   
-                if(isset($coin) && ($coin != 'bolivares')){
+               /* if(isset($coin) && ($coin != 'bolivares')){
                     $quotation->amount =  $quotation->amount / ($rate ?? 1);
                     $quotation->base_imponible = $quotation->base_imponible / ($rate ?? 1);
                     $quotation->amount_iva =    $quotation->amount_iva / ($rate ?? 1);
                     $quotation->amount_with_iva = ( $quotation->amount_with_iva) / ($rate ?? 1);
-                }
+                }*/
 
                 /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
                 $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
@@ -1132,7 +1132,7 @@ class PDF2Controller extends Controller
                 $quotation_origin = Quotation::on(Auth::user()->database_name)->findOrFail($quotation->id_quotation);
                 
                 
-                $pdf = $pdf->loadView('pdf.debitnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor'));
+                $pdf = $pdf->loadView('pdf.debitnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor','coin'));
                 return $pdf->stream();
          
             }else{

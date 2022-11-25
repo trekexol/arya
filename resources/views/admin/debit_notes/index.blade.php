@@ -109,8 +109,9 @@
                         <tr>
                             <td>
                                 <a href="{{ route('debitnotes.create',[$creditnote->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                                 <a href="{{ route('pdf.debitnotemediacarta',[$creditnote->id,$creditnote->coin])}},ventana,left=800,top=800,height=800,width=1000,scrollbar=si,location=no,resizable=si,menubar=no" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
-                            </td>
+                                 <a href="{{ route('pdf.debitnotemediacarta',[$creditnote->id,'bolivares'])}},ventana,left=800,top=800,height=800,width=1000,scrollbar=si,location=no,resizable=si,menubar=no" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                                 <a href="{{ route('pdf.debitnotemediacarta',[$creditnote->id,'dolar'])}},ventana,left=800,top=800,height=800,width=1000,scrollbar=si,location=no,resizable=si,menubar=no" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                                </td>
                             <td class="text-center">{{ date_format(date_create($creditnote->date),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->serie ?? $creditnote->id ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->quotations['number_invoice'] ?? ''}}</td>
