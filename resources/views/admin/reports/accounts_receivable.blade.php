@@ -45,16 +45,16 @@
   ?>
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; width:9%;">Fecha</th>
+    <th style="text-align: center; width:7%;">Fecha</th>
     <th style="text-align: center; width:12%;">Tipo</th>
     <th style="text-align: center; width:5%;">N°</th>
     <th style="text-align: center; width:1%;">Ctrl/Serie</th>
-    <th style="text-align: center; width:22%;">Cliente</th>
-    <th style="text-align: center;">Vendedor</th>
+    <th style="text-align: center;">Cliente</th>
+    <th style="text-align: center; width:1%;">Vendedor</th>
     <th style="text-align: center;">Total</th>
     <th style="text-align: center;">Abono</th>
     <th style="text-align: center;">Por Cobrar</th>
-    <th style="text-align: center;">Status</th>
+    <th style="text-align: center; width:10%;">Status</th>
   </tr> 
   @foreach ($quotations as $quotation)
     <?php 
@@ -72,10 +72,15 @@
             $datenow = date_format(date_create($datenow),"Y-m-d");
 
             $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $datenow);
-            $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated); 
+
+            $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated);
 
             $validator_date = $shippingDate->lessThan($currentDate);
+            //$validator_date2 = $shippingDate->lessThan($currentDate2);
+            
             $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
+           
+            $diferencia_en_dias2 = $shippingDate->diffInDays($currentDate);
 
             
         }
@@ -128,27 +133,27 @@
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
       @if (($diferencia_en_dias >= 0) && ($validator_date))
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-          Vencida ({{$diferencia_en_dias}} dias)
+          <span style="color: rgb(110, 104, 13)" >Vencida</span> ({{$diferencia_en_dias}} dias)
       </td>
        @else
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-          Pendiente {{''}} 
+        <span style="color: rgb(11, 109, 24)" >Vigente</span> ({{$diferencia_en_dias2}} dias) 
       </td>
       @endif
     </tr> 
   @endforeach 
 
   <tr>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th> 
-    <th style="text-align: right; font-weight: normal;">{{ number_format(($total_anticipos ?? 0), 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
+    <th style="text-align: center; font-weight: bold; border-color: white; border-right-color: black;"></th>
+    <th style="text-align: right; font-weight: bold;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th> 
+    <th style="text-align: right; font-weight: bold;">{{ number_format(($total_anticipos ?? 0), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: bold;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: bold; border-color: white;"></th>
   </tr> 
 </table>
 
