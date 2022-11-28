@@ -910,7 +910,7 @@ class NominaController extends Controller
     public function formula($id_formula,$employee,$nomina,$nomina_calculation)
     {
 
-       // $global = new GlobalController();
+        
         $lunes = 0;
         $hours = 0;
         $days = 0;
@@ -934,7 +934,6 @@ class NominaController extends Controller
                 $cestaticket = $nomina_calculation->cantidad;
             }
         }
-        
 
         $nominaconcepts = NominaFormula::on(Auth::user()->database_name)->find($id_formula);
         $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);

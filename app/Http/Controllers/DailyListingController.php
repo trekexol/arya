@@ -22,11 +22,22 @@ use Illuminate\Support\Facades\Auth;
 
 class DailyListingController extends Controller
 {
-    public function index()
+
+     
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Listado Diario');
+   }
+
+    public function index(request $request)
     {
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
          
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -48,16 +59,16 @@ class DailyListingController extends Controller
                             
 
 
-        }elseif($users_role == '2'){
-            return view('admin.index',compact('detailvouchers'));
-        }
+    
  
-        return view('admin.daily_listing.index',compact('detailvouchers','datenow','accounts'));
+        return view('admin.daily_listing.index',compact('namemodulomiddleware','detailvouchers','datenow','accounts'));
     }
 
 
     public function store(Request $request)
     {
+
+        $namemodulomiddleware = $request->get('namemodulomiddleware');
         $data = request()->validate([
             
         
@@ -89,7 +100,7 @@ class DailyListingController extends Controller
                                 
     
                 
-        return view('admin.daily_listing.index',compact('detailvouchers','date_begin','date_end','accounts'));
+        return view('admin.daily_listing.index',compact('namemodulomiddleware','detailvouchers','date_begin','date_end','accounts'));
    
     }
 

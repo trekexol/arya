@@ -14,12 +14,20 @@ use App;
 
 class ReportPaymentController extends Controller
 {
+
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index_payment');
+        $this->middleware('valimodulo:Pagos Realizados');
+
+        
+   }
+
     public function index_payment($typeperson,$id = null)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
+      
+       
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
             $client = null; 
@@ -41,9 +49,7 @@ class ReportPaymentController extends Controller
                 }
             }
             
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
+    
 
         return view('admin.reports_payment.index_payment',compact('client','datenow','typeperson','provider','vendor'));
       

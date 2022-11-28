@@ -12,7 +12,7 @@
         <div class="col-md-6">
             <h2>Tipos de Inventario</h2>
         </div>
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('inventarytypes.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar un Tipo de Inventario</a>
         </div>
@@ -47,14 +47,13 @@
                     @foreach ($inventarytypes as $key => $var)
                     <tr>
                     <td>{{$var->id}}</td>
-                    <td>{{$var->description}}</td>
-                    @if (Auth::user()->role_id  == '1')
+                    <td>{{$var->description}}</td>         
                         @if($var->status == 1)
                             <td>Activo</td>
                         @else
                             <td>Inactivo</td>
                         @endif
-                    @endif
+        
                     </tr>
                     @endforeach
                 @endif

@@ -7,6 +7,7 @@ use App\ComboProduct;
 use App\Company;
 use App\Inventory;
 use App\Product;
+use App\UserAccess;
 
 use App\Segment;
 use App\Subsegment;
@@ -24,28 +25,43 @@ class ComboController extends Controller
     public function __construct(){
 
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Combos');
+       
  
     }
  
-    public function index()
+    public function index(request $request)
     {
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-    
-        $combos = Product::on(Auth::user()->database_name)
-        ->orderBy('id' ,'desc')->where('status',1)->where('type',"COMBO")->get();
+      
+          /* para hacer el submenu "dinamico" */
+    $user       =   auth()->user();
+    $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta')
+                ->get();
+
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+
+    $combos = Product::on(Auth::user()->database_name)
+    ->orderBy('id' ,'desc')->where('status',1)->where('type',"COMBO")->get();
  
  
-        return view('admin.combos.index',compact('combos'));
+        return view('admin.combos.index',compact('eliminarmiddleware','actualizarmiddleware','namemodulomiddleware','agregarmiddleware','combos','sistemas'));
     }
  
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+  
+    public function create(request $request)
     {
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
          $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->pluck('description','id')->toArray();
        
          $subsegments  = Subsegment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
@@ -53,10 +69,16 @@ class ComboController extends Controller
          $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
  
          return view('admin.combos.create',compact('segments','subsegments','unitofmeasures'));
+
+        }else{
+
+            return redirect('/combos')->withDelete('No Tienes Permiso para Agregar!');
+        }
     }
 
-    public function create_assign($id_combo)
+    public function create_assign(request $request,$id_combo)
     {
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $combo = Product::on(Auth::user()->database_name)->find($id_combo);
         $global = new GlobalController();
         
@@ -103,7 +125,10 @@ class ComboController extends Controller
         }else{
             return redirect('combos')->withDanger('Debe seleccionar un Combo!');
         }
+    }else{
 
+        return redirect('/combos')->withDelete('No Tienes Permiso para Agregar!');
+    }
         
     }
 
@@ -169,15 +194,10 @@ class ComboController extends Controller
         }
     }
  
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+  
     public function store(Request $request)
      {
-         
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
          $data = request()->validate([
              
          
@@ -257,10 +277,17 @@ class ComboController extends Controller
          $inventory->save();
  
          return redirect('combos/assign/'.$var->id.'')->withSuccess('Registro del Combo Exitosamente!');
-     }
+     
+        }else{
+
+            return redirect('/combos')->withDelete('No Tienes Permiso para Agregar!');
+        }
+        }
 
      public function store_assign(Request $request)
      {
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         try{ 
             if(isset($request->combo_products) || isset($request->id_products)){
                 $array = $request->all();
@@ -364,10 +391,17 @@ class ComboController extends Controller
 
             return redirect('combos/assign/'.$request->id_combo.'')->withDanger('Debe ingresar la cantidad al seleccionar un Producto!!');
         }
+
+     } else{
+
+            return redirect('/combos')->withDelete('No Tienes Permiso para Agregar!');
+        }
     }
 
-     public function edit($id)
+     public function edit(request $request,$id)
      {
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
           $combo = Product::on(Auth::user()->database_name)->find($id);
           $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
          
@@ -385,21 +419,21 @@ class ComboController extends Controller
     
           $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
   
-          //dd($product->subsegment_id);
+          
          
           return view('admin.combos.edit',compact('threesubsegments','twosubsegments','combo','segments','subsegments','unitofmeasures'));
     
+        } else{
+
+            return redirect('/combos')->withDelete('No Tienes Permiso');
+        }
      }
   
-     /**
-      * Update the specified resource in storage.
-      *
-      * @param  \Illuminate\Http\Request  $request
-      * @param  int  $id
-      * @return \Illuminate\Http\Response
-      */
+   
     public function update(Request $request, $id)
     {
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
   
         $vars =  Product::on(Auth::user()->database_name)->find($id);
     
@@ -482,7 +516,12 @@ class ComboController extends Controller
         
         $var->save();
     
-        return redirect('/combos')->withSuccess('Actualizacion Exitosa!');
+        return redirect('/products')->withSuccess('Actualizacion Exitosa!');
+
+    } else{
+
+        return redirect('/combos')->withDelete('No Tienes Permiso!');
+    }
     }
   
 
@@ -502,15 +541,11 @@ class ComboController extends Controller
         }
     }
   
-     /**
-      * Remove the specified resource from storage.
-      *
-      * @param  int  $id
-      * @return \Illuminate\Http\Response
-      */
+    
      public function destroy(Request $request)
      {
-        
+        if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
           $product = Product::on(Auth::user()->database_name)->find(request('id_combo_modal')); 
   
           if(isset($product)){
@@ -525,5 +560,9 @@ class ComboController extends Controller
       
               return redirect('combos')->withSuccess('Se ha Deshabilitado el Combo Correctamente!!');
           }
+        } else{
+
+            return redirect('/combos')->withDelete('No Tienes Permiso!');
+        }
      }
 }

@@ -16,38 +16,33 @@ use Illuminate\Support\Facades\Auth;
 class VendorLicController extends Controller
 {
  
-    public $userAccess;
-    public $modulo = 'Cotizacion';
-
-    public function __construct(){
-
+ 
+    public function __construct()
+    {
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Vendedores');
+
     }
 
-   public function index()
-   {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+    public function index(Request $request)
+    {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+       
+            $vendors = Vendor::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
             
-                $vendors = Vendor::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
-            
-            return view('admin.vendorslic.index',compact('vendors'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.vendorslic.index',compact('vendors','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
+        
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+  
+   public function create(Request $request)
    {
 
-
+       if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
      
        $estados     = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
        $municipios  = Municipio::on(Auth::user()->database_name)->get();
@@ -58,17 +53,17 @@ class VendorLicController extends Controller
 
 
        return view('admin.vendorslic.create',compact('estados','municipios','parroquias','comisions','employees'));
-   }
+   
+   
+    }else{
+        return redirect('/vendorslic')->withSuccess('No Tiene Permiso');
+     }
+    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+   
    public function store(Request $request)
     {
-   
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
     $data = request()->validate([
         
         'Parroquia'         =>'required',
@@ -119,27 +114,20 @@ class VendorLicController extends Controller
     $var->save();
 
     return redirect('/vendorslic')->withSuccess('Registro Exitoso!');
+
+    }else{
+        return redirect('/vendorslic')->withSuccess('No Tiene Permiso');
+    }
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
+ 
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+
+   public function edit(request $request,$id)
    {
+
+    if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $vendor = vendor::on(Auth::user()->database_name)->find($id);
         
         $estados            = Estado::on(Auth::user()->database_name)->get();
@@ -152,18 +140,16 @@ class VendorLicController extends Controller
 
       
         return view('admin.vendorslic.edit',compact('vendor','estados','municipios','parroquias','comisions','employees'));
-  
+    }else{
+        return redirect('/vendorslic')->withSuccess('No Tiene Permiso');
+    }
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+ 
    public function update(Request $request, $id)
    {
+
+    if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
     $vars =  Vendor::on(Auth::user()->database_name)->find($id);
 
     $vars_status = $vars->status;
@@ -218,19 +204,12 @@ class VendorLicController extends Controller
     $var->save();
 
     return redirect('/vendorslic')->withSuccess('Actualizacion Exitosa!');
+
+        }else{
+            return redirect('/vendorslic')->withSuccess('No Tiene Permiso');
+        }
     }
 
-
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
 
   
 }

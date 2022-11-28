@@ -25,14 +25,19 @@ class AccountController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Plan de Cuentas');
    }
 
-   public function index($coin = null,$level = null)
+   public function index(request $request,$coin = null,$level = null)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+      
+
         if($coin == null){
             $coin = 'bolivares';
         }
@@ -171,7 +176,8 @@ class AccountController extends Controller
         $total_saldo_anterior = $total_saldo_anterior1 + $total_saldo_anterior2 + $total_saldo_anterior3;
 
       
-       return view('admin.accounts.index',compact('total_debe','total_haber','total_saldo_anterior','accounts','coin','level'));
+       return view('admin.accounts.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','total_debe','total_haber','total_saldo_anterior','accounts','coin','level'));
+
    }
 
    public function index_previous_exercise()
@@ -386,13 +392,13 @@ class AccountController extends Controller
         return view('admin.accounts.index_header_movement',compact('detailvouchers','type','var','id_account','reference'));
     }
  
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+
+
+   public function create(Request $request)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+  
 
         $date = Carbon::now();
         $datenow = $date->format('Y');
@@ -409,11 +415,20 @@ class AccountController extends Controller
         }
 
         return view('admin.accounts.create',compact('datenow','rate'));
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
+
    }
 
     public function createlevel($id_account)
     {
     
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
             $var = DB::connection(Auth::user()->database_name)->table('accounts')->where('id', $id_account)->first();
                                     
             if(isset($var)){          
@@ -491,6 +506,13 @@ class AccountController extends Controller
             }else{
                 return redirect('/accounts/menu')->withDanger('No existe la Cuenta!');
         }
+
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
+
     }
 
 
@@ -499,6 +521,9 @@ class AccountController extends Controller
 
    public function store(Request $request)
     {
+
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
         $exist = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', request('code_one'))
                                 ->where('code_two', request('code_two'))
@@ -536,7 +561,11 @@ class AccountController extends Controller
             $valor_sin_formato = str_replace(',', '.', str_replace('.', '', request('balance_previus')));
             $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
+
             $var->balance_previus = $valor_sin_formato;
+
+            $var->balance_previus =$valor_sin_formato;
+
             $var->rate = $valor_sin_formato_rate;
 
             if(request('coin') != 'BsS'){
@@ -556,13 +585,23 @@ class AccountController extends Controller
         }else{
             return redirect('/accounts/menu')->withDanger('La Cuenta ya existe!');
        }
+
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
+
     }
 
 
     public function storeNewLevel(Request $request)
     {
 
-       
+
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $exist = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', request('code_one'))
                                 ->where('code_two', request('code_two'))
                                 ->where('code_three', request('code_three'))
@@ -622,30 +661,23 @@ class AccountController extends Controller
         }else{
             return redirect('/accounts/menu')->withDanger('La Cuenta ya existe!');
        }
+
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
+
     }
 
    
 
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+   public function edit(request $request,$id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $var = Account::on(Auth::user()->database_name)->find($id);
 
         $company = Company::on(Auth::user()->database_name)->find(1);
@@ -659,19 +691,18 @@ class AccountController extends Controller
         }
        
         return view('admin.accounts.edit',compact('var','rate'));
-  
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function update(Request $request, $id)
    {
-        
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         
         $data = request()->validate([
             'description'       =>'required',
@@ -699,13 +730,21 @@ class AccountController extends Controller
             $var->coin = null;
            // $var->balance_previus = $sin_formato_balance_previus;
         }
-            
+
         $var->balance_previus = $sin_formato_balance_previus;
+
         $var->rate = $sin_formato_rate;
     
         $var->save();
 
         return redirect('/accounts/menu')->withSuccess('Actualizacion Exitosa!');
+
+
+    }else{
+
+        return redirect('/accounts/menu')->withDanger('No Tienes Permiso');
+    }
+
     }
 
 

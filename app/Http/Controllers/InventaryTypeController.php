@@ -13,41 +13,39 @@ class InventaryTypeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tipos de Inventario');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    public function index(Request $request)
     {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        
         $user       =   auth()->user();
         $users_role =   $user->role_id;
 
-        try{
-            if($users_role == '1' || $users_role == '2' || $users_role == '3'  ){
-                $inventarytypes      =   InventaryType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-                return view('admin.inventarytypes.index',compact('inventarytypes'));
-            }else{
-                dd('No tiene acceso');
-                return view('admin.index');
-            }
-        }catch(\Illuminate\Database\QueryException $qry_ex){//capturar excepciones de consultas en BD
-            return view('admin.index');
-        }catch(Throwable $th){//Capturar errores en General.
-            return view('admin.index');
-        }
+        $inventarytypes      =   InventaryType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+                return view('admin.inventarytypes.index',compact('inventarytypes','agregarmiddleware'));
+  
     }
 
-    public function create()
+    public function create(Request $request)
     {
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         return view('admin.inventarytypes.create');
+    }else{
+        return redirect('/inventarytypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
             'Descripcion'    =>'required|max:255',
         ]);
@@ -61,19 +59,29 @@ class InventaryTypeController extends Controller
 
         $inventaryTypes->save();
         return redirect('/inventarytypes')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/inventarytypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $company            = Company::on(Auth::user()->database_name)->find($id);
         $codigo             = substr($company->razon_social,0,2);
         $razon_social       = substr($company->razon_social,2);
 
         return view('admin.companies.edit',compact('company','codigo','razon_social'));
+    }else{
+        return redirect('/inventarytypes')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
     public function update(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $validar              =  Company::on(Auth::user()->database_name)->find($id);
 
         $request->validate([
@@ -101,6 +109,9 @@ class InventaryTypeController extends Controller
 
         $companies->save();
         return redirect('/companies')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/inventarytypes')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

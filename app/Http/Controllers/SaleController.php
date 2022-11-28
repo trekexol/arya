@@ -16,14 +16,15 @@ class SaleController extends Controller
 
         $this->middleware('auth');
         $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Pedidos');
     }
  
  
     public function index()
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+
+      
         
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                 ->join('inventories', 'products.id', '=', 'inventories.product_id')
@@ -37,9 +38,7 @@ class SaleController extends Controller
 
     
             return view('admin.sales.index',compact('inventories_quotations','bcv'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+      
     }
 
 

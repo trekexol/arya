@@ -39,9 +39,11 @@
       <div class="col-md-6">
           <h2>Vendedores</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('vendorslic.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar un Vendedor</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -92,8 +94,10 @@
                             <td>{{$vendor->email}}</td>
                             <td>{{$vendor->phone}}</td>
                             <td>
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                 <a href="vendorslic/{{$vendor->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                             </td>
+                                @endif
+                            </td>
                         </tr>     
                     @endforeach   
                 @endif

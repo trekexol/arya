@@ -141,7 +141,7 @@
                                 
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('anticipos') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                                 
+                                <a href="{{ route('anticipos.index_provider') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>                                 
                             </div>
                         </div>
                     </form>

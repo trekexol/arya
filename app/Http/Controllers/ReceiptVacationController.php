@@ -13,41 +13,48 @@ class ReceiptVacationController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Recibo de Vacaciones');
+     
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
-    {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $receiptvacations = ReceiptVacation::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-    
-        return view('admin.receiptvacations.index',compact('receiptvacations'));
+
+    public function index(Request $request)
+    {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+
+        $receiptvacations = ReceiptVacation::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+ 
+
+        return view('admin.receiptvacations.index',compact('receiptvacations','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function indexemployees()
+    public function indexemployees(Request $request)
     {
 
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
 
         return view('admin.receiptvacations.indexemployees',compact('employees'));
+        }else{
+
+            return redirect('/receiptvacations')->withSuccess('No Tiene Acceso a Registrar');
+
+        }
     }
 
 
 
-    public function create($id)
+    public function create(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $employee = Employee::on(Auth::user()->database_name)->find($id);
 
        //HACER VALIDACION DE LAS FECHAS DE INICIO Y FIN
@@ -67,14 +74,17 @@ class ReceiptVacationController extends Controller
             return redirect('receiptvacations/indexemployees')->withDanger('El Empleado No Existe');
     
         }
-      
+    }else{
+        return redirect('/receiptvacations')->withSuccess('No Tiene Acceso a Registrar');
+
+    }
 
         
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         //ACORDARSE DE VALIDAR LOS FOREIGN KEY COMO BIGINTEGER
         $data = request()->validate([
            
@@ -123,16 +133,26 @@ class ReceiptVacationController extends Controller
         $var->save();
 
         return redirect('receiptvacations')->withSuccess('Registro Exitoso!');
+
+    }else{
+        return redirect('/receiptvacations')->withSuccess('No Tiene Acceso a Registrar');
+
+    }
+
     }
 
 
 
-    public function edit($id)
+    public function edit(request $request,$id)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
         $var = Receiptvacation::on(Auth::user()->database_name)->find($id);
         
         return view('admin.receiptvacations.edit',compact('var'));
+        }else{
+
+            return redirect('/receiptvacations')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -140,7 +160,7 @@ class ReceiptVacationController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
         $vars =  Receiptvacation::on(Auth::user()->database_name)->find($id);
 
         $var_status = $vars->status;
@@ -199,6 +219,11 @@ class ReceiptVacationController extends Controller
 
 
         return redirect('receiptvacations')->withSuccess('Registro Guardado Exitoso!');
+
+    }else{
+
+        return redirect('/receiptvacations')->withSuccess('No Tiene Acceso a Editar');
+    }
 
     }
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Client;
 use App\Branch;
-use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,124 +11,120 @@ use Illuminate\Support\Facades\Auth;
 class ClientController extends Controller
 {
  
-    public $userAccess;
-    public $modulo = 'Cotizacion';
 
     public function __construct(){
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
-    }
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Clientes');
+       }
 
-   public function index()
-   {
-        if($this->userAccess->validate_user_access($this->modulo)){
+       public function index(Request $request)
+       {
+    
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+       
+
             $user= auth()->user();
 
             $clients = Client::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
             
-            return view('admin.clients.index',compact('clients'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+
+            return view('admin.clients.index',compact('actualizarmiddleware','agregarmiddleware','clients'));
+        
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+   public function create(Request $request)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         $branches = Branch::on(Auth::user()->database_name)->orderBy('description','desc')->get();
 
        return view('admin.clients.create',compact('vendors','branches'));
+
+
+    }else{
+
+        return redirect('/clients')->withDelete('No Tienes Permiso!');
+    }
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
-   public function store(Request $request)
-    {
    
-        $data = request()->validate([
-            'type_code'         =>'required|max:20',
-            'id_user'         =>'required',
-            'direction'         =>'required|max:300',
-            'city'         =>'required',
-            'country'         =>'required',
-            'phone1'         =>'required',
-            'days_credit'         =>'required|integer',
-           
-        ]);
+public function store(Request $request)
+{
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
-    $users = new client();
-    $users->setConnection(Auth::user()->database_name);
+            $data = request()->validate([
+                'type_code'         =>'required|max:20',
+                'id_user'         =>'required',
+                'direction'         =>'required|max:300',
+                'city'         =>'required',
+                'country'         =>'required',
+                'phone1'         =>'required',
+                'days_credit'         =>'required|integer',
+            
+            ]);
 
-    $users->id_vendor = request('id_vendor');
-    $users->id_user = request('id_user');
-    $users->type_code = request('type_code');
-   
-    $users->name = request('name');
-    $users->name_ref = request('namecomercial');
-    $users->cedula_rif = request('cedula_rif');
-    $users->direction = request('direction');
-    $users->city = request('city');
-    $users->country = request('country');
-    $users->phone1 = request('phone1');
-    $users->phone2 = request('phone2');
-    $users->email = request('email');
-    $users->aliquot = request('aliquot');
-    $users->id_cost_center = request('id_cost_center');
-    $users->personcontact = request('personcontact');
+        $users = new client();
+        $users->setConnection(Auth::user()->database_name);
+
+        $users->id_vendor = request('id_vendor');
+        $users->id_user = request('id_user');
+        $users->type_code = request('type_code');
     
-    $users->days_credit = request('days_credit');
+        $users->name = request('name');
+        $users->name_ref = request('namecomercial');
+        $users->cedula_rif = request('cedula_rif');
+        $users->direction = request('direction');
+        $users->city = request('city');
+        $users->country = request('country');
+        $users->phone1 = request('phone1');
+        $users->phone2 = request('phone2');
+        $users->email = request('email');
+        $users->aliquot = request('aliquot');
+        $users->id_cost_center = request('id_cost_center');
+        $users->personcontact = request('personcontact');
+        
+        $users->days_credit = request('days_credit');
 
-    if(request('amount_max_credit') != null){
-        $sin_formato_amount_max_credit = str_replace(',', '.', str_replace('.', '', request('amount_max_credit')));
-    }
-    if(request('percentage_retencion_iva') != null){
-        $sin_formato_percentage_retencion_iva = str_replace(',', '.', str_replace('.', '', request('percentage_retencion_iva')));
-    }
-    if(request('percentage_retencion_islr') != null){
-        $sin_formato_percentage_retencion_islr = str_replace(',', '.', str_replace('.', '', request('percentage_retencion_islr')));
-    }
+        if(request('amount_max_credit') != null){
+            $sin_formato_amount_max_credit = str_replace(',', '.', str_replace('.', '', request('amount_max_credit')));
+        }
+        if(request('percentage_retencion_iva') != null){
+            $sin_formato_percentage_retencion_iva = str_replace(',', '.', str_replace('.', '', request('percentage_retencion_iva')));
+        }
+        if(request('percentage_retencion_islr') != null){
+            $sin_formato_percentage_retencion_islr = str_replace(',', '.', str_replace('.', '', request('percentage_retencion_islr')));
+        }
 
-    $users->amount_max_credit = $sin_formato_amount_max_credit ?? 0;
+        $users->amount_max_credit = $sin_formato_amount_max_credit ?? 0;
+        
+        $users->percentage_retencion_iva = $sin_formato_percentage_retencion_iva ?? 0;
+        $users->percentage_retencion_islr = $sin_formato_percentage_retencion_islr ?? 0;
     
-    $users->percentage_retencion_iva = $sin_formato_percentage_retencion_iva ?? 0;
-    $users->percentage_retencion_islr = $sin_formato_percentage_retencion_islr ?? 0;
-   
-    $users->status =  1;
-   
-    $users->save();
+        $users->status =  1;
+    
+        $users->save();
 
-    return redirect('/clients')->withSuccess('Registro Exitoso!');
+        return redirect('/clients')->withSuccess('Registro Exitoso!');
+
+
+    }else{
+
+        return redirect('/clients')->withDelete('No Tienes Permiso!');
     }
+}
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
+ 
+ 
+   public function edit(request $request,$id)
    {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
-   {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $var = client::on(Auth::user()->database_name)->find($id);
         
         $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
@@ -138,18 +133,20 @@ class ClientController extends Controller
 
 
         return view('admin.clients.edit',compact('var','vendors','branches'));
+
+
+        
+    }else{
+
+        return redirect('/clients')->withDelete('No Tienes Permiso!');
+    }
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+ 
    public function update(Request $request, $id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
 
     $vars =  client::on(Auth::user()->database_name)->find($id);
     $vars_status = $vars->status;
@@ -208,17 +205,12 @@ class ClientController extends Controller
     $users->save();
 
     return redirect('/clients')->withSuccess('Actualizacion Exitosa!');
+
+        }else{
+
+            return redirect('/clients')->withDelete('No Tienes Permiso!');
+        }
     }
 
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       dd($id);
-   }
 }

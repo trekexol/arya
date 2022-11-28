@@ -37,9 +37,11 @@
       <div class="col-md-6">
           <h2>Clientes.</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('clientslic.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Cliente</a>
       </div>
+      @endif
     </div>
 </div>
   <!-- /.container-fluid -->
@@ -92,7 +94,9 @@
 
                                 
                                 <td>
+                                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                     <a href="clientslic/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                    @endif
                                 </td>
                             </tr>     
                         @endforeach   

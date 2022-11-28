@@ -36,9 +36,11 @@
       <div class="col-md-6">
           <h2>Cotizaciones</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('quotationslic.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -83,8 +85,10 @@
                     @foreach ($quotations as $quotation)
                         <tr>
                             <td>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <a href="{{ route('quotationslic.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                            </td>
+                            @endif
+                        </td>
                             <td class="text-center">{{$quotation->id ?? ''}}</td>
                             <td class="text-center">{{$quotation->serie ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
@@ -92,8 +96,10 @@
                             <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
                             <td class="text-center">{{ $quotation->date_quotation ?? ''}}</td>
                             <td>
+                                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                             <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>                
+                                @endif
+                        </td>                
                         </tr>     
                     @endforeach   
                 @endif

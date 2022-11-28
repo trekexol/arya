@@ -48,9 +48,11 @@
             <span class="text">Cobros</span>
         </a>
     </div>
+    @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <button type="submit" title="Agregar" id="btncobrar" class="btn btn-primary  float-md-right" >Cobrar Facturas</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->

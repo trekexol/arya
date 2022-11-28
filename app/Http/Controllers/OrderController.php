@@ -28,14 +28,18 @@ class OrderController extends Controller
 
         $this->middleware('auth');
         $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Pedidos');
     }
  
-    public function index()
+    public function index(request $request)
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
-            
+         
+     $agregarmiddleware = $request->get('agregarmiddleware');
+     $actualizarmiddleware = $request->get('actualizarmiddleware');
+     $eliminarmiddleware = $request->get('eliminarmiddleware');
+     $namemodulomiddleware = $request->get('namemodulomiddleware');
+
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_order' ,'DESC')
                                     ->where('date_order','<>',null)
                                     ->where('date_billing',null)
@@ -48,19 +52,17 @@ class OrderController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
-            return view('admin.orders.index',compact('quotations','clients','datenow'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.orders.index',compact('agregarmiddleware','actualizarmiddleware','eliminarmiddleware','quotations','clients','datenow'));
+        
     }
  
 
 
 
 
-    public function create_order($id_quotation,$coin)
+    public function create_order(request $request,$id_quotation,$coin)
     {
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
          $quotation = null;
              
          if(isset($id_quotation)){
@@ -148,6 +150,10 @@ class OrderController extends Controller
          }else{
              return redirect('/orders')->withDanger('La cotizacion no existe');
          } 
+
+        }else{
+            return redirect('/orders')->withDanger('no tiene permiso');
+        }
          
     }
 
@@ -190,9 +196,9 @@ class OrderController extends Controller
         return $pdf->stream();
     }
 
-    public function reversar_order($id_quotation)
+    public function reversar_order(request $request,$id_quotation)
     { 
-        
+        if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
         QuotationProduct::on(Auth::user()->database_name)
@@ -212,6 +218,11 @@ class OrderController extends Controller
         ->update(['status' => 'X']);
        
         return redirect('orders')->withSuccess('Reverso de Pedido Exitoso!');
+
+
+    }else{
+        return redirect('/orders')->withDanger('no tiene permiso');
+    }
 
     }
 

@@ -12,39 +12,41 @@ class ClientLicController extends Controller
 
     public function __construct(){
 
-       $this->middleware('auth');
-   }
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Clientes');
+       }
 
-   public function index()
-   {
-       $user= auth()->user();
-
+       public function index(Request $request)
+       {
+    
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+       
        $clients = Client::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
 
-       return view('admin.clientslic.index',compact('clients'));
+       return view('admin.clientslic.index',compact('clients','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+ 
+   public function create(Request $request)
    {
-    
+
+       if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
     $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
 
        return view('admin.clientslic.create',compact('vendors'));
+
+    }else{
+        return redirect('/clientslic')->withSuccess('No Tiene Permiso');
+     }
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+   
    public function store(Request $request)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
 
     $data = request()->validate([
         'type_code'     =>'required|max:20',
@@ -95,42 +97,36 @@ class ClientLicController extends Controller
     $users->save();
 
     return redirect('/clientslic')->withSuccess('Registro Exitoso!');
+
+
+        }else{
+            return redirect('/clientslic')->withSuccess('No Tiene Permiso');
+        }
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
+ 
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+
+   public function edit(request $request,$id)
    {
+
+    if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $var            = client::on(Auth::user()->database_name)->find($id);
         $vendors        = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         return view('admin.clientslic.edit',compact('var','vendors'));
 
+
+    }else{
+        return redirect('/clientslic')->withSuccess('No Tiene Permiso');
+    }
+
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+ 
    public function update(Request $request, $id)
    {
+    if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
 
     $vars =  client::on(Auth::user()->database_name)->find($id);
     $vars_status = $vars->status;
@@ -170,17 +166,12 @@ class ClientLicController extends Controller
     $users->save();
 
     return redirect('/clientslic')->withSuccess('Actualizacion Exitosa!');
+
+
+        }else{
+            return redirect('/clientslic')->withSuccess('No Tiene Permiso');
+        }
     }
 
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
 }

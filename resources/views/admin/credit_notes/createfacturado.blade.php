@@ -244,7 +244,7 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="#" method="post">
+            <form action="{{ route('creditnotes.reversarcreditnote') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <div class="modal-body">

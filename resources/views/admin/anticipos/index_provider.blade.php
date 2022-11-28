@@ -46,7 +46,7 @@
         
         
        
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-3">
             <a href="{{ route('anticipos.create_provider')}}" class="btn btn-primary" role="button" aria-pressed="true">Registrar un Anticipo</a>
          
@@ -114,12 +114,16 @@
                     <td class="text-right">{{number_format($anticipo->amount, 2, ',', '.')}}</td>
                     <td class="text-center">{{$anticipo->coin}}</td>
                    
-                    @if (Auth::user()->role_id  == '1')
+                  
                         <td>
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                             <a href="{{ route('anticipos.edit',$anticipo->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
+                            @endif
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                             <a href="#" class="delete" data-id-anticipo={{$anticipo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>
-                    @endif
+                            @endif    
+                        </td>
+                 
                     </tr>
                     @endforeach
                 @endif

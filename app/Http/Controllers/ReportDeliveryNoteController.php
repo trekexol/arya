@@ -18,12 +18,23 @@ class ReportDeliveryNoteController extends Controller
 {
    
     public $modulo = "Reportes";
+
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index_accounts_receivable_note');
+        $this->middleware('valiuser')->only('index_accounts_receivable_note_det');
+        $this->middleware('valimodulo:Notas de Entrega');
+
+        
+   }
+
    
     //public function index_accounts_receivable_note($typepersone,$id_client_or_vendor)
     public function index_accounts_receivable_note($typepersone = 'todo',$id_client_or_vendor = 'todo',$date_end = 'todo',$date_frist = 'todo',$typeinvoice = 'todo')
     {        
        
-        
+    
 
             $global = new GlobalController();
        
@@ -36,9 +47,7 @@ class ReportDeliveryNoteController extends Controller
            } 
               
    
-        $userAccess = new UserAccessController();
-
-        if($userAccess->validate_user_access($this->modulo)){
+ 
             $date = Carbon::now();   
             $client = null; 
             $vendor = null; 
@@ -64,13 +73,6 @@ class ReportDeliveryNoteController extends Controller
               
             return view('admin.reports.index_accounts_receivable_note',compact('typepersone','client','vendor','date_end','date_frist','typeinvoice','id_client_or_vendor'));
             
-        } else{
-          
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        
-        } 
-
-        //return view('admin.reports.index_accounts_receivable_note',compact('typepersone','id_client_or_vendor')); 
     }
 
     
@@ -758,9 +760,7 @@ class ReportDeliveryNoteController extends Controller
            } 
               
    
-        $userAccess = new UserAccessController();
-
-        if($userAccess->validate_user_access($this->modulo)){
+     
             $date = Carbon::now();   
             $client = null; 
             $vendor = null; 
@@ -786,13 +786,6 @@ class ReportDeliveryNoteController extends Controller
               
             return view('admin.reports.index_accounts_receivable_note_det',compact('typepersone','client','vendor','date_end','date_frist','typeinvoice','id_client_or_vendor'));
             
-        } else{
-          
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        
-        } 
-
-        //return view('admin.reports.index_accounts_receivable_note',compact('typepersone','id_client_or_vendor')); 
     }
 
     

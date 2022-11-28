@@ -9,7 +9,7 @@
         <div class="col-md-6">
             <h2>Importaciones</h2>
         </div>
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
         <div class="col-sm-6">
             <a href="{{route('imports.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar una Importacion</a>
         </div>
@@ -36,7 +36,9 @@
                 <th>Nro</th>
                 <th>Importacion</th>
                 <th>Factura</th>
+                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                 <th>Cerrar</th>
+                @endif
             </tr>
             </thead>
             <tbody>
@@ -44,14 +46,22 @@
                 @else
                     @foreach ($imports as $key => $var)
                         <tr>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <td>
                                 <a type="button" class="btn btn-info"  href="{{route('imports.selectimport',$var->id)}}">{{$var->id}}</a>
                             </td>
+                            @else
+                            <td>
+                            {{$var->id}}
+                            </td>
+                            @endif
                             <td class="text-center">{{$var->id_purchases}}</td>
                             <td class="text-center">{{$var->fecha}}</td>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <td>
                                 <a type="button" class="btn btn-success btn-lg btn-block"  href="{{route('imports.calcular',$var->id)}}">Calcular</a>
                             </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif

@@ -36,6 +36,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
+                <th>ID</th>
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
@@ -52,7 +53,9 @@
                 <th>Acumulado Utilidades</th>
                 <th>Status</th>
                 <th>Centro Costo</th>
+                @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                 <th>Tools</th>
+                @endif
             </tr>
             </thead>
             
@@ -93,9 +96,11 @@
                             @endif
                             
                             <td>{{$employee->centro_cos}}</td>
+                            @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                             <td>
                                 <a href="{{$employee->id }}/create" title="Editar"><i class="fa fa-edit"></i></a>
                             </td>
+                            @endif
                         </tr>     
                     @endforeach   
                 @endif

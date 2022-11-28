@@ -20,10 +20,14 @@ class TaxesController extends Controller
     public function __construct(){
 
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('iva_paymentindex');
+        $this->middleware('valimodulo:Pago de Iva');
+        $this->middleware('valimodulo:Pago de Iva Retenido')->only('iva_retenido_payment');
     }
 
     public function iva_paymentindex()
     {
+     
         $date = Carbon::now();
         $datenow = $date->format('Y');
         $year_anterior   = date("Y",strtotime($datenow."- 1 year"));
@@ -33,9 +37,13 @@ class TaxesController extends Controller
  
     }
 
-    public function iva_payment($month,$year)
+    public function iva_payment(request $request,$month,$year)
     {
 
+
+        if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Pago de Iva'){
+
+            $agregarmiddleware = $request->get('agregarmiddleware');
         $mes = $month;
 
         if($mes == 0){
@@ -197,11 +205,18 @@ class TaxesController extends Controller
             $total_pay = 0;
         }
 
-       return view('admin.taxes.iva_payment',compact('total_pay','iva_retenido_terceros_total','total_excedente','debito_fiscal_total','iva_credito_fiscal_total','providers','branches','account_iva','bcv','datenow','nro_mes','mes_nombre'));
+       return view('admin.taxes.iva_payment',compact('agregarmiddleware','total_pay','iva_retenido_terceros_total','total_excedente','debito_fiscal_total','iva_credito_fiscal_total','providers','branches','account_iva','bcv','datenow','nro_mes','mes_nombre'));
+   
+    }else{
+        return redirect('/home')->withDanger('No Tiene Permiso!');
+    } 
+   
     }
 
-    public function iva_retenido_payment()
+    public function iva_retenido_payment(request $request)
     {
+        if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Pago de Iva Retenido'){
+
         $account = Account::on(Auth::user()->database_name)->where('code_one', 2)
         ->where('code_two', 1)
         ->where('code_three', 3)
@@ -235,17 +250,20 @@ class TaxesController extends Controller
 
 
        return view('admin.taxes.iva_retenido_payment',compact('account','providers','branches','bcv','datenow'));
+   
+    }else{
+        return redirect('/home')->withDanger('No Tiene Permiso!');
+    } 
+   
     }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+ 
    public function store(Request $request)
     {
-        
+
+       
+        if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Pago de Iva' || $request->get('namemodulomiddleware') == 'Pago de Iva Retenido'){
+
         $data = request()->validate([
             
         
@@ -369,6 +387,10 @@ class TaxesController extends Controller
         }else{
             return redirect('taxes/ivaretenidopayment')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
+
+    }else{
+        return redirect('/home')->withDanger('No Tiene Permiso!');
+    }
     }
 
 

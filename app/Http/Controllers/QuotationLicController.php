@@ -25,50 +25,36 @@ use App\Driver;
 class QuotationLicController extends Controller
 {
 
-    public $userAccess;
-    public $modulo = 'Cotizacion';
-
- 
     public function __construct(){
 
-       $this->middleware('auth');
-       $this->userAccess = new UserAccessController();
-      
-   }
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Cotizaciones');
+       }
 
 
-   public function index()
+   public function index(Request $request)
    {
-           
-        if($this->userAccess->validate_user_access($this->modulo)){
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
             ->where('date_billing','=',null)
             ->where('date_delivery_note','=',null)
             ->get();
 
-        /*  $company = Company::on(Auth::user()->database_name)->find(1);
-
-            $clients = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
-
-            $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');*/
-
-            //return view('admin.quotationslic.index',compact('quotations','company','coin','clients','datenow'));
-            return view('admin.quotationslic.index',compact('quotations'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+    return view('admin.quotationslic.index',compact('eliminarmiddleware','quotations','agregarmiddleware','actualizarmiddleware'));
+      
    
     }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
 
-    public function createquotation()
+    public function createquotation(request $request)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
 
         $date           = Carbon::now();
         $datenow        = $date->format('Y-m-d');
@@ -90,6 +76,10 @@ class QuotationLicController extends Controller
 
 
         return view('admin.quotationslic.createquotation',compact('datenow','transports','drivers','company'));
+     
+    }else{
+        return redirect('/quotationslic')->withSuccess('No Tiene Permiso');
+    }
     }
 
     public function createquotationclient($id_client)
@@ -143,8 +133,10 @@ class QuotationLicController extends Controller
         }
     }
 
-    public function create($id_quotation,$coin)
+    public function create(request $request,$id_quotation,$coin)
     {
+       
+    if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
             $quotation = null;
 
             if(isset($id_quotation)){
@@ -267,6 +259,11 @@ class QuotationLicController extends Controller
             }else{
                 return redirect('/quotationslic')->withDanger('No es posible ver esta cotizacion');
             }
+
+        }else{
+            return redirect('/quotationslic')->withDanger('No Tiene Permiso');
+        }
+
     }
 
 
@@ -481,14 +478,12 @@ class QuotationLicController extends Controller
     }
 
 
-    /**
-        * Store a newly created resource in storage.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @return \Illuminate\Http\Response
-        */
+
     public function store(Request $request)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
+
         $id_client = request('id_client');
         $id_vendor = request('id_vendor',Null);
 
@@ -542,6 +537,10 @@ class QuotationLicController extends Controller
         }else{
             return redirect('/quotationslic/registerquotation')->withDanger('Debe Buscar un Cliente');
         }
+
+            }else{
+                return redirect('/quotationslic')->withSuccess('No Tiene Permiso');
+            }
     } 
 
 
@@ -672,17 +671,6 @@ class QuotationLicController extends Controller
     }
 
 
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-        * Show the form for editing the specified resource.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
     public function edit($id)
     {
         $quotation = Quotation::on(Auth::user()->database_name)->find($id);
@@ -736,13 +724,6 @@ class QuotationLicController extends Controller
     }
 
 
-    /**
-        * Update the specified resource in storage.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
     public function update(Request $request, $id)
     {
 
@@ -934,35 +915,11 @@ class QuotationLicController extends Controller
 
 
 
-    /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
 
     public function deleteProduct(Request $request)
     {
         
-        /*$quotation_product = QuotationProduct::on(Auth::user()->database_name)->find(request('id_quotation_product_modal')); 
-
-        if(isset($quotation_product) && $quotation_product->status == "C"){
-            QuotationProduct::on(Auth::user()->database_name)
-                ->join('inventories','inventories.id','quotation_products.id_inventory')
-                ->join('products','products.id','inventories.product_id')
-                ->where(function ($query){
-                    $query->where('products.type','MERCANCIA')
-                        ->orWhere('products.type','COMBO');
-                })
-                ->where('quotation_products.id',$quotation_product->id)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount'), 'quotation_products.status' => 'X']);
-
-                $this-> discountAmountsForEliminationProduct($quotation_product);
-        }else{
-            
-            $quotation_product->status = 'X'; 
-            $quotation_product->save(); 
-        } */
+      
         $product = QuotationProduct::on(Auth::user()->database_name)->find(request('id_quotation_product_modal'));
         $product->delete();
 
@@ -994,11 +951,7 @@ class QuotationLicController extends Controller
             $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)
             ->update(['status' => 'X']);
 
-             /*DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-            ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
-            ->join('multipayment_expenses', 'multipayment_expenses.id_header','=','header_vouchers.id')
-            ->where('multipayment_expenses.id_expense','=',$id_quotation)
-            ->update(['detail_vouchers.status' => 'X']);*/
+          
 
             QuotationProduct::on(Auth::user()->database_name)
                             ->join('inventories','inventories.id','quotation_products.id_inventory')

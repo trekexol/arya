@@ -10,9 +10,9 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-md-6">
-            <h2>Tipos de Taza</h2>
+            <h2>Tipos de Tasa</h2>
         </div>
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('ratetypes.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar un Tipo de Taza</a>
         </div>
@@ -28,7 +28,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de Tipos de Taza</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Tipos de Tasa</h6>
     </div>
 
     <div class="card-body">
@@ -48,13 +48,13 @@
                     <tr>
                     <td>{{$var->id}}</td>
                     <td>{{$var->description}}</td>
-                    @if (Auth::user()->role_id  == '1')
+                
                         @if($var->status == 1)
                             <td>Activo</td>
                         @else
                             <td>Inactivo</td>
                         @endif
-                    @endif
+              
                     </tr>
                     @endforeach
                 @endif

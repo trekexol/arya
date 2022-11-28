@@ -64,13 +64,16 @@ $suma_haber = 0;
                             <div class="col-sm-1">
                                 <a id="btn_search_reference" class="btn btn-info " onclick="searchReference()" title="Buscar Referencia">Buscar</a>  
                             </div>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <div class="col-sm-3">
                                 <button type="submit" class="btn btn-primary" title="Agregarheader">Registrar Comprobante</button>  
                             </div>
+                            @endif
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                             <div class="col-sm-2">
-                               <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Eliminar</a>  
+                               <a class="btn btn-danger" href="#"  data-toggle="modal" data-target="#disableModal" title="Deshabilitar">Deshabilitar</a>  
                             </div>
-                           
+                            @endif
                             <div class="col-sm-1">
                                 <a id="btn_clean" class="btn btn-light2" href="{{ route('detailvouchers.create','bolivares') }}" title="Limpiar Referencia">Limpiar</a>  
                             </div>
@@ -293,8 +296,12 @@ $suma_haber = 0;
                                        
                                     
                                         <td>
+                                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                             <a href="{{route('detailvouchers.edit',[$coin,$var->id]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                            @endif
+                                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                                             <a href="#" class="delete" data-id-detail={{$var->id}} data-coin={{$coin ?? 'bolivares'}} data-header={{$header->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                            @endif
                                         </td>
                                    
                                     </tr>
@@ -336,9 +343,9 @@ $suma_haber = 0;
                         <label for="reference" class="col-md-2 col-form-label text-md-right"><i class="fa fa-circle" style="color: rgb(84, 196, 84)"><strong> Contabilizado</strong></i></label>
                         <label for="reference" class="col-md-3 col-form-label text-md-right"><i class="fa fa-circle" style="color: rgb(255, 94, 94)"><strong> No Contabilizado</strong></i></label>
                     </div>
-
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                     <a href="{{route('detailvouchers.contabilizar',[$coin ?? 'bolivares',$header->id ?? -1]) }}" id="btncontabilizar" name="btncontabilizar" class="btn btn-success" title="Contabilizar">Contabilizar</a>  
-                                            
+                    @endif                   
                 </div>
             </div>
         </div>

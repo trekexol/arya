@@ -10,9 +10,11 @@
       <div class="col-md-6">
           <h2>Transportes</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
       <div class="col-md-6">
         <a href="{{ route('transports.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Transporte</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -45,7 +47,9 @@
                 <th>Placa</th>
                 <th>Foto del Transporte</th>
                 <th>Status</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                 <th>Tools</th>
+                @endif
             </tr>
             </thead>
             
@@ -64,10 +68,11 @@
                             @else
                                 <td>Inactivo</td>
                             @endif
-                            
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                             <td>
                                 <a href="transports/{{$transport->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                </td>
+                               @endif
                         </tr>     
                     @endforeach   
                 @endif

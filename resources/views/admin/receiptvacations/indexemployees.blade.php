@@ -81,9 +81,11 @@
                             @endif
                             
                             <td>{{$employee->centro_cos}}</td>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <td>
                                 <a href="employees/{{$employee->id }}" title="Ver"><i class="fas fa-file-alt"></i></a>
                              </td>
+                             @endif
                         </tr>     
                     @endforeach   
                 @endif

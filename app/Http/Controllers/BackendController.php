@@ -29,7 +29,6 @@ class BackendController extends Controller
 
        
         if($users_role == 1){
- 
 
             if($user->id_company == 1) { // acceso especifico a do7a paula
 

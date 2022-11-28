@@ -11,43 +11,44 @@ class NominaTypeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tipos de Nóminas');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $nominatypes =NominaType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-    
-        return view('admin.nominatypes.index',compact('nominatypes'));
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        
+
+        $nominatypes =NominaType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+
+        return view('admin.nominatypes.index',compact('nominatypes','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-        
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
 
         return view('admin.nominatypes.create');
+    }else{
+        return redirect('/nominatypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+
         $data = request()->validate([
            
             'description'         =>'required|max:255',
+            'nomina'         =>'required|max:255',
             'status'         =>'required|max:2',
             
            
@@ -56,6 +57,7 @@ class NominaTypeController extends Controller
         $users = new Nominatype();
         $users->setConnection(Auth::user()->database_name);
 
+        $users->name = request('nomina');
         $users->description = request('description');
         $users->status =  request('status');
        
@@ -63,16 +65,23 @@ class NominaTypeController extends Controller
         $users->save();
 
         return redirect('nominatypes')->withSuccess('Registro Exitoso!');
+
+    }else{
+        return redirect('/nominatypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
 
-
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
 
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $var = Nominatype::on(Auth::user()->database_name)->find($id);
         
         return view('admin.nominatypes.edit',compact('var'));
+    }else{
+        return redirect('/nominatypes')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -80,7 +89,7 @@ class NominaTypeController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $vars =  Nominatype::on(Auth::user()->database_name)->find($id);
 
         $var_status = $vars->status;
@@ -108,6 +117,9 @@ class NominaTypeController extends Controller
 
 
         return redirect('nominatypes')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/nominatypes')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

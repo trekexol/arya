@@ -15,46 +15,46 @@ class BranchController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
+    $this->middleware('auth');
+    $this->middleware('valiuser')->only('index');
+    $this->middleware('valimodulo:Sucursales');
    }
 
-   public function index()
+   public function index(Request $request)
    {
-       $user= auth()->user();
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
 
        $branches = Branch::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
-       //dd($user->estado_id);
-
-       //$rol = $user->roles();
-       //dd($rol);
-       //$persons = Person::on(Auth::user()->database_name)->where('estado_id', $user->estado_id)
-                           //->orderBy('id', 'DESC')
-                           //->get();
-       // dd($persons);
-       return view('admin.branches.index',compact('branches'));
+      
+       return view('admin.branches.index',compact('branches','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+
+   public function create(Request $request)
    {
-        $estados            = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+            $estados            = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
+
         $municipios         = Municipio::on(Auth::user()->database_name)->get();
         $companies     = Company::on(Auth::user()->database_name)->orderBy('razon_social', 'DESC')->get();
         $parroquias         = Parroquia::on(Auth::user()->database_name)->orderBy('descripcion', 'ASC')->get();
 
        return view('admin.branches.create',compact('companies','parroquias','estados','municipios'));
+
+        }else{
+
+            return redirect('/branches')->withDelete('No Tienes Permiso para Agregar Sucursales!');
+        }
+
+        
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+
+
    public function store(Request $request)
     {
    
@@ -96,48 +96,33 @@ class BranchController extends Controller
     return redirect('/branches')->withSuccess('Registro Exitoso!');
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
+    public function edit(Request $request, $id)
    {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
-   {
-        $var = Branch::on(Auth::user()->database_name)->find($id);
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+            $var = Branch::on(Auth::user()->database_name)->find($id);
       
-        //SIRVE PARA OBTENER EL ID DE SU ESTADO Y DE SU MUNICIPIO, YA QUE NO ESTA GUARDADO EN LA TABLA BRANCH
-        $parroquia_guia = Parroquia::on(Auth::user()->database_name)->find($var->parroquia_id);
+            //SIRVE PARA OBTENER EL ID DE SU ESTADO Y DE SU MUNICIPIO, YA QUE NO ESTA GUARDADO EN LA TABLA BRANCH
+            $parroquia_guia = Parroquia::on(Auth::user()->database_name)->find($var->parroquia_id);
+    
+            $parroquias = Parroquia::on(Auth::user()->database_name)->get();
+            $estados = Estado::on(Auth::user()->database_name)->get();
+            $municipios = Municipio::on(Auth::user()->database_name)->get();
+            $companies = Company::on(Auth::user()->database_name)->get();
+          
+    
+            return view('admin.branches.edit',compact('var','parroquia_guia','parroquias',
+                                                        'estados','municipios','companies'));
+        }else{
 
-        $parroquias = Parroquia::on(Auth::user()->database_name)->get();
-        $estados = Estado::on(Auth::user()->database_name)->get();
-        $municipios = Municipio::on(Auth::user()->database_name)->get();
-        $companies = Company::on(Auth::user()->database_name)->get();
-      
+            return redirect('/branches')->withDelete('No Tienes Permiso para Editar Sucursales!');
 
-        return view('admin.branches.edit',compact('var','parroquia_guia','parroquias',
-                                                    'estados','municipios','companies'));
+        }
+
+       
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
    public function update(Request $request, $id)
    {
 
@@ -186,15 +171,5 @@ class BranchController extends Controller
     }
 
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
 }
 

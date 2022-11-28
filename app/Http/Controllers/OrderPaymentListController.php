@@ -27,11 +27,15 @@ class OrderPaymentListController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
-   }
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('indexmovement');
+        $this->middleware('valimodulo:Ordenes de Pago');
+       }
 
    public function index()
    {
+
+ 
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        if($users_role == '1'){
@@ -45,21 +49,13 @@ class OrderPaymentListController extends Controller
        return view('admin.bankmovements.index',compact('accounts','accounts_USD'));
    }
 
-   public function indexmovement()
+   public function indexmovement(request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       if($users_role == '1'){
-            /*$detailvouchers = DB::connection(Auth::user()->database_name)->select('SELECT d.*, h.description as header_description, h.reference as header_reference, h.date as header_date
-                                FROM header_vouchers h
-                                LEFT JOIN detail_vouchers d 
-                                    ON d.id_header_voucher = h.id
-                                WHERE h.description LIKE ? OR
-                                h.description LIKE ? OR
-                                h.description LIKE ? 
-                                '
-                                , ['Deposito%','Retiro%','Transferencia%']);
-            */
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
             $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -84,11 +80,9 @@ class OrderPaymentListController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d'); 
 
-            return view('admin.bankmovements.indexorderpayment',compact('detailvouchers','accounts','datenow'));
+            return view('admin.bankmovements.indexorderpayment',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','detailvouchers','accounts','datenow'));
 
-        }else{
-            return redirect('/bankmovements')->withDanger('No Tiene Acceso!');
-       }
+      
    } 
 
   

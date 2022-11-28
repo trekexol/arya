@@ -38,7 +38,7 @@
                                 <button type="submit" class="btn btn-success btn-sm"><i class="fa fa-send-o"></i>Guardar</button>
                             </div>
                             <div class="form-group col-sm-5">
-                                <a href="{{route('danger','companies')}}" name="danger" type="button" class="btn btn-danger btn-sm">Cancelar</a>
+                                <a href="{{route('danger','inventarytypes')}}" name="danger" type="button" class="btn btn-danger btn-sm">Cancelar</a>
                             </div>
                         </div>
                     </form>

@@ -211,10 +211,11 @@
                                             @endif
                                         </select>
                                     </div>
+                                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                                         <div class="col-md-2">
                                         <button type="button" onclick="guardarcambios()" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
                                         </div>
-
+                                        @endif
                                 </div>
 
                                 <div class="form-group row" id="divinventario" style="display:none;">
@@ -375,9 +376,13 @@
                                                     $suma += $var->price * $var->amount;
                                                 ?>
                                                     <td style="text-align: right">
+                                                        @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                                                         <a href="{{ route('expensesandpurchases.editproduct',[$var->id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>  
+                                                        @endif
+                                                        @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' ) 
                                                         <a href="#" class="delete" data-id={{$var->id}} data-description={{$var->description}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                                                   </td>
+                                                        @endif
+                                                    </td>
                                             
                                                 </tr>
                                             @endforeach
