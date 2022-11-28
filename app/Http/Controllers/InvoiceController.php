@@ -22,21 +22,21 @@ use App\Multipayment;
 
 class InvoiceController extends Controller
 {
-    public $userAccess;
-    public $modulo = 'Cotizacion';
+   
 
-    public function __construct(){
+    public function __construct()
+    {
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Facturas');
+      
+       
     }
  
-    
- 
-    public function index($id_quotation = null,$number_pedido = null)
+    public function index()
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-
+    
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
            
@@ -48,10 +48,9 @@ class InvoiceController extends Controller
 
             }
     
-            return view('admin.invoices.index',compact('quotations','datenow'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+    
+            return view('admin.invoices.index',compact('quotations','datenow')); 
+
     }
 
     public function movementsinvoice($id_invoice,$coin = null)

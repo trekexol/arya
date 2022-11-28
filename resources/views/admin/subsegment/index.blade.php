@@ -13,7 +13,7 @@
             <h2>Sub Segmentos Registrados</h2>
         </div>
        
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-4">
             <a href="{{ route('subsegment.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar un Sub Segmento</a>
          
@@ -42,8 +42,9 @@
                 <th>Descripción</th>
                 <th>Segmento</th>
                 <th>Status</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                 <th>Opciones</th>
-              
+                @endif
             </tr>
             </thead>
             
@@ -56,12 +57,13 @@
                     <td>{{$segment->description}}</td>
                     <td>{{ $segment->segments['description']}}</td>
                     
-                    @if (Auth::user()->role_id  == '1')
+                    
                             @if($segment->status == 1)
                                 <td>Activo</td>
                             @else
                                 <td>Inactivo</td>
                             @endif
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                         <td>
                         <a href="{{route('subsegment.edit',$segment->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                         </td>

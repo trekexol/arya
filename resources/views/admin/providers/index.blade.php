@@ -26,9 +26,11 @@
             </form>
         </div> 
     </div> 
+    @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
       <div class="col-md-6">
         <a href="{{ route('providers.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Proveedor</a>
       </div>
+    @endif
     </div>
 </div>
   <!-- /.container-fluid -->
@@ -51,7 +53,9 @@
                     <th>Ciudad</th>
                     <th>Pais</th>
                     <th>Telefono</th>
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                     <th></th>
+                    @endif
                 </tr>
                 </thead>
                 
@@ -66,10 +70,11 @@
                                 <td>{{$var->city}}</td>
                                 <td>{{$var->country}}</td>
                                 <td>{{$var->phone1}}</td>
-                                
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                                 <td>
                                     <a href="providers/{{$var->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 </td>
+                                @endif
                             </tr>     
                         @endforeach   
                     @endif

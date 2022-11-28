@@ -7,6 +7,7 @@ use App\Inventory;
 use App\InventoryHistories;
 use Carbon\Carbon;
 use App\Product;
+use App\UserAccess;
 use App\Company;
 use App\Segment;
 use App\Subsegment;
@@ -24,15 +25,30 @@ class ProductController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Productos y Servicio');
 
    }
 
-   public function index($type = 'todos')
+   public function index(request $request,$type = 'todos')
    {
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        $company = Company::on(Auth::user()->database_name)->find(1);
+    $user       =   auth()->user();
+    $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta')
+                ->get();
+       
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+
+
+       $company = Company::on(Auth::user()->database_name)->find(1);
 
 
         if ($type == 'todos') {
@@ -63,13 +79,16 @@ class ProductController extends Controller
         ->orderBy('status','DESC')
         ->orderBy('id' ,'DESC')->get();
 
-       return view('admin.products.index',compact('products','company','type'));
+      
+       return view('admin.products.index',compact('namemodulomiddleware','sistemas','products','company','type','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
 
-   public function productprices($id)
+   public function productprices(request $request,$id)
    {
-
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
@@ -81,38 +100,46 @@ class ProductController extends Controller
            
         return view('admin.index');
        } else {
-        return view('admin.products.productprices',compact('products','product_detail'));
+        return view('admin.products.productprices',compact('agregarmiddleware','actualizarmiddleware','products','product_detail'));
        }
 
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
+
    }
-   public function createprice($id)
+   public function createprice(request $request,$id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
        $user       =   auth()->user();
        $users_role =   $user->role_id;
 
            $product_detail        =   Product::on(Auth::user()->database_name)->find($id);
   
        return view('admin.products.createprice',compact('product_detail'));
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
    }
 
-   public function editprice($id)
+   public function editprice(request $request,$id)
    {
+    
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
     $product = ProductPrice::on(Auth::user()->database_name)->find($id);
     $product_detail        =   Product::on(Auth::user()->database_name)->where('id',$product->id_product)->get()->first();
 
      return view('admin.products.editprice',compact('product','product_detail'));
-
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function updateproduct($id,Request $request)
     {
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
         $valor_sin_formato_price            =   trim(str_replace(',', '.', str_replace('.', '',request('Precio')))) ;
         $var = ProductPrice::on(Auth::user()->database_name)->findOrFail($id);
         $var->price = $valor_sin_formato_price;
@@ -122,14 +149,16 @@ class ProductController extends Controller
         $id_producto     = request('id_product');
 
         return \redirect()->route('products.productprices',$id_producto)->withSuccess('Actualizacion Exitosa!');
-
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
        /* //return \redirect()->route('products.productprice',$id)->withSuccess('Actualizacion Exitosa!');;*/
     }
 
 
     public function storeprice(Request $request)
     {
-
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $id     = request('id_product');
           $valor_sin_formato_precio =   trim(str_replace(',', '.', str_replace('.', '',request('Precio'))));
 
@@ -142,7 +171,9 @@ class ProductController extends Controller
             $var->save();
 
             return \redirect()->route('products.productprices',$id);
-        
+        } else{
+            return redirect('/products')->withDanger('No Tiene Permiso!');
+        }
     }
 
     public function listprice(Request $request, $code_id = null){
@@ -160,13 +191,10 @@ class ProductController extends Controller
 
     }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+  
+   public function create(request $request)
    {
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->pluck('description','id')->toArray();
       
         $subsegments  = Subsegment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
@@ -183,33 +211,48 @@ class ProductController extends Controller
 
 
         return view('admin.products.create',compact('segments','subsegments','unitofmeasures','accounts'));
-   }
+    }else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
+ 
+    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+  
    public function store(Request $request)
     {
-        
-        $data = request()->validate([
-            
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
+
+            $rules = [
+  
             'segment'         =>'required',
             'unit_of_measure_id'         =>'required',
             'type'         =>'required',
             'description'         =>'required',
             'price'         =>'required',
             'price_buy'         =>'required',
-            'money'         =>'required'
-        
-        
-        ]);
+            'money'         =>'required',
+            'code_comercial' =>'required|unique:products,code_comercial,'.request('code_comercial'),
+            'id_account' => 'required',
 
-        //dd($request);
-        //dd(Auth::on(Auth::user()->database_name);
+            ];
+            $messages = [
+                'segment.required' => 'Seleccione un Segmento.',
+                'unit_of_measure_id.required' => 'Seleccione una unidad de medida.',
+                'type.required' => 'Seleccione un tipo de mercancia.',
+                'description.required' => 'Ingrese descripcion del producto.',
+                'price.required' => 'Ingrese Precio del producto.',
+                'price_buy.required' => 'Ingrese Precio de compra del producto.',
+                'money.required' => 'Seleccione una moneda.',
+                'code_comercial.required' => 'Ingrese un codigo comercial',
+                'code_comercial.unique' => 'El codigo comercial ya existe.',
+                'id_account.required' => 'Seleccione una Cuenta.',
+           
+            ];
+            $this->validate($request, $rules, $messages);
+
+
+
         $var = new Product();
         $var->setConnection(Auth::user()->database_name);
 
@@ -323,28 +366,18 @@ class ProductController extends Controller
         $inventory->save();
 
 
-        return redirect('products/index/todos')->withSuccess('Registro Exitoso!');
+        return redirect('/products/index/todos')->withSuccess('Registro Exitoso!');
+     } else{
+            return redirect('/products/index/todos')->withDanger('No Tiene Permiso!');
+        }
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+
+   public function edit(request $request,$id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $company = Company::on(Auth::user()->database_name)->find(1);
     
         $product = Product::on(Auth::user()->database_name)->find($id);
@@ -368,19 +401,15 @@ class ProductController extends Controller
                                 ->get();
        
         return view('admin.products.edit',compact('accounts','threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures','company'));
-  
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function update(Request $request, $id)
    {
-
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
     $vars =  Product::on(Auth::user()->database_name)->find($id);
 
     $vars_status = $vars->status;
@@ -506,17 +535,17 @@ class ProductController extends Controller
     $var->save();
 
     return redirect('/products/index/todos')->withSuccess('Actualizacion Exitosa!');
+
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
     }
+}
 
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy()
+   public function destroy(request $request)
    {
+    if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
         $product = Product::on(Auth::user()->database_name)->find(request('id_product_modal')); 
 
         if(isset($product)){
@@ -531,6 +560,10 @@ class ProductController extends Controller
     
             return redirect('/products')->withSuccess('Se ha Deshabilitado el Producto Correctamente!!');
         }
+
+    } else{
+        return redirect('/products')->withDanger('No Tiene Permiso!');
+    }
    }
 
 

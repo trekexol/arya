@@ -50,10 +50,18 @@ Route::group(["prefix"=>'users'],function(){
     Route::delete('delete','UserController@destroy')->name('users.delete');
     Route::patch('{id}/update','UserController@update')->name('users.update');
 
-    Route::get('createassignmodules/{id_user}','UserController@createAssignModules')->name('users.createAssignModules');
-    Route::post('assignmodules', 'UserController@assignModules')->name('users.assignModules');
+    //Route::get('createassignmodules/{id_user}','UserController@createAssignModules')->name('users.createAssignModules');
+    //Route::post('assignmodules', 'UserController@assignModules')->name('users.assignModules');
+
+
+
+    Route::get('permisos/{id_user}/{name_user}','UserController@indexpermisos')->name('users.indexpermisos');
+
+    Route::get('edit','MyUserController@edit')->name('users.edituser');
+    Route::patch('update','MyUserController@update')->name('users.updateuser');
 
 });
+
 
 
 Route::group(["prefix"=>'salarytypes'],function(){
@@ -360,7 +368,7 @@ Route::group(["prefix"=>'historictransports'],function(){
     Route::get('/','HistoricTransportController@index')->name('historictransports');
     Route::post('store','HistoricTransportController@store')->name('historictransports.store');
     Route::get('{id}/edit','HistoricTransportController@edit')->name('historictransports.edit');
-    Route::delete('{id}/delete','HistoricTransportController@destroy')->name('historictransports.delete');
+    Route::delete('delete','HistoricTransportController@destroy')->name('historictransports.delete');
     Route::patch('{id}/update','HistoricTransportController@update')->name('historictransports.update');
 
     Route::get('selecttransport','HistoricTransportController@selecttransport')->name('historictransports.selecttransport');
@@ -540,6 +548,17 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
      Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
 
+   
+
+
+/****************************** MOVIMIENTOS MASIVOS*****/
+    Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
+    Route::post('facturasmovimientos','BankMovementController@facturasmovimientos')->name('facturasmovimientos');
+    Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
+    Route::get('listcontrapartidanew/{type_var?}','BankMovementController@listcontrapartidanew')->name('listcontrapartidanew');
+    Route::post('procesarcontrapartidanew','BankMovementController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
+    Route::post('guardartransferencia','BankMovementController@guardartransferencia')->name('guardartransferencia');
+
     
 });
 
@@ -628,8 +647,11 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
 
     Route::get('debitnotemediacarta/{id_quotation}/{coin}','PDF2Controller@debitnotemediacarta')->name('pdf.debitnotemediacarta');
+
     Route::get('creditnotemediacarta/{id_quotation}/{coin}','PDF2Controller@creditnotemediacarta')->name('pdf.creditnotemediacarta');
       
+
+
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
     Route::get('facturamedia/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura_media')->name('pdf.media');
@@ -798,11 +820,11 @@ Route::group(["prefix"=>'receipt'],function(){
 
 
 Route::group(["prefix"=>'anticipos'],function(){
+
     Route::get('/','AnticipoController@index')->name('anticipos');
     Route::get('register','AnticipoController@create')->name('anticipos.create');
     Route::post('store', 'AnticipoController@store')->name('anticipos.store');
-
-    Route::get('edit/{id}/{id_client?}/{id_provider?}','AnticipoController@edit')->name('anticipos.edit');
+    Route::get('edit/{id}/{id_client?}/{id_provider?}','AnticipoController@edit')->middleware('valimodulo:Anticipos Clientes')->name('anticipos.edit');
    Route::patch('{id}/update','AnticipoController@update')->name('anticipos.update');
 
     Route::get('register/{id_client}','AnticipoController@createclient')->name('anticipos.createclient');
@@ -814,15 +836,17 @@ Route::group(["prefix"=>'anticipos'],function(){
 
     Route::get('changestatus/{id_anticipo}/{verify}','AnticipoController@changestatus')->name('anticipos.changestatus');
 
-    Route::get('indexprovider','AnticipoController@index_provider')->name('anticipos.index_provider');
-    Route::get('historicprovider','AnticipoController@indexhistoric_provider')->name('anticipos.historic_provider');
-    Route::get('registerprovider/{id_provider?}','AnticipoController@create_provider')->name('anticipos.create_provider');
-    Route::get('selectprovider/{id_anticipo?}','AnticipoController@selectprovider')->name('anticipos.selectprovider');
-    Route::get('selectanticipoexpense/{id_provider}/{coin}/{id_expense}','AnticipoController@selectanticipo_provider')->name('anticipos.selectanticipo_provider');
-    Route::post('storeprovider', 'AnticipoController@store_provider')->name('anticipos.store_provider');
 
-    Route::delete('delete','AnticipoController@delete_anticipo')->name('anticipos.delete');
-    Route::delete('deleteprovider','AnticipoController@delete_anticipo_provider')->name('anticipos.delete_provider');
+    /******ANTICIPOS AL PROVEEDOR MODULO GASTOS Y COMPRAS */
+    Route::get('indexprovider','AnticipoController@index_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.index_provider');
+    Route::get('historicprovider','AnticipoController@indexhistoric_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.historic_provider');
+    Route::get('registerprovider/{id_provider?}','AnticipoController@create_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.create_provider');
+    Route::get('selectprovider/{id_anticipo?}','AnticipoController@selectprovider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.selectprovider');
+    Route::get('selectanticipoexpense/{id_provider}/{coin}/{id_expense}','AnticipoController@selectanticipo_provider')->name('anticipos.selectanticipo_provider');
+    Route::post('storeprovider', 'AnticipoController@store_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.store_provider');
+
+    Route::delete('delete','AnticipoController@delete_anticipo')->middleware('valimodulo:Anticipos Clientes')->name('anticipos.delete');
+    Route::delete('deleteprovider','AnticipoController@delete_anticipo_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.delete_provider');
 
     Route::get('consultrate/{id?}','AnticipoController@consultrate')->name('anticipos.consultrate');
 
@@ -908,8 +932,8 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
    });
 
 Route::group(["prefix"=>'directpaymentorders'],function(){
-    Route::get('/','DirectPaymentOrderController@createretirement')->name('directpaymentorders.create');
-    Route::post('store','DirectPaymentOrderController@store')->name('directpaymentorders.store');
+    Route::get('/','DirectPaymentOrderController@createretirement')->middleware('valimodulo:Ordenes de Pago')->name('directpaymentorders.create');
+    Route::post('store','DirectPaymentOrderController@store')->middleware('valimodulo:Ordenes de Pago')->name('directpaymentorders.store');
 
     Route::get('listbeneficiary/{type_var?}','DirectPaymentOrderController@listbeneficiary')->name('directpaymentorders.listbeneficiary');
     Route::get('listcontrapartida/{type_var?}','DirectPaymentOrderController@listcontrapartida')->name('directpaymentorders.listcontrapartida');
@@ -1048,24 +1072,24 @@ Route::group(["prefix"=>'reports'],function(){
 
     Route::get('selectprovider','Report2Controller@select_provider')->name('reports.select_provider');
 
-    Route::get('ledger','Report2Controller@index_ledger')->name('reports.ledger');
-    Route::post('storeledger','Report2Controller@store_ledger')->name('reports.store_ledger');
+    Route::get('ledger','Report2Controller@index_ledger')->middleware('valimodulo:Listado Diario')->name('reports.ledger');
+    Route::post('storeledger','Report2Controller@store_ledger')->middleware('valimodulo:Listado Diario')->name('reports.store_ledger');
     Route::get('ledgerpdf/{date_begin}/{date_end}','Report2Controller@ledger_pdf')->name('reports.ledger_pdf');
 
-    Route::get('accounts','Report2Controller@index_accounts')->name('reports.accounts');
-    Route::post('storeaccounts','Report2Controller@store_accounts')->name('reports.store_accounts');
+    Route::get('accounts','Report2Controller@index_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.accounts');
+    Route::post('storeaccounts','Report2Controller@store_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.store_accounts');
     Route::get('accountspdf/{coin?}/{level?}/{date_begin?}/{date_end?}','Report2Controller@accounts_pdf')->name('reports.accounts_pdf');
 
     Route::get('bankmovements','Report2Controller@index_bankmovements')->name('reports.bankmovements');
     Route::post('storebankmovements','Report2Controller@store_bankmovements')->name('reports.store_bankmovements');
     Route::get('bankmovementspdf/{type}/{coin}/{date_begin}/{date_end}/{account_bank?}','Report2Controller@bankmovements_pdf')->name('reports.bankmovements_pdf');
 
-    Route::get('sales_books','Report2Controller@index_sales_books')->name('reports.sales_books');
-    Route::post('storesales_books','Report2Controller@store_sales_books')->name('reports.store_sales_books');
+    Route::get('sales_books','Report2Controller@index_sales_books')->middleware('valimodulo:Libro de Ventas')->name('reports.sales_books');
+    Route::post('storesales_books','Report2Controller@store_sales_books')->middleware('valimodulo:Libro de Ventas')->name('reports.store_sales_books');
     Route::get('sales_bookspdf/{coin}/{date_begin}/{date_end}','Report2Controller@sales_books_pdf')->name('reports.sales_books_pdf');
 
-    Route::get('purchases_book','Report2Controller@index_purchases_books')->name('reports.purchases_book');
-    Route::post('storepurchases_book','Report2Controller@store_purchases_books')->name('reports.store_purchases_books');
+    Route::get('purchases_book','Report2Controller@index_purchases_books')->middleware('valimodulo:Libro de Compras')->name('reports.purchases_book');
+    Route::post('storepurchases_book','Report2Controller@store_purchases_books')->middleware('valimodulo:Libro de Compras')->name('reports.store_purchases_books');
     Route::get('purchases_bookpdf/{coin}/{date_begin}/{date_end}','Report2Controller@purchases_book_pdf')->name('reports.purchases_book_pdf');
 
     Route::get('inventory','Report2Controller@index_inventory')->name('reports.inventory');
@@ -1073,10 +1097,10 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('inventorypdf/{coin}/{date_begin}/{date_end}/{name?}','Report2Controller@inventory_pdf')->name('reports.inventory_pdf');
 
     Route::get('operating_margin','Report2Controller@index_operating_margin')->name('reports.operating_margin');
-    Route::post('storeoperating_margin','Report2Controller@store_operating_margin')->name('reports.store_operating_margin');
+    Route::post('storeoperating_margin','Report2Controller@store_operating_margin')->middleware('valimodulo:Margen Operativo')->name('reports.store_operating_margin');
     Route::get('operating_marginpdf/{coin}/{date_begin}/{date_end}','Report2Controller@operating_margin_pdf')->name('reports.operating_margin_pdf');
 
-    Route::get('clients','Report2Controller@index_clients')->name('reports.clients');
+    Route::get('clients','Report2Controller@index_clients')->middleware('valimodulo:Clientes')->name('reports.clients');
     Route::post('storeclients','Report2Controller@store_clients')->name('reports.store_clients');
     Route::get('clientspdf/{date_begin}/{date_end}/{name?}','Report2Controller@clients_pdf')->name('reports.clients_pdf');
 
@@ -1602,3 +1626,14 @@ Route::group(["prefix"=>'report_paymentslic'],function(){
 });
 
 /////////////////////////////////////////FIN EMPRESA LICORES///////////////////////////////////////////////
+
+Route::group(["prefix"=>"modulos"],function(){
+    Route::get('modulos/{id_sistema?}','ModulosController@list')->name('modulos.list');
+    Route::post('insert','ModulosController@insert')->name('modulos.insert');
+    Route::delete('delete','ModulosController@destroy')->name('modulos.delete');
+    Route::post('insertmasivo','ModulosController@insertmasivo')->name('modulos.insertmasivo');
+    Route::delete('eliminarmasivo','ModulosController@eliminarmasivo')->name('modulos.eliminarmasivo');
+    Route::delete('eliminarpermiso','ModulosController@eliminarpermiso')->name('modulos.eliminarpermiso');
+
+
+});

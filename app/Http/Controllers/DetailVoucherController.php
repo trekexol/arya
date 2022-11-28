@@ -19,10 +19,12 @@ class DetailVoucherController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('create');
+        $this->middleware('valimodulo:Ajustes Contables');
    }
 
-   public function index()
+  /* public function index()
    {
        $user       =   auth()->user();
        $users_role =   $user->role_id;
@@ -31,15 +33,16 @@ class DetailVoucherController extends Controller
         }
 
        return view('admin.detailvouchers.index');
-   }
+   }*/
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create($coin,$id_header = null,$id_account = null)
+
+   public function create(Request $request,$coin,$id_header = null,$id_account = null)
    {
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
        // $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->get();
@@ -115,7 +118,7 @@ class DetailVoucherController extends Controller
             }
         }
         
-        return view('admin.detailvouchers.create',compact('saldo_total_bs','saldo_total_dolares','tasa_calculada','detailvouchers_last','account','datenow','header_number','coin','bcv','header','detailvouchers'));
+        return view('admin.detailvouchers.create',compact('saldo_total_bs','saldo_total_dolares','tasa_calculada','detailvouchers_last','account','datenow','header_number','coin','bcv','header','detailvouchers','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
    public function createvalidation($coin,$id_header = null,$id_account = null)
@@ -133,7 +136,7 @@ class DetailVoucherController extends Controller
         $company = Company::on(Auth::user()->database_name)->find(1);
         $global = new GlobalController();
 
-        //Si la taza es automatica
+        //Si la taza es automaticaheadervouchers.store'
         if($company->tiporate_id == 1){
             $bcv = $global->search_bcv();
         }else{
@@ -159,31 +162,6 @@ class DetailVoucherController extends Controller
                                     ->where('detail_vouchers.id_header_voucher','<>',1)
                                     ->select('detail_vouchers.*')
                                     ->get();
-        /*
-        $old_header = 0;
-        $sum_debe = 0;
-        $sum_haber = 0;
-        foreach($details as $detail){
-            
-            if(($old_header == 0) || ($old_header <> $detail->id_header_voucher)){
-                if($sum_debe <> $sum_haber){
-                    dd($old_header);
-                    $id_header = $old_header;
-                }
-                $old_header = $detail->id_header_voucher;
-
-                $sum_debe = 0;
-                $sum_haber = 0;
-                $sum_debe += $detail->debe;
-                $sum_haber += $detail->haber;
-            }else{
-                $sum_debe += $detail->debe;
-                $sum_haber += $detail->haber;
-            }
-
-        }
-
-        */
         
         if(isset($id_header)){
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
@@ -298,16 +276,10 @@ class DetailVoucherController extends Controller
 
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
    public function store(Request $request)
     {
        
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
          $data = request()->validate([
                 
                 
@@ -353,28 +325,18 @@ class DetailVoucherController extends Controller
             $var->save();
 
             return redirect('/detailvouchers/register/'.$coin.'/'.$var->id_header_voucher.'')->withSuccess('Agregado el movimiento Correctamente, para procesarlo debe contabilizar!');
-           
+        }else{
+            return redirect('/detailvouchers/register/bolivares')->withDanger('No Tienes Permiso');
+
+        } 
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($coin,$id,$id_account = null)
+
+   public function edit(request $request,$coin,$id,$id_account = null)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $var = DetailVoucher::on(Auth::user()->database_name)->find($id);
 
         if(isset($id_account)){
@@ -399,20 +361,19 @@ class DetailVoucherController extends Controller
         }
        
         return view('admin.detailvouchers.edit',compact('var','bcv','coin','id_account'));
+
+    }else{
+        return redirect('/detailvouchers/register/bolivares')->withDanger('No Tienes Permiso');
+
+    } 
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function update(Request $request, $id = null)
     {
         
-        
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
         $data = request()->validate([
                     
             'type'      =>'required',
@@ -467,6 +428,11 @@ class DetailVoucherController extends Controller
     
             return redirect('/detailvouchers/register/'.$coin.'/'.$var->id_header_voucher.'')->withSuccess('Actualizacion Exitosa!');
         }
+
+    }else{
+            return redirect('/detailvouchers/register/bolivares')->withDanger('No Tienes Permiso');
+    
+        } 
         
     }
 
@@ -486,15 +452,10 @@ class DetailVoucherController extends Controller
            }
         }
     }
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id = null)
+  
+   public function destroy(request $request,$id = null)
    {
-      
+    if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
        if(isset($id)){
         $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
 
@@ -510,6 +471,11 @@ class DetailVoucherController extends Controller
         return redirect('/detailvouchers/register/bolivares')->withDanger('Debe buscar un movimiento primero !!');
        
        }
+
+    }else{
+        return redirect('/detailvouchers/register/bolivares')->withDanger('No Tienes Permiso');
+
+    } 
 
    }
 

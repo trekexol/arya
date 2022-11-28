@@ -17,21 +17,21 @@ use Illuminate\Support\Facades\Auth;
 class DeliveryNoteLicController extends Controller
 {
 
-    public $userAccess;
-    public $modulo = 'Cotizacion';
 
     public function __construct(){
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Notas de Entrega');
     }
  
 
-    public function index($id_quotation = null,$number_pedido = null,$saldar = null)
+    public function index(request $request,$id_quotation = null,$number_pedido = null,$saldar = null)
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+ 
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
 
             if(isset($id_quotation)) {
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
@@ -55,10 +55,8 @@ class DeliveryNoteLicController extends Controller
 
 
             
-            return view('admin.quotationslic.indexdeliverynote',compact('quotations'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.quotationslic.indexdeliverynote',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','quotations'));
+       
     }
  
 

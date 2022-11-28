@@ -24,8 +24,6 @@
 <div class="container" >
     <div class="row justify-content-center" >
         <div class="col-md-12" >
-            
-
             <div class="card">
                 
                 @if($type == 'Nota de Entrega')
@@ -37,7 +35,6 @@
                 @if($type != 'Nota de Entrega' && $type != 'factura')            
                 <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
                 @endif 
-
                 <div class="card-body" >
                     <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type ?? 'Cotización') }}" enctype="multipart/form-data" >
                         @method('PATCH')
@@ -225,7 +222,6 @@
                             <button type="submit" id="btnUpdateQuotation" name="btnUpdateQuotation" class="btn btn-success" title="Actualizar Datos">Guardar Cambios</button>  
                             </div>
                     </form>
-
                         <form id="formSendProduct" method="POST" action="{{ route('quotations.storeproduct') }}" enctype="multipart/form-data" onsubmit="return validacion()">
                             @csrf
                             <input id="id_quotation" type="hidden" class="form-control @error('id_quotation') is-invalid @enderror" name="id_quotation" value="{{ $quotation->id ?? -1}}" readonly required autocomplete="id_quotation">

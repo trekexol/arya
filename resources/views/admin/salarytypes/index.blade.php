@@ -12,7 +12,7 @@
         <div class="col-md-6 h2">Tipos de Salario
         </div>
        
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('salarytypes.create')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar un Tipo de Salario</a>
          
@@ -42,8 +42,9 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Status</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1') 
                 <th>Opciones</th>
-              
+                @endif
             </tr>
             </thead>
             
@@ -57,12 +58,13 @@
                     <td>{{$var->description}}</td>
                    
                    
-                    @if (Auth::user()->role_id  == '1')
+                  
                         @if($var->status == 1)
                             <td>Activo</td>
                         @else
                             <td>Inactivo</td>
                         @endif
+                        @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1') 
                         <td>
                         <a href="{{route('salarytypes.edit',$var->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                         </td>

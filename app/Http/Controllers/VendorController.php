@@ -23,30 +23,30 @@ class VendorController extends Controller
 
         $this->middleware('auth');
         $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Pedidos');
     }
 
-   public function index()
-   {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+    public function index(request $request)
+    {
+         
+     $agregarmiddleware = $request->get('agregarmiddleware');
+     $actualizarmiddleware = $request->get('actualizarmiddleware');
+     $eliminarmiddleware = $request->get('eliminarmiddleware');
+     $namemodulomiddleware = $request->get('namemodulomiddleware');
+
             
                 $vendors = Vendor::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
             
-            return view('admin.vendors.index',compact('vendors'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.vendors.index',compact('vendors','agregarmiddleware','actualizarmiddleware'));
+       
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
+
+   public function create(request $request)
    {
 
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
      
        $estados     = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
@@ -58,17 +58,18 @@ class VendorController extends Controller
 
 
        return view('admin.vendors.create',compact('estados','municipios','parroquias','comisions','employees'));
-   }
+    }else{
+        return redirect('/vendors')->withDanger('No tiene permiso!');
+ 
+    }
+  
+    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+  
    public function store(Request $request)
     {
-   
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
     $data = request()->validate([
         
         'Parroquia'         =>'required',
@@ -119,27 +120,19 @@ class VendorController extends Controller
     $var->save();
 
     return redirect('/vendors')->withSuccess('Registro Exitoso!');
+}else{
+    return redirect('/vendors')->withDanger('No tiene permiso!');
+
+}
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+   public function edit(request $request,$id)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
+
         $vendor = vendor::on(Auth::user()->database_name)->find($id);
         
         $estados            = Estado::on(Auth::user()->database_name)->get();
@@ -153,17 +146,17 @@ class VendorController extends Controller
       
         return view('admin.vendors.edit',compact('vendor','estados','municipios','parroquias','comisions','employees'));
   
+    }else{
+        return redirect('/vendors')->withDanger('No tiene permiso!');
+    
+    }
+
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function update(Request $request, $id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
     $vars =  Vendor::on(Auth::user()->database_name)->find($id);
 
     $vars_status = $vars->status;
@@ -218,19 +211,13 @@ class VendorController extends Controller
     $var->save();
 
     return redirect('/vendors')->withSuccess('Actualizacion Exitosa!');
+
+        }else{
+            return redirect('/vendors')->withDanger('No tiene permiso!');
+
+        }
     }
 
-
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
 
   
 }

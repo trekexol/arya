@@ -11,39 +11,38 @@ class ProviderController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
-   }
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Proveedores');
+       }
 
-   public function index()
+   public function index(request $request)
    {
-       $user= auth()->user();
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
 
        $providers = Provider::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
       
-       return view('admin.providers.index',compact('providers'));
+       return view('admin.providers.index',compact('providers','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function create()
-   {
 
+   public function create(Request $request)
+   {
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
       
        return view('admin.providers.create');
+    }else{
+        return redirect('/providers')->withDanger('No Tiene Permiso!');
+    }
+
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+  
    public function store(Request $request)
     {
-   
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
     $data = request()->validate([
         'code_provider'         =>'required|max:20',
         'razon_social'         =>'required|max:80',
@@ -102,45 +101,34 @@ class ProviderController extends Controller
     $users->save();
 
     return redirect('/providers')->withSuccess('Registro Exitoso!');
+
+        }else{
+            return redirect('/providers')->withDanger('No Tiene Permiso!');
+        }
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id)
+
+   public function edit(request $request,$id)
    {
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $var = Provider::on(Auth::user()->database_name)->find($id);
         
 
         return view('admin.providers.edit',compact('var'));
+
+    }else{
+        return redirect('/providers')->withDanger('No Tiene Permiso!');
+    }
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+   
    public function update(Request $request, $id)
    {
 
-   
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
     $data = request()->validate([
         'code_provider'         =>'required|max:20',
         'razon_social'          =>'required|max:80',
@@ -200,17 +188,14 @@ class ProviderController extends Controller
     $users->save();
 
     return redirect('/providers')->withSuccess('Actualizacion Exitosa!');
+
+}else{
+    return redirect('/providers')->withDanger('No Tiene Permiso!');
+}
     }
 
+    
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
+
+ 
 }

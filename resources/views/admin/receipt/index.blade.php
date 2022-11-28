@@ -47,9 +47,11 @@
                 <span class="text">Cobros</span>
             </a>
         </div> -->
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
          <div class="col-sm-4">
             <a href="{{ route('receipt.createreceipt',"factura") }}" type="submit" title="Agregar" id="btnRegistrar" class="btn btn-primary  float-md-right" >Registrar Gasto de Condomino</a>
           </div>
+        @endif
         <!--<div class="col-sm-2">
             <button type="submit" title="Agregar" id="btncobrar" class="btn btn-info  float-md-right" >Cobros</button>
         </div> -->

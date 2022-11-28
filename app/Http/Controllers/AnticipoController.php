@@ -26,20 +26,21 @@ class AnticipoController extends Controller
     public $userAccess;
     public $modulo = 'Cotizacion';
 
-    public function __construct(){
-
+    public function __construct()
+    {
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valiuser')->only('index_provider');
+        $this->middleware('valimodulo:Anticipos Clientes');
+     
     }
- 
 
-   public function index()
-   {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
-            
-            
+    public function index(Request $request)
+    {
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+    
                 $anticipos = Anticipo::on(Auth::user()->database_name)
                 ->whereIn('status',[1,'M'])->where('id_client','<>',null)
                 ->orderBy('id','desc')->get();
@@ -61,18 +62,20 @@ class AnticipoController extends Controller
 
 
 
-            return view('admin.anticipos.index',compact('anticipos','control'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+
+            return view('admin.anticipos.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','anticipos','control'));
+        
    }
 
-   public function index_provider()
+   public function index_provider(Request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
-       
+ 
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+  
+
         $anticipos = Anticipo::on(Auth::user()->database_name)->whereIn('status',[1,'M'])->where('id_provider','<>',null)->orderBy('id','desc')->get();
         
         $control = 'index';
@@ -90,7 +93,8 @@ class AnticipoController extends Controller
         }
 
        
-       return view('admin.anticipos.index_provider',compact('anticipos','control'));
+       return view('admin.anticipos.index_provider',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','anticipos','control'));
+
    }
 
    public function consultrate(Request $request, $id)
@@ -111,11 +115,13 @@ class AnticipoController extends Controller
    }
 
 
-   public function indexhistoric_provider()
+
+   public function indexhistoric_provider(Request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
+ 
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
        
         $anticipos = Anticipo::on(Auth::user()->database_name)->where('status','C')->where('id_provider','<>',null)->orderBy('id','desc')->get();
 
@@ -134,11 +140,17 @@ class AnticipoController extends Controller
         }
 
        
-       return view('admin.anticipos.index_provider',compact('anticipos','control'));
+
+       return view('admin.anticipos.index_provider',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','anticipos','control'));
    }
    
-   public function indexhistoric()
+   public function indexhistoric(Request $request)
    {
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        
@@ -159,14 +171,12 @@ class AnticipoController extends Controller
         }
 
        
-       return view('admin.anticipos.index',compact('anticipos','control'));
+
+       return view('admin.anticipos.index',compact('anticipos','control','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+
+
     public function selectclient($id_anticipo = null)
     {
         $clients = Client::on(Auth::user()->database_name)->orderBy('name' ,'asc')->get();
@@ -174,12 +184,20 @@ class AnticipoController extends Controller
         return view('admin.anticipos.selectclient',compact('clients','id_anticipo'));
     }
 
-    public function selectprovider($id_anticipo = null)
+
+    public function selectprovider(request $request,$id_anticipo = null)
     {
-        
+   
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $providers = Provider::on(Auth::user()->database_name)->orderBy('razon_social' ,'asc')->get();
 
         return view('admin.anticipos.selectprovider',compact('providers','id_anticipo'));
+
+    }else{
+
+        return redirect('/anticipos/indexprovider')->withDelete('No Tienes Permiso!');
+    }
+
     }
     
     public function selectanticipo($id_client,$coin,$id_quotation)
@@ -214,8 +232,13 @@ class AnticipoController extends Controller
     }
   
 
-   public function create()
+
+   public function create(request $request)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
+
         $accounts = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
@@ -238,10 +261,23 @@ class AnticipoController extends Controller
         }
 
         return view('admin.anticipos.create',compact('datenow','accounts','bcv'));
+
+
+    }else{
+
+        return redirect('/anticipos')->withDelete('No Tienes Permiso!');
+    }
    }
 
-   public function create_provider($id_provider = null)
+   public function create_provider(Request $request,$id_provider = null)
    {
+
+    
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+  
+
+
+
         $accounts = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
@@ -276,7 +312,15 @@ class AnticipoController extends Controller
         }
 
         return view('admin.anticipos.create_provider',compact('expenses','datenow','accounts','bcv','provider'));
-   }
+
+    }else{
+
+        return redirect('/anticipos/indexprovider')->withDelete('No Tienes Permiso!');
+    }
+  
+  
+  
+    }
 
    public function createclient($id_client)
    {
@@ -310,16 +354,13 @@ class AnticipoController extends Controller
    }
 
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+
+ 
    public function store(Request $request)
     {
    
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $data = request()->validate([
             
         
@@ -408,6 +449,13 @@ class AnticipoController extends Controller
         }else{
             return redirect('/anticipos/indexprovider')->withSuccess('Registro Exitoso!');
         }
+
+
+    }else{
+
+        return redirect('/anticipos')->withDelete('No Tienes Permiso!');
+    }
+
         
     }
 
@@ -475,7 +523,9 @@ class AnticipoController extends Controller
     public function store_provider(Request $request)
     {
         
-        
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $data = request()->validate([
             
         
@@ -566,6 +616,11 @@ class AnticipoController extends Controller
            
             return redirect('/anticipos/indexprovider')->withSuccess('Registro Exitoso!');
         }
+
+
+    }else{
+        return redirect('/anticipos/indexprovider')->withDanger('No Tiene Permiso!');
+    }
         
     }
 
@@ -604,14 +659,12 @@ class AnticipoController extends Controller
 
     }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function edit($id,$id_client = null,$id_provider = null)
+
+   public function edit(request $request,$id,$id_client = null,$id_provider = null)
    {
+    
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $anticipo = Anticipo::on(Auth::user()->database_name)->find($id);
 
         $invoices_to_pay = null;
@@ -667,18 +720,16 @@ class AnticipoController extends Controller
       
         return view('admin.anticipos.edit',compact('anticipo','accounts','datenow','bcv','client','provider','invoices_to_pay','expenses_to_pay'));
   
+    }else{
+        return redirect('/anticipos')->withDanger('No Tiene Permiso!');
+    }
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+   
    public function update(Request $request, $id)
    {
-       
+    if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
         $data = request()->validate([
                 
             'date_begin'         =>'required',
@@ -794,6 +845,12 @@ class AnticipoController extends Controller
         }else{
             return redirect('/anticipos/indexprovider')->withSuccess('Actualizacion Exitosa!');
         }
+
+
+    }else{
+        return redirect('/anticipos')->withDanger('No Tiene Permiso!');
+    }
+
         
     }
     public function delete_anticipo(Request $request)
@@ -818,6 +875,10 @@ class AnticipoController extends Controller
     }
     public function delete_anticipo_provider(Request $request)
     {
+
+
+        if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
         $anticipo = Anticipo::on(Auth::user()->database_name)->find(request('id_anticipo_modal'));
         
         $historial_anticipo = new HistorialAnticipoController();
@@ -834,6 +895,12 @@ class AnticipoController extends Controller
         }else{
             return redirect('/anticipos/indexprovider')->withDanger('No se pudo encontrar el anticipo!!');
         }
+
+
+    }else{
+        return redirect('/anticipos/indexprovider')->withDanger('No Tiene Permiso!!');
+    }
+
         
     }
 
@@ -869,16 +936,7 @@ class AnticipoController extends Controller
             ->where('header_vouchers.id_anticipo','=',$anticipo->id)
             ->delete();
     }
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
+
 
     public function changestatus(Request $request, $id_anticipo, $verify){
         //validar si la peticion es asincrona
@@ -900,4 +958,3 @@ class AnticipoController extends Controller
         
     }
 }
-

@@ -58,9 +58,12 @@
                 <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
             </div>
         </div> 
+        @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
+
       <div class="col-sm-4">
         <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Pedido</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -109,9 +112,16 @@
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-center">{{ $quotation->transports['placa'] ?? ''}}</td>
                             <td class="text-center">
+                            @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
+
                                 <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                           
                                 <a href="{{ route('orders.create_order',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+                               @endif
+                               @if(Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
+ 
                                 <a href="{{ route('orders.reversar_order',$quotation->id)}}" title="Borrar"><i class="fa fa-trash text-danger"></i></a>
+                            @endif
                            </td>
                         </tr>     
                     @endforeach   

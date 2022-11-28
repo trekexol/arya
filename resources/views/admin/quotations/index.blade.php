@@ -77,9 +77,11 @@
                 
             </select>
         </div>
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-sm-3">
         <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -114,7 +116,9 @@
                 <th class="text-center">Observaciones</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center">Moneda</th>
+                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                 <th class="text-center"></th>
+                @endif
                
             </tr>
             </thead>
@@ -125,8 +129,9 @@
                 @foreach ($quotations as $quotation)
                 <tr>
                     <td>
+                        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                         <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                        
+                        @endif
                         @if($quotation->photo == true)
                         <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a> 
                             <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares',$quotation->photo]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a> 
@@ -153,11 +158,14 @@
                     <td class="text-center">{{ number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
                     <td class="text-center">{{ 'BS' }}</td>
                     @endif  
-                    <td> 
+                    @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
+                    <td>
                     <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                    </td>                
+                    </td>  
+                    @endif                 
                 </tr>     
             @endforeach
+
 
                 @endif
             </tbody>

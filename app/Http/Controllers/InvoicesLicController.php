@@ -21,19 +21,25 @@ use App\Multipayment;
 
 class InvoicesLicController extends Controller
 {
-    
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Facturas');
+       }
  
-    public function index()
+    public function index(Request $request)
     {
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
+     
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
         
          $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                         ->where('date_billing','<>',null)
                                         ->get();
         
- 
-        return view('admin.invoiceslic.index',compact('quotations'));
+        return view('admin.invoiceslic.index',compact('eliminarmiddleware','quotations','agregarmiddleware','actualizarmiddleware'));
     }
 
     public function movementsinvoicelic($id_invoice,$coin = null)

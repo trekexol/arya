@@ -25,11 +25,13 @@
                 &nbsp Imprimir Libro Diario
             </a>
         </div>
+        @if (Auth::user()->role_id  == '1' || $namemodulomiddleware  == 'Listado Diario')
         <div class="col-sm-2">
             <a href="{{ route('reports.ledger') }}" class="btn btn-light2"><i class="fas fa-eye" ></i>
                 &nbsp Libro Mayor
             </a>
         </div>
+        @endif
         <div class="col-sm-3">
             <a class="btn btn-light2" href="#" data-toggle="modal" data-target="#libroMayorCuentasModal"><i class="fas fa-eye" ></i>
                 &nbsp Libro Mayor por Cuentas

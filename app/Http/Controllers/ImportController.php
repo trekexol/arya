@@ -20,10 +20,16 @@ class ImportController extends Controller
     public function __construct(){
 
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Importaciones');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
 
         $user= auth()->user();
         $imports = Import::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
@@ -34,17 +40,13 @@ class ImportController extends Controller
             ->whereNull('import_details.id_purchases')
             ->get();*/
 
-        return view('admin.imports.index',compact('imports'));
+        return view('admin.imports.index',compact('imports','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create($id = null)
+ 
+    public function create(request $request,$id = null)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         if($id == null){
             $id == null;
         }else{
@@ -52,18 +54,18 @@ class ImportController extends Controller
            $id = $expenses->id;
         }
         return view('admin.imports.create',compact('id'));
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cargar()
+  
+    public function cargar(request $request)
     {
 
-
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $quotationss = DB::connection(Auth::user()->database_name)
             ->table('expenses_and_purchases')
             ->leftjoin('import_details', 'expenses_and_purchases.id', '=', 'import_details.id_purchases')
@@ -82,13 +84,15 @@ class ImportController extends Controller
         $importDetails      =   ImportDetail::on(Auth::user()->database_name)->get();
 
         return view('admin.imports.importquotation',compact('quotationss','import_quotationss','importDetails'));
+   
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
+   
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function selectquotation($id)
     {
         $quotation    =   ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id)->first();
@@ -96,13 +100,10 @@ class ImportController extends Controller
         return redirect()->route('imports.create',$quotation->id);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function selectimport($id)
+  
+    public function selectimport(request $request,$id)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $user= auth()->user();
         $import_id          =   Import::on(Auth::user()->database_name)->where('id',$id)->get()->first();
         $imports            =   Import::on(Auth::user()->database_name)->get();
@@ -117,15 +118,19 @@ class ImportController extends Controller
             ->get();
 
         return view('admin.imports.importdetails',compact('quotationss','imports','importDetails','import_id'));
+   
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cargarDetails($id,$quotation = null)
+    
+    public function cargarDetails(request $request,$id,$quotation = null)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+
 
         if(isset($id)){
             $import     = Import::on(Auth::user()->database_name)->where('id',$id)->get()->first();
@@ -153,18 +158,20 @@ class ImportController extends Controller
 
         return redirect('/imports')->withSuccess('Registro de Importacion-Segunradia Exitosa!');
 
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
 
-      //  return view('admin.imports.importdetails',compact('quotations','imports','importDetails'));
+    }
+
     }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function calcular($id)
+
+    public function calcular(request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+
 
         $import             =   Import::on(Auth::user()->database_name)->where('id',$id)->get()->first();
 
@@ -214,18 +221,16 @@ class ImportController extends Controller
 
             return view('admin.imports.importPrincipal',compact('import_quotation','import','import_details','inventories_import_expenses','expenses','expenses_imports','import_expense','resultado','total_gasto','total'));
 
-        //  return view('admin.imports.importdetails',compact('quotations','imports','importDetails'));
+        }else{
+            return redirect('/imports')->withDelete('No tiene Permiso!');
+    
+        }
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+
         $data = request()->validate([
             'Fecha'         =>'required',
         ]);
@@ -241,18 +246,18 @@ class ImportController extends Controller
         $imports->save();
 
         return redirect('/imports')->withSuccess('Registro de Importacion Exitoso!');
+
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function calcularfiltro(Request $request, $id)
     {
 
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $total_pricipal =  request('total_1');
         $resultado_total =  request('total_2');
 
@@ -362,113 +367,15 @@ class ImportController extends Controller
            }
         }
         return redirect()->route('imports.calcular',$id);
+
+
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
     }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $var = client::on(Auth::user()->database_name)->find($id);
-
-        $vendors = Vendor::on(Auth::user()->database_name)->orderBy('name','asc')->get();
-
-        return view('admin.clients.edit',compact('var','vendors'));
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-
-        $vars =  client::on(Auth::user()->database_name)->find($id);
-        $vars_status = $vars->status;
-
-        $data = request()->validate([
-            'type_code'         =>'required|max:20',
-
-            'razon_social'         =>'required|max:80',
-            'cedula_rif'         =>'required|max:20',
-            'direction'         =>'required|max:100',
-
-            'city'         =>'required|max:20',
-            'country'         =>'required|max:20',
-            'phone1'         =>'required|max:20',
-
-
-
-            'days_credit'         =>'required|integer',
-
-
-
-        ]);
-
-
-        $users = client::on(Auth::user()->database_name)->findOrFail($id);
-
-        $users->id_vendor = request('id_vendor');
-
-        $users->type_code = request('type_code');
-
-        $users->name = request('razon_social');
-        $users->cedula_rif = request('cedula_rif');
-        $users->direction = request('direction');
-        $users->city = request('city');
-        $users->country = request('country');
-        $users->phone1 = request('phone1');
-        $users->phone2 = request('phone2');
-
-        $users->days_credit = request('days_credit');
-
-        $sin_formato_amount_max_credit = str_replace(',', '.', str_replace('.', '', request('amount_max_credit')));
-
-
-        $users->amount_max_credit = $sin_formato_amount_max_credit;
-
-        $users->percentage_retencion_iva = request('retencion_iva');
-        $users->percentage_retencion_islr = request('retencion_islr');
-
-        if(request('status') == null){
-            $users->status = $vars_status;
-        }else{
-            $users->status = request('status');
-        }
-
-        $users->save();
-
-        return redirect('/clients')->withSuccess('Actualizacion Exitosa!');
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+ 
 }

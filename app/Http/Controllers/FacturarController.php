@@ -12,6 +12,8 @@ use App\Company;
 use App\Http\Controllers\Calculations\FacturaCalculationController;
 use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\Validations\FacturaValidationController;
+use App\Http\Controllers\UserAccess\UserAccessController;
+
 use Illuminate\Http\Request;
 
 use App\Quotation;
@@ -25,9 +27,19 @@ use Illuminate\Support\Facades\Auth;
 
 class FacturarController extends Controller
 {
+   
+
+    
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->userAccess = new UserAccessController();
+    }
+ 
+
     public function createfacturar($id_quotation,$coin,$type = 'Cotización')
     {
-
+        
          $quotation = null;
              
          if(isset($id_quotation)){
@@ -62,7 +74,6 @@ class FacturarController extends Controller
            
             
             $anticipos_sum_dolares = 0;
-            
             if(isset($total_dolar_anticipo[0]->dolar)){
                 $anticipos_sum_dolares = $total_dolar_anticipo[0]->dolar;
             }
@@ -350,7 +361,6 @@ class FacturarController extends Controller
                                             ->where('description','not like', 'Punto de Venta%')
                                             ->orderBy('description','ASC')
                                             ->get();
-
              $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                             ->where('code_two', 1)
                                             ->where('code_three', 1)
@@ -3436,6 +3446,8 @@ public function storeanticiposaldar(Request $request)
 
     public function createfacturado($id_quotation,$coin,$reverso = null)
     {
+        if($this->userAccess->validate_user_access("Facturas")){
+
          $quotation = null;
              
          if(isset($id_quotation)){
@@ -3465,6 +3477,10 @@ public function storeanticiposaldar(Request $request)
             }else{
              return redirect('/invoices')->withDanger('La factura no existe');
          } 
+
+        }else{
+            return redirect('/invoices')->withDanger('No Tienes Permiso');
+        }
          
     }
     

@@ -12,39 +12,42 @@ class TasaController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tasa del Dia');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $tasas      =   Tasa::on(Auth::user()->database_name)->orderBy('id', 'desc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+         $tasas      =   Tasa::on(Auth::user()->database_name)->orderBy('id', 'desc')->get();
+       
 
     
-        return view('admin.tasas.index',compact('tasas'));
+        return view('admin.tasas.index',compact('tasas','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
         return view('admin.tasas.create',compact('datenow'));
+    }else{
+        return redirect('/tasas')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        
+     
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
            
             'date_begin'         =>'required',
@@ -55,12 +58,15 @@ class TasaController extends Controller
 
         $tasa_old = Tasa::on(Auth::user()->database_name)->where('date_end','=',null)->first();
 
-        $date = Carbon::now();
+        if($tasa_old){
+            $date = Carbon::now();
         $datenow = $date->format('Y-m-d');  
 
         $tasa_old->date_end = $datenow;
-
+      
         $tasa_old->save();
+        }
+        
 
 
 
@@ -79,16 +85,23 @@ class TasaController extends Controller
         $users->save();
 
         return redirect('/tasas')->withSuccess('Registro Exitoso!');
+
+    }else{
+        return redirect('/tasas')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
 
 
-    public function edit($id)
+    public function edit(request $request,$id)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $user    = Tasa::on(Auth::user()->database_name)->find($id);
         
         return view('admin.tasas.edit',compact('user'));
+    }else{
+        return redirect('/tasas')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -96,7 +109,7 @@ class TasaController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $request->validate([
           
             'description'      =>'required|string|max:255',
@@ -114,6 +127,9 @@ class TasaController extends Controller
 
 
         return redirect('/tasas')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/tasas')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

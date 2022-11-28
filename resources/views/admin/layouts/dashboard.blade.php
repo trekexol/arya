@@ -39,7 +39,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        @include('admin.layouts.dashboard_sidebar')
+        @include('admin.layouts.dashboard_sidebar_two')
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->

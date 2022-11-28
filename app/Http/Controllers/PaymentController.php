@@ -18,12 +18,21 @@ use App\QuotationPayment;
 
 class PaymentController extends Controller
 {
-    public function index()
-    {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
 
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Cobros');
+       }
+
+
+    public function index(Request $request)
+       {
+    
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
         $payment_quotations = null;
         
         $date = Carbon::now();
@@ -51,7 +60,7 @@ class PaymentController extends Controller
         }
             
         
-        return view('admin.payments.index',compact('datenow','payment_quotations'));
+        return view('admin.payments.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','datenow','payment_quotations'));
       
     }
 
@@ -137,7 +146,7 @@ class PaymentController extends Controller
 
     public function deleteAllPayments(Request $request){
 
-        
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $id_quotation = request('id_quotation_modal');
         //dd($request);
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
@@ -161,6 +170,10 @@ class PaymentController extends Controller
         
         
         return redirect('payments/index')->withSuccess('Reverso de Pagos Exitoso!');
+    }else{
+        return redirect('payments/index')->withDanger('No Tiene Permiso!');
+
+    }
     }
 
     public function check_quotation_in_multipayment($id_quotation){

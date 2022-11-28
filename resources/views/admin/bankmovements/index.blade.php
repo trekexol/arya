@@ -36,8 +36,9 @@
                                 <th class="text-center">Saldo Actual Bs</th>
                                 
                                 <th class="text-center">Saldo Actual USD</th>
-
+                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                                 <th class="text-center">Opciones</th>
+                                @endif
                             </tr>
                             </thead>
                             
@@ -80,13 +81,13 @@
                                         
                                             <td style="text-align:right; color:black;">{{number_format(($var->balance_previus + $var->debe) - $var->haber, 2, ',', '.')}}</td>
                                             <td style="text-align:right; color:black;">{{number_format($total_USD[$cont], 2, ',', '.')}}</td>                
-                                        
+                                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                                             <td style="text-align:right; color:black;">  
                                                 <a href="{{ route('bankmovements.createdeposit',$var->id) }}" title="Depositar"><i class="fa fa-download"></i></a>
                                                 <a href="{{ route('bankmovements.createretirement',$var->id) }}" title="Retiro"><i class="fa fa-upload"></i></a>
                                                 <a href="{{ route('bankmovements.createtransfer',$var->id) }}" title="Transferencia"><i class="fa fa-exchange-alt"></i></a>
                                           </td>
-                                         
+                                          @endif
                                         @endif
                                     </tr>  
                                     <?php
@@ -98,8 +99,9 @@
                                         <td style="background: #E0D7CD; text-align:right; color:black;">Totales</td>
                                         <td style="background: #E0D7CD; text-align:right; color:black;">{{number_format($total, 2, ',', '.')}}</td>
                                         <td style="background: #E0D7CD; text-align:right; color:black;">{{number_format($total2, 2, ',', '.')}}</td>
+                                        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                                         <td style="background: #E0D7CD; text-align:right; color:black;"></td>
-                                    
+                                        @endif
                                         </tr>
                                 @endif
                             </tbody>

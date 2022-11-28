@@ -107,6 +107,15 @@ class DirectChargeOrderController extends Controller
                    
       }
 
+    public function __construct()
+    {
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Orden de Cobro');
+      
+       
+    }
 
     public function create()
    {

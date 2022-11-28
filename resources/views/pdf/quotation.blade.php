@@ -189,7 +189,6 @@
       $total_less_percentage = $total_less_percentage;
 
       $total += $total_less_percentage;
-      
       ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>

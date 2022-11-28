@@ -6,15 +6,14 @@ use App\Client;
 use App\Company;
 use App\DetailVoucher;
 use App\Http\Controllers\Historial\HistorialcreditnoteController;
-use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
 use App\HeaderVoucher;
 use App\Account;
+use App\Product;
 use App\Multipayment;
 use App\CreditNote;
 use App\CreditCoteDetail;
 use App\CreditNoteDetail;
-use App\Permission\Models\Product;
 use App\Quotation;
 use App\Transport;
 use App\Vendor;
@@ -25,54 +24,61 @@ use Illuminate\Support\Facades\Auth;
 
 class CreditNoteController extends Controller
 {
-    public $userAccess;
-    public $modulo = 'Cotizacion';
 
- 
-    public function __construct(){
 
-       $this->middleware('auth');
-       $this->userAccess = new UserAccessController();
+    public function __construct()
+    {
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Notas de Credito');
       
-   }
-
-   public function index()
+       
+    }
+   public function index(request $request)
    {
         
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $creditnotes = CreditNote::on(Auth::user()->database_name)->whereIn('status',['1','C'])->orderBy('id' ,'DESC')
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+       
+    $creditnotes = CreditNote::on(Auth::user()->database_name)->whereIn('status',['1','C'])->orderBy('id' ,'DESC')
             ->get();
 
-            return view('admin.credit_notes.index',compact('creditnotes'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.credit_notes.index',compact('creditnotes','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
+       
 
    }
 
-   public function index_historial()
+   public function index_historial(request $request)
    {
-        
-        if($this->userAccess->validate_user_access($this->modulo)){
+    if(Auth::user()->role_id  == '1' || $request->get('namemodulomiddleware') == 'Notas de Credito'){
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+        $namemodulomiddleware = $request->get('namemodulomiddleware');
             $creditnotes = CreditNote::on(Auth::user()->database_name)->where('status','C')->orderBy('id' ,'DESC')
             ->get();
 
             $historial = "historial";
-            return view('admin.credit_notes.index',compact('creditnotes','historial'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+            return view('admin.credit_notes.index',compact('eliminarmiddleware','agregarmiddleware','creditnotes','historial'));
+        } else{
+            return redirect('/creditnotes')->withDanger('No tiene Permiso');
         }
 
    }
 
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+  
     
-    public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null,$tasa = null)
+    public function createcreditnote(request $request,$id_invoice = null,$id_client = null,$id_vendor = null,$tasa = null)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+
+    
+
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
@@ -97,14 +103,18 @@ class CreditNoteController extends Controller
         }
 
         return view('admin.credit_notes.createcreditnote',compact('client','vendor','invoice','datenow','transports','tasa'));
+   
+    } else{
+        return redirect('/creditnotes')->withDanger('No tiene Permiso');
+    }
+   
     }
 
 
-    public function create($id_creditnote,$coin)
+    public function create(request $request,$id_creditnote,$coin)
     {
         
-        if($this->userAccess->validate_user_access($this->modulo)){
-
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
             $creditnote = null;
                 
             if(isset($id_creditnote)){
@@ -161,7 +171,7 @@ class CreditNoteController extends Controller
             } 
             
         }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+            return redirect('/creditnotes')->withDanger('No tiene Permiso');
         }
 
     }
@@ -970,7 +980,7 @@ class CreditNoteController extends Controller
 
     public function deletecreditnote(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('eliminarmiddleware') == 1){
         $creditnote = CreditNote::on(Auth::user()->database_name)->find(request('id_creditnote_modal')); 
 
     
@@ -985,6 +995,10 @@ class CreditNoteController extends Controller
 
         
         return redirect('/creditnotes')->withDanger('Eliminacion exitosa!!');
+
+    }else{
+        return redirect('/creditnotes')->withDanger('No tiene Permiso');
+    }
         
     }
 

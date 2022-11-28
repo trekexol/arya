@@ -9,21 +9,23 @@ use Illuminate\Support\Facades\Auth;
 
 class SaleLicController extends Controller
 {
-    public $userAccess;
-    public $modulo = 'Venta';
 
-    public function __construct(){
 
+ 
+    public function __construct()
+    {
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Ventas');
+
     }
+
  
  
     public function index()
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+    
+      
         
             $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
                                 ->join('inventories', 'products.id', '=', 'inventories.product_id')
@@ -37,9 +39,7 @@ class SaleLicController extends Controller
 
     
             return view('admin.saleslic.index',compact('inventories_quotations','bcv'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+       
     }
 
 

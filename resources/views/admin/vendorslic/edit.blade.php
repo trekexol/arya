@@ -364,7 +364,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <a href="{{ route('vendors') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
+                        <a href="{{ route('vendorslic') }}" name="danger" type="button" class="btn btn-danger btn-block">Cancelar</a>
                     </div>
                 </div>
             </form>

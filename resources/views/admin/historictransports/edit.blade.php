@@ -29,10 +29,10 @@
             </ul>
         </div>
     @endif
-
+{{dd($historictransport)}}
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form  method="POST"   action="{{ route('transports.update',$var->id) }}" enctype="multipart/form-data" >
+            <form  method="POST"   action="{{ route('transports.update',$historictransport->id) }}" enctype="multipart/form-data" >
                 @method('PATCH')
                 @csrf()
                 <div class="container py-2">

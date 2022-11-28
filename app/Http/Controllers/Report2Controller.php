@@ -27,14 +27,25 @@ use Illuminate\Support\Facades\Auth;
 class Report2Controller extends Controller
 {
    
-    public $modulo = "Reportes";
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index_accounts_receivable');
+        $this->middleware('valiuser')->only('index_debtstopay');
+        $this->middleware('valiuser')->only('index_employees');
+        $this->middleware('valiuser')->only('index_operating_margin');
+        $this->middleware('valiuser')->only('index_bankmovements');
+        $this->middleware('valiuser')->only('index_providers');
+        $this->middleware('valiuser')->only('index_vendor');
+        $this->middleware('valiuser')->only('index_sales');
+        
+        
+       }
    
     public function index_accounts_receivable($typeperson,$id_client_or_vendor = null)
     {        
-       
-        $userAccess = new UserAccessController();
+      
 
-        if($userAccess->validate_user_access($this->modulo)){
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
             $client = null; 
@@ -52,17 +63,13 @@ class Report2Controller extends Controller
             }
             
             return view('admin.reports.index_accounts_receivable',compact('client','datenow','typeperson','vendor'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+       
     }
 
     public function index_debtstopay($id_provider = null)
     {
       
-        $userAccess = new UserAccessController();
-        
-        if($userAccess->validate_user_access($this->modulo)){
+  
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
             $provider = null; 
@@ -70,33 +77,35 @@ class Report2Controller extends Controller
             if(isset($id_provider)){
                 $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
             }
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
 
         return view('admin.reports.index_debtstopay',compact('provider','datenow'));
       
     }
 
 
-    public function index_ledger()
+    public function index_ledger(request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
+     
+      
        
+        if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Listado Diario'){
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');    
             
             $datebeginyear = $date->firstOfYear()->format('Y-m-d');
 
         return view('admin.reports.index_ledger',compact('datebeginyear','datenow'));
+        }else{
+
+            return redirect('/daily_listing/index')->withDanger('No Tienes Permiso!');
+
+        }
       
     }
 
     public function index_accounts()
     {
-        
+     
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -112,7 +121,7 @@ class Report2Controller extends Controller
 
     public function index_bankmovements()
     {
-        
+       
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -152,7 +161,7 @@ class Report2Controller extends Controller
 
     public function index_purchases_books()
     {
-        
+     
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -182,7 +191,7 @@ class Report2Controller extends Controller
 
     public function index_operating_margin()
     {
-        
+    
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -237,7 +246,7 @@ class Report2Controller extends Controller
 
     public function index_providers()
     {
-        
+   
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -257,9 +266,7 @@ class Report2Controller extends Controller
 
     public function index_employees()
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
+       
         
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
@@ -277,7 +284,7 @@ class Report2Controller extends Controller
 
     public function index_sales()
     {
-        
+   
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         
@@ -1351,7 +1358,7 @@ class Report2Controller extends Controller
 
     function accounts_receivable_pdf($coin,$date_end,$typeinvoice,$typeperson,$id_client_or_vendor = null)
     {
-        
+ 
         $pdf = App::make('dompdf.wrapper');
         $quotations = null;
         

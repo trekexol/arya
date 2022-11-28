@@ -155,11 +155,13 @@
                             @endif
 
                             @if ($quotation->status == "C")
+                            
                                 <td class="text-center font-weight-bold">
                                     <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                 <td class="text-center font-weight-bold">
                                 </td>
+                          
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
                                 </td>
@@ -167,23 +169,27 @@
                                 </td>
                             @else
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
+                                @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
+
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
+                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
+                                    @endif
                                 @else
+                                @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                     <td class="text-center font-weight-bold">
-                                        <a href="{{ route('quotations.createfacturar',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+                                        <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
+                                @endif
+                                @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                 <td>
                                     <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">    
                                 </td>
+                                @endif
                             @endif
                             
-                        </tr>   
-                        <?php   
-                        $cont++;
-                        ?>   
+                        </tr>     
                     @endforeach   
                 @endif
             </tbody>

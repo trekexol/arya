@@ -20,9 +20,11 @@
             @endif
 
         </div>
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-sm-3">
         <a href="{{ route('products.createprice',$product_detail->id)}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Precio</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -51,7 +53,9 @@
             <tr>
                 <th class="text-center">Nro</th>
                 <th class="text-center">Precio$/BSF</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                 <th class="text-center">Editar</th>
+                @endif
             </tr>
             </thead>
 
@@ -70,9 +74,11 @@
                                 @endphp
                             </td>
                             <td class="text-center">{{number_format($product->price ,2, ',', '.')}}</td>
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                             <td class="text-center">
                                 <a href="{{ route('products.editprice',$product->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
                             </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif

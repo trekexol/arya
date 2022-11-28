@@ -246,11 +246,13 @@
                         </div>
                         <br>
                         <div class="form-group row mb-0">
+                         
                             <div class="col-sm-3 offset-sm-2">
                                 <button type="submit" class="btn btn-primary">
                                    Pagar Impuesto
                                 </button>
                             </div>
+                    
                             <div class="col-sm-2">
                                 <a href="{{ route('taxes.iva_paymentindex') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>
                             </div>

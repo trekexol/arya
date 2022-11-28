@@ -37,9 +37,11 @@
       <div class="col-md-6">
           <h2>Notas de Entrega lista</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('quotationslic.createquotation')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Cotización</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -83,10 +85,14 @@
                     @foreach ($quotations as $quotation)
                         <tr>
                             <td class="text-center">
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                                 <a href="{{ route('quotationslic.create',[$quotation->id,$quotation->coin])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                            @endif
                                 <a href="{{ route('quotationslic.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                                 <a href="{{ route('quotationslic.reversarQuotation',$quotation->id)}}" title="Borrar"><i class="fa fa-trash text-danger"></i></a>
-                           </td>
+                            @endif
+                            </td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>

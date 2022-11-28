@@ -120,7 +120,9 @@
                             <td class="text-right font-weight-bold">{{number_format(bcdiv(($payment_quotation->amount / $payment_quotation->rate), '1', 2), 2, ',', '.')}}$</td>
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_quotation->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+                                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                                 <a href="#"  class="delete" title="Borrar" data-id-quotation={{$payment_quotation->id_quotation ?? -1}} data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-danger"></i></a>                        
+                                @endif
                             </td>
                             
                         </tr>     
