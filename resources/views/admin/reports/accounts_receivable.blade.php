@@ -141,7 +141,7 @@
         </td>
        @else
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-        @if ($diferencia_en_dias2 == 1)
+        @if (isset($diferencia_en_dias2) && $diferencia_en_dias2 == 1)
         <span style="color: rgb(11, 109, 24)" >Vigente</span> ({{$diferencia_en_dias2}} día) 
         @else
         <span style="color: rgb(11, 109, 24)" >Vigente</span> ({{$diferencia_en_dias2}} dias) 
