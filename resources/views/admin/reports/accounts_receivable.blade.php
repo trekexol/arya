@@ -63,6 +63,7 @@
         $amount_bcv = 1;
         $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
         $diferencia_en_dias = 0;
+        $diferencia_en_dias2 = 0;
         $validator_date = '';
 
 
@@ -141,7 +142,7 @@
         </td>
        @else
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
-        @if (isset($diferencia_en_dias2) && $diferencia_en_dias2 == 1)
+        @if ($diferencia_en_dias2 == 1)
         <span style="color: rgb(11, 109, 24)" >Vigente</span> ({{$diferencia_en_dias2}} día) 
         @else
         <span style="color: rgb(11, 109, 24)" >Vigente</span> ({{$diferencia_en_dias2}} dias) 
