@@ -341,6 +341,7 @@ label.error{ color: red; font-size: 1em; }
                           <option value="Bancamiga">Bancamiga</option>
                           <option value="Banco Banesco">Banesco</option>
                           <option value="Banco Banplus">Banplus</option>
+                          <option value="Banco Banplusd">Banplus Dolares</option>
                           <option value="Mercantil">Mercantil</option>
                           <option value="Chase">Chase</option>
                           <option value="BOFA">BOFA</option>
