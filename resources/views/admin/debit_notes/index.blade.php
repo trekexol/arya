@@ -51,7 +51,7 @@
         </div>
       @else
         <div class="col-md-3">
-            <h2>Notas de Dédito</h2>
+            <h2>Notas de Dédito.</h2>
         </div>
         <div class="col-md-3">
             <a href="{{ route('debitnotes.historial')}}" class="btn btn-info  float-md-right" role="button" aria-pressed="true">Historial</a>
