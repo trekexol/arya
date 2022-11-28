@@ -106,6 +106,26 @@ return [
             ]) : [],
         ],
 
+        'north' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('NORTH_HOST', '127.0.0.1'),
+            'port' => env('NORTH_PORT', '3306'),
+            'database' => env('NORTH_DATABASE', 'forge'),
+            'username' => env('NORTH_USERNAME', 'forge'),
+            'password' => env('NORTH_PASSWORD', ''),
+            'unix_socket' => env('NORTH_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'aryanew' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),

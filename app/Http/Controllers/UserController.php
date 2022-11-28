@@ -28,6 +28,7 @@ class UserController extends Controller
         $this->middleware('valiuser')->only('index');
         $this->middleware('valimodulo:Usuarios');
 
+
     }
 
   

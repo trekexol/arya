@@ -270,9 +270,9 @@ class TempMovimientosImport implements  ToCollection
                 'moneda'                  => $moneda,   
             
             ]);
-
-            $Client->setConnection(Auth::user()->database_name);
-
+            
+             $Client->setConnection(Auth::user()->database_name);
+          
             $contador++;
         $estatus = TRUE;
         $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;

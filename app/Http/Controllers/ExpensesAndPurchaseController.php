@@ -66,7 +66,7 @@ class ExpensesAndPurchaseController extends Controller
    {
 
     if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Gastos y Compras'){
-
+      
         $agregarmiddleware = $request->get('agregarmiddleware');
         $actualizarmiddleware = $request->get('actualizarmiddleware');
         $eliminarmiddleware = $request->get('eliminarmiddleware');

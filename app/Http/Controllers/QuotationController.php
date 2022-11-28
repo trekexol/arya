@@ -340,7 +340,7 @@ class QuotationController extends Controller
                 }
                 
                 
-                $login = Company::on($this->conection_logins)->find($user->id_company);
+                $login = Company::on(Auth::user()->database_name)->find($user->id_company);
 
                 return view('admin.quotations.create',compact('quotation','inventories_quotations','datenow','bcv','coin','bcv_quotation_product','type','company','branches','user_branch','login'));
             
