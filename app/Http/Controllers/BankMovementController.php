@@ -1847,7 +1847,7 @@ public function importmovimientos(Request $request){
 
     }
 
-    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA' OR $banco == 'Banco Banplus') AND $extension == 'txt'){
+    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banco Banplusd') AND $extension == 'txt'){
         Excel::import($import, $file);
         $resp['error'] = $import->estatus;
         $resp['msg'] = $import->mensaje;
