@@ -12,6 +12,8 @@ class TwoSubSegmentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Segundo Sub Segmento');
     }
 
     public function list(Request $request, $id_subsegment = null){
@@ -27,36 +29,36 @@ class TwoSubSegmentController extends Controller
             }
         }
     }
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+   
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $subsegments      =   TwoSubsegment::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-        return view('admin.twosubsegments.index',compact('subsegments'));
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        $subsegments = TwoSubsegment::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+     
+
+        return view('admin.twosubsegments.index',compact('subsegments','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
         $subsegments   = Subsegment::on(Auth::user()->database_name)->orderBy('description', 'asc')->get();
 
         return view('admin.twosubsegments.create',compact('subsegments'));
+    }else{
+        return redirect('/twosubsegments')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             'description'         =>'required|max:255',
             'segment_id'         =>'required',
@@ -72,6 +74,9 @@ class TwoSubSegmentController extends Controller
 
         $users->save();
         return redirect('/twosubsegments')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/twosubsegments')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
     
     public function messages()
@@ -83,13 +88,16 @@ class TwoSubSegmentController extends Controller
     }
 
 
-    public function edit($id)
+    public function edit(request $request, $id)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $var        = TwoSubsegment::on(Auth::user()->database_name)->find($id);
         $subsegments   = SubSegment::on(Auth::user()->database_name)->get();
 
         return view('admin.twosubsegments.edit',compact('var','subsegments'));
+    }else{
+        return redirect('/twosubsegments')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -97,6 +105,7 @@ class TwoSubSegmentController extends Controller
 
     public function update(Request $request,$id)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $subsegment =  TwoSubsegment::on(Auth::user()->database_name)->find($id);
        
         $subsegment_status = $subsegment->status;
@@ -124,6 +133,9 @@ class TwoSubSegmentController extends Controller
 
 
         return redirect('/twosubsegments')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/twosubsegments')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 }

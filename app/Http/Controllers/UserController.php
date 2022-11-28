@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Branch;
 use App\Modulo;
+use App\Sistemas;
 use Illuminate\Http\Request;
 
 use App\User;
@@ -24,54 +25,94 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Usuarios');
+
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+  
+    public function index(Request $request)
     {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
+       
         if($users_role == '1'){
-           $users      =   User::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2' || $users_role == '3'){
-            return view('admin.index');
+            $users      =   User::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+        }else{
+            $users      =   User::on(Auth::user()->database_name)->whereNotIn('role_id',['1'])->orderBy('id', 'asc')->get();
         }
-
-
+       
          
-        return view('admin.users.index',compact('users'));
+        return view('admin.users.index',compact('users','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
+            
+            $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+            return view('admin.users.create',compact('branches'));
+
+        }else{
+              return redirect('/users')->withSuccess('No Tiene Acceso a Registrar Usuarios');
+        }
+
+
+
      
-        return view('admin.users.create',compact('branches'));
     }
 
-    public function createAssignModules($id_user)
+    public function createAssignModules(Request $request, $id_user)
     {
-        $user   = User::on(Auth::user()->database_name)->find($id_user);
-        if($user->role_id == '1'){
-            return redirect('/users')->withDelete('Este Usuario es de tipo Administrador, si quiere asignarle modulos debe editarlo a usuario!');
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
+
+            $user   = User::on(Auth::user()->database_name)->find($id_user);
+
+            if(isset($user->role_id) && $user->role_id == '1'){
+                return redirect('/users')->withDelete('Este Usuario es de tipo Administrador, si quiere asignarle modulos debe editarlo a usuario!');
+           
+           
+            }elseif(isset($user) && $user->count() > '0'){
+                
+              
+            $user_access = UserAccess::on($this->conection_logins)->where('id_user',$user->id)
+                ->join('modulos', 'modulos.id', '=', 'user_access.id_modulo')
+                ->join('sistemas', 'sistemas.id_sistema', '=', 'modulos.id_sistema')
+                ->select('user_access.id','user_access.id_user','sistemas.id_sistema','sistemas.sistema', 'modulos.name','user_access.agregar','user_access.actualizar','user_access.eliminar')
+                ->get();
+    
+           return view('admin.users.selectmodulos',compact('user','user_access'));
+    
+            }else{
+    
+                return redirect('/users')->withDelete('Usuario No Existe!');
+    
+            }
+            
+        }else{
+
+            return redirect('/users')->withDelete('No Tiene Permiso Para Asignar Modulo');
+
         }
-        $modulos   = Modulo::on($this->conection_logins)->get();
-
-        $user_access   = UserAccess::on($this->conection_logins)->where('id_user',$user->id)->get();
 
 
-        return view('admin.users.selectmodulos',compact('modulos','user','user_access'));
+       
+      
+
+       
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             'email'         =>'required|max:255|unique:users,email',
             'name'         =>'required|max:160',
@@ -123,6 +164,12 @@ class UserController extends Controller
         }else{
             return redirect('/users')->withSuccess('Registro Exitoso!');
         }
+
+    }else{
+
+        return redirect('/users')->withDelete('No Tiene Permiso Para Asignar Modulo');
+
+    }
         
     }
 
@@ -161,19 +208,55 @@ class UserController extends Controller
         return redirect('/users')->withSuccess('Registro de Asignaciones Exitosa!');
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $user   = User::on(Auth::user()->database_name)->find($id);
-        $roles   = Role::on(Auth::user()->database_name)->get();
+        
 
-        $user_conected  =   auth()->user();
-
-        if($user_conected->role_id != '1'){
-            return redirect('/users')->withDanger('Debes ser Administrador!');
-        }else{
+        $user   = User::on(Auth::user()->database_name)->find(Auth::user()->id);
+       
+        if($user->id == $id){
+            $roles   = Role::on(Auth::user()->database_name)->get();
+            
             $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
      
             return view('admin.users.edit',compact('user','roles','branches'));
+            
+        }
+        elseif(Auth::user()->role_id  == '1'){
+          
+            $roles   = Role::on(Auth::user()->database_name)->get();
+            
+        
+            
+            $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+     
+            return view('admin.users.edit',compact('user','roles','branches'));
+
+        }elseif($request->get('actualizarmiddleware') == '1'){
+
+            
+            if($user->role_id == '1'){
+                return redirect('/users')->withDelete('Solo puede ser editado por un Administrador');
+
+            }else{
+
+                $roles   = Role::on(Auth::user()->database_name)->get();
+            
+                $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+         
+                return view('admin.users.edit',compact('user','roles','branches'));
+            }
+            
+           
+
+        }
+
+        else{
+
+   
+            return redirect('/users')->withDanger('No Tiene Permiso para Editar Usuarios');
+       
+           
         }
 
         
@@ -184,7 +267,7 @@ class UserController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == '1'){
         $users =  User::on(Auth::user()->database_name)->find($id);
         $user_rol = $users->role_id;
         $user_status = $users->status;
@@ -261,24 +344,98 @@ class UserController extends Controller
 
         return redirect('/users')->withSuccess('Registro Guardado Exitoso!');
 
+     } else{
+
+   
+            return redirect('/users')->withDanger('No Tiene Permiso para Editar Usuarios');
+       
+           
+        }
+
     }
 
 
     public function destroy(Request $request)
     {
-        $user = User::on(Auth::user()->database_name)->find($request->id_user_modal);
-        if(isset($user)){
-            $user->delete();
-        }
+
+        if(Auth::user()->role_id  == '1'){
+
+            $user = User::on(Auth::user()->database_name)->find($request->id_user_modal);
+            if(isset($user)){
+                $user->delete();
+            }
+            
+            $user = User::on($this->conection_logins)->find($request->id_user_modal);
+            if(isset($user)){
+                $user->delete();
+            }
+            return redirect('users')->withDelete('Registro Eliminado Exitoso!');
+
+        }elseif($request->get('eliminarmiddleware') == '1'){
+
+            $user = User::on(Auth::user()->database_name)->find($request->id_user_modal);
+
+            if(isset($user) && $user->role_id == '1'){
+
+             return redirect('/users')->withDanger('Solo Administradores puede Eliminar a un Administrador!');
+            }else{
+                $user->delete();
+
+                $users = User::on($this->conection_logins)->find($request->id_user_modal);
+            if(isset($users)){
+                $users->delete();
+            }
+
+            return redirect('users')->withDelete('Registro Eliminado Exitoso!');
+
+            }
+          
         
-        $user = User::on($this->conection_logins)->find($request->id_user_modal);
-        if(isset($user)){
-            $user->delete();
+        
+        }else{
+
+            return redirect('/users')->withDanger('No tiene permiso para Eliminar Usuarios!');
         }
-        return redirect('users')->withDelete('Registro Eliminado Exitoso!');
+
+   
     }
 
 
+
+
+    /****VISTA PARA ASIGNAR PERMISO */
+
+    public function indexpermisos(Request $request,$id_user,$name_user)
+    {
+      
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == '1'){
+            $user = User::on($this->conection_logins)->where('id',$id_user)->where('name',$name_user)->WhereNotIn('role_id',['1'])->first();
+
+            if($user){
+
+                $sistemas = Sistemas::on($this->conection_logins)->WhereIn('id_companies',[$user->id_company])->orderby('sistema','ASC')->get();
+          
+                return view('admin.users.indexpermisos',compact('id_user','name_user','sistemas'));
+              
+    
+            }else{
+    
+                return redirect('/users')->withDelete('Usuario No Existe o es Administrador!');
+    
+            }
+
+        }else{
+    
+            return redirect('/users')->withDelete('No tienes Permiso Para Asignar Modulos!');
+
+        }
+
+        
+
+
+      
+    }
    
     
 }

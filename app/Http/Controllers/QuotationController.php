@@ -39,17 +39,20 @@ class QuotationController extends Controller
 
  
     public function __construct(){
-
-       $this->middleware('auth');
-       $this->userAccess = new UserAccessController();
-      
-   }
-
-   public function index($coin = null)
-   {
+  
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Cotizaciones');
+    }
+    
+    public function index(Request $request,$coin = null)
+       {
         $photo = '';
 
-        if($this->userAccess->validate_user_access($this->modulo)){
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
             ->where('date_billing','=',null)
             ->where('date_delivery_note','=',null)
@@ -137,31 +140,25 @@ class QuotationController extends Controller
 
 
 
-
             
-            return view('admin.quotations.index',compact('quotations','company','coin','clients','datenow','photo'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.quotations.index',compact('eliminarmiddleware','agregarmiddleware','quotations','company','coin','clients','datenow','photo'));
+      
 
       
    }
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-  
-    public function createquotation($type = null)
+
+    
+    public function createquotation(request $request,$type = null)
     {
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');   
         
         $user   =   auth()->user();
-        
+
+
         if(isset($user->id_branch)){
             $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
         }else{
@@ -175,14 +172,15 @@ class QuotationController extends Controller
         ->first();
     
         if(isset($clients)){
-            $client = $client->id;
+            $client = $clients->id;
         }else{
             $client = null;
         }     
-
-
+       
         return view('admin.quotations.createquotation',compact('user_branch','branches','datenow','transports','type','user','client'));
-   
+    }else{
+        return redirect('/quotations/index')->withDanger('no tiene permiso');
+    } 
     }
 
     public function createquotationclient($id_client,$type = null)
@@ -220,8 +218,9 @@ class QuotationController extends Controller
         } 
     }
 
-    public function createquotationvendor($id_client,$id_vendor,$type = null)
+    public function createquotationvendor(request $request,$id_client,$id_vendor,$type = null)
     {
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $client = null;
                 
         if(isset($id_client)){
@@ -261,26 +260,33 @@ class QuotationController extends Controller
         }else{
             return redirect('/quotations/index')->withDanger('El Cliente no existe');
         } 
+
+    }else{
+        return redirect('/quotations/index')->withDanger('no tiene permiso');
+    } 
     }
 
-    public $conection_logins = "logins"; 
 
-    public function create($id_quotation,$coin,$type = null)
+
+    public function create(request $request,$id_quotation,$coin,$type = null)
     {
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+          
         $user   =   auth()->user();
 
         if(isset($user->id_branch)){
+            
             $user_branch  = Branch::on(Auth::user()->database_name)->find($user->id_branch);
         }else{
+          
             $user_branch  = null;
         }
 
-        $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
+      $branches  = Branch::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
 
 
-        if($this->userAccess->validate_user_access($this->modulo)){
+
             $quotation = null;
                 
             if(isset($id_quotation)){
@@ -343,7 +349,7 @@ class QuotationController extends Controller
             } 
             
         }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
+            return redirect('/quotations/index')->withDanger('No tiene Permiso');
         }
 
     }
@@ -548,17 +554,21 @@ class QuotationController extends Controller
     }
 
 
-    public function selectclient($type = null)
+    public function selectclient(request $request,$type = null)
     {
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $clients     = Client::on(Auth::user()->database_name)->orderBy('name','asc')->get();
         
     
         return view('admin.quotations.selectclient',compact('clients','type'));
+        }else{
+            return redirect('/quotations/index')->withDanger('No tiene permiso');
+        }
     }
 
     public function store(Request $request)
     {
-    
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             
         
@@ -641,7 +651,9 @@ class QuotationController extends Controller
             return redirect('/quotations/registerquotation')->withDanger('Debe Buscar un Cliente');
         } 
 
-        
+    }else{
+        return redirect('/quotations/index')->withDanger('No tiene permiso');
+    }
     }
 
 
@@ -944,7 +956,6 @@ class QuotationController extends Controller
         $var->save();
 
         $type = request('type_f');
-
 
         $historial_quotation = new HistorialQuotationController();
 

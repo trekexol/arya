@@ -13,7 +13,7 @@
             <h2>Usuarios Registrados</h2>
         </div>
        
-        @if (Auth::user()->role_id  == '1')
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
         <div class="col-md-6">
             <a href="{{ route('users.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Usuario</a>
         </div> 
@@ -41,11 +41,9 @@
                 <th>Usuario</th>
                 <th>Email</th>
                 <th>Sucursal</th>
-                @if (Auth::user()->role_id  == '1' )
-                    <th>Rol</th>
-                    <th>Status</th>
-                @endif
-                @if (Auth::user()->role_id  == '1')
+                <th>Rol</th>
+                <th>Status</th>
+                @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1 || $actualizarmiddleware == 1 || $eliminarmiddleware == 1)
                     <th>Tools</th>
                 @endif
             </tr>
@@ -60,17 +58,23 @@
                     <td>{!!$user->name!!}</td>
                     <td>{!!$user->email!!}</td>
                     <td>{!!$user->branches['description'] ?? ''!!}</td>
-                    @if (Auth::user()->role_id  == '1')
                     <td>{{ $user->roles['description'] ?? ''}}</td>
-                        @if($user->status == 1)
-                            <td>Activo</td>
-                        @else
-                            <td>Inactivo</td>
-                        @endif
+                    @if($user->status == 1)
+                        <td>Activo</td>
+                    @else
+                        <td>Inactivo</td>
+                    @endif
+                    @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1 || $actualizarmiddleware == 1 || $eliminarmiddleware == 1)
                         <td class="text-center">
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                             <a href="{{ route('users.createAssignModules',$user->id)}}" title="Seleccionar"><i class="fa fa-check"></i></a>
+                            @endif
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == 1)
                             <a href="{{ route('users.edit',$user->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
+                            @endif
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
                             <a href="#" class="delete" data-id-user={{$user->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                            @endif
                         </td>
                     @endif
                     </tr>

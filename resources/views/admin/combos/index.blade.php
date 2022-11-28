@@ -1,8 +1,10 @@
 @extends('admin.layouts.dashboard')
 
 @section('content')
-
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+  @if (Auth::user()->role_id  == '1')
+
+ 
     <li class="nav-item" role="presentation">
       <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
     </li>
@@ -10,13 +12,36 @@
       <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
     </li>
     <li class="nav-item" role="presentation">
-      <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
     </li>
     <li class="nav-item" role="presentation">
       <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
     </li>
     
-  </ul>
+  
+  @else
+
+    @foreach($sistemas as $sistemas)
+        @if($namemodulomiddleware == $sistemas->name)
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+      </li>
+      @else
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+      </li>
+      @endif
+      @if($sistemas->name == 'Inventario')
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+        </li>
+      @endif
+    @endforeach
+  
+ 
+@endif
+</ul>
+
 
 <!-- container-fluid -->
 <div class="container-fluid">
@@ -45,8 +70,13 @@
 
       
       <div class="col-sm-3">
+      </div>
+      
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
+      <div class="col-md-6">
         <a href="{{ route('combos.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Combo</a>
       </div>
+      @endif
     </div>
 
 
@@ -106,9 +136,15 @@
                             @endif
     
                             <td class="text-center">
-                              <a href="{{ route('combos.create_assign',$combo->id) }}"  title="Asignar Productos"><i class="fa fa-list"></i></a>
+                              @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
+                              <a href="{{ route('combos.create_assign',$combo->id) }}"  title="Asignar Productos"><i class="fa fa-check"></i></a>
+                              @endif
+                              @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                               <a href="{{ route('combos.edit',$combo->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
-                                <a href="#" class="delete" data-id-combo={{$combo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                              @endif
+                              @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')  
+                              <a href="#" class="delete" data-id-combo={{$combo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                              @endif
                             </td>
                         </tr>     
                     @endforeach   

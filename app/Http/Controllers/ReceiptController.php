@@ -36,14 +36,19 @@ class ReceiptController extends Controller
     public function __construct(){
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
-    }
- 
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Recibos de Cobro');
+       }
+
     
  
-    public function index()
+    public function index(Request $request)
     {
-
+ 
+     $agregarmiddleware = $request->get('agregarmiddleware');
+     $actualizarmiddleware = $request->get('actualizarmiddleware');
+     $eliminarmiddleware = $request->get('eliminarmiddleware');
+      
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
            
@@ -53,7 +58,7 @@ class ReceiptController extends Controller
                                             ->get();
             
     
-            return view('admin.receipt.index',compact('quotations','datenow'));
+            return view('admin.receipt.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
 
     }
 
@@ -127,14 +132,30 @@ class ReceiptController extends Controller
 
     }
 
+<<<<<<< HEAD
     public function createreceipt($type = null) // crando recibo
     {
+=======
+    public function createreceipt(request $request,$type = null) // crando recibo
+    {
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
+>>>>>>> fb39095d (todo el proyecto)
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
 
         return view('admin.receipt.createreceipt',compact('datenow','transports','type'));
+<<<<<<< HEAD
+=======
+
+    }else{
+        return redirect('/receipt')->withDanger('No Tiene Permiso!');
+
+    }
+>>>>>>> fb39095d (todo el proyecto)
     }
     
 
@@ -7741,6 +7762,7 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
     public function index_accounts_receivable($typeperson,$id_client_or_vendor = null)
     {        
 
+      
         $userAccess = new UserAccessController();
 
         if($userAccess->validate_user_access($this->modulo)){

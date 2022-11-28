@@ -19,8 +19,12 @@ use Illuminate\Support\Facades\Auth;
 
 class DirectPaymentOrderController extends Controller
 {
-    public function createretirement()
-   {
+    public function createretirement(request $request)
+    {
+    
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+ 
+
         $accounts = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
                                         ->where('code_two', 1)
                                         ->where('code_three', 1)
@@ -76,13 +80,19 @@ class DirectPaymentOrderController extends Controller
         }else{
             return redirect('/directpaymentorders')->withDanger('No hay Cuentas!');
        }
+
+    }else{
+
+        return redirect('/bankmovements/orderpaymentlist')->withDelete('No Tienes Permiso');
+    }
+
    }
 
 
     public function store(Request $request)
     {
 
-       // dd($request);
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
        
         $data = request()->validate([
             
@@ -239,6 +249,10 @@ class DirectPaymentOrderController extends Controller
         }else{
             return redirect('/bankmovements/orderpaymentlist')->withDanger('No se puede hacer un movimiento a la misma cuenta! 1. '.$request->amount_of_payments.' Cont: '.$contrapartida.' Banco: '.$account);
         }
+    }else{
+
+        return redirect('/bankmovements/orderpaymentlist')->withDelete('No Tienes Permiso');
+    }
     }
 
     public function returnTotalAmount(Request $request){

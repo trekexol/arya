@@ -27,40 +27,35 @@ class BankMovementController extends Controller
  
     public function __construct(){
 
-       $this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valiuser')->only('indexmovement');
+        $this->middleware('valimodulo:Bancos');
    }
 
-   public function index()
+   public function index(Request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       if($users_role == '1'){
-        
+  
+
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
 
         $accounts = $this->calculation('bolivares');
         $accounts_USD = $this->calculation('dolares');
          
-        
-        }
 
-       /* foreach ($accounts as $var){
-
-        }
-  
-        foreach ($accounts_USD as $var2){
-
-        }           */                       
-
-
-       return view('admin.bankmovements.index',compact('accounts','accounts_USD'));
+       return view('admin.bankmovements.index',compact('agregarmiddleware','accounts','accounts_USD'));
    }
 
-   public function indexmovement()
+   public function indexmovement(Request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       if($users_role == '1'){
-      
+   
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+
         $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -85,11 +80,7 @@ class BankMovementController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
 
-        return view('admin.bankmovements.indexmovement',compact('detailvouchers','accounts','datenow'));
-
-        }else{
-            return redirect('/bankmovements')->withDanger('No Tiene Acceso!');
-        }
+        return view('admin.bankmovements.indexmovement',compact('eliminarmiddleware','detailvouchers','accounts','datenow'));
 
        
    }
@@ -226,7 +217,9 @@ class BankMovementController extends Controller
             'detail_vouchers.debe', 'detail_vouchers.haber', 'detail_vouchers.haber', 'detail_vouchers.tasa',
             'accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','accounts.description as account_description'
             )
+
             ->orderBy('detail_vouchers.debe','desc')
+
             ->get();
          
         if(count($movements) > 0){
@@ -244,15 +237,12 @@ class BankMovementController extends Controller
        return $pdf->stream();
                 
    }
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-   public function createdeposit($id)
+ 
+   public function createdeposit(request $request,$id)
    {
-    
-   
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $account = Account::on(Auth::user()->database_name)->find($id);
 
       
@@ -283,10 +273,17 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements')->withDanger('No existe la Cuenta!');
        }
+
+    }else{
+        return redirect('/bankmovements')->withDanger('No Tiene Permiso');
+   }
    }
 
-   public function createretirement($id)
+   public function createretirement(request $request,$id)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $account = Account::on(Auth::user()->database_name)->find($id);
 
         if(isset($account)){   
@@ -315,10 +312,18 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements')->withDanger('No existe la Cuenta!');
        }
+
+
+    }else{
+        return redirect('/bankmovements')->withDanger('No Tiene Permiso');
+   }
    }
 
-   public function createtransfer($id)
+   public function createtransfer(request $request,$id)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $account = Account::on(Auth::user()->database_name)->find($id);
 
         if(isset($account)){   
@@ -348,12 +353,20 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements')->withDanger('No existe la Cuenta!');
        }
+
+
+    }else{
+        return redirect('/bankmovements')->withDanger('No Tiene Permiso');
+   }
+
    }
 
    
     public function store(Request $request)
     {
         //DEPOSITOS
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
         $data = request()->validate([
             
@@ -450,6 +463,12 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements/registerdeposit/'.request('id_account').'')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
+
+
+    }else{
+        return redirect('/bankmovements'.request('id_account').'')->withDanger('No Tiene Permiso!');
+    }
+
     }
 
 
@@ -457,7 +476,8 @@ class BankMovementController extends Controller
     public function storeretirement(Request $request)
     {
 
-       
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $data = request()->validate([
             
         
@@ -551,12 +571,20 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements/registerretirement/'.request('id_account').'')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
+
+
+    }else{
+        return redirect('/bankmovements'.request('id_account').'')->withDanger('No Tiene Permiso!');
+    }
+
     }
 
 
     public function storetransfer(Request $request)
     {
-       
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
         $data = request()->validate([
             
         
@@ -651,19 +679,14 @@ class BankMovementController extends Controller
         }else{
             return redirect('/bankmovements/registertransfer/'.request('id_account').'')->withDanger('No se puede hacer un movimiento a la misma cuenta!');
         }
+
+
+    }else{
+        return redirect('/bankmovements'.request('id_account').'')->withDanger('No Tiene Permiso!');
     }
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
-  
-   
+    }
+
+
     public function calculation($coin)
     {
                                             
@@ -1644,13 +1667,6 @@ class BankMovementController extends Controller
    }
   
   
-   
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
    public function edit($id)
    {
         $bankmovement = BankMovement::on(Auth::user()->database_name)->find($id);
@@ -1660,13 +1676,7 @@ class BankMovementController extends Controller
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function update(Request $request, $id)
    {
 
@@ -1742,13 +1752,11 @@ class BankMovementController extends Controller
     }
 
 
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-  public function destroy($id){
+
+
+  public function destroy(request $request,$id){
+    if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
     if(isset($id)){
         $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
 
@@ -1763,6 +1771,12 @@ class BankMovementController extends Controller
        }else{
         return redirect('/bankmovements/seemovements')->withDanger('Debe buscar un movimiento primero !!');
        
+       }
+
+
+    }else{
+        return redirect('/bankmovements/seemovements')->withDanger('No Tiene Permiso');
+
        }
   }
 

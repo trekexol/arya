@@ -43,7 +43,8 @@
                 <a class="dropdown-item bg-light" href="{{ route('accounts.index_previous_exercise') }}">Ver Ejercicios Anteriores</a>
             </div>
         </div> 
-       
+
+        @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
             <div class="col-sm-3">
                 <a href="#" class="btn btn-light2" data-toggle="modal" data-target="#cierreModal">
                     <i class="fas fa-times" ></i>
@@ -51,7 +52,8 @@
                     
                 </a>
             </div>
-            
+        @endif
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
             <div class="col-sm-3">
                 <a href="{{ route('accounts.create')}}" class="btn btn-light2" role="button" aria-pressed="true">
                     
@@ -59,6 +61,7 @@
                     
                 </a>
             </div>
+        @endif    
             <div class="col-sm-2">
                 <select class="form-control" name="coin" id="coin">
                     @if(isset($coin))
@@ -126,8 +129,9 @@
                 <th style="text-align: right;">Debe</th>
                 <th style="text-align: right;">Haber</th>
                 <th style="text-align: right;">Saldo Actual</th>
-               
+                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                 <th style="text-align: right;"></th>
+                @endif
             </tr>
             </thead>
             
@@ -141,11 +145,19 @@
                             <td style="text-align:left; color:black; font-weight: bold;">{{$account->code_one}}{{ ($account->code_two == 0) ? '' : '.'.$account->code_two }}{{ ($account->code_three == 0) ? '' : '.'.$account->code_three }}{{ ($account->code_four == 0) ? '' : '.'.$account->code_four }}{{ ($account->code_five == 0) ? '' : '.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT) }}</td>
                             <td style="text-align:right; color:black;">
                                 @if ($account->level == 5)
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                     @if(isset($account->coin))
                                         <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
                                     @else
                                         <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
                                     @endif
+                                    @else
+                                    @if(isset($account->coin))
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                @else
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                @endif
+                            @endif  
                                 @else
                                     @if(isset($account->coin))
                                         <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
@@ -326,11 +338,19 @@
                         <td style="text-align:left; color:black; font-weight: bold;">{{$account->code_one}}{{ ($account->code_two == 0) ? '' : '.'.$account->code_two }}{{ ($account->code_three == 0) ? '' : '.'.$account->code_three }}{{ ($account->code_four == 0) ? '' : '.'.$account->code_four }}{{ ($account->code_five == 0) ? '' : '.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT) }}</td>
                         <td style="text-align:right; color:black;">
                             @if ($account->level == 5)
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                 @if(isset($account->coin))
                                     <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
                                 @else
                                     <a href="{{ route('accounts.edit',$account->id) }}" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
                                 @endif
+                            @else 
+                            @if(isset($account->coin))
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
+                                @else
+                                    <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}}</a>
+                                @endif
+                            @endif    
                             @else
                                 @if(isset($account->coin))
                                     <a href="#" style="color: black; font-weight: bold;" title="Ver Movimientos">{{$account->description}} ({{ $account->coin }})</a>
@@ -485,12 +505,13 @@
                                 @endif
                             @endif
                         @endif
+                        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                         <td style="text-align:right; color:black; ">  
                             @if($account->code_five == 0)
                                 <a href="{{ route('accounts.createlevel',$account->id) }}" title="Crear"><i class="fa fa-plus" style="color: orangered"></i></a>
                             @endif
                         </td>
-                           
+                        @endif
                     </tr>   
                     
                     @endif

@@ -11,40 +11,41 @@ class ComisionTypeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tipos de Comisión');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+   
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+      
            $comisiontypes      =   ComisionType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
+     
 
     
-        return view('admin.comisiontypes.index',compact('comisiontypes'));
+        return view('admin.comisiontypes.index',compact('comisiontypes','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-        
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
 
         return view('admin.comisiontypes.create');
+    }else{
+        return redirect('/comisiontypes')->withDelete('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
            
            
@@ -64,16 +65,25 @@ class ComisionTypeController extends Controller
         $users->save();
 
         return redirect('/comisiontypes')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/comisiontypes')->withDelete('No Tiene Acceso a Registrar');
+        }
     }
 
 
 
-    public function edit($id)
+
+    public function edit(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
 
         $var = Comisiontype::on(Auth::user()->database_name)->find($id);
         
         return view('admin.comisiontypes.edit',compact('var'));
+    }else{
+        return redirect('/comisiontypes')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -82,6 +92,7 @@ class ComisionTypeController extends Controller
     public function update(Request $request,$id)
     {
        
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $users =  Comisiontype::on(Auth::user()->database_name)->find($id);
         
         $user_status = $users->status;
@@ -110,6 +121,9 @@ class ComisionTypeController extends Controller
 
 
         return redirect('/comisiontypes')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/comisiontypes')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

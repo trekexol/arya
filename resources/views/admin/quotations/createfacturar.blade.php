@@ -1185,7 +1185,6 @@
 
                 var montoFormat_base_imponible_form = montoFormat.replace(/[,]/g,'.');    
 
-
                 document.getElementById("base_imponible_form").value =  montoFormat_base_imponible_form;
                 /*-----------------------------------*/
                 /*Toma la Base y la envia por form*/
@@ -1201,7 +1200,7 @@
                 var total_iva_exento =  parseFloat(totalIvaMenos);
 
                 var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-                
+               
 
                 //document.getElementById("retencion").value = parseFloat(totalIvaMenos);
                 //------------------------------
@@ -1277,7 +1276,8 @@
 
                 var IGTF_input = calc_porc.toFixed(2);
 
-                
+
+
                 document.getElementById("total_pay").value =  total_payformat;
          
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);

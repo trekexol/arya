@@ -74,7 +74,9 @@
                                       
                                         <td>
                                             <a href="{{ route('bankmovements.bankmovementPdfDetail',$var->id_header_voucher ?? null) }}" class="show" title="Ver Comprobante"><i class="fa fa-print"></i></a>  
+                                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                                             <a href="{{ route('bankmovements.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                            @endif
                                         </td>  
                                         
                                         </tr>

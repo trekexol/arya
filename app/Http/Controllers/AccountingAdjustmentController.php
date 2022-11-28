@@ -17,18 +17,18 @@ use Illuminate\Support\Facades\Auth;
 
 class AccountingAdjustmentController extends Controller
 {
-    public $userAccess;
-    public $modulo = 'Cotizacion';
 
     public function __construct(){
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
+
+        $this->middleware('valiuser')->only('create');
+        $this->middleware('valimodulo:Ajustes Contables');
+
     }
  
     public function index($coin = null)
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
          
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
@@ -36,13 +36,8 @@ class AccountingAdjustmentController extends Controller
                 $coin = "bolivares";
             }
 
-            /*$detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-                            ->where('header_vouchers.date', $datenow)
-                            ->select('detail_vouchers.*','header_vouchers.*'
-                            ,'accounts.description as account_description')->orderBy('header_vouchers.date','asc')->get();
-           */
+
+           
                             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -114,12 +109,7 @@ class AccountingAdjustmentController extends Controller
 
 
             return view('admin.accounting_adjustments.index',compact('detailvouchers','datenow','accounts','coin'));
-
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
-        
- 
+            
         
     }
 

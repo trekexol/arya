@@ -13,6 +13,8 @@ class SubsegmentController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Sub Segmentos');
     }
 
     public function list(Request $request, $id_segment = null){
@@ -29,41 +31,35 @@ class SubsegmentController extends Controller
         
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $subsegments      =   Subsegment::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-    //dd('llego');
-        return view('admin.subsegment.index',compact('subsegments'));
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+     
+         $subsegments      =   Subsegment::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+     
+        return view('admin.subsegment.index',compact('subsegments','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-       /* $personregister         = Person::on(Auth::user()->database_name)->find($id);
-        $estados                = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
-        $municipios             = Municipio::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
-       */ $segments                  = Segment::on(Auth::user()->database_name)->orderBy('description', 'asc')->get();
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+        $segments                  = Segment::on(Auth::user()->database_name)->orderBy('description', 'asc')->get();
 
         return view('admin.subsegment.create',compact('segments'));
+    }else{
+        return redirect('/subsegment')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        //
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
             'description'         =>'required|max:255',
             'status'         =>'required|max:1',
@@ -80,6 +76,9 @@ class SubsegmentController extends Controller
 
         $users->save();
         return redirect('/subsegment')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/subsegment')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
     
     public function messages()
@@ -91,13 +90,18 @@ class SubsegmentController extends Controller
     }
 
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
 
         $var  = Subsegment::on(Auth::user()->database_name)->find($id);
         $segments        = Segment::on(Auth::user()->database_name)->get();
 
         return view('admin.subsegment.edit',compact('var','segments'));
+    }else{
+        return redirect('/subsegment')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -105,6 +109,7 @@ class SubsegmentController extends Controller
 
     public function update(Request $request,$id)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $subsegment =  Subsegment::on(Auth::user()->database_name)->find($id);
        
         $subsegment_status = $subsegment->status;
@@ -132,6 +137,10 @@ class SubsegmentController extends Controller
 
 
         return redirect('/subsegment')->withSuccess('Registro Guardado Exitoso!');
+
+    }else{
+        return redirect('/subsegment')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

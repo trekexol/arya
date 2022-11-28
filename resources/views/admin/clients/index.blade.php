@@ -36,7 +36,6 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('vendors') }}" role="tab" aria-controls="contact" aria-selected="false">Vendedores</a>
     </li>
   </ul>
-  
 
 <!-- container-fluid -->
 <div class="container-fluid">
@@ -62,9 +61,11 @@
             </form>
         </div> 
     </div> 
+    @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('clients.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Cliente</a>
       </div>
+    @endif
     </div>
 </div>
   <!-- /.container-fluid -->
@@ -89,8 +90,9 @@
                     <th>Telefono</th>
                   
                     <th>Vendedor</th>
-                    
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                     <th></th>
+                    @endif
                 </tr>
                 </thead>
                 
@@ -114,10 +116,11 @@
                                 @endif
                                 
 
-                                
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                 <td>
                                     <a href="clients/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 </td>
+                                @endif
                             </tr>     
                         @endforeach   
                     @endif

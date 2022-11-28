@@ -10,9 +10,11 @@
       <div class="col-md-6">
           <h2>Sucursales</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
       <div class="col-md-6">
         <a href="{{ route('branches.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Sucursal</a>
       </div>
+      @endif
     </div>
 </div>
   <!-- /.container-fluid -->
@@ -41,7 +43,9 @@
                     <th>Observación</th>
                   
                     <th>Status</th>
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                     <th>Tools</th>
+                    @endif
                 </tr>
                 </thead>
                 
@@ -65,10 +69,11 @@
                                 @else
                                     <td>Inactivo</td>
                                 @endif
-                                
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                                 <td>
                                     <a href="branches/{{$var->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 </td>
+                                @endif
                             </tr>     
                         @endforeach   
                     @endif

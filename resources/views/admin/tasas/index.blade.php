@@ -13,7 +13,7 @@
             <h2>Registrar Tasa del Día</h2>
         </div>
        
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('tasas.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Tasa Nueva</a>
          

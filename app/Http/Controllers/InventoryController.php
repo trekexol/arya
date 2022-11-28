@@ -7,6 +7,7 @@ use App\Account;
 use App\Combo;
 use App\ComboProduct;
 use App\Company;
+use App\UserAccess;
 use App\DetailVoucher;
 use App\HeaderVoucher;
 use App\Inventory;
@@ -26,15 +27,29 @@ class InventoryController extends Controller
 
     public function __construct(){
 
-       $this->middleware('auth');
-   }
+        $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Inventario');
+        $this->middleware('valimodulo:Inventario')->only('indexmovements');
+  
+       }
 
 
-   public function index($type = 'todos')
+   public function index(request $reques,$type = 'todos')
    {
+    /* para hacer el submenu "dinamico" */
+    $user       =   auth()->user();
+    $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->get();
 
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
+    $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
 
         $global = new GlobalController();
         
@@ -75,15 +90,27 @@ class InventoryController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
 
-       return view('admin.inventories.index',compact('inventories','company','type'));
+       return view('admin.inventories.index',compact('sistemas','namemodulomiddleware','actualizarmiddleware','inventories','company','type'));
    }
 
 
 
-   public function indexmovements($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_account = 'todas')
+   public function indexmovements(request $request,$coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
    {
+
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+
        $user       =   auth()->user();
        $users_role =   $user->role_id;
+
+         /* para hacer el submenu "dinamico" */
+    $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta')
+                ->get();
 
        $global = new GlobalController();
 
@@ -105,59 +132,12 @@ class InventoryController extends Controller
         ->select('products.id as id_inventory','products.*')  
         ->get();     
        
-                
-        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
-        ->Where('code_one',1)
-        ->Where('code_two',1)
-        ->Where('code_three',3)
-        ->Where('code_four',1)
-        ->Where('level',5)
-        ->orderBY('description','asc')->get(); 
-
-
-
-         return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','id_account','accounts'));
-   }
-
-  
-    public function getinventory(Request $request, $id_account = 'todas'){
-
-         if($request->ajax()){
-            try{
-
-                
-                if($id_account == 'todas') {
-                    $cond = '!=';
-                    $id_account = 'r';
-                
-                } else {
-                    $cond = '=';
-                    
-                }
-
-                $inventories = Product::on(Auth::user()->database_name)
-                ->where(function ($query){
-                    $query->where('type','MERCANCIA')
-                        ->orWhere('type','COMBO')
-                        ->orWhere('type','MATERIAP');
-                })
-                ->where('products.status',1)
-                ->where('products.id_account',$cond,$id_account)
-                ->select('products.*')  
-                ->get();    
-                 
-
-               return response()->json($inventories);
-
-            }catch(Throwable $th){
-                return response()->json(false,500);
-            }
-        }
-
+         return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory'));
    }
 
    public function storemovements(Request $request)
    {
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         $date_end = request('date_end');
@@ -165,9 +145,15 @@ class InventoryController extends Controller
         $type = request('type');
         $coin = request('coin');
         $id_inventory = request('id_inventories');
-        $id_account = request('id_account');
         $global = new GlobalController();
         
+        $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta')
+                ->get();
    
 
         if($date_frist == 'todo'){
@@ -188,18 +174,9 @@ class InventoryController extends Controller
 
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
-        ->get();    
-        
-        
-        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
-        ->Where('code_one',1)
-        ->Where('code_two',1)
-        ->Where('code_three',3)
-        ->Where('code_four',1)
-        ->Where('level',5)
-        ->orderBY('description','asc')->get(); 
+        ->get();     
        
-        return view('admin.inventories.indexmovement',compact('inventories','coin','date_frist','date_end','type','id_inventory','accounts','id_account'));
+        return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory'));
     }
 
 
@@ -261,7 +238,6 @@ class InventoryController extends Controller
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
         ->where('inventory_histories.id_product',$cond2,$id_inventory)
-        ->where('products.id_account',$cond3,$id_account)
         ->orderBy('inventory_histories.id' ,'ASC')
         ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
         ->get();     
@@ -330,11 +306,7 @@ class InventoryController extends Controller
     
 
    }
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+   
 
 
     public function selectproduct()
@@ -374,10 +346,10 @@ class InventoryController extends Controller
         return view('admin.inventories.create',compact('product'));
    }
 
-   public function create_increase_inventory($id_inventory)
+   public function create_increase_inventory(request $request,$id_inventory)
    {
 
-       
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
         $global = new GlobalController; 
         $inventory->amount = $global->consul_prod_invt($inventory->id);    
@@ -386,7 +358,6 @@ class InventoryController extends Controller
         //Si la taza es automatica
         if($company->tiporate_id == 1){
             $bcv = $global->search_bcv();
-
         }else{
             //si la tasa es fija
             $bcv = $company->rate;
@@ -401,11 +372,15 @@ class InventoryController extends Controller
                                                         ->orderBY('description','asc')->pluck('description','id')->toArray();
 
         return view('admin.inventories.create_increase_inventory',compact('inventory','bcv','contrapartidas'));
+    }else{
+        return redirect('/inventories')->withDanger('No Tiene Permiso');
+
+    }
    }
 
-   public function create_decrease_inventory($id_inventory)
+   public function create_decrease_inventory(request $request,$id_inventory)
    {
-            
+    if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
     $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
     $global = new GlobalController; 
     $inventory->amount = $global->consul_prod_invt($inventory->id);    
@@ -420,14 +395,14 @@ class InventoryController extends Controller
         }
 
         return view('admin.inventories.create_decrease_inventory',compact('inventory','bcv'));
+
+    }else{
+        return redirect('/inventories')->withDanger('No Tiene Permiso');
+
+    }
    }
 
-   /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+
 
     public function store(Request $request)
     {
@@ -467,7 +442,7 @@ class InventoryController extends Controller
 
     public function store_increase_inventory(Request $request)
     {
-        
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             
             'id_inventory'    =>'required',
@@ -560,13 +535,20 @@ class InventoryController extends Controller
            return redirect('inventories/index/todos/createincreaseinventory/'.$id_inventory.'')->withDanger('La cantidad nueva debe ser mayor a cero!');
 
         }
+    }else{
+        return redirect('/inventories')->withDanger('No Tiene Permiso');
+
+    }
 
     }
 
 
+   
+
+
     public function store_decrease_inventory(Request $request)
     {
-   
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             
             'id_inventory'  =>'required',
@@ -589,7 +571,6 @@ class InventoryController extends Controller
         $id_inventory = request('id_inventory');
 
         if($valor_sin_formato_amount_new > 0){
-            
             if($valor_sin_formato_amount_new <= $amount_old){
 
                 $inventory = Product::on(Auth::user()->database_name)->findOrFail($id_inventory);
@@ -606,44 +587,38 @@ class InventoryController extends Controller
                 $inventory->save();*/
 
                 $date = Carbon::now();
-                $datenow = $date->format('Y-m-d');
-                
-               // $counterpart = request('Subcontrapartida');
+                $datenow = $date->format('Y-m-d');   
 
                 $global = new GlobalController; 
                 $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
 
-               // if($counterpart != 'Seleccionar'){
+                $header_voucher  = new HeaderVoucher();
 
-                    $header_voucher  = new HeaderVoucher();
-                    $header_voucher->setConnection(Auth::user()->database_name);
-
-                    $header_voucher->description = "Disminucion de Inventario";
-                    $header_voucher->date = $datenow;
-                    
-                    $header_voucher->status =  "1";
+                $header_voucher->description = "Disminucion de Inventario";
+                $header_voucher->date = $datenow;
                 
-                    $header_voucher->save();
+                $header_voucher->status =  "1";
+            
+                $header_voucher->save();
 
-                    if($inventory->money == 'Bs'){
-                        $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
-                    }else{
-                        $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
-                    }
+                if($inventory->money == 'Bs'){
+                    $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
+                }else{
+                    $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
+                }
 
-                    if ($inventory->id_account == null) {
-                        $inventory->id_account = 17; 
-                    }
-                    
-                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
-                                        $id_user,0,$total);
+                if ($inventory->id_account == null) {
+                    $inventory->id_account = 17; 
+                }
+                
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
+                                    $id_user,0,$total);
 
-                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Gastos de ajuste de inventario%')->first();  
+                $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
 
-                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
-                                      $id_user,$total,0);
-               // }
-
+                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
+                                    $id_user,$total,0);
+            
                 return redirect('inventories/index/todos')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
             
             }else{
@@ -654,7 +629,10 @@ class InventoryController extends Controller
             return redirect('inventories/index/todos/createdecreaseinventory/'.$id_inventory.'')->withDanger('La cantidad a disminuir debe ser mayor a cero!');
 
         }
+    }else{
+        return redirect('/inventories')->withDanger('No Tiene Permiso');
 
+    }
     
     }
 
@@ -786,23 +764,6 @@ class InventoryController extends Controller
 
 
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
-
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
    public function edit($id)
    {
         $inventory = Inventory::on(Auth::user()->database_name)->find($id);
@@ -813,13 +774,7 @@ class InventoryController extends Controller
   
    }
 
-   /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+   
    public function update(Request $request, $id)
    {
 
@@ -860,16 +815,5 @@ class InventoryController extends Controller
     return redirect('inventories')->withSuccess('Actualizacion Exitosa!');
     }
 
-
-   /**
-    * Remove the specified resource from storage.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function destroy($id)
-   {
-       //
-   }
 
 }

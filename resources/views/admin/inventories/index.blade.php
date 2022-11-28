@@ -66,21 +66,57 @@
 
 @section('content')
 
+
+
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
-    </li>
+    @if (Auth::user()->role_id  == '1')
+  
+   
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
+      </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+      </li>
+      
     
+    @else
+  
+      @foreach($sistemas as $sistemas)
+      @if($sistemas->name == 'Productos y Servicio')
+      <?php $valor = $sistemas->agregar; ?>
+      @endif
+          @if($namemodulomiddleware == $sistemas->name)
+      <li class="nav-item" role="presentation">
+          <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+        </li>
+        @else
+        <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+        </li>
+        @endif
+  
+      @endforeach
+      @if($namemodulomiddleware == 'Inventario')
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+        </li>
+      @endif
+   
+  @endif
   </ul>
+
+
+    
+    
+ 
+<div class="container-fluid">
 
 
   <div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
@@ -236,6 +272,13 @@
         </div> 
         </div>
         <div class="col-sm-3">
+        
+        @if(Auth::user()->role_id  == '1' || $valor == 1)
+        <div class="col-md-4">
+            <a href="{{ route('products.create')}}" class="btn btn-info  float-md-center"  role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
+          </div>
+          @endif
+        <div class="col-md-2 dropdown mb-4">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
                 Imprimir
@@ -313,9 +356,10 @@
                 
                 <th class="text-center">Moneda</th>
               
-                <th class="text-center" style="width: 1%">Foto del Producto.</th>
-                
+                <th class="text-center"  style="width: 1%">Foto del Producto.</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                 <th class="text-center"></th>
+                @endif
             </tr>
             </thead>
             
@@ -354,7 +398,7 @@
                                 @endif
 
                             </td> 
-                            
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                             <td class="text-center">
                                 @if($var->type == 'COMBO')
                                 <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span> 
@@ -365,6 +409,7 @@
                                 <a href="{{ route('inventories.create_decrease_inventory',$var->id_inventory) }}" style="color: rgb(248, 62, 62);" title="Disminuir Inventario"><i class="fa fa-minus"></i></a>
                                 @endif
                             </td>
+                            @endif
                         </tr>     
                     @endforeach   
                 @endif

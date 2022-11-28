@@ -24,14 +24,20 @@ class DeliveryNoteController extends Controller
 
         $this->middleware('auth');
         $this->userAccess = new UserAccessController();
+
+
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Notas de Entrega');
     }
  
 
-    public function index($id_quotation = null,$number_pedido = null,$saldar = null)
+    public function index(request $request,$id_quotation = null,$number_pedido = null,$saldar = null)
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
+      
+        $agregarmiddleware = $request->get('agregarmiddleware');
+    $actualizarmiddleware = $request->get('actualizarmiddleware');
+    $eliminarmiddleware = $request->get('eliminarmiddleware');
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
 
             if(isset($id_quotation)) {
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
@@ -55,16 +61,14 @@ class DeliveryNoteController extends Controller
 
 
             
-            return view('admin.quotations.indexdeliverynote',compact('quotations'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.quotations.indexdeliverynote',compact('agregarmiddleware','quotations'));
+      
     }
  
 
-    public function indexsald($id_quotation = null,$number_pedido = null)
+    public function indexsald(request $request,$id_quotation = null,$number_pedido = null)
     {
-        if($this->userAccess->validate_user_access($this->modulo)){
+        if(Auth::user()->role_id  == '1' || $request->get('namemodulomiddleware') == 'Notas de Entrega'){
             $user       =   auth()->user();
             $users_role =   $user->role_id;
 
@@ -112,9 +116,11 @@ class DeliveryNoteController extends Controller
 
 
 
-    public function createdeliverynote($id_quotation,$coin,$type = null,$photo_product = null)
+    public function createdeliverynote(request $request,$id_quotation,$coin,$type = null,$photo_product = null)
     {   
-        
+        if(Auth::user()->role_id  == '1' || $request->get('namemodulomiddleware') == 'Notas de Entrega'){
+
+            $actualizarmiddleware = $request->get('actualizarmiddleware');
          $quotation = null;
              
          if(isset($id_quotation)){
@@ -209,10 +215,14 @@ class DeliveryNoteController extends Controller
             /*-------------- */
              
      
-             return view('admin.quotations.createdeliverynote',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr','type','photo_product'));
+             return view('admin.quotations.createdeliverynote',compact('actualizarmiddleware','coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr','type','photo_product'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          } 
+
+        }else{
+            return redirect('/quotations/index')->withDanger('No Tiene Permiso');
+        } 
          
     }
 

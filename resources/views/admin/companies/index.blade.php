@@ -12,7 +12,7 @@
         <div class="col-md-6 h2">Empresas Registradas
         </div>
 
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('companies.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empresa</a>
 
@@ -41,9 +41,12 @@
                 <th>Nro</th>
                 <th>Login</th>
                 <th>Razon Social</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                 <th>Opciones</th>
+                @endif
+                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                 <th>Logo</th>
-
+                @endif
             </tr>
             </thead>
 
@@ -56,12 +59,12 @@
                     <td>{{$user->login}}</td>
                     <td>{!!$user->razon_social!!}</td>
 
-                    @if (Auth::user()->role_id  == '1')
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                         <td>
                         <a href="{{route('companies.edit',$user->id) }}" title="Editar"><i class="fa fa-edit"></i></a>
                         </td>
                     @endif
-                    @if (Auth::user()->role_id  == '1')
+                    @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                         <td>
                            <button>Subir Logo</button>
                         </td>

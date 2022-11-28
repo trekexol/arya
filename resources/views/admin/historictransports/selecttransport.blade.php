@@ -36,14 +36,15 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
-                <th>Seleccionar</th>
                 <th>Modelo</th>
                 <th>Color</th>
                 <th>Tipo</th>
                 <th>Placa</th>
                 <th>Foto del Transporte</th>
                 <th>Status</th>
+                @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                 <th>Tools</th>
+                @endif
             </tr>
             </thead>
             
@@ -52,9 +53,6 @@
                 @else  
                     @foreach ($transports as $transport)
                         <tr>
-                            <td>
-                                <a href="{{$transport->id }}/selectemployee" title="Editar"><i class="fa fa-edit"></i></a>
-                               </td>
                             <td>{{$transport->modelos['description']}}</td>
                             <td>{{$transport->colors['description']}}</td>
                             <td>{{$transport->type}}</td>
@@ -65,10 +63,11 @@
                             @else
                                 <td>Inactivo</td>
                             @endif
-                            
+                            @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                             <td>
                                 <a href="{{$transport->id }}/selectemployee" title="Editar"><i class="fa fa-edit"></i></a>
                                </td>
+                            @endif
                         </tr>     
                     @endforeach   
                 @endif

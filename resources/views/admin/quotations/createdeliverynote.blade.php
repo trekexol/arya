@@ -202,6 +202,7 @@
                             @endif
                             
                         </div>
+                        
                     
                 </div>
             </div>
@@ -276,7 +277,6 @@
 <script type="text/javascript">
 
     calculate();
-
 
     function pdf(valor) {
         let inputIva = document.getElementById("iva").value; 

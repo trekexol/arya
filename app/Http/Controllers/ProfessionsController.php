@@ -11,40 +11,39 @@ class ProfessionsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tipos de Empleados');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $professions      =   Profession::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        
+           $professions      =   Profession::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+      
     
-        return view('admin.professions.index',compact('professions'));
+        return view('admin.professions.index',compact('professions','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-        
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
 
         return view('admin.professions.create');
+    }else{
+        return redirect('/professions')->withDelete('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
            
             'name'         =>'required|max:160',
@@ -65,16 +64,23 @@ class ProfessionsController extends Controller
         $users->save();
 
         return redirect('/professions')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/professions')->withDelete('No Tiene Acceso a Registrar');
+        }
     }
 
 
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
 
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $user  = Profession::on(Auth::user()->database_name)->find($id);
         
         return view('admin.professions.edit',compact('user'));
+    }else{
+        return redirect('/professions')->withDelete('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -82,7 +88,7 @@ class ProfessionsController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $users =  Profession::on(Auth::user()->database_name)->find($id);
         $user_rol = $users->role_id;
         $user_status = $users->status;
@@ -111,6 +117,10 @@ class ProfessionsController extends Controller
 
 
         return redirect('/professions')->withSuccess('Registro Guardado Exitoso!');
+
+    }else{
+        return redirect('/professions')->withDelete('No Tiene Acceso a Editar');
+        }
 
     }
 

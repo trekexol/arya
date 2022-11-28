@@ -35,35 +35,42 @@ class ExpensesAndPurchaseController extends Controller
     public $userAccess;
     public $modulo = 'Cotizacion';
 
+   
     public function __construct(){
 
         $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
-    }
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Gastos y Compras');
+       }
  
 
-   public function index()
-   {
-        if($this->userAccess->validate_user_access($this->modulo)){
-          
-            $user       =   auth()->user();
-            $users_role =   $user->role_id;
-            
-
-                $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+       public function index(request $request)
+       {
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+        $namemodulomiddleware = $request->get('namemodulomiddleware');
+    
+        
+    $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
                                                             ->where('amount_with_iva','=',null)
                                                             ->where('status',1)
                                                             ->get();
 
-            return view('admin.expensesandpurchases.index',compact('expensesandpurchases'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
-        }
+            return view('admin.expensesandpurchases.index',compact('namemodulomiddleware','expensesandpurchases','agregarmiddleware','eliminarmiddleware'));
+      
    }
 
 
-   public function index_historial()
+   public function index_historial(request $request)
    {
+
+    if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Gastos y Compras'){
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+     
        $user       =   auth()->user();
        $users_role =   $user->role_id;
        
@@ -76,7 +83,13 @@ class ExpensesAndPurchaseController extends Controller
         $datenow = $date->format('Y-m-d');  
 
 
-       return view('admin.expensesandpurchases.index_historial',compact('expensesandpurchases','datenow'));
+       return view('admin.expensesandpurchases.index_historial',compact('agregarmiddleware','expensesandpurchases','datenow'));
+
+    }else{
+    
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
+   
+     }
    }
 
 
@@ -99,7 +112,7 @@ class ExpensesAndPurchaseController extends Controller
                 $expenses = MultipaymentExpense::on(Auth::user()->database_name)->where('id_header',$multipayment->id_header)->get();     
                 $multipayments_detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$multipayment->id_header)->get();
             }
-           //-------
+           
             
 
        
@@ -107,26 +120,40 @@ class ExpensesAndPurchaseController extends Controller
    }
 
 
-   public function index_delivery_note()
+   public function index_delivery_note(request $request)
    {
-       $user       =   auth()->user();
-       $users_role =   $user->role_id;
-       
+ 
+     if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Gastos y Compras'){
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+        $namemodulomiddleware = $request->get('namemodulomiddleware');
+
+
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
                                 ->where('date_delivery_note','<>',null)
                                 ->get();
       
 
-       return view('admin.expensesandpurchases.indexdeliverynote',compact('expenses'));
+       return view('admin.expensesandpurchases.indexdeliverynote',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','expenses'));
+
+     }else{
+    
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
+   
+     }
    }
 
 
 
 
 
-   public function createdeliverynote($id_expense,$coin)
+   public function createdeliverynote(request $request,$id_expense,$coin)
    {
-       
+   
+  
+      if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
             
         if(isset($id_expense)){
@@ -198,13 +225,13 @@ class ExpensesAndPurchaseController extends Controller
         }else{
             return redirect('/expensesandpurchases')->withDanger('La compra no existe');
         } 
-        
+    }else{
+    
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
+   
+     }
    }
-   /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+   
     
     public function create_expense($id_provider = null)
     {
@@ -263,9 +290,9 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function updateexpense($id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date,$rate)
+    public function updateexpense(request $request,$id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date)
     {   
-       
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
         if ($observation == '-1'){
             $observation = '';
         }
@@ -275,10 +302,9 @@ class ExpensesAndPurchaseController extends Controller
         if ($serie == '-1'){
             $serie = '';
         }
-        $sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate));
 
         ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id_quotation)
-                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date,'rate'=>$sin_formato_rate]);
+                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date]);
 
 
         /*$historial_quotation = new HistorialQuotationController();
@@ -287,6 +313,10 @@ class ExpensesAndPurchaseController extends Controller
 
        // return view('admin.expensesandpurchases.createexpense',compact('datenow','provider'));
         return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+
+    }else{
+        return redirect('/expensesandpurchases/expensevoucher/'.$id_expense.'/bolivares')->withDanger('Esta factura no retiene IVA!');
+    }
         
     }
 
@@ -329,9 +359,17 @@ class ExpensesAndPurchaseController extends Controller
 
     }
 
-    public function create_expense_detail($id_expense,$coin,$type = null,$id_product = null,$account = null,$subaccount = null)
+    public function create_expense_detail(request $request,$id_expense,$coin,$type = null,$id_product = null,$account = null,$subaccount = null)
     {
-        
+
+    
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
+
+            $agregarmiddleware = $request->get('agregarmiddleware');
+            $actualizarmiddleware = $request->get('actualizarmiddleware');
+            $eliminarmiddleware = $request->get('eliminarmiddleware');
+
         $expense = null;
         $provider = null;
         $expense_details = null;
@@ -424,7 +462,12 @@ class ExpensesAndPurchaseController extends Controller
             $coin = 'dolares';
         }
 
-        return view('admin.expensesandpurchases.create',compact('type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas','account','subaccount'));
+        return view('admin.expensesandpurchases.create',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','type','coin','bcv','datenow','provider','expense','expense_details','branches','inventory','accounts_inventory','contrapartidas','account','subaccount'));
+   
+    }else{
+        return redirect('/expensesandpurchases')->withDanger('No Tienes Permiso!');
+    }
+   
     }
 
     public function create_expense_voucher($id_expense,$coin)
@@ -457,9 +500,9 @@ class ExpensesAndPurchaseController extends Controller
   
 
 
-    public function create_payment($id_expense,$coin)
+    public function create_payment(request $request,$id_expense,$coin)
     {
-      
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
         $expense_details = null;
@@ -588,13 +631,17 @@ class ExpensesAndPurchaseController extends Controller
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
                                 ,'islrconcepts'));
+
+                            }else{
+                                return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
+                            }
          
          
     }
 
-    public function create_payment_after($id_expense,$coin)
+    public function create_payment_after(request $request,$id_expense,$coin)
     {
-       
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
         $expense_details = null;
@@ -722,15 +769,24 @@ class ExpensesAndPurchaseController extends Controller
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
                                 ,'islrconcepts'));
          
+                            }else{
+                                return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
+                            }
          
     }
 
 
-    public function selectprovider()
+    public function selectprovider(request $request)
     {
+
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
             $providers     = Provider::on(Auth::user()->database_name)->get();
         
             return view('admin.expensesandpurchases.selectprovider',compact('providers'));
+        }else{
+            return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+
+        }
     }
     
     public function selectproviderexpense(Request $request,$id)
@@ -800,15 +856,10 @@ class ExpensesAndPurchaseController extends Controller
     }
     
 
-    /**
-        * Store a newly created resource in storage.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @return \Illuminate\Http\Response
-        */
+  
     public function store(Request $request)
     {
-    
+        if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $data = request()->validate([
             
             'id_user'         =>'required',
@@ -858,6 +909,11 @@ class ExpensesAndPurchaseController extends Controller
 
 
         return redirect('expensesandpurchases/register/'.$var->id.'/bolivares')->withSuccess('Gasto o Compra Resgistrada Correctamente!');
+
+    }else{
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+
+    }
     }
 
 
@@ -2467,32 +2523,7 @@ class ExpensesAndPurchaseController extends Controller
     }
 
    
-
-    /**
-        * Display the specified resource.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-        * Show the form for editing the specified resource.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
-    public function edit($id,$coin)
-    {
-        /*$expense_detail = ExpensesDetail::on(Auth::user()->database_name)->find($id);
-    
-    
-        return view('admin.expensesandpurchases.edit_product',compact('expense_detail','coin'));*/
-    
-    }
+  
     public function editexpensesandpurchaseproduct($id)
     {
             $expensesandpurchase_product = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id);
@@ -2509,8 +2540,9 @@ class ExpensesAndPurchaseController extends Controller
         
     
     }
-    public function editproduct($id,$coin)
+    public function editproduct(request $request,$id,$coin)
     {
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
         $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->find($id);
         $rate = null;
 
@@ -2532,17 +2564,14 @@ class ExpensesAndPurchaseController extends Controller
         }else{
             return redirect('/expensesandpurchases')->withDanger('No se Encontro el Producto!');
         }
+
+    }else{
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+    }
         
     }
     
 
-    /**
-        * Update the specified resource in storage.
-        *
-        * @param  \Illuminate\Http\Request  $request
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
     public function update(Request $request, $id)
     {
 
@@ -2629,7 +2658,7 @@ class ExpensesAndPurchaseController extends Controller
 
         public function update_product(Request $request, $id)
         { 
-            //dd($request);
+            if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
             $data = request()->validate([
                 
                 'description'   =>'required',
@@ -2722,17 +2751,16 @@ class ExpensesAndPurchaseController extends Controller
             Precio Viejo: ".number_format($price_old, 2, ',', '.')." Cantidad: ".$amount_old."/ Precio Nuevo: ".number_format($var->price, 2, ',', '.')." Cantidad: ".$var->amount);
         */
             return redirect('/expensesandpurchases/register/'.$var->id_expense.'/'.$coin.'')->withSuccess('Actualizacion Exitosa!');
-        
+        }else{
+            return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+        }
         }
 
-    /**
-        * Remove the specified resource from storage.
-        *
-        * @param  int  $id
-        * @return \Illuminate\Http\Response
-        */
+
     public function destroy(Request $request)
     {
+        if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find(request('id_expense_modal')); 
         
         $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$expense->id)
@@ -2754,6 +2782,10 @@ class ExpensesAndPurchaseController extends Controller
         $historial_expense->registerAction($expense,"expense","Se elimino la Compra");
         
         return redirect('/expensesandpurchases')->withDanger('Reverso Exitoso!!');
+        }else{
+
+            return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+        }
     }
 
 

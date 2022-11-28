@@ -16,30 +16,32 @@ class CompaniesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:General');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+ 
+    public function index(Request $request)
     {
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           /* $user_companies = UserCompany::on("logins")->where('id_user',Auth::on("logins")->id())->first();
-            $users      =   Company::on("logins")->on($user_companies->name_connection)->orderBy('id', 'asc')->get();*/
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        if(Auth::user()->database_name == 'arya'){
             $users      =   Company::on("logins")->orderBy('id', 'asc')->get();
-        
-        }elseif($users_role == '2'){
-            return view('admin.index');
+        }else{
+            $users      =   Company::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
         }
-        return view('admin.companies.index',compact('users'));
+        
+        
+        return view('admin.companies.index',compact('users','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $bcv = 0;
         $date           = Carbon::now();
         $periodo        = $date->format('Y');
@@ -51,12 +53,17 @@ class CompaniesController extends Controller
         $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
 
         return view('admin.companies.create',compact('periodo','tipoinvs','tiporates','bcv','company'));
+        }else{
+            return redirect('/companies')->withDelete('No Tiene Permiso');
+
+        }
+   
     }
 
     public function store(Request $request)
     {
 
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
             'Login'             =>'required|max:191',
             'Email'             =>'required|max:255',
@@ -144,10 +151,16 @@ class CompaniesController extends Controller
         $companies->save();
         
         return redirect('/companies/register')->withSuccess('Actualizado Exitosamente!');
+
+    }else{
+        return redirect('/companies')->withDelete('No Tiene Permiso');
+
+    }
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $company            = Company::on("logins")->find($id);
 
         $urlToGet ='https://www.bcv.org.ve/tasas-informativas-sistema-bancario';
@@ -168,10 +181,16 @@ class CompaniesController extends Controller
 
 
         return view('admin.companies.edit',compact('company','bcv','periodo','tipoinvs','tiporates'));
+
+    }else{
+        return redirect('/companies')->withDelete('No Tiene Permiso');
+
+    }
     }
 
     public function update(Request $request,$id)
     {
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $validar              =  Company::on("logins")->find($id);
 
         $request->validate([
@@ -199,6 +218,11 @@ class CompaniesController extends Controller
 
         $companies->save();
         return redirect('/companies')->withSuccess('Registro Guardado Exitoso!');
+
+    }else{
+            return redirect('/companies')->withDelete('No Tiene Permiso');
+    
+        }
 
     }
 

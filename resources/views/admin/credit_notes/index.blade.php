@@ -57,10 +57,11 @@
             <a href="{{ route('creditnotes.historial')}}" class="btn btn-info  float-md-right" role="button" aria-pressed="true">Historial</a>
         </div>
       @endif
-      
+      @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
       <div class="col-md-4">
         <a href="{{ route('creditnotes.createcreditnote')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Nota de Crédito</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -87,6 +88,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
+            @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                 <th class="text-center"></th>
                 <th class="text-center">Fecha</th>
                 <th class="text-center">N°</th>
@@ -97,7 +99,10 @@
                 <th class="text-center">Monto USD</th>
                 <th class="text-center">Monto Bs</th>
                 <th class="text-center">(S)</th>
+            @endif
+                @if(Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
                 <th class="text-center"></th>
+                @endif
                
             </tr>
             </thead>
@@ -107,11 +112,13 @@
                 @else  
                     @foreach ($creditnotes as $creditnote)
                         <tr>
+                        @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                             <td>
                                 <a href="{{ route('creditnotes.create',[$creditnote->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
                                  <a href="{{ route('pdf.creditnotemediacarta',[$creditnote->id,$creditnote->coin])}},ventana,left=800,top=800,height=800,width=1000,scrollbar=si,location=no,resizable=si,menubar=no" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
                             <td class="text-center">{{ date_format(date_create($creditnote->date),"d-m-Y") ?? ''}}</td>
+                        @endif
                             <td class="text-center">{{ $creditnote->serie ?? $creditnote->id ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->quotations['number_invoice'] ?? ''}}</td>
                             <td class="text-center">{{ $creditnote->clients['name'] ?? $creditnote->quotations->clients['name'] ?? ''}}</td>
@@ -125,11 +132,11 @@
                             </td>  
                             @else
                             <td class="text-center">P</td>
+                            @if(Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
                             <td>
-                                <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>  
-                            @endif
-              
+                            <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                            </td> 
+                            @endif               
                         </tr>     
                     @endforeach   
                 @endif

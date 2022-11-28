@@ -26,10 +26,19 @@
                 -->
                 <a href="#" data-toggle="modal" data-target="#ExcelModalAccount" class="dropdown-item bg-light">Exportar a Excel</a> 
             </div>
+<<<<<<< HEAD
         </div> 
         <div class="col-sm-4" style="text-align: right;">
             <a href="{{ route('directpaymentorders.create')}}" class="btn btn-info" title="Transferencia">Crear Orden de Pago</a>
         </div>
+=======
+        </div>
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1') 
+        <div class="col-sm-4" style="text-align: right;">
+            <a href="{{ route('directpaymentorders.create')}}" class="btn btn-info" title="Transferencia">Crear Orden de Pago</a>
+        </div>
+        @endif
+>>>>>>> fb39095d (todo el proyecto)
     </div>
 </div>
 <br>
@@ -75,7 +84,13 @@
                                         <td>{{ number_format($var->haber / $var->tasa, 2, ',', '.')}}</td>
                                         <td>
                                             <a href="#" onclick="pdf({{ $var->id_header_voucher }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+<<<<<<< HEAD
                                             <a href="{{ route('orderpayment.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+=======
+                                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
+                                            <a href="{{ route('orderpayment.delete',$var->id_header_voucher ?? null) }}" class="delete" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                            @endif
+>>>>>>> fb39095d (todo el proyecto)
                                         </td>  
                                         
                                         </tr>

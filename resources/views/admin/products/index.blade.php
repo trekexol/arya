@@ -67,19 +67,44 @@
 @section('content')
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
+    @if (Auth::user()->role_id  == '1')
+  
+   
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
+      </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+      </li>
+      
+    
+    @else
+  
+    @foreach($sistemas as $sistemas)
+    @if($namemodulomiddleware == $sistemas->name)
+<li class="nav-item" role="presentation">
+    <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
   </li>
-    <li class="nav-item" role="presentation">
+  @else
+  <li class="nav-item" role="presentation">
+    <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+  </li>
+  @endif
+  @if($sistemas->name == 'Inventario')
+  <li class="nav-item" role="presentation">
       <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
     </li>
-    
+  @endif
+@endforeach
+  
+   
+  @endif
   </ul>
 
 <!-- container-fluid -->
@@ -108,11 +133,11 @@
           </div> 
       </div> 
 
-      
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-sm-3">
         <a href="{{ route('products.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Producto </a>
       </div>
-
+      @endif
       <div class="col-sm-2">
         <select class="form-control" name="type" id="type">
             @if(isset($type))
@@ -141,6 +166,7 @@
             
 
         </select>
+     
     </div>
     </div>
 
@@ -230,9 +256,15 @@
                             <td class="text-center" style="font-weight: bold; color: green">A</td>
                             @endif
                             <td class="text-center" width="9%">
+                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                 <a href="{{ route('products.edit',$product->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
+                                @endif
+                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                                 <a href="{{ route('products.productprices',$product->id) }}"  title="Listado de Precios"><i class="fa fa-list"></i></a>
+                                @endif
+                                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
                                 <a href="#" class="delete" data-id-product={{$product->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                @endif
                             </td>
                         </tr>     
                     @endforeach   

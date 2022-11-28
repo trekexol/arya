@@ -8,43 +8,41 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentTypeController extends Controller
 {
+  
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Tipos de Pagos');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $user       =   auth()->user();
-        $users_role =   $user->role_id;
-        if($users_role == '1'){
-           $paymenttypes = PaymentType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
-        }elseif($users_role == '2'){
-            return view('admin.index');
-        }
 
-    
-        return view('admin.paymenttypes.index',compact('paymenttypes'));
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+
+        $paymenttypes = PaymentType::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+       
+        return view('admin.paymenttypes.index',compact('paymenttypes','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-        
+  
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
 
         return view('admin.paymenttypes.create');
+    }else{
+        return redirect('/paymenttypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         $data = request()->validate([
            
             'description'   =>'required|max:100',
@@ -78,16 +76,23 @@ class PaymentTypeController extends Controller
         $users->save();
 
         return redirect('paymenttypes')->withSuccess('Registro Exitoso!');
+    }else{
+        return redirect('/paymenttypes')->withSuccess('No Tiene Acceso a Registrar');
+        }
     }
 
 
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
 
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $var = Paymenttype::on(Auth::user()->database_name)->find($id);
         
         return view('admin.paymenttypes.edit',compact('var'));
+    }else{
+        return redirect('/paymenttypes')->withSuccess('No Tiene Acceso a Editar');
+        }
     }
 
    
@@ -95,7 +100,7 @@ class PaymentTypeController extends Controller
 
     public function update(Request $request,$id)
     {
-       
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $vars =  Paymenttype::on(Auth::user()->database_name)->find($id);
 
         $var_status = $vars->status;
@@ -138,6 +143,10 @@ class PaymentTypeController extends Controller
 
 
         return redirect('paymenttypes')->withSuccess('Registro Guardado Exitoso!');
+
+    }else{
+        return redirect('/paymenttypes')->withSuccess('No Tiene Acceso a Editar');
+        }
 
     }
 

@@ -13,7 +13,7 @@
             <h2>Fórmulas de Nóminas Registradas</h2>
         </div>
        
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
+        @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-6">
             <a href="{{ route('nominaformulas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Fórmula</a>
          
@@ -44,8 +44,9 @@
                 <th>Descripción</th>
                 <th>Tipo</th>
                 <th>Contenida en:</th>
+                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1')
                 <th></th>
-              
+                @endif
             </tr>
             </thead>
             
@@ -58,7 +59,7 @@
                         <td>{{$nomina_formula->description}}</td>
                         <td>{{$nomina_formula->type}}</td>
                         <td>{{$nomina_formula->concepts}}</td>
-                    @if (Auth::user()->role_id  == '1')
+                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1')
                         <td>
                             <a href="{{route('nominaformulas.edit',$nomina_formula->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                         </td>

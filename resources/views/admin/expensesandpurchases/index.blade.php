@@ -27,9 +27,11 @@
       <div class="col-md-6">
           <h2>Gastos y Compras por Procesar</h2>
       </div>
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
       <div class="col-md-6">
         <a href="{{ route('expensesandpurchases.create')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar un Gasto o Compra</a>
       </div>
+      @endif
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -56,14 +58,17 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr> 
+                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
                 <th ></th>
+                @endif
                 <th class="text-center">ID</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha</th>
+                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' ) 
                 <th ></th>
-               
+                @endif
             </tr>
             </thead>
             
@@ -72,17 +77,21 @@
                 @else  
                     @foreach ($expensesandpurchases as $expensesandpurchase)
                         <tr>
+                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
                             <td>
                             <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,$expensesandpurchase->coin]) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
                             </td>
+                            @endif
                             <td>{{$expensesandpurchase->id}}</td>
                             <td>{{$expensesandpurchase->invoice}}</td>
                             <td>{{$expensesandpurchase->serie}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
                             <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' ) 
                             <td>
                                 <a href="#" class="delete" data-id-expense={{$expensesandpurchase->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>    
+                            </td> 
+                            @endif   
                         </tr>     
                     @endforeach   
                 @endif

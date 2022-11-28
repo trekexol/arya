@@ -12,15 +12,17 @@ class NominaFormulaController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Formulas de Nomina');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    
+    public function index(Request $request)
     {
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
         
         $user       =   auth()->user();
         $users_role =   $user->role_id;
@@ -57,21 +59,26 @@ class NominaFormulaController extends Controller
         }
         
 
-        return view('admin.nominaformulas.index',compact('nomina_formulas'));
+        return view('admin.nominaformulas.index',compact('nomina_formulas','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
       
     }
 
-    public function create()
+    public function create(Request $request)
     {
 
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
 
         return view('admin.nominaformulas.create');
+    
+        }else{
+
+            return redirect('/nominaformulas')->withSuccess('No Tiene Acceso a Registrar Formulas');
+        }
     }
 
     public function store(Request $request)
     {
-        
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
         
         $data = request()->validate([
            
@@ -92,16 +99,25 @@ class NominaFormulaController extends Controller
         $users->save();
 
         return redirect('/nominaformulas')->withSuccess('Registro Exitoso!');
+    }else{
+
+        return redirect('/nominaformulas')->withDelete('No tienes permiso para agregar');
+    }
     }
 
 
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $var   = NominaFormula::on(Auth::user()->database_name)->find($id);
         
         return view('admin.nominaformulas.edit',compact('var'));
+
+        }else{
+
+            return redirect('/nominaformulas')->withDelete('No Tiene Permiso Para Editar Formulas!');
+        }
     }
 
    
@@ -109,6 +125,8 @@ class NominaFormulaController extends Controller
 
     public function update(Request $request,$id)
     {
+
+        if(Auth::user()->role_id  == '1' || $request->get('actualizarmiddleware') == 1){
         $vars =  NominaFormula::on(Auth::user()->database_name)->find($id);
         $var_status = $vars->status;
 
@@ -135,7 +153,10 @@ class NominaFormulaController extends Controller
 
 
         return redirect('/nominaformulas')->withSuccess('Registro Guardado Exitoso!');
+    }else{
+        return redirect('/nominaformulas')->withDelete('No tienes permiso para editar');
 
+    }
     }
 
 
