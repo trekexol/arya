@@ -132,30 +132,22 @@ class ReceiptController extends Controller
 
     }
 
-<<<<<<< HEAD
-    public function createreceipt($type = null) // crando recibo
-    {
-=======
     public function createreceipt(request $request,$type = null) // crando recibo
     {
 
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
->>>>>>> fb39095d (todo el proyecto)
         $transports     = Transport::on(Auth::user()->database_name)->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');    
 
         return view('admin.receipt.createreceipt',compact('datenow','transports','type'));
-<<<<<<< HEAD
-=======
 
     }else{
         return redirect('/receipt')->withDanger('No Tiene Permiso!');
 
     }
->>>>>>> fb39095d (todo el proyecto)
     }
     
 
@@ -7763,9 +7755,7 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
     {        
 
       
-        $userAccess = new UserAccessController();
 
-        if($userAccess->validate_user_access($this->modulo)){
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
             $client = null; 
@@ -7783,9 +7773,7 @@ public function createfacturar_aftereceipt($id_quotation,$coin) // cobrando reci
             }
             
             return view('admin.receipt.index_accounts_receivable',compact('client','datenow','typeperson','vendor'));
-        }else{
-            return redirect('/home')->withDanger('No tiene Acceso al modulo');
-        }
+      
     }
 
 

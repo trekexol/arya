@@ -91,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
             ->Where('sistemas.estatus','1')
             ->select('sistemas.id_sistema','sistemas.sistema','sistemas.icono_sistema','sistemas.padre')
             ->groupBy('sistemas.id_sistema','sistemas.sistema','sistemas.icono_sistema','sistemas.padre')
+            ->orderBy('sistemas.nro_orden','asc')
             ->get();
      
             $arreglo = array();
@@ -110,7 +111,7 @@ class AppServiceProvider extends ServiceProvider
                 ->where('id_user',$user->id)
                 ->Where('modulos.id_sistema',$id_sistema)
                 ->Where('modulos.estatus','1')
-                ->orderBy('name','asc')
+                ->orderBy('nro_orden','asc')
                 ->get();
   
     

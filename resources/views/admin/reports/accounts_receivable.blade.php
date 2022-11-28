@@ -63,6 +63,7 @@
         $amount_bcv = 1;
         $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
         $diferencia_en_dias = 0;
+        $diferencia_en_dias2 = 0;
         $validator_date = '';
 
 
@@ -119,7 +120,7 @@
       if(isset($quotation->date_quotation)){
         $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
       }
-    
+
     ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_billing ?? $quotation->date_delivery_note ?? $quotation->date_quotation ?? ''}}</th>

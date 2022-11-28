@@ -14,7 +14,6 @@ use App\Multipayment;
 use App\CreditNote;
 use App\CreditCoteDetail;
 use App\CreditNoteDetail;
-use App\Permission\Models\Product;
 use App\Quotation;
 use App\Transport;
 use App\Vendor;

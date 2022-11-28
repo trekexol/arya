@@ -132,6 +132,7 @@
                             </td>  
                             @else
                             <td class="text-center">P</td>
+                            @endif  
                             @if(Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
                             <td>
                             <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  

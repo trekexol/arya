@@ -35,7 +35,7 @@ class InventoryController extends Controller
        }
 
 
-   public function index(request $reques,$type = 'todos')
+   public function index(request $request,$type = 'todos')
    {
     /* para hacer el submenu "dinamico" */
     $user       =   auth()->user();
@@ -95,7 +95,7 @@ class InventoryController extends Controller
 
 
 
-   public function indexmovements(request $request,$coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos')
+   public function indexmovements(request $request,$coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_account = 'todas')
    {
 
     $namemodulomiddleware = $request->get('namemodulomiddleware');
@@ -131,8 +131,18 @@ class InventoryController extends Controller
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
         ->get();     
+
+        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
+        ->Where('code_one',1)
+        ->Where('code_two',1)
+        ->Where('code_three',3)
+        ->Where('code_four',1)
+        ->Where('level',5)
+        ->orderBY('description','asc')->get(); 
+
+
        
-         return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory'));
+         return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory','accounts','id_account'));
    }
 
    public function storemovements(Request $request)
@@ -145,6 +155,7 @@ class InventoryController extends Controller
         $type = request('type');
         $coin = request('coin');
         $id_inventory = request('id_inventories');
+        $id_account = request('id_account');
         $global = new GlobalController();
         
         $sistemas = UserAccess::on("logins")
@@ -175,8 +186,19 @@ class InventoryController extends Controller
         ->where('products.status',1)
         ->select('products.id as id_inventory','products.*')  
         ->get();     
+
+                   
+        $accounts = Account::on(Auth::user()->database_name) // Cuentas de Inventario
+        ->Where('code_one',1)
+        ->Where('code_two',1)
+        ->Where('code_three',3)
+        ->Where('code_four',1)
+        ->Where('level',5)
+        ->orderBY('description','asc')->get(); 
+
        
-        return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory'));
+        return view('admin.inventories.indexmovement',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory','id_account','accounts'));
+
     }
 
 

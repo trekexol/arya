@@ -368,7 +368,7 @@ Route::group(["prefix"=>'historictransports'],function(){
     Route::get('/','HistoricTransportController@index')->name('historictransports');
     Route::post('store','HistoricTransportController@store')->name('historictransports.store');
     Route::get('{id}/edit','HistoricTransportController@edit')->name('historictransports.edit');
-    Route::delete('{id}/delete','HistoricTransportController@destroy')->name('historictransports.delete');
+    Route::delete('delete','HistoricTransportController@destroy')->name('historictransports.delete');
     Route::patch('{id}/update','HistoricTransportController@update')->name('historictransports.update');
 
     Route::get('selecttransport','HistoricTransportController@selecttransport')->name('historictransports.selecttransport');

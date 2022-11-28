@@ -296,6 +296,112 @@ class TempMovimientosImport implements  ToCollection
       
 }//// fin  foreach
        } ///fin        elseif($this->banco == 3)
+
+
+       
+       elseif($this->banco == 'Banco Banplus'){
+
+  
+        foreach($rows as $row){
+
+
+            
+if($i > 1){
+
+            /*******cambio formato de fecha */
+ $arr = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]));
+    
+    dd($arr);
+
+}elseif(($row[5] == 'ND' OR $row[5] == 'NC') AND is_numeric($row[3]) AND is_numeric($row[4])){
+  
+
+    /******DEFINIENDO EL TIPO DE MONEDA ***/
+    if($row[1] == 'USD'){
+        $moneda = 'dolares';
+        $banco = 'Banco Mercantil Dolares';
+    }else{
+        $moneda = 'bolivares';
+        $banco = 'Banco Mercantil';
+    }
+
+             /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+               $monto =  str_replace(",", ".", $row[7]);
+      
+                /**** Verifico si es nota de credito o debito */
+                    if($row[5] == 'ND'){
+                        $haber = $monto;
+                        $debe = 0;
+                    }elseif($row[5] == 'NC'){
+                        $haber = 0;
+                        $debe = $monto;
+                    }
+            
+            /****Cambio el formato de la fecha para la BD */
+            $fecha = $row[3];
+            $dias = substr($row[3], 0, 2);
+            $mes = substr($row[3], 2, 2);
+            $años = substr($row[3], 4, 4);
+            $fechacompleta = $años.'-'.$mes.'-'.$dias;
+        
+             /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
+            
+             $vali   = TempMovimientos::on(Auth::user()->database_name)
+             ->where('banco',$banco)
+             ->where('referencia_bancaria',$row[4])
+             ->where('moneda',$moneda)->first();
+
+   /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
+
+
+ $vali2   = TempMovimientos::on(Auth::user()->database_name)
+             ->where('banco',$banco)
+             ->where('referencia_bancaria',$row[4])
+             ->where('fecha',$fechacompleta)
+             ->where('haber',$haber)
+             ->where('debe',$debe)
+             ->where('moneda',$moneda)->first();
+ /******si todo esta correcto inserto en BD */
+
+ if(!$vali AND !$vali2){
+
+    $Client = TempMovimientos::Create([
+            
+        'banco'                   => $banco,
+        'referencia_bancaria'     => $row[4], 
+        'descripcion'             => $row[6],
+        'fecha'                   => $fechacompleta, 
+        'haber'                   => $haber, 
+        'debe'                    => $debe,
+        'moneda'                  => $moneda,   
+    
+    ]);
+    
+     $Client->setConnection(Auth::user()->database_name);
+  
+    $contador++;
+$estatus = TRUE;
+$mensaje = 'Archivo BanPlus <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+}else{
+    $contadorerror++;
+    $estatus = TRUE;
+    $mensaje = 'Archivo BanPlus <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+
+}
+
+            
+    
+     
+}else{
+    $contadorerror++;
+    $estatus = TRUE;
+    $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+
+
+}
+$i++;
+}//// fin  foreach
+} ///fin        elseif($this->banco == 3)
        
        
        elseif($this->banco == 'Chase'){
