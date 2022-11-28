@@ -91,7 +91,9 @@ class BankMovementController extends Controller
 
 
              /********MOVIMIENTOS MASIVOS ********/               
-        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)->orderBy('banco','asc')->get();
+        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+                                ->where('estatus','0')
+                                ->orderBy('banco','asc')->get();
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                             ->where('date_billing','<>',null)
                                             ->where('number_invoice','<>',null)
@@ -1884,7 +1886,7 @@ public function importmovimientos(Request $request){
     }else{
 
         $resp['error'] = false;
-        $resp['msg'] = 'Solo Admite formato archivos .txt .csv .xlsx ';
+        $resp['msg'] = 'Verifique Formato. <br> Banesco y Bancamiga .xlsx <br> Mercantil .txt <br> Chase y BOFA .csv ';
 
         return response()->json($resp);
     }
@@ -1914,22 +1916,49 @@ public function importmovimientos(Request $request){
 public function facturasmovimientos(Request $request){
     
     $data = explode('/',$request->value);
-
-    $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-    ->where('date_billing','<>',null)
-    ->where('number_invoice','<>',null)
-    ->where('status','=','P')
-    ->where('amount_with_iva','=',$data[0])
-    ->get();
-
     $valormovimiento = $data[0];
     $idmovimiento = $data[1];
     $fechamovimiento = $data[2];
     $bancomovimiento = $data[3];
+    $tipo = $data[4];
     
 
-    return View::make('admin.bankmovements.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento'))->render();
+    if($tipo == 'match'){
+        $moneda = $data[5];
+        $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+        ->where('date_billing','<>',null)
+        ->where('number_invoice','<>',null)
+        ->where('status','=','P')
+        ->where('amount_with_iva','=',$data[0])
+        ->where('coin', $moneda)
+        ->get();
+        
+    
+        return View::make('admin.bankmovements.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo'))->render();
+    
 
+    }elseif($tipo == 'contra'){
+       
+        $montohaber = $data[5];
+        $referenciamovimiento = $data[6];
+        $moneda = $data[7];
+        $descripcionbanco = $data[8];
+        $contrapartidas     = Account::on(Auth::user()->database_name)
+        ->where('code_one', '<>',0)
+        ->where('code_one', '<>',4)
+        ->where('code_two', '<>',0)
+        ->where('code_three', '<>',0)
+        ->where('code_four', '<>',0)
+        ->where('code_five', '=',0)
+    ->orderBY('description','asc')->pluck('description','id')->toArray();
+
+
+
+        return View::make('admin.bankmovements.tablafactura',compact('contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
+
+    }
+
+  
 
 }
 
@@ -1983,6 +2012,7 @@ public function procesarfact(Request $request){
             ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
+            ->where('tempmovimientos.moneda','coin')
             ->where('number_invoice','=',$request->nrofactura)
             ->where('status','=','P')
             ->where('amount_with_iva','=',$request->montoiva)
@@ -2026,13 +2056,170 @@ public function procesarfact(Request $request){
                 return response()->json(false,500); 
             }
             
-            
+                  
 
-           
+        }catch(\error $error){
+            return response()->json(false,500);
+        }
+    }
+}
+
+
+/************** CONTRAPARTIDA NEW*******/
+
+public function listcontrapartidanew(Request $request, $id_var = null){
+    //validar si la peticion es asincrona
+    if($request->ajax()){
+        try{
+
+            $account = Account::on(Auth::user()->database_name)->find($id_var);
+            $subcontrapartidas = Account::on(Auth::user()->database_name)->select('id','description')->where('code_one',$account->code_one)
+                                                                ->where('code_two',$account->code_two)
+                                                                ->where('code_three',$account->code_three)
+                                                                ->where('code_four',$account->code_four)
+                                                                ->where('code_five','<>',0)
+                                                                ->orderBy('description','asc')->get();
                 
+            return response()->json($subcontrapartidas,200);
+           
+            
+        }catch(Throwable $th){
+            return response()->json(false,500);
+        }
+    }
+    
+}
+
+
+
+
+public function procesarcontrapartidanew(Request $request){
+    
+    if($request->ajax()){
+        try{
+
+         
+           
+
+            if($request->valorhaber == 0){
+                ///BANCO POR EL DEBE
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = $request->descripcionbanco;
+                $header_voucher->reference = $request->referenciabanco;
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                ///BANCO
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();  
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas(0,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->id,Auth::user()->id,$request->valordebe,0);
+                }
                 
                
+                
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();
+                
+                if(isset($account_subsegmento)){
+                    $this->add_movementfacturas(0,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,0,$request->valordebe);
+                }   
 
+            }elseif($request->valordebe == 0){
+                ///BANCO POR EL HABER
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = $request->descripcionbanco;
+                $header_voucher->reference = $request->referenciabanco;
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                ///BANCO
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();  
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas(0,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->id,Auth::user()->id,0,$request->valorhaber);
+                }
+                
+                
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();
+                
+                if(isset($account_subsegmento)){
+                    $this->add_movementfacturas(0,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->valorhaber,0);
+                }   
+
+
+
+
+
+            }else{
+
+
+            }
+
+         
+
+            
+            foreach($request->valorcontra AS $valorcontra){
+
+              
+                
+            }
+       
+            /**********VERIFICO QUE LA FACTURA EXITE Y QUE EL MOVIMIENTO Y 
+             MONTOS SEAN EXACTAMENTE IGUALES CON SUS RESPECTIVOS ID *****/
+     
+
+           /* $quotations = Quotation::on(Auth::user()->database_name)
+            ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
+            ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
+            ->where('date_billing','<>',null)
+            ->where('tempmovimientos.moneda','coin')
+            ->where('number_invoice','=',$request->nrofactura)
+            ->where('status','=','P')
+            ->where('amount_with_iva','=',$request->montoiva)
+            ->where('id','=',$request->id)->first();
+       
+            
+           
+            if($quotations){
+             
+                $quotations->status = 'C';
+                $quotations->save();
+
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Cobro Masivo Match de Bienes o servicios.";
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();  
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->id,Auth::user()->id,0,$request->montoiva);
+                }
+                
+                //Banco
+                
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();
+                
+                if(isset($account_subsegmento)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
+                }   
+
+
+
+                return response()->json(true,200);
+                
+            }else{
+
+                return response()->json(false,500); 
+            }*/
+            
            
 
                 
@@ -2042,5 +2229,7 @@ public function procesarfact(Request $request){
         }
     }
 }
+
+
 
 }

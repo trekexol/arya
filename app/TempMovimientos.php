@@ -12,6 +12,6 @@ class TempMovimientos extends Model
     protected $table = 'TempMovimientos';
 
     protected $fillable = [
-        'banco', 'referencia_bancaria', 'descripcion', 'fecha', 'haber','debe'
+        'banco', 'referencia_bancaria', 'descripcion', 'fecha', 'haber','debe', 'moneda'
     ];
 }

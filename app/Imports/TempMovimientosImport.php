@@ -30,7 +30,6 @@ class TempMovimientosImport implements  ToCollection
 
     public function collection(Collection $rows)
     {
-
         $i = 0;
         $contador = 0;
         $contadorerror = 0;
@@ -55,7 +54,8 @@ class TempMovimientosImport implements  ToCollection
                     
                     $vali   = TempMovimientos::on(Auth::user()->database_name)
                                 ->where('banco','bancamiga')
-                                ->where('referencia_bancaria',$row[2])->first();
+                                ->where('referencia_bancaria',$row[2])
+                                ->where('moneda','bolivares')->first();
 
                       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -64,6 +64,7 @@ class TempMovimientosImport implements  ToCollection
                                 ->where('banco','bancamiga')
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('fecha',$arr)
+                                ->where('moneda','bolivares')
                                 ->where('haber',$row[4])
                                 ->where('debe',$row[5])->first();
 
@@ -78,6 +79,7 @@ class TempMovimientosImport implements  ToCollection
                                         'fecha'                   => $arr, 
                                         'haber'                   => $row[4], 
                                         'debe'                    => $row[5], 
+                                        'moneda'                    => 'bolivares', 
                                     
                                     ]);
                                     $Client->setConnection(Auth::user()->database_name);
@@ -140,15 +142,17 @@ class TempMovimientosImport implements  ToCollection
                     
                       $vali   = TempMovimientos::on(Auth::user()->database_name)
                       ->where('banco','Banco Banesco')
-                      ->where('referencia_bancaria',$row[1])->first();
+                      ->where('referencia_bancaria',$row[1])
+                      ->where('moneda','bolivares')->first();
 
             /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
                     $vali2  = TempMovimientos::on(Auth::user()->database_name)
-                    ->where('banco','banesco')
+                    ->where('banco','Banco Banesco')
                     ->where('referencia_bancaria',$row[1])
                     ->where('fecha',$arr)
                     ->where('haber',$haber)
-                    ->where('debe',$debe)->first();
+                    ->where('debe',$debe)
+                    ->where('moneda','bolivares')->first();
 
 
 
@@ -161,7 +165,8 @@ class TempMovimientosImport implements  ToCollection
                                 'descripcion'             => $row[2],
                                 'fecha'                   => $arr, 
                                 'haber'                   => $haber, 
-                                'debe'                    => $debe, 
+                                'debe'                    => $debe,
+                                'moneda'                  => 'bolivares',  
                                     
                             ]);
                             $Client->setConnection(Auth::user()->database_name);
@@ -204,6 +209,15 @@ class TempMovimientosImport implements  ToCollection
 
       }elseif(($row[5] == 'ND' OR $row[5] == 'NC') AND is_numeric($row[3]) AND is_numeric($row[4])){
           
+
+            /******DEFINIENDO EL TIPO DE MONEDA ***/
+            if($row[1] == 'USD'){
+                $moneda = 'dolares';
+
+            }else{
+                $moneda = 'bolivares';
+            }
+   
                      /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
                        $monto =  str_replace(",", ".", $row[7]);
               
@@ -227,7 +241,8 @@ class TempMovimientosImport implements  ToCollection
                     
                      $vali   = TempMovimientos::on(Auth::user()->database_name)
                      ->where('banco','mercantil')
-                     ->where('referencia_bancaria',$row[4])->first();
+                     ->where('referencia_bancaria',$row[4])
+                     ->where('moneda',$moneda)->first();
 
            /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -237,7 +252,8 @@ class TempMovimientosImport implements  ToCollection
                      ->where('referencia_bancaria',$row[4])
                      ->where('fecha',$fechacompleta)
                      ->where('haber',$haber)
-                     ->where('debe',$debe)->first();
+                     ->where('debe',$debe)
+                     ->where('moneda',$moneda)->first();
          /******si todo esta correcto inserto en BD */
         
          if(!$vali AND !$vali2){
@@ -249,7 +265,8 @@ class TempMovimientosImport implements  ToCollection
                 'descripcion'             => $row[6],
                 'fecha'                   => $fechacompleta, 
                 'haber'                   => $haber, 
-                'debe'                    => $debe, 
+                'debe'                    => $debe,
+                'moneda'                  => $moneda,   
             
             ]);
 
@@ -313,7 +330,8 @@ class TempMovimientosImport implements  ToCollection
                         ->where('banco','chase')
                         ->where('fecha',$fechacompleta)
                         ->where('haber',$haber)
-                        ->where('debe',$debe)->first();
+                        ->where('debe',$debe)
+                        ->where('moneda','dolares')->first();
             /******si todo esta correcto inserto en BD */
            
             if(!$vali2){
@@ -325,7 +343,8 @@ class TempMovimientosImport implements  ToCollection
                     'descripcion'             => $row[2],
                     'fecha'                   => $fechacompleta, 
                     'haber'                   => $haber, 
-                    'debe'                    => $debe, 
+                    'debe'                    => $debe,
+                    'moneda'                  => 'dolares',  
                 
                 ]);
 
@@ -405,7 +424,8 @@ elseif($this->banco == 5){
             ->where('banco','BOFA')
             ->where('fecha',$fechacompleta)
             ->where('haber',$haber)
-            ->where('debe',$debe)->first();
+            ->where('debe',$debe)
+            ->where('moneda','dolares')->first();
                 /******si todo esta correcto inserto en BD */
 
                     if(!$vali2){
@@ -416,7 +436,8 @@ elseif($this->banco == 5){
                             'descripcion'             => $row[1],
                             'fecha'                   => $fechacompleta, 
                             'haber'                   => $haber, 
-                            'debe'                    => $debe, 
+                            'debe'                    => $debe,
+                            'moneda'                  => 'dolares',   
                         
                         ]);
 
@@ -443,12 +464,7 @@ elseif($this->banco == 5){
     
           }
 
-     
-
-
- 
-
-  
+    
 
     }
 

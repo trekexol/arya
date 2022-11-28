@@ -110,13 +110,14 @@ label.error{ color: red; font-size: 1em; }
 
                 <!-- INICIO DE UNA SECCION DE MOVIMIENTOS MASIVOS -->  
                 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <table class="table table-light2 table-bordered dataTableclass" width="100%" cellspacing="0">
+                <table class="table table-light2 table-bordered dataTableclass"  cellspacing="0">
                             <thead>
                                 <tr>
                                     <th class="text-center">Fecha</th>
                                     <th class="text-center">Referencia</th>
                                     <th class="text-center">Banco</th>
                                     <th class="text-center">Descripcion</th>
+                                    <th class="text-center">Moneda</th>
                                     <th class="text-center">Haber</th>
                                     <th class="text-center">Debe</th>
                                     <th class="text-center">Accion</th>
@@ -132,6 +133,7 @@ label.error{ color: red; font-size: 1em; }
                                         <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
                                         <td>{{$var->banco ?? ''}}</td>
                                         <td>{{$var->descripcion ?? ''}}</td>
+                                        <td>{{$var->moneda ?? ''}}</td>
                                      
                                        
                                         <td>{{ $var->haber}}</td>
@@ -141,12 +143,15 @@ label.error{ color: red; font-size: 1em; }
 
 
                                         <td>
-                                            @if (!empty($quotations))
+                                           @if (!empty($quotations))
                                                 @foreach($quotations as $quotation)
-                                                    @if($var->debe == $quotation->amount_with_iva)
+                                                    @if($var->debe == $quotation->amount_with_iva AND $var->moneda == $quotation->coin)
 
-                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco}}">Match</span>
+                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match'.$var->moneda}}">Match</span>
+                                                    
                                                     @endif
+                                                    <span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span>
+
                                                 @endforeach
                                             @endif
                                             
@@ -366,15 +371,8 @@ label.error{ color: red; font-size: 1em; }
 
   <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Facturas</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="modalfacturas">
-            </div> 
+        <div class="modal-content" id="modalfacturas">
+          
         </div>
     </div>
   </div>
@@ -477,16 +475,11 @@ $("#fileForms").validate({
         }
     }); ///fin $("#registro").validate({
 
- /******************/
-
-
-
+ /********MODAL CUANDO CONSIGUE MATCH**********/
 
 $('[name="matchvalue"]').click(function(e){
     e.preventDefault();
-   var value = $(this).data('id');
-
-    
+   var value = $(this).data('id'); 
    var url = "{{ route('facturasmovimientos') }}";
 
  $.post(url,{value: value,"_token": "{{ csrf_token() }}",},function(data){
@@ -498,16 +491,20 @@ $('[name="matchvalue"]').click(function(e){
 
  });
 
+ 
+
+ $('.dataTableclass').DataTable({
+        "ordering": false,
+        "order": [],
+        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+    });
+
  });
 
 
 
 
-    $('.dataTableclass').DataTable({
-        "ordering": false,
-        "order": [],
-        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
-    });
+ 
 
 
 
