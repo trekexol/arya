@@ -36,10 +36,6 @@ Route::post('asignacnioasd','UserController@assigndatabase')->name('assigndataba
 
 Auth::routes();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fb39095d (todo el proyecto)
 Route::get('/home/{coin?}', 'BackendController@index')->name('home');
 
 Route::get('/suspended', 'SuspendedController@index')->name('suspended');
@@ -57,24 +53,14 @@ Route::group(["prefix"=>'users'],function(){
     Route::get('createassignmodules/{id_user}','UserController@createAssignModules')->name('users.createAssignModules');
     Route::post('assignmodules', 'UserController@assignModules')->name('users.assignModules');
 
-<<<<<<< HEAD
-});
-
-
-=======
 
 
     Route::get('permisos/{id_user}/{name_user}','UserController@indexpermisos')->name('users.indexpermisos');
 
-    Route::get('edit','MyUserController@edit')->name('users.edituser');
-    Route::patch('update','MyUserController@update')->name('users.updateuser');
-
-
 });
 
 
 
->>>>>>> fb39095d (todo el proyecto)
 Route::group(["prefix"=>'salarytypes'],function(){
     Route::get('/','SalarytypeController@index')->name('salarytypes');
     Route::get('register','SalarytypeController@create')->name('salarytypes.create');
@@ -345,13 +331,9 @@ Route::group(["prefix"=>'inventories'],function(){
 
     Route::get('movements','InventoryController@indexmovements')->name('inventories.movement');
     Route::post('storemovements','InventoryController@storemovements')->name('reports.storemovements');
-<<<<<<< HEAD
     Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}/{id_account}','InventoryController@movements_pdf')->name('reports.movements_pdf');
     
     Route::get('getinventory/{id_account?}','InventoryController@getinventory')->name('inventories.getinventory');
-=======
-    Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}','InventoryController@movements_pdf')->name('reports.movements_pdf');
->>>>>>> fb39095d (todo el proyecto)
 });
 
 Route::group(["prefix"=>'modelos'],function(){
@@ -383,11 +365,7 @@ Route::group(["prefix"=>'historictransports'],function(){
     Route::get('/','HistoricTransportController@index')->name('historictransports');
     Route::post('store','HistoricTransportController@store')->name('historictransports.store');
     Route::get('{id}/edit','HistoricTransportController@edit')->name('historictransports.edit');
-<<<<<<< HEAD
     Route::delete('{id}/delete','HistoricTransportController@destroy')->name('historictransports.delete');
-=======
-    Route::delete('delete','HistoricTransportController@destroy')->name('historictransports.delete');
->>>>>>> fb39095d (todo el proyecto)
     Route::patch('{id}/update','HistoricTransportController@update')->name('historictransports.update');
 
     Route::get('selecttransport','HistoricTransportController@selecttransport')->name('historictransports.selecttransport');
@@ -639,11 +617,7 @@ Route::group(["prefix"=>'nominacalculations'],function(){
 });
 
 Route::group(["prefix"=>'invoices'],function(){
-<<<<<<< HEAD
     Route::get('/{id_quotation?}/{number_pedido?}','InvoiceController@index')->name('invoices');
-=======
-    Route::get('/','InvoiceController@index')->name('invoices');
->>>>>>> fb39095d (todo el proyecto)
 
     Route::get('movementinvoice/{id_invoice}/{coin?}','InvoiceController@movementsinvoice')->name('invoices.movement');
 
@@ -657,17 +631,13 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('deliverynote/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynote')->name('pdf.deliverynote');
     Route::get('deliverynotemediacarta/{id_quotation}/{coin}/{iva}/{date}/{valor?}','PDF2Controller@deliverynotemediacarta')->name('pdf.deliverynotemediacarta');
-<<<<<<< HEAD
 
     Route::get('debitnotemediacarta/{id_quotation}/{coin}','PDF2Controller@debitnotemediacarta')->name('pdf.debitnotemediacarta');
-<<<<<<< HEAD
+
     Route::get('creditnotemediacarta/{id_quotation}/{coin}','PDF2Controller@creditnotemediacarta')->name('pdf.creditnotemediacarta');
       
-=======
-=======
->>>>>>> fb39095d (todo el proyecto)
-    
->>>>>>> 6eea3ad8 (correccion terminada)
+
+
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
 
     Route::get('facturamedia/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura_media')->name('pdf.media');
@@ -818,11 +788,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
 
  });
-<<<<<<< HEAD
  Route::group(["prefix"=>'receiptc'],function(){
-=======
- Route::group(["prefix"=>'receipts'],function(){
->>>>>>> fb39095d (todo el proyecto)
  
  });
 
@@ -840,19 +806,11 @@ Route::group(["prefix"=>'receipt'],function(){
 
 
 Route::group(["prefix"=>'anticipos'],function(){
-<<<<<<< HEAD
+
     Route::get('/','AnticipoController@index')->name('anticipos');
     Route::get('register','AnticipoController@create')->name('anticipos.create');
     Route::post('store', 'AnticipoController@store')->name('anticipos.store');
-
-    Route::get('edit/{id}/{id_client?}/{id_provider?}','AnticipoController@edit')->name('anticipos.edit');
-=======
-    Route::get('/','AnticipoController@index')->middleware('valimodulo:Anticipos Clientes')->name('anticipos');
-    Route::get('register','AnticipoController@create')->name('anticipos.create');
-    Route::post('store', 'AnticipoController@store')->name('anticipos.store');
-
     Route::get('edit/{id}/{id_client?}/{id_provider?}','AnticipoController@edit')->middleware('valimodulo:Anticipos Clientes')->name('anticipos.edit');
->>>>>>> fb39095d (todo el proyecto)
    Route::patch('{id}/update','AnticipoController@update')->name('anticipos.update');
 
     Route::get('register/{id_client}','AnticipoController@createclient')->name('anticipos.createclient');
@@ -864,17 +822,6 @@ Route::group(["prefix"=>'anticipos'],function(){
 
     Route::get('changestatus/{id_anticipo}/{verify}','AnticipoController@changestatus')->name('anticipos.changestatus');
 
-<<<<<<< HEAD
-    Route::get('indexprovider','AnticipoController@index_provider')->name('anticipos.index_provider');
-    Route::get('historicprovider','AnticipoController@indexhistoric_provider')->name('anticipos.historic_provider');
-    Route::get('registerprovider/{id_provider?}','AnticipoController@create_provider')->name('anticipos.create_provider');
-    Route::get('selectprovider/{id_anticipo?}','AnticipoController@selectprovider')->name('anticipos.selectprovider');
-    Route::get('selectanticipoexpense/{id_provider}/{coin}/{id_expense}','AnticipoController@selectanticipo_provider')->name('anticipos.selectanticipo_provider');
-    Route::post('storeprovider', 'AnticipoController@store_provider')->name('anticipos.store_provider');
-
-    Route::delete('delete','AnticipoController@delete_anticipo')->name('anticipos.delete');
-    Route::delete('deleteprovider','AnticipoController@delete_anticipo_provider')->name('anticipos.delete_provider');
-=======
 
     /******ANTICIPOS AL PROVEEDOR MODULO GASTOS Y COMPRAS */
     Route::get('indexprovider','AnticipoController@index_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.index_provider');
@@ -886,7 +833,6 @@ Route::group(["prefix"=>'anticipos'],function(){
 
     Route::delete('delete','AnticipoController@delete_anticipo')->middleware('valimodulo:Anticipos Clientes')->name('anticipos.delete');
     Route::delete('deleteprovider','AnticipoController@delete_anticipo_provider')->middleware('valimodulo:Anticipos a Proveedor')->name('anticipos.delete_provider');
->>>>>>> fb39095d (todo el proyecto)
 
     Route::get('consultrate/{id?}','AnticipoController@consultrate')->name('anticipos.consultrate');
 
@@ -910,11 +856,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('registerexpense/{id_provider?}','ExpensesAndPurchaseController@create_expense')->name('expensesandpurchases.create');
     Route::post('store', 'ExpensesAndPurchaseController@store')->name('expensesandpurchases.store');
 
-<<<<<<< HEAD
     Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
-=======
-    Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
->>>>>>> fb39095d (todo el proyecto)
 
     Route::patch('selectproviderexpense/{id}','ExpensesAndPurchaseController@selectproviderexpense')->name('expensesandpurchases.selectproviderexpense');
     Route::get('updateproviderexpense/{id_expense}/{id_provider}/{coin}','ExpensesAndPurchaseController@updateproviderexpense')->name('expensesandpurchases.updateproviderexpense'); 
@@ -976,13 +918,8 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
    });
 
 Route::group(["prefix"=>'directpaymentorders'],function(){
-<<<<<<< HEAD
-    Route::get('/','DirectPaymentOrderController@createretirement')->name('directpaymentorders.create');
-    Route::post('store','DirectPaymentOrderController@store')->name('directpaymentorders.store');
-=======
     Route::get('/','DirectPaymentOrderController@createretirement')->middleware('valimodulo:Ordenes de Pago')->name('directpaymentorders.create');
     Route::post('store','DirectPaymentOrderController@store')->middleware('valimodulo:Ordenes de Pago')->name('directpaymentorders.store');
->>>>>>> fb39095d (todo el proyecto)
 
     Route::get('listbeneficiary/{type_var?}','DirectPaymentOrderController@listbeneficiary')->name('directpaymentorders.listbeneficiary');
     Route::get('listcontrapartida/{type_var?}','DirectPaymentOrderController@listcontrapartida')->name('directpaymentorders.listcontrapartida');
@@ -1121,42 +1058,24 @@ Route::group(["prefix"=>'reports'],function(){
 
     Route::get('selectprovider','Report2Controller@select_provider')->name('reports.select_provider');
 
-<<<<<<< HEAD
-    Route::get('ledger','Report2Controller@index_ledger')->name('reports.ledger');
-    Route::post('storeledger','Report2Controller@store_ledger')->name('reports.store_ledger');
-    Route::get('ledgerpdf/{date_begin}/{date_end}','Report2Controller@ledger_pdf')->name('reports.ledger_pdf');
-
-    Route::get('accounts','Report2Controller@index_accounts')->name('reports.accounts');
-    Route::post('storeaccounts','Report2Controller@store_accounts')->name('reports.store_accounts');
-=======
     Route::get('ledger','Report2Controller@index_ledger')->middleware('valimodulo:Listado Diario')->name('reports.ledger');
     Route::post('storeledger','Report2Controller@store_ledger')->middleware('valimodulo:Listado Diario')->name('reports.store_ledger');
     Route::get('ledgerpdf/{date_begin}/{date_end}','Report2Controller@ledger_pdf')->name('reports.ledger_pdf');
 
     Route::get('accounts','Report2Controller@index_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.accounts');
     Route::post('storeaccounts','Report2Controller@store_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.store_accounts');
->>>>>>> fb39095d (todo el proyecto)
     Route::get('accountspdf/{coin?}/{level?}/{date_begin?}/{date_end?}','Report2Controller@accounts_pdf')->name('reports.accounts_pdf');
 
     Route::get('bankmovements','Report2Controller@index_bankmovements')->name('reports.bankmovements');
     Route::post('storebankmovements','Report2Controller@store_bankmovements')->name('reports.store_bankmovements');
     Route::get('bankmovementspdf/{type}/{coin}/{date_begin}/{date_end}/{account_bank?}','Report2Controller@bankmovements_pdf')->name('reports.bankmovements_pdf');
 
-<<<<<<< HEAD
-    Route::get('sales_books','Report2Controller@index_sales_books')->name('reports.sales_books');
-    Route::post('storesales_books','Report2Controller@store_sales_books')->name('reports.store_sales_books');
-    Route::get('sales_bookspdf/{coin}/{date_begin}/{date_end}','Report2Controller@sales_books_pdf')->name('reports.sales_books_pdf');
-
-    Route::get('purchases_book','Report2Controller@index_purchases_books')->name('reports.purchases_book');
-    Route::post('storepurchases_book','Report2Controller@store_purchases_books')->name('reports.store_purchases_books');
-=======
     Route::get('sales_books','Report2Controller@index_sales_books')->middleware('valimodulo:Libro de Ventas')->name('reports.sales_books');
     Route::post('storesales_books','Report2Controller@store_sales_books')->middleware('valimodulo:Libro de Ventas')->name('reports.store_sales_books');
     Route::get('sales_bookspdf/{coin}/{date_begin}/{date_end}','Report2Controller@sales_books_pdf')->name('reports.sales_books_pdf');
 
     Route::get('purchases_book','Report2Controller@index_purchases_books')->middleware('valimodulo:Libro de Compras')->name('reports.purchases_book');
     Route::post('storepurchases_book','Report2Controller@store_purchases_books')->middleware('valimodulo:Libro de Compras')->name('reports.store_purchases_books');
->>>>>>> fb39095d (todo el proyecto)
     Route::get('purchases_bookpdf/{coin}/{date_begin}/{date_end}','Report2Controller@purchases_book_pdf')->name('reports.purchases_book_pdf');
 
     Route::get('inventory','Report2Controller@index_inventory')->name('reports.inventory');
@@ -1164,17 +1083,10 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('inventorypdf/{coin}/{date_begin}/{date_end}/{name?}','Report2Controller@inventory_pdf')->name('reports.inventory_pdf');
 
     Route::get('operating_margin','Report2Controller@index_operating_margin')->name('reports.operating_margin');
-<<<<<<< HEAD
-    Route::post('storeoperating_margin','Report2Controller@store_operating_margin')->name('reports.store_operating_margin');
-    Route::get('operating_marginpdf/{coin}/{date_begin}/{date_end}','Report2Controller@operating_margin_pdf')->name('reports.operating_margin_pdf');
-
-    Route::get('clients','Report2Controller@index_clients')->name('reports.clients');
-=======
     Route::post('storeoperating_margin','Report2Controller@store_operating_margin')->middleware('valimodulo:Margen Operativo')->name('reports.store_operating_margin');
     Route::get('operating_marginpdf/{coin}/{date_begin}/{date_end}','Report2Controller@operating_margin_pdf')->name('reports.operating_margin_pdf');
 
     Route::get('clients','Report2Controller@index_clients')->middleware('valimodulo:Clientes')->name('reports.clients');
->>>>>>> fb39095d (todo el proyecto)
     Route::post('storeclients','Report2Controller@store_clients')->name('reports.store_clients');
     Route::get('clientspdf/{date_begin}/{date_end}/{name?}','Report2Controller@clients_pdf')->name('reports.clients_pdf');
 
@@ -1406,7 +1318,6 @@ Route::group(["prefix"=>'creditnotes'],function(){
 
 });
 
-<<<<<<< HEAD
 
 Route::group(["prefix"=>'debitnotes'],function(){
     Route::get('/','DebitNoteController@index')->name('debitnotes');
@@ -1451,10 +1362,6 @@ Route::group(["prefix"=>'debitnotes'],function(){
 Route::group(["prefix"=>'movements'],function(){
     Route::get('creditnote/{id_creditnote}/{coin?}','CreditNoteDetailController@movements')->name('movements.creditnote');
     Route::get('creditnote/{id_creditnote}/{coin?}','DebitNoteDetailController@movements')->name('movements.debitnote');
-=======
-Route::group(["prefix"=>'movements'],function(){
-    Route::get('creditnote/{id_creditnote}/{coin?}','CreditNoteDetailController@movements')->name('movements.creditnote');
->>>>>>> fb39095d (todo el proyecto)
 });
 
 Route::group(["prefix"=>'accounting_adjustments'],function(){
@@ -1490,12 +1397,9 @@ Route::group(["prefix"=>'export_reports'],function(){
     
     Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
     Route::post('orders','Exports\Quotations\OrderExportController@exportExcel')->name('export_reports.orders');
-<<<<<<< HEAD
     Route::post('vendor_commissions','Exports\Reports\VendorCommissionExportController@exportExcel')->name('export_reports.vendor_commissions');
 
     
-=======
->>>>>>> fb39095d (todo el proyecto)
 });
 
 Route::group(["prefix"=>'mails'],function(){
@@ -1538,11 +1442,7 @@ Route::group(["prefix"=>'owners'],function(){
 Route::group(["prefix"=>'vendor_commissions'],function(){
     Route::get('menu/{typeperson}/{id_client?}','Reports\VendorCommissionController@index')->name('vendor_commissions.index');
     Route::post('store','Reports\VendorCommissionController@store')->name('vendor_commissions.store');
-<<<<<<< HEAD
     Route::get('pdf/{coin}/{date_begin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
-=======
-    Route::get('pdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Reports\VendorCommissionController@pdf')->name('vendor_commissions.pdf');
->>>>>>> fb39095d (todo el proyecto)
 
     Route::get('selectclient','Reports\VendorCommissionController@selectClient')->name('vendor_commissions.selectClient');
     Route::get('selectvendor','Reports\VendorCommissionController@selectVendor')->name('vendor_commissions.selectVendor');
@@ -1711,11 +1611,7 @@ Route::group(["prefix"=>'report_paymentslic'],function(){
     Route::get('selectvendor','Reports\PaymentLicReportController@selectVendor')->name('report_paymentslic.selectVendor');
 });
 
-<<<<<<< HEAD
 /////////////////////////////////////////FIN EMPRESA LICORES///////////////////////////////////////////////
-=======
-/////////////////////////////////////////FIN EMPRESA LICORES///////////////////////////////////////////////
-
 
 Route::group(["prefix"=>"modulos"],function(){
     Route::get('modulos/{id_sistema?}','ModulosController@list')->name('modulos.list');
@@ -1723,4 +1619,3 @@ Route::group(["prefix"=>"modulos"],function(){
     Route::delete('delete','ModulosController@destroy')->name('modulos.delete');
 
 });
->>>>>>> fb39095d (todo el proyecto)

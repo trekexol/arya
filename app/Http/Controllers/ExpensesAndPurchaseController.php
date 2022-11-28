@@ -290,21 +290,66 @@ class ExpensesAndPurchaseController extends Controller
     }
 
 
-    public function updateexpense(request $request,$id_quotation,$coin,$observation = null,$invoice = null,$serie = null,$date)
+    public function updateexpense(request $request)
     {   
-        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
-        if ($observation == '-1'){
-            $observation = '';
-        }
-        if ($invoice == '-1'){
-            $invoice = '';
-        }
-        if ($serie == '-1'){
-            $serie = '';
-        }
 
-        ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id_quotation)
-                                ->update(['coin'=>$coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$date]);
+        if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
+
+            if($request->ajax()){
+                try{
+
+                    if ($request->observation == '-1'){
+                        $observation = '';
+                    }else{
+
+                        $observation = $request->observation;
+                    }
+                    if ($request->invoice == '-1'){
+                        $invoice = '';
+                    }else{
+                        $invoice = $request->invoice;
+                    }
+                    if ($request->serie == '-1'){
+                        $serie = '';
+                    }else{
+                        $serie = $request->serie;
+                    }
+        
+        $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_expense)
+                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date]);
+    
+
+
+
+           if($update == 1){
+            return response()->json(true,200);
+           }   else{
+            return response()->json(false,500);
+
+           }             
+           
+    
+                          
+    
+               
+    
+                    
+                  
+                       
+             
+                   
+    
+                }catch(Throwable $th){
+                    return response()->json(false,500);
+                }
+            }
+
+
+
+
+  
+
+       
 
 
         /*$historial_quotation = new HistorialQuotationController();
@@ -312,10 +357,10 @@ class ExpensesAndPurchaseController extends Controller
         $historial_quotation->registerAction($var,"quotation","Actualizó la Compra");*/
 
        // return view('admin.expensesandpurchases.createexpense',compact('datenow','provider'));
-        return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+       // return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
 
     }else{
-        return redirect('/expensesandpurchases/expensevoucher/'.$id_expense.'/bolivares')->withDanger('Esta factura no retiene IVA!');
+        return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
     }
         
     }
@@ -362,7 +407,6 @@ class ExpensesAndPurchaseController extends Controller
     public function create_expense_detail(request $request,$id_expense,$coin,$type = null,$id_product = null,$account = null,$subaccount = null)
     {
 
-    
 
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 

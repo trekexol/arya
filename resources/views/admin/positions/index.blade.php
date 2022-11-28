@@ -46,13 +46,9 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Status</th>
-<<<<<<< HEAD
-                <th>Opciones</th>
-=======
                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                 <th>Opciones</th>
                 @endif
->>>>>>> fb39095d (todo el proyecto)
               
             </tr>
             </thead>
@@ -65,16 +61,6 @@
                     <td>{{$position->id}}</td>
                     <td>{!!$position->name!!}</td>
                     <td>{{$position->description}}</td>
-<<<<<<< HEAD
-                   
-                   
-                    @if (Auth::user()->role_id  == '1')
-                        @if($position->status == 1)
-                            <td>Activo</td>
-                        @else
-                            <td>Inactivo</td>
-                        @endif
-=======
                     @if($position->status == 1)
                     <td>Activo</td>
                 @else
@@ -83,7 +69,6 @@
                    
                     @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                         
->>>>>>> fb39095d (todo el proyecto)
                         <td>
                         <a href="{{route('positions.edit',$position->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                         </td>

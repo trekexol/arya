@@ -222,22 +222,37 @@ class ProductController extends Controller
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
-        $data = request()->validate([
-            
-        
+
+            $rules = [
+  
             'segment'         =>'required',
             'unit_of_measure_id'         =>'required',
             'type'         =>'required',
             'description'         =>'required',
             'price'         =>'required',
             'price_buy'         =>'required',
-            'money'         =>'required'
-        
-        
-        ]);
+            'money'         =>'required',
+            'code_comercial' =>'required|unique:products,code_comercial,'.request('code_comercial'),
+            'id_account' => 'required',
 
-        //dd($request);
-        //dd(Auth::on(Auth::user()->database_name);
+            ];
+            $messages = [
+                'segment.required' => 'Seleccione un Segmento.',
+                'unit_of_measure_id.required' => 'Seleccione una unidad de medida.',
+                'type.required' => 'Seleccione un tipo de mercancia.',
+                'description.required' => 'Ingrese descripcion del producto.',
+                'price.required' => 'Ingrese Precio del producto.',
+                'price_buy.required' => 'Ingrese Precio de compra del producto.',
+                'money.required' => 'Seleccione una moneda.',
+                'code_comercial.required' => 'Ingrese un codigo comercial',
+                'code_comercial.unique' => 'El codigo comercial ya existe.',
+                'id_account.required' => 'Seleccione una Cuenta.',
+           
+            ];
+            $this->validate($request, $rules, $messages);
+
+
+
         $var = new Product();
         $var->setConnection(Auth::user()->database_name);
 

@@ -51,14 +51,9 @@
                 <th>Naturaleza</th>
                 <th>Punto</th>
                 <th>Status</th>
-<<<<<<< HEAD
-                <th>Opciones</th>
-              
-=======
                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1') 
                 <th>Opciones</th>
                 @endif
->>>>>>> fb39095d (todo el proyecto)
             </tr>
             </thead>
             
@@ -77,19 +72,12 @@
                     <td>{{$var->point}}</td>
                    
                    
-<<<<<<< HEAD
-                    @if (Auth::user()->role_id  == '1')
-=======
->>>>>>> fb39095d (todo el proyecto)
                         @if($var->status == 1)
                             <td>Activo</td>
                         @else
                             <td>Inactivo</td>
                         @endif
-<<<<<<< HEAD
-=======
                         @if (Auth::user()->role_id  == '1' || $actualizarmiddleware == '1') 
->>>>>>> fb39095d (todo el proyecto)
                         <td>
                         <a href="{{route('paymenttypes.edit',$var->id) }}" title="Editar"><i class="fa fa-edit"></i></a>  
                         </td>
