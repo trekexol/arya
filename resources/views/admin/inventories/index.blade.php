@@ -113,12 +113,6 @@
   </ul>
 
 
-    
-    
- 
-<div class="container-fluid">
-
-
   <div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
 
     <div class="modal-dialog" role="document">
@@ -271,14 +265,8 @@
            <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
         </div> 
         </div>
-        <div class="col-sm-3">
-        
-        @if(Auth::user()->role_id  == '1' || $valor == 1)
-        <div class="col-md-4">
-            <a href="{{ route('products.create')}}" class="btn btn-info  float-md-center"  role="button" aria-pressed="true">Registrar un Producto Nuevo</a>
-          </div>
-          @endif
-        <div class="col-md-2 dropdown mb-4">
+
+        <div class="col-md-3">
             <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
                 Imprimir
@@ -288,9 +276,13 @@
                 <a class="dropdown-item" onclick="pdfinventory();" style="color: rgb(4, 119, 252)"> <i class="fas fa-download fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Inventario Actual</strong></a>
             </div> 
         </div>
+
+                
+        @if(Auth::user()->role_id  == '1' || $valor == 1)
         <div class="col-sm-3 offset-sm-2  dropdown mb-4">
             <a href="{{ route('products.create')}}" class="btn btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
         </div> 
+          @endif
         <div class="col-sm-2">
             <select class="form-control" name="type" id="type">
                 @if(isset($type))
