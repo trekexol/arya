@@ -550,15 +550,6 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
    
 
-
-/****************************** MOVIMIENTOS MASIVOS*****/
-    Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
-    Route::post('facturasmovimientos','BankMovementController@facturasmovimientos')->name('facturasmovimientos');
-    Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
-    Route::get('listcontrapartidanew/{type_var?}','BankMovementController@listcontrapartidanew')->name('listcontrapartidanew');
-    Route::post('procesarcontrapartidanew','BankMovementController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
-    Route::post('guardartransferencia','BankMovementController@guardartransferencia')->name('guardartransferencia');
-
     
 });
 
@@ -1634,6 +1625,22 @@ Route::group(["prefix"=>"modulos"],function(){
     Route::post('insertmasivo','ModulosController@insertmasivo')->name('modulos.insertmasivo');
     Route::delete('eliminarmasivo','ModulosController@eliminarmasivo')->name('modulos.eliminarmasivo');
     Route::delete('eliminarpermiso','ModulosController@eliminarpermiso')->name('modulos.eliminarpermiso');
+
+
+});
+
+
+
+Route::group(["prefix"=>"bankmasivos"],function(){
+    Route::get('/','BankMovementMasivoController@index')->name('bankmasivos');
+    Route::post('listardatos','BankMovementMasivoController@listardatos')->name('listardatos');
+
+    Route::post('importmovimientos','BankMovementMasivoController@importmovimientos')->name('importmovimientos');
+    Route::post('facturasmovimientos','BankMovementMasivoController@facturasmovimientos')->name('facturasmovimientos');
+    Route::post('procesarfact','BankMovementMasivoController@procesarfact')->name('procesarfact');
+    Route::get('listcontrapartidanew/{type_var?}','BankMovementMasivoController@listcontrapartidanew')->name('listcontrapartidanew');
+    Route::post('procesarcontrapartidanew','BankMovementMasivoController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
+    Route::post('guardartransferencia','BankMovementMasivoController@guardartransferencia')->name('guardartransferencia');
 
 
 });

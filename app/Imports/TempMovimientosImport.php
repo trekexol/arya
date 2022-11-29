@@ -71,18 +71,20 @@ class TempMovimientosImport implements  ToCollection
                     
                     /******si todo esta correcto inserto en BD */
                     if(!$vali AND !$vali2){
-                                    $Client = TempMovimientos::Create([
-                                
-                                        'banco'                   => 'Bancamiga',
-                                        'referencia_bancaria'     => $row[2], 
-                                        'descripcion'             => $row[3],
-                                        'fecha'                   => $arr, 
-                                        'haber'                   => $row[4], 
-                                        'debe'                    => $row[5], 
-                                        'moneda'                    => 'bolivares', 
-                                    
-                                    ]);
-                                    $Client->setConnection(Auth::user()->database_name);
+
+                        
+                                $user = new TempMovimientos();
+                                $user->setConnection(Auth::user()->database_name);
+                                $user->banco        = 'Bancamiga';
+                                $user->referencia_bancaria     = $row[2];
+                                $user->descripcion       = $row[3];
+                                $user->fecha    = $arr;
+                                $user->haber     = $row[4];
+                                $user->debe   = $row[5];
+                                $user->moneda      = 'bolivares';
+                                $user->save();
+
+                              
                                 
                                     $contador++;
                                 $estatus = TRUE;
@@ -158,18 +160,18 @@ class TempMovimientosImport implements  ToCollection
 
                         /******si todo esta correcto inserto en BD */
                         if(!$vali AND !$vali2){
-                            $Client = TempMovimientos::Create([
 
-                                'banco'                   => 'Banco Banesco',
-                                'referencia_bancaria'     => $row[1], 
-                                'descripcion'             => $row[2],
-                                'fecha'                   => $arr, 
-                                'haber'                   => $haber, 
-                                'debe'                    => $debe,
-                                'moneda'                  => 'bolivares',  
-                                    
-                            ]);
-                            $Client->setConnection(Auth::user()->database_name);
+                            $user = new TempMovimientos();
+                            $user->setConnection(Auth::user()->database_name);
+                            $user->banco        = 'Banco Banesco';
+                            $user->referencia_bancaria     = $row[1];
+                            $user->descripcion       = $row[2];
+                            $user->fecha    = $arr;
+                            $user->haber     = $haber;
+                            $user->debe   = $debe;
+                            $user->moneda      = 'bolivares';
+                            $user->save();
+
 
                             $contador++;
                         $estatus = TRUE;
@@ -259,19 +261,18 @@ class TempMovimientosImport implements  ToCollection
         
          if(!$vali AND !$vali2){
 
-            $Client = TempMovimientos::Create([
-                    
-                'banco'                   => $banco,
-                'referencia_bancaria'     => $row[4], 
-                'descripcion'             => $row[6],
-                'fecha'                   => $fechacompleta, 
-                'haber'                   => $haber, 
-                'debe'                    => $debe,
-                'moneda'                  => $moneda,   
-            
-            ]);
-            
-             $Client->setConnection(Auth::user()->database_name);
+            $user = new TempMovimientos();
+            $user->setConnection(Auth::user()->database_name);
+            $user->banco        = $banco;
+            $user->referencia_bancaria     = $row[4];
+            $user->descripcion       = $row[6];
+            $user->fecha    = $fechacompleta;
+            $user->haber     = $haber;
+            $user->debe   = $debe;
+            $user->moneda      = $moneda;
+            $user->save();
+
+         
           
             $contador++;
         $estatus = TRUE;
@@ -313,6 +314,7 @@ class TempMovimientosImport implements  ToCollection
             
 if($i > 1){
 
+    
             /*******cambio formato de fecha */
                 $fecha = explode('/',$row[0]);
                 $dia = $fecha[0];
@@ -332,12 +334,7 @@ if($i > 1){
 
             }
 
-                /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
-                    
-                $vali   = TempMovimientos::on(Auth::user()->database_name)
-                ->where('banco','Banco Banplus')
-                ->where('referencia_bancaria',$referencia)
-                ->where('moneda',$moneda)->first();
+     
 
       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -351,21 +348,19 @@ if($i > 1){
                 ->where('moneda',$moneda)->first();
     /******si todo esta correcto inserto en BD */
    
-    if(!$vali AND !$vali2){
+    if(!$vali2){
 
-       $Client = TempMovimientos::Create([
-               
-           'banco'                   => 'Banco Banplus',
-           'referencia_bancaria'     => $referencia, 
-           'descripcion'             => $descripcion,
-           'fecha'                   => $fechacompleta, 
-           'haber'                   => $haber, 
-           'debe'                    => $debe,
-           'moneda'                  => $moneda,   
-       
-       ]);
-       
-        $Client->setConnection(Auth::user()->database_name);
+        $user = new TempMovimientos();
+        $user->setConnection(Auth::user()->database_name);
+        $user->banco        = 'Banco Banplus';
+        $user->referencia_bancaria     = $referencia;
+        $user->descripcion       = $descripcion;
+        $user->fecha    = $fechacompleta;
+        $user->haber     = $haber;
+        $user->debe   = $debe;
+        $user->moneda      = $moneda;
+        $user->save();
+
      
        $contador++;
    $estatus = TRUE;
@@ -428,19 +423,17 @@ if($i > 1){
            
             if(!$vali2){
 
-                $Client = TempMovimientos::Create([
-            
-                    'banco'                   => 'Chase',
-                    'referencia_bancaria'     => NULL, 
-                    'descripcion'             => $row[2],
-                    'fecha'                   => $fechacompleta, 
-                    'haber'                   => $haber, 
-                    'debe'                    => $debe,
-                    'moneda'                  => 'dolares',  
-                
-                ]);
+                $user = new TempMovimientos();
+                $user->setConnection(Auth::user()->database_name);
+                $user->banco        = 'Chase';
+                $user->referencia_bancaria     = NULL;
+                $user->descripcion       = $row[2];
+                $user->fecha    = $fechacompleta;
+                $user->haber     = $haber;
+                $user->debe   = $debe;
+                $user->moneda      = 'dolares';
+                $user->save();
 
-                $Client->setConnection(Auth::user()->database_name);
 
             $contador++;
             $estatus = TRUE;
@@ -521,19 +514,17 @@ elseif($this->banco == 'BOFA'){
                 /******si todo esta correcto inserto en BD */
 
                     if(!$vali2){
-                        $Client = TempMovimientos::Create([
-        
-                            'banco'                   => 'BOFA',
-                            'referencia_bancaria'     => NULL, 
-                            'descripcion'             => $row[1],
-                            'fecha'                   => $fechacompleta, 
-                            'haber'                   => $haber, 
-                            'debe'                    => $debe,
-                            'moneda'                  => 'dolares',   
-                        
-                        ]);
 
-                        $Client->setConnection(Auth::user()->database_name);
+                        $user = new TempMovimientos();
+                        $user->setConnection(Auth::user()->database_name);
+                        $user->banco        = 'BOFA';
+                        $user->referencia_bancaria     = NULL;
+                        $user->descripcion       = $row[1];
+                        $user->fecha    = $fechacompleta;
+                        $user->haber     = $haber;
+                        $user->debe   = $debe;
+                        $user->moneda      = 'dolares';
+                        $user->save();
 
                         $contador++;
                         $estatus = TRUE;

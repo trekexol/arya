@@ -12,6 +12,8 @@ class AcademiclevelsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('valiuser')->only('index');
+        $this->middleware('valimodulo:Niveles Académicos');
     }
 
 
@@ -19,8 +21,7 @@ class AcademiclevelsController extends Controller
     public function index(Request $request)
     {
 
-     
-
+    
         $agregarmiddleware = $request->get('agregarmiddleware');
         $actualizarmiddleware = $request->get('actualizarmiddleware');
         $eliminarmiddleware = $request->get('eliminarmiddleware');
