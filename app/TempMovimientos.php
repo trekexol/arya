@@ -9,7 +9,7 @@ class TempMovimientos extends Model
     /*protected $connection = 'logins';
 
     protected $table = 'bvc_rates_social_benefits';*/
-
+    
     protected $table = 'tempmovimientos';
     protected $primaryKey = 'id_temp_movimientos';
     protected $fillable = [

@@ -43,9 +43,9 @@ class UserController extends Controller
         $users_role =   $user->role_id;
        
         if($users_role == '1'){
-            $users      =   User::on(Auth::user()->database_name)->orderBy('id', 'asc')->get();
+            $users      =   User::on(Auth::user()->database_name)->orderBy('id', 'asc')->where('status','1')->get();
         }else{
-            $users      =   User::on(Auth::user()->database_name)->whereNotIn('role_id',['1'])->orderBy('id', 'asc')->get();
+            $users      =   User::on(Auth::user()->database_name)->whereNotIn('role_id',['1'])->where('status','1')->orderBy('id', 'asc')->get();
         }
        
          
@@ -363,28 +363,38 @@ class UserController extends Controller
 
             $user = User::on(Auth::user()->database_name)->find($request->id_user_modal);
             if(isset($user)){
-                $user->delete();
+           
+                $user->status = 0;
+                $user->save();
+
+
             }
             
             $user = User::on($this->conection_logins)->find($request->id_user_modal);
             if(isset($user)){
-                $user->delete();
+                
+                $user->status = 0;
+                $user->save();
             }
             return redirect('users')->withDelete('Registro Eliminado Exitoso!');
 
         }elseif($request->get('eliminarmiddleware') == '1'){
 
             $user = User::on(Auth::user()->database_name)->find($request->id_user_modal);
-
+            
             if(isset($user) && $user->role_id == '1'){
 
              return redirect('/users')->withDanger('Solo Administradores puede Eliminar a un Administrador!');
             }else{
-                $user->delete();
+               
+                $user->status = 0;
+                $user->save();
 
                 $users = User::on($this->conection_logins)->find($request->id_user_modal);
             if(isset($users)){
-                $users->delete();
+               
+                $users->status = 0;
+                $users->save();
             }
 
             return redirect('users')->withDelete('Registro Eliminado Exitoso!');

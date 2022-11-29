@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
         if($user->role_id == 1){ //si es administrador
 
                 $sistemas = Sistemas::on($this->conection_logins)
-                ->Where('id_companies','like','%'.$user->id_company.'A%')
+                ->Where('id_companies','like','%A'.$user->id_company.'A%')
                 ->Where('estatus','1')
                 ->orderBy('nro_orden','asc')->get();
 
@@ -86,7 +86,7 @@ class AppServiceProvider extends ServiceProvider
             ->join('modulos','modulos.id','=','user_access.id_modulo')
             ->join('sistemas','sistemas.id_sistema','=','modulos.id_sistema')
             ->where('user_access.id_user',$user->id)
-            ->Where('id_companies','like','%'.$user->id_company.'A%')
+            ->Where('id_companies','like','%A'.$user->id_company.'A%')
             ->Where('modulos.estatus','1')
             ->Where('sistemas.estatus','1')
             ->select('sistemas.id_sistema','sistemas.sistema','sistemas.icono_sistema','sistemas.padre')

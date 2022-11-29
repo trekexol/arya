@@ -33,9 +33,6 @@ label.error{ color: red; font-size: 1em; }
             <a href="{{ route('bankmovements') }}" class="btn btn-info" title="Transferencia">Bancos</a>
         </div>
 
-        <div class="col-md-2">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
-        </div>
  
     </div>
 </div>
@@ -105,66 +102,9 @@ label.error{ color: red; font-size: 1em; }
                         </table>
                     </div>
                 
-               
-                <!-- FIN DE UNA SECCION DE MOVIMIENTOS -->    
+                
 
-                <!-- INICIO DE UNA SECCION DE MOVIMIENTOS MASIVOS -->  
-                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <table class="table table-light2 table-bordered dataTableclass"  cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Fecha</th>
-                                    <th class="text-center">Referencia</th>
-                                    <th class="text-center">Banco</th>
-                                    <th class="text-center">Descripcion</th>
-                                    <th class="text-center">Moneda</th>
-                                    <th class="text-center">Haber</th>
-                                    <th class="text-center">Debe</th>
-                                    <th class="text-center">Accion</th>
-                                </tr>
-                                </thead>
-                                
-                                <tbody>
-                                    @if (!empty($movimientosmasivos))
-                                 
-                                        @foreach ($movimientosmasivos as $var)
-                                        <tr>
-                                        <td>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</td>
-                                        <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
-                                        <td>{{$var->banco ?? ''}}</td>
-                                        <td>{{$var->descripcion ?? ''}}</td>
-                                        <td>{{$var->moneda ?? ''}}</td>
-                                     
-                                       
-                                        <td>{{ $var->haber}}</td>
-                                        <td>{{ $var->debe}}</td>
-
-
-
-
-                                        <td>
-                                           @if (!empty($quotations))
-                                                @foreach($quotations as $quotation)
-                                                    @if($var->debe == $quotation->amount_with_iva AND $var->moneda == $quotation->coin)
-
-                                                    <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match'.$var->moneda}}">Match</span>
-                                                    
-                                                    @endif
-                                                    <span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span>
-                                                    <span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span>
-                                                @endforeach
-                                            @endif
-                                            
-                                        </td>  
-                                        
-                                        </tr>
-                                    @endforeach
-                                @endif
-                            </tbody>
-                        </table>
-                </div>
-
-                <!-- FIN DE UNA SECCION DE MOVIMIENTOS MASIVOS --> 
+      
                 </div>            
             </div>
     </div>
@@ -321,179 +261,16 @@ label.error{ color: red; font-size: 1em; }
     </div>
 
 
-    <!-- Delete Warning Modal -->
-<div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Subir Movimientos</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="fileForms" enctype="multipart/form-data" >
-                    @csrf
-                    <div class="form-group col-md-8">
-                        <label for="inputState">Banco</label>
-                        <select class="form-control" name="banco" id="banco">
-                          <option value="">Seleccione..</option>
-                          <option value="Bancamiga">Bancamiga</option>
-                          <option value="Banco Banesco">Banesco</option>
-                          <option value="Banco Banplus">Banplus</option>
-                          <option value="Banco Banplusd">Banplus Dolares</option>
-                          <option value="Mercantil">Mercantil</option>
-                          <option value="Chase">Chase</option>
-                          <option value="BOFA">BOFA</option>
-                        </select>
-
-                        
-                      </div>
-                    <div id="muestrasbanco"></div>
-
-                      <div class="form-group col-md-12">
-                        <input required id="file" type="file" value="import" name="file" class="form-control-file" accept=".xlsx, .csv, .txt">
-                        
-                      </div>
-                      <div id="muestrasfile" ></div>
-               
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Importar</button>
-            </div>
-            </form>
-        </div>
-    </div>
-  </div>
 
 
-
-
-
-  <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content" id="modalfacturas">
-          
-        </div>
-    </div>
-  </div>
 
 
 @endsection
 @section('javascript')
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
     <script type="text/javascript">
 
 
-
-$(document).ready(function(){
-
-
-
-/*********************************VALIDADOR DE FORMULARIO************************************/
-$("#fileForms").validate({
-  
-        rules: {
-            banco: "required",
-            file: "required",
-
-        },
-
-        messages:{
-            banco: "Seleccione un Banco",
-            file: "Agregue un Archivo",
-
-
-        },
-     
-       
-/*MODIFICANDO PARA MOSTRAR LA ALERTA EN EL LUGAR QUE DESEO CON UN DIV*/
-    errorPlacement: function(error, element) {
-
-        if(element.attr("name") == "banco") {
-        
-        $("#muestrasbanco").append(error);
-
-        }
-
-        if(element.attr("name") == "file") {
-
-        $("#muestrasfile").append(error);
-
-        }
-
-        },
-
-        submitHandler: function (form) {
-
-           
-
-            $.ajax({
-            type: "post",
-            url: "{{ route('importmovimientos') }}",
-            dataType: "json",
-            data: new FormData( form ),
-            processData: false,
-            contentType: false,
-            //success:(response)=>{
-            success:function(response){
-             if(response.error == true){
-                Swal.fire({
-                        icon: 'info',
-                        title: 'Exito!',
-                        html: response.msg,
-                
-                
-                        })
-             }else{
-               
-                Swal.fire({
-                        icon: 'info',
-                        title: 'Error..',
-                        html: response.msg,
-                        })
-             }
-            
-         
-            
-         
-         },
-         error:(response)=>{
-      
-        
-            Swal.fire({
-                    icon: 'error',
-                    title: 'Error...',
-                    html: response.msg,
-                    });
-         }
-            });
-
-
-
-            return false; // required to block normal submit since you used ajax
-        }
-    }); ///fin $("#registro").validate({
-
- /********MODAL CUANDO CONSIGUE MATCH**********/
-
-$('[name="matchvalue"]').click(function(e){
-    e.preventDefault();
-   var value = $(this).data('id'); 
-   var url = "{{ route('facturasmovimientos') }}";
-
- $.post(url,{value: value,"_token": "{{ csrf_token() }}",},function(data){
-        $("#modalfacturas").empty().append(data);
-   
-      });
-
-
-
- });
-
- 
 
  $('.dataTableclass').DataTable({
         "ordering": false,
@@ -501,19 +278,10 @@ $('[name="matchvalue"]').click(function(e){
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
- });
-
-
-
-
- 
-
-
 
 
 
 
     </script> 
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection
