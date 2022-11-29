@@ -51,10 +51,13 @@
                             </div>
 
                         </div>
-                           @if($type == 'factura' || $type == 'Nota de Entrega')
-                            <label for="serie" class="col-md-3 col-form-label text-md-right">N° de Control/Serie:</label>
+                           
+                        @if($type == 'factura' || $type == 'Nota de Entrega')
+                        <div class="form-group row">  
+                            
+                           <label for="serie" class="col-md-2 col-form-label text-md-right">N° de Control/Serie:</label>
 
-                            <div class="col-md-2">
+                           <div class="col-md-3">
                                 <input id="serie" type="text" class="form-control @error('serie') is-invalid @enderror" name="serie" value="{{ old('serie') }}" autocomplete="serie">
 
                                 @error('serie')
@@ -64,7 +67,7 @@
                                 @enderror
                             </div>
                            @endif 
-                            
+                        </div>    
                         </div>
 
                         <div class="form-group row">
