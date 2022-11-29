@@ -34,7 +34,7 @@ class InvoiceController extends Controller
        
     }
  
-    public function index()
+    public function index(request $request)
     {
     
             $date = Carbon::now();
@@ -43,13 +43,21 @@ class InvoiceController extends Controller
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                             ->where('date_billing','<>',null)
                                             ->get();
+
+
+            $agregarmiddleware = $request->get('agregarmiddleware');
+            $actualizarmiddleware = $request->get('actualizarmiddleware');
+            $eliminarmiddleware = $request->get('eliminarmiddleware');
+            $namemodulomiddleware = $request->get('namemodulomiddleware');
+        
+
             if(isset($id_quotation)) {
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
 
             }
     
     
-            return view('admin.invoices.index',compact('quotations','datenow')); 
+            return view('admin.invoices.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware')); 
 
     }
 
