@@ -82,6 +82,7 @@ $('.procesarfactura').click(function(e){
 
 
                         })
+                        setTimeout("location.reload()", 3000);
                  }else{
                     Swal.fire({
                         icon: 'error',
@@ -320,6 +321,8 @@ $('.procesarcontrapartida').click(function(e){
 
 
                         })
+
+                        setTimeout("location.reload()", 3000);
              }else{
                 $('.procesarcontrapartida').prop( 'disabled', false );
                 Swal.fire({
@@ -469,6 +472,8 @@ $('.procesarcontrapartida').click(function(e){
 
 
                         })
+
+                        setTimeout("location.reload()", 3000);
              }else{
                 $('.procesarcontrapartida').prop( 'disabled', false );
                 Swal.fire({
@@ -513,6 +518,255 @@ $('.procesarcontrapartida').click(function(e){
     });
     </script>
 <?php 
+}
+
+elseif($tipo == 'deposito'){
+
+?>
+<div class="modal-header">
+<h5 class="modal-title">DEPOSITO</h5>
+
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body" >
+    <form id='pruebaform' >
+        @csrf
+<div class="table-responsive-xl">
+    
+    <table class="table table-sm">
+        <thead>
+            <tr>
+              <th scope="col">Banco</th>
+              <th scope="col">Descripcion</th>
+              <th scope="col">Referencia</th>
+              <th scope="col">Moneda</th>
+              <th scope="col">Tasa</th>
+              <th scope="col">Debe</th>
+              <th scope="col">Haber</th>
+              <th scope="col">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <th scope="row">{{$bancomovimiento}}</th>
+                <td>{{$descripcionbanco}}</td>
+                <td>{{$referenciamovimiento}}</td>
+                <td>{{$moneda}}</td>
+                <td><input type="text" class="form-control form-control-sm" name="tasa" value={{number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }} /></td>
+                <td>{{$valormovimiento}}</td>
+                <td>{{$montohaber}}</td>
+                <td><button type="button" class="add_button btn btn-secondary btn-sm">Agregar Contrapartida</button>
+                </td>
+              </tr>
+          </tbody>
+    </table>
+  </div>
+
+        
+          
+
+    <input type="hidden" name="valordebe" value='{{$valormovimiento}}'>
+    <input type="hidden" name="valorhaber" value='{{$montohaber}}'>
+    <input type="hidden" name="referenciabanco" value='{{$referenciamovimiento}}'>
+    <input type="hidden" name="banco" value='{{$bancomovimiento}}'>
+    <input type="hidden" name="moneda" value='{{$moneda}}'>
+    <input type="hidden" name="fechamovimiento" value='{{$fechamovimiento}}'>
+    <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
+    <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+
+    <div class="field_wrapper">
+
+
+   
+
+      </div>
+
+
+      <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
+
+ 
+
+    </form>
+
+
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var x = 1;
+    var contadordiv = 0;
+    var maxField = 10;
+    var addButton = $('.add_button');
+    var wrapper = $('.field_wrapper');
+
+    $('.procesarcontrapartida').hide();
+
+    $(addButton).click(function(){ //funcion para cuando agregue un campo
+
+    if(contadordiv < maxField){  //si son mayor a 10 no permite mas campos
+    var camposelect = "#selecontra"+x;
+    var valor = x;
+
+   
+    var camposopcionales = '<div class="form-row" id="dinamicosdiv'+x+'">'+
+        '<div class="form-group col-md-3">'+
+            '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
+            '</div>'+
+            '<div class="form-group col-md-3">'+
+       
+                '<select  id="account_counterpart'+x+'"  name="valorcontra[]" class="form-control  account_counterpart" required> <option value="">Seleccionar</option> @if (isset($accounts_inventory)) @foreach ($accounts_inventory as $var) <option value="{{ $var->id }}">{{ $var->description }}</option> @endforeach @endif</select>'+
+                   
+                    '</div>'+
+
+                    '<div class="form-group col-md-3">'+
+                        
+                        '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
+                        '</div>'+
+                        '<div class="form-group col-md-3">'+
+                        
+                        '<button class="remove_button btn btn-outline-danger" value='+x+'>Eliminar</button>'+
+                        
+                        '</div>'+
+                        '</div>';
+   
+   
+   
+    $('.procesarcontrapartida').show();
+    //$(wrapper).append(fieldHTML+fieldca);
+    $(wrapper).append(camposopcionales);
+    $(camposelect).on('change',function(){
+
+       var contrapartida_id = $(this).val();
+
+       getSubcontrapartida(contrapartida_id,valor);
+
+   });
+   $('.add_button').prop( 'disabled', false );
+   contadordiv++;
+        }else{
+
+            $('.add_button').prop( 'disabled', true );
+
+        }
+
+
+        x++;
+
+        function getSubcontrapartida(contrapartida_id,valor){
+
+       $.ajax({
+           url:"{{ route('listcontrapartidanew') }}" + '/' + contrapartida_id,
+           beforSend:()=>{
+               alert('consultando datos');
+           },
+           success:(response)=>{
+
+                var camposelect2 = "#account_counterpart"+valor;
+               let subcontrapartida = $(camposelect2);
+               let htmlOptions = `<option value='' >Seleccione..</option>`;
+
+               if(response.length > 0){
+                   response.forEach((item, index, object)=>{
+                       let {id,description} = item;
+                       htmlOptions += `<option value='${id}'>${description}</option>`
+
+                   });
+               }
+
+               subcontrapartida.html('');
+               subcontrapartida.html(htmlOptions);
+
+
+           },
+           error:(xhr)=>{
+               alert('Presentamos inconvenientes al consultar los datos');
+           }
+       })
+   }
+
+
+    });
+
+    $(wrapper).on('click', '.remove_button', function(e){
+        e.preventDefault();
+        valor = $(this).val();
+        $("#dinamicosdiv"+valor).remove();
+        $("#dinamicos"+valor).remove();
+
+       contadordiv--;
+       if(contadordiv == 0){
+            $('.procesarcontrapartida').hide();
+            $('.add_button').prop( 'disabled', false );
+
+        }
+    });
+
+
+
+
+$('.procesarcontrapartida').click(function(e){
+  e.preventDefault();
+  $('.procesarcontrapartida').prop( 'disabled', true );
+$.ajax({
+    method: "POST",
+    url: "{{ route('procesardeposito') }}",
+    data: $('#pruebaform').serialize(),
+         success:(response)=>{
+
+            if(response.error == true){
+                $('.procesarcontrapartida').prop( 'disabled', false );
+
+            Swal.fire({
+                    icon: 'info',
+                    title: 'Exito!',
+                    html: response.msg,
+
+
+                    })
+
+                    setTimeout("location.reload()", 3000);
+         }else{
+            $('.procesarcontrapartida').prop( 'disabled', false );
+            Swal.fire({
+                    icon: 'info',
+                    title: 'Error..',
+                    html: response.msg,
+                    })
+         }
+
+
+
+
+         },
+         error:(xhr)=>{
+            $('.procesarcontrapartida').prop( 'disabled', false );
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Error...',
+                    text: 'Error a Procesar!',
+                    });
+         }
+     })
+
+
+
+
+
+
+
+});
+
+
+
+});
+</script>
+
+<?php
+
 }
 
 ?>

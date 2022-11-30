@@ -8,8 +8,8 @@
                         <th class="text-center">Banco</th>
                         <th class="text-center">Descripcion</th>
                         <th class="text-center">Moneda</th>
-                        <th class="text-center">Haber</th>
                         <th class="text-center">Debe</th>
+                        <th class="text-center">Haber</th>
                         <th class="text-center">Accion</th>
                     </tr>
                     </thead>
@@ -24,14 +24,8 @@
                             <td>{{$var->banco ?? ''}}</td>
                             <td>{{$var->descripcion ?? ''}}</td>
                             <td>{{$var->moneda ?? ''}}</td>
-                         
-                           
-                            <td>{{ $var->haber}}</td>
                             <td>{{ $var->debe}}</td>
-
-
-
-
+                            <td>{{ $var->haber}}</td>
                             <td>
                                @if (!empty($quotations))
                                     @foreach($quotations as $quotation)
@@ -43,8 +37,9 @@
                                           @endforeach
                                 @endif
                                 <span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span>
-                                        <span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span>
-                                  
+                                <span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span>
+                                <span class="badge badge-pill badge-info" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/deposito/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Deposito</span>
+
                             </td>  
                             
                             </tr>

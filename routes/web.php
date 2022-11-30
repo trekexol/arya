@@ -1641,6 +1641,7 @@ Route::group(["prefix"=>"bankmasivos"],function(){
     Route::get('listcontrapartidanew/{type_var?}','BankMovementMasivoController@listcontrapartidanew')->name('listcontrapartidanew');
     Route::post('procesarcontrapartidanew','BankMovementMasivoController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
     Route::post('guardartransferencia','BankMovementMasivoController@guardartransferencia')->name('guardartransferencia');
+    Route::post('procesardeposito','BankMovementMasivoController@procesardeposito')->name('procesardeposito');
 
 
 });

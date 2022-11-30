@@ -46,48 +46,6 @@ class BankMovementMasivoController extends Controller
        return view('admin.bankmovementsmasivo.index',compact('bancosmasivos','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
-   public function indexmovement(Request $request)
-   {
-
-    $agregarmiddleware = $request->get('agregarmiddleware');
-    $actualizarmiddleware = $request->get('actualizarmiddleware');
-    $eliminarmiddleware = $request->get('eliminarmiddleware');
-
-        $detailvouchers = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
-                            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
-                            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
-                            ->where('header_vouchers.status','LIKE','1')
-                            ->where(function ($query) {
-                                $query->where('header_vouchers.description','LIKE','Deposito%')
-                                        ->orwhere('header_vouchers.description','LIKE','Retiro%')
-                                        ->orwhere('header_vouchers.description','LIKE','Transferencia%');
-                            })
-
-                            ->select('detail_vouchers.*','header_vouchers.description as header_description',
-                            'header_vouchers.reference as header_reference','header_vouchers.date as header_date',
-                            'accounts.description as account_description','accounts.code_one as account_code_one',
-                            'accounts.code_two as account_code_two','accounts.code_three as account_code_three',
-                            'accounts.code_four as account_code_four','accounts.code_five as account_code_five',)
-                            ->orderBy('header_vouchers.id','desc')
-                            ->get();
-
-
-        $accounts     = Account::on(Auth::user()->database_name)->orderBy('description','asc')->get();
-
-
-
-     
-
-                                            /********* *******/
-
-        $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');
-
-        return view('admin.bankmovements.indexmovement',compact('eliminarmiddleware','detailvouchers','accounts','datenow','movimientosmasivos','quotations'));  
-
-   }
-
-
 
 /***********CARGA MASIVA DE MOVIMIENTOS *****/
 
@@ -120,7 +78,7 @@ public function importmovimientos(Request $request){
 
     }
 
-    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banco Banplusd') AND $extension == 'txt'){
+    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banplus Custodia') AND $extension == 'txt'){
         Excel::import($import, $file);
         $resp['error'] = $import->estatus;
         $resp['msg'] = $import->mensaje;
@@ -128,7 +86,7 @@ public function importmovimientos(Request $request){
     }else{
 
         $resp['error'] = false;
-        $resp['msg'] = 'Verifique Formato. <br> Banesco y Bancamiga .xlsx <br> Mercantil .txt <br> Chase y BOFA .csv ';
+        $resp['msg'] = 'Verifique Formato. <br> Banesco y Bancamiga .xlsx <br> Mercantil y Banplus .txt <br> Chase y BOFA .csv ';
 
         return response()->json($resp);
     }
@@ -228,6 +186,29 @@ public function facturasmovimientos(Request $request){
 
 
 
+        }
+        elseif($tipo == 'deposito'){
+
+            $global = new GlobalController();
+            $bcv = $global->search_bcv();
+
+            $montohaber = $data[5];
+            $referenciamovimiento = $data[6];
+            $moneda = $data[7];
+            $descripcionbanco = $data[8];
+            $contrapartidas     = Account::on(Auth::user()->database_name)
+            ->where('code_one', '<>',0)
+            ->where('code_one', '<>',4)
+            ->where('code_two', '<>',0)
+            ->where('code_three', '<>',0)
+            ->where('code_four', '<>',0)
+            ->where('code_five', '=',0)
+        ->orderBY('description','asc')->pluck('description','id')->toArray();
+    
+    
+    
+            return View::make('admin.bankmovementsmasivo.tablafactura',compact('bcv','contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
+    
         }
 
 }
@@ -702,6 +683,194 @@ public function listardatos(Request $request){
 
 
     
+}
+
+
+
+
+public function procesardeposito(Request $request){
+
+    $resp = array();
+    $resp['error'] = false;
+    $resp['msg'] = '';
+
+    if($request->ajax()){
+        try{
+
+        
+
+            if($request->valorhaber == 0){
+                ///BANCO POR DEBE
+                $montodelacontra = 0;
+                $validarcontra = FALSE;
+                foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
+
+                    $montocontra =  $request->input('montocontra.' . $i);
+                    if($valorcontra == 0){
+
+                        $validarcontra = TRUE;
+
+                     }else{
+
+                        $montodelacontra = $montocontra + $montodelacontra;
+
+                     }
+
+
+                 }
+
+
+                if($validarcontra == TRUE){
+
+                    $resp['error'] = false;
+                    $resp['msg'] = 'Debe Seleccionar una Contrapartida';
+
+                    return response()->json($resp);
+
+                }elseif($montodelacontra != $request->valordebe){
+
+                    $resp['error'] = false;
+                    $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
+
+                    return response()->json($resp);
+                }else{
+                    $descripcion = "Deposito ".$request->descripcionbanco;
+                  
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = $descripcion;
+                $header_voucher->reference = $request->referenciabanco;
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+                
+                $bcv = $request->tasa;
+               
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valordebe,0);
+                }
+
+                foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
+
+                   $montocontra =  $request->input('montocontra.' . $i);
+
+
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+
+                }
+
+                $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+                                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
+
+                $movimientosmasivos->estatus = 1;
+                $movimientosmasivos->save();
+
+                $resp['error'] = True;
+                $resp['msg'] = 'Movimiento Consolidado Exitosamente';
+
+                return response()->json($resp);
+
+
+                }
+
+
+            }elseif($request->valordebe == 0){
+
+                $montodelacontra = 0;
+                $validarcontra = FALSE;
+                foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
+
+                    $montocontra =  $request->input('montocontra.' . $i);
+                    if($valorcontra == 0){
+
+                        $validarcontra = TRUE;
+
+                     }else{
+
+                        $montodelacontra = $montocontra + $montodelacontra;
+
+                     }
+
+
+                 }
+
+
+                if($validarcontra == TRUE){
+
+                    $resp['error'] = false;
+                    $resp['msg'] = 'Debe Seleccionar una Contrapartida';
+
+                    return response()->json($resp);
+
+                }elseif($montodelacontra != $request->valorhaber){
+
+                    $resp['error'] = false;
+                    $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
+
+                    return response()->json($resp);
+                }else{
+                    $descripcion = "Deposito ".$request->descripcionbanco;
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = $descripcion;
+                $header_voucher->reference = $request->referenciabanco;
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
+                $bcv = $request->tasa;
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valorhaber);
+                }
+
+                foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
+
+                   $montocontra =  $request->input('montocontra.' . $i);
+
+
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+
+                }
+
+                $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
+                $movimientosmasivos->estatus = 1;
+                $movimientosmasivos->save();
+
+                $resp['error'] = True;
+                $resp['msg'] = 'Movimiento Consolidado Exitosamente';
+
+                return response()->json($resp);
+
+
+                }
+
+
+
+
+
+            }else{
+                $resp['error'] = False;
+                $resp['msg'] = 'Error El Movimiento no Tiene Valor';
+
+                return response()->json($resp);
+
+            }
+
+
+
+
+
+
+
+        }catch(\error $error){
+            return response()->json(false,500);
+        }
+    }
 }
 
 }
