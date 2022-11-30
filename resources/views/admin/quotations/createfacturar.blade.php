@@ -1151,6 +1151,7 @@
     <script type="text/javascript">
 
             calculate();
+            
             let igtf_saved = parseFloat("<?php echo $quotation->IGTF_amount;?>");  
            
             function calculate() {
@@ -1270,12 +1271,11 @@
                //IGTF
                 var porcentaje = document.getElementById("IGTF_porc").value;
                   
-                var calc_porc = total_pay * (porcentaje/100);
+                var calc_porc = grand_total * (porcentaje/100);
 
                 var IGTF_general = total_pay + calc_porc;
 
                 var IGTF_input = calc_porc.toFixed(2);
-
 
 
                 document.getElementById("total_pay").value =  total_payformat;
