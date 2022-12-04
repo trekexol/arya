@@ -157,7 +157,7 @@ elseif($tipo == 'contra'){
               </tbody>
         </table>
       </div>
-   
+
             <form id='pruebaform' >
                 @csrf
 
@@ -173,7 +173,7 @@ elseif($tipo == 'contra'){
         <div class="field_wrapper">
 
 
-       
+
 
           </div>
 
@@ -181,7 +181,7 @@ elseif($tipo == 'contra'){
           <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
 
             </form>
-     
+
 
 
 
@@ -204,31 +204,31 @@ elseif($tipo == 'contra'){
         if(contadordiv < maxField){  //si son mayor a 10 no permite mas campos
         var camposelect = "#selecontra"+x;
         var valor = x;
- 
-       
+
+
         var camposopcionales = '<div class="form-row" id="dinamicosdiv'+x+'">'+
             '<div class="form-group col-md-3">'+
                 '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
                 '</div>'+
                 '<div class="form-group col-md-3">'+
-           
+
                     '<select  id="account_counterpart'+x+'"  name="valorcontra[]" class="form-control  account_counterpart" required> <option value="">Seleccionar</option> @if (isset($accounts_inventory)) @foreach ($accounts_inventory as $var) <option value="{{ $var->id }}">{{ $var->description }}</option> @endforeach @endif</select>'+
-                       
+
                         '</div>'+
 
                         '<div class="form-group col-md-3">'+
-                            
+
                             '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
                             '</div>'+
                             '<div class="form-group col-md-3">'+
-                            
+
                             '<button class="remove_button btn btn-outline-danger" value='+x+'>Eliminar</button>'+
-                            
+
                             '</div>'+
                             '</div>';
-       
-       
-       
+
+
+
         $('.procesarcontrapartida').show();
         //$(wrapper).append(fieldHTML+fieldca);
         $(wrapper).append(camposopcionales);
@@ -363,8 +363,8 @@ $('.procesarcontrapartida').click(function(e){
 
 }elseif($tipo == 'transferencia'){
 
- 
-                            
+
+
                             if($valormovimiento == 0){
                                 $monto = $montohaber;
                                 $tipo = "HABER";
@@ -372,9 +372,9 @@ $('.procesarcontrapartida').click(function(e){
                                 $monto = $valormovimiento;
                                 $tipo = "DEBE";
                             }
-                                
 
-                            
+
+
 
 ?>
 <div class="modal-header">
@@ -420,29 +420,43 @@ $('.procesarcontrapartida').click(function(e){
         <input id="rate" type="hidden" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
         <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" placeholder="0,00" name="amount" value="{{$monto}}" required autocomplete="amount">
         <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+        <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
 
-       
-    
+
+
         <div class="form-group row">
-            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir:</label>
+            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir Desde:</label>
 
-            <div class="col-md-6">
+            <div class="col-md-3">
+            <select class="form-control" id="iddesde" name="iddesde" required>
+                <option value="">Selecciona una Cuenta</option>
+                @foreach($counterparts as $vars)
+                    <option value="{{ $vars->description.'/'.$vars->id }}">{{ $vars->description }}</option>
+                @endforeach
+
+            </select>
+            </div>
+
+            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir a:</label>
+
+            <div class="col-md-3">
             <select class="form-control" id="id_counterpart" name="id_counterpart" required>
                 <option value="">Selecciona una Cuenta</option>
                 @foreach($counterparts as $var)
                     <option value="{{ $var->id }}">{{ $var->description }}</option>
                 @endforeach
-              
+
             </select>
             </div>
-            <div class="col-md-4">
+
+            <div class="col-md-2">
                 <button type="submit" class="btn btn-primary  btn-sm procesartransferencia">
                     Guardar Transferencia
                  </button>
                 </div>
         </div>
-     
-    
+
+
     </form>
 
 
@@ -450,7 +464,7 @@ $('.procesarcontrapartida').click(function(e){
 
 <script type="text/javascript">
     $(document).ready(function(){
-      
+
 
 
         $('.procesartransferencia').click(function(e){
@@ -517,7 +531,7 @@ $('.procesarcontrapartida').click(function(e){
 
     });
     </script>
-<?php 
+<?php
 }
 
 elseif($tipo == 'deposito'){
@@ -534,7 +548,7 @@ elseif($tipo == 'deposito'){
     <form id='pruebaform' >
         @csrf
 <div class="table-responsive-xl">
-    
+
     <table class="table table-sm">
         <thead>
             <tr>
@@ -564,8 +578,8 @@ elseif($tipo == 'deposito'){
     </table>
   </div>
 
-        
-          
+
+
 
     <input type="hidden" name="valordebe" value='{{$valormovimiento}}'>
     <input type="hidden" name="valorhaber" value='{{$montohaber}}'>
@@ -579,14 +593,14 @@ elseif($tipo == 'deposito'){
     <div class="field_wrapper">
 
 
-   
+
 
       </div>
 
 
       <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
 
- 
+
 
     </form>
 
@@ -611,30 +625,30 @@ $(document).ready(function(){
     var camposelect = "#selecontra"+x;
     var valor = x;
 
-   
+
     var camposopcionales = '<div class="form-row" id="dinamicosdiv'+x+'">'+
         '<div class="form-group col-md-3">'+
             '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
             '</div>'+
             '<div class="form-group col-md-3">'+
-       
+
                 '<select  id="account_counterpart'+x+'"  name="valorcontra[]" class="form-control  account_counterpart" required> <option value="">Seleccionar</option> @if (isset($accounts_inventory)) @foreach ($accounts_inventory as $var) <option value="{{ $var->id }}">{{ $var->description }}</option> @endforeach @endif</select>'+
-                   
+
                     '</div>'+
 
                     '<div class="form-group col-md-3">'+
-                        
+
                         '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
                         '</div>'+
                         '<div class="form-group col-md-3">'+
-                        
+
                         '<button class="remove_button btn btn-outline-danger" value='+x+'>Eliminar</button>'+
-                        
+
                         '</div>'+
                         '</div>';
-   
-   
-   
+
+
+
     $('.procesarcontrapartida').show();
     //$(wrapper).append(fieldHTML+fieldca);
     $(wrapper).append(camposopcionales);
