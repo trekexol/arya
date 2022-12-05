@@ -15,7 +15,7 @@
         <div class="form-group col-md-2">
             <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
             <select class="form-control" name="bancos" id="bancos">
                 <option value="">Seleccione Banco.</option>
                 @if($bancosmasivos)
@@ -23,6 +23,12 @@
                         <option value="{{$bancosmasivos->banco}}">{{$bancosmasivos->banco}}</option>
                     @endforeach
                 @endif
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <select class="form-control" name="fechabancos" id="fechabancos">
+                <option>Seleccione Fecha..</option>
             </select>
         </div>
       </div>
@@ -38,7 +44,7 @@
 
                 <div class="card-body">
                         <div class="table-responsive" id="datosbancos">
-                        
+
 
 
                         </div>
@@ -48,7 +54,7 @@
 </div>
 </div>
 
-  
+
 
 
     <!-- Delete Warning Modal -->
@@ -71,22 +77,22 @@
                               <option value="Bancamiga">Bancamiga</option>
                               <option value="Banco Banesco">Banesco</option>
                               <option value="Banco Banplus">Banplus</option>
-                              <option value="Banco Banplusd">Banplus Dolares</option>
+                              <option value="Banplus Custodia">Banplus Custodia</option>
                               <option value="Mercantil">Mercantil</option>
                               <option value="Chase">Chase</option>
                               <option value="BOFA">BOFA</option>
                             </select>
-    
-                            
+
+
                           </div>
                         <div id="muestrasbanco"></div>
-    
+
                           <div class="form-group col-md-12">
                             <input required id="file" type="file" value="import" name="file" class="form-control-file" accept=".xlsx, .csv, .txt">
-                            
+
                           </div>
                           <div id="muestrasfile" ></div>
-                   
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -99,15 +105,15 @@
 
 
 
-      
+
   <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content" id="modalfacturas">
-          
+
         </div>
     </div>
   </div>
- 
+
 @endsection
 
 @section('javascript')
@@ -122,7 +128,7 @@ $(document).ready(function(){
 
 /*********************************VALIDADOR DE FORMULARIO************************************/
 $("#fileForms").validate({
-  
+
         rules: {
             banco: "required",
             file: "required",
@@ -135,13 +141,13 @@ $("#fileForms").validate({
 
 
         },
-     
-       
+
+
 /*MODIFICANDO PARA MOSTRAR LA ALERTA EN EL LUGAR QUE DESEO CON UN DIV*/
     errorPlacement: function(error, element) {
 
         if(element.attr("name") == "banco") {
-        
+
         $("#muestrasbanco").append(error);
 
         }
@@ -156,7 +162,7 @@ $("#fileForms").validate({
 
         submitHandler: function (form) {
 
-           
+
 
             $.ajax({
             type: "post",
@@ -172,25 +178,25 @@ $("#fileForms").validate({
                         icon: 'info',
                         title: 'Exito!',
                         html: response.msg,
-                
-                
+
+
                         })
              }else{
-               
+
                 Swal.fire({
                         icon: 'info',
                         title: 'Error..',
                         html: response.msg,
                         })
              }
-            
-         
-            
-         
+
+
+
+
          },
          error:(response)=>{
-      
-        
+
+
             Swal.fire({
                     icon: 'error',
                     title: 'Error...',
@@ -208,21 +214,32 @@ $("#fileForms").validate({
 
  $("#bancos").change(function () {
 
-    var url = "{{ route('listardatos') }}";
+    var url = "{{ route('listarfecha') }}";
 
         $("#bancos option:selected").each(function () {
             bancos = $(this).val();
             $.post(url,{bancos: bancos,"_token": "{{ csrf_token() }}"}, function(data){
-                    $("#datosbancos").empty().append(data);
+                    $("#fechabancos").empty().append(data);
             });
         });
     })
 
 
+    $("#fechabancos").change(function () {
 
+var url = "{{ route('listardatos') }}";
+
+    $("#fechabancos option:selected").each(function () {
+
+        fechabancos = $(this).val();
+        $.post(url,{fechabancos: fechabancos,bancos: bancos,"_token": "{{ csrf_token() }}"}, function(data){
+                $("#datosbancos").empty().append(data);
+        });
+    });
+})
 
 });
-    </script> 
+    </script>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

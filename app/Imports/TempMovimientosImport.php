@@ -53,7 +53,7 @@ class TempMovimientosImport implements  ToCollection
                     /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
                     $vali   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','Bancamiga')
+                                ->where('banco','BANCAMIGA CUENTA CORRIENTE')
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('moneda','bolivares')->first();
 
@@ -61,7 +61,7 @@ class TempMovimientosImport implements  ToCollection
 
 
                     $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','Bancamiga')
+                                ->where('banco','BANCAMIGA CUENTA CORRIENTE')
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('fecha',$arr)
                                 ->where('moneda','bolivares')
@@ -75,7 +75,7 @@ class TempMovimientosImport implements  ToCollection
                         
                                 $user = new TempMovimientos();
                                 $user->setConnection(Auth::user()->database_name);
-                                $user->banco        = 'Bancamiga';
+                                $user->banco        = 'BANCAMIGA CUENTA CORRIENTE';
                                 $user->referencia_bancaria     = $row[2];
                                 $user->descripcion       = $row[3];
                                 $user->fecha    = $arr;
@@ -300,12 +300,14 @@ class TempMovimientosImport implements  ToCollection
 
 
        
-       elseif($this->banco == 'Banco Banplus' OR $this->banco == 'Banco Banplusd'){
+       elseif($this->banco == 'Banco Banplus' OR $this->banco == 'Banplus Custodia'){
 
         if($this->banco == 'Banco Banplus'){
             $moneda = "bolivares";
+            $banco = 'Banco Banplus';
         }elseif($this->banco == 'Banco Banplusd'){
             $moneda = "dolares";
+            $banco = 'Banplus Custodia';
         }
   
         foreach($rows as $row){
@@ -340,7 +342,7 @@ if($i > 1){
 
 
     $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                ->where('banco','Banco Banplus')
+                ->where('banco', $banco)
                 ->where('referencia_bancaria',$referencia)
                 ->where('fecha',$fechacompleta)
                 ->where('haber',$haber)
@@ -352,7 +354,7 @@ if($i > 1){
 
         $user = new TempMovimientos();
         $user->setConnection(Auth::user()->database_name);
-        $user->banco        = 'Banco Banplus';
+        $user->banco        =  $banco;
         $user->referencia_bancaria     = $referencia;
         $user->descripcion       = $descripcion;
         $user->fecha    = $fechacompleta;
@@ -364,11 +366,11 @@ if($i > 1){
      
        $contador++;
    $estatus = TRUE;
-   $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+   $mensaje = 'Archivo Banplus <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
    }else{
        $contadorerror++;
        $estatus = TRUE;
-       $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+       $mensaje = 'Archivo Banplus <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
 
    }
 

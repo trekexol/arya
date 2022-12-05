@@ -41,12 +41,6 @@ label.error{ color: red; font-size: 1em; }
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <nav>
-                    <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-                        <a class="nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Movimientos de Caja y Bancos</a>
-                        <a class="nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Movimientos Carga Masiva</a>
-                    </div>
-                    </nav>
 
                 <div class="card-body">
                         <div class="table-responsive">

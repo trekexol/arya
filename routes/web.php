@@ -286,7 +286,7 @@ Route::group(["prefix"=>'products'],function(){
     Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list2subsegment')->name('products.list2subsegment');
     Route::get('listtwosubsegment/{id_subsegment}','TwoSubSegmentController@list')->name('products.listtwosubsegment');
     Route::get('listthreesubsegment/{id_subsegment}','ThreeSubSegmentController@list')->name('products.listthreesubsegment');
-    
+
     Route::get('productprices/{id}','ProductController@productprices')->name('products.productprices');
     Route::get('createprice/{id}','ProductController@createprice')->name('products.createprice');
     Route::get('editprice/{id}','ProductController@editprice')->name('products.editprice');
@@ -329,13 +329,13 @@ Route::group(["prefix"=>'inventories'],function(){
 
     Route::post('storedecreaseinventory','InventoryController@store_decrease_inventory')->name('inventories.store_decrease_inventory');
     Route::get('createdecreaseinventory/{id_inventario}','InventoryController@create_decrease_inventory')->name('inventories.create_decrease_inventory');
-  
+
     Route::post('storeinventorycombo','InventoryController@store_inventory_combo')->name('inventories.store_inventory_combo');
 
     Route::get('movements','InventoryController@indexmovements')->name('inventories.movement');
     Route::post('storemovements','InventoryController@storemovements')->name('reports.storemovements');
     Route::get('movements_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}/{id_account}','InventoryController@movements_pdf')->name('reports.movements_pdf');
-    
+
     Route::get('getinventory/{id_account?}','InventoryController@getinventory')->name('inventories.getinventory');
 });
 
@@ -434,7 +434,7 @@ Route::group(["prefix"=>'detailvouchers'],function(){
     Route::get('validation/{coin}/{id_header?}/{id_account?}','DetailVoucherController@createvalidation')->name('detailvouchers.createvalidation');
     Route::delete('deletedetail','DetailVoucherController@deleteDetail')->name('detailvouchers.deletedetail');
 
-    
+
     Route::delete('disable','DetailVoucherController@disable')->name('detailvouchers.disable');
 });
 
@@ -446,10 +446,10 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
     Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
 
-    Route::patch('{id}/updateQuotation','QuotationController@updateQuotation')->name('quotations.updateQuotation'); 
+    Route::patch('{id}/updateQuotation','QuotationController@updateQuotation')->name('quotations.updateQuotation');
     Route::patch('selectclientQuotation/{id}','QuotationController@selectclientQuotation')->name('quotations.selectclientQuotation');
-    Route::get('updateClientQuotation/{id_quotation}/{id_client}/{coin}','QuotationController@updateClientQuotation')->name('quotations.updateClientQuotation'); 
-   
+    Route::get('updateClientQuotation/{id_quotation}/{id_client}/{coin}','QuotationController@updateClientQuotation')->name('quotations.updateClientQuotation');
+
 
     Route::get('registerquotation/{type?}','QuotationController@createquotation')->name('quotations.createquotation');
 
@@ -476,9 +476,9 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::get('notadeentrega/{id_quotation}/{coin}/{type?}','DeliveryNoteController@createdeliverynote')->name('quotations.createdeliverynote');
 
     Route::get('indexnotasdeentrega/{id_quotation?}/{number_pedido?}/{saldar?}','DeliveryNoteController@index')->name('quotations.indexdeliverynote');
-   
+
     Route::get('indexnotasdeentregasald/{id_quotation?}/{number_pedido?}','DeliveryNoteController@indexsald')->name('quotations.indexdeliverynotesald');
-   
+
     Route::get('storesaldar/{id?}/{anticipo?}/{totalfac?}','DeliveryNoteController@storesaldar')->name('quotation.storesaldar');
     Route::post('storesaldarnota','FacturarController@storeanticiposaldar')->name('quotations.storeanticiposaldar');
 
@@ -503,8 +503,8 @@ Route::group(["prefix"=>'quotations'],function(){
 
     Route::post('pdfQuotations','QuotationController@pdfQuotations')->name('quotations.pdfQuotations');
 
-   
-    
+
+
 });
 
 Route::group(["prefix"=>'printer'],function(){
@@ -512,7 +512,7 @@ Route::group(["prefix"=>'printer'],function(){
     Route::get('printer','printerController@printer')->name('printer.printer');
 
 
-});    
+});
 
 Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('/','BankMovementController@index')->name('bankmovements');
@@ -536,10 +536,10 @@ Route::group(["prefix"=>'bankmovements'],function(){
     Route::get('seemovements','BankMovementController@indexmovement')->name('bankmovements.indexmovement');
 
     Route::get('orderpaymentlist','OrderPaymentListController@indexmovement')->name('bankmovements.indexorderpayment');
-    
+
     Route::post('orderpaymentlist/pdfAccount','OrderPaymentListController@pdfAccountOrdenDePago')->name('bankmovements.pdfAccountOrdenDePago');
 
-    
+
     Route::post('pdfAccount','BankMovementController@pdfAccountBankMovement')->name('bankmovements.pdfAccountBankMovement');
 
     Route::post('orderPaymentPdf','OrderPaymentListController@orderPaymentPdf')->name('bankmovements.orderPaymentPdf');
@@ -548,9 +548,9 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
      Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
 
-   
 
-    
+
+
 });
 
 Route::group(["prefix"=>'nominas'],function(){
@@ -564,7 +564,7 @@ Route::group(["prefix"=>'nominas'],function(){
     Route::get('selectemployee/{id}','NominaController@selectemployee')->name('nominas.selectemployee');
 
     Route::get('calculate/{id}','NominaController@calculate')->name('nominas.calculate');
-    
+
     Route::get('calculatecont/{id}','NominaController@calculatecont')->name('nominas.calculatecont');
 
     Route::get('searchmovement/{id}','NominaController@searchMovementNomina')->name('nominas.searchMovementNomina');
@@ -572,7 +572,7 @@ Route::group(["prefix"=>'nominas'],function(){
     Route::get('recalculate/{id}','NominaController@recalculate')->name('nominas.recalculate');
 
     Route::get('recalculatecont/{id}','NominaController@recalculatecont')->name('nominas.recalculatecont');
-    
+
 });
 
 
@@ -589,7 +589,7 @@ Route::group(["prefix"=>'nominabasescalc'],function(){
     Route::get('/','NominaBasesCalcController@index')->name('nominabasescalc');
     Route::post('store','NominaBasesCalcController@store')->name('nominabasescalc.store');
     /*Route::get('register','NominaConceptController@create')->name('nominaconcepts.create');
-   
+
     Route::get('{id}/edit','NominaConceptController@edit')->name('nominaconcepts.edit');
     Route::delete('{id}/delete','NominaConceptController@destroy')->name('nominaconcepts.delete');
     Route::patch('{id}/update','NominaConceptController@update')->name('nominaconcepts.update');*/
@@ -600,7 +600,7 @@ Route::group(["prefix"=>'nominaparts'],function(){
     Route::get('{type?}','NominaPartsController@index')->name('nominaparts');
    /* Route::post('store','NominaBasesCalcController@store')->name('nominabasescalc.store');
     Route::get('register','NominaConceptController@create')->name('nominaconcepts.create');
-   
+
     Route::get('{id}/edit','NominaConceptController@edit')->name('nominaconcepts.edit');
     Route::delete('{id}/delete','NominaConceptController@destroy')->name('nominaconcepts.delete');
     Route::patch('{id}/update','NominaConceptController@update')->name('nominaconcepts.update');*/
@@ -640,7 +640,7 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('debitnotemediacarta/{id_quotation}/{coin}','PDF2Controller@debitnotemediacarta')->name('pdf.debitnotemediacarta');
 
     Route::get('creditnotemediacarta/{id_quotation}/{coin}','PDF2Controller@creditnotemediacarta')->name('pdf.creditnotemediacarta');
-      
+
 
 
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
@@ -660,7 +660,7 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('order/{id_quotation}/{coin}/{iva}/{date}','PDF2Controller@order')->name('pdf.order');
 
     Route::get('quotation/{id_quotation}/{coin?}/{photo?}','PDF2Controller@printQuotation')->name('pdf.quotation');
-   
+
     Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
 
      //////PDF EMPRESA LICORES//////////////////////////////////////////////////////////////////////////////////
@@ -671,7 +671,7 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::get('previewnote/{id_quotation}/{coin},{serienote}','PDF2LicController@previewnote')->name('pdf.previewnote');
     Route::get('deliverynotelic/{id_quotation}/{coin}/{iva?}/{date?}/{serienote?}','PDF2LicController@deliverynotelic')->name('pdf.deliverynotelic');
     Route::get('deliverynotelicvertical/{id_quotation}/{coin}/{iva?}/{date?}/{serienote?}','PDF2LicController@deliverynotelicvertical')->name('pdf.deliverynotelicvertical');
-     
+
 });
 
 Route::group(["prefix"=>'receipt'],function(){
@@ -685,7 +685,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('registerreceiptclients/{type?}','ReceiptController@createreceiptclients')->name('receipt.createreceiptclients'); // opcion generar recibo a propietarios
     Route::get('registerreceiptclient/{id_client}/{type?}','ReceiptController@createreceiptclient')->name('receipt.createreceiptclient'); //consulta clientes
-    
+
     Route::get('registerreceiptclientsunique/{type?}','ReceiptController@createreceiptclientsunique')->name('receipt.createreceiptclientsunique'); // crear recibo individual a propietario
 
     Route::get('registerreceipcondominiums/{id_client}/{type?}','ReceiptController@createreceiptcondominiums')->name('receipt.createreceiptcondominiums'); //consulta clientes condominio
@@ -696,12 +696,12 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('selectcondominiumsreceipt/{type?}','ReceiptController@selectcondominiumsreceipt')->name('receipt.selectcondominiumsreceipt');
     Route::get('selectownersreceipt/{type?}','ReceiptController@selectownersreceipt')->name('receipt.selectownersreceipt');
     Route::get('selectownersreceiptunique/{client?}/{type?}/{date?}/{owner}','ReceiptController@selectownersreceiptunique')->name('receipt.selectownersreceiptunique');
-    Route::get('selectownersreceiptresumen/{type?}','ReceiptController@selectownersreceiptresumen')->name('receipt.selectownersreceiptresumen'); 
+    Route::get('selectownersreceiptresumen/{type?}','ReceiptController@selectownersreceiptresumen')->name('receipt.selectownersreceiptresumen');
 
     Route::get('selectclientfactura/{type?}','ReceiptController@selectclientfactura')->name('receipt.selectclientfactura');
 
     Route::get('selectclientemail/{type?}','ReceiptController@selectclientemail')->name('receipt.selectclientemail');
-    
+
     Route::get('registerreceiptnvendor/{id_client}/{id_vendor}/{type?}','ReceiptController@createreceiptvendor')->name('receipt.createreceiptvendor');
     Route::get('selectvendor/{id_client}/{type?}','ReceiptController@selectvendor')->name('receipt.selectvendor');
 
@@ -712,7 +712,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproduct')->name('receipt.createproduct');
     Route::get('registerproductunique/{id_quotation}/{coin}/{id_product}/{type_quotation?}','ReceiptController@createproductunique')->name('receipt.createproductunique');
-    
+
     Route::get('register/{id_quotation}/{coin}/{type?}','ReceiptController@create')->name('receipt.create');
 
     Route::get('registerunique/{id_quotation?}/{coin?}/{type?}','ReceiptController@createunique')->name('receipt.createunique');
@@ -720,7 +720,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::post('store','ReceiptController@store')->name('receipt.store');
     Route::post('storeunique','ReceiptController@storeunique')->name('receipt.storeunique');
-    
+
     Route::post('storeclients','ReceiptController@storeclients')->name('receipt.storeclients');
 
     Route::post('storeownersunique','ReceiptController@storeownersunique')->name('receipt.storeownersunique');
@@ -745,7 +745,7 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::post('storefacturacredit','ReceiptController@storefacturacredit')->name('receipt.storefacturacredit');
     Route::post('storefacturacreditunique','ReceiptController@storefacturacreditunique')->name('receipt.storefacturacreditunique');
-     
+
     Route::post('storefactura','ReceiptController@storefactura')->name('receipt.storefactura');
     Route::get('facturado/{id_quotation}/{coin}/{reverso?}','ReceiptController@createfacturado')->name('receipt.createfacturado');
 
@@ -755,18 +755,18 @@ Route::group(["prefix"=>'receipt'],function(){
 
     Route::get('reversarquotationmultipayment/{id}/{id_header?}','ReceiptController@reversar_quotation_multipayment')->name('receipt.reversar_quotation_multipayment');
     Route::delete('reversarquotation','ReceiptController@reversar_quotation')->name('receipt.reversarQuotation');
- 
+
     Route::get('factura/{id_quotation}/{coin?}','ReceiptController@imprimirfactura')->name('pdf.receiptfac');
     Route::get('facturamedia/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_media')->name('pdf.receiptfacmedia');
     Route::get('factura_maq/{id_quotation}/{coin?}','ReceiptController@imprimirfactura_maq')->name('pdf.receiptfacmaq');
-    
+
     Route::get('recibo/{id_quotation}/{coin?}','ReceiptController@imprimirecibo')->name('pdf.receipt');
     Route::get('recibounique/{id_quotation}/{coin?}','ReceiptController@imprimirecibounique')->name('pdf.receiptunique');
 
 
 
     Route::get('movementinvoice/{id_invoice}/{coin?}','ReceiptController@movementsinvoice')->name('receipt.movement');
-   
+
     Route::get('facturarafter/{id_quotation}/{coin}','ReceiptController@createfacturar_after')->name('receipt.createfacturar_after');
     Route::get('facturaraftereceipt/{id_quotation}/{coin}','ReceiptController@createfacturar_aftereceipt')->name('receipt.createfacturar_aftereceipt');
 
@@ -783,18 +783,18 @@ Route::group(["prefix"=>'receipt'],function(){
     Route::get('accountsreceivable_receipt/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable_receipt')->name('receipt.accounts_receivable_receipt');
     Route::post('storeaccounts_receivable_receipt','ReceiptController@store_accounts_receivable_receipt')->name('receipt.store_accounts_receivable_receipt');
     Route::get('accounts_receivablepdf_receipt/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt')->name('receipt.accounts_receivable_pdf_receipt');
-    
+
     Route::get('accountsreceivable_receipt_resumen/{typeperson}/{id_client?}','ReceiptController@index_accounts_receivable_receipt_resumen')->name('receipt.accounts_receivable_receipt_resumen');
     Route::post('storeaccounts_receivable_receipt_resumen','ReceiptController@store_accounts_receivable_receipt_resumen')->name('receipt.store_accounts_receivable_receipt_resumen');
     Route::get('accounts_receivablepdf_receipt_resumen/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','ReceiptController@accounts_receivable_pdf_receipt_resumen')->name('receipt.accounts_receivable_pdf_receipt_resumen');
-    
+
 
     Route::get('envioreceiptclients/{type?}','ReceiptController@envioreceiptclients')->name('receipt.envioreceiptclients'); // opcion generar recibo a clientes
 
 
  });
  Route::group(["prefix"=>'receiptc'],function(){
- 
+
  });
 
  Route::group(["prefix"=>'tasas'],function(){
@@ -864,9 +864,9 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
 
     Route::patch('selectproviderexpense/{id}','ExpensesAndPurchaseController@selectproviderexpense')->name('expensesandpurchases.selectproviderexpense');
-    Route::get('updateproviderexpense/{id_expense}/{id_provider}/{coin}','ExpensesAndPurchaseController@updateproviderexpense')->name('expensesandpurchases.updateproviderexpense'); 
+    Route::get('updateproviderexpense/{id_expense}/{id_provider}/{coin}','ExpensesAndPurchaseController@updateproviderexpense')->name('expensesandpurchases.updateproviderexpense');
 
-   
+
     Route::get('{id}/edit','ExpensesAndPurchaseController@edit')->name('expensesandpurchases.edit');
     Route::delete('delete','ExpensesAndPurchaseController@destroy')->name('expensesandpurchases.delete');
     Route::delete('deletedetail','ExpensesAndPurchaseController@deleteDetail')->name('expensesandpurchases.deleteDetail');
@@ -890,7 +890,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::post('storeexpensecredit', 'ExpensesAndPurchaseController@store_expense_credit')->name('expensesandpurchases.store_expense_credit');
 
     Route::get('selectinventary/{id_expense}/{coin}/{type}/{account?}/{subaccount?}','ExpensesAndPurchaseController@selectinventary')->name('expensesandpurchases.selectinventary');
-   
+
     Route::get('expensevoucher/{id_expense}/{coin}','ExpensesAndPurchaseController@create_expense_voucher')->name('expensesandpurchases.create_expense_voucher');
 
     Route::get('registerpaymentafter/{id_expense}/{coin}','ExpensesAndPurchaseController@create_payment_after')->name('expensesandpurchases.create_payment_after');
@@ -987,10 +987,10 @@ Route::group(["prefix"=>'pdfnomina'],function(){
     Route::get('printnominacalculationall/{id_nomina}','PdfNominaController@print_nomina_calculation_all')->name('nominas.print_nomina_calculation_all');
     Route::get('printpayroolsummary/{id_nomina}','PdfNominaController@print_payrool_summary')->name('nominas.print_payrool_summary');
     Route::get('printpayroolsummaryall/{id_nomina}','PdfNominaController@print_payrool_summary_all')->name('nominas.print_payrool_summary_all');
-   
+
  });
 
- 
+
 Route::group(["prefix"=>'twosubsegments'],function(){
     Route::get('/','TwoSubSegmentController@index')->name('twosubsegments');
     Route::get('register','TwoSubSegmentController@create')->name('twosubsegments.create');
@@ -1049,13 +1049,13 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('selectvendor','Report2Controller@select_vendor')->name('reports.select_vendor');
 
     Route::get('select_client_note','ReportDeliveryNoteController@select_client_note')->name('reports.select_client_note'); //dacson nota de entrega
-    Route::get('select_vendor_note','ReportDeliveryNoteController@select_vendor_note')->name('reports.select_vendor_note'); // dacson nota de entrega 
+    Route::get('select_vendor_note','ReportDeliveryNoteController@select_vendor_note')->name('reports.select_vendor_note'); // dacson nota de entrega
 
     Route::get('select_client_note_det','ReportDeliveryNoteController@select_client_note_det')->name('reports.select_client_note_det'); //dacson nota de entrega
-    Route::get('select_vendor_note_det','ReportDeliveryNoteController@select_vendor_note_det')->name('reports.select_vendor_note_det'); // dacson nota de entrega 
+    Route::get('select_vendor_note_det','ReportDeliveryNoteController@select_vendor_note_det')->name('reports.select_vendor_note_det'); // dacson nota de entrega
 
     Route::get('select_client_fac_det','ReportDeliveryFacController@select_client_fac_det')->name('reports.select_client_fac_det'); //dacson nota de entrega
-    Route::get('select_vendor_fac_det','ReportDeliveryFacController@select_vendor_fac_det')->name('reports.select_vendor_fac_det'); // dacson nota de entrega 
+    Route::get('select_vendor_fac_det','ReportDeliveryFacController@select_vendor_fac_det')->name('reports.select_vendor_fac_det'); // dacson nota de entrega
 
     Route::get('debtstopay/{id_provider?}','Report2Controller@index_debtstopay')->name('reports.debtstopay');
     Route::post('storedebtstopay','Report2Controller@store_debtstopay')->name('reports.store_debtstopay');
@@ -1114,7 +1114,7 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('shopping','Reports\ShoppingController@index_shopping')->name('reports.shopping');
     Route::post('storeshopping','Reports\ShoppingController@store_shopping')->name('reports.store_shopping');
     Route::get('shoppingpdf/{coin}/{date_begin}/{date_end}/{name?}','Reports\ShoppingController@shopping_pdf')->name('reports.shopping_pdf');
-    
+
     Route::get('accounts_receivable_note/{typepersone}/{id_client_or_vendor?}','ReportDeliveryNoteController@index_accounts_receivable_note')->name('reports.accounts_receivable_note'); // dacson (report note delivery)
     Route::post('storeaccounts_receivable_note','ReportDeliveryNoteController@store_accounts_receivable_note')->name('reports.store_accounts_receivable_note'); // dacson (report note delivery)
     Route::get('accounts_receivable_note_pdf/{coin}/{date_end}/{typeinvoice}/{typepersone}/{id_client_or_vendor?}/{fecha_frist?}','ReportDeliveryNoteController@accounts_receivable_note_pdf')->name('reports.accounts_receivable_note_pdf');
@@ -1161,14 +1161,14 @@ Route::group(["prefix"=>'taxes'],function(){
 
 Route::group(["prefix"=>'directchargeorders'],function(){
 
-        
+
     Route::get('directchargeorders','DirectChargeOrderController@index')->name('directchargeorders.index');
 
     Route::get('/','DirectChargeOrderController@create')->name('directchargeorders.create');
     Route::get('ocdelete/{id}','DirectChargeOrderController@destroy')->name('directchargeorders.delete');
     Route::get('directchargeorderPaymentPdfDetail/{id_header_voucher}','DirectChargeOrderController@orderPaymentPdfDetail')->name('directchargeorders.directchargeorderPaymentPdfDetail');
 
-   
+
     Route::post('store','DirectChargeOrderController@store')->name('directchargeorders.store');
     Route::get('listbeneficiary/{type_var?}','DirectChargeOrderController@listbeneficiary')->name('directchargeorders.listbeneficiary');
     Route::get('listcontrapartida/{type_var?}','DirectChargeOrderController@listcontrapartida')->name('directchargeorders.listcontrapartida');
@@ -1184,9 +1184,9 @@ Route::group(["prefix"=>'export'],function(){
 
     Route::get('products','ExcelController@export_product')->name('export.product_template');
     Route::get('inventary','ExcelController@export_inventary')->name('export.product_template_inventary');
-    
+
     Route::get('combos','ExcelController@export_combo')->name('export.product_template_combo');
-    
+
     Route::post('productsimport','ExcelController@import_product')->name('import_product');
 
     Route::post('inventaryimport','ExcelController@import_inventary')->name('import_inventary');
@@ -1206,7 +1206,7 @@ Route::group(["prefix"=>'export'],function(){
 
     Route::post('productsupdatepriceimport','ExcelController@import_product_update_price')->name('import_product_update_price');
 
-   
+
   });
 
   Route::group(["prefix"=>'orders'],function(){
@@ -1269,7 +1269,7 @@ Route::group(["prefix"=>'historialquotation'],function(){
 
 Route::group(["prefix"=>'historialselect'],function(){
     Route::get('user/{route}','Historial\HistorialSelectController@selectUser')->name('historialselect.user');
-   
+
 });
 
 Route::group(["prefix"=>'historialexpense'],function(){
@@ -1291,7 +1291,7 @@ Route::group(["prefix"=>'creditnotes'],function(){
     Route::post('store','CreditNoteController@store')->name('creditnotes.store');
     Route::delete('{id}/delete','CreditNoteController@destroy')->name('creditnotes.delete');
     Route::get('historial','CreditNoteController@index_historial')->name('creditnotes.historial');
-   
+
     Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}/{tasa?}','CreditNoteController@createcreditnote')->name('creditnotes.createcreditnote');
     Route::get('selectclient','CreditNoteController@selectclient')->name('creditnotes.selectclient');
     Route::get('selectvendor/{id_client}','CreditNoteController@selectvendor')->name('creditnotes.selectvendor');
@@ -1330,7 +1330,7 @@ Route::group(["prefix"=>'debitnotes'],function(){
     Route::post('store','DebitNoteController@store')->name('debitnotes.store');
     Route::delete('{id}/delete','DebitNoteController@destroy')->name('debitnotes.delete');
     Route::get('historial','DebitNoteController@index_historial')->name('debitnotes.historial');
-   
+
     Route::get('registercreditnote/{id_invoice?}/{id_client?}/{id_vendor?}/{tasa?}','DebitNoteController@createcreditnote')->name('debitnotes.createcreditnote');
     Route::get('selectclient','DebitNoteController@selectclient')->name('debitnotes.selectclient');
     Route::get('selectvendor/{id_client}','DebitNoteController@selectvendor')->name('debitnotes.selectvendor');
@@ -1392,19 +1392,19 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('payment_cobro','Exports\Reports\PaymentCobroExportController@exportExcel')->name('export_reports.payment_cobro');
     Route::post('payment_expense','Exports\Reports\PaymentExpenseExportController@exportExcel')->name('export_reports.payment_expense');
     Route::post('anticipos','Exports\Reports\AnticipoExportController@exportExcel')->name('export_reports.anticipos');
-    
+
     Route::post('diarybookdetails','Exports\DailyListing\DiaryBookDetailExportController@exportExcel')->name('export_reports.diary_book_details');
     Route::post('ledger','Exports\DailyListing\LedgerExportController@exportExcel')->name('export_reports.ledger');
 
     Route::post('journalbooks','Exports\DailyListing\JournalbookExportController@exportExcel')->name('export_reports.journalbooks');
     Route::post('orderpayments','Exports\DailyListing\OrderPaymentListExportController@exportExcel')->name('export_reports.orderpayments');
     Route::post('bankmovements','Exports\DailyListing\BankMovementExportController@exportExcel')->name('export_reports.bankmovements');
-    
+
     Route::post('quotations','Exports\Quotations\QuotationExportController@exportExcel')->name('export_reports.quotations');
     Route::post('orders','Exports\Quotations\OrderExportController@exportExcel')->name('export_reports.orders');
     Route::post('vendor_commissions','Exports\Reports\VendorCommissionExportController@exportExcel')->name('export_reports.vendor_commissions');
 
-    
+
 });
 
 Route::group(["prefix"=>'mails'],function(){
@@ -1633,6 +1633,7 @@ Route::group(["prefix"=>"modulos"],function(){
 
 Route::group(["prefix"=>"bankmasivos"],function(){
     Route::get('/','BankMovementMasivoController@index')->name('bankmasivos');
+    Route::post('listarfecha','BankMovementMasivoController@listarfecha')->name('listarfecha');
     Route::post('listardatos','BankMovementMasivoController@listardatos')->name('listardatos');
 
     Route::post('importmovimientos','BankMovementMasivoController@importmovimientos')->name('importmovimientos');
@@ -1641,6 +1642,8 @@ Route::group(["prefix"=>"bankmasivos"],function(){
     Route::get('listcontrapartidanew/{type_var?}','BankMovementMasivoController@listcontrapartidanew')->name('listcontrapartidanew');
     Route::post('procesarcontrapartidanew','BankMovementMasivoController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
     Route::post('guardartransferencia','BankMovementMasivoController@guardartransferencia')->name('guardartransferencia');
+    Route::post('procesardeposito','BankMovementMasivoController@procesardeposito')->name('procesardeposito');
+    Route::delete('eliminarmovimiento','BankMovementMasivoController@eliminarmovimiento')->name('eliminarmovimiento');
 
 
 });
