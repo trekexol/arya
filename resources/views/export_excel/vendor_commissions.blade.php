@@ -55,17 +55,12 @@
     
       if(isset($coin) && $coin != 'bolivares'){
 
-        $quotation->amount_with_iva = ($quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0)) / ($quotation->bcv ?? 1);
-        //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
-
-        $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
-        $total_por_cobrar += $por_cobrar;
-        $total_por_facturar += $quotation->amount_with_iva;
+        $cantidatotal = $quotation->amount / $quotation->bcv;
+        $total_por_facturar += $cantidatotal;
       }else{
-        $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
-        $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
-        $total_por_cobrar += $por_cobrar;
-        $total_por_facturar += $quotation->amount_with_iva;
+        $cantidatotal = $quotation->amount;
+        $total_por_facturar += $cantidatotal;
+            
       }
       
       $total_anticipos += $quotation->amount_anticipo;
@@ -88,7 +83,7 @@
         $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
       }
 
-      $comision = (($quotation->comision ?? 0) * (bcdiv($quotation->amount ?? 0, '1', 2)))/100;
+      $comision = (($quotation->comision ?? 0) * (bcdiv($cantidatotal ?? 0, '1', 2)))/100;
     
       $total_comision += bcdiv($comision, '1', 2);
     ?>
@@ -101,7 +96,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format(($quotation->comision ?? 0), 0, ',', '.')}}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(bcdiv($comision ?? 0, '1', 2), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($cantidatotal ?? 0), 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
 
