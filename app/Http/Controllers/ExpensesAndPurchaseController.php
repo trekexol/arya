@@ -264,8 +264,8 @@ class ExpensesAndPurchaseController extends Controller
         
         if(isset($pago)){
 
-            $periodo_pago = substr($pago->created_at,0,4);
-            $mes_pago = substr($pago->created_at,5,2);
+            $periodo_pago = substr($expense->date_payment,0,4);
+            $mes_pago = substr($expense->date_payment,5,2);
         
         } else {
 
@@ -281,7 +281,7 @@ class ExpensesAndPurchaseController extends Controller
             $company = Company::on(Auth::user()->database_name)->find(1);
                     
             
-            $pdf = $pdf->loadView('admin.expensesandpurchases.retencion_iva',compact('pago','company','expense','datenow','period','provider','periodo_pago','mes_pago'))->setPaper('a4', 'landscape');
+            $pdf = $pdf->loadView('admin.expensesandpurchases.retencion_iva',compact('pago','company','expense','datenow','period','provider','periodo_pago','mes_pago'))->setPaper('letter', 'landscape');
             return $pdf->stream();
         }else{
             return redirect('/expensesandpurchases/expensevoucher/'.$id_expense.'/bolivares')->withDanger('Esta factura no retiene IVA!');
