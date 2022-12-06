@@ -61,7 +61,7 @@ class DeliveryNoteController extends Controller
 
 
             
-            return view('admin.quotations.indexdeliverynote',compact('agregarmiddleware','quotations'));
+            return view('admin.quotations.indexdeliverynote',compact('agregarmiddleware','quotations','eliminarmiddleware'));
       
     }
  
@@ -236,6 +236,8 @@ class DeliveryNoteController extends Controller
         
         
        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
+       $quotation->status = 'X';
+       $quotation->save(); 
 
         QuotationProduct::on(Auth::user()->database_name)
 
@@ -243,16 +245,15 @@ class DeliveryNoteController extends Controller
                         ->where('products.type','MERCANCIA')
                         ->orwhere('products.type','MATERIAP')
                         ->orwhere('products.type','COMBO')
-                        ->where('id_quotation',$quotation->id)
+                        ->where('id_quotation',$id_quotation)
                         ->update(['quotation_products.status' => 'X']);
     
-        $quotation->status = 'X';
-        $quotation->save();
+      
         
         $global = new GlobalController;                                                
         
         $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-        ->where('id_quotation', '=', $quotation->id)->get();
+        ->where('id_quotation', '=', $id_quotation)->get();
 
         foreach($quotation_products as $det_products){
 
@@ -260,9 +261,9 @@ class DeliveryNoteController extends Controller
 
         }  
 
-
+        /*
         $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$id_quotation)
-        ->update(['status' => 'X']);
+        ->update(['status' => 'X']);*/
 
         $historial_quotation = new HistorialQuotationController();
 
