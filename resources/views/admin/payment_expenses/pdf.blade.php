@@ -94,7 +94,7 @@
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $provider_type_code ?? ''}}{{ $provider_code_provider ?? '' }} / {{ $provider_name ?? ''}}</th>
     </tr> 
     <tr>
-      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Fecha del Cobro:</th>
+      <th style="text-align: left; font-weight: normal; width: 25%; border-color: white;">Fecha del Pago:</th>
       <th style="text-align: left; font-weight: normal; width: 70%; border-color: white;">{{ $payment_created_at ?? ''}}</th>
     </tr>
     <tr>
