@@ -624,7 +624,6 @@ class GlobalController extends Controller
         
         $url = "https://s3.amazonaws.com/dolartoday/data.json";
             
-            
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
@@ -634,11 +633,8 @@ class GlobalController extends Controller
         $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data), true); 
         $datos['USD']['promedio_real'];
       
-        
        if($datos['USD']['promedio_real'] != $company->rate_bcv){
-     
-     
-           
+ 
             if($datos['USD']['promedio_real'] > 0){
 
                 $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza
