@@ -105,15 +105,6 @@
 
 
 
-
-  <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content" id="modalfacturas">
-
-        </div>
-    </div>
-  </div>
-
 @endsection
 
 @section('javascript')

@@ -50,7 +50,7 @@ class ExpensesAndPurchaseController extends Controller
         $actualizarmiddleware = $request->get('actualizarmiddleware');
         $eliminarmiddleware = $request->get('eliminarmiddleware');
         $namemodulomiddleware = $request->get('namemodulomiddleware');
-    
+   
         
     $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
                                                             ->where('amount_with_iva','=',null)
@@ -235,6 +235,7 @@ class ExpensesAndPurchaseController extends Controller
     
     public function create_expense($id_provider = null)
     {
+
         $provider = null;
 
         if(isset($id_provider)){
@@ -295,8 +296,6 @@ class ExpensesAndPurchaseController extends Controller
 
         if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
 
-            if($request->ajax()){
-                try{
 
                     if ($request->observation == '-1'){
                         $observation = '';
@@ -321,43 +320,15 @@ class ExpensesAndPurchaseController extends Controller
 
 
 
-           if($update == 1){
-            return response()->json(true,200);
-           }   else{
-            return response()->json(false,500);
-
-           }             
-           
-    
-                          
-    
-               
-    
-                    
-                  
-                       
-             
-                   
-    
-                }catch(Throwable $th){
-                    return response()->json(false,500);
-                }
-            }
-
-
-
-
-  
-
-       
-
+            return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+ 
 
         /*$historial_quotation = new HistorialQuotationController();
 
         $historial_quotation->registerAction($var,"quotation","Actualizó la Compra");*/
 
        // return view('admin.expensesandpurchases.createexpense',compact('datenow','provider'));
-       // return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+
 
     }else{
         return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -904,56 +875,73 @@ class ExpensesAndPurchaseController extends Controller
     public function store(Request $request)
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
-        $data = request()->validate([
-            
-            'id_user'         =>'required',
-            'date-begin'         =>'required',
         
-        ]);
+            $rules = [
+                'id_provider' => 'required',
+                'invoice' => 'required',
+            ];
+            $messages = [
+                'id_provider.required' => 'Seleccione un Proveedor.',
+                'invoice.required' => 'Ingrese Numero de factura.',
 
-        $var = new ExpensesAndPurchase();
-        $var->setConnection(Auth::user()->database_name);
+            ];
+            $this->validate($request, $rules, $messages);
+       
 
-        $var->id_provider = request('id_provider');
+        $idprovider = request('id_provider');
+        $invoice = request('invoice');
 
-        if(!isset($var->id_provider)){
+        $validar = ExpensesAndPurchase::on(Auth::user()->database_name)
+                    ->where('id_provider',$idprovider)
+                    ->where('invoice',$invoice)
+                    ->get();
+
+
+                    
+        if(!isset($idprovider)){
             return redirect('expensesandpurchases/registerexpense')->withDelete('Debe seleccionar un proveedor!');
         }
-
-        $var->id_user = request('id_user');
-
-        $var->invoice = request('invoice');
-        $var->serie = request('serie');
-        $var->observation = request('observation');
-
-        $var->date = request('date-begin');
-
-        $var->coin = 'bolivares';
-
-        $company = Company::on(Auth::user()->database_name)->find(1);
-        $global = new GlobalController();
-        
-        //Si la taza es automatica
-        if($company->tiporate_id == 1){
-            $bcv = $global->search_bcv();
+        elseif(!isset($invoice)){
+            return redirect('expensesandpurchases/registerexpense/'.request('id_provider'))->withDelete('Debe Registrar Factura de Compra!');
+        } elseif($validar->count() > 0){
+            return redirect('expensesandpurchases/registerexpense/'.request('id_provider'))->withDelete('El Proveedor ya posee una factura con el numero '.$invoice);
         }else{
-            //si la tasa es fija
-            $bcv = $company->rate;
+
+            $var = new ExpensesAndPurchase();
+            $var->setConnection(Auth::user()->database_name);
+            $var->id_provider = request('id_provider');
+            $var->invoice = request('invoice');
+            $var->id_user = request('id_user');
+            $var->serie = request('serie');
+            $var->observation = request('observation');
+            $var->date = request('date-begin');
+            $var->coin = 'bolivares';
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $global = new GlobalController();
+            
+            //Si la taza es automatica
+            if($company->tiporate_id == 1){
+                $bcv = $global->search_bcv();
+            }else{
+                //si la tasa es fija
+                $bcv = $company->rate;
+            }
+    
+            $var->rate = $bcv;
+            $var->status =  "1";
+            $var->save();
+    
+            $historial_expense = new HistorialExpenseController();
+            $historial_expense->registerAction($var,"expense","Creó la Compra");
+    
+            return redirect('expensesandpurchases/register/'.$var->id.'/bolivares')->withSuccess('Gasto o Compra Resgistrada Correctamente!');
+    
         }
 
-        $var->rate = $bcv;
+       
 
-        $var->status =  "1";
-    
-        $var->save();
-
-        $historial_expense = new HistorialExpenseController();
-
-        $historial_expense->registerAction($var,"expense","Creó la Compra");
-
-
-        return redirect('expensesandpurchases/register/'.$var->id.'/bolivares')->withSuccess('Gasto o Compra Resgistrada Correctamente!');
-
+       
     }else{
         return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
 
