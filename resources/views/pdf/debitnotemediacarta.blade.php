@@ -106,14 +106,21 @@
     <th style="text-align: center; ">Desc</th>
     <th style="text-align: center; ">Total</th>
   </tr> 
+
   @foreach ($inventories_quotations as $var)
       <?php
+      if($coin == "dolares"){
+     
+        $monto = $var->price;
+       
+      }else{
+        $monto = $var->price;
+      }
       
-      $var->price = $var->price * $bcv;
 
-      $percentage = (($var->price * $var->amount) * $var->discount)/100;
+      $percentage = (($monto * $var->amount) * $var->discount)/100;
 
-      $total_less_percentage = ($var->price * $var->amount) - $percentage;
+      $total_less_percentage = ($monto * $var->amount) - $percentage;
       
       ?>
     <tr>
@@ -121,7 +128,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 0, '', '.') }}</th>
       
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ number_format($monto, 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 

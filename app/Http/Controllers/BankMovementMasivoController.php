@@ -407,7 +407,7 @@ public function procesarcontrapartidanew(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valordebe,0);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valordebe);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -415,7 +415,7 @@ public function procesarcontrapartidanew(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
 
                 }
 
@@ -481,7 +481,7 @@ public function procesarcontrapartidanew(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valorhaber);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -489,7 +489,7 @@ public function procesarcontrapartidanew(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
 
                 }
 
@@ -790,7 +790,7 @@ public function procesardeposito(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valordebe,0);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valordebe);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -798,7 +798,7 @@ public function procesardeposito(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
 
                 }
 
@@ -865,7 +865,7 @@ public function procesardeposito(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
                 $bcv = $request->tasa;
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valorhaber);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
@@ -873,7 +873,7 @@ public function procesardeposito(Request $request){
                    $montocontra =  $request->input('montocontra.' . $i);
 
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
 
                 }
 

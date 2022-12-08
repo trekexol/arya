@@ -1004,7 +1004,6 @@ class PDF2Controller extends Controller
     function debitnotemediacarta($id_quotation,$coin)
     {
       
-
         $pdf = App::make('dompdf.wrapper');
     
              $quotation = null;
@@ -1035,22 +1034,19 @@ class PDF2Controller extends Controller
                                                                 ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                                 ->get(); */
 
-
-                                                                $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
-                                                                ->join('debit_note_details', 'products.id', '=', 'debit_note_details.id_inventory')
-                                                                //->join('debit_notes', 'debit_notes.id_quotation', '=', 'debit_notes.id_inventory')
-                                                                ->where('debit_note_details.id_debit_note',$quotation->id)
-                                                                ->whereIn('debit_note_details.status',['1','C'])
-                                                                ->select('products.*','debit_note_details.*')
-                                                                ->get(); 
+                $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                        ->join('debit_note_details', 'products.id', '=', 'debit_note_details.id_inventory')
+                        //->join('debit_notes', 'debit_notes.id_quotation', '=', 'debit_notes.id_inventory')
+                        ->where('debit_note_details.id_debit_note',$quotation->id)
+                        ->whereIn('debit_note_details.status',['1','C'])
+                        ->select('products.*','debit_note_details.*')
+                        ->get(); 
 
 
 
                 $total= 0;
-
                 $base_imponible= 0;
                 $price_cost_total= 0;
-
                 //este es el total que se usa para guardar el monto de todos los productos que estan exentos de iva, osea retienen iva
                 $total_retiene_iva = 0;
                 $retiene_iva = 0;
