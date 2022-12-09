@@ -243,10 +243,10 @@ class TempMovimientosImport implements  ToCollection
                 
                      /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
-                     $vali   = TempMovimientos::on(Auth::user()->database_name)
+                   /*  $vali   = TempMovimientos::on(Auth::user()->database_name)
                      ->where('banco',$banco)
                      ->where('referencia_bancaria',$row[4])
-                     ->where('moneda',$moneda)->first();
+                     ->where('moneda',$moneda)->first();*/
 
            /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -259,7 +259,7 @@ class TempMovimientosImport implements  ToCollection
                      ->where('moneda',$moneda)->first();
          /******si todo esta correcto inserto en BD */
         
-         if(!$vali AND !$vali2){
+         if(!$vali2){
 
             $user = new TempMovimientos();
             $user->setConnection(Auth::user()->database_name);

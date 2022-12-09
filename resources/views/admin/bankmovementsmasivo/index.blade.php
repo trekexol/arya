@@ -10,12 +10,16 @@
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
+
+
 <div class="container-fluid">
+    <form method="post" action="{{ route('pdflibro') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
+        @csrf
     <div class="form-row">
         <div class="form-group col-md-2">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
-        </div>
-        <div class="form-group col-md-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
+        </div>  
+        <div class="form-group col-md-3">
             <select class="form-control" name="bancos" id="bancos">
                 <option value="">Seleccione Banco.</option>
                 @if($bancosmasivos)
@@ -26,13 +30,21 @@
             </select>
         </div>
 
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <select class="form-control" name="fechabancos" id="fechabancos">
                 <option>Seleccione Fecha..</option>
             </select>
         </div>
-      </div>
 
+
+        <div class="form-group col-md-4" >
+            <input type="submit" id="libromayor" class="btn btn-primary" value="Libro Mayor">
+
+          </div>
+        </form>
+
+        </div>
+ 
 </div>
 <br>
 
@@ -172,6 +184,8 @@ $("#fileForms").validate({
 
 
                         })
+                                        setTimeout("location.reload()", 2500);
+
              }else{
 
                 Swal.fire({
@@ -202,6 +216,7 @@ $("#fileForms").validate({
         }
     }); ///fin $("#registro").validate({
 
+        $("#libromayor").hide();
 
  $("#bancos").change(function () {
 
@@ -211,6 +226,8 @@ $("#fileForms").validate({
             bancos = $(this).val();
             $.post(url,{bancos: bancos,"_token": "{{ csrf_token() }}"}, function(data){
                     $("#fechabancos").empty().append(data);
+                    $("#datosbancos").empty().append();
+                    $("#libromayor").hide();
             });
         });
     })
@@ -225,9 +242,13 @@ var url = "{{ route('listardatos') }}";
         fechabancos = $(this).val();
         $.post(url,{fechabancos: fechabancos,bancos: bancos,"_token": "{{ csrf_token() }}"}, function(data){
                 $("#datosbancos").empty().append(data);
+                $("#libromayor").show();
+
         });
     });
 })
+
+
 
 });
     </script>

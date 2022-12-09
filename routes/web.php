@@ -1645,5 +1645,7 @@ Route::group(["prefix"=>"bankmasivos"],function(){
     Route::post('procesardeposito','BankMovementMasivoController@procesardeposito')->name('procesardeposito');
     Route::delete('eliminarmovimiento','BankMovementMasivoController@eliminarmovimiento')->name('eliminarmovimiento');
 
+    Route::post('pdflibro','BankMovementMasivoController@pdflibro')->name('pdflibro');
+
 
 });
