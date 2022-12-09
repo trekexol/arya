@@ -405,7 +405,6 @@ $('.procesarcontrapartida').click(function(e){
                   <th scope="col">Número de Referencia</th>
                   <th scope="col">Fecha Transferenca</th>
                   <th scope="col">Moneda</th>
-                  <th scope="col">Tasa</th>
                   <th scope="col">Monto de la Transferencia</th>
                 </tr>
               </thead>
@@ -415,7 +414,6 @@ $('.procesarcontrapartida').click(function(e){
                     <td>{{$referenciamovimiento}}</td>
                     <td>{{ $fechamovimiento}}</td>
                     <td>{{$moneda}}</td>
-                    <td>{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}</td>
                     <td> {{$monto}}</td>
                   </tr>
               </tbody>
@@ -430,7 +428,6 @@ $('.procesarcontrapartida').click(function(e){
         <input id="date_begin" type="hidden" class="form-control @error('date_begin') is-invalid @enderror" name="date" value="{{ $fechamovimiento ?? old('date_begin') }}" required autocomplete="date_begin">
         <input id="reference" type="hidden" class="form-control @error('reference') is-invalid @enderror" name="reference" value="{{ $referenciamovimiento }}" required autocomplete="reference">
         <input class="form-control" type="hidden" name="coin" value="{{$moneda}}" id="coin">
-        <input id="rate" type="hidden" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
         <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" placeholder="0,00" name="amount" value="{{$monto}}" required autocomplete="amount">
         <input type="hidden" id="idmovimiento" name="idmovimiento" value='{{$idmovimiento}}'>
         <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
@@ -438,7 +435,7 @@ $('.procesarcontrapartida').click(function(e){
 
 
         <div class="form-group row">
-            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir Desde:</label>
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Desde:</label>
 
             <div class="col-md-3">
             <select class="form-control" id="iddesde" name="iddesde" required>
@@ -450,7 +447,7 @@ $('.procesarcontrapartida').click(function(e){
             </select>
             </div>
 
-            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir a:</label>
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Hacia:</label>
 
             <div class="col-md-3">
             <select class="form-control" id="id_counterpart" name="id_counterpart" required>
@@ -460,6 +457,13 @@ $('.procesarcontrapartida').click(function(e){
                 @endforeach
 
             </select>
+            </div>
+
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Tasa:</label>
+
+            <div class="col-md-1">
+            <input id="rate" type="text" class="form-control" name="rate" value="{{ $bcv }}" >
+
             </div>
 
             <div class="col-md-2">
@@ -507,7 +511,8 @@ $('.procesarcontrapartida').click(function(e){
                         $('#MatchModal').modal('hide');
                     
                     }else{
-               
+                        $('.procesartransferencia').prop( 'disabled', false );
+
                         Swal.fire({
                         icon: 'info',
                         title: 'Error..',
