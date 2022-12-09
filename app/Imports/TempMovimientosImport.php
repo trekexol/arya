@@ -336,10 +336,10 @@ if($i > 1){
 
             }
 
-            $validarproceso = HeaderVoucher::on(Auth::user()->database_name)
-            ->join('detail_vouchers','detail_vouchers.id','id_header_voucher')
-            ->where('reference',$referencia)->get();
-
+            /*$validarproceso = HeaderVoucher::on(Auth::user()->database_name)
+            ->where('reference',$referencia)
+            ->where('date',$fechacompleta)->get();*/
+            
 
       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -352,7 +352,7 @@ if($i > 1){
                 ->where('moneda',$moneda)->get();
     /******si todo esta correcto inserto en BD */
    
-    if($vali2->count() == 0 AND $validarproceso->count() == 0){
+    if($vali2->count() == 0){
 
         $user = new TempMovimientos();
         $user->setConnection(Auth::user()->database_name);
