@@ -428,10 +428,8 @@ public function procesarcontrapartidanew(Request $request){
                 }
 
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
-                                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
-
-                $movimientosmasivos->estatus = 1;
-                $movimientosmasivos->save();
+                                ->where('id_temp_movimientos',$request->idmovimiento)
+                                ->update(['estatus' => '1']);
 
                 $resp['error'] = True;
                 $resp['msg'] = 'Movimiento Consolidado Exitosamente';
@@ -501,10 +499,10 @@ public function procesarcontrapartidanew(Request $request){
 
                 }
 
+            
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
-                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
-                $movimientosmasivos->estatus = 1;
-                $movimientosmasivos->save();
+                                ->where('id_temp_movimientos',$request->idmovimiento)
+                                ->update(['estatus' => '1']);
 
                 $resp['error'] = True;
                 $resp['msg'] = 'Movimiento Consolidado Exitosamente';
