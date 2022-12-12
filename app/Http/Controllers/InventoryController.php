@@ -44,6 +44,8 @@ class InventoryController extends Controller
                 ->where('id_user',$user->id)
                 ->Where('modulos.estatus','1')
                 ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+                ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->get();
 
     $agregarmiddleware = $request->get('agregarmiddleware');
@@ -104,13 +106,14 @@ class InventoryController extends Controller
        $users_role =   $user->role_id;
 
          /* para hacer el submenu "dinamico" */
-    $sistemas = UserAccess::on("logins")
-                ->join('modulos','modulos.id','id_modulo')
-                ->where('id_user',$user->id)
-                ->Where('modulos.estatus','1')
-                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
-                ->select('modulos.name','modulos.ruta')
-                ->get();
+         $sistemas = UserAccess::on("logins")
+         ->join('modulos','modulos.id','id_modulo')
+         ->where('id_user',$user->id)
+         ->Where('modulos.estatus','1')
+         ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+         ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+         ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+         ->get();
 
        $global = new GlobalController();
 

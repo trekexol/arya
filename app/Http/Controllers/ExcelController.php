@@ -23,9 +23,18 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use App\UserAccess;
+
 
 class ExcelController extends Controller
 {
+
+    public function __construct(){
+
+        $this->middleware('auth');
+        $this->middleware('valimodulo:Inventario')->only('import_inventary');
+  
+       }
 
     public function export_account() 
     {
@@ -401,12 +410,27 @@ class ExcelController extends Controller
    public function import_inventary(Request $request) 
    {
        
-    
+    $user       =   auth()->user();
+
         $file = $request->file('file');
 
         if (!isset($file)){
             return redirect('inventories/index')->with('danger', 'Para importar debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');    
         }
+
+        $sistemas = UserAccess::on("logins")
+        ->join('modulos','modulos.id','id_modulo')
+        ->where('id_user',$user->id)
+        ->Where('modulos.estatus','1')
+        ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+        ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+        ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+        ->get();
+
+        $agregarmiddleware = $request->get('agregarmiddleware');
+        $actualizarmiddleware = $request->get('actualizarmiddleware');
+        $eliminarmiddleware = $request->get('eliminarmiddleware');
+        $namemodulomiddleware = $request->get('namemodulomiddleware');
 
         $rows = Excel::toArray(new ProductReadImport, $file);
       
@@ -430,7 +454,7 @@ class ExcelController extends Controller
 
         $bcv = $global->search_bcv();
         
-        return view('admin.inventories.index',compact('products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
+        return view('admin.inventories.index',compact('namemodulomiddleware','eliminarmiddleware','actualizarmiddleware','agregarmiddleware','sistemas','products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
        
     }
 
@@ -530,6 +554,7 @@ class ExcelController extends Controller
 
             $movement = new MovementProductImportController();
             $movement->add_movement($subcontrapartida,$amount,$rate,$coin);
+
             
             return redirect('inventories/index')->with('success', 'Archivo importado con Exito!');
 
