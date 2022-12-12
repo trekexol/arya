@@ -19,7 +19,7 @@
                         @if (!empty($movimientosmasivos))
 
                             @foreach ($movimientosmasivos as $var)
-                            <tr>
+                            <tr id="{{$var->id_temp_movimientos}}">
                             <td>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</td>
                             <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
                             <td>{{$var->banco ?? ''}}</td>
@@ -50,6 +50,13 @@
                 </tbody>
             </table>
 
+            <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content" id="modalfacturas">
+            
+                    </div>
+                </div>
+              </div>
 
             <script type="text/javascript">
 
@@ -92,7 +99,7 @@
 
 
                         })
-                        setTimeout("location.reload()", 3000);
+                        $("#"+idmov).empty().append();
 
              }else{
 

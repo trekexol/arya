@@ -82,7 +82,8 @@ $('.procesarfactura').click(function(e){
 
 
                         })
-                        setTimeout("location.reload()", 3000);
+                        $("#"+idmovimiento).empty().append();
+                        $('#MatchModal').modal('hide');
                  }else{
                     Swal.fire({
                         icon: 'error',
@@ -161,26 +162,21 @@ elseif($tipo == 'contra'){
             <form id='pruebaform' >
                 @csrf
 
-        <input type="hidden" name="valordebe" value='{{$valormovimiento}}'>
-        <input type="hidden" name="valorhaber" value='{{$montohaber}}'>
+        <input type="hidden" id="valordebe" name="valordebe" value='{{$valormovimiento}}'>
+        <input type="hidden" id="valorhaber" name="valorhaber" value='{{$montohaber}}'>
         <input type="hidden" name="referenciabanco" value='{{$referenciamovimiento}}'>
         <input type="hidden" name="banco" value='{{$bancomovimiento}}'>
         <input type="hidden" name="moneda" value='{{$moneda}}'>
         <input type="hidden" name="fechamovimiento" value='{{$fechamovimiento}}'>
         <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
-        <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+        <input type="hidden" id="idmovimiento" name="idmovimiento" value='{{$idmovimiento}}'>
 
-        <div class="field_wrapper">
-
-
+        <div class="field_wrapper"></div>
 
 
-          </div>
+        <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
 
-
-          <button type="button" class="btn btn-primary btn-sm procesarcontrapartida" >Procesar Contrapartida</button>
-
-            </form>
+        </form>
 
 
 
@@ -196,6 +192,20 @@ elseif($tipo == 'contra'){
         var maxField = 10;
         var addButton = $('.add_button');
         var wrapper = $('.field_wrapper');
+
+        var debe = $('#valordebe').val();
+
+        if(debe > 0){
+
+            var montocontra = debe;
+
+        }else{
+            var haber = $('#valorhaber').val();
+            var montocontra = haber;
+        }
+
+
+       
 
         $('.procesarcontrapartida').hide();
 
@@ -218,7 +228,7 @@ elseif($tipo == 'contra'){
 
                         '<div class="form-group col-md-3">'+
 
-                            '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
+                            '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" value="'+montocontra+'" />'+
                             '</div>'+
                             '<div class="form-group col-md-3">'+
 
@@ -305,6 +315,7 @@ elseif($tipo == 'contra'){
 $('.procesarcontrapartida').click(function(e){
       e.preventDefault();
       $('.procesarcontrapartida').prop( 'disabled', true );
+      idmovimiento = $('#idmovimiento').val();
     $.ajax({
         method: "POST",
         url: "{{ route('procesarcontrapartidanew') }}",
@@ -322,8 +333,10 @@ $('.procesarcontrapartida').click(function(e){
 
                         })
 
-                        setTimeout("location.reload()", 3000);
-             }else{
+                        $("#"+idmovimiento).empty().append();
+                        $('#MatchModal').modal('hide');
+                    
+                    }else{
                 $('.procesarcontrapartida').prop( 'disabled', false );
                 Swal.fire({
                         icon: 'info',
@@ -392,7 +405,6 @@ $('.procesarcontrapartida').click(function(e){
                   <th scope="col">Número de Referencia</th>
                   <th scope="col">Fecha Transferenca</th>
                   <th scope="col">Moneda</th>
-                  <th scope="col">Tasa</th>
                   <th scope="col">Monto de la Transferencia</th>
                 </tr>
               </thead>
@@ -402,7 +414,6 @@ $('.procesarcontrapartida').click(function(e){
                     <td>{{$referenciamovimiento}}</td>
                     <td>{{ $fechamovimiento}}</td>
                     <td>{{$moneda}}</td>
-                    <td>{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}</td>
                     <td> {{$monto}}</td>
                   </tr>
               </tbody>
@@ -417,15 +428,14 @@ $('.procesarcontrapartida').click(function(e){
         <input id="date_begin" type="hidden" class="form-control @error('date_begin') is-invalid @enderror" name="date" value="{{ $fechamovimiento ?? old('date_begin') }}" required autocomplete="date_begin">
         <input id="reference" type="hidden" class="form-control @error('reference') is-invalid @enderror" name="reference" value="{{ $referenciamovimiento }}" required autocomplete="reference">
         <input class="form-control" type="hidden" name="coin" value="{{$moneda}}" id="coin">
-        <input id="rate" type="hidden" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
         <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" placeholder="0,00" name="amount" value="{{$monto}}" required autocomplete="amount">
-        <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+        <input type="hidden" id="idmovimiento" name="idmovimiento" value='{{$idmovimiento}}'>
         <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
 
 
 
         <div class="form-group row">
-            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir Desde:</label>
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Desde:</label>
 
             <div class="col-md-3">
             <select class="form-control" id="iddesde" name="iddesde" required>
@@ -437,7 +447,7 @@ $('.procesarcontrapartida').click(function(e){
             </select>
             </div>
 
-            <label for="counterpart" class="col-md-2 col-form-label text-md-right">Transferir a:</label>
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Hacia:</label>
 
             <div class="col-md-3">
             <select class="form-control" id="id_counterpart" name="id_counterpart" required>
@@ -447,6 +457,13 @@ $('.procesarcontrapartida').click(function(e){
                 @endforeach
 
             </select>
+            </div>
+
+            <label for="counterpart" class="col-md-1 col-form-label text-md-right">Tasa:</label>
+
+            <div class="col-md-1">
+            <input id="rate" type="text" class="form-control" name="rate" value="{{ $bcv }}" >
+
             </div>
 
             <div class="col-md-2">
@@ -469,6 +486,8 @@ $('.procesarcontrapartida').click(function(e){
 
         $('.procesartransferencia').click(function(e){
       e.preventDefault();
+      idmovimiento = $('#idmovimiento').val();
+
       $('.procesartransferencia').prop( 'disabled', true );
     $.ajax({
         method: "POST",
@@ -479,7 +498,8 @@ $('.procesarcontrapartida').click(function(e){
                 if(response.error == true){
                     $('.procesarcontrapartida').prop( 'disabled', false );
 
-                Swal.fire({
+                
+                    Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
                         html: response.msg,
@@ -487,10 +507,13 @@ $('.procesarcontrapartida').click(function(e){
 
                         })
 
-                        setTimeout("location.reload()", 3000);
-             }else{
-                $('.procesarcontrapartida').prop( 'disabled', false );
-                Swal.fire({
+                        $("#"+idmovimiento).empty().append();
+                        $('#MatchModal').modal('hide');
+                    
+                    }else{
+                        $('.procesartransferencia').prop( 'disabled', false );
+
+                        Swal.fire({
                         icon: 'info',
                         title: 'Error..',
                         html: response.msg,
@@ -502,7 +525,6 @@ $('.procesarcontrapartida').click(function(e){
 
              },
              error:(xhr)=>{
-                $('.procesarcontrapartida').prop( 'disabled', false );
                 Swal.fire({
                         icon: 'error',
                         title: 'Error...',
@@ -556,7 +578,6 @@ elseif($tipo == 'deposito'){
               <th scope="col">Descripcion</th>
               <th scope="col">Referencia</th>
               <th scope="col">Moneda</th>
-              <th scope="col">Tasa</th>
               <th scope="col">Debe</th>
               <th scope="col">Haber</th>
               <th scope="col">Acción</th>
@@ -568,7 +589,6 @@ elseif($tipo == 'deposito'){
                 <td>{{$descripcionbanco}}</td>
                 <td>{{$referenciamovimiento}}</td>
                 <td>{{$moneda}}</td>
-                <td><input type="text" class="form-control form-control-sm" name="tasa" value={{number_format(bcdiv($bcv, '1', 2) , 2, ',', '.') }} /></td>
                 <td>{{$valormovimiento}}</td>
                 <td>{{$montohaber}}</td>
                 <td><button type="button" class="add_button btn btn-secondary btn-sm">Agregar Contrapartida</button>
@@ -581,14 +601,16 @@ elseif($tipo == 'deposito'){
 
 
 
-    <input type="hidden" name="valordebe" value='{{$valormovimiento}}'>
-    <input type="hidden" name="valorhaber" value='{{$montohaber}}'>
+    <input type="hidden" id="valordebe" name="valordebe" value='{{$valormovimiento}}'>
+    <input type="hidden" id="valorhaber" name="valorhaber" value='{{$montohaber}}'>
     <input type="hidden" name="referenciabanco" value='{{$referenciamovimiento}}'>
     <input type="hidden" name="banco" value='{{$bancomovimiento}}'>
     <input type="hidden" name="moneda" value='{{$moneda}}'>
     <input type="hidden" name="fechamovimiento" value='{{$fechamovimiento}}'>
     <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
-    <input type="hidden" name="idmovimiento" value='{{$idmovimiento}}'>
+    <input type="hidden" id="idmovimiento" name="idmovimiento" value='{{$idmovimiento}}'>
+    <input type="hidden" id="tasa" name="tasa" value="{{ $bcv}}">
+
 
     <div class="field_wrapper">
 
@@ -616,8 +638,16 @@ $(document).ready(function(){
     var maxField = 10;
     var addButton = $('.add_button');
     var wrapper = $('.field_wrapper');
-
+    idmovimiento = $('#idmovimiento').val();
     $('.procesarcontrapartida').hide();
+
+    var debe = $('#valordebe').val();
+        if(debe > 0){
+            var montocontra = debe;
+        }else{
+            var haber = $('#valorhaber').val();
+            var montocontra = haber;
+        }
 
     $(addButton).click(function(){ //funcion para cuando agregue un campo
 
@@ -638,7 +668,7 @@ $(document).ready(function(){
 
                     '<div class="form-group col-md-3">'+
 
-                        '<input type="text" class="form-control" placeholder="monto de la contrapartida" id="montosid'+x+'" name="montocontra[]" />'+
+                        '<input type="text" class="form-control" placeholder="monto de la contrapartida" value="'+montocontra+'" id="montosid'+x+'" name="montocontra[]" />'+
                         '</div>'+
                         '<div class="form-group col-md-3">'+
 
@@ -742,8 +772,10 @@ $.ajax({
 
                     })
 
-                    setTimeout("location.reload()", 3000);
-         }else{
+                    $("#"+idmovimiento).empty().append();
+                    $('#MatchModal').modal('hide');
+
+                    }else{
             $('.procesarcontrapartida').prop( 'disabled', false );
             Swal.fire({
                     icon: 'info',

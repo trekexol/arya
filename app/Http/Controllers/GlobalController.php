@@ -622,27 +622,19 @@ class GlobalController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d H:i:s');   
         
-        $datenow_verf = $date->format('Y-m-d 15:30:00');   
-        $datenow_verf2 = $date->format('Y-m-d 15:32:00');   
- 
-        $datenow_normal = $date->format('Y-m-d');   
-        $datenow_normal_verf = date_format(date_create($company->date_consult_bcv),"Y-m-d");  
-        
-        // $clientg = new Clientg();
-
-       if($datenow_normal != $datenow_normal_verf){
-     
-     
-            $url = "https://s3.amazonaws.com/dolartoday/data.json";
+        $url = "https://s3.amazonaws.com/dolartoday/data.json";
             
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
-            $data = curl_exec( $ch );
-            curl_close( $ch );
-            $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data), true); 
-            $datos['USD']['promedio_real'];
-
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec( $ch );
+        $error = curl_error($ch);
+        curl_close( $ch );
+        $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data), true); 
+        $datos['USD']['promedio_real'];
+      
+       if($datos['USD']['promedio_real'] != $company->rate_bcv){
+ 
             if($datos['USD']['promedio_real'] > 0){
 
                 $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza

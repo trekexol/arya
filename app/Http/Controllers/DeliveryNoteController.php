@@ -122,7 +122,7 @@ class DeliveryNoteController extends Controller
 
             $actualizarmiddleware = $request->get('actualizarmiddleware');
          $quotation = null;
-             
+        
          if(isset($id_quotation)){
             $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
             

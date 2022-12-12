@@ -51,7 +51,8 @@
                         </div>
                        </div>
                     
-              
+                       <input id="date-begin" type="hidden" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $quotation->date_quotation ?? $quotation->date_delivery_note ?? $datenow }}" autocomplete="date-begin">
+
                     
                     <div class="form-group row">
                             <label for="date_quotation" class="col-md-2 col-form-label text-md-right">Cliente: </label>
@@ -245,6 +246,7 @@
                                     aria-labelledby="dropdownMenuButton">
                                     <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Factura Media Carta</a>  
                                     <a href="#" onclick="pdf_maq();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Imprimir Factura Matricial Carta</a> 
+                                    <a href="#" onclick="pdf_comonotaentrega();" id="btnfacturarmaq" name="btnfacturarmaq" class="dropdown-item bg-light" title="imprimir">Imprimir Nota de Entrega</a> 
                                     @if (Auth::user()->mod_delete  == '1')
                                     <a href="#" class="dropdown-item bg-light delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Factura</a> 
                                     @endif
@@ -358,7 +360,14 @@
                 
                 var nuevaVentana3= window.open("{{ route('pdf.maq',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
         
-            }          
+            }  
+            
+            function pdf_comonotaentrega() {
+                let inputIva = document.getElementById("iva").value; 
+                let date = document.getElementById("date-begin").value;
+                var nuevaVentana4= window.open("{{ route('pdf.deliverynote',[$quotation->id,$coin,'',''])}}"+"/"+inputIva+"/"+date+"/1","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
+
+            }
                // calculate();
                 
             function calculate() {
