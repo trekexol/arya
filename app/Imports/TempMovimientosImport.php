@@ -142,10 +142,10 @@ class TempMovimientosImport implements  ToCollection
 
             /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
-                      $vali   = TempMovimientos::on(Auth::user()->database_name)
+                    /*  $vali   = TempMovimientos::on(Auth::user()->database_name)
                       ->where('banco','Banco Banesco')
                       ->where('referencia_bancaria',$row[1])
-                      ->where('moneda','bolivares')->first();
+                      ->where('moneda','bolivares')->first();*/
 
             /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
                     $vali2  = TempMovimientos::on(Auth::user()->database_name)
@@ -158,7 +158,7 @@ class TempMovimientosImport implements  ToCollection
 
 
                         /******si todo esta correcto inserto en BD */
-                        if(!$vali AND !$vali2){
+                        if(!$vali2){
 
                             $user = new TempMovimientos();
                             $user->setConnection(Auth::user()->database_name);
@@ -221,8 +221,9 @@ class TempMovimientosImport implements  ToCollection
             }
    
                      /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
-                       $monto =  str_replace(",", ".", $row[7]);
-              
+                       $monto =  str_replace(".", "", $row[7]);
+                       $monto =  str_replace(",", ".", $monto);
+
                         /**** Verifico si es nota de credito o debito */
                             if($row[5] == 'ND'){
                                
@@ -233,7 +234,7 @@ class TempMovimientosImport implements  ToCollection
                                 $debe = 0;
                                 
                             }
-                    
+               
                     /****Cambio el formato de la fecha para la BD */
                     $fecha = $row[3];
                     $dias = substr($row[3], 0, 2);

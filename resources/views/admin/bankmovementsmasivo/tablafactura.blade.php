@@ -195,7 +195,7 @@ elseif($tipo == 'contra'){
 
         var debe = $('#valordebe').val();
 
-        if(debe > 0){
+        if(debe > '0'){
 
             var montocontra = debe;
 
@@ -642,7 +642,7 @@ $(document).ready(function(){
     $('.procesarcontrapartida').hide();
 
     var debe = $('#valordebe').val();
-        if(debe > 0){
+        if(debe > '0'){
             var montocontra = debe;
         }else{
             var haber = $('#valorhaber').val();
@@ -658,7 +658,7 @@ $(document).ready(function(){
 
     var camposopcionales = '<div class="form-row" id="dinamicosdiv'+x+'">'+
         '<div class="form-group col-md-3">'+
-            '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Otros Ingresos" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
+            '<select  name="contra[]" id="selecontra'+x+'" class="form-control selecontra" required><option value="-1">Seleccione una Contrapartida</option>@foreach($contrapartidas as $index => $value) @if ($value != "Bancos" && $value != "Efectivo en Caja" && $value != "Superavit o Deficit" && $value != "Resultado del Ejercicio" && $value != "Resultados Anteriores") <option value="{{ $index }}" {{ old("type_form") == $index ? "selected" : "" }}>{{ $value }} </option> @endif @endforeach</select>'+
             '</div>'+
             '<div class="form-group col-md-3">'+
 

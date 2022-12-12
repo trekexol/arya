@@ -39,7 +39,8 @@ class ProductController extends Controller
                 ->where('id_user',$user->id)
                 ->Where('modulos.estatus','1')
                 ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
-                ->select('modulos.name','modulos.ruta')
+                ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+                ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->get();
        
     $agregarmiddleware = $request->get('agregarmiddleware');
