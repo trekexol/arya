@@ -558,7 +558,7 @@ public function guardartransferencia(Request $request)
                 if($desde[1] != $contrapartida){
 
                     //$amount = str_replace(',', '.', str_replace('.', '', request('amount')));
-                    $rate = str_replace(',', '.', str_replace('.', '', request('rate')));
+                    $rate = request('rate');
                     $amount = request('amount');
                     if($coin != 'bolivares'){
                         $amount = $amount * $rate;
