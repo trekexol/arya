@@ -77,7 +77,7 @@ class DebitNoteController extends Controller
     
     public function createcreditnote($id_invoice = null,$id_client = null,$id_vendor = null,$tasa = null)
     {
-
+      
         $transports     = Transport::on(Auth::user()->database_name)->get();
  
         $date = Carbon::now();
@@ -110,7 +110,7 @@ class DebitNoteController extends Controller
 
     public function create($id_creditnote,$coin)
     {
-        
+    
         if($this->userAccess->validate_user_access($this->modulo)){
 
             $creditnote = null;
@@ -181,7 +181,7 @@ class DebitNoteController extends Controller
 
     public function createproduct($id_creditnote,$coin,$id_inventory)
     {
-
+       
         $creditnote = null;
                 
         if(isset($id_creditnote)){
@@ -200,7 +200,9 @@ class DebitNoteController extends Controller
                                 ->get(); 
                 
                 if(isset($id_inventory)){
-                    $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
+                    $inventory = Product::on(Auth::user()->database_name)->where('id',$id_inventory)->first();
+
+            
                 }
                 if(isset($inventory)){
 
@@ -233,7 +235,7 @@ class DebitNoteController extends Controller
                         }
                         $bcv = null;
                     }
-                    
+              
 
                     return view('admin.debit_notes.create',compact('bcv_creditnote_product','creditnote','inventories_creditnotes','inventory','bcv','datenow','coin'));
 
