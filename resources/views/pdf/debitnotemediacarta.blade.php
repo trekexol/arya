@@ -137,9 +137,13 @@
 
 
 <?php
-
-  $base_imponible = $quotation->base_imponible;
-  //$total_factura = $quotation->amount_with_iva;
+ if($coin == "dolares"){
+     
+  $base_imponible = $quotation->base_imponible / $bcv;
+    
+   }else{
+    $base_imponible = $quotation->base_imponible;
+   }
 
   $total_factura = $base_imponible;
 

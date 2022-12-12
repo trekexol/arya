@@ -242,25 +242,40 @@ class TempMovimientosImport implements  ToCollection
                     $años = substr($row[3], 4, 4);
                     $fechacompleta = $años.'-'.$mes.'-'.$dias;
                 
-                     /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
-                    
-                   /*  $vali   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco',$banco)
-                     ->where('referencia_bancaria',$row[4])
-                     ->where('moneda',$moneda)->first();*/
+  
+       
+            $vali2   = TempMovimientos::on(Auth::user()->database_name)
+            ->where('banco',$banco)
+            ->where('referencia_bancaria',$row[4])
+            ->where('haber',$haber)
+            ->where('debe',$debe)
+            ->where('moneda',$moneda)->first();
+            /******si todo esta correcto inserto en BD */
 
-           /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
+            /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
+            if($row[6] == 'IMPUESTOS A LAS TRANSACCIONES FINANCIERA'){
+
+            $user = new TempMovimientos();
+            $user->setConnection(Auth::user()->database_name);
+            $user->banco        = $banco;
+            $user->referencia_bancaria     = $row[4];
+            $user->descripcion       = $row[6];
+            $user->fecha    = $fechacompleta;
+            $user->haber     = $haber;
+            $user->debe   = $debe;
+            $user->moneda      = $moneda;
+            $user->save();
 
 
-         $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco',$banco)
-                     ->where('referencia_bancaria',$row[4])
-                     ->where('haber',$haber)
-                     ->where('debe',$debe)
-                     ->where('moneda',$moneda)->first();
-         /******si todo esta correcto inserto en BD */
-        
-         if(!$vali2){
+
+            $contador++;
+            $estatus = TRUE;
+            $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+
+            }
+
+
+            elseif(!$vali2){
 
             $user = new TempMovimientos();
             $user->setConnection(Auth::user()->database_name);
