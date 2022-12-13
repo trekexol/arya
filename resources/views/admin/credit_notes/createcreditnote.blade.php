@@ -63,7 +63,7 @@
                             <div class="col-md-3">
                                 <select class="form-control" id="type" name="type">
                                     <option id="typeinvoice" selected value="Factura">Factura</option>
-                                    <option id="typeclient" value="Cliente">Cliente</option>
+                                   
                                 </select>
                             </div> 
                             <div style="display: none">
@@ -237,7 +237,7 @@
                 $("#invoiceform").show();
                 $("#clientform").hide();
                 $("#vendorform").hide();
-            }else{
+            } if(type == "Cliente"){
                 $("#invoiceform").hide();
                 $("#clientform").show();
                 $("#vendorform").show();

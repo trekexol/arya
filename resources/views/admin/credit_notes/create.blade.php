@@ -203,6 +203,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-1">
+                                        
                                         @if (empty($inventory))
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
@@ -210,17 +211,7 @@
                                                 Exento
                                             </label>
                                         </div>
-                                        @else
-                                        <div class="form-check">
-                                            @if($inventory->products['exento'] == 1)
-                                                <input class="form-check-input" type="checkbox" name="exento" checked id="gridCheck">
-                                            @else
-                                                <input class="form-check-input" type="checkbox" name="exento" id="gridCheck">
-                                            @endif
-                                            <label class="form-check-label" for="gridCheck">
-                                                Exento
-                                            </label>
-                                        </div>
+                                 
                                         @endif
                                             
                                     </div>
@@ -232,17 +223,7 @@
                                                 Retiene ISLR
                                             </label>
                                         </div>
-                                        @else
-                                            <div class="form-check">
-                                                @if($inventory->products['exento'] == 1)
-                                                    <input class="form-check-input" type="checkbox" name="islr" checked id="gridCheck2">
-                                                @else
-                                                    <input class="form-check-input" type="checkbox" name="islr" id="gridCheck2">
-                                                @endif
-                                                <label class="form-check-label" for="gridCheck2">
-                                                    Retiene ISLR
-                                                </label>
-                                            </div>
+                                       
                                         @endif
                                     </div>
                                     <div class="form-group col-md-2">
@@ -375,15 +356,19 @@
 
                             <div class="form-group row mb-0">
                                
-                                @if (isset($inventories_creditnotes))
+                                @if (empty($inventories_creditnotes))
+                    
                                     <div class="col-sm-4">   
-                                        <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
+                                        <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation ?? $creditnote->id,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
                                     </div>
                                     
                                     <div class="col-sm-4" style="display: none;">   
                                         <a href="{{ route('creditnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
-                                    </div>      
-                                  
+                                    </div> 
+                                @else
+                                <div class="col-sm-4">   
+                                    <a href="{{ route('creditnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
+                                </div>
                                 @endif
                             
                             <div class="col-sm-4">

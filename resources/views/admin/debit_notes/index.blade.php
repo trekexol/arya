@@ -44,14 +44,14 @@
       
       @if (isset($historial))
         <div class="col-md-5">
-            <h2>Historial de Notas de Dédito</h2>
+            <h2>Historial de Notas de Débito</h2>
         </div>
         <div class="col-md-3">
             <a href="{{ route('creditnotes')}}" class="btn btn-info  float-md-right" role="button" aria-pressed="true">Notas de Debito</a>
         </div>
       @else
         <div class="col-md-3">
-            <h2>Notas de Dédito.</h2>
+            <h2>Notas de Débito.</h2>
         </div>
         <div class="col-md-3">
             <a href="{{ route('debitnotes.historial')}}" class="btn btn-info  float-md-right" role="button" aria-pressed="true">Historial</a>
