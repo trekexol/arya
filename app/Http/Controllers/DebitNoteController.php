@@ -1010,7 +1010,8 @@ class DebitNoteController extends Controller
             
             $this->deleteAllProducts($id);
             
-            $creditnote->delete();
+            $creditnote->status = 'X';
+            $creditnote->save();
         
         }
         

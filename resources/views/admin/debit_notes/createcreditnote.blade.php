@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Nota de Dédito</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Nota de Débito</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('debitnotes.store') }}" enctype="multipart/form-data">
@@ -63,7 +63,6 @@
                             <div class="col-md-3">
                                 <select class="form-control" id="type" name="type">
                                     <option id="typeinvoice" selected value="Factura">Factura</option>
-                                    <option id="typeclient" value="Cliente">Cliente</option>
                                 </select>
                             </div> 
                             <div style="display: none">
@@ -248,7 +247,7 @@
                 $("#invoiceform").show();
                 $("#clientform").hide();
                 $("#vendorform").hide();
-            }else{
+            }if(type == "Cliente"){
                 $("#invoiceform").hide();
                 $("#clientform").show();
                 $("#vendorform").show();
