@@ -307,7 +307,7 @@
                                         @endif
                                     </div>
                                     
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-2">
                                         <label for="price" >Precio</label>
                                         @if(isset($inventory->price_buy))
                                             <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy, 2, ',', '.')  }}"  required autocomplete="price">
@@ -320,7 +320,16 @@
                                             </span>
                                         @enderror
                                     </div>
-                                  
+                                    <div class="form-group col-md-1">
+                                        <label for="price" >Descuento</label>
+                                        <input id="discount_product" type="text" onkeyup="noespac(this)" class="form-control  @error('discount') is-invalid @enderror" name="discount" value="0" autocomplete="discount">
+        
+                                        @error('discount')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                    
                                     <div class="form-group col-md-1">
                                         <button type="submit" title="Agregar"><i class="fa fa-plus"></i></button>  
@@ -341,6 +350,7 @@
                                         <th class="text-center">Descripción</th>
                                         <th class="text-center">Cantidad</th>
                                         <th class="text-center">Precio</th>
+                                        <th class="text-center">Descuento</th>
                                         <th class="text-center">Sub Total</th>
                                         <th class="text-center"><i class="fas fa-cog"></i></th>
                                       
@@ -358,6 +368,10 @@
                                                 if($coin != 'bolivares'){
                                                     $var->price = $var->price / $expense->rate;
                                                 }
+
+                                                $percentage = (($var->price * $var->amount) * $var->porc_discount)/100;
+
+                                                $total_less_percentage = ($var->price * $var->amount) - $percentage;
                                                 
                                             ?>
                                            
@@ -371,9 +385,10 @@
                                                 
                                                 <td style="text-align: right">{{number_format($var->amount, 2, ',', '.')}}</td>
                                                 <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
-                                                <td style="text-align: right">{{number_format($var->price * $var->amount, 2, ',', '.')}}</td>
+                                                <td style="text-align: right">{{$var->porc_discount}}%</td>
+                                                <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
                                                 <?php
-                                                    $suma += $var->price * $var->amount;
+                                                    $suma += $total_less_percentage;
                                                 ?>
                                                     <td style="text-align: right">
                                                         @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
@@ -388,6 +403,7 @@
                                             @endforeach
                                             <tr>
                                                 
+                                                <td style="text-align: center">-------------</td>
                                                 <td style="text-align: center">-------------</td>
                                                 <td style="text-align: center">-------------</td>
                                                 <td style="text-align: right">Total</td>
