@@ -52,7 +52,7 @@
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
+                                        <option selected value="{{ $coin }}">{{ $coin }}</option>
                                         <option disabled  value="{{ $coin }}">-----------</option>
                                     @else
                                         <option disabled selected value="bolivares">Moneda</option>

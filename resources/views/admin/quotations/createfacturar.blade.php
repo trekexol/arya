@@ -1165,7 +1165,7 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
+                let totalIvaMenos = inputIva * totalBaseImponible / 100;
 
                 let total_debit_notes = "<?php echo $total_debit_notes ?>";
                 let total_credit_notes = "<?php echo $total_credit_notes ?>";
@@ -1216,12 +1216,11 @@
                 
                 var total_credit_notes_dos_decimales = parseFloat(total_credit_notes).toFixed(2);
                 var creditnote_format = total_credit_notes.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-            
+       
 
                 // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
 
                 var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento);
-                
                 var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
                 
@@ -1324,7 +1323,6 @@
             $("#iva").on('change',function(){
                 //calculate();
 
-
                 let inputIva = document.getElementById("iva").value; 
 
                 //let totalIva = (inputIva * "<?php echo $quotation->total_factura; ?>") / 100;  
@@ -1334,7 +1332,7 @@
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $quotation->base_imponible   ?>";
 
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
+                let totalIvaMenos = inputIva * totalBaseImponible / 100;
 
 
                 /*Toma la Base y la envia por form*/
@@ -1357,7 +1355,7 @@
                 /*-----------------------------------*/
 
 
-                var total_iva_exento =  parseFloat(totalIvaMenos);
+                var total_iva_exento =  totalIvaMenos;
 
                 var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
                
@@ -1504,7 +1502,7 @@
                 let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
 
-                let totalIvaMenos = parseInt(inputIva * "<?php echo $quotation->base_imponible ; ?>", 10) / 100;
+                let totalIvaMenos = inputIva * totalBaseImponible / 100;
 
                 /*Toma la Base y la envia por form*/
                 let base_imponible_form = document.getElementById("base_imponible").value; 
@@ -1529,7 +1527,7 @@
 
 
 
-                var total_iva_exento =  parseFloat(totalIvaMenos);
+                var total_iva_exento =  totalIvaMenos;
 
                 var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 

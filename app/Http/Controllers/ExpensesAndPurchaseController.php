@@ -314,13 +314,13 @@ class ExpensesAndPurchaseController extends Controller
                         $serie = $request->serie;
                     }
         
-        $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_expense)
+        $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
                                     ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date]);
     
 
 
 
-            return redirect('/expensesandpurchases/register/'.$id_quotation.'/'.$coin)->withSuccess('Actualizacion Exitosa!');
+            return redirect('/expensesandpurchases/register/'.$request->id_quotation.'/'.$request->coin)->withSuccess('Actualizacion Exitosa!');
  
 
         /*$historial_quotation = new HistorialQuotationController();

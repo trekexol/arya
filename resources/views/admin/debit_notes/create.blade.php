@@ -25,7 +25,7 @@
     <div class="row justify-content-center" >
         <div class="col-md-12" >
             <div class="card">
-                <div class="card-header" ><h3>Registro de Importe Nota de Dédito {{ $creditnote->id ?? '' }}</h3></div>
+                <div class="card-header" ><h3>Registro de Importe Nota de Débito {{ $creditnote->id ?? '' }}</h3></div>
 
                 <div class="card-body" >
                    
@@ -377,7 +377,7 @@
                             </div>
                             <div class="form-group row mb-0">
                                
-                                    @if (isset($inventories_creditnotes))
+                                @if (empty($inventories_creditnotes))
                                         <div class="col-sm-4">   
                                             <a href="{{ route('quotations.createfacturar_after',[$creditnote->id_quotation,$coin ?? 'bolivares']) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Volver a Factura</a>
                                         </div>
@@ -385,7 +385,10 @@
                                         <div class="col-sm-4" style="display: none;">   
                                             <a href="{{ route('debitnotes.createfacturar',[$creditnote->id,$coin]) }}" id="btnfacturar" name="btnfacturar" class="btn btn-success" title="facturar">Generar Nota de Débito</a>  
                                         </div>      
-                                      
+                                @else
+                                <div class="col-sm-4">   
+                                    <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
+                                </div>   
                                     @endif
                                 
                                 <div class="col-sm-4">

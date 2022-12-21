@@ -113,10 +113,10 @@ class CreditNoteController extends Controller
 
     public function create(request $request,$id_creditnote,$coin)
     {
-        
+      
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
             $creditnote = null;
-                
+               
             if(isset($id_creditnote)){
                 $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
                 
@@ -130,6 +130,8 @@ class CreditNoteController extends Controller
                 } else {
                 $existe_comprobante = 0;    
                 }
+
+           
             }
 
             if(isset($creditnote) && ($creditnote->status == 1)){
@@ -140,7 +142,6 @@ class CreditNoteController extends Controller
                                 ->select('products.*','credit_note_details.price as price','credit_note_details.id_inventory as id_inventory','credit_note_details.rate as rate','credit_note_details.id as credit_note_details_id','products.code_comercial as code','credit_note_details.discount as discount',
                                 'credit_note_details.amount as amount_creditnote','credit_note_details.exento as exento')
                                 ->get(); 
-            
                 
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');  
@@ -182,7 +183,21 @@ class CreditNoteController extends Controller
                 
         if(isset($id_creditnote)){
             $creditnote = CreditNote::on(Auth::user()->database_name)->find($id_creditnote);
+
+            $existe_comprobante = DB::connection(Auth::user()->database_name)->table('header_vouchers')
+            ->where('description','LIKE','%Nota de Credito '.$id_creditnote.'%')
+            ->where('status','!=','X')
+            ->get();
+            
+            if (count($existe_comprobante) > 0){
+            $existe_comprobante = 1;
+            } else {
+            $existe_comprobante = 0;    
+            }
         }
+
+
+
 
         if(isset($creditnote) && ($creditnote->status == 1)){
             
@@ -231,7 +246,7 @@ class CreditNoteController extends Controller
                     }
                     
 
-                    return view('admin.credit_notes.create',compact('bcv_creditnote_product','creditnote','inventories_creditnotes','inventory','bcv','datenow','coin'));
+                    return view('admin.credit_notes.create',compact('existe_comprobante','bcv_creditnote_product','creditnote','inventories_creditnotes','inventory','bcv','datenow','coin'));
 
                 }else{
                     return redirect('/creditnotes')->withDanger('El Producto no existe');
@@ -988,10 +1003,11 @@ class CreditNoteController extends Controller
 
         DB::connection(Auth::user()->database_name)->table('detail_vouchers')
         ->join('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
-        ->where('header_vouchers.id_credit_note','=',$creditnote->id)
+        ->where('header_vouchers.description','LIKE','%Nota de Credito '.$creditnote->id.'%')
         ->update(['detail_vouchers.status' => 'X' , 'header_vouchers.status' => 'X']);
 
-        $creditnote->delete(); 
+        $creditnote->status = 'X';
+        $creditnote->save();
 
         
         return redirect('/creditnotes')->withDanger('Eliminacion exitosa!!');

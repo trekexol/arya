@@ -51,12 +51,8 @@ class TempMovimientosImport implements  ToCollection
                     $arr = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]));
                         /*********FIN DANDO FORMATO A LA FECHA ****/
 
-                    /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
-                    $vali   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','BANCAMIGA CUENTA CORRIENTE')
-                                ->where('referencia_bancaria',$row[2])
-                                ->where('moneda','bolivares')->first();
+            
 
                       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
@@ -66,11 +62,12 @@ class TempMovimientosImport implements  ToCollection
                                 ->where('referencia_bancaria',$row[2])
                                 ->where('moneda','bolivares')
                                 ->where('haber',$row[5])
+                                ->where('fecha',$arr)
                                 ->where('debe',$row[4])->first();
 
                     
                     /******si todo esta correcto inserto en BD */
-                    if(!$vali AND !$vali2){
+                    if(!$vali2){
 
                         
                                 $user = new TempMovimientos();
@@ -142,10 +139,10 @@ class TempMovimientosImport implements  ToCollection
 
             /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
                     
-                      $vali   = TempMovimientos::on(Auth::user()->database_name)
+                    /*  $vali   = TempMovimientos::on(Auth::user()->database_name)
                       ->where('banco','Banco Banesco')
                       ->where('referencia_bancaria',$row[1])
-                      ->where('moneda','bolivares')->first();
+                      ->where('moneda','bolivares')->first();*/
 
             /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
                     $vali2  = TempMovimientos::on(Auth::user()->database_name)
@@ -153,12 +150,13 @@ class TempMovimientosImport implements  ToCollection
                     ->where('referencia_bancaria',$row[1])
                     ->where('haber',$haber)
                     ->where('debe',$debe)
+                    ->where('fecha',$arr)
                     ->where('moneda','bolivares')->first();
 
 
 
                         /******si todo esta correcto inserto en BD */
-                        if(!$vali AND !$vali2){
+                        if(!$vali2){
 
                             $user = new TempMovimientos();
                             $user->setConnection(Auth::user()->database_name);
@@ -221,8 +219,9 @@ class TempMovimientosImport implements  ToCollection
             }
    
                      /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
-                       $monto =  str_replace(",", ".", $row[7]);
-              
+                       $monto =  str_replace(".", "", $row[7]);
+                       $monto =  str_replace(",", ".", $monto);
+
                         /**** Verifico si es nota de credito o debito */
                             if($row[5] == 'ND'){
                                
@@ -233,7 +232,7 @@ class TempMovimientosImport implements  ToCollection
                                 $debe = 0;
                                 
                             }
-                    
+               
                     /****Cambio el formato de la fecha para la BD */
                     $fecha = $row[3];
                     $dias = substr($row[3], 0, 2);
@@ -241,24 +240,17 @@ class TempMovimientosImport implements  ToCollection
                     $años = substr($row[3], 4, 4);
                     $fechacompleta = $años.'-'.$mes.'-'.$dias;
                 
-                     /*******CONSULTO QUE LA REFERENCIA NO EXISTA EN LA BD ******/
-                    
-                   /*  $vali   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco',$banco)
-                     ->where('referencia_bancaria',$row[4])
-                     ->where('moneda',$moneda)->first();*/
+  
+       
+            $vali2   = TempMovimientos::on(Auth::user()->database_name)
+            ->where('banco',$banco)
+            ->where('referencia_bancaria',$row[4])
+            ->where('haber',$haber)
+            ->where('fecha',$fechacompleta)
+            ->where('debe',$debe)
+            ->where('moneda',$moneda)->first();
+            /******si todo esta correcto inserto en BD */
 
-           /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
-
-
-         $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                     ->where('banco',$banco)
-                     ->where('referencia_bancaria',$row[4])
-                     ->where('haber',$haber)
-                     ->where('debe',$debe)
-                     ->where('moneda',$moneda)->first();
-         /******si todo esta correcto inserto en BD */
-        
          if(!$vali2){
 
             $user = new TempMovimientos();
@@ -335,10 +327,6 @@ if($i > 1){
                 $haber = 0;
 
             }
-
-            /*$validarproceso = HeaderVoucher::on(Auth::user()->database_name)
-            ->where('reference',$referencia)
-            ->where('date',$fechacompleta)->get();*/
             
 
       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
@@ -349,6 +337,7 @@ if($i > 1){
                 ->where('referencia_bancaria',$referencia)
                 ->where('haber',$haber)
                 ->where('debe',$debe)
+                ->where('fecha',$fechacompleta)
                 ->where('moneda',$moneda)->get();
     /******si todo esta correcto inserto en BD */
    
@@ -421,6 +410,7 @@ if($i > 1){
                         ->where('banco','Chase')
                         ->where('haber',$haber)
                         ->where('debe',$debe)
+                        ->where('fecha',$fechacompleta)
                         ->where('moneda','dolares')->first();
             /******si todo esta correcto inserto en BD */
            
@@ -512,6 +502,7 @@ elseif($this->banco == 'BOFA'){
             ->where('banco','BOFA')
             ->where('haber',$haber)
             ->where('debe',$debe)
+            ->where('fecha',$fechacompleta)
             ->where('moneda','dolares')->first();
                 /******si todo esta correcto inserto en BD */
 
