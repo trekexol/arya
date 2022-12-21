@@ -237,7 +237,7 @@
   <tr>
     <th style="text-align: left; font-weight: normal; width: 38%; border-bottom-color: white; border-right-color: white; font-size: small;"></th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">I.V.A.{{ $quotation->iva_percentage }}%</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($iva, '1', 2), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($iva, 2, ',', '.') }}</th>
   </tr> 
 
 
