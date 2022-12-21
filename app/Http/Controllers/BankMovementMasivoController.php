@@ -385,8 +385,9 @@ public function procesarcontrapartidanew(Request $request){
 
 
                  }
-
-
+                 $valordebe = (string) $request->valordebe;
+                 $montodelacontra = (string) $montodelacontra;
+               
                 if($validarcontra == TRUE){
 
                     $resp['error'] = false;
@@ -394,11 +395,10 @@ public function procesarcontrapartidanew(Request $request){
 
                     return response()->json($resp);
 
-                }elseif($montodelacontra != $request->valordebe){
+                }elseif($montodelacontra != $valordebe){
 
                     $resp['error'] = false;
                     $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
-
                     return response()->json($resp);
                 }else{
 
@@ -460,6 +460,9 @@ public function procesarcontrapartidanew(Request $request){
 
                  }
 
+                 $valorhaber = (string) $request->valorhaber;
+                 $montodelacontra = (string) $montodelacontra;
+
 
                 if($validarcontra == TRUE){
 
@@ -468,7 +471,7 @@ public function procesarcontrapartidanew(Request $request){
 
                     return response()->json($resp);
 
-                }elseif($montodelacontra != $request->valorhaber){
+                }elseif($montodelacontra != $valorhaber){
 
                     $resp['error'] = false;
                     $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
@@ -766,6 +769,9 @@ public function procesardeposito(Request $request){
 
                  }
 
+                 
+                 $valordebe = (string) $request->valordebe;
+                 $montodelacontra = (string) $montodelacontra;
 
                 if($validarcontra == TRUE){
 
@@ -774,7 +780,7 @@ public function procesardeposito(Request $request){
 
                     return response()->json($resp);
 
-                }elseif($montodelacontra != $request->valordebe){
+                }elseif($montodelacontra !=  $valordebe){
 
                     $resp['error'] = false;
                     $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
@@ -842,7 +848,9 @@ public function procesardeposito(Request $request){
 
 
                  }
-
+                 
+                 $valorhaber = (string) $request->valorhaber;
+                 $montodelacontra = (string) $montodelacontra;
 
                 if($validarcontra == TRUE){
 
@@ -851,7 +859,7 @@ public function procesardeposito(Request $request){
 
                     return response()->json($resp);
 
-                }elseif($montodelacontra != $request->valorhaber){
+                }elseif($montodelacontra != $valorhaber){
 
                     $resp['error'] = false;
                     $resp['msg'] = 'El Total de las contrapartidas debe ser igual al monto del movimiento bancario';
