@@ -204,10 +204,12 @@
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Descuento {{$expense->porc_discount}}%</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->discount / ($bcv ?? 1), 2, ',', '.') }}</th>
   </tr>
+
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Monto con Descuento</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->sub_total-$expense->discount / ($bcv ?? 1), 2, ',', '.') }}</th>
   </tr>  
+  @endif 
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">I.V.A.{{ $expense->iva_percentage }}%</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->amount_iva / ($bcv ?? 1), 2, ',', '.') }}</th>
@@ -223,11 +225,6 @@
     <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); font-size: small;">MONTO TOTAL</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format($expense->amount_with_iva, 2, ',', '.') }}</th>
   </tr> 
-
-
-
-  @endif
-
 
 </table>
 
