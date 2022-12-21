@@ -377,7 +377,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_expense_detail(request $request,$id_expense,$coin,$type = null,$id_product = null,$account = null,$subaccount = null)
     {
-
+    
 
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
@@ -517,6 +517,8 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_payment(request $request,$id_expense,$coin)
     {
+
+
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
@@ -588,15 +590,19 @@ class ExpensesAndPurchaseController extends Controller
              $total_retiene_islr = 0;
 
              foreach($expense_details as $var){
-                 
-                    $total += ($var->price * $var->amount);
+
+                $percentage = (($var->price * $var->amount) * $var->porc_discount)/100;
+
+                $total_less_percentage = ($var->price * $var->amount) - $percentage;
+                $total += $total_less_percentage;
+                  //  $total += ($var->price * $var->amount);
                
                 if($var->exento == 0){
-                    $base_imponible += ($var->price * $var->amount); 
+                    $base_imponible += $total_less_percentage; 
                 }
 
                 if($var->islr == 1){
-                    $total_retiene_islr += ($var->price * $var->amount); 
+                    $total_retiene_islr += $total_less_percentage; 
                 }
              }
 
@@ -974,10 +980,11 @@ class ExpensesAndPurchaseController extends Controller
         $var->id_expense = request('id_expense');
         $var->rate = request('rate_expense');
         $coin = request('coin_hidde');
-
+        $discount = request('discount');
+        
         $var->id_user = request('id_user');
         $var->id_account = request('Account');
-        
+        $var->porc_discount = $discount;
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('amount')));
 
         $var->amount = $sin_formato_amount;
@@ -995,6 +1002,13 @@ class ExpensesAndPurchaseController extends Controller
         $var->price = $sin_formato_price;
        
         $var->id_branch = request('centro_costo');
+
+
+        $percentage = (($sin_formato_price * $sin_formato_amount) * $discount)/100;
+
+        $total_less_percentage = ($sin_formato_price *  $sin_formato_amount) - $percentage;
+
+        $var->discount = $total_less_percentage;
 
         $exento = request('exento');
         if($exento == null){
@@ -1064,10 +1078,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function store_expense_payment(Request $request)
     { 
-        $data = request()->validate([
-            
-        ]);
-    
+
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
         
