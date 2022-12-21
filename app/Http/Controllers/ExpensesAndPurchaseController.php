@@ -2502,7 +2502,7 @@ class ExpensesAndPurchaseController extends Controller
             }//SIN DETERMINAR
             else if($payment_type == 7){
                 
-                $account_sin_determinar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Otros Ingresos No Identificados')->first(); 
+                $account_sin_determinar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Otros Egresos No Identificados')->first(); 
         
                 if(isset($account_sin_determinar)){
                     $this->add_movement($bcv,$header_voucher,$account_sin_determinar->id,$id_expense,$user_id,$amount_debe,$amount_haber);
