@@ -90,17 +90,18 @@
                               <option value="Banco Banesco">Banesco</option>
                               <option value="Banco Banplus">Banplus</option>
                               <option value="Banplus Custodia">Banplus Custodia</option>
+                              <option value="Banco del Tesoro">Banco del Tesoro</option>
                               <option value="Mercantil">Mercantil</option>
                               <option value="Chase">Chase</option>
                               <option value="BOFA">BOFA</option>
                             </select>
-
+                            
 
                           </div>
                         <div id="muestrasbanco"></div>
 
                           <div class="form-group col-md-12">
-                            <input required id="file" type="file" value="import" name="file" class="form-control-file" accept=".xlsx, .csv, .txt">
+                            <input required id="file" type="file" value="import" name="file" class="form-control-file" accept=".xlsx, .csv, .txt, .jsp">
 
                           </div>
                           <div id="muestrasfile" ></div>
