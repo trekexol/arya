@@ -99,7 +99,6 @@ public function importmovimientos(Request $request){
         return response()->json($resp);
     }
 
-
         }catch(\error $error){
             $resp['error'] = false;
 	        $resp['msg'] = 'Verifique el Archivo.';
@@ -107,8 +106,6 @@ public function importmovimientos(Request $request){
             return response()->json($resp);
         }
     }
-
-
 
 
 }
