@@ -567,9 +567,15 @@ elseif($this->banco == 'Banco del Tesoro'){
 
         $banco = 'Banco del Tesoro';
         $moneda = 'bolivares';
-        $haber = $row[4];
-        $debe = $row[3];
 
+        
+         /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+         $monto =  str_replace(".", "", $row[4]);
+         $debe =  str_replace(",", ".", $monto);
+
+           /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+           $montos =  str_replace(".", "", $row[3]);
+           $haber =  str_replace(",", ".", $montos);
         
         $vali2   = TempMovimientos::on(Auth::user()->database_name)
         ->where('banco',$banco)
