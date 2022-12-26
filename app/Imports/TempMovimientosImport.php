@@ -297,18 +297,18 @@ class TempMovimientosImport implements  ToCollection
         if($this->banco == 'Banco Banplus'){
             $moneda = "bolivares";
             $banco = 'Banco Banplus';
-        }elseif($this->banco == 'Banco Banplusd'){
+        }elseif($this->banco == 'Banplus Custodia'){
             $moneda = "dolares";
             $banco = 'Banplus Custodia';
         }
   
         foreach($rows as $row){
 
-
+           
             
 if($i > 1){
 
-    
+ 
             /*******cambio formato de fecha */
                 $fecha = explode('/',$row[0]);
                 $dia = $fecha[0];
@@ -547,6 +547,75 @@ elseif($this->banco == 'BOFA'){
 $i++;
     }
 }
+
+
+elseif($this->banco == 'Banco del Tesoro'){
+  
+   
+    foreach($rows as $row){
+      
+        if($i > 0){
+
+            
+
+        /****Cambio el formato de la fecha para la BD */
+        $data = explode('/',$row[0]);
+        $dias = $data[0];
+        $mes = $data[1];
+        $años = $data[2];
+        $fechacompleta = $años.'-'.$mes.'-'.$dias;
+
+        $banco = 'Banco del Tesoro';
+        $moneda = 'bolivares';
+        $haber = $row[4];
+        $debe = $row[3];
+
+        
+        $vali2   = TempMovimientos::on(Auth::user()->database_name)
+        ->where('banco',$banco)
+        ->where('referencia_bancaria',$row[2])
+        ->where('haber',$haber)
+        ->where('fecha',$fechacompleta)
+        ->where('debe',$debe)
+        ->where('moneda',$moneda)->first();
+        /******si todo esta correcto inserto en BD */
+        
+
+        if(!$vali2){
+
+            $user = new TempMovimientos();
+            $user->setConnection(Auth::user()->database_name);
+            $user->banco        = $banco;
+            $user->referencia_bancaria     = $row[2];
+            $user->descripcion       = $row[1];
+            $user->fecha    = $fechacompleta;
+            $user->haber     = $haber;
+            $user->debe   = $debe;
+            $user->moneda      = $moneda;
+            $user->save();
+            
+            
+            
+            $contador++;
+            $estatus = TRUE;
+            $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+            }else{
+            $contadorerror++;
+            $estatus = TRUE;
+            $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+            
+            }
+
+        }
+
+      
+$i++;
+
+
+}//// fin  foreach
+} ///fin        elseif($this->banco == 3)
+
+
 
   
 

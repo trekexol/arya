@@ -70,6 +70,12 @@
                         </div>  
                         
                     </div>
+                    <div class="form-group row">
+                        <label for="price" class="col-md-2 col-form-label text-md-right">Descuento</label>
+                        <div class="col-md-3">
+                            <input id="discount" type="text" class="form-control @error('price') is-invalid @enderror" name="discount" value="{{ $expense_detail->porc_discount }}"  required autocomplete="price">
+                        </div>  
+                    </div>
                     
                     
                         <div class="form-group row">

@@ -1121,6 +1121,9 @@ class ExpensesAndPurchaseController extends Controller
         $total_pay_form = request('total_pay_form');
         
         $porc_descuento = request('porc_descuento_form');
+
+     
+
         $descuento = request('descuento_form');
 
         $date_payment = request('date_payment_form');
@@ -2585,6 +2588,7 @@ class ExpensesAndPurchaseController extends Controller
     }
     public function editproduct(request $request,$id,$coin)
     {
+ 
         if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
         $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->find($id);
         $rate = null;
@@ -2720,10 +2724,12 @@ class ExpensesAndPurchaseController extends Controller
             $amount_old = $var->amount;
 
             $coin = request('coin');
+            $discount = request('discount');
 
             $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
            
             $var->price = $valor_sin_formato_price;
+            $var->porc_discount = $discount;
 
             $rate_expense = request('rate_expense');
 

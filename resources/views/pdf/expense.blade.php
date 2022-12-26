@@ -149,15 +149,24 @@
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Cantidad</th>
     <th style="text-align: center; ">P.V.J.</th>
+    <th style="text-align: center; ">Descuento</th>
     <th style="text-align: center; ">Total</th>
   </tr> 
   @foreach ($inventories_expenses as $var)
       <?php
         if($coin != 'bolivares'){
-          $var->price = $var->price / $expense->rate;
+          //$var->price = $var->price / $expense->rate;
+
+          
+          $percentage = (($var->price * $var->amount) * $var->porc_discount)/100;
+
+          $total_less_percentage = ($var->price * $var->amount) - $percentage;
+          $var->price =  $total_less_percentage / $expense->rate;
         }
 
-        $total_less_percentage = ($var->price * $var->amount);
+        $percentage = (($var->price * $var->amount) * $var->porc_discount)/100;
+
+          $total_less_percentage = ($var->price * $var->amount) - $percentage;
 
       ?>
     <tr>
@@ -169,6 +178,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 2, ',', '.') }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->porc_discount  }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
