@@ -194,8 +194,8 @@ elseif($tipo == 'contra'){
         var wrapper = $('.field_wrapper');
 
         var debe = $('#valordebe').val();
-
-        if(debe > '0'){
+    
+        if(parseFloat(debe) > '0'){
 
             var montocontra = debe;
 
