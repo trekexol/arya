@@ -795,7 +795,7 @@ public function procesardeposito(Request $request){
                 $header_voucher->save();
 
                 //$bcv = $request->tasa;
-                $bcv = "1,00";
+                $bcv = "1.00";
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
@@ -877,7 +877,7 @@ public function procesardeposito(Request $request){
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
                 
                 //$bcv = $request->tasa;
-                $bcv = "1,00";
+                $bcv = "1.00";
 
                 if(isset($account_cuentas_por_cobrar)){
                     $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
