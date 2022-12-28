@@ -281,12 +281,12 @@ $suma_haber = 0;
                                             <td>{{number_format($var->haber, 2, ',', '.')}}</td>
                                         @else
                                             <?php
-                                                $suma_debe += bcdiv($var->debe / $var->tasa ?? 1, '1', 2);
-                                                $suma_haber += bcdiv($var->haber / $var->tasa ?? 1, '1', 2);
+                                                $suma_debe +=$var->debe / $var->tasa;
+                                                $suma_haber += $var->haber / $var->tasa;
                                             ?>
                                             @if ($var->tasa != 0)
-                                                <td>{{number_format(bcdiv($var->debe / $var->tasa ?? 1, '1', 2), 2, ',', '.')}}</td>
-                                                <td>{{number_format(bcdiv($var->haber / $var->tasa ?? 1, '1', 2), 2, ',', '.')}}</td>
+                                                <td>{{number_format($var->debe / $var->tasa, 2, ',', '.')}}</td>
+                                                <td>{{number_format($var->haber / $var->tasa, 2, ',', '.')}}</td>
                                             @else
                                                 <td>La Tasa es Cero</td>
                                                 <td>La Tasa es Cero</td>
@@ -312,13 +312,13 @@ $suma_haber = 0;
                         <tfoot>
                             <tr>
                                         
-                                @if(bcdiv($suma_debe, '1', 2) == bcdiv($suma_haber, '1', 2))
+                                @if($suma_debe == $suma_haber)
                                     <td style="color: rgb(84, 196, 84)">El comprobante está cuadrado</td>
                                     <td>Total</td>
                                     <td>{{ number_format($suma_debe, 2, ',', '.') }}</td>
                                     <td>{{ number_format($suma_haber, 2, ',', '.') }}</td>
                                 @else
-                                    <td style="color: red">El comprobante está descuadrado {{bcdiv($suma_debe, '1', 2)}}/{{ bcdiv($suma_haber, '1', 2)}}</td>
+                                    <td style="color: red">El comprobante está descuadrado {{$suma_debe}}/{{ $suma_haber}}</td>
                                     <td>Total</td>
                                     @if (bcdiv($suma_debe, '1', 2) > bcdiv($suma_haber, '1', 2))
                                         <td>{{number_format($suma_debe, 2, ',', '.')}}  <br><div style="color: red"> - {{ number_format($suma_debe - $suma_haber, 2, ',', '.')}}</div></td>
