@@ -571,11 +571,11 @@ elseif($this->banco == 'Banco del Tesoro'){
 
         
          /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
-         $monto =  str_replace(".", "", $row[4]);
+         $monto =  str_replace(".", "", $row[3]);
          $debe =  str_replace(",", ".", $monto);
 
         /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
-        $montos =  str_replace(".", "", $row[3]);
+        $montos =  str_replace(".", "", $row[4]);
         $haber =  str_replace(",", ".", $montos);
        
         if($row[2] == '000000000'){
