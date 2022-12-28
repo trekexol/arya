@@ -652,7 +652,8 @@ $(document).ready(function(){
     $('.procesarcontrapartida').hide();
 
     var debe = $('#valordebe').val();
-        if(debe > '0'){
+    if(parseFloat(debe) > '0'){
+
             var montocontra = debe;
         }else{
             var haber = $('#valorhaber').val();
