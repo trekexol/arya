@@ -551,12 +551,12 @@ $i++;
 
 elseif($this->banco == 'Banco del Tesoro'){
   
+    $nro = 1;
    
     foreach($rows as $row){
       
         if($i > 0){
 
-            
 
         /****Cambio el formato de la fecha para la BD */
         $data = explode('/',$row[0]);
@@ -564,6 +564,7 @@ elseif($this->banco == 'Banco del Tesoro'){
         $mes = $data[1];
         $años = $data[2];
         $fechacompleta = $años.'-'.$mes.'-'.$dias;
+        $fechamesa = $años.'-'.$mes;
 
         $banco = 'Banco del Tesoro';
         $moneda = 'bolivares';
@@ -573,13 +574,44 @@ elseif($this->banco == 'Banco del Tesoro'){
          $monto =  str_replace(".", "", $row[4]);
          $debe =  str_replace(",", ".", $monto);
 
-           /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
-           $montos =  str_replace(".", "", $row[3]);
-           $haber =  str_replace(",", ".", $montos);
-        
+        /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+        $montos =  str_replace(".", "", $row[3]);
+        $haber =  str_replace(",", ".", $montos);
+       
+        if($row[2] == '000000000'){
+
+            $descripcion = $row[1].' '.$nro; 
+
+            $vali   = TempMovimientos::on(Auth::user()->database_name)
+            ->where('banco',$banco)
+            ->where('referencia_bancaria',$row[2])
+            ->where('descripcion', $descripcion)
+            ->where('haber',$haber)
+            ->where('fecha',$fechacompleta)
+            ->where('debe',$debe)
+            ->where('moneda',$moneda)->get();
+  
+            if($vali->count() == 0){
+    
+               
+                $nro++;
+    
+            }else{
+                $nro++;
+
+            }
+    
+           
+        }else{
+            $descripcion = $row[1]; 
+        }
+
+       
+
         $vali2   = TempMovimientos::on(Auth::user()->database_name)
         ->where('banco',$banco)
         ->where('referencia_bancaria',$row[2])
+        ->where('descripcion',$descripcion)
         ->where('haber',$haber)
         ->where('fecha',$fechacompleta)
         ->where('debe',$debe)
@@ -593,7 +625,7 @@ elseif($this->banco == 'Banco del Tesoro'){
             $user->setConnection(Auth::user()->database_name);
             $user->banco        = $banco;
             $user->referencia_bancaria     = $row[2];
-            $user->descripcion       = $row[1];
+            $user->descripcion       = $descripcion;
             $user->fecha    = $fechacompleta;
             $user->haber     = $haber;
             $user->debe   = $debe;

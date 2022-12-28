@@ -137,7 +137,8 @@ public function facturasmovimientos(Request $request){
 
 
     }elseif($tipo == 'contra'){
-
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
         $montohaber = $data[5];
         $referenciamovimiento = $data[6];
         $moneda = $data[7];
@@ -153,7 +154,7 @@ public function facturasmovimientos(Request $request){
 
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('bcv','contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
 
     }elseif($tipo == 'transferencia'){
 
@@ -360,8 +361,8 @@ public function procesarcontrapartidanew(Request $request){
     if($request->ajax()){
         try{
 
-            $global = new GlobalController();
-            $bcv = $global->search_bcv();
+           
+            $bcv = $request->rate;
 
             if($request->valorhaber == 0){
                 ///BANCO POR DEBE

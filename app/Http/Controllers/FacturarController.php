@@ -39,7 +39,7 @@ class FacturarController extends Controller
 
     public function createfacturar($id_quotation,$coin,$type = 'Cotización')
     {
-        
+     
          $quotation = null;
              
          if(isset($id_quotation)){
