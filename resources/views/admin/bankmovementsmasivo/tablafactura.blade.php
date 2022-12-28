@@ -128,6 +128,8 @@ $('#dataTable').DataTable({
 elseif($tipo == 'contra'){
 
     ?>
+
+    
 <div class="modal-header">
 
     <button type="button" class="add_button btn btn-secondary btn-sm">Agregar Contrapartida</button>
@@ -137,31 +139,37 @@ elseif($tipo == 'contra'){
 </div>
 <div class="modal-body" >
     <div class="table-responsive-xl">
+         
         <table class="table table-sm">
             <thead>
                 <tr>
                   <th scope="col">Banco</th>
                   <th scope="col">Descripcion</th>
                   <th scope="col">Moneda</th>
-                  <th scope="col">Haber</th>
                   <th scope="col">Debe</th>
+                  <th scope="col">Haber</th>
+                  <th>Tasa</th>
                 </tr>
               </thead>
+              
               <tbody>
+                
                 <tr>
                     <th scope="row">{{$bancomovimiento}}</th>
                     <td>{{$descripcionbanco}}</td>
                     <td>{{$moneda}}</td>
-                    <td>{{$montohaber}}</td>
                     <td>{{$valormovimiento}}</td>
+                    <td>{{$montohaber}}</td>
+                    <td><input id="rates" type="text" class="form-control form-control-sm" name="rates" value="{{ $bcv }}" ></td>
+
                   </tr>
               </tbody>
         </table>
       </div>
+      <form id='pruebaform' >
 
-            <form id='pruebaform' >
-                @csrf
-
+      @csrf
+      <input id="rate" type="hidden" class="form-control form-control-sm" name="rate" value="{{ $bcv }}" >   
         <input type="hidden" id="valordebe" name="valordebe" value='{{$valormovimiento}}'>
         <input type="hidden" id="valorhaber" name="valorhaber" value='{{$montohaber}}'>
         <input type="hidden" name="referenciabanco" value='{{$referenciamovimiento}}'>
@@ -181,9 +189,8 @@ elseif($tipo == 'contra'){
 
 
 
-    </div>
-</div>
-</div>
+ </div>
+
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -316,6 +323,9 @@ $('.procesarcontrapartida').click(function(e){
       e.preventDefault();
       $('.procesarcontrapartida').prop( 'disabled', true );
       idmovimiento = $('#idmovimiento').val();
+      var rates = $('#rates').val();
+      $('#rate').val(rates);
+
     $.ajax({
         method: "POST",
         url: "{{ route('procesarcontrapartidanew') }}",
@@ -816,4 +826,6 @@ $.ajax({
 }
 
 ?>
+
+
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -60,7 +60,6 @@ class DeliveryNoteController extends Controller
                                     ->get();
 
 
-            
             return view('admin.quotations.indexdeliverynote',compact('agregarmiddleware','quotations','eliminarmiddleware'));
       
     }
@@ -233,7 +232,6 @@ class DeliveryNoteController extends Controller
 
         $id_quotation = $request->id_quotation_modal;
 
-        
         
        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
        $quotation->status = 'X';
