@@ -240,11 +240,6 @@ class DeliveryNoteController extends Controller
        $quotation->save(); 
 
         QuotationProduct::on(Auth::user()->database_name)
-
-                        ->join('products','products.id','quotation_products.id_inventory')
-                        ->where('products.type','MERCANCIA')
-                        ->orwhere('products.type','MATERIAP')
-                        ->orwhere('products.type','COMBO')
                         ->where('id_quotation',$id_quotation)
                         ->update(['quotation_products.status' => 'X']);
     
