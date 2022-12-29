@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
         
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Registrar Pago para Compra/Gasto</h3></div>
+                <div class="card-header" ><h3>Registrar Pago para Compras/Gastos</h3></div>
                 <form method="POST" action="{{ route('expensesandpurchases.store_expense_credit') }}" enctype="multipart/form-data">
                     @csrf   
                 <div class="card-body" >
@@ -957,11 +957,15 @@
                 /*if (valor == '0'){
                     porc_discount = "<?php echo $expense->porc_discount ?>";
                     discount = "<?php echo $expense->discount ?>";
-
+                    descuento_general
                 } 
-                if (valor == '1'){    */          
+                if (valor == '1'){    */   
+                    if (valor == '1'){        
                     porc_discount = $("#porc_descuento_general").val();
+
                     discount = totalFactura * porc_discount / 100; 
+
+                    totalBaseImponible = totalFactura - discount;
 
                     if (totalBaseImponible != totalFactura && porc_discount > 0) {
                     totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
@@ -971,6 +975,25 @@
                     if (totalBaseImponible == totalFactura && porc_discount > 0) {
                     totalBaseImponible = totalFactura - discount;
                     }
+                    
+                }
+
+                if (valor == '2'){        
+                    discount = $("#descuento_general").val();
+
+                 
+
+                    totalBaseImponible = totalFactura - discount;
+
+                    porcentaje = (discount * 100) / totalFactura; // Regla de tres
+                    porc_discount = porcentaje;  // Quitar los decimales
+                    
+                    $("#porc_descuento_general").val(porc_discount);
+                    $("#porc_descuento_form").val(porc_discount);
+                }
+
+                  
+                    
                 //}
 
                 totalFactura = totalFactura - discount;
@@ -1135,7 +1158,10 @@
             $("#porc_descuento_general").on('change',function(){ 
                 calculate(1);
             });
-  
+            
+            $("#descuento_general").on('change',function(){ 
+                calculate(2);
+            });
 
             $("#checkdescuento").on('change', function() {
                
@@ -1144,13 +1170,13 @@
                     $("#div_descuento").show();
                     document.getElementById("forcheckdescuento").innerHTML = "Descuento Aplicado";
         
-                    if (porc_discount > 0){
+                   /* if (porc_discount > 0){
                     
                         calculate(1);
                     } else {
                         calculate(0);
-                    }
-                    
+                    }*/
+             
 
                 }else {
 

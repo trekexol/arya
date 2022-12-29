@@ -297,18 +297,18 @@ class TempMovimientosImport implements  ToCollection
         if($this->banco == 'Banco Banplus'){
             $moneda = "bolivares";
             $banco = 'Banco Banplus';
-        }elseif($this->banco == 'Banco Banplusd'){
+        }elseif($this->banco == 'Banplus Custodia'){
             $moneda = "dolares";
             $banco = 'Banplus Custodia';
         }
   
         foreach($rows as $row){
 
-
+           
             
 if($i > 1){
 
-    
+ 
             /*******cambio formato de fecha */
                 $fecha = explode('/',$row[0]);
                 $dia = $fecha[0];
@@ -547,6 +547,113 @@ elseif($this->banco == 'BOFA'){
 $i++;
     }
 }
+
+
+elseif($this->banco == 'Banco del Tesoro'){
+  
+    $nro = 1;
+   
+    foreach($rows as $row){
+      
+        if($i > 0){
+
+
+        /****Cambio el formato de la fecha para la BD */
+        $data = explode('/',$row[0]);
+        $dias = $data[0];
+        $mes = $data[1];
+        $años = $data[2];
+        $fechacompleta = $años.'-'.$mes.'-'.$dias;
+        $fechamesa = $años.'-'.$mes;
+
+        $banco = 'Banco del Tesoro';
+        $moneda = 'bolivares';
+
+        
+         /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+         $monto =  str_replace(".", "", $row[3]);
+         $debe =  str_replace(",", ".", $monto);
+
+        /**** CAMBIO EL MONTO DE PUNTO A COMA PARA LA BD */
+        $montos =  str_replace(".", "", $row[4]);
+        $haber =  str_replace(",", ".", $montos);
+       
+        if($row[2] == '000000000'){
+
+            $descripcion = $row[1].' '.$nro; 
+
+            $vali   = TempMovimientos::on(Auth::user()->database_name)
+            ->where('banco',$banco)
+            ->where('referencia_bancaria',$row[2])
+            ->where('descripcion', $descripcion)
+            ->where('haber',$haber)
+            ->where('fecha',$fechacompleta)
+            ->where('debe',$debe)
+            ->where('moneda',$moneda)->get();
+  
+            if($vali->count() == 0){
+    
+               
+                $nro++;
+    
+            }else{
+                $nro++;
+
+            }
+    
+           
+        }else{
+            $descripcion = $row[1]; 
+        }
+
+       
+
+        $vali2   = TempMovimientos::on(Auth::user()->database_name)
+        ->where('banco',$banco)
+        ->where('referencia_bancaria',$row[2])
+        ->where('descripcion',$descripcion)
+        ->where('haber',$haber)
+        ->where('fecha',$fechacompleta)
+        ->where('debe',$debe)
+        ->where('moneda',$moneda)->first();
+        /******si todo esta correcto inserto en BD */
+        
+
+        if(!$vali2){
+
+            $user = new TempMovimientos();
+            $user->setConnection(Auth::user()->database_name);
+            $user->banco        = $banco;
+            $user->referencia_bancaria     = $row[2];
+            $user->descripcion       = $descripcion;
+            $user->fecha    = $fechacompleta;
+            $user->haber     = $haber;
+            $user->debe   = $debe;
+            $user->moneda      = $moneda;
+            $user->save();
+            
+            
+            
+            $contador++;
+            $estatus = TRUE;
+            $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+            }else{
+            $contadorerror++;
+            $estatus = TRUE;
+            $mensaje = 'Archivo Mercantil <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+            
+            }
+
+        }
+
+      
+$i++;
+
+
+}//// fin  foreach
+} ///fin        elseif($this->banco == 3)
+
+
 
   
 

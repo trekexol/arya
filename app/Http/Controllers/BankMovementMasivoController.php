@@ -75,9 +75,9 @@ public function importmovimientos(Request $request){
 
     $import = new TempMovimientosImport($banco);
 
+        
 
-
-    if(($banco == 'Bancamiga' OR $banco == 'Banco Banesco') AND $extension == 'xlsx'){
+    if(($banco == 'Bancamiga' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
 
     Excel::import($import, $file);
     $resp['error'] = $import->estatus;
@@ -94,11 +94,10 @@ public function importmovimientos(Request $request){
     }else{
 
         $resp['error'] = false;
-        $resp['msg'] = 'Verifique Formato. <br> Banesco y Bancamiga .xlsx <br> Mercantil y Banplus .txt <br> Chase y BOFA .csv ';
+        $resp['msg'] = 'Verifique Formato. <br> Banesco,Bancamiga,Banco del Tesoro .xlsx <br> Mercantil y Banplus .txt <br> Chase y BOFA .csv';
 
         return response()->json($resp);
     }
-
 
         }catch(\error $error){
             $resp['error'] = false;
@@ -107,8 +106,6 @@ public function importmovimientos(Request $request){
             return response()->json($resp);
         }
     }
-
-
 
 
 }
@@ -140,7 +137,8 @@ public function facturasmovimientos(Request $request){
 
 
     }elseif($tipo == 'contra'){
-
+        $global = new GlobalController();
+        $bcv = $global->search_bcv();
         $montohaber = $data[5];
         $referenciamovimiento = $data[6];
         $moneda = $data[7];
@@ -156,7 +154,7 @@ public function facturasmovimientos(Request $request){
 
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('bcv','contrapartidas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','montohaber','referenciamovimiento','moneda','descripcionbanco'))->render();
 
     }elseif($tipo == 'transferencia'){
 
@@ -363,8 +361,8 @@ public function procesarcontrapartidanew(Request $request){
     if($request->ajax()){
         try{
 
-            $global = new GlobalController();
-            $bcv = $global->search_bcv();
+           
+            $bcv = $request->rate;
 
             if($request->valorhaber == 0){
                 ///BANCO POR DEBE
@@ -797,7 +795,8 @@ public function procesardeposito(Request $request){
                 $header_voucher->status =  "1";
                 $header_voucher->save();
 
-                $bcv = $request->tasa;
+                //$bcv = $request->tasa;
+                $bcv = "1.00";
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
@@ -877,7 +876,10 @@ public function procesardeposito(Request $request){
                 $header_voucher->save();
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
-                $bcv = $request->tasa;
+                
+                //$bcv = $request->tasa;
+                $bcv = "1.00";
+
                 if(isset($account_cuentas_por_cobrar)){
                     $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
                 }

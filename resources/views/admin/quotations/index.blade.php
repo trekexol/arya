@@ -133,12 +133,12 @@
                         <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
                         @endif
                         @if($quotation->photo == true)
-                        <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a> 
-                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares',$quotation->photo]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a> 
+                        <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares',$quotation->photo]) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a> 
 
                         
                         @else
-                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
 
                         @endif
                         
