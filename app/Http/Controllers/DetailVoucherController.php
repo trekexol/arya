@@ -574,6 +574,7 @@ class DetailVoucherController extends Controller
 
    public function deleteDetail(Request $request)
     {
+        
         $header = request('header_modal');
         $id = request('id_detail_modal');
 
