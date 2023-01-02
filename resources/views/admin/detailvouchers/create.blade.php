@@ -367,7 +367,7 @@ $suma_haber = 0;
                 @method('DELETE')
                 <input id="id_detail_modal" type="hidden"  class="form-control @error('id_detail_modal') is-invalid @enderror" name="id_detail_modal" readonly required autocomplete="id_detail_modal">
                 <input id="coin_modal" type="hidden" class="form-control @error('coin_modal') is-invalid @enderror" name="coin_modal" readonly required autocomplete="coin_modal">
-                <input id="header_modal" type="hidden" class="form-control @error('header_modal') is-invalid @enderror" name="header_modal" readonly required autocomplete="header_modal">
+                <input id="header_modal" type="hidden" class="form-control @error('header_modal') is-invalid @enderror" name="header_modal" readonly autocomplete="header_modal">
                       
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
                 

@@ -82,7 +82,9 @@ class DetailVoucherController extends Controller
         if(isset($id_header)){
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
             if(isset($header) && ($header->status != 'X')){
-                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->get();
+                $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)
+                ->where('status','!=','X')
+                ->get();
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
                 $detailvouchers_last = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','desc')->first();
 
@@ -335,6 +337,8 @@ class DetailVoucherController extends Controller
 
    public function edit(request $request,$coin,$id,$id_account = null)
    {
+
+  
     if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
 
         $var = DetailVoucher::on(Auth::user()->database_name)->find($id);
@@ -570,18 +574,21 @@ class DetailVoucherController extends Controller
 
    public function deleteDetail(Request $request)
     {
-      
-        $detail = DetailVoucher::on(Auth::user()->database_name)->find(request('id_detail_modal')); 
+        
+        $header = request('header_modal');
+        $id = request('id_detail_modal');
+
+       /* $detail = DetailVoucher::on(Auth::user()->database_name)
+        ->where('id',$id)
+        ->where('',$header); 
+        $detail->status = "X";
+        $detail->save();*/
 
         $coin = request('coin_modal');
 
-        $header = request('header_modal');
+        DetailVoucher::on(Auth::user()->database_name)->where('id',$id)->where('id_header_voucher',$header)
+        ->update(['status' => 'X']);
 
-        DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$header)
-        ->update(['status' => 'N']);
-
-        $detail->status = "X";
-        $detail->save();
       
 
         return redirect('/detailvouchers/register/'.$coin.'/'.$header.'')->withDanger('Eliminacion exitosa!!');
