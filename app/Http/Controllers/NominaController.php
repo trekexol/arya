@@ -73,9 +73,11 @@ class NominaController extends Controller
         
         if(isset($header)){
             $detail = new DetailVoucherController();
-            return $detail->create("bolivares",$header->id);
+        
+         
+            return  redirect('/detailvouchers/register/bolivares/'.$header->id);
+           
         }
-
 
         return redirect('/nominas')->withDanger('No posee movimientos la Nomina !!');
     }
