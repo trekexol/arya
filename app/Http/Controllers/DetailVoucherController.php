@@ -518,7 +518,7 @@ class DetailVoucherController extends Controller
             $type_delete = "compra";
            
             if(substr($header->description, 0, 4) == "Pago"){
-                $message_delete = "Este movimiento posee Los Pagos de la Compra Numero ".$detail->id_expense.", seguro desea eliminar los Pagos?";
+                $message_delete = "Este movimiento posee Los Pagos de la Compra Numero. ".$detail->id_expense.", seguro desea eliminar los Pagos?";
             }else{
                 $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense.", seguro desea eliminarla?";
             }
