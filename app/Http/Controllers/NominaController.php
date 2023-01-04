@@ -416,6 +416,16 @@ class NominaController extends Controller
         ->get();
 
 
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');
+        $global = new GlobalController();
+        $bcv = floatval($global->search_bcv());
+        $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
+        $lunes = $this->calcular_cantidad_de_lunes($nomina);
+
+
+
+
         foreach($calculos_nomina as $calculos) {
                 $concepto = '';
                 
@@ -427,8 +437,11 @@ class NominaController extends Controller
                     // Sueldo
                     if($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
                         $amount_total_asignacion += $calculos->amount;
+
+                        $total_sso_patronal += (($calculos->amount * 12)/52) * $lunes * ($nominabases->sso_company/100);
                     } else {
                         $amount_total_asignacion += 0;
+                        $total_sso_patronal += 0;
                     }
 
                     if($concepto->account_name == 'Bono de Alimentacion' and $concepto->sign == 'A'){
@@ -497,7 +510,7 @@ class NominaController extends Controller
                         
                     }
 
-
+                    
 
                 } else {
                     
@@ -521,12 +534,6 @@ class NominaController extends Controller
         
 
                          
-        $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');
-        $global = new GlobalController();
-        $bcv = floatval($global->search_bcv());
-        $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
-        $lunes = $this->calcular_cantidad_de_lunes($nomina);
 
 
         if($nomina->rate == 0 or $nomina->rate == null){
@@ -664,8 +671,10 @@ class NominaController extends Controller
         
         //MOVIMIENTO DE aporte patronal            
         if ($amount_total_deduccion_sso > 0) {     
-            $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
-
+           
+           /* $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
+            */
+            
             $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','6')
             ->where('description','LIKE', 'Gasto por Aporte al SSO Patronal')

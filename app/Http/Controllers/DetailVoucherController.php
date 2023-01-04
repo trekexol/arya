@@ -457,9 +457,9 @@ class DetailVoucherController extends Controller
         }
     }
   
-   public function destroy(request $request,$id = null)
+   public function destroy($id = null)
    {
-    if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
        if(isset($id)){
         $header = HeaderVoucher::on(Auth::user()->database_name)->findOrFail($id);
 
@@ -469,22 +469,19 @@ class DetailVoucherController extends Controller
         $header->status = "X";
         $header->save();
 
-        return redirect('/detailvouchers/register/bolivares')->withSuccess('Se deshabilitó con éxito el movimiento!');
-       
+        return redirect('/detailvouchers/register/bolivares')->withDanger('Se deshabilitó con éxito el movimiento!');
+ 
        }else{
+    
         return redirect('/detailvouchers/register/bolivares')->withDanger('Debe buscar un movimiento primero !!');
        
        }
 
-    }else{
-        return redirect('/detailvouchers/register/bolivares')->withDanger('No Tienes Permiso');
-
-    } 
-
    }
 
    public function check_header(Request $request){
-       
+
+
     $coin = "bolivares";
     $date = Carbon::now();
     $datenow = $date->format('Y-m-d');    
@@ -528,13 +525,18 @@ class DetailVoucherController extends Controller
             }
     }
  
+       
     if($id_delete == 0){
+    
         $this->destroy($id);
-        return redirect('/detailvouchers/register/bolivares')->withSuccess('Se deshabilitó con éxito el movimiento!');
-    }else{
+        return redirect('/detailvouchers/register/bolivares')->withDanger('Se deshabilitó con éxito el movimiento!');
+       
+    }else{ 
         return view('admin.detailvouchers.create',compact('datenow','coin','bcv','header','type_delete','id_delete','message_delete'));
     }
     
+
+
    }
 
    public function disable(Request $request){
