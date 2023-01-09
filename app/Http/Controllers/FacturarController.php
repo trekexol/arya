@@ -532,6 +532,9 @@ class FacturarController extends Controller
        /* $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
         $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
          
+
+
+
         $IGTF_input = request('IGTF_input_pre');
         $IGTF_input_check = request('IGTF_input');
           
@@ -544,33 +547,38 @@ class FacturarController extends Controller
 
         $total_mercancia = request('total_mercancia_credit');
         $total_servicios = request('total_servicios_credit');
+
+
      
         if($moneda == 'dolares'){
             $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
             $sin_formato_amount_iva = round($sin_formato_amount_iva, 2);
 
+
             $sin_formato_base_imponible = $sin_formato_base_imponible * $bcv;
             $sin_formato_base_imponible = round($sin_formato_base_imponible, 2);
 
             $sin_formato_grand_total = $sin_formato_base_imponible + $sin_formato_amount_iva;
+            
+          
 
+           if($sin_formato_grand_total ==   0){
+            $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+            $sin_formato_grand_total = $sin_formato_grand_total * $bcv;
+   
+             }
+      
             $sin_formato_amount = $sin_formato_amount * $bcv;
             $sin_formato_amount = round($sin_formato_amount, 2);
 
 
-     
-
-           // $sin_formato_amount_with_iva = $sin_formato_amount_with_iva * $bcv;
-            
-           
-       
             $total_retiene_iva = $total_retiene_iva * $bcv;
             $total_retiene_islr = $total_retiene_islr * $bcv;
             $anticipo = $anticipo * $bcv;
    
-           // $sin_formato_grand_total = $sin_formato_grand_total * $bcv;
-        
+          
         }
+
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
@@ -1816,13 +1824,13 @@ class FacturarController extends Controller
             
 
 
-            $quotation->base_imponible = $base_imponible;
-            $quotation->amount_exento =  $amount_exento;
-            $quotation->amount =  $sin_formato_amount;
-            $quotation->amount_iva =  $sin_formato_amount_iva;
+           // $quotation->base_imponible = $base_imponible;
+           // $quotation->amount_exento =  $amount_exento;
+            //$quotation->amount =  $sin_formato_amount;
+            //$quotation->amount_iva =  $sin_formato_amount_iva;
            // $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
-            $quotation->amount_with_iva = $sin_formato_grandtotal;
-            $quotation->iva_percentage = $iva_percentage;
+            //$quotation->amount_with_iva = $sin_formato_grandtotal;
+           // $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
             $quotation->IGTF_percentage = $IGTF_porc;
@@ -1844,13 +1852,13 @@ class FacturarController extends Controller
                 //$sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
                 $sub_total = $sub_total * $bcv;
 
-                $quotation->base_imponible = $base_imponible;
-                $quotation->amount_exento =  $amount_exento * $bcv;
-                $quotation->amount =  $sin_formato_amount;
-                $quotation->amount_iva =  $sin_formato_amount_iva;
+                //$quotation->base_imponible = $base_imponible;
+                //$quotation->amount_exento =  $amount_exento * $bcv;
+               // $quotation->amount =  $sin_formato_amount;
+               // $quotation->amount_iva =  $sin_formato_amount_iva;
                 //$quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
-                $quotation->amount_with_iva = $sin_formato_grandtotal;
-                $quotation->iva_percentage = $iva_percentage;
+                //$quotation->amount_with_iva = $sin_formato_grandtotal;
+                //$quotation->iva_percentage = $iva_percentage;
                 $quotation->retencion_iva = $retencion_iva;
                 $quotation->retencion_islr = $retencion_islr;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
