@@ -60,6 +60,13 @@ Route::group(["prefix"=>'users'],function(){
     Route::get('edit','MyUserController@edit')->name('users.edituser');
     Route::patch('update','MyUserController@update')->name('users.updateuser');
 
+
+
+    Route::get('permisos/{id_user}/{name_user}','UserController@indexpermisos')->name('users.indexpermisos');
+
+    Route::get('edit','MyUserController@edit')->name('users.edituser');
+    Route::patch('update','MyUserController@update')->name('users.updateuser');
+
 });
 
 
@@ -551,6 +558,16 @@ Route::group(["prefix"=>'bankmovements'],function(){
 
 
 
+/****************************** MOVIMIENTOS MASIVOS*****/
+    Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
+    Route::post('facturasmovimientos','BankMovementController@facturasmovimientos')->name('facturasmovimientos');
+    Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
+    Route::get('listcontrapartidanew/{type_var?}','BankMovementController@listcontrapartidanew')->name('listcontrapartidanew');
+    Route::post('procesarcontrapartidanew','BankMovementController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
+
+
+
+
 });
 
 Route::group(["prefix"=>'nominas'],function(){
@@ -920,7 +937,17 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('notadeentregaexpense/{id_expense}/{coin}','ExpensesAndPurchaseController@createdeliverynote')->name('expensesandpurchases.createdeliverynote');
     Route::get('indexnotasdeentrega/','ExpensesAndPurchaseController@index_delivery_note')->name('expensesandpurchases.indexdeliverynote');
 
-   });
+
+    Route::get('notas','ExpensesAndPurchaseController@notas')->name('notas');
+
+    Route::get('crearnota','ExpensesAndPurchaseController@crearnota')->name('crearnota');
+    Route::post('crearnota','ExpensesAndPurchaseController@crearnota')->name('crearnota');
+
+    Route::post('selectfacturas','ExpensesAndPurchaseController@selectfacturas')->name('selectfacturas');
+    Route::post('notastore','ExpensesAndPurchaseController@notastore')->name('notastore');
+
+
+    });
 
 Route::group(["prefix"=>'directpaymentorders'],function(){
     Route::get('/','DirectPaymentOrderController@createretirement')->middleware('valimodulo:Ordenes de Pago')->name('directpaymentorders.create');
