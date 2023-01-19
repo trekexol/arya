@@ -899,7 +899,14 @@ class ExpensesAndPurchaseController extends Controller
                 ->select('amount_real')
                 ->get()->last();
 
-                $inventorie->amount = $inventories_quotations->amount_real;
+                if($inventories_quotations){
+                    $inventorie->amount = $inventories_quotations->amount_real;
+                }else{
+
+                    $inventorie->amount = 11;
+                }
+
+
 
             }
 
@@ -931,6 +938,7 @@ class ExpensesAndPurchaseController extends Controller
         $validar = ExpensesAndPurchase::on(Auth::user()->database_name)
                     ->where('id_provider',$idprovider)
                     ->where('invoice',$invoice)
+                    ->wherein('status',['C','P'])
                     ->get();
 
 
