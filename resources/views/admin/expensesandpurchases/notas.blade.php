@@ -21,7 +21,7 @@
     </li>
 </ul>
 
-  
+
 <!-- container-fluid -->
 <div class="container-fluid">
 
@@ -30,7 +30,7 @@
       <div class="col-md-6">
           <h2>Notas de Debito</h2>
       </div>
-      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
+      @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
       <div class="col-md-6">
         <a href="{{ route('crearnota')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar Nota de Debito</a>
       </div>
@@ -45,7 +45,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -54,49 +54,44 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
-                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
-                <th ></th>
-                @endif
-                <th class="text-center">ID</th>
+            <tr>
+            <th ></th>
+
                 <th class="text-center">Factura de Compra</th>
-                <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha</th>
-                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' ) 
+                @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                 <th ></th>
                 @endif
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($expensesandpurchases))
-                @else  
+                @else
                     @foreach ($expensesandpurchases as $expensesandpurchase)
                         <tr>
-                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
-                            <td>
-                            <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,$expensesandpurchase->coin]) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                            </td>
-                            @endif
-                            <td>{{$expensesandpurchase->id}}</td>
+                          <td>
+                                <a  href="{{ route('pdf.debitnotemediacartagastoscompras',[$expensesandpurchase->id_expense,'bolivares'])}}" Target="_blank" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                                <a  href="{{ route('pdf.debitnotemediacartagastoscompras',[$expensesandpurchase->id_expense,'dolares'])}}" Target="_blank" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 243, 46);"></i></a>
+                         </td>
+
                             <td>{{$expensesandpurchase->invoice}}</td>
-                            <td>{{$expensesandpurchase->serie}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
                             <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
-                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' ) 
+                            @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                             <td>
-                                <a href="#" class="delete" data-id-expense={{$expensesandpurchase->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td> 
-                            @endif   
-                        </tr>     
-                    @endforeach   
+                                <a href="#" class="delete" data-id-expense={{$expensesandpurchase->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                            </td>
+                            @endif
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
@@ -114,13 +109,13 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('expensesandpurchases.delete') }}" method="post">
+            <form action="{{ route('deletenota') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <input id="id_expense_modal" type="hidden" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" readonly required autocomplete="id_expense_modal">
-                       
+
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -130,7 +125,7 @@
         </div>
     </div>
   </div>
-  
+
 @endsection
 
 @section('javascript')
@@ -142,11 +137,11 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     } );
     $(document).on('click','.delete',function(){
-            
+
         let id_expense = $(this).attr('data-id-expense');
 
         $('#id_expense_modal').val(id_expense);
     });
 </script>
-    
+
 @endsection

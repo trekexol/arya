@@ -1,42 +1,42 @@
 
 <div class="container-fluid">
     <div class="row py-lg-2">
-       
+
         <div class="col-md-6">
             <h2>Facturas de Compra / Gastos por pagar</h2>
         </div>
-        
-    
+
+
     </div>
 </div>
 
 
 <div class="card shadow mb-4">
-   
+
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr> 
+                    <tr>
                         <th class="text-center">Orden</th>
                         <th class="text-center">Factura</th>
                         <th class="text-center">N° Serie</th>
                         <th class="text-center">Proveedor</th>
                         <th class="text-center">Fecha</th>
                         <th class="text-center">REF</th>
-                        <th class="text-center">Total</th>
+                        <th class="text-center">Total con IVA</th>
                         <th class="text-center">Seleccione.</th>
 
                     </tr>
                     </thead>
-                    
+
                     <tbody>
                             @foreach ($expensesandpurchases as $expensesandpurchases)
-                            <?php 
-                                $amount_bcv = 0;
+                            <?php
+
                                 $amount_bcv = $expensesandpurchases->amount_with_iva / $expensesandpurchases->rate;
                             ?>
-        
+
                                 <tr>
                                     <td>{{$expensesandpurchases->id ?? ''}}</td>
                                     <td class="text-center font-weight-bold font-weight-bold text-dark">{{ $expensesandpurchases->invoice }}</td>
@@ -53,15 +53,16 @@
                                             <input type="hidden" name="fac" id="fac" value="{{ encrypt($expensesandpurchases->invoice)}}"/>
                                             <input type="hidden" name="tasa" id="fac" value="{{ encrypt($expensesandpurchases->rate)}}"/>
                                             <input type="hidden" name="serie" id="fac" value="{{ encrypt($expensesandpurchases->serie)}}"/>
+                                            <input type="hidden" name="coin" id="coin" value="{{ encrypt($expensesandpurchases->coin)}}"/>
 
 
                                             <button type="submit"><i class="fa fa-check"></i></button>
                                         </form>
                                     </td>
-                                    
-                                </tr>     
-                            @endforeach   
-                    
+
+                                </tr>
+                            @endforeach
+
                     </tbody>
                 </table>
         </div>
@@ -69,11 +70,11 @@
 </div>
 
 
-    
+
 
 
     <script>
-        
+
        $(document).ready(function () {
 
 
@@ -85,12 +86,12 @@
     });
 
 
-            
+
         });
 
 
 
 
-    
-    </script> 
+
+    </script>
 

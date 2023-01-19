@@ -658,6 +658,7 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('creditnotemediacarta/{id_quotation}/{coin}','PDF2Controller@creditnotemediacarta')->name('pdf.creditnotemediacarta');
 
+    Route::get('debitnotemediacartagastoscompras/{id_quotation}/{coin}','PDF2Controller@debitnotemediacartagastoscompras')->name('pdf.debitnotemediacartagastoscompras');
 
 
     Route::get('inventory','PDF2Controller@imprimirinventory')->name('pdf.inventory');
@@ -945,7 +946,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
 
     Route::post('selectfacturas','ExpensesAndPurchaseController@selectfacturas')->name('selectfacturas');
     Route::post('notastore','ExpensesAndPurchaseController@notastore')->name('notastore');
-
+    Route::delete('deletenota','ExpensesAndPurchaseController@deletenota')->name('deletenota');
 
     });
 

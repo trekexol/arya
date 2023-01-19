@@ -20,7 +20,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -72,7 +72,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -81,13 +81,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
                 <th class="text-center">Nº Factura</th>
@@ -100,14 +100,14 @@
                 <th class="text-center" width="5%"></th>
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($payment_quotations))
-                @else  
+                @else
                     @foreach ($payment_quotations as $payment_quotation)
                         <tr>
                             <td class="text-center font-weight-bold">{{$payment_quotation->created_at->format('d-m-Y')}}</td>
-                            
+
                             <td class="text-center font-weight-bold">
                                 <a href="{{ route('payments.movement',$payment_quotation->id_quotation ?? -1) }}" title="Ver Movimiento" class="font-weight-bold text-dark">{{ $payment_quotation->id }}</a>
                             </td>
@@ -121,17 +121,17 @@
                             <td class="text-center">
                                 <a href="#" onclick="pdf({{ $payment_quotation->id }});" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
-                                <a href="#"  class="delete" title="Borrar" data-id-quotation={{$payment_quotation->id_quotation ?? -1}} data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-danger"></i></a>                        
+                                <a href="#"  class="delete" title="Borrar" data-id-quotation={{$payment_quotation->id_quotation ?? -1}} data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash text-danger"></i></a>
                                 @endif
                             </td>
-                            
-                        </tr>     
-                    @endforeach   
+
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
 
-      
+
         </div>
     </div>
 </div>
@@ -150,9 +150,9 @@
                 @csrf
                 @method('DELETE')
                 <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
-                    
+
                 <h5 class="text-center">Seguro que desea eliminar todos los pagos pertenecientes a esta factura?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -171,15 +171,15 @@
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         } );
 
-        
-       
+
+
         function pdf(id_payment) {
-            var nuevaVentana= window.open("{{ route('payments.pdf',['',''])}}"+"/"+id_payment+"/"+'bolivares',"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");   
+            var nuevaVentana= window.open("{{ route('payments.pdf',['',''])}}"+"/"+id_payment+"/"+'bolivares',"ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
         }
 
         $(document).on('click','.delete',function(){
             let id_quotation = $(this).attr('data-id-quotation');
-        
+
             $('#id_quotation_modal').val(id_quotation);
         });
     </script>

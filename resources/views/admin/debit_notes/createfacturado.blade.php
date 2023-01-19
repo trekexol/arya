@@ -9,7 +9,7 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -24,12 +24,12 @@
 
 <div class="container" >
     <div class="row justify-content-center" >
-        
+
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" >Nota de Dédito </div>
-                
+
                 <div class="card-body" >
-                        
+
                     <div class="form-group row">
                         <label for="total_factura" class="col-md-2 col-form-label text-md-right">Nº Nota de Dédito:</label>
                         <div class="col-md-4">
@@ -39,17 +39,17 @@
                         <label for="date_creditnote" class="col-md-2 col-form-label text-md-right">CI/Rif: </label>
                         <div class="col-md-3">
                             <input id="date_creditnote" type="text" class="form-control @error('date_creditnote') is-invalid @enderror" name="date_creditnote" value="{{ $creditnote->clients['cedula_rif'] ?? $creditnote->quotations->clients['cedula_rif']  ?? '' }}" readonly required autocomplete="date_creditnote">
-    
+
                             @error('date_creditnote')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>  
+                        </div>
                     </div>
-                    
-              
-                    
+
+
+
                     <div class="form-group row">
                             <label for="date_creditnote" class="col-md-2 col-form-label text-md-right">Cliente: </label>
                             <div class="col-md-4">
@@ -70,13 +70,13 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                         </div>
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Nota:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($creditnote->amount / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
-    
+
                                 @error('total_factura')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -97,8 +97,8 @@
                         <div class="form-group row">
                             <label for="iva_amounts" class="col-md-2 col-form-label text-md-right">Monto de Iva:</label>
                             <div class="col-md-4">
-                                <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($creditnote->amount_iva / ($bcv ?? 1), 2, ',', '.') ?? 0 }}"  readonly required autocomplete="iva_amount"> 
-                                
+                                <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($creditnote->amount_iva / ($bcv ?? 1), 2, ',', '.') ?? 0 }}"  readonly required autocomplete="iva_amount">
+
                                 @error('iva_amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -120,8 +120,8 @@
                         <div class="form-group row">
                             <label for="grand_totals" class="col-md-2 col-form-label text-md-right">Total General:</label>
                             <div class="col-md-4">
-                                <input id="grand_total" type="text" class="form-control @error('grand_total') is-invalid @enderror" name="grand_total" value="{{ number_format( ($creditnote->amount + $creditnote->amount_iva) / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="grand_total"> 
-                           
+                                <input id="grand_total" type="text" class="form-control @error('grand_total') is-invalid @enderror" name="grand_total" value="{{ number_format( ($creditnote->amount + $creditnote->amount_iva) / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="grand_total">
+
                                 @error('grand_total')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -140,14 +140,14 @@
                                 @enderror
                             </div>
                         </div>
-                        
-                        
+
+
                         <div class="form-group row">
                             <div style="display: none;">
                                 <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                                 <div class="col-md-4">
-                                    <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($creditnote->anticipo / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="anticipo"> 
-                            
+                                    <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($creditnote->anticipo / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="anticipo">
+
                                     @error('anticipo')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -165,25 +165,25 @@
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Pagar:</label>
                             <div class="col-md-4">
-                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly value="{{ number_format(($creditnote->amount_with_iva / ($bcv ?? 1)) - ($creditnote->anticipo / ($bcv ?? 1)) - ($creditnote->retencion_iva / ($bcv ?? 1)) - ($creditnote->retencion_islr / ($bcv ?? 1)), 2, ',', '.') ?? '0,00' }}"  required autocomplete="total_pay"> 
-                           
+                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly value="{{ number_format(($creditnote->amount_with_iva / ($bcv ?? 1)) - ($creditnote->anticipo / ($bcv ?? 1)) - ($creditnote->retencion_iva / ($bcv ?? 1)) - ($creditnote->retencion_islr / ($bcv ?? 1)), 2, ',', '.') ?? '0,00' }}"  required autocomplete="total_pay">
+
                                 @error('total_pay')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
-                            <label id="coinlabel" for="coin" class="col-md-1 col-form-label text-md-right">Taza:</label> 
+                            <label id="coinlabel" for="coin" class="col-md-1 col-form-label text-md-right">Taza:</label>
                             <div class="col-md-2">
                                 <input id="monto_taza" type="text" class="form-control" name="monto_taza" value="{{ number_format( $creditnote->bcv ?? 1, 2,',', '.') }}" readonly> <!--By dacson-->
-                            </div>                              
+                            </div>
                             @if (isset($creditnote->credit_days))
                                 <label for="total_pays" class="col-md-2 col-form-label text-md-right">Dias de Crédito:</label>
                                 <div class="col-md-1">
-                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" value="{{ $creditnote->credit_days ?? '' }}" readonly autocomplete="credit"> 
+                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" value="{{ $creditnote->credit_days ?? '' }}" readonly autocomplete="credit">
                                 </div>
                             @endif
-                            
+
                         </div>
                         <div class="form-group row">
                             <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
@@ -193,7 +193,7 @@
                                     <option value="bolivares">Bolívares</option>
                                     @if($coin == 'dolares')
                                         <option selected value="dolares">Dolares</option>
-                                    @else 
+                                    @else
                                         <option value="dolares">Dolares</option>
                                     @endif
                                 </select>
@@ -202,11 +202,11 @@
 
                         <br>
                         <div class="form-group row">
-                           
+
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Nota</a>  
+                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Nota</a>
                             </div>
-                            
+
                             <div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
@@ -216,21 +216,21 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Nota Media Carta</a>  
-                                    <a href="#" class="dropdown-item bg-light delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Compra</a> 
+                                    <a href="#" onclick="pdf_media();" id="btnfacturar" name="btnfacturar" class="dropdown-item bg-light" title="imprimir">Imprimir Nota Media Carta</a>
+                                    <a href="#" class="dropdown-item bg-light delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#reversarModal" title="Eliminar">Reversar Compra</a>
                                 </div>
-                            </div> 
-                           
-                            <div class="col-md-3">
-                                <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div>
-                           
+
+                            <div class="col-md-3">
+                                <a href="{{ route('movements.debitnote',[$creditnote->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>
+                            </div>
+
                             <div class="col-md-2">
-                                <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Notas de Dédito</a>  
+                                <a href="{{ route('debitnotes') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Ver Notas de Débito</a>
                             </div>
                         </div>
-                        
-                    </form>    
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -252,7 +252,7 @@
                 <div class="modal-body">
                     <h5 class="text-center">Seguro quiere reversar la factura?</h5>
                     <input id="id_creditnote_modal" type="hidden" class="form-control @error('id_creditnote_modal') is-invalid @enderror" name="id_creditnote_modal" readonly required autocomplete="id_creditnote_modal">
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -290,31 +290,31 @@
                 $('#id_creditnote_modal').val(id_creditnote);
             });
             function pdf() {
-                
+
                 var nuevaVentana= window.open("{{ route('pdf.debitnotemediacarta',[$creditnote->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-        
+
             }
             function pdf_media() {
-                
+
                 var nuevaVentana2= window.open("{{ route('pdf.media',[$creditnote->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-        
+
             }
-           
+
                // calculate();
-                
+
             function calculate() {
-                let inputIva = document.getElementById("iva").value; 
+                let inputIva = document.getElementById("iva").value;
 
-                //let totalIva = (inputIva * "<?php echo $creditnote->total_factura; ?>") / 100;  
+                //let totalIva = (inputIva * "<?php echo $creditnote->total_factura; ?>") / 100;
 
-                let totalFactura = "<?php echo $creditnote->total_factura / ($bcv ?? 1) ?>";       
+                let totalFactura = "<?php echo $creditnote->total_factura / ($bcv ?? 1) ?>";
 
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
                 let totalBaseImponible = "<?php echo $creditnote->base_imponible / ($bcv ?? 1) ?>";
 
-                let totalIvaMenos = (inputIva * "<?php echo $creditnote->base_imponible / ($bcv ?? 1); ?>") / 100;  
+                let totalIvaMenos = (inputIva * "<?php echo $creditnote->base_imponible / ($bcv ?? 1); ?>") / 100;
 
-               
+
 
 
                 var total_iva_exento =  parseFloat(totalIvaMenos);
@@ -324,7 +324,7 @@
                 //document.getElementById("retencion").value = parseFloat(totalIvaMenos);
                 //------------------------------
 
-               
+
 
                 document.getElementById("iva_amounts").value = iva_format;
 
@@ -337,15 +337,15 @@
 
                 document.getElementById("grand_total").value = grand_totalformat;
 
-                let inputAnticipo = document.getElementById("anticipo").value;  
+                let inputAnticipo = document.getElementById("anticipo").value;
 
                 var montoFormat = inputAnticipo.replace(/[$.]/g,'');
 
-                var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');             
+                var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
 
                 var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
 
-               
+
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
@@ -356,8 +356,8 @@
                 document.getElementById("iva_form").value =  inputIva;
 
                 document.getElementById("anticipo_form").value =  inputAnticipo;
-            }        
+            }
 
-       
+
     </script>
 @endsection

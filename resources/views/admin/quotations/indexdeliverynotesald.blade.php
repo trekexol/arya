@@ -19,7 +19,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -58,7 +58,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -67,14 +67,14 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
-                
+            <tr>
+
                 <th class="text-center">ID</th>
                 <th class="text-center" style="width:20%;">Fecha Saldada</th>
                 <th class="text-center" style="width:20%;">Fecha Nota</th>
@@ -88,43 +88,43 @@
                 <th class="text-center" style="width:11%;">F.Cotización</th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
-                
-                
-               
+
+
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($quotations))
-                @else  
-                    <?php   
+                @else
+                    <?php
                     $cont = 0;
                     $numcont = count($quotations);
                     ?>
 
                     @foreach ($quotations as $quotation)
-                    <?php 
+                    <?php
                     $amount_bcv = 0;
                     $amount_bcv = $quotation->amount_with_iva / ($quotation->bcv ?? 1);
-                    
+
                     ?>
-                    
+
                       <tr>
-                            <td class="text-center">{{$numcont}}</td>    
+                            <td class="text-center">{{$numcont}}</td>
                             <td class="text-center">{{ date_format(date_create($quotation->date_saldate),"d-m-Y") ?? ''}}</td>
-                               
+
                             <td class="text-center">{{ date_format(date_create($quotation->date_delivery_note),"d-m-Y") ?? ''}}</td>
                             <td class="text-center">{{ $quotation->number_delivery_note ?? $quotation->id ?? ''}}</td>
                             <td class="text-center">{{ $quotation->clients['name'] ?? ''}}</td>
 
                             <!--<td class="text-center">{{ /*$quotation->number_pedido ?? */''}}</td>-->
-                                                       
+
                             <td class="text-center"><input style="display:none" none; id="pedido{{$cont}}" data-pedido="{{$cont}}" data-quotation="{{$quotation->id}}" type="text" class="form-control pedidoedit2" name="pedido{{$cont}}" value="{{ $quotation->number_pedido ?? '' }}"> <div style="display: block; cursor:pointer;" class="pedidoedit{{$cont}}"> <span data-pedido="{{$cont}}" class="pedidoedit">{{ $quotation->number_pedido ?? 0 }}</span> </div></td>
 
                             <td class="text-center">{{ $quotation->vendors['name'] ?? ''}} {{ $quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-center">{{number_format($quotation->amount_anticipo, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">${{number_format($amount_bcv, 2, ',', '.') ?? 0}}</td>
-                            
+
                             <td class="text-center">{{number_format($quotation->amount_with_iva, 2, ',', '.') ?? 0}}</td>
                             <td class="text-center">{{ date_format(date_create($quotation->date_quotation),"d-m-Y") ?? ''}}</td>
                             @if ($quotation->coin == 'bolivares')
@@ -134,21 +134,21 @@
                             <td class="text-center font-weight-bold">USD</td>
                             @endif
                             <td class="text-center">
-   
+
                                 <a href="{{ route('quotations.create',[$quotation->id,$quotation->coin,"Nota de Entrega"])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
 
                                 <a href="{{ route('quotations.createdeliverynote',[$quotation->id,$quotation->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
                                 <a href="#" class="delete" data-id-quotation={{$quotation->id}} data-toggle="modal" data-target="#deleteModal" title="Quitar de la Lista"><i class="fa fa-trash text-danger"></i></a>
 
-                                
-                            </td>                        
-                        
-                        </tr>    
-                        <?php   
+
+                            </td>
+
+                        </tr>
+                        <?php
                         $cont++;
                         $numcont--;
-                        ?> 
-                    @endforeach   
+                        ?>
+                    @endforeach
                 @endif
             </tbody>
         </table>
@@ -166,22 +166,22 @@
                 </button>
             </div>
             <div class="modal-body">
-           
 
-           
+
+
         <div>
                 @csrf
                 @method('DELETE')
                 <input id="id_quotation_modal" type="hidden" class="form-control error('id_quotation_modal') is-invalid enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
-                       
+
                 <h5 class="text-center">Seguro desea enviar al listado de notas?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" data-id-quotation-desaldar="" class="btn btn-danger desaldar">Quitar Saldado</button>
                 <input id="id-quotation-desaldar" type="hidden" name="id-quotation-desaldar">
-                
+
             </div>
         </div>
         </div>
@@ -198,11 +198,11 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
- 
+
      $(document).on('click','.pedidoedit',function(){
         let id_pedido = $(this).attr('data-pedido');
         /*var valinput = $('#'+id_pedido).val();*/
-        
+
        $('.pedidoedit'+id_pedido).hide();
 
        $('#pedido'+id_pedido).show();
@@ -223,16 +223,16 @@
     });
 
     $(document).on('click','.delete',function(){
-         
+
          let id_quotation = $(this).attr('data-id-quotation');
- 
+
          $('#id_quotation_modal').val(id_quotation);
          $('#id-quotation-desaldar').val(id_quotation);
 
      });
 
      $(document).on('click','.desaldar',function(){
-            
+
         let id_quotation = $('#id-quotation-desaldar').val();
         var saldar = '0';
          var valinput = '0';
@@ -241,8 +241,8 @@
 
          window.location.href = url;
     });
-     
 
-    </script> 
+
+    </script>
 
 @endsection

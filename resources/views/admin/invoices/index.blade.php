@@ -20,7 +20,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -72,7 +72,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -81,13 +81,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center">Fecha</th>
                 <th class="text-center">Nº</th>
                 <th class="text-center">Pedido</th>
@@ -102,32 +102,32 @@
                 <th class="text-center"></th>
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($quotations))
-                @else 
-                <?php   
+                @else
+                <?php
                 $cont = 0;
                 ?>
                     @foreach ($quotations as $quotation)
-                    <?php 
+                    <?php
                         $amount_bcv = 1;
                         $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
                         $diferencia_en_dias = 0;
                         $validator_date = '';
 
                         if(isset($quotation->credit_days)){
-                            $date_defeated = date("Y-m-d",strtotime($quotation->date_billing."+ $quotation->credit_days days")); 
-                            
+                            $date_defeated = date("Y-m-d",strtotime($quotation->date_billing."+ $quotation->credit_days days"));
+
                             $currentDate = \Carbon\Carbon::createFromFormat('Y-m-d', $datenow);
-                            $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated); 
+                            $shippingDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date_defeated);
 
                             $validator_date = $shippingDate->lessThan($currentDate);
                             $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
 
-                            
+
                         }
-                       
+
                     ?>
 
                         <tr>
@@ -155,13 +155,13 @@
                             @endif
 
                             @if ($quotation->status == "C")
-                            
+
                                 <td class="text-center font-weight-bold">
                                     <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                 <td class="text-center font-weight-bold">
                                 </td>
-                          
+
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
                                 </td>
@@ -184,18 +184,18 @@
                                 @endif
                                 @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                 <td>
-                                    <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">    
+                                    <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">
                                 </td>
                                 @endif
                             @endif
-                            
-                        </tr>     
-                    @endforeach   
+
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
 
-      
+
         </div>
     </div>
 </div>
@@ -209,28 +209,28 @@
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     } );
 
-        
+
 
 
         $("#btncobrar").hide();
 
         function buttom(){
-            
+
             $("#btncobrar").show();
 
             $("#btnRegistrar").hide();
-            
+
         }
      $(document).on('click','.pedidoedit',function(){
         let id_pedido = $(this).attr('data-pedido');
         /*var valinput = $('#'+id_pedido).val();*/
-        
+
        $('.pedidoedit'+id_pedido).hide();
 
        $('#pedido'+id_pedido).show();
        $('#pedido'+id_pedido).focus();
     });
-    
+
     $(document).on('blur','.pedidoedit2',function(){
         let id_pedido = $(this).attr('data-pedido');
         let id_quotation = $(this).attr('data-quotation');

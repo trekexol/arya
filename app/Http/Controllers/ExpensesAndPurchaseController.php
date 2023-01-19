@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 use App;
 use App\Account;
 use App\Branch;
-use App\Client;
 use App\DetailVoucher;
 use App\ExpensePayment;
 use App\MultipaymentExpense;
@@ -14,7 +13,6 @@ use App\ExpensesAndPurchase;
 use App\ExpensesDetail;
 use App\HeaderVoucher;
 use App\Product;
-use App\InventoryHistories;
 use App\Provider;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,20 +20,17 @@ use Illuminate\Support\Facades\DB;
 use App\Anticipo;
 use App\Company;
 use App\Http\Controllers\Historial\HistorialExpenseController;
-use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Http\Controllers\Validations\ExpenseDetailValidationController;
 use App\Inventory;
 use App\IslrConcept;
 use Illuminate\Support\Facades\Auth;
-use App\Quotation;
+use App\DebitNoteExpense;
+use App\DebitNoteDetailExpense;
+use App\InventoryHistories;
 
 
 class ExpensesAndPurchaseController extends Controller
 {
-
-    public $userAccess;
-    public $modulo = 'Cotizacion';
-
 
     public function __construct(){
 
@@ -675,6 +670,27 @@ class ExpensesAndPurchaseController extends Controller
             $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
             $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+
+            $debitnoteexpense = DebitNoteExpense::on(Auth::user()->database_name)
+            ->Where('id_expense',$id_expense)
+            ->first();
+
+            if($debitnoteexpense){
+                if($debitnoteexpense->percentage > 0){
+                    if($coin == 'dolares'){
+                        $montodebito =  $debitnoteexpense->monto_perc / $debitnoteexpense->rate;
+                      } else{
+                          $montodebito =  $debitnoteexpense->monto_perc;
+                      }
+
+                }else{
+                    $montodebito = 0;
+                }
+            }else{
+
+                $montodebito = 0;
+            }
+
         }else{
             return redirect('/expensesandpurchases')->withDanger('El Pago no existe');
         }
@@ -753,11 +769,14 @@ class ExpensesAndPurchaseController extends Controller
 
              if($coin == 'bolivares'){
                 $bcv = null;
-
+                $total = $total - $montodebito;
              }else{
                 $bcv = $expense->rate;
+                $total = $total - $montodebito;
                 $total = $total / $expense->rate;
                 $base_imponible = $base_imponible / $expense->rate;
+
+
              }
 
              $expense->total_factura = $total;
@@ -790,7 +809,7 @@ class ExpensesAndPurchaseController extends Controller
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts'));
+                                ,'islrconcepts','debitnoteexpense'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -854,6 +873,10 @@ class ExpensesAndPurchaseController extends Controller
         $users_role =   $user->role_id;
 
             $global = new GlobalController();
+
+
+
+
             $inventories = Product::on(Auth::user()->database_name)
 
             ->where(function ($query){
@@ -870,7 +893,13 @@ class ExpensesAndPurchaseController extends Controller
 
             foreach ($inventories as $inventorie) {
 
-                $inventorie->amount = 11;
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                ->table('inventory_histories')
+                ->where('id_product','=',$inventorie->id_inventory)
+                ->select('amount_real')
+                ->get()->last();
+
+                $inventorie->amount = $inventories_quotations->amount_real;
 
             }
 
@@ -961,19 +990,20 @@ class ExpensesAndPurchaseController extends Controller
     {
 
 
-        $data = request()->validate([
-
-
+        $rules = [
             'id_expense'    =>'required',
-
             'id_user'  =>'required',
             'amount'        =>'required',
             'description'   =>'required',
             'price'         =>'required',
             'Account'       =>'required'
+        ];
+        $messages = [
+            'id_provider.required' => 'Seleccione un Proveedor.',
+            'invoice.required' => 'Ingrese Numero de factura.',
 
-
-        ]);
+        ];
+        $this->validate($request, $rules, $messages);
 
 
         $var = new ExpensesDetail();
@@ -2224,6 +2254,26 @@ class ExpensesAndPurchaseController extends Controller
                     }
 
 
+                    $debinot = DebitNoteExpense::on(Auth::user()->database_name)
+                    ->where('id_expense',$expense->id)
+                    ->get();
+
+                    if($debinot->count() > 0){
+
+                        foreach($debinot as $debinot){
+                            $arreglo[] = ['iddebit' => $debinot->id];
+                        }
+
+                        DebitNoteDetailExpense::on(Auth::user()->database_name)
+                            ->WhereIn('id_debit_note_expenses',$arreglo)
+                            ->update(['status' => 'X']);
+                    DebitNoteExpense::on(Auth::user()->database_name)
+                            ->where('id_expense',$expense->id)
+                        ->update(['status' => 'X']);
+                    }
+
+
+
 
                  //Aqui pasa los quotation_products a status C de Cobrado
                 DB::connection(Auth::user()->database_name)->table('expenses_details')
@@ -3083,7 +3133,7 @@ class ExpensesAndPurchaseController extends Controller
 
                 return response()->json($subcontrapartidas,200);
 
-            }catch(Throwable $th){
+            }catch(\Throwable $th){
                 return response()->json(false,500);
             }
         }
@@ -3103,7 +3153,7 @@ class ExpensesAndPurchaseController extends Controller
                $respuesta = Product::on(Auth::user()->database_name)->where('code_comercial',$var)->where('status',1)->get();
                 return response()->json($respuesta,200);
 
-            }catch(Throwable $th){
+            }catch(\Throwable $th){
                 return response()->json(false,500);
             }
         }
@@ -3124,10 +3174,12 @@ public function notas(request $request)
      $namemodulomiddleware = $request->get('namemodulomiddleware');
 
 
- $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
-                                                         ->where('amount_with_iva','=',null)
-                                                         ->where('status',1)
-                                                         ->get();
+     $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)
+     ->join('debit_notes_expenses', 'expenses_and_purchases.id', '=', 'debit_notes_expenses.id_expense')
+     ->where('expenses_and_purchases.amount_with_iva','<>',null)
+     ->where('expenses_and_purchases.status','P')
+     ->where('debit_notes_expenses.status',1)
+     ->get();
 
          return view('admin.expensesandpurchases.notas',compact('namemodulomiddleware','expensesandpurchases','agregarmiddleware','eliminarmiddleware'));
 
@@ -3147,9 +3199,14 @@ public function notas(request $request)
             return view('admin.expensesandpurchases.crearnotas',compact('datenow'));
 
         }else{
+            $idexpense = decrypt($request->id);
+            $expense_details = ExpensesDetail::on(Auth::user()->database_name)
+                                            ->where('id_expense', $idexpense)
+                                            ->orderBy('id_expense' ,'DESC')
+                                            ->get();
 
-            $prueba = "prueba";
-            return view('admin.expensesandpurchases.crearnotas',compact('datenow','prueba'));
+
+            return view('admin.expensesandpurchases.crearnotas',compact('datenow','expense_details'));
 
 
         }
@@ -3186,207 +3243,326 @@ public function notas(request $request)
     public function notastore(Request $request)
     {
 
-        $rules = [
-            'tiponota'      =>'required',
-            'date'     =>'required',
-            'invoice'  =>'required',
-            'importe' => 'required',
-            'tipocuenta' => 'required'
-        ];
-        $messages = [
-            'tiponota.required' => 'Debe Seleccionar un tipo de nota.',
-            'date.required' =>'Seleccione una fecha',
-            'invoice.required' => 'Seleccione una factura.',
-            'importe.required' => 'Debe ingresar un monto.',
-            'tipocuenta.required' => 'Seleccione una Cuenta.',
 
+        if($request->ajax()){
+            try{
 
-        ];
-        $this->validate($request, $rules, $messages);
+                $idexpense = $request->id_expense;
+                $id_user  = $request->id_user;
+                $tipocuenta = $request->tipocuenta;
+                $date = $request->date;
+                $obs = $request->observation;
+                $note = $request->note;
 
+                $nrofactura = $request->invoice;
 
+                $descripcionfactura = "NOTA DEBITO DE GASTOS Y COMPRA NRO ".$nrofactura;
 
-        $id_invoice = request('id_invoice');
-        $id_provider  = request('id_provider');
-        $id_account  = request('id_account');
-        $coin = request('coin');
-        $tiponota = request('tiponota');
-
-        dd($tiponota);
-
-        $rate_form = request('rate');
-
-        if ($rate_form <= 0){
-            $rate_form = '1,00';
-        }
-
-        $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate_form));
-        $importe = str_replace(',', '.', str_replace('.', '', request('importe')));
-
-
-
-        if ($importe != null) { // si monto esta logeado
-
-            $importe = str_replace(',', '.', str_replace('.', '', request('importe')));
-
-
-            if ($coin == 'dolares') {
-
-                $importe =  $importe * $valor_sin_formato_rate;
-
-            }
-
-        } else {
-            $importe = 0;
-        }
-
-
-
-        if((isset($id_invoice))){
-
-                $var = new CreditNote();
-                $var->setConnection(Auth::user()->database_name);
-
-                if(isset($id_invoice)){
-                    $var->id_quotation = $id_invoice;
-                }
-
-                $var->id_user = request('id_user');
-                $var->serie = request('serie');
-                $var->date = request('date');
-
-                $var->observation = request('observation');
-
-                $global = new GlobalController();
-
-
-                if ($rate_form){
-
-                    $var->rate = $valor_sin_formato_rate;
-                } else {
-                    $var->rate = $global->search_bcv();
-                }
-
-                $var->coin = $coin;
-
-                if ($importe != null && $importe > 0) {
-                $var->amount = $importe;
-                $var->amount_with_iva = $importe;
-                } else {
-                $var->amount = 0;
-                $var->amount_with_iva = 0;
-                }
-
-                $var->status =  '1';
-
-                $var->save();
-
-                $id_debit_note_last = DB::connection(Auth::user()->database_name)->table('credit_notes')
-                ->where('id_quotation', '=', $id_invoice)
-                ->orderBy('id','desc')
+                $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
+                ->where('amount_with_iva','<>',null)
+                ->where('id',$idexpense)
+                ->where('status','P')
                 ->first();
 
+                if($expensesandpurchases){
 
-               //dd('no entra');
+                    if($tipocuenta == 'descuento'){
+                        $despor = $request->despor2;
+                        $pordes = $request->pordes;
 
-                    if(isset($id_invoice)){
+                        $despor =  str_replace(".", "", $despor);
+                        $despor =  str_replace(",", ".", $despor);
 
-                        $quotation = DB::connection(Auth::user()->database_name)->table('quotations')
-                        ->where('id', '=', $id_invoice)
-                        ->first();
-
-                        if (!empty($quotation)){
-                            DB::connection(Auth::user()->database_name)->table('credit_notes')
-                            ->where('id_quotation', '=', $id_invoice)
-                            ->update(['id_client' => $quotation->id_client,'id_vendor' => $quotation->id_vendor]);
+                        /*** si el porcentaje es mayor a 150 se coloca al maximo que es el  100 */
+                        if($pordes > 100){
+                            $pordes = 100;
                         }
 
+                        if($expensesandpurchases->coin == 'bolivares'){
 
-                        $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
-                        ->where('id_quotation', '=', $id_invoice)
-                        ->where('status','!=','X')
-                        ->get();
+                            if($despor > $expensesandpurchases->amount){
 
-                        $conteo = count($quotation_products);
+                                $resp['error'] = false;
+                                $resp['msg'] = 'El Monto de descuento no puede ser mayor a la base imponible';
+                                return response()->json($resp);
 
-                        if ($importe > 0) { // si monto esta logeado
 
-                            $cost = $importe / $conteo;
-
-                            //armando comprobantes//////////////////////////////////////////////////////
-
-                            $date = Carbon::now();
-                            $datenow = $date->format('Y-m-d');
-                            $date_payment = request('date');
-                            $user       =   auth()->user();
-                            $user_id = $user->id;
-                            $header_voucher  = new HeaderVoucher();
-                            $header_voucher->setConnection(Auth::user()->database_name);
-                            $header_voucher->description = "Nota de Credito ".$id_debit_note_last->id;
-                            $header_voucher->date = $date_payment;
-                            $header_voucher->status =  "1";
-                            //$header_voucher->id_credit_note = $creditnote->id;
-                            $header_voucher->save();
-                            //Busqueda de Cuentas
-                            //Cuentas por Cobrar Clientes
-                            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
-
-                            if(isset($account_cuentas_por_cobrar)){
-
-                                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_cuentas_por_cobrar->id,$id_invoice,$user_id,0,$importe);
-                            }
-
-                            if(isset($id_account)){
-                                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like','%'.$id_account.'%')->first();
-
-                                if(isset($account_subsegmento)){
-                                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_subsegmento->id,$id_invoice,$user_id,$importe,0);
-                                }
-                            }
-
-                        } else {
-                            $cost = 0;
-                        }
-
-                        foreach ($quotation_products as $quotation) {
-
-                            $var = new CreditNoteDetail();
-                            $var->setConnection(Auth::user()->database_name);
-
-                            $var->id_credit_note = $id_debit_note_last->id;
-                            $var->id_inventory = $quotation->id_inventory;
-                            $var->islr = false;
-                            $exento = 1;
-
-                            if($exento == null){
-                                $var->exento = false;
                             }else{
-                                $var->exento = true;
+
+
+                                $debit = new DebitNoteExpense();
+                                $debit->setConnection(Auth::user()->database_name);
+                                $debit->id_expense  = $idexpense;
+                                $debit->id_user   = $id_user;
+                                $debit->date   = $date;
+                                $debit->percentage  = $pordes;
+                                $debit->monto_perc  = $despor;
+                                $debit->coin  = $expensesandpurchases->coin;
+                                $debit->rate  = $expensesandpurchases->rate;
+                                $debit->base_imponible  = $expensesandpurchases->amount;
+                                $debit->obs      = $obs;
+                                $debit->notapie  = $note;
+                                $debit->save();
+
+                                $headervoucher = new HeaderVoucher();
+                                $headervoucher->setConnection(Auth::user()->database_name);
+                                $headervoucher->description  = $descripcionfactura;
+                                $headervoucher->date   = $date;
+                                $headervoucher->status   = 1;
+                                $headervoucher->save();
+
+
+                                $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+
+                                if(isset($account)){
+                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$despor);
+                                }
+
+                                $resp['error'] = true;
+                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                return response()->json($resp);
+
                             }
 
-                            $var->rate = $valor_sin_formato_rate;
 
-                            $var->price = $cost;
 
-                            $var->amount = 1;
+                        }elseif($expensesandpurchases->coin == 'dolares'){
 
-                            $var->discount = 0;
+                            $montodescuento = $despor * $expensesandpurchases->rate;
 
-                            $var->status =  '1';
 
-                            $var->save();
+                            if($montodescuento > $expensesandpurchases->amount){
+
+                                $resp['error'] = false;
+                                $resp['msg'] = 'El Monto de descuento no puede ser mayor a la base imponible';
+                                return response()->json($resp);
+
+
+                            }else{
+
+
+                                $debit = new DebitNoteExpense();
+                                $debit->setConnection(Auth::user()->database_name);
+                                $debit->id_expense  = $idexpense;
+                                $debit->id_user   = $id_user;
+                                $debit->date   = $date;
+                                $debit->percentage  = $pordes;
+                                $debit->monto_perc  = $montodescuento;
+                                $debit->coin  = $expensesandpurchases->coin;
+                                $debit->rate  = $expensesandpurchases->rate;
+                                $debit->base_imponible  = $expensesandpurchases->amount;
+                                $debit->obs      = $obs;
+                                $debit->notapie  = $note;
+                                $debit->save();
+
+                                $headervoucher = new HeaderVoucher();
+                                $headervoucher->setConnection(Auth::user()->database_name);
+                                $headervoucher->description  = $descripcionfactura;
+                                $headervoucher->date   = $date;
+                                $headervoucher->status   = 1;
+                                $headervoucher->save();
+
+
+                                $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+
+                                if(isset($account)){
+                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$montodescuento);
+                                }
+
+                                $resp['error'] = true;
+                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                return response()->json($resp);
+
+                            }
+
+                        }else{
+                                $resp['error'] = false;
+                                $resp['msg'] = 'Verifique la moneda';
+                                return response()->json($resp);
 
                         }
+
+                    }elseif($tipocuenta == 'devolucion'){
+                        $preciodeduccion = 0;
+                        $totalcantidad = array_sum($request->input('cantidad'));
+                        $totalFactura = $request->input('totalfact');
+
+                        $totalFactura =  str_replace(".", "", $totalFactura);
+                        $totalFactura =  str_replace(",", ".", $totalFactura);
+
+
+                        if($totalcantidad > 0){
+
+                            foreach ($request->input('cantidad', []) as $i => $cantidad) {
+
+
+                                if($cantidad > 0){
+
+                                    $idinventario =  $request->input('idinventario.' . $i);
+                                    $precioindividual =  $request->input('precio.' . $i);
+                                    $cantidadreal =  $request->input('cantidadreal.' . $i);
+
+
+
+                                    if($cantidad > $cantidadreal){
+
+                                        $resp['error'] = false;
+                                        $resp['msg'] = 'la cantidad Ingresada no puede superar a la cantidad del producto en la factura';
+                                        return response()->json($resp);
+
+                                    }else{
+
+
+
+                                        if($expensesandpurchases->coin == 'dolares'){
+
+                                        $preciodeduccionproducto = $cantidad * $precioindividual * $expensesandpurchases->rate;
+
+
+                                        $totalFactura = $totalFactura * $expensesandpurchases->rate;
+                                        $preciodeduccion += $cantidad * $precioindividual * $expensesandpurchases->rate;
+
+                                        }
+                                        elseif($expensesandpurchases->coin == 'bolivares'){
+                                            $preciodeduccionproducto = $cantidad * $precioindividual;
+                                            $preciodeduccion += $cantidad * $precioindividual;
+                                            $totalFactura = $totalFactura;
+
+                                        }
+
+
+
+
+                                        $debitdetal = new DebitNoteDetailExpense();
+                                        $debitdetal->setConnection(Auth::user()->database_name);
+                                        $debitdetal->id_inventory  = $idinventario;
+                                        $debitdetal->amount   = $cantidad;
+                                        $debitdetal->price  = $preciodeduccionproducto;
+                                        $debitdetal->save();
+
+
+
+                                    $arreglo[] = ['idetal' => $debitdetal->id];
+
+
+                                    $inventory = Inventory::on(Auth::user()->database_name)->find($idinventario);
+
+                                    $inventories_quotations = DB::connection(Auth::user()->database_name)
+                                    ->table('inventory_histories')
+                                    ->where('id_product','=',$inventory->product_id)
+                                    ->select('*')
+                                    ->get()->last();
+
+                                    $amount_real = $inventories_quotations->amount_real - $cantidad;
+
+
+                                    $invh = new InventoryHistories();
+                                    $invh->setConnection(Auth::user()->database_name);
+                                    $invh->id_product = $inventory->product_id;
+                                    $invh->id_expense_detail = $idexpense;
+                                    $invh->id_user = $id_user;
+                                    $invh->id_branch = 1;
+                                    $invh->id_centro_costo = 1;
+                                    $invh->id_quotation_product = 0;
+                                    $invh->date = $date;
+                                    $invh->type = "rev_compra";
+                                    $invh->price = $precioindividual;
+                                    $invh->amount = $cantidad;
+                                    $invh->amount_real = $amount_real;
+                                    $invh->save();
+
+                                        $validar = true;
+
+                                    }
+
+
+
+
+                                }//fin cantidad 0
+
+
+
+                             }//fin foreach
+
+
+                             $porcentaje = ($preciodeduccion * 100) / $totalFactura; // Regla de tres
+
+                            $debit = new DebitNoteExpense();
+                            $debit->setConnection(Auth::user()->database_name);
+                            $debit->id_expense  = $idexpense;
+                            $debit->id_user   = $id_user;
+                            $debit->date   = $date;
+                            $debit->percentage  = $porcentaje;
+                            $debit->monto_perc  = $preciodeduccion;
+                            $debit->coin  = $expensesandpurchases->coin;
+                            $debit->rate  = $expensesandpurchases->rate;
+                            $debit->base_imponible  = $expensesandpurchases->amount;
+                            $debit->obs      = $obs;
+                            $debit->notapie  = $note;
+                            $debit->save();
+
+
+                            DebitNoteDetailExpense::on(Auth::user()->database_name)
+                            ->Wherein('id',$arreglo)
+                            ->update(['id_debit_note_expenses' => $debit->id]);
+
+
+
+                            $headervoucher = new HeaderVoucher();
+                            $headervoucher->setConnection(Auth::user()->database_name);
+                            $headervoucher->description  = $descripcionfactura;
+                            $headervoucher->date   = $date;
+                            $headervoucher->status   = 1;
+                            $headervoucher->save();
+
+
+                            $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Devolucion de Mercancia')->first();
+
+                            if(isset($account)){
+                                $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$preciodeduccion);
+
+                            }
+
+                            if($validar == TRUE){
+                                $resp['error'] = true;
+                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                return response()->json($resp);
+                            }
+
+                        }else{
+
+                                $resp['error'] = false;
+                                $resp['msg'] = 'Debe ingresar una cantidad en algun producto';
+                                return response()->json($resp);
+
+                        }
+
+
+
+
+
+                    }else{
+                            $resp['error'] = false;
+                                $resp['msg'] = 'Verifique la cuenta seleccionada';
+                                return response()->json($resp);
 
 
                     }
 
-                    return redirect('creditnotes/register/'.$id_debit_note_last->id.'/'.request('coin'));
 
 
-        }else{
-            return redirect('/creditnotes/registercreditnote')->withDanger('Debe Seleccionar una Factura');
+                }else{
+
+                    return response()->json(false,500);
+                }
+
+
+
+            }catch(\error $error){
+                return response()->json(false,500);
+            }
         }
+
 
 
     }
@@ -3394,7 +3570,68 @@ public function notas(request $request)
 
 
 
+    public function deletenota(Request $request)
+    {
+        if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
 
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+        DebitNoteExpense::on(Auth::user()->database_name)
+            ->Where('id',request('id_expense_modal'))
+            ->delete();
+
+        $debitnotedetailexpense = DebitNoteDetailExpense::on(Auth::user()->database_name)
+            ->Where('id_debit_note_expenses',request('id_expense_modal'))
+            ->get();
+
+        if($debitnotedetailexpense->count() > 0){
+
+            foreach($debitnotedetailexpense as $debitnotedetailexpense){
+
+
+                $inventory = Inventory::on(Auth::user()->database_name)->find($debitnotedetailexpense->id_inventory);
+
+                                    $inventories_quotations = DB::connection(Auth::user()->database_name)
+                                    ->table('inventory_histories')
+                                    ->where('id_product','=',$inventory->product_id)
+                                    ->select('*')
+                                    ->get()->last();
+
+                                    $amount_real = $inventories_quotations->amount_real + $debitnotedetailexpense->amount;
+                                    $precioindividual = $debitnotedetailexpense->price / $debitnotedetailexpense->amount;
+
+                                    $invh = new InventoryHistories();
+                                    $invh->setConnection(Auth::user()->database_name);
+                                    $invh->id_product = $inventory->product_id;
+                                    $invh->id_user = Auth::user()->id;
+                                    $invh->id_branch = 1;
+                                    $invh->id_centro_costo = 1;
+                                    $invh->id_quotation_product = 0;
+                                    $invh->date = $datenow;
+                                    $invh->type = "nota_debito_eliminada";
+                                    $invh->price = $precioindividual;
+                                    $invh->amount = $debitnotedetailexpense->amount;
+                                    $invh->amount_real = $amount_real;
+                                    $invh->save();
+
+            }
+
+            DebitNoteDetailExpense::on(Auth::user()->database_name)
+            ->Where('id_debit_note_expenses',request('id_expense_modal'))->delete();
+
+        }
+
+
+
+
+
+        return redirect('/expensesandpurchases/notas')->withDanger('Nota Elimidada Con Exitos!!');
+        }else{
+
+            return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+        }
+    }
 
 
 

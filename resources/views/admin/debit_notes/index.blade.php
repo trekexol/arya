@@ -20,7 +20,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -35,13 +35,13 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('vendors') }}" role="tab" aria-controls="contact" aria-selected="false">Vendedores</a>
     </li>
   </ul>
-  
+
 <!-- container-fluid -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-      
+
       @if (isset($historial))
         <div class="col-md-5">
             <h2>Historial de Notas de Débito</h2>
@@ -57,7 +57,7 @@
             <a href="{{ route('debitnotes.historial')}}" class="btn btn-info  float-md-right" role="button" aria-pressed="true">Historial</a>
         </div>
       @endif
-      
+
       <div class="col-md-4">
         <a href="{{ route('debitnotes.createcreditnote')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar una Nota de Dédito</a>
       </div>
@@ -71,7 +71,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -80,13 +80,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center"></th>
                 <th class="text-center">Fecha</th>
                 <th class="text-center">N°</th>
@@ -98,13 +98,13 @@
                 <th class="text-center">Monto Bs</th>
                 <th class="text-center">(S)</th>
                 <th class="text-center"></th>
-               
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($creditnotes))
-                @else  
+                @else
                     @foreach ($creditnotes as $creditnote)
                         <tr>
                             <td>
@@ -123,16 +123,16 @@
                             @if($creditnote->status == 'C')
                             <td class="text-center" style="color:darkgreen">{{ $creditnote->status ?? ''}}</td>
                             <td>
-                            </td>  
+                            </td>
                             @else
                             <td class="text-center">P</td>
                             <td>
-                                <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            </td>  
+                                <a href="#" class="delete" data-id-creditnote={{$creditnote->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                            </td>
                             @endif
-              
-                        </tr>     
-                    @endforeach   
+
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
@@ -154,9 +154,9 @@
               @csrf
               @method('DELETE')
               <input id="id_creditnote_modal" type="hidden" class="form-control @error('id_creditnote_modal') is-invalid @enderror" name="id_creditnote_modal" readonly required autocomplete="id_creditnote_modal">
-                     
+
               <h5 class="text-center">Seguro que desea eliminar?</h5>
-              
+
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -166,7 +166,7 @@
       </div>
   </div>
 </div>
-  
+
 @endsection
 
 @section('javascript')
@@ -177,14 +177,14 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
-    
+
     $(document).on('click','.delete',function(){
-         
+
         let id_creditnote = $(this).attr('data-id-creditnote');
 
         $('#id_creditnote_modal').val(id_creditnote);
     });
 
-    </script> 
+    </script>
 
 @endsection
