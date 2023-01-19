@@ -5,7 +5,7 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases') }}" role="tab" aria-controls="home" aria-selected="true">Por Procesar</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases') }}" role="tab" aria-controls="home" aria-selected="true">Por Procesar</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('expensesandpurchases.indexdeliverynote') }}" role="tab" aria-controls="home" aria-selected="true">Ordenes de Compra</a>
@@ -17,7 +17,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito</a>
     </li>
 </ul>
 
@@ -28,11 +28,11 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Gastos y Compras por Procesar</h2>
+          <h2>Notas de Debito</h2>
       </div>
       @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
       <div class="col-md-6">
-        <a href="{{ route('expensesandpurchases.create')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar un Gasto o Compra</a>
+        <a href="{{ route('crearnota')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar Nota de Debito</a>
       </div>
       @endif
     </div>
@@ -61,12 +61,9 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr>
-                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
-                <th ></th>
-                @endif
-                <th class="text-center">ID</th>
+            <th ></th>
+
                 <th class="text-center">Factura de Compra</th>
-                <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha</th>
                 @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
@@ -80,14 +77,12 @@
                 @else
                     @foreach ($expensesandpurchases as $expensesandpurchase)
                         <tr>
-                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
-                            <td>
-                            <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,$expensesandpurchase->coin]) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
-                            </td>
-                            @endif
-                            <td>{{$expensesandpurchase->id}}</td>
+                          <td>
+                                <a  href="{{ route('pdf.debitnotemediacartagastoscompras',[$expensesandpurchase->id_expense,'bolivares'])}}" Target="_blank" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                                <a  href="{{ route('pdf.debitnotemediacartagastoscompras',[$expensesandpurchase->id_expense,'dolares'])}}" Target="_blank" title="Seleccionar"><i class="fa fa-print" style="color: rgb(46, 243, 46);"></i></a>
+                         </td>
+
                             <td>{{$expensesandpurchase->invoice}}</td>
-                            <td>{{$expensesandpurchase->serie}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
                             <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
                             @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
@@ -114,7 +109,7 @@
                 </button>
             </div>
             <div class="modal-body">
-            <form action="{{ route('expensesandpurchases.delete') }}" method="post">
+            <form action="{{ route('deletenota') }}" method="post">
                 @csrf
                 @method('DELETE')
                 <input id="id_expense_modal" type="hidden" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" readonly required autocomplete="id_expense_modal">

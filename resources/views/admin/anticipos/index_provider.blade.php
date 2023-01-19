@@ -15,6 +15,9 @@
     <li class="nav-item" role="presentation">
         <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
     </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito</a>
+    </li>
 </ul>
 <!-- container-fluid -->
 <div class="container-fluid">
@@ -43,18 +46,18 @@
                 </a>
             </div>
         @endif
-        
-        
-       
+
+
+
         @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
         <div class="col-md-3">
             <a href="{{ route('anticipos.create_provider')}}" class="btn btn-primary" role="button" aria-pressed="true">Registrar un Anticipo</a>
-         
+
         </div>
         @endif
-       
-            
-       
+
+
+
     </div>
 
   </div>
@@ -72,7 +75,7 @@
             <thead>
             <tr>
                 <th class="text-center">ID</th>
-                <th class="text-center" width="11%">Fecha del Anticipo</th>               
+                <th class="text-center" width="11%">Fecha del Anticipo</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Caja/Banco</th>
                 <th class="text-center">Comp.</th>
@@ -82,15 +85,15 @@
                 <th class="text-center">Monto Bs.</th>
                 <th class="text-center">Moneda</th>
                <th class="text-center" width="7%"></th>
-              
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($anticipos))
                 @else
                     @foreach ($anticipos as $key => $anticipo)
-                    <?php 
+                    <?php
 
                         $amount_bcv = 0;
 
@@ -105,25 +108,25 @@
                     @else
                         <td class="text-center">{{$anticipo->providers['razon_social'] ?? ''}}</td>
                     @endif
-                    
+
                     <td class="text-center">{{$anticipo->accounts['description'] ?? ''}}</td>
                     <td class="text-center"><a href="{{ route('detailvouchers.create',[$anticipo->coin,$anticipo->comprobante ?? '']) }}" title="Ver comprobante contable">{{ $anticipo->comprobante ?? '' }}</a></td>
-                    
+
                     <td class="text-center">{{$anticipo->reference ?? ''}}</td>
                     <td class="text-right">${{number_format($amount_bcv ?? 0, 2, ',', '.')}}</td>
                     <td class="text-right">{{number_format($anticipo->amount, 2, ',', '.')}}</td>
                     <td class="text-center">{{$anticipo->coin}}</td>
-                   
-                  
+
+
                         <td>
                             @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                             <a href="{{ route('anticipos.edit',$anticipo->id) }}"  title="Editar"><i class="fa fa-edit"></i></a>
                             @endif
                             @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
-                            <a href="#" class="delete" data-id-anticipo={{$anticipo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
-                            @endif    
+                            <a href="#" class="delete" data-id-anticipo={{$anticipo->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                            @endif
                         </td>
-                 
+
                     </tr>
                     @endforeach
                 @endif
@@ -147,9 +150,9 @@
                 @csrf
                 @method('DELETE')
                 <input id="id_anticipo_modal" type="hidden" class="form-control @error('id_anticipo_modal') is-invalid @enderror" name="id_anticipo_modal" readonly required autocomplete="id_anticipo_modal">
-                       
+
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -171,10 +174,10 @@
     });
 
     $(document).on('click','.delete',function(){
-         
+
          let id_anticipo = $(this).attr('data-id-anticipo');
 
          $('#id_anticipo_modal').val(id_anticipo);
         });
-    </script> 
+    </script>
 @endsection
