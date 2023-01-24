@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class InventoryHistories extends Model
 {
-
+    public $timestamps = false;
     /*
     protected $table = 'inventory_history';
 protected $fillable = ['id','date','id_product','description','type','price','amount','amount_real','status','branch','centro_cost','number_invoice','user'];
@@ -18,6 +18,6 @@ protected $fillable = ['id','date','id_product','description','type','price','am
         return $this->belongsTo('App\Permission\Models\Product','product_id');
     } */
 
-    
-    
+
+
 }

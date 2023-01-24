@@ -2,7 +2,7 @@
 
 @section('header')
 
-<style> 
+<style>
     .krajee-default .file-caption-info,.krajee-default .file-size-info{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:0px;height:0px;margin:auto}
     .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-image,.file-zoom-content>.file-object.type-video{max-width:100%;max-height:100%;width:auto}
     .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-video{height:100%}
@@ -38,7 +38,7 @@
     .file-preview-object,.file-preview-other-frame,.kv-zoom-body{display:flex;align-items:center;justify-content:center}
     .kv-file-remove i {display: none; position: fixed;}
     .fa-trash-alt i {display: none; position: fixed;}
-   
+
        canvas{
            display: none;
            position: fixed;
@@ -52,12 +52,12 @@
        }
 
        .btnimg {
-        color:  rgb(78, 115, 223);opacity:0.8; 
+        color:  rgb(78, 115, 223);opacity:0.8;
         background-color: transparent;
         border-style: none !important;
        }
-       
-       .btnimg:hover { 
+
+       .btnimg:hover {
         background-color: rgb(253, 253, 253);opacity:0.8;
        }
    </style>
@@ -70,8 +70,8 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     @if (Auth::user()->role_id  == '1')
-  
-   
+
+
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
       </li>
@@ -84,10 +84,10 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
       </li>
-      
-    
+
+
     @else
-  
+
       @foreach($sistemas as $sistemas)
       @if($sistemas->name == 'Productos y Servicio')
       <?php $valor = $sistemas->agregar; ?>
@@ -101,14 +101,14 @@
           <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
         </li>
         @endif
-  
+
       @endforeach
       @if($namemodulomiddleware == 'Inventario')
       <li class="nav-item" role="presentation">
           <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
         </li>
       @endif
-   
+
   @endif
   </ul>
 
@@ -127,7 +127,7 @@
                     <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
                         @csrf
                         <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
-                                    
+
                         <div class="form-group row">
                             <div class="offset-sm-1">
                                 <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file" required>
@@ -151,13 +151,13 @@
                                     <select id="coin"  name="coin" class="form-control">
                                         <option selected value="dolares">Dolares</option>
                                         <option value="bolivares">Bolivares</option>
-                                    </select>  
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                    @if (isset($contrapartidas))      
+                                    @if (isset($contrapartidas))
                                     <label for="contrapartida" class="col-sm-4 col-form-label text-md-right">Contrapartida/Cargo:</label>
-                                
+
                                     <div class="col-sm-4">
                                     <select id="contrapartida"  name="contrapartida" class="form-control">
                                         <option value="">Seleccionar</option>
@@ -186,7 +186,7 @@
                                             </span>
                                         @endif
                                     </div>
-                            </div>  
+                            </div>
             </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -216,7 +216,7 @@
                 <input id="cant_actual" type="hidden" name="cant_actual">
                 <input id="name_combo" type="hidden" name="name_combo">
                 <input id="serie" type="hidden" name="serie">
-                                
+
                     <div class="modal-body">
                         <h6 class="modal-title" id="exampleModalLabelmed2"></h6>
                         <br>
@@ -225,11 +225,11 @@
                     <div class="form-group row">
                         <div class="col-sm-6">
                         <span id="type_add_text"></span>
-                        </div> 
+                        </div>
                         <div class="col-sm-4">
                     <input id="disponible" style="text-align: center" type="number" class="form-control @error('disponible') is-invalid @enderror" name="disponible" value="0" required>
-                    </div> 
-                    </div> 
+                    </div>
+                    </div>
                     <br>
                     <button type="submit" class="btn btn-info"> <span id="type_add_button"></span></button>
                 </div>
@@ -248,22 +248,22 @@
             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
             aria-expanded="false">
             <i class="fas fa-bars"></i>
-            Opciones 
+            Opciones
         </button>
         <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
             <h6>Importación Masiva de Inventario</h6>
-            <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a> 
+            <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a>
                 <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
                 @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
-                
+
                 <br>
                 <br>
                 <button type="submit" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</button>
                 </form>
-            <!-- <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5"></a> 
+            <!-- <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5"></a>
            <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
-        </div> 
+        </div>
         </div>
 
         <div class="col-md-3">
@@ -272,16 +272,16 @@
                 Imprimir
             </button>
             <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-                
+
                 <a class="dropdown-item" onclick="pdfinventory();" style="color: rgb(4, 119, 252)"> <i class="fas fa-download fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Inventario Actual</strong></a>
-            </div> 
+            </div>
         </div>
 
-                
+
         @if(Auth::user()->role_id  == '1' || $valor == 1)
         <div class="col-sm-3 offset-sm-2  dropdown mb-4">
             <a href="{{ route('products.create')}}" class="btn btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
-        </div> 
+        </div>
           @endif
         <div class="col-sm-2">
             <select class="form-control" name="type" id="type">
@@ -290,10 +290,10 @@
                         <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
                     @endif
                     @if ($type == 'todos')
-                        <option disabled selected value="{{$type}}">TODOS</option>    
+                        <option disabled selected value="{{$type}}">TODOS</option>
                     @endif
                     @if ($type == 'MERCANCIA' or $type == 'COMBO')
-                    <option disabled selected value="{{$type}}">{{$type}}</option> 
+                    <option disabled selected value="{{$type}}">{{$type}}</option>
                     @endif
                     <option value="todos">-------------</option>
                     <option value="todos">TODOS</option>
@@ -307,14 +307,14 @@
                     <option value="COMBO">COMBO</option>
 
                 @endif
-                
+
 
             </select>
         </div>
     </div>
 
 
-       
+
  </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -324,7 +324,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -333,7 +333,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
@@ -345,19 +345,19 @@
                 <th class="text-center">Tipo</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Costo</th>
-                
+
                 <th class="text-center">Moneda</th>
-              
+
                 <th class="text-center"  style="width: 1%">Foto del Producto.</th>
                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                 <th class="text-center"></th>
                 @endif
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($inventories))
-                @else  
+                @else
                     @foreach ($inventories as $var)
                      <?php
                      if (isset($var->description)){
@@ -365,15 +365,15 @@
                      } else {
                         $descripcion = '';
                      }
-                     ?>    
+                     ?>
                     <tr>
                             <td class="text-center">{{ $var->id ?? '' }}</td>
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
-                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '')}}</td> 
+                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '')}}</td>
                             <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
-                            
+
                             @if($var->money == "D")
                             <td class="text-center">USD</td>
                             @else
@@ -381,20 +381,20 @@
                             @endif
 
                             <td class="text-center">
-        
+
                                 @if(isset($var->photo_product))
                                 <!--arya/storage/app/public/img/-->
                                 <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
                                 <div class="file-footer-buttons">
-                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>  
+                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
 
-                            </td> 
+                            </td>
                             @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                             <td class="text-center">
                                 @if($var->type == 'COMBO')
-                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span> 
-                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span> 
+                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span>
+                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span>
                                 <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
                                 @else
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
@@ -402,15 +402,15 @@
                                 @endif
                             </td>
                             @endif
-                        </tr>     
-                    @endforeach   
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
         </div>
     </div>
 
-            
+
         <!-- vista previa imagen Modal -->
         <div class="modal modal-danger fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -426,7 +426,7 @@
                             <section>
                                 <canvas id="canvas"></canvas>
                                 <div class="full-img">
-                                <img src="" alt="" id="myImage" class="myImage">      
+                                <img src="" alt="" id="myImage" class="myImage">
                                 </div>
                             </section>
                         </main>
@@ -434,7 +434,7 @@
             </div>
         </div>
 </div>
-  
+
 @endsection
 
 @section('javascript')
@@ -442,15 +442,15 @@
     if("{{isset($total_amount_for_import)}}"){
         $('#movementModal').modal('show');
     }
-    
+
 
 </script>
 
     <script type="text/javascript">
             function pdfinventory() {
-                
+
                 var nuevaVentanainventory = window.open("{{ route('pdf.inventory')}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-        
+
             }
 
         $('#dataTable').DataTable({
@@ -460,7 +460,7 @@
         });
 
         $("#file").on('change',function(){
-            
+
             var file = document.getElementById("file").value;
 
             /*Extrae la extencion del archivo*/
@@ -470,21 +470,21 @@
 
             if (basename === "" || pos < 1) {
                 alert("El archivo no tiene extension");
-            }          
-            /*-------------------------------*/     
+            }
+            /*-------------------------------*/
 
             if(basename.slice(pos + 1) == 'xlsx'){
-                
+
             }else{
                 alert("Solo puede cargar archivos .xlsx");
-            }            
-               
+            }
+
         });
 
 
-        
+
         $(document).on('click','.inv_combo',function(){
-    
+
                 var desc = $(this).attr("data-desc");
                 var serie = $(this).attr("data-serie");
                 var id_combo = $(this).attr("data-id_combo");
@@ -505,18 +505,18 @@
                 $('#type_add').val('1');
                 $('#type_add_text').html('Ingrese la cantidad a crear:');
                 $('#type_add_button').html('Agregar al Inventario del Combo');
-                
+
 
         });
 
         $(document).on('click','.inv_combo_des',function(){
-    
+
                 var desc = $(this).attr("data-desc");
                 var serie = $(this).attr("data-serie");
                 var id_combo = $(this).attr("data-id_combo");
                 var cantidad_combos = $(this).attr("data-cantidad_combos");
                 var cantidad_actual = $(this).attr("data-cantidad_actual");
-                
+
                 $('#id_product').val(id_combo);
                 $('#movementModaltwo').modal('show');
                 $('#exampleModalLabelcombo').html('Deshacer Combo ID: '+id_combo+' '+serie+' '+desc);
@@ -535,7 +535,7 @@
 
 
         function loadimg (url){
-        
+
                 const domString = url
                 //console.log(domString)
                 var ctx = canvas.getContext('2d')
@@ -547,7 +547,7 @@
         }
 
         $("#file_form").on('change',function(){
-            
+
             var file = document.getElementById("file_form").value;
 
             /*Extrae la extencion del archivo*/
@@ -557,27 +557,27 @@
 
             if (basename === "" || pos < 1) {
                 alert("El archivo no tiene extension");
-            }          
-            /*-------------------------------*/     
+            }
+            /*-------------------------------*/
 
             if(basename.slice(pos + 1) == 'xlsx'){
-              
+
             }else{
                 alert("Solo puede cargar archivos .xlsx");
-            }            
-               
+            }
+
         });
 
 
         $("#contrapartida").on('change',function(){
             var contrapartida_id = $(this).val();
             $("#subcontrapartida").val("");
-            
+
             getSubcontrapartida(contrapartida_id);
         });
 
         function getSubcontrapartida(contrapartida_id){
-            
+
             $.ajax({
                 url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
                 beforSend:()=>{
@@ -598,9 +598,9 @@
                     // console.log(htmlOptions);
                     subcontrapartida.html('');
                     subcontrapartida.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
@@ -611,13 +611,13 @@
         $("#subcontrapartida").on('change',function(){
                 var subcontrapartida_id = $(this).val();
                 var contrapartida_id    = document.getElementById("contrapartida").value;
-                
+
             });
-            
+
         $("#type").on('change',function(){
             type = $(this).val();
             window.location = "{{route('inventories', [''])}}"+"/"+type;
         });
 
-        </script> 
+        </script>
 @endsection

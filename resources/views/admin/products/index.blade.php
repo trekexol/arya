@@ -2,7 +2,7 @@
 
 @section('header')
 
-<style> 
+<style>
      .krajee-default .file-caption-info,.krajee-default .file-size-info{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:0px;height:0px;margin:auto}
      .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-image,.file-zoom-content>.file-object.type-video{max-width:100%;max-height:100%;width:auto}
      .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-video{height:100%}
@@ -38,7 +38,7 @@
      .file-preview-object,.file-preview-other-frame,.kv-zoom-body{display:flex;align-items:center;justify-content:center}
      .kv-file-remove i {display: none; position: fixed;}
      .fa-trash-alt i {display: none; position: fixed;}
-    
+
         canvas{
             display: none;
             position: fixed;
@@ -52,12 +52,12 @@
         }
 
         .btnimg {
-         color:  rgb(78, 115, 223);opacity:0.8; 
+         color:  rgb(78, 115, 223);opacity:0.8;
          background-color: transparent;
          border-style: none !important;
         }
-        
-        .btnimg:hover { 
+
+        .btnimg:hover {
          background-color: rgb(253, 253, 253);opacity:0.8;
         }
     </style>
@@ -68,13 +68,13 @@
 
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     @if (Auth::user()->role_id  == '1')
-  
-   
+
+
       <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
+        <a class="nav-link  font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
       </li>
       <li class="nav-item" role="presentation">
           <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
@@ -82,10 +82,10 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
       </li>
-      
-    
+
+
     @else
-  
+
     @foreach($sistemas as $sistemas)
     @if($namemodulomiddleware == $sistemas->name)
 <li class="nav-item" role="presentation">
@@ -102,8 +102,8 @@
     </li>
   @endif
 @endforeach
-  
-   
+
+
   @endif
   </ul>
 
@@ -117,21 +117,21 @@
               id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
               aria-expanded="false">
               <i class="fas fa-bars"></i>
-              Opciones 
+              Opciones
           </button>
           <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
               <h6>Importar Productos Masivamente</h6>
               <h6>(Sin Inventario)</h6>
-              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla de Productos</a> 
+              <a href="{{ route('export.product_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla de Productos</a>
               <form id="fileForm" method="POST" action="{{ route('import_product') }}" enctype="multipart/form-data" >
                 @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
               </form>
               <br>
-              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla de Productos</a> 
+              <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5">Subir Plantilla de Productos</a>
              <!-- <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
-          </div> 
-      </div> 
+          </div>
+      </div>
 
       @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-sm-3">
@@ -145,17 +145,17 @@
                     <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
                 @endif
                 @if ($type == 'todos')
-                    <option disabled selected value="{{$type}}">TODOS</option>    
+                    <option disabled selected value="{{$type}}">TODOS</option>
                 @endif
                 @if ($type == 'MERCANCIA' or $type == 'COMBO' or $type == 'SERVICIO')
-                <option disabled selected value="{{$type}}">{{$type}}</option> 
+                <option disabled selected value="{{$type}}">{{$type}}</option>
                 @endif
                 <option value="todos">-------------</option>
                 <option value="todos">TODOS</option>
                 <option value="MERCANCIA">MERCANCIA</option>
                 <option value="MATERIAP">MATERIA PRIMA</option>
                 <option value="COMBO">COMBO</option>
-                <option value="SERVICIO">SERVICIO</option>  
+                <option value="SERVICIO">SERVICIO</option>
             @else
                 <option value="todos">TODOS</option>
                 <option value="MERCANCIA">MERCANCIA</option>
@@ -163,14 +163,14 @@
                 <option value="COMBO">COMBO</option>
                 <option value="SERVICIO">SERVICIO</option>
             @endif
-            
+
 
         </select>
-     
+
     </div>
     </div>
 
-    
+
   </div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
@@ -184,7 +184,7 @@
 
     <div class="card-body">
         <div class="container">
-        
+
             @if (session('flash'))
 
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -192,8 +192,8 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="close">
                         <span aria-hidden="true">&times; </span>
                     </button>
-                </div>   
-                
+                </div>
+
             @endif
         </div>
 
@@ -202,7 +202,7 @@
 
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center negro" width="1%">ID</th>
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
@@ -212,14 +212,14 @@
                 <th class="text-center" width="1%">Moneda</th>
                 <th class="text-center">Foto</th>
                 <th class="text-center" width="1%">(S)</th>
-              
+
                 <th class="text-center" width="9%"></th>
             </tr>
             </thead>
-        
+
             <tbody>
                 @if (empty($products))
-                @else  
+                @else
                     @foreach ($products as $product)
                         <tr>
                             <td class="text-center">{{$product->id}}</td>
@@ -228,28 +228,28 @@
                             <td class="text-center">{{$product->type}}</td>
                             <td class="text-right">{{number_format($product->price, 3, ',', '.')}}</td>
                             <td class="text-right">{{number_format($product->price_buy, 3, ',', '.')}}</td>
-                            
+
                             @if ($product->money == 'Bs')
                               <td class="text-center">Bs</td>
                             @else
                               <td class="text-center">USD</td>
                             @endif
-                           
-            
+
+
                             <td class="text-center">
-                                              
+
                                 @if(isset($product->photo_product))
                                 <!--arya/storage/app/public/img/-->
                                 <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$product->photo_product)}}">
                                 <div class="file-footer-buttons">
-                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" data-company="modal" data-foto="modal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$product->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>  
+                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" data-company="modal" data-foto="modal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$product->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
 
 
                             </td>
 
-                           
-            
+
+
                             @if ($product->status == '0')
                             <td class="text-center" style="font-weight: bold; color: red">I</td>
                             @else
@@ -263,11 +263,11 @@
                                 <a href="{{ route('products.productprices',$product->id) }}"  title="Listado de Precios"><i class="fa fa-list"></i></a>
                                 @endif
                                 @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1')
-                                <a href="#" class="delete" data-id-product={{$product->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                <a href="#" class="delete" data-id-product={{$product->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                                 @endif
                             </td>
-                        </tr>     
-                    @endforeach   
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
 
@@ -294,9 +294,9 @@
               @csrf
               @method('DELETE')
               <input id="id_product_modal" type="hidden" class="form-control @error('id_product_modal') is-invalid @enderror" name="id_product_modal" readonly required autocomplete="id_product_modal">
-                     
+
               <h5 class="text-center">Seguro que desea eliminar?</h5>
-              
+
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -322,7 +322,7 @@
                     <section>
                         <canvas id="canvas"></canvas>
                         <div class="full-img">
-                        <img src="" alt="" id="myImage" class="myImage">      
+                        <img src="" alt="" id="myImage" class="myImage">
                         </div>
                     </section>
                 </main>
@@ -338,36 +338,36 @@
 
     <script>
         if("{{isset($total_amount_for_import)}}"){
-          
+
            alert('monto-buscado');
             /*   $('#movementModal').modal('show');
           $('#movementModal').show();*/
 
         }
-        
+
     </script>
      <script>
         $('#dataTable').DataTable({
             "ordering": true,
-            "order": [],       
+            "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
-        
+
 
         $(document).ready(function () {
             $("#rate").mask('000.000.000.000.000,00', { reverse: true });
-            
+
         });
 
         $(document).on('click','.delete',function(){
-         
+
             let id_product = $(this).attr('data-id-product');
-    
+
             $('#id_product_modal').val(id_product);
         });
 
         $("#file").on('change',function(){
-            
+
             var file = document.getElementById("file").value;
 
             /*Extrae la extencion del archivo*/
@@ -377,15 +377,15 @@
 
             if (basename === "" || pos < 1) {
                 alert("El archivo no tiene extension");
-            }          
-            /*-------------------------------*/     
+            }
+            /*-------------------------------*/
 
             if(basename.slice(pos + 1) == 'xlsx'){
-                
+
             }else{
                 alert("Solo puede cargar archivos .xlsx");
-            }            
-               
+            }
+
         });
 
         function import_product(){
@@ -398,7 +398,7 @@
         }*/
 
         function loadimg (url){
-        
+
                 const domString = url
                 //console.log(domString)
                 var ctx = canvas.getContext('2d')
@@ -410,7 +410,7 @@
         }
 
         $("#file_form").on('change',function(){
-            
+
             var file = document.getElementById("file_form").value;
 
             /*Extrae la extencion del archivo*/
@@ -420,15 +420,15 @@
 
             if (basename === "" || pos < 1) {
                 alert("El archivo no tiene extension");
-            }          
-            /*-------------------------------*/     
+            }
+            /*-------------------------------*/
 
             if(basename.slice(pos + 1) == 'xlsx'){
-              
+
             }else{
                 alert("Solo puede cargar archivos .xlsx");
-            }            
-               
+            }
+
         });
 
         $("#type").on('change',function(){
@@ -438,5 +438,5 @@
 
 
 
-        </script> 
+        </script>
 @endsection

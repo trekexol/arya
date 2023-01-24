@@ -15,6 +15,9 @@
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
     </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito</a>
+    </li>
 </ul>
 <form method="POST" action="{{ route('expensesandpurchases.multipayment') }}" enctype="multipart/form-data" >
     @csrf
@@ -43,18 +46,18 @@
             </button>
             <div class="dropdown-menu animated--fade-in"
                 aria-labelledby="dropdownMenuButton">
-                <a href="#" data-toggle="modal" data-target="#reportIvaTxtModal" class="dropdown-item bg-light">Retención de Iva a .txt</a> 
-                <a href="#" data-toggle="modal" data-target="#reportIslrModal" class="dropdown-item bg-light">Retención de ISLR a XML</a> 
-                <a href="#" data-toggle="modal" data-target="#reportIvaExcelModal" class="dropdown-item bg-light">Retención de Iva a Excel</a> 
+                <a href="#" data-toggle="modal" data-target="#reportIvaTxtModal" class="dropdown-item bg-light">Retención de Iva a .txt</a>
+                <a href="#" data-toggle="modal" data-target="#reportIslrModal" class="dropdown-item bg-light">Retención de ISLR a XML</a>
+                <a href="#" data-toggle="modal" data-target="#reportIvaExcelModal" class="dropdown-item bg-light">Retención de Iva a Excel</a>
             </div>
-        </div> 
+        </div>
       <div class="col-md-4">
         <button type="submit" title="Agregar" id="btncobrar" class="btn btn-primary  float-md-right" >Cobrar Gastos o Compras</a>
       </div>
     </div>
   </div>
 
- 
+
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
   @include('admin.layouts.success')   {{-- SAVE --}}
@@ -63,7 +66,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -72,13 +75,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
+            <tr>
                 <th>Orden</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
@@ -88,13 +91,13 @@
                 <th class="text-center">Total</th>
                 <th ></th>
                 <th ></th>
-               
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($expensesandpurchases))
-                @else  
+                @else
                     @foreach ($expensesandpurchases as $expensesandpurchase)
                         <?php
                             $amount_bcv = 1;
@@ -102,7 +105,7 @@
                              if ($expensesandpurchase->rate <= 0) {
                                  $rate = 1;
                              } else {
-                                 $rate = $expensesandpurchase->rate; 
+                                 $rate = $expensesandpurchase->rate;
                              }
 
                         ?>
@@ -132,19 +135,19 @@
                             </td>
                             @else
                             <td class="text-center font-weight-bold">
-                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
+                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
                                 <a href="{{ route('expensesandpurchases.create_payment_after',[$expensesandpurchase->id,$expensesandpurchase->coin]) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Pagar</a>
                                 @endif
                             </td>
-                            <td> 
-                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' ) 
-                                <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,'bolivares']) }}" title="Editar"><i class="fa fa-edit"></i></a>                         
-                                <input type="checkbox" name="check{{ $expensesandpurchase->id }}" value="{{ $expensesandpurchase->id }}" onclick="buttom();" id="flexCheckChecked">    
+                            <td>
+                                @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
+                                <a href="{{ route('expensesandpurchases.create_detail',[$expensesandpurchase->id,'bolivares']) }}" title="Editar"><i class="fa fa-edit"></i></a>
+                                <input type="checkbox" name="check{{ $expensesandpurchase->id }}" value="{{ $expensesandpurchase->id }}" onclick="buttom();" id="flexCheckChecked">
                                 @endif
                             </td>
                             @endif
-                        </tr>     
-                    @endforeach   
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
@@ -166,10 +169,10 @@
             <div class="modal-body">
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
-    
+
                         @error('date_begin')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -179,10 +182,10 @@
                 </div>
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
-    
+
                         @error('date_end')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -190,10 +193,10 @@
                         @enderror
                     </div>
                 </div>
-               
+
                 <div class="modal-footer">
                     <div class="form-group col-sm-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                     </div>
             </form>
                     <div class="offset-sm-2 col-sm-3">
@@ -218,10 +221,10 @@
             <div class="modal-body">
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-3 col-form-label text-md-right">Seleccionar</label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="month" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{ date_format(date_create( $date_begin ?? $datenow  ?? "01-2021"),"Y-m") }}" required autocomplete="date_begin">
-    
+
                         @error('date_begin')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -229,10 +232,10 @@
                         @enderror
                     </div>
                 </div>
-               
+
                 <div class="modal-footer">
                     <div class="form-group col-sm-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                     </div>
             </form>
                     <div class="offset-sm-2 col-sm-3">
@@ -257,10 +260,10 @@
             <div class="modal-body">
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
-    
+
                         @error('date_begin')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -270,10 +273,10 @@
                 </div>
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
-    
+
                         @error('date_end')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -281,10 +284,10 @@
                         @enderror
                     </div>
                 </div>
-               
+
                 <div class="modal-footer">
                     <div class="form-group col-sm-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                     </div>
             </form>
                     <div class="offset-sm-2 col-sm-3">
@@ -295,7 +298,7 @@
         </div>
     </div>
 </div>
-   
+
 @endsection
 
 @section('javascript')
@@ -307,17 +310,17 @@
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     } );
 
-    
+
 
     $("#btncobrar").hide();
 
     function buttom(){
-        
+
         $("#btncobrar").show();
     }
 
 
 
 </script>
-    
+
 @endsection

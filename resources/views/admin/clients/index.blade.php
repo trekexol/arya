@@ -21,7 +21,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -53,14 +53,14 @@
             Opciones
         </button>
         <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-            
-            <a href="{{ route('export.client_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla</a> 
+
+            <a href="{{ route('export.client_template') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla</a>
             <form id="fileForm" method="POST" action="{{ route('import_client') }}" enctype="multipart/form-data" >
               @csrf
                 <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
             </form>
-        </div> 
-    </div> 
+        </div>
+    </div>
     @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-md-6">
         <a href="{{ route('clients.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Cliente</a>
@@ -76,29 +76,29 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-   
+
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                <tr> 
+                <tr>
                     <th>ID</th>
                     <th>Nombre / Razón Social</th>
                     <th>Nombre Comercial</th>
                     <th>Cedula o Rif</th>
                     <th>Dirección</th>
                     <th>Telefono</th>
-                  
+
                     <th>Vendedor</th>
                     @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                     <th></th>
                     @endif
                 </tr>
                 </thead>
-                
+
                 <tbody>
                     @if (empty($clients))
-                    @else  
+                    @else
                         @foreach ($clients as $client)
                             <tr>
                                 <td>{{$client->id}}</td>
@@ -107,22 +107,22 @@
                                 <td>{{$client->type_code}} {{$client->cedula_rif}}</td>
                                 <td>{{$client->direction}}</td>
                                 <td>{{$client->phone1}}</td>
-                               
+
 
                                 @if (isset($client->vendors['name']))
                                     <td>{{$client->vendors['name']}}</td>
                                 @else
                                     <td></td>
                                 @endif
-                                
+
 
                                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                                 <td>
                                     <a href="clients/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
                                 </td>
                                 @endif
-                            </tr>     
-                        @endforeach   
+                            </tr>
+                        @endforeach
                     @endif
                 </tbody>
             </table>
@@ -131,7 +131,7 @@
 </div>
 
 
-    
+
 @endsection
 @section('javascript')
 
@@ -143,7 +143,7 @@
     });
 
     $("#file").on('change',function(){
-            
+
         var file = document.getElementById("file").value;
 
         /*Extrae la extencion del archivo*/
@@ -153,16 +153,16 @@
 
         if (basename === "" || pos < 1) {
             alert("El archivo no tiene extension");
-        }          
-        /*-------------------------------*/     
+        }
+        /*-------------------------------*/
 
         if(basename.slice(pos + 1) == 'xlsx'){
             document.getElementById("fileForm").submit();
         }else{
             alert("Solo puede cargar archivos .xlsx");
-        }            
-            
+        }
+
     });
 
-    </script> 
+    </script>
 @endsection

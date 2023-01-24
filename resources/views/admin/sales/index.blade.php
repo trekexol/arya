@@ -20,7 +20,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('creditnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Crédito</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Dédito</a>
+        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('debitnotes') }}" role="tab" aria-controls="home" aria-selected="true">Notas de Débito</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('sales') }}" role="tab" aria-controls="profile" aria-selected="false">Ventas</a>
@@ -47,7 +47,7 @@
       <div class="col-md-6">
           <h2>Ventas</h2>
       </div>
-      
+
     </div>
   </div>
   <!-- /.container-fluid -->
@@ -58,7 +58,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -67,32 +67,32 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center">Código</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Tipo</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Moneda</th>
-                
-               
+
+
             </tr>
             </thead>
-            
+
             <tbody>
 
-                
+
 
 
                 @if (empty($inventories_quotations))
-                @else  
+                @else
                     @foreach ($inventories_quotations as $var)
-                        <?php 
+                        <?php
                             $total = $var->amount_sales * $var->price * ($bcv ?? 1);
                         ?>
                         <tr>
@@ -105,18 +105,18 @@
                             @else
                                 <td class="text-center">Dolares</td>
                             @endif
-                            
-                        </tr>     
-                    @endforeach   
+
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
 
-      
+
         </div>
     </div>
 </div>
-  
+
 @endsection
 @section('javascript')
     <script>
@@ -125,7 +125,7 @@
             "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
-        
 
-    </script> 
+
+    </script>
 @endsection
