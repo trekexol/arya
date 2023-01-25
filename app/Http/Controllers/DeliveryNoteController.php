@@ -232,18 +232,15 @@ class DeliveryNoteController extends Controller
 
         $id_quotation = $request->id_quotation_modal;
 
-        dd($id_quotation);
 
-        
        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
        $quotation->status = 'X';
        $quotation->save(); 
 
         QuotationProduct::on(Auth::user()->database_name)
                         ->where('id_quotation',$id_quotation)
-                        ->update(['quotation_products.status' => 'X']);
+                        ->update(['status' => 'X']);
     
-      
         
         $global = new GlobalController;                                                
         

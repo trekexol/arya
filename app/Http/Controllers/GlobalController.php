@@ -576,19 +576,18 @@ class GlobalController extends Controller
 
     public function deleteAllProducts($id_quotation)
     {
-       /* $quotation_products = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$id_quotation)->get(); 
+
+
+       $quotation_products = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$id_quotation)->first(); 
         
         if(isset($quotation_products)){
-            foreach($quotation_products as $quotation_product){
-                //if(isset($quotation_product) && $quotation_product->status == "C"){
-                    QuotationProduct::on(Auth::user()->database_name)
-                        ->where('quotation_products.id',$quotation_product->id)
-                        ->update(['quotation_products.status' => 'X']);
-                //}
-            }
-        }*/
 
-        dd('ESTA SECCION SE ESTA MODIFICANDO POR EL AREA DE SOPORTE 2');
+                    QuotationProduct::on(Auth::user()->database_name)
+                        ->where('id_quotation',$id_quotation)
+                        ->update(['status' => 'X']);
+        }
+        
+
     }
 
     public function deleteAllProductsExpense($id_expense)
