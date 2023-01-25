@@ -1000,8 +1000,11 @@
 
                 totalFactura = totalFactura - discount;
 
-
+                if (totalBaseImponible > 0){
                 let totalIvaMenos = (totalFactura * inputIva) / 100;
+                } else {
+                    totalIvaMenos = 0;
+                }
 
                 //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
