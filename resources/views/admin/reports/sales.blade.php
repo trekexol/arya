@@ -55,10 +55,14 @@
   ?>
   @foreach ($sales as $sale)
     <?php
-
+           if (isset($coin) && $coin == 'dolares'){
             $total += $sale->amount_sales * $sale->price;
             $total_buy += ($sale->price_buy ?? 0) * $sale->amount_sales;
-        
+           } else {
+            $total += ($sale->amount_sales * $sale->price ) * ($rate ?? 1);
+            $total_buy += (($sale->price_buy ?? 0) * $sale->amount_sales) * ($rate ?? 1);
+            
+           }
     ?>
 
     <tr>
@@ -70,21 +74,15 @@
       <td style="text-align: center; font-weight: normal;">{{ $sale->subsegment_description ?? ''}}</td>
       <td style="text-align: center; font-weight: normal;">{{ $sale->amount_sales ?? ''}}</td>
       @if (isset($coin) && ($coin == 'bolivares'))
-        @if ($sale->money == "Bs")
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price ?? 0), 2, ',', '.') }}</td>
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
-        @else
+
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price ?? 0) * ($rate ?? 1), 2, ',', '.') }}</td>
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
-        @endif
+          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0) * ($rate ?? 1), 2, ',', '.') }}</td>
+
       @else
-        @if ($sale->money == "Bs")
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price ?? 0), 2, ',', '.') }}</td>
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
-        @else
+
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price ?? 0), 2, ',', '.')  }}</td>
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
-        @endif
+
       @endif
         <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_buy ?? 0) * $sale->amount_sales, 2, ',', '.')  }}</td>
     </tr> 
@@ -103,8 +101,8 @@
     <th style="text-align: right; font-weight: normal;">${{ number_format($total, 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: normal;">${{ number_format($total_buy, 2, ',', '.') }}</th>
     @else
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;">{{ number_format($total_buy, 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total * ($rate ?? 1), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: normal;">{{ number_format($total_buy * ($rate ?? 1), 2, ',', '.') }}</th>
     @endif
   </tr> 
 </table>
