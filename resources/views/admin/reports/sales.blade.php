@@ -1,5 +1,3 @@
-
-  
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -56,7 +54,7 @@
   @foreach ($sales as $sale)
     <?php
            if (isset($coin) && $coin == 'dolares'){
-            $total += $sale->amount_sales * $sale->price;
+            $total += $sale->price_sales_dolar;
             $total_buy += ($sale->price_buy ?? 0) * $sale->amount_sales;
            } else {
             $total += ($sale->amount_sales * $sale->price ) * ($rate ?? 1);
@@ -81,7 +79,7 @@
       @else
 
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price ?? 0), 2, ',', '.')  }}</td>
-          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
+          <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_sales_dolar ?? 0), 2, ',', '.') }}</td>
 
       @endif
         <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_buy ?? 0) * $sale->amount_sales, 2, ',', '.')  }}</td>
