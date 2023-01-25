@@ -232,6 +232,8 @@ class DeliveryNoteController extends Controller
 
         $id_quotation = $request->id_quotation_modal;
 
+        dd($id_quotation);
+
         
        $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
        $quotation->status = 'X';
