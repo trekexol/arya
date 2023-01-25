@@ -55,12 +55,10 @@
   ?>
   @foreach ($sales as $sale)
     <?php
-        if(isset($coin) && $coin == 'bolivares'){
-            $total += $sale->amount_sales * $sale->price;
-        }else if(isset($coin) && $coin == 'dolares'){
+
             $total += $sale->amount_sales * $sale->price;
             $total_buy += ($sale->price_buy ?? 0) * $sale->amount_sales;
-        }
+        
     ?>
 
     <tr>
