@@ -550,10 +550,6 @@ class ProductController extends Controller
         $product = Product::on(Auth::user()->database_name)->find(request('id_product_modal')); 
 
         if(isset($product)){
-            
-            Inventory::on(Auth::user()->database_name)
-                            ->where('product_id',$product->id)
-                            ->update(['status' => 'X']);
 
             $product->status = 'X';
 

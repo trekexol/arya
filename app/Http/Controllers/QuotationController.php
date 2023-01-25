@@ -1082,7 +1082,8 @@ class QuotationController extends Controller
         
         $quotation_product = QuotationProduct::on(Auth::user()->database_name)->find(request('id_quotation_product_modal')); 
         
-        if(isset($quotation_product) && $quotation_product->status == "C"){
+    
+       if(isset($quotation_product) && $quotation_product->status == "C"){
             
                 QuotationProduct::on(Auth::user()->database_name)
                 ->join('products','products.id','quotation_products.id_inventory')
@@ -1319,8 +1320,7 @@ class QuotationController extends Controller
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('multipayments.id_header','=',$id_header)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount') ,
-                        'quotation_products.status' => 'X']);
+                ->update(['quotation_products.status' => 'X']);
     
 
             //aqui le cambiamos el status a todas las facturas a X de reversado
@@ -1371,8 +1371,7 @@ class QuotationController extends Controller
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('multipayments.id_header','=',$id_header)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount') ,
-                        'quotation_products.status' => 'X']);
+                ->update(['quotation_products.status' => 'X']);
     
 
             //aqui le cambiamos el status a todas las facturas a X de reversado

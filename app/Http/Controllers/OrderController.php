@@ -148,7 +148,7 @@ class OrderController extends Controller
      
              return view('admin.orders.create',compact('coin','quotation','datenow','bcv','total_retiene_iva','total_retiene_islr'));
          }else{
-             return redirect('/orders')->withDanger('La cotizacion no existe');
+             return redirect('/orders')->withDanger('El Pedido no existe');
          } 
 
         }else{
@@ -202,14 +202,9 @@ class OrderController extends Controller
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
         QuotationProduct::on(Auth::user()->database_name)
-                        ->join('inventories','inventories.id','quotation_products.id_inventory')
-                        ->join('products','products.id','inventories.product_id')
-                        ->where(function ($query){
-                            $query->where('products.type','MERCANCIA')
-                                ->orWhere('products.type','COMBO');
-                        })
+                        ->join('products','products.id','quotation_products.id_inventory')
                         ->where('id_quotation',$quotation->id)
-                        ->update(['inventories.amount' => DB::raw('inventories.amount+quotation_products.amount') , 'quotation_products.status' => 'X']);
+                        ->update(['quotation_products.status' => 'X']);
     
         $quotation->status = 'X';
         $quotation->save();

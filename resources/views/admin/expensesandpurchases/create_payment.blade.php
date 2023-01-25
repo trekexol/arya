@@ -948,6 +948,8 @@
 
 
                 let inputIva = document.getElementById("iva").value;
+
+
                 //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
                 let totalFactura = "<?php echo $expense->total_factura ?>";
                 //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
@@ -999,7 +1001,7 @@
                 totalFactura = totalFactura - discount;
 
 
-                let totalIvaMenos = (inputIva * totalBaseImponible) / 100;
+                let totalIvaMenos = (totalFactura * inputIva) / 100;
 
                 //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
