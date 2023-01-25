@@ -5912,15 +5912,13 @@ public function store(Request $request) // Empezar a Crear Factura
             //aqui aumentamos el inventario y cambiamos el status de los productos que se reversaron
             DB::connection(Auth::user()->database_name)->table('multipayments')
                 ->join('receipt_products', 'receipt_products.id_quotation','=','multipayments.id_quotation')
-                ->join('inventories','inventories.id','receipt_products.id_inventory')
-                ->join('products','products.id','inventories.product_id')
+                ->join('products','products.id','receipt_products.id_inventory')
                 ->where(function ($query){
                     $query->where('products.type','MERCANCIA')
                         ->orWhere('products.type','COMBO');
                 })
                 ->where('multipayments.id_header','=',$id_header)
-                ->update(['inventories.amount' => DB::raw('inventories.amount+receipt_products.amount') ,
-                        'receipt_products.status' => 'X']);
+                ->update(['receipt_products.status' => 'X']);
     
 
             //aqui le cambiamos el status a todas las facturas a X de reversado
