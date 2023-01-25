@@ -214,22 +214,23 @@
 
 
      if (isset($coin) && ($coin == 'bolivares')){
-      $total_amount +=  $quotation->amount;
-      $total_base_imponible += $quotation->base_imponible;
-      $total_amount_exento += $quotation->amount_exento;
-      $total_retencion_iva += $quotation->retencion_iva;
-      $total_retencion_islr += $quotation->retencion_islr;
-      $total_anticipo += $quotation->anticipo;
-      $total_amount_iva += $quotation->amount_iva;
-      $total_amount_with_iva += $quotation->amount_with_iva;
+      $total_amount += number_format($quotation->amount,2,'.','');
+      $total_base_imponible += number_format($quotation->base_imponible,2,'.','');
+      $total_amount_exento += number_format($quotation->amount_exento,2,'.','');
+      $total_retencion_iva += number_format($quotation->retencion_iva,2,'.','');
+      $total_retencion_islr += number_format($quotation->retencion_islr,2,'.','');
+      $total_anticipo += number_format($quotation->anticipo,2,'.','');
+      $total_amount_iva += number_format($quotation->amount_iva,2,'.','');
+      $total_amount_with_iva += number_format($quotation->amount_with_iva,2,'.','');
 
      } else {
-      $total_amount += ($quotation->amount / $quotation->bcv ?? 0); 
-      $total_amount_exento += ($quotation->amount_exento / $quotation->bcv ?? 0); 
-      $total_base_imponible += ($quotation->base_imponible / $quotation->bcv ?? 0); 
-      $total_amount_iva += ($quotation->amount_iva / $quotation->bcv ?? 0); 
-      $total_retencion_iva += ($quotation->retencion_iva / $quotation->bcv ?? 0); 
-
+      $total_amount += number_format(($quotation->amount / $quotation->bcv ?? 0),2,'.',''); 
+      $total_base_imponible += number_format(($quotation->base_imponible / $quotation->bcv ?? 0),2,'.',''); 
+      $total_amount_exento += number_format(($quotation->amount_exento / $quotation->bcv ?? 0),2,'.','');
+      $total_retencion_iva += number_format(($quotation->retencion_iva / $quotation->bcv ?? 0),2,'.',''); 
+      $total_retencion_islr += number_format(($quotation->retencion_islr / $quotation->bcv ?? 0),2,'.','');
+      $total_amount_iva += number_format(($quotation->amount_iva / $quotation->bcv ?? 0),2,'.',''); 
+      $total_amount_with_iva += number_format(($quotation->amount_with_iva / $quotation->bcv ?? 0),2,'.','');
      }
 
 
