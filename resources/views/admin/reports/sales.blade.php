@@ -88,9 +88,7 @@
           <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->amount_sales * $sale->price ?? 0), 2, ',', '.') }}</td>
         @endif
       @endif
-      @if (isset($coin) && $coin == 'dolares')
         <td style="text-align: right; font-weight: normal;">{{ number_format(($sale->price_buy ?? 0) * $sale->amount_sales, 2, ',', '.')  }}</td>
-      @endif
     </tr> 
   @endforeach 
 
