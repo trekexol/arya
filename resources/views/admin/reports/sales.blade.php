@@ -43,8 +43,8 @@
     <th style="text-align: center; ">Segmento</th>
     <th style="text-align: center; ">Sub Segmento</th>
     <th style="text-align: center; ">Cantidad</th>
-    <th style="text-align: center; ">Precio Venta</th>
-    <th style="text-align: center; ">Total Precio Venta</th>
+    <th style="text-align: center; ">Precio Actual</th>
+    <th style="text-align: center; ">Total Venta</th>
     <th style="text-align: center; ">Total Precio Compra</th>
   </tr> 
   <?php
