@@ -74,10 +74,10 @@
                                         <option value="notas">Notas de Entrega</option>
                                         <option value="facturas">Facturas</option>
                                     @else
-                                        <option selected value="todo">Todo</option>
+                                        <option value="todo">Todo</option>
                                         <option value="todo">Todo</option>
                                         <option value="notas">Notas de Entrega</option>
-                                        <option value="facturas">Facturas</option>
+                                        <option selected value="facturas">Facturas</option>
                                         
                                     @endif
                                 </select>
@@ -91,7 +91,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.sales_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? 'nada',$type ?? 'todo']) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.sales_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? 'nada',$type ?? 'facturas']) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>

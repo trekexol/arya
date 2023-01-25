@@ -1178,7 +1178,7 @@ class Report2Controller extends Controller
                  
     }
 
-    function sales_pdf($coin,$date_begin,$date_end,$name,$type)
+    function sales_pdf($coin,$date_begin,$date_end,$name,$type = 'facturas')
     {
         
         $pdf = App::make('dompdf.wrapper');
