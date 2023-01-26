@@ -1677,3 +1677,10 @@ Route::group(["prefix"=>"bankmasivos"],function(){
 
 
 });
+
+/////////////////////////////////////////Modulo Para Desarollador///////////////////////////////////////////////
+
+Route::group(["prefix"=>"developer"],function(){
+    Route::get('index','DeveloperController@index')->name('developer.index');
+
+});
