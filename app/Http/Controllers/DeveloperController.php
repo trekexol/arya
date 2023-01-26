@@ -43,6 +43,10 @@ class DeveloperController extends Controller
 ->Orwhere('quotation_products.id_quotation','3919')
 ->get();
 
+
+
+$a_quotation = array();
+
         foreach($quotation_products as  $quotation_pro){
             
             $suma = 0;
