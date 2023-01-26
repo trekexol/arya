@@ -944,10 +944,11 @@
             function calculate(valor) {
 
                 var porc_discount = 0;
-                var discount = 0;
+                let discount = 0;
+                let totalIvaMenos = 0;
+                let inputIva = 0;
 
-
-                let inputIva = document.getElementById("iva").value;
+                inputIva = document.getElementById("iva").value;
 
 
                 //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
@@ -962,7 +963,7 @@
                     descuento_general
                 }
                 if (valor == '1'){    */
-                    if (valor == '1'){
+                if (valor == '1'){
                     porc_discount = $("#porc_descuento_general").val();
 
                     discount = totalFactura * porc_discount / 100;
@@ -997,13 +998,16 @@
 
 
                 //}
+                
 
                 totalFactura = totalFactura - discount;
 
                 if (totalBaseImponible > 0){
-                let totalIvaMenos = (totalFactura * inputIva) / 100;
+               
+                    totalIvaMenos = (totalFactura * inputIva) / 100;
+
                 } else {
-                 totalIvaMenos = 0;
+                    totalIvaMenos = 0;
                 }
 
                 //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
