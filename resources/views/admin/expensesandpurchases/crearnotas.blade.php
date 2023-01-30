@@ -263,7 +263,7 @@
                         </form>
                 @else
                 <div class="form-group row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-12 text-center">
                         <a href="{{ route('notas') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>
                     </div>
                 </div>
