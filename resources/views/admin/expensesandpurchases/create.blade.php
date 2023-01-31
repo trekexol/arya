@@ -255,8 +255,8 @@
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
-                                        <input id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="0" required autocomplete="amount">
-
+                                        <input onkeyup="numeric(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
+        
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -524,10 +524,6 @@
 
         });
 
-        $(document).ready(function () {
-            $("#amount_product").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
-
-        });
 
         function noespac(e) {
 
@@ -901,9 +897,9 @@
 
         let amount = document.getElementById("amount_product").value;
 
-        if (amount < 1) {
+        if (amount <= 0 ) {
 
-        alert('La cantidad del Producto debe ser mayor a 1');
+        alert('Ingrese la cantidad del Producto');
         return false;
         }
         else {

@@ -13,7 +13,7 @@ class DeveloperController extends Controller
 
     public function index()
     {
-        $quotation_products = QuotationProduct::on(Auth::user()->database_name)
+        /*$quotation_products = QuotationProduct::on(Auth::user()->database_name)
         ->join('products','products.id','quotation_products.id_inventory')
         ->where('id_quotation','3893')
 ->Orwhere('quotation_products.id_quotation','3894')
@@ -41,10 +41,10 @@ class DeveloperController extends Controller
 ->Orwhere('quotation_products.id_quotation','3917')
 ->Orwhere('quotation_products.id_quotation','3918')
 ->Orwhere('quotation_products.id_quotation','3919')
-->get();
+->get(); */
 
 
-
+/*
 $a_quotation = array();
 
         foreach($quotation_products as  $quotation_pro){
@@ -88,9 +88,7 @@ $a_quotation = array();
                     
             } 
 
-        }
-
-        dd('listo');
+        }*/
 
         return view('admin.developer.index',compact('quotation_products'));
       

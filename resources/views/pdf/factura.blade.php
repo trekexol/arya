@@ -189,7 +189,7 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->amount_quotation }}</th>
        
       @if ($lote != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>

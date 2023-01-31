@@ -126,7 +126,7 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->amount }}</th>
       
       <th style="text-align: center; font-weight: normal;">{{ number_format($monto, 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->discount }}%</th>
