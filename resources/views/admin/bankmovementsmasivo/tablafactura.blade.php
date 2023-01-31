@@ -590,6 +590,7 @@ elseif($tipo == 'deposito'){
               <th scope="col">Moneda</th>
               <th scope="col">Debe</th>
               <th scope="col">Haber</th>
+              <th scope="col">Tasa</th>
               <th scope="col">Acción</th>
             </tr>
           </thead>
@@ -601,6 +602,8 @@ elseif($tipo == 'deposito'){
                 <td>{{$moneda}}</td>
                 <td>{{$valormovimiento}}</td>
                 <td>{{$montohaber}}</td>
+                <td><input type="text" class="form-control form-control-sm" id="tasa" name="tasa" value="{{ $bcv}}">
+                </td>
                 <td><button type="button" class="add_button btn btn-secondary btn-sm">Agregar Contrapartida</button>
                 </td>
               </tr>
@@ -619,7 +622,6 @@ elseif($tipo == 'deposito'){
     <input type="hidden" name="fechamovimiento" value='{{$fechamovimiento}}'>
     <input type="hidden" name="descripcionbanco" value='{{$descripcionbanco}}'>
     <input type="hidden" id="idmovimiento" name="idmovimiento" value='{{$idmovimiento}}'>
-    <input type="hidden" id="tasa" name="tasa" value="{{ $bcv}}">
 
 
     <div class="field_wrapper">
