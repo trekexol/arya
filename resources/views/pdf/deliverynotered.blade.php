@@ -160,7 +160,7 @@
         <th style="text-align: center; font-weight: normal;"></th>
         @endif
       @endif
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_quotation, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->amount_quotation }}</th>
       @if ($lote != '')
       <th style="text-align: center; font-weight: normal;">{{ $var->lote }}</th>
       @endif

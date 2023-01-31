@@ -24,6 +24,7 @@ use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use App\Transport;
+use App\Driver;
 use App\UserAccess;
 use App\Vendor;
 use Carbon\Carbon;
@@ -151,7 +152,10 @@ class QuotationController extends Controller
     public function createquotation(request $request,$type = null)
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
-        $transports     = Transport::on(Auth::user()->database_name)->get();
+        
+        $transports = Transport::on(Auth::user()->database_name)->get();
+        $drivers = Driver::on(Auth::user()->database_name)->get();
+
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');   
@@ -659,7 +663,7 @@ class QuotationController extends Controller
 
     public function storeproduct(Request $request)
     {
-        
+
         $data = request()->validate([
             
         
@@ -705,6 +709,9 @@ class QuotationController extends Controller
         }
 
         $amount = request('amount');
+      
+        $amount = str_replace(',', '.', $amount);
+
         $cost = str_replace(',', '.', str_replace('.', '',request('cost')));
 
         $global = new GlobalController();

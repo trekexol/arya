@@ -58,7 +58,7 @@
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $var->code_comercial }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount_real, 0, '', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->amount_real }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(16, 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total, 2, ',', '.') }}</th>

@@ -351,7 +351,7 @@ class DailyListingController extends Controller
         }
        
        
-       /* if($coin != "bolivares"){
+       /* if($coin != "bolivares"){ //saldos Anteriores del historial
         $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
         } else {
         $account_historial->balance_previous = $account_historial->balance_previous;   

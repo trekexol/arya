@@ -144,6 +144,7 @@
           if (id_company == '1') {
           window.location.href = "{{ route('suspended')}}";
           }*/
+          
 
       </script>
 
@@ -204,6 +205,30 @@
         $('#'+idCampo).keyup(function (){
               this.value = (this.value + '').replace(/[^0-9.]/g, '');
           });
+        }
+      </script>
+      <script> 
+        function numeric(e) { // funcion no permite letras y reemplaza punto por coma
+            
+            e.value = e.value.replace(/\./g, ',');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+            e.value = e.value.replace(/-/g, '')
+
+            return e.value;
+            
+        }
+      </script>
+      <script>
+        function noespac(e) { //funcion no permite letras y reemplaza coma por punto 
+            
+            e.value = e.value.replace(/\,/g, '.');
+            e.value = e.value.replace(/[A-Z]/g, '');
+            e.value = e.value.replace(/[a-z]/g, '');
+            e.value = e.value.replace(/-/g, '');
+        
+            return e.value;
+            
         }
       </script>
 </body>

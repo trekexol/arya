@@ -78,7 +78,7 @@
                             </div>
                             <label for="cantidad" class="col-md-2 col-form-label text-md-right">Cantidad a Aumentar</label>
                             <div class="col-md-4">
-                                <input id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
+                                <input onkeyup="numeric(this)"  id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
 
                                 @error('amount_new')
                                     <span class="invalid-feedback" role="alert">
@@ -204,26 +204,10 @@
 	    $(document).ready(function () {
             $("#amount").mask('000.000.000.000.000,00', { reverse: true });
 
-        document.getElementById("amount_new").focus();    
+             document.getElementById("amount_new").focus();    
         
         });
         
-
-        $(document).ready(function () {
-            $("#amount_new").mask('000.000.000.000.000,00', { reverse: true });
-            
-        });
-
-        function noespac(e) {
-            
-            e.value = e.value.replace(/\./g, ',');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-        
-            return e.value;
-            
-        }
-
         
         $("#contrapartida").on('change',function(){
             var contrapartida_id = $(this).val();
