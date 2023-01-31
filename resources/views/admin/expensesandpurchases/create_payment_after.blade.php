@@ -327,7 +327,6 @@
                         <input type="hidden" id="descuento_form" name="descuento_form" value="0" readonly>
                         <input type="hidden" id="porc_descuento_form" name="porc_descuento_form" value="{{ $expense->porc_discount ?? 0}}" readonly>
 
-
                         <!--Porcentaje de iva aplicado que se va a realizar-->
                         <input type="hidden" id="iva_form" name="iva_form"  readonly>
                         <input type="hidden" id="iva_amount_form" name="iva_amount_form"  readonly>
