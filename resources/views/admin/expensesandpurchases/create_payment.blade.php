@@ -1034,12 +1034,13 @@
                 let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
 
-                /*if (valor == '0'){
+                if (valor == '0'){
                     porc_discount = "<?php echo $expense->porc_discount ?>";
                     discount = "<?php echo $expense->discount ?>";
-                    descuento_general
+
                 }
-                if (valor == '1'){    */
+                
+
                 if (valor == '1'){
                     porc_discount = $("#porc_descuento_general").val();
 
