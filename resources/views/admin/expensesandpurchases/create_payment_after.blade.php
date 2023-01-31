@@ -93,7 +93,7 @@
                             <div class="form-group row">
                                 <label for="descuento_general" class="col-md-2 col-form-label text-md-right">Monto Descuento</label>
                                 <div class="col-md-3">
-                                    <input id="descuento_general" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0,00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general">
+                                    <input id="descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0,00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general">
 
                                     @error('descuento_general')
                                         <span class="invalid-feedback" role="alert">
@@ -872,15 +872,6 @@
 @section('consulta')
     <script>
 
-       function noespac(e) {
-
-            e.value = e.value.replace(/\,/g, '.');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-
-            return e.value;
-
-        }
        $("#credit").hide();
         $("#formenviarcredito").hide();
         var switchStatus = false;
