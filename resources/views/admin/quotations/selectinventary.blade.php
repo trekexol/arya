@@ -137,7 +137,7 @@
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Precio Bs</th>
                 <th class="text-center">Precio Moneda</th>
-                <th class="text-center">Moneda</th>
+                <th class="text-center">T.Moneda</th>
                 <th class="text-center" width="1%">Foto del Producto</th>
                 
               
