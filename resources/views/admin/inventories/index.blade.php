@@ -371,7 +371,7 @@
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
-                            <td class="text-right">{{number_format($var->amount ?? 0, 3, ',', '')}}</td>
+                            <td class="text-right">{{ $var->amount }}</td>
                             <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
 
                             @if($var->money == "D")
