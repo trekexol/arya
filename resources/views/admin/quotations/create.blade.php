@@ -298,7 +298,8 @@
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
-                                        <input id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
+                                        
+                                        <input onkeyup="numeric(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
         
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
@@ -629,7 +630,14 @@
         });
         
         $(document).ready(function () {
-            $("#amount_product").mask('00000', { reverse: true });
+            id_company = $("#id_company").val();
+
+                /*if (id_company == '30') {
+                   // $("#amount_product").mask('00000,00', { reverse: true });
+                } else {
+                    $("#amount_product").mask('00000', { reverse: true });
+                }*/
+                e.value = sum.toLocaleString('de-DE', {minimumFractionDigits: 3,maximumFractionDigits: 20});;
             
         });
         
@@ -729,15 +737,7 @@
             window.location = "{{route('quotations.create', [$quotation->id,''])}}"+"/"+coin;
         });
 
-        function noespac(e) {
-            
-            e.value = e.value.replace(/\,/g, '.');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-        
-            return e.value;
-            
-        }
+
       
 
     function sendProduct(){
@@ -769,9 +769,9 @@
 
         let amount = document.getElementById("amount_product").value; 
 
-        if (amount < 1) {
+        if (amount < 0) {
         
-        alert('La cantidad del Producto debe ser mayor a 1');
+        alert('Ingrese la cantidad del Producto');
         return false;
         }
         else {

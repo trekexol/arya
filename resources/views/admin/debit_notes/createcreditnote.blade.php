@@ -261,14 +261,5 @@
         });
 
 
-        function numeric(e) {
-            
-            e.value = e.value.replace(/\./g, ',');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-        
-            return e.value;
-            
-        }
     </script>
 @endsection

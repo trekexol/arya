@@ -176,7 +176,7 @@
         <th style="text-align: center; font-weight: normal;">Cuenta: {{ $var->id_account }}</th>
       @endif
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($var->amount, 2, ',', '.') }}</th>
+      <th style="text-align: center; font-weight: normal;">{{ $var->amount }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($var->price, 2, ',', '.')  }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->porc_discount  }}%</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_less_percentage, 2, ',', '.') }}</th>

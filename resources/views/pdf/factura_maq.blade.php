@@ -176,7 +176,7 @@ body{
     <tr>
       <td style="text-align: center; ">{{ $var->code_comercial }}</td>
       <td style="text-align: center; ">{{ $var->description }}</td>
-      <td style="text-align: center; ">{{ number_format($var->amount_quotation, 0, '', '.') }}</td>
+      <td style="text-align: center; ">{{ $var->amount_quotation }}</td>
       <td style="text-align: center; ">{{ number_format($var->price / ($bcv ?? 1), 2, ',', '.')  }}</td>
       <td style="text-align: center; ">{{ $var->discount }}%</td>
       <td style="text-align: right; ">{{ number_format($total_less_percentage, 2, ',', '.') }}</td>
