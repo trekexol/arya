@@ -277,6 +277,43 @@
                             @endif
 
                         </div>
+
+                        @if (Auth::user()->company['id']  == '26' || Auth::user()->company['id']  == '3' )
+                        <div class="form-group row" id="newcour">
+                            <label for="court" class="col-md-2 col-form-label text-md-right">Tipo Couriertool:</label>
+
+                            <div class="col-md-2">
+                                <select  id="court"  name="court" class="form-control">
+                                    <option value="">Seleccionar</option>
+                                    <option value="1">PALETA</option>
+                                    <option value="2">CONTENEDOR</option>
+                                    <option value="3">GUIA MASTER</option>
+                                    <option value="4">TULA</option>
+
+                                </select>
+
+                            </div>
+                            <label id="tifaclabel" for="tifac" class="col-md-2 col-form-label text-md-right">Tipo Factura:</label>
+
+                            <div class="col-md-2">
+                                <select class="form-control" name="tifac" id="tifac">
+                                    <option value="">Seleccionar</option>
+                                    <option value="1">ADUANA</option>
+                                    <option value="2">INTERNACIONAL</option>
+                                    <option value="3">SEGURO</option>
+                           
+                                </select>
+                            </div>
+
+                            <label id="tifaclabel" for="tifac" class="col-md-2 col-form-label text-md-right">Nro Couriertool:</label>
+
+                            <div class="col-md-2">
+                                <input id="nrofactcou" type="text" class="form-control" name="nrofactcou" value="{{ old('nrofactcou') }}">
+                            </div>
+                          
+                        </div>
+                        @endif
+                       
                         <br>
                         <div class="form-group row" id="formenviarcredito">
 
@@ -336,6 +373,41 @@
 
                         <input type="hidden" id="date_payment_form_expense" name="date_payment_expense" value="{{$expense->date_payment ?? $datenow}}" readonly>
 
+                        @if (Auth::user()->company['id']  == '26' || Auth::user()->company['id']  == '3' )
+                        <div class="form-group row" id="newcour2">
+                            <label for="court" class="col-md-2 col-form-label text-md-right">Tipo Couriertool:</label>
+
+                            <div class="col-md-2">
+                                <select  id="court"  name="court" class="form-control">
+                                    <option value="">Seleccionar</option>
+                                    <option value="1">PALETA</option>
+                                    <option value="2">CONTENEDOR</option>
+                                    <option value="3">GUIA MASTER</option>
+                                    <option value="4">TULA</option>
+
+                                </select>
+
+                            </div>
+                            <label id="tifaclabel" for="tifac" class="col-md-2 col-form-label text-md-right">Tipo Factura:</label>
+
+                            <div class="col-md-2">
+                                <select class="form-control" name="tifac" id="tifac">
+                                    <option value="">Seleccionar</option>
+                                    <option value="1">ADUANA</option>
+                                    <option value="2">INTERNACIONAL</option>
+                                    <option value="3">SEGURO</option>
+                           
+                                </select>
+                            </div>
+
+                            <label id="tifaclabel" for="tifac" class="col-md-2 col-form-label text-md-right">Nro Couriertool:</label>
+
+                            <div class="col-md-2">
+                                <input id="nrofactcou" type="text" class="form-control" name="nrofactcou" value="{{ old('nrofactcou') }}">
+                            </div>
+                          
+                        </div>
+                        @endif
 
                         <div class="form-group row" id="formulario1" >
                             <label id="label_amount_pays" for="amount_pays" class="col-md-2 col-form-label text-md-right">Forma de Pago:</label>
@@ -876,6 +948,7 @@
 
         $("#credit").hide();
         $("#formenviarcredito").hide();
+        $("#newcour").hide();
         var switchStatus = false;
         $("#customSwitches").on('change', function() {
             if ($(this).is(':checked')) {
@@ -890,6 +963,8 @@
                 $("#formulario7").hide();
                 $("#formenviarcredito").show();
                 $("#enviarpagos").hide();
+                $("#newcour").show();
+                $("#newcour2").hide();
                 number_form = 1;
             }
             else {
@@ -898,6 +973,8 @@
                 $("#formulario1").show();
                 $("#formenviarcredito").hide();
                 $("#enviarpagos").show();
+                $("#newcour2").show();
+                $("#newcour").hide();
             }
         });
 
