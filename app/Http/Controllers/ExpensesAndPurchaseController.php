@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use App\DebitNoteExpense;
 use App\DebitNoteDetailExpense;
 use App\InventoryHistories;
+use App\FacturasCour;
 
 
 class ExpensesAndPurchaseController extends Controller
@@ -1119,12 +1120,16 @@ class ExpensesAndPurchaseController extends Controller
     public function store_expense_payment(Request $request)
     {
 
+                /************PARA LO DE COURIERTOOL NO TOCAR ********/
+                $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+                /***************************************************************/
+        
+
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
         $total_pay = 0;
 
-        //dd($request);
         //Saber cuantos pagos vienen
         $come_pay = request('amount_of_payments');
 
@@ -2280,7 +2285,23 @@ class ExpensesAndPurchaseController extends Controller
                         ->update(['status' => 'X']);
                     }
 
+                
 
+
+           /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
+            
+            $factcour  = new FacturasCour();
+            $factcour->setConnection(Auth::user()->database_name);
+            $factcour->id_expense = $expense->id;
+            $factcour->tipo_fac = $request->tifac;
+            $factcour->tipo_movimiento = $request->court;
+            $factcour->numero =  $request->nrofactcou;
+            $factcour->monto =  $montocour;
+            $factcour->save();
+        
+        }
+    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
 
                  //Aqui pasa los quotation_products a status C de Cobrado
@@ -2315,7 +2336,7 @@ class ExpensesAndPurchaseController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-        //dd($request);
+      
 
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
         $sin_formato_base_imponible = str_replace(',', '.', str_replace('.', '', request('base_imponible')));
@@ -2344,6 +2365,10 @@ class ExpensesAndPurchaseController extends Controller
 
         $sin_formato_anticipo = str_replace(',', '.', str_replace('.', '', request('anticipo')));
         $sin_formato_total_pay = str_replace(',', '.', str_replace('.', '', request('total_pay')));
+
+        /************PARA LO DE COURIERTOOL NO TOCAR ********/
+        $montocour = str_replace(',', '.', str_replace('.', '', request('total_pay')));
+        /***************************************************************/
 
         $id_expense = request('id_expense');
         $user_id = request('user_id');
@@ -2398,6 +2423,23 @@ class ExpensesAndPurchaseController extends Controller
          //preparando para guardar historial
         $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$id_expense)->get();
 
+        /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+        if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
+            
+            $factcour  = new FacturasCour();
+            $factcour->setConnection(Auth::user()->database_name);
+            $factcour->id_expense = $id_expense;
+            $factcour->tipo_fac = $request->tifac;
+            $factcour->tipo_movimiento = $request->court;
+            $factcour->numero =  $request->nrofactcou;
+            $factcour->monto =  $montocour;
+            $factcour->save();
+        
+        }
+    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+
+
+      
         if(isset($expense_detail)){
 
            foreach($expense_detail as $var){
