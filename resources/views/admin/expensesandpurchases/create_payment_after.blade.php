@@ -93,7 +93,7 @@
                             <div class="form-group row">
                                 <label for="descuento_general" class="col-md-2 col-form-label text-md-right">Monto Descuento</label>
                                 <div class="col-md-3">
-                                    <input id="descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0,00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general">
+                                    <input id="descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0.00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general">
 
                                     @error('descuento_general')
                                         <span class="invalid-feedback" role="alert">
@@ -983,10 +983,33 @@ function calculate(valor) {
         }
     }
 
+
+                 if (valor == '2'){
+                    discount = $("#descuento_general").val();
+
+
+
+                    totalBaseImponible = totalFactura - discount;
+
+                    porcentaje = (discount * 100) / totalFactura; // Regla de tres
+                    porc_discount = porcentaje;  // Quitar los decimales
+
+                    $("#porc_descuento_general").val(porc_discount);
+                    $("#porc_descuento_form").val(porc_discount);
+                }
+
+
+
     totalFactura = totalFactura - discount;
 
+    if (totalBaseImponible > 0){
+               
+               totalIvaMenos = (totalFactura * inputIva) / 100;
 
-    let totalIvaMenos = (inputIva * totalBaseImponible) / 100;
+           } else {
+               totalIvaMenos = 0;
+           }
+
 
     //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
@@ -1146,6 +1169,9 @@ $("#porc_descuento_general").on('change',function(){
     calculate(1);
 });
 
+$("#descuento_general").on('change',function(){
+    calculate(2);
+});
 
 $("#checkdescuento").on('change', function() {
 
