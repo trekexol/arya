@@ -288,7 +288,7 @@
                                     <option value="1">PALETA</option>
                                     <option value="2">CONTENEDOR</option>
                                     <option value="3">GUIA MASTER</option>
-                                    <option value="4">TULA</option>
+                                    <option value="4">.TULA</option>
 
                                 </select>
 
