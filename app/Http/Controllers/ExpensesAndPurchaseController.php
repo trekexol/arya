@@ -638,6 +638,7 @@ class ExpensesAndPurchaseController extends Controller
                 $bcv = null;
              }
 
+
              /*Aqui revisamos el porcentaje de retencion de iva que tiene el proveedor, para aplicarlo a productos que retengan iva */
              $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
@@ -2648,7 +2649,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function refreshrate($id_expense,$coin,$rate)
     {
-        $sin_formato_rate = str_replace(',', '.', str_replace('.', '', $rate));
+        $sin_formato_rate = $rate;
 
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
 

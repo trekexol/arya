@@ -118,7 +118,7 @@
                         @if($debitnoteexpense)
                         @if($debitnoteexpense->percentage > 0)
                         <?php if($coin == 'dolares'){
-                          $montodebito =  $debitnoteexpense->monto_perc / $debitnoteexpense->rate;
+                            $montodebito =  $debitnoteexpense->monto_perc / $debitnoteexpense->rate;
                         } else{
                             $montodebito =  $debitnoteexpense->monto_perc;
                         }?>
