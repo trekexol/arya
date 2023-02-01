@@ -92,7 +92,7 @@
                             </div>
                             <label for="rate" class="col-md-1 col-form-label text-md-right">Tasa:</label>
                             <div class="col-md-2">
-                                <input  id="rate" type="text" onkeyup="noespac(this)" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($expense->rate ?? $bcv, 10, ',', '.') }}" required autocomplete="rate">
+                                <input  id="rate" type="text" onkeyup="noespac(this)" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($expense->rate ?? $bcv, 10, '.', '') }}" required autocomplete="rate">
                                 @error('rate')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

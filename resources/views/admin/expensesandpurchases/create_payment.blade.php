@@ -110,7 +110,7 @@
                             <div class="form-group row">
                                 <label for="descuento_general" class="col-md-2 col-form-label text-md-right">Monto Descuento</label>
                                 <div class="col-md-3">
-                                    <input id="descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0.00" value="{{$expense->discount ?? 0}}" autocomplete="descuento_general">
+                                    <input id="descuento_general" onkeyup="noespac(this)" type="text" class="form-control @error('descuento_general') is-invalid @enderror" name="descuento_general" placeholder="0.00" value="{{$expense->discount / ($bcv ?? 1)}}" autocomplete="descuento_general">
 
                                     @error('descuento_general')
                                         <span class="invalid-feedback" role="alert">
@@ -122,7 +122,7 @@
                             <div class="form-group row">
                                 <label for="total_descuento_general" class="col-md-2 col-form-label text-md-right">Total con Descuento</label>
                                 <div class="col-md-3">
-                                    <input id="total_descuento_general" type="text" class="form-control @error('total_descuento_general') is-invalid @enderror" name="total_descuento_general" placeholder="0,00" value="{{$expense->total_factura - $expense->discount}}" readonly>
+                                    <input id="total_descuento_general" type="text" class="form-control @error('total_descuento_general') is-invalid @enderror" name="total_descuento_general" placeholder="0,00" value="{{($expense->total_factura - $expense->discount) / ($bcv ?? 1)}}" readonly>
 
                                     @error('total_descuento_general')
                                         <span class="invalid-feedback" role="alert">
