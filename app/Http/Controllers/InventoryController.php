@@ -262,6 +262,7 @@ class InventoryController extends Controller
         ->where('inventory_histories.date','>=',$date_frist)
         ->where('inventory_histories.date','<=',$date_end)
         ->where('inventory_histories.type',$cond,$type)
+        ->where('inventory_histories.type','!=','creado')
         ->where('inventory_histories.id_product',$cond2,$id_inventory)
         ->orderBy('inventory_histories.id' ,'ASC')
         ->select('inventory_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')  
