@@ -70,7 +70,7 @@
                                     <label for="amount" class="col-md-2 col-form-label text-md-right">Cantidad</label>
         
                                     <div class="col-md-2">
-                                        <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($quotation_product->amount, 0, ',', '.') }}" required autocomplete="amount">
+                                        <input id="amount" onkeyup="noespac(this)" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ $quotation_product->amount }}" required autocomplete="amount">
         
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
@@ -134,10 +134,7 @@
  @section('validacion')
     <script>    
 
-        $(document).ready(function () {
-            $("#amount").mask('000000000000', { reverse: true });
-            
-        });
+
         $(document).ready(function () {
             $("#price").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
             
@@ -160,16 +157,7 @@
             }
         });
 
-        function noespac(e) {
-            
-            e.value = e.value.replace(/\,/g, '.');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-        
-            return e.value;
-            
-        }
-      
+
 
         function validacion() {
 
