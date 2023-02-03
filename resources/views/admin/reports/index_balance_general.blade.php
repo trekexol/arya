@@ -9,7 +9,7 @@
                     @csrf
 
                 <div class="card-header text-center h4">
-                        Balance General
+                    Estado de Situación Financiera
                 </div>
 
                 <div class="card-body">
@@ -34,7 +34,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                             <div class="col-sm-1">
                             <button type="submit" class="btn btn-primary ">
                                 Buscar
@@ -49,9 +49,9 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-2">
@@ -71,16 +71,16 @@
                                     <option value="4">Nivel 4</option>
                                     <option selected value="5">Nivel 5</option>
                                 @endif
-                                    
-                            
+
+
                                 </select>
                             </div>
                             <label for="date_end" class="col-sm-1 col-form-label text-md-right">Moneda:</label>
                             <div class="col-sm-2">
-                               
+
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                        
+
                                         @if($coin == 'bolivares')
                                         <option selected value="bolivares">Bolívares</option>
                                         <option value="dolares">Dólares</option>
@@ -93,15 +93,15 @@
                                         <option selected value="bolivares">Bolívares</option>
                                         <option value="dolares">Dólares</option>
                                     @endif
-                                    
+
                                 </select>
                             </div>
                             <label for="date_end" class="col-sm-1 col-form-label text-md-right">Tasa:</label>
                             <div class="col-sm-2">
- 
+
                                 <select class="form-control" name="type" id="type">
                                     @if(isset($type))
-                                           
+
                                         @if($type == '1')
                                         <option selected value="1">Actual</option>
                                         <option value="0">Normal</option>
@@ -114,16 +114,16 @@
                                         <option value="1">Actual</option>
                                     @endif
 
-                                    
-                                    
+
+
                                 </select>
-                            </div> 
+                            </div>
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{ route('balancegenerals.balance_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$level ?? 5,$type ?? 0]) }}" allowfullscreen></iframe>
                           </div>
-                        
+
                         </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@
 @section('javascript')
 
     <script>
-   
+
     function exportToExcel(){
         var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.balance') }}";
@@ -145,8 +145,8 @@
         document.getElementById("formPost").action = old_action;
     }
 
-    
-       
-    </script> 
+
+
+    </script>
 
 @endsection
