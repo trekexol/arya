@@ -20,33 +20,33 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PurchasesBookExportController extends Controller
 {
-    public function exportExcel(Request $request) 
+    public function exportExcel(Request $request)
     {
-       
-      
+
+
 
         $export = new PurchasesBookExportFromView($request);
 
         $export->setter($request);
 
-        $export->view();       
-        
+        $export->view();
+
         return Excel::download($export, 'libro_compras.xlsx');
     }
 
-    function purchases_book_pdf($coin,$date_begin,$date_end)
+    function purchases_books_pdf($coin,$date_begin,$date_end)
     {
-        
+
         $pdf = App::make('dompdf.wrapper');
 
         $date = Carbon::now();
-        $datenow = $date->format('d-m-Y'); 
+        $datenow = $date->format('d-m-Y');
         $period = $date->format('Y');
-        $a_total = array(); 
+        $a_total = array();
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                     ->where('amount','<>',null)
                                     ->whereRaw(
-                                        "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
+                                        "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)",
                                         [$date_begin, $date_end])
                                     ->orderBy('date','desc')->get();
 
@@ -56,22 +56,22 @@ class PurchasesBookExportController extends Controller
                 ->where('id_expense',$expense->id)
                 ->where('exento','1')
                 ->orderBy('id_expense','asc')
-                ->get(); */               
-                //->select(DB::connection(Auth::user()->database_name)->raw('price*amount as totalG,id_expense as id_expense'))->get();    
+                ->get(); */
+                //->select(DB::connection(Auth::user()->database_name)->raw('price*amount as totalG,id_expense as id_expense'))->get();
                 $total_exentoG = 0;
                 $total_exentoG = DB::connection(Auth::user()->database_name)->table('expenses_details')
                 ->where('id_expense',$expense->id)
                 ->where('exento','1')
                 //>sum('price * amount as suma')
-                //->select('price','amount','id_expense')->get();          
-                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(price*amount) as total'))->get();          
                 //->select('price','amount','id_expense')->get();
-                //$a_total[] = array(bcdiv($total_exentoG[0]->total,'1',2),$expense->id); 
-                
-                
+                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(price*amount) as total'))->get();
+                //->select('price','amount','id_expense')->get();
+                //$a_total[] = array(bcdiv($total_exentoG[0]->total,'1',2),$expense->id);
+
+
                 $a_total[] = [bcdiv($total_exentoG[0]->total,'1',2),$expense->id];
-              
- 
+
+
             }
 
         $date_begin = Carbon::parse($date_begin);
@@ -80,7 +80,7 @@ class PurchasesBookExportController extends Controller
         $date_end = $date_end->format('d-m-Y');
 
         return view('export_excel.purchases_books',compact('coin','expenses','datenow','date_begin','date_end','a_total'));
-          
-       
+
+
     }
 }
