@@ -36,7 +36,7 @@
                                     </span>
                                 @enderror
                             </div>
-                           
+
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
@@ -45,7 +45,7 @@
                                     @else
                                         <option disabled selected value="bolivares">Moneda</option>
                                     @endif
-                                    
+
                                     <option  value="bolivares">Bolívares</option>
                                     <option value="dolares">Dólares</option>
                                 </select>
@@ -64,15 +64,15 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{ route('reports.purchases_book_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow]) }}" allowfullscreen></iframe>
                           </div>
-                        
+
                         </div>
                 </div>
             </div>
@@ -91,15 +91,15 @@
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
 
-    
+
     function exportToExcel(){
         var old_action = document.getElementById("formPost").action;
-        document.getElementById("formPost").action = "{{ route('export_reports.sales_book') }}";
+        document.getElementById("formPost").action = "{{ route('export_reports.purchases_book') }}";
         document.getElementById("formPost").submit();
         document.getElementById("formPost").action = old_action;
     }
 
-    let client  = "<?php echo $client->name ?? 0 ?>";  
+    let client  = "<?php echo $client->name ?? 0 ?>";
 
     if(client != 0){
         $("#client_label1").show();
@@ -110,11 +110,11 @@
         $("#client_label2").hide();
         $("#client_label3").hide();
     }
-    
+
 
     $("#type").on('change',function(){
             type = $(this).val();
-            
+
             if(type == 'todo'){
                 $("#client_label1").hide();
                 $("#client_label2").hide();
@@ -126,6 +126,6 @@
             }
         });
 
-    </script> 
+    </script>
 
 @endsection
