@@ -1124,7 +1124,7 @@ class ExpensesAndPurchaseController extends Controller
                 /************PARA LO DE COURIERTOOL NO TOCAR ********/
                 $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
                 /***************************************************************/
-        
+
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -2286,12 +2286,12 @@ class ExpensesAndPurchaseController extends Controller
                         ->update(['status' => 'X']);
                     }
 
-                
+
 
 
            /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
            if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
-            
+
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);
             $factcour->id_expense = $expense->id;
@@ -2300,7 +2300,7 @@ class ExpensesAndPurchaseController extends Controller
             $factcour->numero =  $request->nrofactcou;
             $factcour->monto =  $montocour;
             $factcour->save();
-        
+
         }
     /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
@@ -2337,7 +2337,7 @@ class ExpensesAndPurchaseController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-      
+
 
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
         $sin_formato_base_imponible = str_replace(',', '.', str_replace('.', '', request('base_imponible')));
@@ -2426,7 +2426,7 @@ class ExpensesAndPurchaseController extends Controller
 
         /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
         if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
-            
+
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);
             $factcour->id_expense = $id_expense;
@@ -2435,12 +2435,12 @@ class ExpensesAndPurchaseController extends Controller
             $factcour->numero =  $request->nrofactcou;
             $factcour->monto =  $montocour;
             $factcour->save();
-        
+
         }
     /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
 
-      
+
         if(isset($expense_detail)){
 
            foreach($expense_detail as $var){
@@ -3363,11 +3363,11 @@ public function notas(request $request)
                                 $headervoucher->save();
 
 
-                                $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+                              /*  $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
 
                                 if(isset($account)){
                                     $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$despor);
-                                }
+                                }*/
 
                                 $resp['error'] = true;
                                 $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
@@ -3414,11 +3414,11 @@ public function notas(request $request)
                                 $headervoucher->save();
 
 
-                                $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+                               /* $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
 
                                 if(isset($account)){
                                     $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$montodescuento);
-                                }
+                                }*/
 
                                 $resp['error'] = true;
                                 $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
@@ -3567,12 +3567,12 @@ public function notas(request $request)
                             $headervoucher->save();
 
 
-                            $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Devolucion de Mercancia')->first();
+                          /*  $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Devolucion de Mercancia')->first();
 
                             if(isset($account)){
                                 $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$preciodeduccion);
 
-                            }
+                            }*/
 
                             if($validar == TRUE){
                                 $resp['error'] = true;
