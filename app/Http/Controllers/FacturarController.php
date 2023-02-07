@@ -797,6 +797,7 @@ class FacturarController extends Controller
 
         $sub_total = request('sub_total_form');
         $base_imponible = request('base_imponible_form');
+        
         $amount_exento = request('amount_exento');
         $sin_formato_amount = request('sub_total_form');
         $iva_percentage = request('iva_form');
@@ -1824,47 +1825,42 @@ class FacturarController extends Controller
             
 
 
-           // $quotation->base_imponible = $base_imponible;
-           // $quotation->amount_exento =  $amount_exento;
-            //$quotation->amount =  $sin_formato_amount;
-            //$quotation->amount_iva =  $sin_formato_amount_iva;
-           // $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
-            //$quotation->amount_with_iva = $sin_formato_grandtotal;
-           // $quotation->iva_percentage = $iva_percentage;
+            $quotation->base_imponible = $base_imponible;
+            $quotation->amount_exento =  $amount_exento;
+            $quotation->amount =  $sin_formato_amount;
+            $quotation->amount_iva =  $sin_formato_amount_iva;
+            $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
+            $quotation->amount_with_iva = $sin_formato_grandtotal;
+            $quotation->iva_percentage = $iva_percentage;
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
-    
+
+
             if($coin == 'dolares'){
                 
                 $anticipo =  $anticipo * $bcv;
                 $retencion_iva = $retencion_iva * $bcv;
                 $retencion_islr = $retencion_islr * $bcv;
-              
                 $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
-
                 $base_imponible = $base_imponible * $bcv;
                 $sin_formato_amount = $sin_formato_amount * $bcv;
                 $sin_formato_total_pay = $sin_formato_total_pay * $bcv;
-
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
-                //$sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
+                $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
                 $sub_total = $sub_total * $bcv;
-
-                //$quotation->base_imponible = $base_imponible;
-                //$quotation->amount_exento =  $amount_exento * $bcv;
-               // $quotation->amount =  $sin_formato_amount;
-               // $quotation->amount_iva =  $sin_formato_amount_iva;
-                //$quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
-                //$quotation->amount_with_iva = $sin_formato_grandtotal;
-                //$quotation->iva_percentage = $iva_percentage;
+                $quotation->base_imponible = $base_imponible;
+                $quotation->amount_exento =  $amount_exento * $bcv;
+                $quotation->amount =  $sin_formato_amount;
+                $quotation->amount_iva =  $sin_formato_amount_iva;
+                $quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
+                $quotation->amount_with_iva = $sin_formato_grandtotal;
+                $quotation->iva_percentage = $iva_percentage;
                 $quotation->retencion_iva = $retencion_iva;
                 $quotation->retencion_islr = $retencion_islr;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
-                $quotation->IGTF_amount = $IGTF_input * $bcv;
-            
-   
+                $quotation->IGTF_amount = $IGTF_input * $bcv; 
             }
             
             

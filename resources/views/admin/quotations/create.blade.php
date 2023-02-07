@@ -26,14 +26,19 @@
         <div class="col-md-12" >
             <div class="card">
                 
-                @if($type == 'Nota de Entrega')
-                <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}} {{$quotation->number_delivery_note ?? ''}}</h3> </div>
-                @endif
+
                 @if($type == 'factura')
                 <div class="card-header" ><h3>Registro de {{$type ?? 'Cotización'}}</h3> </div>
                 @endif
-                @if($type != 'Nota de Entrega' && $type != 'factura')            
-                <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
+
+                @if($type != 'factura')       
+                     
+                    @if($quotation->number_delivery_note)
+                        <div class="card-header" ><h3>Registro de {{'Nota de Entrega' ?? ''}} {{$quotation->number_delivery_note ?? ''}}</h3> </div>
+                    @else
+                        <div class="card-header" ><h3>Registro de {{'Cotización'}} {{$quotation->id ?? ''}}</h3> </div>
+                    @endif
+
                 @endif 
                 <div class="card-body" >
                     <form  method="POST" id="formUpdate"  action="{{ route('quotations.updateQuotation',$quotation->id,$type ?? 'Cotización') }}" enctype="multipart/form-data" >
