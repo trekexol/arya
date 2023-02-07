@@ -1410,6 +1410,9 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('balance','Exports\Reports\BalanceGeneralExportController@exportExcel')->name('export_reports.balance');
     Route::post('ingresos','Exports\Reports\IngresosEgresosExportController@exportExcel')->name('export_reports.ingresos');
     Route::post('salesbook','Exports\Reports\SalesBookExportController@exportExcel')->name('export_reports.sales_book');
+    Route::post('ventasreporte','Exports\Reports\SalesBookExportController@ventasreporte')->name('ventasreporte');
+
+
     Route::post('purchasesbook','Exports\Reports\PurchasesBookExportController@exportExcel')->name('export_reports.purchases_book');
     Route::post('inventoriesmovement','Exports\Reports\InventoriesMovementExportController@exportExcel')->name('export_reports.inventoriesmovement');
     Route::post('accountreceivablenote','Exports\Reports\AccountReceivableNoteExportController@exportExcel')->name('export_reports.account_receivable_note');

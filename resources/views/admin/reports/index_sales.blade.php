@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-sm-12">
             <div class="card">
-                <form method="POST" action="{{ route('reports.store_sales') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.store_sales') }}">
                     @csrf
 
                 <div class="card-header text-center h4">
@@ -35,21 +35,26 @@
                                 @enderror
                             </div>
 
-                        </div>
-                        <div class="form-group row">
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
-                                    @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                    @if(isset($coin) AND $coin == 'bolivares')
+                                        <option selected value="{{ $coin }}">{{ $coin }}</option>
+                                        <option value="dolares">dólares</option>
+                                    @elseif(isset($coin) AND $coin == 'dolares')
+                                    <option selected  value="{{ $coin }}">{{ $coin }}</option>
+                                    <option  value="bolivares">bolivares</option>
                                     @else
-                                        <option disabled selected value="bolivares">Moneda</option>
+                                    <option selected  value="bolivares">bolívares</option>
+                                    <option  value="dolares">dólares</option>
                                     @endif
-                                    
-                                    <option  value="bolivares">Bolívares</option>
-                                    <option value="dolares">Dólares</option>
+
+
                                 </select>
                             </div>
+
+                        </div>
+                        <div class="form-group row">
+
                             <label for="name" class="col-md-2 col-form-label text-md-right">Descripción:</label>
 
                             <div class="col-md-3">
@@ -60,25 +65,29 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div> 
+                            </div>
                             <div class="col-sm-2">
                                 <select class="form-control" name="type" id="type">
                                     @if (isset($type))
                                         @if ($type == 'notas')
-                                            <option selected value="notas">Notas de Entrega</option>                                       
+                                            <option selected value="notas">Notas de Entrega</option>
+                                            <option  value="facturas">Facturas</option>
+                                            <option value="todo">Todo</option>
                                         @elseif($type == 'facturas')
                                             <option selected value="facturas">Facturas</option>
-                                        @endif
-                                        <option disabled value="todo">-----------------</option>
-                                        <option value="todo">Todo</option>
+                                            <option value="todo">Todo</option>
+                                            <option value="notas">Notas de Entrega</option>
+                                        @elseif($type == 'todo')
+                                        <option selected value="todo">Todo</option>
                                         <option value="notas">Notas de Entrega</option>
                                         <option value="facturas">Facturas</option>
+                                        @endif
+
                                     @else
-                                        <option value="todo">Todo</option>
                                         <option value="todo">Todo</option>
                                         <option value="notas">Notas de Entrega</option>
                                         <option selected value="facturas">Facturas</option>
-                                        
+
                                     @endif
                                 </select>
                             </div>
@@ -87,13 +96,20 @@
                                     Buscar
                                  </button>
                             </div>
+                            <div class="col-sm-2">
+                                <a href="#" class="btn btn-success" type="button" onclick="exportToExcel();">
+                                    Exportar a Excel
+                                </a>
+
+                            </div>
                         </div>
                         </div>
                     </form>
+
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{ route('reports.sales_pdf',[$coin ?? 'bolivares',$datebeginyear ?? $date_begin ?? $datenow,$date_end ?? $datenow,$name ?? 'nada',$type ?? 'facturas']) }}" allowfullscreen></iframe>
                           </div>
-                        
+
                         </div>
                 </div>
             </div>
@@ -112,10 +128,15 @@
         'aLengthMenu': [[-1, 50, 100, 150, 200], ["Todo",50, 100, 150, 200]]
     });
 
-    
-    
+    function exportToExcel(){
+        var old_action = document.getElementById("formPost").action;
+        document.getElementById("formPost").action = "{{ route('ventasreporte') }}";
+        document.getElementById("formPost").submit();
+        document.getElementById("formPost").action = old_action;
+    }
 
-    let client  = "<?php echo $client->name ?? 0 ?>";  
+
+    let client  = "<?php echo $client->name ?? 0 ?>";
 
     if(client != 0){
         $("#client_label1").show();
@@ -126,11 +147,11 @@
         $("#client_label2").hide();
         $("#client_label3").hide();
     }
-    
+
 
     /*$("#type").on('change',function(){
             type = $(this).val();
-            
+
             if(type == 'todo'){
                 $("#client_label1").hide();
                 $("#client_label2").hide();
@@ -142,6 +163,6 @@
             }
         }); */
 
-    </script> 
+    </script>
 
 @endsection
