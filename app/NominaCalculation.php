@@ -17,4 +17,8 @@ class NominaCalculation extends Model
     public function employees(){
         return $this->belongsTo('App\Permission\Models\Employee','id_employee');
     }
+
+    public function positions(){
+        return $this->belongsTo('App\Position','position_id');
+    }
 }

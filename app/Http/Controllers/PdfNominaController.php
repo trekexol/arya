@@ -24,9 +24,9 @@ class PdfNominaController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-        
-        $dateend =  date("Y-m-d",strtotime($date."+ 15 days")); 
-        
+
+        $dateend =  date("Y-m-d",strtotime($date."+ 15 days"));
+
 
         return view('admin.nominas.create_recibo_vacaciones',compact('employees','datenow','dateend'));
     }
@@ -46,10 +46,10 @@ class PdfNominaController extends Controller
     {
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
-        $date = Carbon::now(); 
+        $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
-        $dateend =  date("Y-m-d",strtotime($date."+ 15 days")); 
+
+        $dateend =  date("Y-m-d",strtotime($date."+ 15 days"));
 
         return view('admin.nominas.create_recibo_utilidades',compact('employees','datenow','dateend'));
     }
@@ -59,10 +59,10 @@ class PdfNominaController extends Controller
     {
         $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
 
-        $date = Carbon::now(); 
+        $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
-        $dateend =  date("Y-m-d",strtotime($date."+ 15 days")); 
+
+        $dateend =  date("Y-m-d",strtotime($date."+ 15 days"));
 
         return view('admin.nominas.create_recibo_liquidacion_auto',compact('employees','datenow','dateend'));
     }
@@ -71,7 +71,7 @@ class PdfNominaController extends Controller
 
 
     function imprimirVacaciones(Request $request){
-      
+
         $guardar = request('guardar');
 
         $pdf = App::make('dompdf.wrapper');
@@ -80,7 +80,7 @@ class PdfNominaController extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
+
 
         if(isset($employee)){
 
@@ -96,10 +96,10 @@ class PdfNominaController extends Controller
                 $total_feriados = $this->calcular_cantidad_de_feriados($employee->date_begin,$employee->date_end);
                 $employee->holidays = $total_feriados;
             }
-            
+
             //---------------------------------
             $employee->mondays = request('monday');
-            
+
 
             $sin_formato_lph = str_replace(',', '.', str_replace('.', '', request('lph')));
 
@@ -110,56 +110,56 @@ class PdfNominaController extends Controller
             if(isset($guardar)){
                 return $pdf->download('vacaciones.pdf');
             }
-            
+
             return $pdf->stream();
-    
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no existe');
-        } 
-            
+        }
+
     }
 
     function imprimirPrestaciones(Request $request){
-      
+
         $pdf = App::make('dompdf.wrapper');
 
         $employee = Employee::on(Auth::user()->database_name)->find(request('id_employee'));
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
+
 
         if(isset($employee)){
 
             $employee->date_begin = request('date_begin');
-           
+
             $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('id_profession',$employee->profession_id)
                                                 ->latest()->first();
 
             if(isset($ultima_nomina)){
-                $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();                                    
+                $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();
             }else{
                 return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
-            } 
-            
+            }
+
             $pdf = $pdf->loadView('pdf.prestaciones',compact('employee','datenow','ultima_nomina','nomina_calculation'));
             return $pdf->stream();
-    
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no existe');
-        } 
-            
+        }
+
     }
 
     function print_nomina_calculation($id_nomina,$id_employee){
-        
+
         $pdf = App::make('dompdf.wrapper');
 
         $employee = Employee::on(Auth::user()->database_name)->find($id_employee);
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
+
 
         if(isset($employee)){
 
@@ -167,54 +167,73 @@ class PdfNominaController extends Controller
 
             if(isset($nomina)){
                 $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$nomina->id)
-                                                        ->where('id_employee',$employee->id)->get();                                    
+                                                        ->where('id_employee',$employee->id)->get();
             }else{
                 return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
-            } 
-            
+            }
+
             $pdf = $pdf->loadView('pdf.print_calculation',compact('employee','datenow','nomina','nomina_calculation'));
             return $pdf->stream();
-    
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no existe');
-        } 
+        }
 
 
     }
     function print_nomina_calculation_all($id_nomina){
-        
+
         $pdf = App::make('dompdf.wrapper');
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
 
- 
+
+
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
         if(isset($nomina)){
-            $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$nomina->id)
-                                                    ->orderBy('id_employee','asc')->get();                                    
+            $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)
+                                    ->join('employees','employees.id','id_employee')
+                                    ->where('id_nomina',$nomina->id)
+                                    ->select('id_employee','')
+                                    ->groupby('id_employee')
+                                    ->orderBy('id_employee','asc')
+                                    ->get();
+
+            $cantidad = count($nomina_calculation);
+
+            foreach($nomina_calculation as $var){
+
+
+
+            }
+
+
+
+
+
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
-        } 
-        
-       
-        $pdf = $pdf->loadView('pdf.print_calculation_all',compact('datenow','nomina','nomina_calculation'));
+        }
+
+
+        $pdf = $pdf->loadView('pdf.print_calculation_all',compact('datenow','nomina','nomina_calculation','cantidad'));
         return $pdf->stream();
 
-       
+
     }
 
     function print_payrool_summary($id_nomina){
-        
+
         $pdf = App::make('dompdf.wrapper');
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
 
- 
+
+
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
 
@@ -226,7 +245,7 @@ class PdfNominaController extends Controller
                                                     ->where('id_nomina',$nomina->id)
                                                     ->select('employees.nombres','employees.apellidos',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_asignacion'))
                                                     ->groupBy('employees.nombres','employees.apellidos')
-                                                    ->get();           
+                                                    ->get();
             $nomina_calculation_deduccion = NominaCalculation::on(Auth::user()->database_name)
                                                     ->join('nomina_concepts','nomina_concepts.id','nomina_calculations.id_nomina_concept')
                                                     ->join('employees','employees.id','nomina_calculations.id_employee')
@@ -234,23 +253,23 @@ class PdfNominaController extends Controller
                                                     ->where('nomina_concepts.sign','D')
                                                     ->select('employees.nombres','employees.apellidos',DB::connection(Auth::user()->database_name)->raw('SUM(nomina_calculations.amount) as total_deduccion'))
                                                     ->groupBy('employees.nombres','employees.apellidos')
-                                                    ->get();       
-        
-           
+                                                    ->get();
+
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
-        } 
-        
-        
-       
+        }
+
+
+
         $pdf = $pdf->loadView('pdf.print_payroll_summary',compact('datenow','nomina','nomina_calculation_asignacion','nomina_calculation_deduccion'));
         return $pdf->stream();
 
-       
+
     }
 
     function print_payrool_summary_all($id_nomina){
-        
+
         $pdf = App::make('dompdf.wrapper');
 
         $date = Carbon::now();
@@ -258,7 +277,7 @@ class PdfNominaController extends Controller
         $global = new GlobalController();
         $bcv = $global->search_bcv();
 
- 
+
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
         if(isset($nomina->rate)&& $nomina->rate != 0){
@@ -266,7 +285,7 @@ class PdfNominaController extends Controller
         }
 
         if(isset($nomina)){
-             
+
             $employees = Employee::on(Auth::user()->database_name)
             ->where('status','!=','X')
             ->where('status','!=','0')
@@ -313,7 +332,7 @@ class PdfNominaController extends Controller
 
                 foreach($calculos_nomina as $calculos) {
                         $concepto = '';
-                        
+
                         $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
                         ->find($calculos->id_nomina_concept);
 
@@ -345,7 +364,7 @@ class PdfNominaController extends Controller
                                 $amount_total_bono_transporte += $calculos->amount;
                             } else {
                                 $amount_total_bono_transporte += 0;
-                                
+
                             }
 
                             // retenciones
@@ -353,36 +372,36 @@ class PdfNominaController extends Controller
                                 $amount_total_deduccion_sso += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_sso += 0;
-                                
+
                             }
 
                             if($concepto->account_name == 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_faov += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_faov += 0;
-                                
+
                             }
 
                             if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_pie += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_pie += 0;
-                                
+
                             }
 
                             if($concepto->account_name == 'Retencion por Aporte al INCES por Pagar' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_ince += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_ince += 0;
-                                
+
                             }
-                            
+
                             // Otras Asignaciones
                             if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
                             $amount_total_otras_asignaciones += $calculos->amount;
                             } else {
                             $amount_total_otras_asignaciones += 0;
-                            
+
                             }
 
                             // Deducciones diferentes
@@ -390,13 +409,13 @@ class PdfNominaController extends Controller
                                 $amount_total_otras_deducciones += $calculos->amount;
                             } else {
                                 $amount_total_otras_deducciones += 0;
-                                
+
                             }
 
 
 
                         } else {
-                            
+
                             $amount_total_asignacion += 0;
                             $amount_total_otras_deducciones += 0;
                             $amount_total_otras_asignaciones += 0;
@@ -429,21 +448,21 @@ class PdfNominaController extends Controller
                     //$employee->total_asignacion_general = $amount_total_asignacion_general;
                     $employee->total_asignacion_m_deducciones = $amount_total_asignacion_m_deducciones;
             }
-           
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no tiene ninguna nomina registrada');
-        } 
-        
-        
-       
+        }
+
+
+
         $pdf = $pdf->loadView('pdf.print_payroll_summary_all',compact('lunes','bcv','datenow','nomina','nominabases','employees'))->setPaper('letter', 'landscape');
         return $pdf->stream();
 
-       
+
     }
 
     function imprimirUtilidades(Request $request){
-      
+
         $guardar = request('guardar');
 
         $pdf = App::make('dompdf.wrapper');
@@ -452,31 +471,31 @@ class PdfNominaController extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
+
 
         if(isset($employee)){
 
             $employee->date_end = request('date_end');
             $employee->days = request('days');
-           
 
-            
+
+
             $pdf = $pdf->loadView('pdf.utilidades',compact('employee','datenow'));
 
             if(isset($guardar)){
                 return $pdf->download('utilidades.pdf');
             }
-            
+
             return $pdf->stream();
-    
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no existe');
-        } 
-            
+        }
+
     }
 
     function imprimirLiquidacionAuto(Request $request){
-      
+
         $guardar = request('guardar');
 
         $pdf = App::make('dompdf.wrapper');
@@ -485,20 +504,20 @@ class PdfNominaController extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        
+
 
         if(isset($employee)){
 
             $employee->date_begin = request('date_begin');
-            
+
             $employee->motivo = request('motivo');
             $employee->utilidad = request('utilidad');
-          
+
             $employee->faov = request('faov');
             $employee->inces = request('inces');
             $employee->adicionales = request('adicionales');
             $employee->bono_alimenticio = request('bono_alimenticio');
-            
+
             $employee->lunes = request('lunes');
             $employee->dias_no_laborados = request('dias_no_laborados');
             $employee->meses_utilidades = request('meses_utilidades');
@@ -512,19 +531,19 @@ class PdfNominaController extends Controller
 
             $ultima_nomina = Nomina::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('id_profession',$employee->profession_id)
                                     ->latest()->first();
-            
+
             if(!empty($ultima_nomina)) {
-                
-                $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();     
+
+                $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$ultima_nomina->id)->get();
 
             } else {
-                 
+
                 $ultima_nomina = null;
                 $nomina_calculation = null;
-            }                        
-            
+            }
 
-            
+
+
 
 
 
@@ -533,13 +552,13 @@ class PdfNominaController extends Controller
             if(isset($guardar)){
                 return $pdf->download('liquidacion.pdf');
             }
-            
+
             return $pdf->stream();
-    
+
         }else{
             return redirect('/nominas')->withDanger('El empleado no existe');
-        } 
-            
+        }
+
     }
 
 
@@ -547,12 +566,12 @@ class PdfNominaController extends Controller
     {
         $fechaInicio= strtotime($date_begin);
         $fechaFin= strtotime($date_end);
-       
+
         $cantidad_de_dias_lunes = 0;
         //Recorro las fechas y con la función strotime obtengo los lunes
         for($i=$fechaInicio; $i<=$fechaFin; $i+=86400){
             //Sacar el dia de la semana con el modificador N de la funcion date
-            
+
             $dia = date('N', $i);
             if($dia==7){
                 $cantidad_de_dias_lunes += 1;
