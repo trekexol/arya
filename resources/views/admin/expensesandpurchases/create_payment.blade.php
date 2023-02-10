@@ -1054,19 +1054,21 @@ function calculate(valor) {
                     $("#porc_descuento_form").val(porc_discount);
                 }
 
+                let totalIva = 0
 
+           totalFactura = totalFactura - discount;
 
-    totalFactura = totalFactura - discount;
-
-    if (totalBaseImponible > 0){
+           if (totalBaseImponible > 0){
                
                totalIvaMenos = (totalFactura * inputIva) / 100;
-
+               totalIva = (totalBaseImponible * inputIva) / 100;
            } else {
                totalIvaMenos = 0;
+               totalIva = 0;
            }
 
-
+           
+     
     //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
     //Toma la Base y la envia por form
@@ -1088,7 +1090,7 @@ function calculate(valor) {
 
 
     //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
-    var total_iva_exento =  parseFloat(totalIvaMenos);
+    var total_iva_exento =  parseFloat(totalIva);
 
     var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
