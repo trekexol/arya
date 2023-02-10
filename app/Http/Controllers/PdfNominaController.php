@@ -188,26 +188,60 @@ class PdfNominaController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-
+        $datos = array();
 
         $nomina = Nomina::on(Auth::user()->database_name)->find($id_nomina);
 
         if(isset($nomina)){
-            $nomina_calculation = NominaCalculation::on(Auth::user()->database_name)
+            $datosempleados = NominaCalculation::on(Auth::user()->database_name)
                                     ->join('employees','employees.id','id_employee')
+                                    ->join('positions','positions.id','position_id')
                                     ->where('id_nomina',$nomina->id)
-                                    ->select('id_employee','')
-                                    ->groupby('id_employee')
-                                    ->orderBy('id_employee','asc')
+                                    ->select('fecha_ingreso','id_employee','id_empleado','apellidos','nombres','name')
+                                    ->groupby('fecha_ingreso','id_employee','id_empleado','apellidos','nombres','name')
+                                    ->orderby('id_empleado', 'DESC')
                                     ->get();
 
-            $cantidad = count($nomina_calculation);
 
-            foreach($nomina_calculation as $var){
+
+            foreach($datosempleados as $datosempleados){
+
+            $datosdenomina = NominaCalculation::on(Auth::user()->database_name)
+                ->join('nomina_concepts','nomina_concepts.id','id_nomina_concept')
+                ->where('id_nomina',$nomina->id)
+                ->select('id_employee','id_nomina_concept','amount','nomina_concepts.description','nomina_concepts.sign')
+                ->groupby('id_employee','id_nomina_concept','amount','nomina_concepts.description','nomina_concepts.sign')
+                ->where('id_employee',$datosempleados->id_employee)
+                ->wherenotin('nomina_concepts.description',['Bono Medico'])
+                ->orderby('nomina_concepts.sign','ASC')
+                ->orderby('nomina_concepts.description','ASC')
+                ->get();
+
+                $nominaarreglo = array();
+
+            foreach($datosdenomina as  $datosdenomina){
+
+            $nominaarreglo[] = ['idcon' => $datosdenomina->id_nomina_concept,
+                                'monto' => $datosdenomina->amount,
+                                'description' => $datosdenomina->description,
+                                'sign' => $datosdenomina->sign ];
+
+
+
+
+             }
+
+
+             $datos[] = ['cedula' => $datosempleados->id_empleado,
+                                'nombres' => $datosempleados->apellidos.' '.$datosempleados->nombres,
+                                'cargo' => $datosempleados->name,
+                                'fecha' => $datosempleados->fecha_ingreso,
+                            'datos' => $nominaarreglo];
 
 
 
             }
+
 
 
 
@@ -219,7 +253,7 @@ class PdfNominaController extends Controller
         }
 
 
-        $pdf = $pdf->loadView('pdf.print_calculation_all',compact('datenow','nomina','nomina_calculation','cantidad'));
+        $pdf = $pdf->loadView('pdf.print_calculation_all',compact('datenow','nomina','datos'));
         return $pdf->stream();
 
 

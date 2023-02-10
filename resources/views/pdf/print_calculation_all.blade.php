@@ -31,29 +31,49 @@
 <?php
 
     $i = 1;
-    dd($nomina_calculation);
+    $cantidad = count($datos);
+
     ?>
 
-    @foreach ($nomina_calculation as $var)
+    @foreach ($datos as $var)
 
     <table id="top">
         <tr>
-          <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" width="93" height="60" class="d-inline-block align-top" alt="">
+          <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/logo.jpg') }}" width="150" height="50" class="d-inline-block align-top" alt="">
           </th>
           <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr>
       </table>
-      <h5 style="color: black">ID Empleado: {{ $var->employees['id'] }} , Nombre del Empleado: {{ $var->employees['nombres'] }} {{ $var->employees['apellidos'] }} , Fecha de Ingreso: {{ \Carbon\Carbon::parse($var->employees['fecha_ingreso'])->format('d-m-Y') }}</h5>
-      <h5 style="color: black">Número de Nómina: {{ str_pad($nomina->id, 6, "0", STR_PAD_LEFT) }}</h5>
+
+      <h5 style="text-align: left; color: black">Recibo de pago Nómina: {{ str_pad($nomina->id, 6, "0", STR_PAD_LEFT) }}</h5>
+      <h5 style="text-align: left; color: black"> {{ str_pad($nomina->description, 6, "0", STR_PAD_LEFT) }}</h5>
+
+
+      <table style="text-align: center; width: 100%;">
+        <tr>
+            <td>Cédula</td>
+            <td>Nombre del Empleado</td>
+            <td>Cargo</td>
+
+        </tr>
+        <tr>
+            <td>{{ $var['cedula'] }}</td>
+            <td>{{ $var['nombres'] }}</td>
+            <td>{{ $var['cargo'] }}</td>
+
+        </tr>
+
+      </table>
+
+
 
  <?php
   $total_asignacion = 0;
   $total_deduccion = 0;
-  $id_employeer = 0;
-  $contador_por_pagina = 0;
+
 
 ?>
-
-    <table>
+    <br>
+    <table style="width: 100%;">
       <tr>
         <th style="text-align: center;">Descripción</th>
         <th style="text-align: center;">Asignación</th>
@@ -61,13 +81,43 @@
 
       </tr>
 
+      @foreach($var['datos'] as $data)
+      <tr>
+        <td>{{ $data['description'] }}</td>
+
+        @if($data['sign'] == 'A')
+
+        @php
+
+        $total_asignacion += $data['monto'];
+
+        @endphp
+
+        <td style="text-align: right;">{{ $data['monto'] }}</td>
+        <td></td>
+        @elseif($data['sign'] == 'D')
+
+        @php
+
+        $total_deduccion += $data['monto'];
+
+        @endphp
+
+        <td></td>
+        <td style="text-align: right;">{{ $data['monto'] }}</td>
+        @endif
+      </tr>
+      @endforeach
 
       <tr>
-
+        <td>Total:</td>
+        <td style="text-align: right;">{{ $total_asignacion }}</td>
+        <td style="text-align: right;">{{ $total_deduccion }}</td>
       </tr>
-
-
-
+      <tr>
+        <td style="text-align: center;">Total a Pagar:</td>
+        <td style="text-align: center;" colspan="2">{{ $total_asignacion - $total_deduccion }}</td>
+      </tr>
 
 
 
@@ -75,16 +125,17 @@
 
   </table>
 
+  <br> <br> <br> <br> <br> <br>
+  <p style="text-align: center; color: black"><b>__________________________________</b></p>
+  <p style="text-align: center; color: black"><b>Firma del Empleado</b></p>
+
   <?php
-   if($i == $cantidad){
+   if($i != $cantidad){
 
-
-
-    }else{
-        echo "<div class='page-break'></div>";
+    echo "<div class='page-break'></div>";
         $i++;
-    }
 
+    }
    ?>
   @endforeach
 
