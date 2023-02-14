@@ -75,7 +75,7 @@ public function importmovimientos(Request $request){
 
     $import = new TempMovimientosImport($banco);
 
-        
+
 
     if(($banco == 'Bancamiga' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
 
@@ -361,7 +361,7 @@ public function procesarcontrapartidanew(Request $request){
     if($request->ajax()){
         try{
 
-           
+
             $bcv = $request->rate;
 
             if($request->valorhaber == 0){
@@ -385,7 +385,7 @@ public function procesarcontrapartidanew(Request $request){
                  }
                  $valordebe = (string) $request->valordebe;
                  $montodelacontra = (string) $montodelacontra;
-               
+
                 if($validarcontra == TRUE){
 
                     $resp['error'] = false;
@@ -412,16 +412,28 @@ public function procesarcontrapartidanew(Request $request){
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
+
+                    /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $request->valordebe * $bcv;
+                }
+                /*** */
+
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valordebe);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$amount);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
 
                    $montocontra =  $request->input('montocontra.' . $i);
 
+                         /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $montocontra * $bcv;
+                }
+                /*** */
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$amount,0);
 
                 }
 
@@ -487,20 +499,32 @@ public function procesarcontrapartidanew(Request $request){
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
+                          /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $request->valorhaber * $bcv;
+                }
+                /*** */
+
+
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$amount,0);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
 
                    $montocontra =  $request->input('montocontra.' . $i);
 
+                                 /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $montocontra * $bcv;
+                }
+                /*** */
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$amount);
 
                 }
 
-            
+
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
                                 ->where('id_temp_movimientos',$request->idmovimiento)
                                 ->update(['estatus' => '1']);
@@ -765,7 +789,7 @@ public function procesardeposito(Request $request){
 
                  }
 
-                 
+
                  $valordebe = (string) $request->valordebe;
                  $montodelacontra = (string) $montodelacontra;
 
@@ -794,20 +818,30 @@ public function procesardeposito(Request $request){
                 $header_voucher->save();
 
                 $bcv = $request->tasa;
-               // $bcv = "1.00";
+
+                  /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $request->valordebe * $bcv;
+                   }
+                  /*** */
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
 
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$request->valordebe);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,0,$amount);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
 
                    $montocontra =  $request->input('montocontra.' . $i);
 
+                     /*** */
+                if($request->moneda != 'bolivares'){
+                    $amount = $montocontra * $bcv;
+                   }
+                  /*** */
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$montocontra,0);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,$amount,0);
 
                 }
 
@@ -845,7 +879,7 @@ public function procesardeposito(Request $request){
 
 
                  }
-                 
+
                  $valorhaber = (string) $request->valorhaber;
                  $montodelacontra = (string) $montodelacontra;
 
@@ -874,20 +908,30 @@ public function procesardeposito(Request $request){
                 $header_voucher->save();
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', $request->banco)->first();
-                
+
                 $bcv = $request->tasa;
-                //$bcv = "1.00";
-                
+
+                           /*** */
+                           if($request->moneda != 'bolivares'){
+                            $amount = $request->valorhaber * $bcv;
+                           }
+                          /*** */
+
                 if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$request->valorhaber,0);
+                    $this->add_movementfacturas($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,null,Auth::user()->id,$amount,0);
                 }
 
                 foreach ($request->input('valorcontra', []) as $i => $valorcontra) {
 
                    $montocontra =  $request->input('montocontra.' . $i);
 
+                          /*** */
+                          if($request->moneda != 'bolivares'){
+                            $amount = $montocontra * $bcv;
+                           }
+                          /*** */
 
-                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$montocontra);
+                 $this->add_movementfacturas($bcv,$header_voucher->id,$valorcontra,null,Auth::user()->id,0,$amount);
 
                 }
 
@@ -972,17 +1016,17 @@ public function eliminarmovimiento(Request $request){
 public function pdflibro(Request $request)
 {
 
-    
+
     $fecha = request('fechabancos')."-01";
     $fechafin = request('fechabancos')."-31";
 
-    
+
     $bancos = request('bancos');
     $coin = request('coin');
-    
+
     $date_begin = $fecha;
     $date_end = $fechafin;
-    
+
     $date = Carbon::now();
     $datenow = $date->format('d-m-Y');
 
@@ -995,14 +1039,14 @@ public function pdflibro(Request $request)
     $mesdia = Carbon::parse($date_begin)->format('m-d');
 
     $account = Account::on(Auth::user()->database_name)->where('description',$bancos)->first();
-    $id_account = $account->id;  
-    
+    $id_account = $account->id;
+
                //consulta normal Bs.
                $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                ->whereRaw(
-                   "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",  
+                   "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
                   [$date_begin, $date_end])
                ->whereIn('header_vouchers.id', function($query) use ($id_account){
                    $query->select('id_header_voucher')
@@ -1022,14 +1066,14 @@ public function pdflibro(Request $request)
 
 
             if($account->period == $period ){
-               
+
               if($mesdia == '01-01') {
-                      
+
                   $detailvouchers_saldo_debe = 0;
                   $detailvouchers_saldo_haber = 0;
-           
+
               } else {
-                  //busca los saldos previos de la cuenta                    
+                  //busca los saldos previos de la cuenta
                   $total_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                               ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                               ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1038,8 +1082,8 @@ public function pdflibro(Request $request)
                               ->where('accounts.id',$id_account)
                               ->whereIn('detail_vouchers.status', ['F','C'])
                               ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
-                  
-                  
+
+
                   $total_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                               ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                               ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1047,7 +1091,7 @@ public function pdflibro(Request $request)
                               ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                               ->where('accounts.id',$id_account)
                               ->whereIn('detail_vouchers.status', ['F','C'])
-                              ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first(); 
+                              ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first();
 
                               $detailvouchers_saldo_debe = number_format($total_debe->debe,2,'.','');
                               $detailvouchers_saldo_haber = number_format($total_haber->haber,2,'.','');
@@ -1059,7 +1103,7 @@ public function pdflibro(Request $request)
 
           } else {
 
-                    //busca los saldos previos de la cuenta                    
+                    //busca los saldos previos de la cuenta
                     $total_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1067,36 +1111,36 @@ public function pdflibro(Request $request)
                                 ->where('accounts.id',$id_account)
                                 ->whereIn('detail_vouchers.status', ['F','C'])
                                 ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.debe/detail_vouchers.tasa) as debe'))->first();
-        
-        
-                    
+
+
+
                     $total_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                                 ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                                 ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                                 ->where('header_vouchers.date','<' ,$date_begin)
                                 ->where('accounts.id',$id_account)
                                 ->whereIn('detail_vouchers.status', ['F','C'])
-                                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first();  
-                            
+                                ->select(DB::connection(Auth::user()->database_name)->raw('SUM(detail_vouchers.haber/detail_vouchers.tasa) as haber'))->first();
+
 
                                 $detailvouchers_saldo_debe = number_format($total_debe->debe,2,'.','');
                                 $detailvouchers_saldo_haber = number_format($total_haber->haber,2,'.','');
 
 
-          } 
+          }
 
     }else{ // bolivares-----------------------------------------------
 
 
         if($account->period == $period ){
-             
+
             if($mesdia == '01-01') {
-                    
+
                 $detailvouchers_saldo_debe = 0;
                 $detailvouchers_saldo_haber = 0;
 
             } else {
-                //busca los saldos previos de la cuenta                    
+                //busca los saldos previos de la cuenta
                 $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1106,7 +1150,7 @@ public function pdflibro(Request $request)
                             ->whereIn('detail_vouchers.status', ['F','C'])
                             ->sum('detail_vouchers.debe');
 
-                
+
                 $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1114,17 +1158,17 @@ public function pdflibro(Request $request)
                             ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
                             ->where('accounts.id',$id_account)
                             ->whereIn('detail_vouchers.status', ['F','C'])
-                            ->sum('detail_vouchers.haber');   
-              
+                            ->sum('detail_vouchers.haber');
+
                             $detailvouchers_saldo_debe = number_format($detailvouchers_saldo_debe,2,'.','');
                             $detailvouchers_saldo_haber = number_format($detailvouchers_saldo_haber,2,'.','');
             }
 
-            
+
 
         } else {
 
-        //busca los saldos previos de la cuenta                    
+        //busca los saldos previos de la cuenta
         $detailvouchers_saldo_debe =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                     ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                     ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
@@ -1133,26 +1177,26 @@ public function pdflibro(Request $request)
                     ->whereIn('detail_vouchers.status', ['F','C'])
                     ->sum('detail_vouchers.debe');
 
-        
+
         $detailvouchers_saldo_haber =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
                     ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
                     ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
                     ->where('header_vouchers.date','<' ,$date_begin)
                     ->where('accounts.id',$id_account)
                     ->whereIn('detail_vouchers.status', ['F','C'])
-                    ->sum('detail_vouchers.haber');  
+                    ->sum('detail_vouchers.haber');
 
 
                     $detailvouchers_saldo_debe = number_format($detailvouchers_saldo_debe,2,'.','');
                     $detailvouchers_saldo_haber = number_format($detailvouchers_saldo_haber,2,'.','');
-                    
 
-        }             
-            
-                    
+
+        }
+
+
     }
 
-    
+
     $date_begin = Carbon::parse($date_begin)->format('d-m-Y');
 
     $date_end = Carbon::parse($date_end)->format('d-m-Y');
@@ -1166,16 +1210,16 @@ public function pdflibro(Request $request)
     if(empty($account_historial->rate) || ($account_historial->rate == 0)){
         $account_historial->rate = 1;
     }
-   
-   
+
+
    /* if($coin != "bolivares"){
     $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
     } else {
-    $account_historial->balance_previous = $account_historial->balance_previous;   
+    $account_historial->balance_previous = $account_historial->balance_previous;
     } */
 
 
-   
+
     $primer_movimiento = true;
     $saldo = 0;
     $saldo_anterior =0;
@@ -1183,41 +1227,41 @@ public function pdflibro(Request $request)
 
 
     foreach($detailvouchers as $detail){
-       
+
         //$detailvouchers->account_counterpart = '';
 
         $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
         ->where('id','=',$detail->id_invoice)
         ->where('date_billing','!=',null)
-        ->get()->first();     
-    
+        ->get()->first();
+
 
         $anticipo = Anticipo::on(Auth::user()->database_name) // buscar anticipo
             ->where('id','=',$detail->id_anticipo)
-            ->get()->first();  
-            
+            ->get()->first();
+
         if($detail->reference == null){
 
             if ($detail->id_expense != null) {
-               
+
                 $referencia = ExpensePayment::on(Auth::user()->database_name) // buscar referencia
-                ->where('id_expense','=',$detail->id_expense)->get();  
-                
+                ->where('id_expense','=',$detail->id_expense)->get();
+
                 if(count($referencia) > 1){
-                    
+
                     $detail->reference = '';
                     $count = 0;
                     foreach ($referencia as $refe) {
-                           
+
                             if ($count >= 1){
-                                
+
                                 $detail->reference .= ' / ';
 
                                 $detail->reference .= $refe->reference;
-                            
+
                             } else {
 
-                                $detail->reference .= $refe->reference;    
+                                $detail->reference .= $refe->reference;
                             }
                            $count++;
                     }
@@ -1232,11 +1276,11 @@ public function pdflibro(Request $request)
                     if(!empty($referenciab)){
                         $detail->reference = $referenciab->reference;
                     }else{
-                        $detail->reference = '';    
-                    } 
-               }    
-                
-                
+                        $detail->reference = '';
+                    }
+               }
+
+
             }
         }
 
@@ -1249,19 +1293,19 @@ public function pdflibro(Request $request)
             $client = Client::on(Auth::user()->database_name) // buscar factura
             ->where('id','=',$quotation->id_client)
             ->get()->first();
-            
+
             $detail->header_description .= '. '.$client->name.'. '.$quotation->coin;
-        
+
             $referenciab = QuotationPayment::on(Auth::user()->database_name) // buscar referencia
-            ->where('id_quotation','=',$quotation->id)  
+            ->where('id_quotation','=',$quotation->id)
             ->first();
 
             if($referenciab != null ){
 
                      $detail->reference = $referenciab->reference;
-               
+
             }
-            
+
 
 
 
@@ -1273,7 +1317,7 @@ public function pdflibro(Request $request)
                 $id_client = '';
                 $coin_mov = '';
                if ($anticipo->id_quotation != null){ //con anticipo
-                    
+
 
                     $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
                     ->where('id','=',$anticipo->id_quotation)
@@ -1285,9 +1329,9 @@ public function pdflibro(Request $request)
                     ->where('date_billing','=',null)
                     ->where('number_invoice','=',null)
                     ->get()->first();
-                    
 
-                    
+
+
                     if (isset($quotation)) { // descriocion  Anticipo factura
                     $detail->header_description .= ' FAC: '.$quotation->number_invoice;
                     $id_client = $quotation->id_client;
@@ -1296,14 +1340,14 @@ public function pdflibro(Request $request)
                     if (isset($quotation_delivery)) {
                     $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
                     $id_client = $quotation_delivery->id_client;
-                    $coin_mov = $quotation_delivery->coin;    
+                    $coin_mov = $quotation_delivery->coin;
                     }
-                    
+
                     if(isset($id_client)) {
                         $client = Client::on(Auth::user()->database_name) // buscar cliente de factura
                         ->where('id','=',$id_client)
                         ->get()->first();
-                        
+
                         if(!empty($client)) {
                         $detail->header_description .= $client->name;
                         }
@@ -1313,8 +1357,8 @@ public function pdflibro(Request $request)
                     $detail->header_description .= '. '.$coin_mov;
 
                     //descripcon Anticipo Compra
-                    
-                    
+
+
 
                } else { // sin anticipo
 
@@ -1322,7 +1366,7 @@ public function pdflibro(Request $request)
 
 
                     if (isset($anticipo->id_client)) {
-                                                
+
                         $client = Client::on(Auth::user()->database_name) // buscar factura
                         ->where('id','=',$anticipo->id_client)
                         ->get()->first();
@@ -1332,18 +1376,18 @@ public function pdflibro(Request $request)
                     }
 
                     if (isset($anticipo->id_provider)) {
-                    
+
                         $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
                         ->where('id','=',$anticipo->id_provider)
                         ->get()->first();
                              if (isset($proveedor)) {
                              $detail->header_description .= '. '.$proveedor->razon_social;
                              }
-                    } 
+                    }
 
                     $detail->header_description .= '. '.$anticipo->coin;
                }
-                
+
 
             }
 
@@ -1352,7 +1396,7 @@ public function pdflibro(Request $request)
 
 
             if($coin != "bolivares"){
-                
+
                 if((isset($detail->debe)) && ($detail->debe != 0)){
                 $detail->debe = $detail->debe / ($detail->tasa ?? 1);
                 }
@@ -1360,20 +1404,20 @@ public function pdflibro(Request $request)
                 if((isset($detail->haber)) && ($detail->haber != 0)){
                 $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                 }
-                
+
                 $saldo_anterior = $account->balance_previus / ($account->rate ?? 1);
 
             } else {
 
                 $saldo_anterior = $account->balance_previus;
             }
-            
+
             $saldo_anterior = number_format($saldo_anterior,2,'.','');
 
             if($account->period != $period){
                 $saldo_anterior = 0;
             }
-            
+
 
             $detail->balance_previus = $saldo_anterior;
             $amount_voucher = 0;
@@ -1385,47 +1429,47 @@ public function pdflibro(Request $request)
 
                 if($primer_movimiento){
 
-                 
+
                         $detail->saldo = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0) + $detail->debe - $detail->haber;
                         $saldo += $detail->saldo;
-            
+
 
 
                     $primer_movimiento = false;
 
                 }else{
 
-       
 
-                        $detail->saldo = $detail->debe - $detail->haber + $saldo;  
 
-                        $saldo = $detail->saldo;   
+                        $detail->saldo = $detail->debe - $detail->haber + $saldo;
+
+                        $saldo = $detail->saldo;
                 }
-                
+
                /* if($counterpart == ""){
                     $last_detail = $detail;
                 }else{
                     $detail->account_counterpart = $counterpart;
                 }*/
-              
+
                 $detail->account_counterpart = '';
 
             }else{
                /*if(isset($last_detail)){
                     $last_detail->account_counterpart = $detail->account_description;
-                   
+
                 }else{
                     $counterpart = $detail->account_description;
                 }*/
 
                // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
-                
+
                $detail->account_counterpart = '';
- 
+
             }
 
                 $amount_voucher = $detail->debe + $detail->haber;
-                  
+
 
                 $account_contrapartida_id = DetailVoucher::on(Auth::user()->database_name) // buscar factura
                 ->where('id_header_voucher','=',$detail->id_header)
@@ -1446,18 +1490,18 @@ public function pdflibro(Request $request)
                 if($coin != "bolivares"){
                 $detail->account_counterpart = $description_contrapartida.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
                 } else {
-                    $detail->account_counterpart = $description_contrapartida;    
+                    $detail->account_counterpart = $description_contrapartida;
                 }
     }
 
     //voltea los movimientos para mostrarlos del mas actual al mas antiguo
     $detailvouchers = array_reverse($detailvouchers->toArray());
-    
+
 
             $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
-        
+
             //$saldo_inicial = number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
-     
+
 
     $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
                             ,'datenow','date_begin','date_end','account','saldo_anterior'
@@ -1465,7 +1509,7 @@ public function pdflibro(Request $request)
     return $pdf->stream();
 
 
-      
+
 }
 
 
