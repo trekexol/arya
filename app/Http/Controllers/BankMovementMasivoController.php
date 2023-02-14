@@ -416,6 +416,8 @@ public function procesarcontrapartidanew(Request $request){
                     /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $request->valordebe * $bcv;
+                }else{
+                    $amount = $request->valordebe;
                 }
                 /*** */
 
@@ -430,6 +432,8 @@ public function procesarcontrapartidanew(Request $request){
                          /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $montocontra * $bcv;
+                }else{
+                    $amount = $montocontra;
                 }
                 /*** */
 
@@ -502,6 +506,8 @@ public function procesarcontrapartidanew(Request $request){
                           /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $request->valorhaber * $bcv;
+                }else{
+                    $amount = $request->valorhaber;
                 }
                 /*** */
 
@@ -517,6 +523,8 @@ public function procesarcontrapartidanew(Request $request){
                                  /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $montocontra * $bcv;
+                }else{
+                    $amount = $montocontra;
                 }
                 /*** */
 
@@ -822,6 +830,8 @@ public function procesardeposito(Request $request){
                   /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $request->valordebe * $bcv;
+                   }else{
+                    $amount = $request->valordebe;
                    }
                   /*** */
 
@@ -838,6 +848,8 @@ public function procesardeposito(Request $request){
                      /*** */
                 if($request->moneda != 'bolivares'){
                     $amount = $montocontra * $bcv;
+                   }else{
+                    $amount = $montocontra;
                    }
                   /*** */
 
@@ -914,6 +926,8 @@ public function procesardeposito(Request $request){
                            /*** */
                            if($request->moneda != 'bolivares'){
                             $amount = $request->valorhaber * $bcv;
+                           }else{
+                            $amount = $request->valorhaber;
                            }
                           /*** */
 
@@ -928,6 +942,9 @@ public function procesardeposito(Request $request){
                           /*** */
                           if($request->moneda != 'bolivares'){
                             $amount = $montocontra * $bcv;
+                           }else{
+                            $amount = $montocontra;
+
                            }
                           /*** */
 
