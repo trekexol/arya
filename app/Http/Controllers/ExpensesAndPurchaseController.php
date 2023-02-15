@@ -773,16 +773,22 @@ class ExpensesAndPurchaseController extends Controller
                 $bcv = null;
                 $total = $total - $montodebito;
              }else{
+
                 $bcv = $expense->rate;
-                $total = $total - $montodebito;
                 $total = $total / $expense->rate;
+                $total = $total - $montodebito;
                 $base_imponible = $base_imponible / $expense->rate;
 
 
              }
+            if($base_imponible == 0){
+                $expense->total_factura = $total;
+                $expense->base_imponible = $base_imponible;
+            }else{
+                $expense->total_factura = $total;
+                $expense->base_imponible = $total;
+            }
 
-             $expense->total_factura = $total;
-             $expense->base_imponible = $base_imponible;
 
              $anticipos_sum = 0;
              if(isset($coin)){
@@ -3379,7 +3385,7 @@ public function notas(request $request)
 
                         }elseif($expensesandpurchases->coin == 'dolares'){
 
-                            $montodescuento = $despor * $expensesandpurchases->rate;
+                            $montodescuento = $despor;
 
 
                             if($montodescuento > $expensesandpurchases->amount){
@@ -3467,11 +3473,11 @@ public function notas(request $request)
 
                                         if($expensesandpurchases->coin == 'dolares'){
 
-                                        $preciodeduccionproducto = $cantidad * $precioindividual * $expensesandpurchases->rate;
+                                        $preciodeduccionproducto = $cantidad * $precioindividual;
 
 
-                                        $totalFactura = $totalFactura * $expensesandpurchases->rate;
-                                        $preciodeduccion += $cantidad * $precioindividual * $expensesandpurchases->rate;
+                                        $totalFactura = $totalFactura;
+                                        $preciodeduccion += $cantidad * $precioindividual;
 
                                         }
                                         elseif($expensesandpurchases->coin == 'bolivares'){
