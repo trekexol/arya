@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
 
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Gasto o Compras</h3></div>
+                <div class="card-header" ><h3>Gasto o Comprass</h3></div>
                 <div class="card-body" >
                     <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                         <div class="form-group row">
-                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
+                            <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura: </label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($expense->total_factura, 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
 
@@ -118,16 +118,16 @@
                         @if($debitnoteexpense)
                         @if($debitnoteexpense->percentage > 0)
                         <?php if($coin == 'dolares'){
-                            $montodebito =  $debitnoteexpense->monto_perc / $debitnoteexpense->rate;
+                            $montodebito =  $debitnoteexpense->monto_perc / $bcv;
                         } else{
                             $montodebito =  $debitnoteexpense->monto_perc;
                         }?>
                         <div class="form-group row">
-                            <label for="total_descuento_general" class="col-md-2 col-form-label text-md-right">Descuento Nota de Débito</label>
+                            <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Descuento Nota de Débito</label>
                             <div class="col-md-3">
-                                <input id="total_descuento_general" type="text" class="form-control @error('total_descuento_general') is-invalid @enderror" name="total_descuento_general" placeholder="0,00" value="{{$montodebito}}" readonly>
+                                <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
 
-                                @error('total_descuento_general')
+                                @error('descuentonota')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -959,6 +959,7 @@ function calculate(valor) {
     let inputIva = document.getElementById("iva").value;
     //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
     let totalFactura = "<?php echo $expense->total_factura ?>";
+    let descuentonota = "<?php echo $expense->total_factura ?>";
     //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
     let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
@@ -1002,7 +1003,7 @@ function calculate(valor) {
     totalFactura = totalFactura - discount;
 
     if (totalBaseImponible > 0){
-               
+
                totalIvaMenos = (totalFactura * inputIva) / 100;
 
            } else {
@@ -1086,6 +1087,7 @@ function calculate(valor) {
 
     document.getElementById("grand_total").value = grand_totalformat;
 
+    console.log();
 
     let inputAnticipo = document.getElementById("anticipo").value;
 
