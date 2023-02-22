@@ -288,7 +288,7 @@
                                     <option value="1">PALETA</option>
                                     <option value="2">CONTENEDOR</option>
                                     <option value="3">GUIA MASTER</option>
-                                    <option value="4">.TULA</option>
+                                    <option value="4">TULA</option>
 
                                 </select>
 
@@ -301,7 +301,7 @@
                                     <option value="1">ADUANA</option>
                                     <option value="2">INTERNACIONAL</option>
                                     <option value="3">SEGURO</option>
-                           
+
                                 </select>
                             </div>
 
@@ -310,10 +310,10 @@
                             <div class="col-md-2">
                                 <input id="nrofactcou" type="text" class="form-control" name="nrofactcou" value="{{ old('nrofactcou') }}">
                             </div>
-                          
+
                         </div>
                         @endif
-                       
+
                         <br>
                         <div class="form-group row" id="formenviarcredito">
 
@@ -396,7 +396,7 @@
                                     <option value="1">ADUANA</option>
                                     <option value="2">INTERNACIONAL</option>
                                     <option value="3">SEGURO</option>
-                           
+
                                 </select>
                             </div>
 
@@ -405,7 +405,7 @@
                             <div class="col-md-2">
                                 <input id="nrofactcou" type="text" class="form-control" name="nrofactcou" value="{{ old('nrofactcou') }}">
                             </div>
-                          
+
                         </div>
                         @endif
 
@@ -1059,7 +1059,7 @@ function calculate(valor) {
            totalFactura = totalFactura - discount;
 
            if (totalBaseImponible > 0){
-               
+
                totalIvaMenos = (totalFactura * inputIva) / 100;
                totalIva = (totalBaseImponible * inputIva) / 100;
            } else {
@@ -1067,8 +1067,8 @@ function calculate(valor) {
                totalIva = 0;
            }
 
-           
-     
+
+
     //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
     //Toma la Base y la envia por form
@@ -1228,7 +1228,7 @@ function calculate(valor) {
             $("#descuento_general").on('change',function(){
                 calculate(2);
             });
-            
+
             $("#checkdescuento").on('change', function() {
 
                 if ($(this).is(':checked')) {
@@ -1254,10 +1254,10 @@ function calculate(valor) {
                 $("#descuento_form").val(0);
                 $("#descuento_general").val(0);
                 $("#div_descuento").hide();
-                
-                document.getElementById("forcheckdescuento").innerHTML = "Aplicar Descuento";       
+
+                document.getElementById("forcheckdescuento").innerHTML = "Aplicar Descuento";
                 calculate(1);
-                
+
             }
 
         });
