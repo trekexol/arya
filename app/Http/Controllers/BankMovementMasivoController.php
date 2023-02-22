@@ -73,7 +73,7 @@ public function importmovimientos(Request $request){
                 $extension = $request->file('file')->extension();
 
 
-    if(($banco == 'Bancamiga' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
+    if(($banco == 'Bancamiga' OR $banco == 'Bancamigausd' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
 
     $import = new TempMovimientosImport($banco);
     Excel::import($import, $file);

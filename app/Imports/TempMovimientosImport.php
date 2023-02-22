@@ -36,8 +36,17 @@ class TempMovimientosImport implements  ToCollection
         $contadorerror = 0;
 
 
-       if($this->banco == 'Bancamiga'){
+       if($this->banco == 'Bancamiga' OR $this->banco == 'Bancamigausd'){
 
+
+        if($this->banco == 'Bancamigausd'){
+            $moneda = 'dolares';
+            $banco = 'BANCAMIGA CUSTODIA';
+        }else{
+            $moneda = 'bolivares';
+            $banco = 'BANCAMIGA CUENTA CORRIENTE';
+
+        }
 
                 foreach($rows as $row){
 
@@ -59,9 +68,9 @@ class TempMovimientosImport implements  ToCollection
 
 
                     $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','BANCAMIGA CUENTA CORRIENTE')
+                                ->where('banco',$banco)
                                 ->where('referencia_bancaria',trim($row[2], "'"))
-                                ->where('moneda','bolivares')
+                                ->where('moneda',$moneda)
                                 ->where('haber',$row[5])
                                 ->where('fecha',$arr)
                                 ->where('debe',$row[4])->first();
@@ -73,13 +82,13 @@ class TempMovimientosImport implements  ToCollection
 
                                 $user = new TempMovimientos();
                                 $user->setConnection(Auth::user()->database_name);
-                                $user->banco        = 'BANCAMIGA CUENTA CORRIENTE';
+                                $user->banco        = $banco;
                                 $user->referencia_bancaria     = trim($row[2], "'");
                                 $user->descripcion       = $row[3];
                                 $user->fecha    = $arr;
                                 $user->haber     = $row[5];
                                 $user->debe   = $row[4];
-                                $user->moneda      = 'bolivares';
+                                $user->moneda      = $moneda;
                                 $user->save();
 
 
