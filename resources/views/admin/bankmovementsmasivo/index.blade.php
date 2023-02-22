@@ -18,7 +18,7 @@
     <div class="form-row">
         <div class="form-group col-md-2">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteModal" >Subir Movimientos</button>
-        </div>  
+        </div>
         <div class="form-group col-md-3">
             <select class="form-control" name="bancos" id="bancos">
                 <option value="">Seleccione Banco.</option>
@@ -44,7 +44,7 @@
         </form>
 
         </div>
- 
+
 </div>
 <br>
 
@@ -87,6 +87,7 @@
                             <select class="form-control" name="banco" id="banco">
                               <option value="">Seleccione..</option>
                               <option value="Bancamiga">Bancamiga</option>
+                              <option value="Bancamigausd">Bancamiga Custodia</option>
                               <option value="Banco Banesco">Banesco</option>
                               <option value="Banco Banplus">Banplus</option>
                               <option value="Banplus Custodia">Banplus Custodia</option>
@@ -95,7 +96,7 @@
                               <option value="Chase">Chase</option>
                               <option value="BOFA">BOFA</option>
                             </select>
-                            
+
 
                           </div>
                         <div id="muestrasbanco"></div>
