@@ -61,6 +61,8 @@ class ExpenseDetailValidationController extends Controller
             if($var->islr == 1){
                 $total_retiene_islr += ($var->price * $var->amount);
             }
+
+            $totalcour = $total / $var->rate;
         }
 
         $expense->base_imponible = $base_imponible;
@@ -80,7 +82,7 @@ class ExpenseDetailValidationController extends Controller
 
            if($facour){
 
-               $facour->monto = $total;
+               $facour->monto = $totalcour;
                $facour->save();
            }
             /*********COURIERTOOL *********/
