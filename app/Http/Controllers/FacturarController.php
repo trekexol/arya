@@ -3243,15 +3243,18 @@ public function storeanticiposaldar(Request $request)
             
             
             //Modifica la factura
-        
+        if ($quotation->status != "P") {
+         
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
             $quotation->amount =  $sin_formato_amount;
             $quotation->amount_iva =  $sin_formato_amount_iva;
             $quotation->amount_with_iva = $sin_formato_grandtotal;
             $quotation->iva_percentage = $iva_percentage;
+        }    
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
+
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
             $quotation->status = "C";
