@@ -726,7 +726,7 @@ return [
             ]) : [],
             ],
 
-            'northseniat' => [
+            'north_seniat' => [
                 'driver' => 'mysql',
                 'url' => env('DATABASE_URL'),
                 'host' => env('NORTHSENIAT_HOST', '127.0.0.1'),

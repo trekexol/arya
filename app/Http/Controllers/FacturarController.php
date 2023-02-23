@@ -1824,6 +1824,7 @@ class FacturarController extends Controller
             }
             
 
+        if ($quotation->status != 'P' ){
 
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
@@ -1831,12 +1832,13 @@ class FacturarController extends Controller
             $quotation->amount_iva =  $sin_formato_amount_iva;
             $quotation->amount_with_iva = $base_imponible + $amount_exento + $sin_formato_amount_iva;
             $quotation->amount_with_iva = $sin_formato_grandtotal;
-            $quotation->iva_percentage = $iva_percentage;
+            $quotation->iva_percentage = $iva_percentage; 
+        }
             $quotation->retencion_iva = $retencion_iva;
             $quotation->retencion_islr = $retencion_islr;
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
-
+        
 
             if($coin == 'dolares'){
                 
@@ -1850,6 +1852,8 @@ class FacturarController extends Controller
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
                 $sub_total = $sub_total * $bcv;
+
+                if ($quotation->status != 'P' ){
                 $quotation->base_imponible = $base_imponible;
                 $quotation->amount_exento =  $amount_exento * $bcv;
                 $quotation->amount =  $sin_formato_amount;
@@ -1857,6 +1861,8 @@ class FacturarController extends Controller
                 $quotation->amount_with_iva = ($base_imponible) + ($amount_exento * $bcv) + ($sin_formato_amount_iva);
                 $quotation->amount_with_iva = $sin_formato_grandtotal;
                 $quotation->iva_percentage = $iva_percentage;
+                }
+                
                 $quotation->retencion_iva = $retencion_iva;
                 $quotation->retencion_islr = $retencion_islr;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
@@ -1980,6 +1986,7 @@ class FacturarController extends Controller
 
 
             $quotation->status = "C";
+            
             
             $quotation->save();   /// guardando factura
             
