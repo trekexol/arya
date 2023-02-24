@@ -2,7 +2,7 @@
 
 @section('content')
 
-<?php 
+<?php
 
 $pres_active = '';
 $utili_active = '';
@@ -67,16 +67,16 @@ $liqui_active = '';
         @endif
         @if ($type == 'liquidaciones')
         <h2>Liquidación de Empleados</h2>
-        @endif  
-        
+        @endif
+
       </div>
       <div class="col-md-6" style="display: none;">
         <a href="{{ route('employees.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
       </div>
       @if ($type == 'vacaciones')
-    
+
       <div class="col-md-6">
-        <a href="{{ route('nominas.create_recibo_vacaciones')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Crear Recibo de Vacacioens</a>   
+        <a href="{{ route('nominas.create_recibo_vacaciones')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Crear Recibo de Vacacioens</a>
       </div>
 
       @endif
@@ -100,13 +100,13 @@ $liqui_active = '';
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
+            <tr>
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
@@ -132,7 +132,7 @@ $liqui_active = '';
                 <th>Dias de Vac. Acumuladas</th>
                 <th></th>
                 @endif
-                @if ($type == 'liquidacion')
+                @if ($type == 'liquidaciones')
                 <th>Salario Diario</th>
                 <th>Salario Integral</th>
                 <th>Prestaciones Acumuladas</th>
@@ -144,10 +144,10 @@ $liqui_active = '';
 
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($employees))
-                @else  
+                @else
                     @foreach ($employees as $employee)
                         <tr>
                             <td>{{$employee->id_empleado}}</td>
@@ -155,13 +155,13 @@ $liqui_active = '';
                             <td>{{$employee->apellidos}}</td>
 
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
-                            
+
                             @if ($type == 'prestaciones')
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>
-                            <a href="{{ route('pdf.prestations',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.prestations',[$employee->id,'prestacion']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
                             @endif
                             @if ($type == 'utilidades')
@@ -172,7 +172,7 @@ $liqui_active = '';
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>
-                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
                             @endif
                             @if ($type == 'vacaciones')
@@ -183,7 +183,7 @@ $liqui_active = '';
                             <!--<a href="{{ ''/*route('pdf.quotation',[$employee->id]) */}}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> -->
                             </td>
                             @endif
-                            @if ($type == 'liquidacion')
+                            @if ($type == 'liquidaciones')
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
@@ -191,19 +191,19 @@ $liqui_active = '';
                             <td>{{'0'}}</td>
                             <td>{{'0'}}</td>
                             <td>
-                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> 
+                            <a href="{{ route('pdf.prestations',[$employee->id,'liquidacion']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
-                            @endif                           
+                            @endif
 
-                        </tr>     
-                    @endforeach   
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
         </div>
     </div>
 </div>
-@if (empty($employee->id)) 
+@if (empty($employee->id))
 @else
 <!-- Delete Warning Modal -->
 <div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
@@ -220,9 +220,9 @@ $liqui_active = '';
                 @csrf
                 @method('DELETE')
                 <input id="id_employee_modal" type="hidden" class="form-control @error('id_employee_modal') is-invalid @enderror" name="id_employee_modal" readonly required autocomplete="id_employee_modal">
-                       
+
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -234,7 +234,7 @@ $liqui_active = '';
   </div>
 @endif
 
-    
+
 @endsection
 @section('javascript')
     <script>
@@ -245,11 +245,11 @@ $liqui_active = '';
     });
 
     $(document).on('click','.delete',function(){
-         
+
          let id_employee = $(this).attr('data-id-employee');
 
          $('#id_employee_modal').val(id_employee);
 
     });
-    </script> 
+    </script>
 @endsection

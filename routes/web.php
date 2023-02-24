@@ -679,7 +679,11 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('quotation/{id_quotation}/{coin?}/{photo?}','PDF2Controller@printQuotation')->name('pdf.quotation');
 
-    Route::get('prestations/{employee_id}/','NominaPartsController@completcalcs')->name('pdf.prestations');
+    Route::get('prestations/{employee_id?}/{tipo?}','NominaPartsController@completcalcs')->name('pdf.prestations');
+
+    Route::post('prestationsbalance','NominaPartsController@balancecomprobacion')->name('pdf.prestationsbalance');
+
+
 
      //////PDF EMPRESA LICORES//////////////////////////////////////////////////////////////////////////////////
     Route::get('quotationlic/{id_quotation}/{coin?}','PDF2LicController@printQuotation')->name('pdf.quotationlic');

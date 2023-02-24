@@ -10,16 +10,16 @@ use App\Estado;                 //IMPORTANTE NOMBRE DE LA CLASE
 use App\Municipio;              //IMPORTANTE NOMBRE DE LA CLASE
 use App\Parroquia;              //IMPORTANTE NOMBRE DE LA CLASE
 use App\NominaType;
-use App\Position;                 
-use App\SalaryType;              
+use App\Position;
+use App\SalaryType;
 use App\Profession;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;      
+use Illuminate\Support\Facades\Auth;
 
 
 class EmployeeController extends Controller
 {
- 
+
     public function __construct(){
 
        $this->middleware('auth');
@@ -32,7 +32,7 @@ class EmployeeController extends Controller
        ->orderBy('status' ,'DESC')
        ->orderBy('nombres' ,'ASC')
        ->get();
-       
+
        $estatus = '';
 
         foreach ($employees as $employee){
@@ -54,7 +54,7 @@ class EmployeeController extends Controller
             }
             if ($employee->status == 5) {
                 $estatus = 'Liquidado';
-            }                                            
+            }
             if ($employee->status == 6) {
                 $estatus = 'De Permiso';
             }
@@ -65,7 +65,7 @@ class EmployeeController extends Controller
             $employee->status = $estatus;
             $employee->nomina_type_id_name = $nomina_type->name;
         }
-      
+
        return view('admin.employees.index',compact('employees'));
    }
 
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
        $estados            = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
        $municipios         = Municipio::on(Auth::user()->database_name)->get();
        $parroquias         = Parroquia::on(Auth::user()->database_name)->get();
-       $nomina_type        = NominaType::on(Auth::user()->database_name)->get();    
+       $nomina_type        = NominaType::on(Auth::user()->database_name)->get();
        $position           = Position::on(Auth::user()->database_name)->get();
        $salarytype         = Salarytype::on(Auth::user()->database_name)->get();
        $profession         = Profession::on(Auth::user()->database_name)->get();
@@ -98,7 +98,7 @@ class EmployeeController extends Controller
     */
    public function store(Request $request)
     {
-   
+
     $data = request()->validate([
         'nombres'         =>'required|max:160',
         'apellidos'         =>'required|max:160',
@@ -110,12 +110,12 @@ class EmployeeController extends Controller
 
         'fecha_ingreso'         =>'required',
         'fecha_nacimiento'         =>'required',
-        
+
         'position_id'         =>'required',
         'nomina_type'         =>'required',
 
         'asignacion_general'         =>'required',
-        
+
         'estado'         =>'required',
         'Municipio'         =>'required',
         'Parroquia'         =>'required',
@@ -123,13 +123,13 @@ class EmployeeController extends Controller
         'salarytype_id'         =>'required',
         'monto_pago'         =>'required',
         'centro_costo'         =>'required'
-        
-       
+
+
     ]);
-    
+
     $users = new Employee();
     $users->setConnection(Auth::user()->database_name);
-    
+
     $users->nombres = request('nombres');
     $users->apellidos = request('apellidos');
     $users->code_employee = request('code_employee');
@@ -146,7 +146,7 @@ class EmployeeController extends Controller
     $users->parroquia_id = request('Parroquia');
 
     $users->fecha_ingreso = request('fecha_ingreso');
-   
+
     $users->fecha_nacimiento = request('fecha_nacimiento');
     $users->direccion = request('direccion');
 
@@ -169,7 +169,7 @@ class EmployeeController extends Controller
     $users->dias_acumulado_prestaciones = request('dias_pres_acumulado');
     $users->dias_acumulado_vacaciones = request('dias_vaca_acumulado');
     $sin_formato_int_acumulado_prestaciones = str_replace(',', '.', str_replace('.', '', request('intereses_prest_acumulado')));
-     
+
     $users->int_acumulado_prestaciones = $sin_formato_int_acumulado_prestaciones;
 
     $users->acumulado_prestaciones = $sin_formato_acumulado_prestaciones;
@@ -181,45 +181,30 @@ class EmployeeController extends Controller
     $users->status =  request('status');
     $users->branch_id = request('centro_costo');
 
-    
-   
+
+
     $users->save();
 
     return redirect('/employees')->withSuccess('Registro Exitoso!');
     }
 
-   /**
-    * Display the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
-   public function show($id)
-   {
-       //
-   }
 
-   /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  int  $id
-    * @return \Illuminate\Http\Response
-    */
+
    public function edit($id)
    {
         $var = Employee::on(Auth::user()->database_name)->find($id);
-        
+
         $estados             = Estado::on(Auth::user()->database_name)->get();
         $municipios          = Municipio::on(Auth::user()->database_name)->get();
         $parroquias          = Parroquia::on(Auth::user()->database_name)->get();
         $positions           = Position::on(Auth::user()->database_name)->get();
         $salarytypes         = Salarytype::on(Auth::user()->database_name)->get();
         $professions         = Profession::on(Auth::user()->database_name)->get();
-        $nomina_type         = NominaType::on(Auth::user()->database_name)->get(); 
+        $nomina_type         = NominaType::on(Auth::user()->database_name)->get();
         $centro_costo        = Branch::on(Auth::user()->database_name)->orderBy('description','asc')->get();
 
         return view('admin.employees.edit',compact('var','estados','municipios','parroquias','positions','salarytypes','professions','centro_costo','nomina_type'));
-  
+
    }
 
    /**
@@ -233,17 +218,17 @@ class EmployeeController extends Controller
    {
 
     $users =  Employee::on(Auth::user()->database_name)->find($id);
-   
+
     $data = request()->validate([
         'nombres'         =>'required|max:160',
         'apellidos'         =>'required|max:160',
         'id_empleado'         =>'required',
         'telefono1'         =>'required',
         'amount_utilities'         =>'required|max:2',
-        
+
         'fecha_ingreso'         =>'required',
         'fecha_nacimiento'         =>'required',
-        
+
         'position_id'         =>'required',
         'nomina_type'         =>'required',
         'asignacion_general'         =>'required',
@@ -252,16 +237,16 @@ class EmployeeController extends Controller
         'Municipio'         =>'required',
         'Parroquia'         =>'required',
         'direccion'         =>'required',
-        
+
         'salarytype_id'         =>'required',
-       
+
         'monto_pago'         =>'required',
-       
+
     ]);
 
     $users = Employee::on(Auth::user()->database_name)->findOrFail($id);
-      
-    
+
+
     $users->nombres = request('nombres');
     $users->apellidos = request('apellidos');
 
@@ -279,7 +264,7 @@ class EmployeeController extends Controller
 
     $users->id_empleado = $request->type_code.request('id_empleado');
     $users->fecha_ingreso = request('fecha_ingreso');
-   
+
     $users->fecha_nacimiento = request('fecha_nacimiento');
     $users->direccion = request('direccion');
     $users->monto_pago = str_replace(',', '.', str_replace('.', '', request('monto_pago')));
@@ -296,17 +281,17 @@ class EmployeeController extends Controller
     $users->dias_acumulado_prestaciones = request('dias_pres_acumulado');
     $users->dias_acumulado_vacaciones = request('dias_vaca_acumulado');
     $sin_formato_int_acumulado_prestaciones = str_replace(',', '.', str_replace('.', '', request('intereses_prest_acumulado')));
-     
+
     $users->int_acumulado_prestaciones = $sin_formato_int_acumulado_prestaciones;
 
     $users->status =  request('status');
-     
+
     $users->branch_id = request('centro_costo');
 
     $users->save();
-     
+
     return redirect('/employees')->withSuccess('Actualizacion Exitosa!');
-    
+
     }
 
 
@@ -325,7 +310,7 @@ class EmployeeController extends Controller
 
             if(empty($employee->fecha_egreso)){
                 $date = Carbon::now();
-                $datenow = $date->format('Y-m-d'); 
+                $datenow = $date->format('Y-m-d');
                 $employee->fecha_egreso = $datenow;
             }
 
