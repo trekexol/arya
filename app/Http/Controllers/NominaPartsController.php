@@ -11,6 +11,7 @@ use App\NominaBasesCalcs;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NominaPartsController extends Controller
 {
@@ -49,18 +50,26 @@ class NominaPartsController extends Controller
 
 
         if($tipo == 'prestacion'){
-
+            $idempleado = $employee;
             $pdf = App::make('dompdf.wrapper');
             $company = Company::on(Auth::user()->database_name)->find(1);
 
             $employee = Employee::on(Auth::user()->database_name) // Buscamos el empleado
-            ->where('status','NOT LIKE','X')
-            ->where('id','=',$employee)
-            ->orderBy('id' ,'DESC')->get()->first();
+            ->where('id','=',$idempleado)->first();
+
+           $datospresta = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->where('a.id_employee',$idempleado)
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
+            ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
+            ->get();
 
 
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo'))->setPaper('a4', 'landscape');
+
+          $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta'))->setPaper('a4', 'landscape');
 
           return $pdf->stream();
 

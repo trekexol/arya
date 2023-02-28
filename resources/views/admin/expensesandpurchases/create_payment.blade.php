@@ -278,7 +278,7 @@
 
                         </div>
 
-                        @if (Auth::user()->company['id']  == '26' || Auth::user()->company['id']  == '3' )
+                        @if (Auth::user()->company['id']  == '26' )
                         <div class="form-group row" id="newcour">
                             <label for="court" class="col-md-2 col-form-label text-md-right">Tipo Couriertool:</label>
 
@@ -373,7 +373,7 @@
 
                         <input type="hidden" id="date_payment_form_expense" name="date_payment_expense" value="{{$expense->date_payment ?? $datenow}}" readonly>
 
-                        @if (Auth::user()->company['id']  == '26' || Auth::user()->company['id']  == '3' )
+                        @if (Auth::user()->company['id']  == '26' )
                         <div class="form-group row" id="newcour2">
                             <label for="court" class="col-md-2 col-form-label text-md-right">Tipo Couriertool:</label>
 

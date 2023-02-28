@@ -484,7 +484,7 @@
 
                                         </div>
 
-                                    <label for="rol" class="col-md-2 col-form-label text-md-right">Motivo</label>
+                                    <label for="rol" class="col-md-2 col-form-label text-md-right">Motivo de Liquidación</label>
 
                                     <div class="col-md-4">
                                         <select class="form-control" id="motivo" name="motivo" title="motivo">
@@ -493,14 +493,20 @@
                                             @if($var->motivo == 1)
                                                 <option selected value="1">Renuncia</option>
                                                 <option value="2">Despido</option>
-
+                                                <option value="3">Postumo</option>
                                             @elseif($var->motivo == 2)
                                                 <option selected value="2">Despido</option>
                                                 <option value="1">Renuncia</option>
+                                                <option value="3">Postumo</option>
+                                            @elseif($var->motivo == 3)
+                                                <option selected value="3">Postumo</option>
+                                                <option value="1">Renuncia</option>
+                                                <option value="2">Despido</option>
                                             @else
-                                            <option value="">Seleccione</option>
-                                            <option value="1">Renuncia</option>
-                                            <option value="2">Despido</option>
+                                                <option value="">Seleccione</option>
+                                                <option value="1">Renuncia</option>
+                                                <option value="2">Despido</option>
+                                                <option value="3">Postumo</option>
                                             @endif
 
                                             </div>
