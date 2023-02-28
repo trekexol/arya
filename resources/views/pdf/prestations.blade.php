@@ -40,13 +40,11 @@
     </tr>
   </table>
   <h4 style="color: black; text-align: center">PRESTACIONES</h4>
-  <h5 style="color: black; text-align: center">Fecha de Emisión: {{ '' }} / Fecha desde: {{ '' }} Fecha Hasta: {{ '' }}</h5>
 
 
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; border-right-color: black; border-left-color: black;">MT</th>
-<th style="text-align: center; border-right-color: black; border-left-color: black;">CPT</th>
+<th style="text-align: center; border-right-color: black; border-left-color: black;">MT</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Mes</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Año</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">CDBV</th>
@@ -67,32 +65,88 @@
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Acumulados</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Total Prest + Int</th>Nom</th>
 </tr>
-  <?php
-     //inicio de variables
-  ?>
-  <!--foreach ($quotations as $quotation)-->
+
+<?php
+
+    if($employee->amount_utilities == 'Ma'){
+
+        $diasutilidades = 120;
+
+    }else{
+        $diasutilidades = 30;
+    }
+$i = 1;
+$o = 1;
+$cantidadmeses = 1;
+$diasvacaciones = 15;
+$diasextras = 0;
+$diasvaca = '';
+?>
+
+@foreach ($datospresta as $datospresta)
+
+<?php
+
+    $sueldodiario = $datospresta->monto/30;
+    $cuotautilidad = $sueldodiario*$diasutilidades/360;
+
+
+
+    if($o == 24){
+        $diasvacaciones = $diasvacaciones + 1;
+        $diasextras = $diasextras + 1;
+        $os = 1;
+    }
+
+    elseif(isset($os) AND $os == 12){
+        $diasvacaciones = $diasvacaciones + 1;
+
+        $os = 1;
+    }elseif(isset($os)){
+        $os++;
+    }
+
+    $cuotavaca = $sueldodiario*$diasvacaciones/360;
+
+    $salariointegral = $sueldodiario + $cuotautilidad + $cuotavaca;
+
+
+
+    if($cantidadmeses == 4)
+    {
+      $asig =   $salariointegral * $diasvacaciones;
+      $diasvaca = 15;
+      $diasextrass = $diasextras;
+      $cantidadmeses = 1;
+
+      $acumulado += $asig;
+
+    }else{
+        $diasvaca = '';
+        $diasextrass = '';
+        $asig = 0;
+    }
+
+
+?>
+
 
     <tr>
-
-      <td style="text-align: center; ">{{ '' }}</td>
-      <td style="text-align: center; ">{{ ''}}</td>
-
-      <td style="text-align: center; font-weight: normal;">{{''}}{{ '' }}</td>
-      <td style="text-align: center; font-weight: normal;">{{ '' }}</td>
-      <td style="text-align: center; font-weight: normal;">{{ '' }}</td>
-      <td style="text-align: center; ">{{ ''}}</td>
-      <td style="text-align: center; font-weight: normal;">{{''}}</td>
-      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--D-->
-      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--C-->
-      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--FA-->
-      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--CA-->
-
-
-        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
+      <td style="text-align: center; ">{{ $i }}</td>
+      <td style="text-align: center; font-weight: normal;">{{$datospresta->mes }}</td>
+      <td style="text-align: center; font-weight: normal;">{{ $datospresta->año }}</td>
+      <td style="text-align: center; font-weight: normal;">{{ ''}}</td>
+      <td style="text-align: center; ">{{$diasvacaciones}}</td>
+      <td style="text-align: center; font-weight: normal;">{{$datospresta->monto}}</td>
+      <td style="text-align: center; font-weight: normal;">{{number_format(($datospresta->monto/30), 2, ',', '.')}}</td><!--D-->
+      <td style="text-align: center; font-weight: normal;">{{number_format(($cuotautilidad), 2, ',', '.')}}</td><!--C-->
+      <td style="text-align: center; font-weight: normal;">{{number_format(($cuotavaca), 2, ',', '.')}}</td><!--FA-->
+      <td style="text-align: center; font-weight: normal;">{{number_format(($salariointegral), 2, ',', '.')}}</td><!--CA-->
+        <td style="text-align: right; font-weight: normal;">{{ $diasvaca }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ $diasextrass }}</td>
+        <td style="text-align: right; font-weight: normal;">{{number_format(($asig), 2, ',', '.')   }}</td><!--BIA-->
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
-        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!-- IvaA-->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($acumulado), 2, ',', '.')    }}</td><!-- IvaA-->
         <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16B -->
         <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
@@ -100,10 +154,16 @@
         <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
 
     </tr>
+
     <?php
-      //$conteo++;
+
+
+        $cantidadmeses++;
+        $o++;
+        $i++;
     ?>
-  <!--endforeach-->
+
+    @endforeach
 
   <tr  style="display:none;">
 

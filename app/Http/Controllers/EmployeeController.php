@@ -288,6 +288,9 @@ class EmployeeController extends Controller
 
     $users->branch_id = request('centro_costo');
 
+    $users->fecha_egreso = request('fecha_egreso');
+    $users->motivo = request('motivo');
+
     $users->save();
 
     return redirect('/employees')->withSuccess('Actualizacion Exitosa!');
