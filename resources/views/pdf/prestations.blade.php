@@ -643,9 +643,9 @@ if($mes == '01'){
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<title></title>
+<title>balancecomprobacion</title>
 <style>
-  table, td, th {
+     table, td, th {
     border: 1px solid black;
     font-size: x-small;
     font-size: 8pt;
@@ -675,29 +675,22 @@ if($mes == '01'){
     </tr>
   </table>
   <h4 style="color: black; text-align: center">Balance de Comprobacion</h4>
-  <h5 style="color: black; text-align: center">Fecha de Emisión: {{ '' }} / Fecha desde: {{ '' }} Fecha Hasta: {{ '' }}</h5>
-
+  <h5 style="color: black; text-align: center">Fecha desde: {{ $ini }} Fecha Hasta: {{ $fin }}</h5>
 
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; border-right-color: black; border-left-color: black;">CUENTAS</th>
     <th style="text-align: center; border-right-color: black; border-left-color: black;"  colspan="2">SUMAS</th>
     <th style="text-align: center; border-right-color: black; border-left-color: black;" colspan="2">SALDOS</th>
-
-</tr>
+    </tr>
 
 
     <tr>
-
-        <td></td>
-
-      <td style="text-align: center;" >DEBE</td>
-      <td style="text-align: center;" >HABER</td>
-
-      <td style="text-align: center;">DEUDOR</td>
-      <td style="text-align: center;" >ACREEDOR</td>
-
-
+    <th></th>
+    <th style="text-align: center;" >DEBE</th>
+    <th style="text-align: center;" >HABER</th>
+    <th style="text-align: center;">DEUDOR</th>
+    <th style="text-align: center;" >ACREEDOR</th>
     </tr>
 
     <?php
@@ -745,7 +738,7 @@ if($mes == '01'){
         $saldodeudor =  str_replace(".", "", $saldodeudor);
         $saldodeudor =  str_replace(",", ".", $saldodeudor);
         $totaldeudor += $saldodeudor;
-    ?>
+        ?>
 
         <td>{{ $saldodeudor }}</td>
         <td></td>
@@ -758,7 +751,7 @@ if($mes == '01'){
 
        @endforeach
         <tr>
-            <td></td>
+            <td>TOTAL</td>
             <td>{{ $totaldebe }}</td>
             <td>{{ $totalhaber }}</td>
             <td>{{ $totaldeudor }}</td>

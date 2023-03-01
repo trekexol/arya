@@ -118,6 +118,9 @@ class NominaPartsController extends Controller
         if($request->tipo == 'balancecomprobacion'){
 
         $tipo = $request->tipo;
+        $ini = $request->ini;
+        $fin = $request->fin;
+
         $arreglo = decrypt($request->employee);
 
         $pdf = App::make('dompdf.wrapper');
@@ -127,7 +130,7 @@ class NominaPartsController extends Controller
            $date = Carbon::now();
            $datenow = $date->format('Y-m-d');
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','arreglo','datenow'))->setPaper('a4');
+          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','arreglo','datenow','ini','fin'));
 
           return $pdf->stream();
 

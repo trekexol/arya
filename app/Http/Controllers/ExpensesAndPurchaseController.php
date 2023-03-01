@@ -684,12 +684,20 @@ class ExpensesAndPurchaseController extends Controller
                       } else{
                           $montodebito =  $debitnoteexpense->monto_perc;
                       }
-
+                      $creditrue = false;
+                }elseif($debitnoteexpense->percentage == 0){
+                    if($coin == 'dolares'){
+                        $montodebito =  $debitnoteexpense->monto_perc / $debitnoteexpense->rate;
+                      } else{
+                          $montodebito =  $debitnoteexpense->monto_perc;
+                      }
+                      $creditrue = true;
                 }else{
+                    $creditrue = false;
                     $montodebito = 0;
                 }
             }else{
-
+                $creditrue = false;
                 $montodebito = 0;
             }
 
@@ -771,12 +779,30 @@ class ExpensesAndPurchaseController extends Controller
 
              if($coin == 'bolivares'){
                 $bcv = null;
-                $total = $total - $montodebito;
-             }else{
+
+                if($creditrue == TRUE){
+                    $total = $total + $montodebito;
+
+                }else{
+                    $total = $total - $montodebito;
+
+                }
+
+
+            }else{
 
                 $bcv = $expense->rate;
                 $total = $total / $expense->rate;
-                $total = $total - $montodebito;
+
+                if($creditrue == TRUE){
+                    $total = $total + $montodebito;
+
+                }else{
+                    $total = $total - $montodebito;
+
+                }
+
+
                 $base_imponible = $base_imponible / $expense->rate;
 
 
@@ -3303,23 +3329,25 @@ public function notas(request $request)
 
         if($request->ajax()){
             try{
-
+                $tiponota = $request->tiponota;
                 $idexpense = $request->id_expense;
                 $id_user  = $request->id_user;
-                $tipocuenta = $request->tipocuenta;
                 $date = $request->date;
                 $obs = $request->observation;
-                $note = $request->note;
-
                 $nrofactura = $request->invoice;
-
-                $descripcionfactura = "NOTA DEBITO DE GASTOS Y COMPRA NRO ".$nrofactura;
 
                 $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
                 ->where('amount_with_iva','<>',null)
                 ->where('id',$idexpense)
                 ->where('status','P')
                 ->first();
+
+                if($tiponota == 'debito'){
+
+                $tipocuenta = $request->tipocuenta;
+                $note = $request->note;
+                $descripcionfactura = "NOTA DEBITO DE GASTOS Y COMPRA NRO ".$nrofactura;
+
 
                 if($expensesandpurchases){
 
@@ -3369,11 +3397,17 @@ public function notas(request $request)
                                 $headervoucher->save();
 
 
-                              /*  $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+                               $descuentoenpago = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
 
-                                if(isset($account)){
-                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$despor);
-                                }*/
+                                if(isset($descuentoenpago)){
+                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$descuentoenpago->id,$idexpense,$id_user,0,$despor);
+                                }
+
+                                $cuentasporpagarproveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
+
+                                if(isset($descuentoenpago)){
+                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$cuentasporpagarproveedores->id,$idexpense,$id_user,$despor,0);
+                                }
 
                                 $resp['error'] = true;
                                 $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
@@ -3385,7 +3419,7 @@ public function notas(request $request)
 
                         }elseif($expensesandpurchases->coin == 'dolares'){
 
-                            $montodescuento = $despor;
+                            $montodescuento = $despor * $expensesandpurchases->rate;
 
 
                             if($montodescuento > $expensesandpurchases->amount){
@@ -3420,11 +3454,20 @@ public function notas(request $request)
                                 $headervoucher->save();
 
 
-                               /* $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
 
-                                if(isset($account)){
-                                    $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$montodescuento);
-                                }*/
+                               $descuentoenpago = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Pago')->first();
+
+                               if(isset($descuentoenpago)){
+                                   $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$descuentoenpago->id,$idexpense,$id_user,0,$montodescuento);
+                               }
+
+                               $cuentasporpagarproveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
+
+                               if(isset($descuentoenpago)){
+                                   $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$cuentasporpagarproveedores->id,$idexpense,$id_user,$montodescuento,0);
+                               }
+
+
 
                                 $resp['error'] = true;
                                 $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
@@ -3473,10 +3516,12 @@ public function notas(request $request)
 
                                         if($expensesandpurchases->coin == 'dolares'){
 
+                                            $precioindividual = $precioindividual * $expensesandpurchases->rate;
+
                                         $preciodeduccionproducto = $cantidad * $precioindividual;
 
 
-                                        $totalFactura = $totalFactura;
+                                        $totalFactura = $totalFactura * $expensesandpurchases->rate;
                                         $preciodeduccion += $cantidad * $precioindividual;
 
                                         }
@@ -3573,12 +3618,22 @@ public function notas(request $request)
                             $headervoucher->save();
 
 
-                          /*  $account = Account::on(Auth::user()->database_name)->where('description', 'like', 'Devolucion de Mercancia')->first();
 
-                            if(isset($account)){
-                                $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$account->id,$idexpense,$id_user,0,$preciodeduccion);
 
-                            }*/
+                            $descuentoenpago = Account::on(Auth::user()->database_name)->where('description', 'like', 'Devolucion de Mercancia')->first();
+
+                            if(isset($descuentoenpago)){
+                                $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$descuentoenpago->id,$idexpense,$id_user,0,$preciodeduccion);
+                            }
+
+                            $cuentasporpagarproveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
+
+                            if(isset($descuentoenpago)){
+                                $this->add_movement($expensesandpurchases->rate,$headervoucher->id,$cuentasporpagarproveedores->id,$idexpense,$id_user,$preciodeduccion,0);
+                            }
+
+
+
 
                             if($validar == TRUE){
                                 $resp['error'] = true;
@@ -3613,6 +3668,64 @@ public function notas(request $request)
                     return response()->json(false,500);
                 }
 
+                }else{
+
+                    /********************* NOTAS DE CREDITOS***********/
+
+                    $pordes = '0';
+                    $note = null;
+
+
+                    if($expensesandpurchases->coin == 'dolares'){
+
+                        $montocredito = $request->montocredito * $expensesandpurchases->rate;
+
+
+                    }
+                    elseif($expensesandpurchases->coin == 'bolivares'){
+
+                        $montocredito = $request->montocredito;
+
+                    }
+
+                    //$montocredito =  str_replace(".", "", $montocredito);
+                    $montocredito =  str_replace(",", ".", $montocredito);
+
+                    $descripcionfactura = "NOTA CREDITO DE GASTOS Y COMPRA NRO ".$nrofactura;
+
+
+                    $debit = new DebitNoteExpense();
+                                $debit->setConnection(Auth::user()->database_name);
+                                $debit->id_expense  = $idexpense;
+                                $debit->id_user   = $id_user;
+                                $debit->date   = $date;
+                                $debit->percentage  = $pordes;
+                                $debit->monto_perc  = $montocredito;
+                                $debit->coin  = $expensesandpurchases->coin;
+                                $debit->rate  = $expensesandpurchases->rate;
+                                $debit->base_imponible  = $expensesandpurchases->amount;
+                                $debit->obs      = $obs;
+                                $debit->notapie  = $note;
+                                $debit->save();
+
+                                $headervoucher = new HeaderVoucher();
+                                $headervoucher->setConnection(Auth::user()->database_name);
+                                $headervoucher->description  = $descripcionfactura;
+                                $headervoucher->date   = $date;
+                                $headervoucher->status   = 1;
+                                $headervoucher->save();
+
+                                $resp['error'] = true;
+                                $resp['msg'] = 'Nota de Credito Registrada Exitosamente';
+                                return response()->json($resp);
+
+
+
+
+                }
+
+
+
 
 
             }catch(\error $error){
@@ -3634,6 +3747,10 @@ public function notas(request $request)
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
+            $descripcion = request('descripcion');
+
+
+
         DebitNoteExpense::on(Auth::user()->database_name)
             ->Where('id',request('id_expense_modal'))
             ->delete();
@@ -3641,6 +3758,7 @@ public function notas(request $request)
         $debitnotedetailexpense = DebitNoteDetailExpense::on(Auth::user()->database_name)
             ->Where('id_debit_note_expenses',request('id_expense_modal'))
             ->get();
+
 
         if($debitnotedetailexpense->count() > 0){
 
@@ -3679,9 +3797,11 @@ public function notas(request $request)
 
         }
 
+        $headervoucher =  HeaderVoucher::on(Auth::user()->database_name)->where('description',$descripcion)->where('status',1)->first();
 
+        DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$headervoucher->id)->delete();
 
-
+        $headervoucher->delete();
 
         return redirect('/expensesandpurchases/notas')->withDanger('Nota Elimidada Con Exitos!!');
         }else{
