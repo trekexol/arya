@@ -1,8 +1,21 @@
+<?php
+
+if($DebitNoteExpense->percentage == 0){
+    $titulo = 'NOTA DE CREDITO';
+    $condicion = 'Nota de Credito';
+}else{
+    $titulo = 'NOTA DE DÉBITO';
+    $condicion = 'Nota de Débito';
+
+}
+
+?>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<title>Nota de Débito</title>
+<title>{{$titulo}}</title>
 <style>
 
   body {
@@ -40,7 +53,7 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h5>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h5></th>    </tr>
     </tr>
   </table>
-<div style="margin-top: -15px; margin-top: -15px; color: black;font-size: 9pt;font-weight: bold; text-align: right;">NOTA DE DÉBITO NRO: {{ str_pad($DebitNoteExpense->id, 6, "0", STR_PAD_LEFT)}}</div>
+<div style="margin-top: -15px; margin-top: -15px; color: black;font-size: 9pt;font-weight: bold; text-align: right;">{{$titulo}} NRO: {{ str_pad($DebitNoteExpense->id, 6, "0", STR_PAD_LEFT)}}</div>
 <table>
 
   <tr>
@@ -73,7 +86,7 @@
     <td style="text-align: center;">{{ $expensesandpurchases->providers['phone1'] ?? ''}}</td>
     <td style="text-align: center;">{{ $expensesandpurchases->providers['code_provider']}}</td>
     <td style="text-align: center;">{{ $expensesandpurchases->serie }}</td>
-    <td style="text-align: center;">Nota de Débito</td>
+    <td style="text-align: center;">{{$condicion}}</td>
     <td style="text-align: center;">{{ $expensesandpurchases->invoice ?? '' }}</td>
 
 
@@ -99,7 +112,6 @@
     <th style="text-align: center; ">Descripción</th>
     <th style="text-align: center; ">Cantidad</th>
     <th style="text-align: center; ">Precio por unidad</th>
-    <th style="text-align: center; ">P.V.J.</th>
     <th style="text-align: center; ">Total</th>
   </tr>
 <?php $totaldebito = 0; ?>
@@ -108,11 +120,13 @@
       if($coin == "dolares"){
 
         $monto = $var->price / $bcv;
-        $montoporunidad = $var->preciofact / $bcv;
+
+        $montoporunidad = $monto;
         $monto_perc = $DebitNoteExpense->monto_perc / $bcv;
+
       }else{
         $monto = $var->price;
-        $montoporunidad = $var->preciofact;
+        $montoporunidad = $monto;
         $monto_perc = $DebitNoteExpense->monto_perc;
       }
 
@@ -127,8 +141,7 @@
       <th style="text-align: center; font-weight: normal;">{{ $var->description }}</th>
       <th style="text-align: center; font-weight: normal;">{{ $var->amount }}</th>
       <th style="text-align: center; font-weight: normal;">{{ number_format($montoporunidad, 2, ',', '.')}}</th>
-      <th style="text-align: center; font-weight: normal;">{{ number_format($monto, 2, ',', '.')  }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format($monto, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format($montoporunidad * $var->amount , 2, ',', '.') }}</th>
     </tr>
   @endforeach
 </table>
@@ -169,16 +182,22 @@
   </tr>
   @endif
   <tr>
-    <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">Nota de Débito.</th>
+    <th style="text-align: right; font-weight: normal; width: 79%; border-bottom-color: white;">{{$condicion}}</th>
     <th style="text-align: right; font-weight: normal; width: 21%;">{{number_format(($monto_perc ?? $totaldebito), 2, ',', '.')  }}</th>
   </tr>
   <tr>
     <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">MONTO TOTAL</th>
-    <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);">{{ number_format($total - $monto_perc ?? $totaldebito, 2, ',', '.') }}</th>
-  </tr>
-</table>
+    @if($DebitNoteExpense->percentage == 0)
+    <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);">{{ number_format($total + $monto_perc ?? $totaldebito, 2, ',', '.') }}</th>
 
+    @else
+    <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);">{{ number_format($total - $monto_perc ?? $totaldebito, 2, ',', '.') }}</th>
+    @endif
+</tr>
+</table>
+@if($DebitNoteExpense->percentage > 0)
 <p>Nota : {{ $DebitNoteExpense->notapie  }}</p>
+@endif
 </body>
 @endif
 

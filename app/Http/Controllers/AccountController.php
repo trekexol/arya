@@ -195,7 +195,7 @@ class AccountController extends Controller
         $total_saldo_anterior = $total_saldo_anterior1 + $total_saldo_anterior2 + $total_saldo_anterior3;
 
 
-       return view('admin.accounts.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','total_debe','total_haber','total_saldo_anterior','accounts','coin','level'));
+       return view('admin.accounts.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','total_debe','total_haber','total_saldo_anterior','accounts','coin','level','ini','fin'));
 
    }
 

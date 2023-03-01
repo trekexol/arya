@@ -17,7 +17,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('anticipos.index_provider') }}" role="tab" aria-controls="profile" aria-selected="false">Anticipo a Proveedores</a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('notas') }}" role="tab" aria-controls="profile" aria-selected="false">Notas Debito/Credito</a>
     </li>
 </ul>
 
@@ -28,11 +28,11 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-md-6">
-          <h2>Notas de Debito</h2>
+          <h2>Notas de Debito y Credito</h2>
       </div>
       @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
       <div class="col-md-6">
-        <a href="{{ route('crearnota')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar Nota de Debito</a>
+        <a href="{{ route('crearnota')}}" class="btn btn-primary  float-md-right" role="button" aria-pressed="true">Registrar Nota</a>
       </div>
       @endif
     </div>
@@ -66,6 +66,7 @@
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Fecha</th>
+                <th class="text-center">Nota</th>
                 @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                 <th ></th>
                 @endif
@@ -85,9 +86,18 @@
                             <td>{{$expensesandpurchase->invoice}}</td>
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
                             <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
+                            @if($expensesandpurchase->percentage == 0)
+                            @php $headatos = 'NOTA CREDITO DE GASTOS Y COMPRA NRO '.$expensesandpurchase->invoice; @endphp
+
+                            <td>NOTA DE CREDITO NRO {{$expensesandpurchase->id}}</td>
+                            @else
+                            @php $headatos = 'NOTA DEBITO DE GASTOS Y COMPRA NRO '.$expensesandpurchase->invoice; @endphp
+
+                            <td>NOTA DE DEBITO NRO {{$expensesandpurchase->id}}</td>
+                            @endif
                             @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                             <td>
-                                <a href="#" class="delete" data-id-expense={{$expensesandpurchase->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
+                                <a href="#" class="delete" data-id-expense="{{$expensesandpurchase->id.'/'.$headatos}}" data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                             </td>
                             @endif
                         </tr>
@@ -113,6 +123,7 @@
                 @csrf
                 @method('DELETE')
                 <input id="id_expense_modal" type="hidden" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" readonly required autocomplete="id_expense_modal">
+                <input id="descripcion" type="hidden" class="form-control @error('id_expense') is-invalid @enderror" name="descripcion" readonly required autocomplete="id_expense">
 
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
 
@@ -138,9 +149,10 @@
     } );
     $(document).on('click','.delete',function(){
 
-        let id_expense = $(this).attr('data-id-expense');
+        id_expense = $(this).attr('data-id-expense').split('/');
 
-        $('#id_expense_modal').val(id_expense);
+        $('#id_expense_modal').val(id_expense[0]);
+        $('#descripcion').val(id_expense[1]);
     });
 </script>
 

@@ -26,7 +26,7 @@
     <div class="row justify-content-center" >
 
             <div class="card" style="width: 70rem;" >
-                <div class="card-header" ><h3>Gasto o Comprass</h3></div>
+                <div class="card-header" ><h3>Gasto o Compras</h3></div>
                 <div class="card-body" >
                     <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
@@ -116,14 +116,29 @@
                             </div>
                         </div>
                         @if($debitnoteexpense)
+                            <?php if($coin == 'dolares'){
+                                $montodebito =  $debitnoteexpense->monto_perc / $bcv;
+                            } else{
+                                $montodebito =  $debitnoteexpense->monto_perc;
+                            }?>
+
+
                         @if($debitnoteexpense->percentage > 0)
-                        <?php if($coin == 'dolares'){
-                            $montodebito =  $debitnoteexpense->monto_perc / $bcv;
-                        } else{
-                            $montodebito =  $debitnoteexpense->monto_perc;
-                        }?>
                         <div class="form-group row">
                             <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Descuento Nota de Débito</label>
+                            <div class="col-md-3">
+                                <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
+
+                                @error('descuentonota')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        @elseif($debitnoteexpense->percentage == 0)
+                        <div class="form-group row">
+                            <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Monto Nota de Credito</label>
                             <div class="col-md-3">
                                 <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
 
@@ -984,7 +999,7 @@ function calculate(valor) {
     }
 
 
-                 if (valor == '2'){
+                if (valor == '2'){
                     discount = $("#descuento_general").val();
 
 
@@ -1086,8 +1101,6 @@ function calculate(valor) {
 
 
     document.getElementById("grand_total").value = grand_totalformat;
-
-    console.log();
 
     let inputAnticipo = document.getElementById("anticipo").value;
 

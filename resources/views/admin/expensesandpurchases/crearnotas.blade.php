@@ -49,7 +49,7 @@
     <div class="row justify-content-center">
         <div class="col-xl-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Nota de Debito </div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Nota </div>
 
                 <div class="card-body">
                     <form id="notastore">
@@ -58,6 +58,7 @@
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
                         <input id="id_provider" type="hidden" class="form-control @error('id_provider') is-invalid @enderror" name="id_provider" value="{{ $idp ?? null  }}" required autocomplete="id_client">
                         <input id="id_expense" type="hidden" class="form-control @error('id_expense') is-invalid @enderror" name="id_expense" value="{{ $id ?? null  }}" required autocomplete="id_expense">
+                        <input id="importe" type="hidden" class="form-control form-control-sm" name="importe" value="{{ old('importe') }}" autocomplete="importe">
 
 
                         <div class="form-group row">
@@ -73,26 +74,21 @@
 
                         @if($activo == TRUE)
                         <div class="form-group row">
-                            <label for="invoices" class="col-sm-2 col-form-label text-md-right">Tipo de Cuenta:</label>
+                            <label for="invoices" class="col-sm-3 col-form-label text-md-right">Tipo de Nota:</label>
                             <div class="col-sm-2">
-                                <select class="form-control form-control-sm" id="tipocuenta" name="tipocuenta">
+                                <select class="form-control form-control-sm" id="tiponota" name="tiponota">
                                     <option value="">Seleccione..</option>
 
-                                    <option  value="devolucion" {{ old('tipocuenta') == 'devolucion' ? 'selected' : '' }}>Devolución</option>
-                                    <option  value="descuento"  {{ old('tipocuenta') == 'descuento' ? 'selected' : '' }}>Descuento</option>
+                                    <option  value="credito" {{ old('tiponota') == 'credito' ? 'selected' : '' }}>Credito</option>
+                                    <option  value="debito"  {{ old('tiponota') == 'debito' ? 'selected' : '' }}>Debito</option>
                                 </select>
                             </div>
-                            <label for="date" class="col-sm-1 col-form-label text-sm-right">Fecha:</label>
+
+                            <label for="date" class="col-sm-3 col-form-label text-sm-right">Fecha:</label>
                             <div class="col-sm-2">
                                 <input id="date_begin" type="date" class="form-control form-control-sm" name="date" value="{{ $datenow }}" required autocomplete="date">
 
 
-                            </div>
-
-                            <label for="importe" class="col-sm-2 col-form-label text-md-right">Monto de factura:</label>
-
-                            <div class="col-sm-2">
-                                <input id="importe" type="text" class="form-control form-control-sm" name="importe" value="{{ old('importe') }}" autocomplete="importe">
                             </div>
 
 
@@ -100,13 +96,30 @@
 
                         <div class="form-group row">
 
-                            <label  class="col-sm-3 col-form-label text-md-right desclass">Porcentaje (%):</label>
+                            <label  class="col-sm-3 col-form-label text-md-right moncre">Monto Credito a Factura:</label>
+
+                            <div class="col-sm-2 moncre">
+                                <input id="montocredito" type="text" class="form-control form-control-sm" name="montocredito" value="{{ old('montocredito') }}" >
+
+                            </div>
+
+                            <label for="invoices" class="col-sm-2 col-form-label text-md-right decue">Tipo de Cuenta:</label>
+                            <div class="col-sm-2 decue">
+                                <select class="form-control form-control-sm" id="tipocuenta" name="tipocuenta">
+                                    <option value="">Seleccione..</option>
+
+                                    <option  value="devolucion" {{ old('tipocuenta') == 'devolucion' ? 'selected' : '' }}>Devolución</option>
+                                    <option  value="descuento"  {{ old('tipocuenta') == 'descuento' ? 'selected' : '' }}>Descuento</option>
+                                </select>
+                            </div>
+
+                            <label  class="col-sm-1 col-form-label text-md-right desclass"> (%):</label>
 
                             <div class="col-sm-2 desclass">
                                 <input id="pordes" type="text" class="form-control form-control-sm" name="pordes" value="{{ old('pordes') }}" autocomplete="importe">
                             </div>
 
-                            <label  class="col-sm-3 col-form-label text-md-right desclass">Descuento Factura:</label>
+                            <label  class="col-sm-2 col-form-label text-md-right desclass">Descuento Factura:</label>
 
                             <div class="col-sm-2 desclass">
                                 <input id="despor" type="text" class="form-control form-control-sm" name="despor" value="{{ old('despor') }}" autocomplete="importe">
@@ -236,10 +249,10 @@
 
                         <div class="form-group row">
 
-                            <label for="note" class="col-sm-2 col-form-label text-md-right">Nota al Pie de Nota de Débito:</label>
+                            <label for="note" class="col-sm-2 col-form-label text-md-right decue">Nota al Pie de Nota de Débito:</label>
 
                             <div class="col-sm-8">
-                                <input id="note" type="text" class="form-control form-control-sm" name="note" value="{{ old('note') }}"  autocomplete="note">
+                                <input id="note" type="text" class="form-control form-control-sm decue" name="note" value="{{ old('note') }}"  autocomplete="note">
                             </div>
                         </div>
 
@@ -294,12 +307,17 @@ $(document).ready(function(){
 
     $("#invoiceform").hide();
     $(".desclass").hide();
+    $(".decue").hide();
+    $(".moncre").hide();
     $(".cantidadval").hide();
     $(".cantidadoriginal").hide();
     $("#importe").mask('000.000.000.000.000.000.000,00', { reverse: true });
     $("#pordes").mask('00000000000000000000000', { reverse: true });
     $("#despor").mask('000000000000000000000.00', { reverse: true });
     $(".cantidadval").mask('000000000000000000000,00', { reverse: true });
+
+    $("#montocredito").mask('000.000.000.000.000.000.000,00', { reverse: true });
+
 
     var totalFacturas = "<?php if(isset($suma)){ echo number_format($suma, 2, ',', '.'); } else{ }  ?>";
 
@@ -348,6 +366,59 @@ $(document).ready(function(){
             }
 
         });
+
+
+        $("#tiponota").on('change',function(){
+
+value = $(this).val();
+
+
+if(value == ''){
+
+$("#pordes").val('');
+$("#despor").val('');
+$(".cantidadval").val('');
+
+$(".decue").hide();
+
+$(".desclass").hide();
+$(".cantidadval").hide();
+$(".moncre").hide();
+
+
+}
+
+if(value == 'debito'){
+
+    $("#pordes").val('');
+    $("#despor").val('');
+    $(".cantidadval").val('');
+
+    $(".decue").show();
+
+    $(".desclass").hide();
+    $(".cantidadval").hide();
+    $(".moncre").hide();
+
+
+}if(value == 'credito'){
+
+    $("#pordes").val('');
+    $("#despor").val('');
+    $(".cantidadval").val('');
+    $("#tipocuenta").val('');
+    $(".desclass").hide();
+    $(".cantidadval").hide();
+    $(".decue").hide();
+    $(".moncre").show();
+
+}
+
+
+
+});
+
+
 
         $("#pordes").on('change',function(){
                 calculate(1);
@@ -487,6 +558,8 @@ $("#notastore").validate({
             coin: "required",
             pordes: "required",
             despor: "required",
+            tiponota: 'required',
+            montocredito: 'required',
 
         },
 
@@ -498,6 +571,8 @@ $("#notastore").validate({
             coin: "Seleccione una moneda",
             pordes: "Ingrese un %",
             despor: "Ingrese un %",
+            tiponota: "Seleccione un tipo de nota",
+            montocredito: "Ingrese Monto de Credito",
 
 
         },
@@ -515,6 +590,27 @@ $("#notastore").validate({
         $("#tipocuenta").attr("data-placement","top");
         $("#tipocuenta").attr("data-content","Seleccione un tipo de Cuenta");
         $("#tipocuenta").popover('show');
+
+        }
+        if(element.attr("name") == "montocredito") {
+        $("#montocredito").removeClass("error");
+        $("#montocredito").addClass("is-invalid");
+
+        $("#montocredito").attr("data-toggle","popover");
+        $("#montocredito").attr("data-placement","top");
+        $("#montocredito").attr("data-content","Ingrese Monto de Credito");
+        $("#montocredito").popover('show');
+
+        }
+
+        if(element.attr("name") == "tiponota") {
+        $("#tiponota").removeClass("error");
+        $("#tiponota").addClass("is-invalid");
+
+        $("#tiponota").attr("data-toggle","popover");
+        $("#tiponota").attr("data-placement","top");
+        $("#tiponota").attr("data-content","Seleccione un tipo de nota");
+        $("#tiponota").popover('show');
 
         }
 
