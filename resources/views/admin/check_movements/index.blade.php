@@ -3,11 +3,17 @@
 @section('content')
 
 
-<!-- container-fluid -->
 <div class="container-fluid">
-
     
+    
+    <div class="row py-lg-12">
+        <div class="col-sm-12 offset-sm-12">
+            <a href="{{ route('check_movements.comprobanteschk') }}" class="btn btn-info" title="Transferencia">Chekear Comprobantes</a>
+        </div>
+    </div>
 </div>
+<br>
+
 <div class="row py-lg-2">
     <div class="col-sm-4 h5 ">
         Chequear Movimientos en Desbalance
