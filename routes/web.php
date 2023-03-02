@@ -1511,6 +1511,8 @@ Route::group(["prefix"=>'report_payment_expenses'],function(){
 
 Route::group(["prefix"=>'check_movements'],function(){
     Route::get('index','Checks\CheckMovementController@index')->name('check_movements.index');
+    Route::get('comprobanteschk','Checks\CheckMovementController@comprobanteschk')->name('check_movements.comprobanteschk');
+    Route::post('comprobanteschks','Checks\CheckMovementController@comprobanteschks')->name('check_movements.comprobanteschks');
    });
 
 Route::group(["prefix"=>'report_anticipos'],function(){
