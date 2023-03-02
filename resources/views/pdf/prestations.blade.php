@@ -40,6 +40,7 @@
     </tr>
   </table>
   <h4 style="color: black; text-align: center">PRESTACIONES</h4>
+  <h4 style="color: black; text-align: left">Nombre: {{$employee->nombres.' '.$employee->apellidos}} C.I: {{$employee->id_empleado}}</h4>
 
 
 <table style="width: 100%;">
@@ -59,10 +60,9 @@
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Prest. Asignadas</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Anticipo</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Prest. Acumulada</th>
-<th style="text-align: center; border-right-color: black; border-left-color: black;">Taza</th>
+<th style="text-align: center; border-right-color: black; border-left-color: black;">Tasa</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Intereses</th>
-<th style="text-align: center; border-right-color: black; border-left-color: black;">Int.</th>
-<th style="text-align: center; border-right-color: black; border-left-color: black;">Acumulados</th>
+<th style="text-align: center; border-right-color: black; border-left-color: black;">Intereses Acumulados</th>
 <th style="text-align: center; border-right-color: black; border-left-color: black;">Total Prest + Int</th>Nom</th>
 </tr>
 
@@ -81,6 +81,8 @@ $cantidadmeses = 1;
 $diasvacaciones = 15;
 $diasextras = 0;
 $diasvaca = '';
+$acumulado = 0;
+$interesesacumulado = 0;
 ?>
 
 @foreach ($datospresta as $datospresta)
@@ -118,13 +120,17 @@ $diasvaca = '';
       $diasvaca = 15;
       $diasextrass = $diasextras;
       $cantidadmeses = 1;
-
+      $ultimodia = 15;
       $acumulado += $asig;
-
+      $interes = $acumulado * $datospresta->tasaaver / 1200;
+      $interesesacumulado += $interes;
     }else{
         $diasvaca = '';
         $diasextrass = '';
         $asig = 0;
+        $acumulado += $asig;
+        $interes = 0;
+        $interesesacumulado += $interes;
     }
 
 
@@ -142,16 +148,15 @@ $diasvaca = '';
       <td style="text-align: center; font-weight: normal;">{{number_format(($cuotautilidad), 2, ',', '.')}}</td><!--C-->
       <td style="text-align: center; font-weight: normal;">{{number_format(($cuotavaca), 2, ',', '.')}}</td><!--FA-->
       <td style="text-align: center; font-weight: normal;">{{number_format(($salariointegral), 2, ',', '.')}}</td><!--CA-->
-        <td style="text-align: right; font-weight: normal;">{{ $diasvaca }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ $diasextrass }}</td>
-        <td style="text-align: right; font-weight: normal;">{{number_format(($asig), 2, ',', '.')   }}</td><!--BIA-->
-        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
-        <td style="text-align: right; font-weight: normal;">{{ number_format(($acumulado), 2, ',', '.')    }}</td><!-- IvaA-->
-        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16B -->
-        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
-        <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
+        <td style="text-align: center; font-weight: normal;">{{ $diasvaca }}</td>
+        <td style="text-align: center; font-weight: normal;">{{ $diasextrass }}</td>
+        <td style="text-align: center; font-weight: normal;">{{number_format(($asig), 2, ',', '.')   }}</td><!--BIA-->
+        <td style="text-align: center; font-weight: normal;">{{ '' }}</td><!--16A -->
+        <td style="text-align: center; font-weight: normal;">{{ number_format(($acumulado), 2, ',', '.')    }}</td><!-- IvaA-->
+        <td style="text-align: center; font-weight: normal;">{{ number_format(($datospresta->tasaaver), 2, ',', '.') }}</td>
+        <td style="text-align: center; font-weight: normal;">{{ number_format(($interes), 2, ',', '.')}}</td><!--16B -->
+        <td style="text-align: center; font-weight: normal;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</td>
+        <td style="text-align: center; font-weight: normal;">{{  number_format(($acumulado + $interesesacumulado), 2, ',', '.')  }}</td>
 
     </tr>
 
@@ -165,30 +170,29 @@ $diasvaca = '';
 
     @endforeach
 
-  <tr  style="display:none;">
+  <tr >
 
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-    <th style="text-align: center; font-weight: normal; border-bottom-color: white; border-right-color: black;"></th>
-    <th style="text-align: right; font-weight: normal; font-style:bold; border-right-color: black; border-left-color: black;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal;font-style:bold;  border-color: black; border-left: 1px;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ '' }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: right; font-weight: normal; font-style:bold;">{{ number_format(0, 2, ',', '.') }}</th>
-    <th style="text-align: center; font-weight: normal; border-color: white;"></th>
-  </tr>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{$diasvacaciones}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{$datospresta->monto}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{number_format(($datospresta->monto/30), 2, ',', '.')}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{number_format(($cuotautilidad), 2, ',', '.')}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{number_format(($cuotavaca), 2, ',', '.')}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{number_format(($salariointegral), 2, ',', '.')}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{$ultimodia}}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ $diasextrass }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ number_format(($asig), 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ '' }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ number_format(($acumulado), 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ '' }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ '' }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</th>
+    <th style="text-align: center; font-weight: normal; border-color: white;">{{ number_format(($acumulado + $interesesacumulado), 2, ',', '.') }}</th>
+
+</tr>
 </table>
 
 <?php
