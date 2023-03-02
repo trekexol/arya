@@ -746,15 +746,15 @@ return [
                 ]) : [],
             ],
 
-            'rdonapaula' => [
+            'respaldodonap' => [
                 'driver' => 'mysql',
                 'url' => env('DATABASE_URL'),
-                'host' => env('RDONAPAULA_HOST', '127.0.0.1'),
-                'port' => env('RDONAPAULA_PORT', '3306'),
-                'database' => env('RDONAPAULA_DATABASE', 'forge'),
-                'username' => env('RDONAPAULA_USERNAME', 'forge'),
-                'password' => env('RDONAPAULA_PASSWORD', ''),
-                'unix_socket' => env('RDONAPAULA_SOCKET', ''),
+                'host' => env('RESPALDONAP_HOST', '127.0.0.1'),
+                'port' => env('RESPALDONAP_PORT', '3306'),
+                'database' => env('RESPALDONAP_DATABASE', 'forge'),
+                'username' => env('RESPALDONAP_USERNAME', 'forge'),
+                'password' => env('RESPALDONAP_PASSWORD', ''),
+                'unix_socket' => env('RESPALDONAP_SOCKET', ''),
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => '',
