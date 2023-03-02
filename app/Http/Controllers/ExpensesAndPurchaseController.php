@@ -79,6 +79,8 @@ class ExpensesAndPurchaseController extends Controller
 
         foreach($expensesandpurchases as $expensesandpurchasesr){
 
+            if(Auth::user()->company == '26'){
+
 
            $validarfact = FacturasCour::on(Auth::user()->database_name)
             ->where('id_expense',$expensesandpurchasesr->id)
@@ -112,6 +114,13 @@ class ExpensesAndPurchaseController extends Controller
                 $expensesandpurchasesr->nombrefac =  $nombre;
                 $expensesandpurchasesr->movimientofac =  $movimiento;
                 $expensesandpurchasesr->numerofac =  $validarfact->numero;
+
+            }else{
+
+                $expensesandpurchasesr->validar = false;
+
+            }
+
             }else{
                 $expensesandpurchasesr->validar = false;
             }
