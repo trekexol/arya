@@ -86,7 +86,7 @@
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
-                @if(Auth::user()->id_company == '3')
+                @if(Auth::user()->id_company == '26')
                 <th class="text-center">Couriertool</th>
                 @endif
                 <th class="text-center">Fecha</th>
@@ -123,7 +123,7 @@
                             <td class="text-center">{{$expensesandpurchase->providers['razon_social'] ?? ''}}</td>
 
 
-                            @if(Auth::user()->id_company == '3')
+                            @if(Auth::user()->id_company == '26')
                             <td class="text-center">{{$expensesandpurchase->movimientofac.' '.$expensesandpurchase->nombrefac.' '.$expensesandpurchase->numerofac}}</td>
 
                             @endif
@@ -159,7 +159,7 @@
                                 @endif
 
 
-                                @if(Auth::user()->id_company == '3' AND $expensesandpurchase->validar == FALSE)
+                                @if(Auth::user()->id_company == '26' AND $expensesandpurchase->validar == FALSE)
                                 <i class="fa fa-file-alt cour" data-id-expense='{{$expensesandpurchase->invoice.'/'.$expensesandpurchase->id.'/'.number_format($expensesandpurchase->amount_with_iva / $rate ?? 0, 2, ',', '.')}}' data-toggle="modal" data-target="#courier"></i>
 
                                 @endif
