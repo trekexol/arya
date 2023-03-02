@@ -70,7 +70,7 @@ class ExpenseDetailValidationController extends Controller
         $expense->amount_iva = ($base_imponible * $expense->iva_percentage) /100;
         $expense->amount_with_iva =  $expense->amount + $expense->amount_iva;
 
-        $expense->retencion_islr = ($total_retiene_islr * $expense->islr_concepts['value'])/100;
+        $expense->retencion_islr = ($total_retiene_islr * $expense->islr_concepts)/100;
         $expense->retencion_iva = ($expense->amount_iva * $expense->providers['porc_retencion_iva']) / 100;
         $expense->save();
 

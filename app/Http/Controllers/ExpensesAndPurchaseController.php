@@ -77,6 +77,49 @@ class ExpensesAndPurchaseController extends Controller
                                                     ->where('amount_with_iva','<>',null)
                                                     ->get();
 
+        foreach($expensesandpurchases as $expensesandpurchasesr){
+
+
+           $validarfact = FacturasCour::on(Auth::user()->database_name)
+            ->where('id_expense',$expensesandpurchasesr->id)
+            ->first();
+
+            if($validarfact){
+
+                if($validarfact->tipo_fac == 1){
+                    $nombre = 'ADUANA';
+                }
+                elseif($validarfact->tipo_fac == 2){
+                    $nombre = 'INTERNACIONAL';
+                }elseif($validarfact->tipo_fac == 3){
+                    $nombre = 'SEGURO';
+                }
+
+
+                if($validarfact->tipo_movimiento == 1){
+                    $movimiento = 'PALETA';
+                }
+                elseif($validarfact->tipo_fac == 2){
+                    $movimiento = 'CONTENEDOR';
+                }elseif($validarfact->tipo_fac == 3){
+                    $movimiento = 'GUIA MASTER';
+                }elseif($validarfact->tipo_fac == 4){
+                    $movimiento = 'TULA';
+                }
+
+
+                $expensesandpurchasesr->validar = true;
+                $expensesandpurchasesr->nombrefac =  $nombre;
+                $expensesandpurchasesr->movimientofac =  $movimiento;
+                $expensesandpurchasesr->numerofac =  $validarfact->numero;
+            }else{
+                $expensesandpurchasesr->validar = false;
+            }
+
+
+        }
+
+
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
@@ -3810,6 +3853,34 @@ public function notas(request $request)
         }
     }
 
+
+
+
+    //******ASIGNAR FACTURA A COURIERTOOL */
+    public function asignarcouriertool(Request $request)
+    {
+
+
+        if($request->court != null AND $request->tifac != null AND $request->nrofactcou != null){
+
+            $totalFactura =  str_replace(".", "", $request->montomodal);
+
+            $factcour  = new FacturasCour();
+            $factcour->setConnection(Auth::user()->database_name);
+            $factcour->id_expense = $request->idexpense;
+            $factcour->tipo_fac = $request->tifac;
+            $factcour->tipo_movimiento = $request->court;
+            $factcour->numero =  $request->nrofactcou;
+            $factcour->monto =  $totalFactura;
+            $factcour->save();
+
+
+            return redirect('expensesandpurchases/indexhistorial')->withSuccess('Asignado a Couriertool Exitosa!');
+
+
+        }
+
+    }
 
 
 }
