@@ -74,16 +74,16 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                <th class="text-center">ID</th>
-                <th class="text-center" width="11%">Fecha del Anticipo</th>
+                <th class="text-center" style="width: 1%;">ID</th>
+                <th class="text-center" width="11%">Fecha/Anticipo</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Caja/Banco</th>
-                <th class="text-center">Comp.</th>
+                <th class="text-center" style="width: 1%;">Comp.</th>
 
-                <th class="text-center">Referencia</th>
+                <th class="text-center" style="width: 1%;">Referencia</th>
                 <th class="text-center">Monto REF</th>
                 <th class="text-center">Monto Bs.</th>
-                <th class="text-center">Moneda</th>
+                <th class="text-center" style="width: 1%;">M</th>
                <th class="text-center" width="7%"></th>
 
             </tr>
@@ -102,7 +102,7 @@
                     ?>
                     <tr>
                         <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
-                        <td class="text-center">{{$anticipo->date}}</td>
+                        <td class="text-center">{{date_format(date_create($anticipo->date),"d-m-Y")}}</td>
                         @if (isset($anticipo->expenses['serie']))
                         <td class="text-center">{{$anticipo->providers['razon_social'] ?? ''}} , fact({{$anticipo->expenses['serie'] ?? ''}})</td>
                     @else
@@ -115,8 +115,12 @@
                     <td class="text-center">{{$anticipo->reference ?? ''}}</td>
                     <td class="text-right">${{number_format($amount_bcv ?? 0, 2, ',', '.')}}</td>
                     <td class="text-right">{{number_format($anticipo->amount, 2, ',', '.')}}</td>
-                    <td class="text-center">{{$anticipo->coin}}</td>
-
+                    
+                    @if($anticipo->coin == 'dolares')
+                    <td class="text-center">$</td>
+                    @else
+                    <td class="text-center">Bs.</td>
+                    @endif
 
                         <td>
                             @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )

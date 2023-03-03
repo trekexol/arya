@@ -1,5 +1,3 @@
-
-  
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -38,9 +36,10 @@
  
 <table style="width: 100%;">
   <tr>
-    <th style="text-align: center; ">Código</th>
+    <th style="text-align: center; width:1%;">Código</th>
     <th style="text-align: center; ">Descripción</th>
-    <th style="text-align: center; ">Nivel</th>
+    <th style="text-align: center; width:1%;">Nivel</th>
+    <th style="text-align: center; width:1%;">Tipo</th>
     <th style="text-align: center; ">Saldo Anterior</th>
     <th style="text-align: center; ">Debe</th>
     <th style="text-align: center; ">Haber</th>
@@ -48,25 +47,44 @@
   </tr> 
   @foreach ($accounts as $account)
     
-    <tr>
       @if ($account->level <= 4)
-        <th style="text-align: center; ">{{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</th>
-        <th style="text-align: center; ">{{ $account->description ?? ''}}</th>
-        <th style="text-align: center; ">{{ $account->level ?? ''}}</th>
+      <tr>
+          <th style="text-align: center; ">{{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</th>
+          <th style="text-align: center; ">{{ $account->description ?? ''}}</th>
+          <th style="text-align: center; ">{{ $account->level ?? ''}}</th>
+          <th style="text-align: center; ">{{ $account->type ?? ''}}</th>
+          <th style="text-align: right; ">{{ number_format(($account->balance_previus ?? 0), 2, ',', '.')}}</th>
+          <th style="text-align: right; ">{{ number_format(($account->debe ?? 0), 2, ',', '.') }}</th>
+          <th style="text-align: right; ">{{ number_format(($account->haber ?? 0), 2, ',', '.') }}</th>
+          <th style="text-align: right; ">{{ number_format(($account->balance_previus ?? 0)+($account->debe ?? 0)-($account->haber ?? 0), 2, ',', '.') }}</th>
+      </tr> 
       @else
+      <tr>
         <th style="text-align: center; font-weight: normal;">{{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</th>
         <th style="text-align: center; font-weight: normal;">{{ $account->description ?? ''}}</th>
         <th style="text-align: center; font-weight: normal;">{{ $account->level ?? ''}}</th>
+        <th style="text-align: center; font-weight: normal;">{{ $account->type ?? ''}}</th>
+        <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0), 2, ',', '.')}}</th>
+        <th style="text-align: right; font-weight: normal;">{{ number_format(($account->debe ?? 0), 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal;">{{ number_format(($account->haber ?? 0), 2, ',', '.') }}</th>
+        <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0)+($account->debe ?? 0)-($account->haber ?? 0), 2, ',', '.') }}</th>
+      </tr> 
       @endif
       
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0), 2, ',', '.')}}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($account->debe ?? 0), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($account->hacer ?? 0), 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0)+($account->debe ?? 0)-($account->hacer ?? 0), 2, ',', '.') }}</th>
-    </tr> 
+      
   @endforeach 
 
+  <tfoot>
+
+      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"></th>
+      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"><th>
+      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"></th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.')}}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
   
+  </tfoot>  
 </table>
 
 </body>
