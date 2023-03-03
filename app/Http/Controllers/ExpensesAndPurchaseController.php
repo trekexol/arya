@@ -2509,7 +2509,7 @@ class ExpensesAndPurchaseController extends Controller
         $expense_detail = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$id_expense)->get();
 
         /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-        if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
+        if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);

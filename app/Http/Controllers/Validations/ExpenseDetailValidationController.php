@@ -74,6 +74,8 @@ class ExpenseDetailValidationController extends Controller
         $expense->retencion_iva = ($expense->amount_iva * $expense->providers['porc_retencion_iva']) / 100;
         $expense->save();
 
+
+        if(Auth::user()->company['id'] == '26'){
            /*********COURIERTOOL *********/
            $facour = FacturasCour::on(Auth::user()->database_name)
            ->where('id_expense',$expense->id)
@@ -86,7 +88,7 @@ class ExpenseDetailValidationController extends Controller
                $facour->save();
            }
             /*********COURIERTOOL *********/
-
+        }
 
     }
     public function updateExpenseMovements($expense){
