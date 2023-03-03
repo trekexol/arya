@@ -8,6 +8,7 @@ use App\BasesCalcs;
 use App\Nomina;
 use App\NominaCalculation;
 use App\NominaBasesCalcs;
+use App\BvcRatesSocialBenefits;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,33 @@ class NominaPartsController extends Controller
             ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
             ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
             ->get();
+
+
+            foreach($datospresta as $datosprestaciones){
+                $bcvtasa   = DB::connection($this->conection_logins)
+                ->table('bvc_rates_social_benefits')
+                ->where('period',$datosprestaciones->año)
+                ->where('month',$datosprestaciones->mes)
+                ->first();
+
+                if($bcvtasa){
+
+                $datosprestaciones->tasaaver = $bcvtasa->rate_average_a_p;
+
+                }else{
+
+                    $bcvtasa   = DB::connection($this->conection_logins)
+                    ->table('bvc_rates_social_benefits')
+                    ->orderBy('id','DESC')
+                    ->first();
+
+                    $datosprestaciones->tasaaver = $bcvtasa->rate_average_a_p;
+
+                }
+
+
+
+            }
 
 
 
