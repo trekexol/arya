@@ -952,6 +952,9 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::post('notastore','ExpensesAndPurchaseController@notastore')->name('notastore');
     Route::delete('deletenota','ExpensesAndPurchaseController@deletenota')->name('deletenota');
 
+    Route::post('asignarcouriertool','ExpensesAndPurchaseController@asignarcouriertool')->name('asignarcouriertool');
+
+
     });
 
 Route::group(["prefix"=>'directpaymentorders'],function(){

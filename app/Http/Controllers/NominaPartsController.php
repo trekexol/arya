@@ -128,6 +128,16 @@ class NominaPartsController extends Controller
             ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
             ->get();
 
+
+            $ultimopago = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->where('a.id_employee',$idempleado)
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('MAX(b.date_end) AS ultimopago'))
+            ->first();
+
+
             if($employee->amount_utilities == 'Ma'){
                 $diasutilidades = 120;
 
@@ -146,6 +156,30 @@ class NominaPartsController extends Controller
 
 
             foreach($datospresta as $datosprestaciones){
+
+
+                $bcvtasa   = DB::connection($this->conection_logins)
+                ->table('bvc_rates_social_benefits')
+                ->where('period',$datosprestaciones->año)
+                ->where('month',$datosprestaciones->mes)
+                ->first();
+
+                if($bcvtasa){
+
+                $tasaaver = $bcvtasa->rate_average_a_p;
+
+                }else{
+
+                    $bcvtasa   = DB::connection($this->conection_logins)
+                    ->table('bvc_rates_social_benefits')
+                    ->orderBy('id','DESC')
+                    ->first();
+
+                    $tasaaver = $bcvtasa->rate_average_a_p;
+
+                }
+
+
 
                 $sueldodiario = $datosprestaciones->monto/30;
                 $cuotautilidad = $sueldodiario*$diasutilidades/360;
@@ -172,23 +206,26 @@ class NominaPartsController extends Controller
 
 
 
-                if($cantidadmeses == 4)
-                {
-                  $asig =   $salariointegral * $diasvacaciones;
-                  $diasvaca = 15;
-                  $diasextrass = $diasextras;
-                  $cantidadmeses = 1;
-                  $ultimodia = 15;
-                  $acumulado += $asig;
-                }else{
-                    $diasvaca = '';
-                    $diasextrass = '';
-                    $asig = 0;
-                    $acumulado += $asig;
+            if($cantidadmeses == 4)
+            {
+                $asig =   $salariointegral * $diasvacaciones;
+                $diasvaca = 15;
+                $diasextrass = $diasextras;
+                $cantidadmeses = 1;
+                $ultimodia = 15;
+                $acumulado += $asig;
+                $interes = $acumulado * $tasaaver / 1200;
+                $interesesacumulado += $interes;
+
+            }else{
+
+                $diasvaca = '';
+                $diasextrass = '';
+                $asig = 0;
+                $acumulado += $asig;
 
                 }
 
-               $ultimanomina = 0;
 
 
 
@@ -201,7 +238,7 @@ class NominaPartsController extends Controller
 
 
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','employee','datenow','diasvacaciones','cuotautilidad','cuotavaca','acumulado','ultimanomina'))->setPaper('a4');
+          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','employee','datenow','diasvacaciones','cuotautilidad','cuotavaca','acumulado','ultimopago','interesesacumulado'))->setPaper('a4');
 
           return $pdf->stream();
 
