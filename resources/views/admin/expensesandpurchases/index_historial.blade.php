@@ -320,6 +320,8 @@
     </div>
 </div>
 
+@if(Auth::user()->id_company == '26')
+
 
 
 <div class="modal fade" id="courier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -398,7 +400,7 @@
                 </div>
             </div>
         </div>
-
+        @endif
 
 
 
