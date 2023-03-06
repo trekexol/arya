@@ -195,53 +195,6 @@ $interesesacumulado = 0;
 </tr>
 </table>
 
-<?php
-$ano = 0;
-$mes = 0;
-/*$ano = substr($date_end, 6, 4); //fecha end
-$mes = substr($date_end, 3, 2);*/
-
-if($mes == '01'){
-            $nro_mes    = "01";
-            $mes_nombre = "ENERO";
-        }elseif($mes == '02'){
-            $nro_mes    = "02";
-            $mes_nombre = "FEBRERO";
-        }elseif($mes == '03'){
-            $nro_mes    = "03";
-            $mes_nombre = "MARZO";
-        }elseif($mes == '04'){
-            $nro_mes    = "04";
-            $mes_nombre = "ABRIL";
-        }elseif($mes == '05'){
-            $nro_mes    = "05";
-            $mes_nombre = "MAYO";
-        }elseif($mes == '06'){
-            $nro_mes    = "06";
-            $mes_nombre = "JUNIO";
-        }elseif($mes == '07'){
-            $nro_mes    = "07";
-            $mes_nombre = "JULIO";
-        }elseif($mes == '08'){
-            $nro_mes    = "08";
-            $mes_nombre = "AGOSTO";
-        }elseif($mes == '09'){
-            $nro_mes    = "09";
-            $mes_nombre = "SEPTIEMBRE";
-        }elseif ($mes == '10'){
-            $nro_mes    = "10";
-            $mes_nombre = "OCTUBRE";
-        }elseif ($mes == '11'){
-            $nro_mes    = "11";
-            $mes_nombre = "NOVIEMBRE";
-        }else {
-            $nro_mes    = "12";
-            $mes_nombre = "DICIEMBRE";
-        }
-
-?>
-
-
 </body>
 </html>
 
@@ -333,15 +286,6 @@ if($mes == '01'){
 
     <?php
 
-
-
-      $datework = Carbon::createFromDate($employee->fecha_ingreso);
-
-
-      $days = $datework->diffInDays($employee->fecha_egreso);
-      $months = $datework->diffInMonths($employee->fecha_egreso);
-      $years = $datework->diffInYears($employee->fecha_egreso);
-
       if($employee->motivo == 1){
         $motivo = 'Renuncia';
       }elseif($employee->motivo == 2){
@@ -350,8 +294,19 @@ if($mes == '01'){
         $motivo = 'S/D';
       }
 
+      $sueldodiario = number_format($employee->monto_pago / 30, 2, '.', '.');
+
+      $salariointegral = $sueldodiario +number_format($cuotautilidad, 2, '.', '.') + number_format($cuotavaca, 2, '.', '.');
 
 
+    $feini = new DateTime($employee->fecha_ingreso);
+    $fefin = new DateTime($employee->fecha_egreso);
+
+    $diferencia = $feini->diff($fefin);
+
+    $años = $diferencia->format('%Y');
+    $mes = $diferencia->format('%M');
+    $dias = $diferencia->format('%D');
     ?>
 
 
@@ -368,18 +323,11 @@ if($mes == '01'){
         <td class="text-center font-weight-normal"></td>
         <td class="text-center font-weight-normal">{{ $employee->fecha_ingreso }}</td>
         <td class="text-center font-weight-normal">{{ $employee->fecha_egreso ?? '' }}</td>
-        <td class="text-center font-weight-normal">{{ $years }}</td>
-        <td class="text-center font-weight-normal">{{ $months }}</td>
+        <td class="text-center font-weight-normal">{{ $años }}</td>
+        <td class="text-center font-weight-normal">{{ $mes }}</td>
         <td class="text-center font-weight-normal">{{ $motivo }}</td>
       </tr>
     </table>
-
-
-    <?php
-
-
-
-    ?>
 
 
     <table style="width: 100%;">
@@ -391,15 +339,10 @@ if($mes == '01'){
       </tr>
       <tr>
         <td class="text-center font-weight-normal"></td>
-        @if(isset($ultima_nomina))
-        <td class="text-center font-weight-normal">{{ $ultima_nomina->date_begin }}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultima_nomina->date_begin)->format('Y') ?? '' }}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultima_nomina->date_begin)->format('M') ?? '' }}</td>
-        @else
-        <td class="text-center font-weight-normal"></td>
-        <td class="text-center font-weight-normal"></td>
-        <td class="text-center font-weight-normal"></td>
-        @endif
+        <td class="text-center font-weight-normal">{{ $ultimanomina}}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimanomina)->format('Y') ?? '' }}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimanomina)->format('M') ?? '' }}</td>
+
       </tr>
     </table>
 
@@ -418,9 +361,9 @@ if($mes == '01'){
           <td class="text-center font-weight-normal"></td>
           <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago, 2, ',', '.') }}</td>
           <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago / 30, 2, ',', '.') }}</td>
-          <td class="text-center font-weight-normal"></td>
-          <td class="text-center font-weight-normal"></td>
-          <td class="text-center font-weight-normal"></td>
+          <td class="text-center font-weight-normal">{{number_format($cuotautilidad, 2, ',', '.')}}</td>
+          <td class="text-center font-weight-normal">{{number_format($cuotavaca, 2, ',', '.')}}</td>
+          <td class="text-center font-weight-normal">{{number_format($salariointegral, 2, ',', '.')}}</td>
         </tr>
       </table>
 
@@ -444,7 +387,7 @@ if($mes == '01'){
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">A - Garantia de Prestaciones Acumuladas</th>
-            <th  class="text-center" style="width: 16%;"></th>
+            <th  class="text-center" style="width: 16%;">{{$acumulado}}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
