@@ -119,14 +119,89 @@ class NominaPartsController extends Controller
             ->where('employees.id','=',$idempleado)
             ->first();
 
-            $ultima_nomina = NominaCalculation::on(Auth::user()->database_name)
-            ->join('nominas','nominas.id','id_nomina')
-            ->where('nominas.status','NOT LIKE','X')
-            ->where('id_employee',$idempleado)
-            ->latest('nominas.created_at')->first();
+            $datospresta = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->where('a.id_employee',$idempleado)
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
+            ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
+            ->get();
+
+            if($employee->amount_utilities == 'Ma'){
+                $diasutilidades = 120;
+
+            }else{
+                $diasutilidades = 30;
+            }
+
+                $i = 1;
+                $o = 1;
+                $cantidadmeses = 1;
+                $diasvacaciones = 15;
+                $diasextras = 0;
+                $diasvaca = '';
+                $acumulado = 0;
+                $interesesacumulado = 0;
 
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','employee','datenow','ultima_nomina'))->setPaper('a4');
+            foreach($datospresta as $datosprestaciones){
+
+                $sueldodiario = $datosprestaciones->monto/30;
+                $cuotautilidad = $sueldodiario*$diasutilidades/360;
+
+
+
+                if($o == 24){
+                    $diasvacaciones = $diasvacaciones + 1;
+                    $diasextras = $diasextras + 1;
+                    $os = 1;
+                }
+
+                elseif(isset($os) AND $os == 12){
+                    $diasvacaciones = $diasvacaciones + 1;
+
+                    $os = 1;
+                }elseif(isset($os)){
+                    $os++;
+                }
+
+                $cuotavaca = $sueldodiario*$diasvacaciones/360;
+
+                $salariointegral = $sueldodiario + $cuotautilidad + $cuotavaca;
+
+
+
+                if($cantidadmeses == 4)
+                {
+                  $asig =   $salariointegral * $diasvacaciones;
+                  $diasvaca = 15;
+                  $diasextrass = $diasextras;
+                  $cantidadmeses = 1;
+                  $ultimodia = 15;
+                  $acumulado += $asig;
+                }else{
+                    $diasvaca = '';
+                    $diasextrass = '';
+                    $asig = 0;
+                    $acumulado += $asig;
+
+                }
+
+               $ultimanomina = 0;
+
+
+
+                $cantidadmeses++;
+                $o++;
+                $i++;
+
+            }
+
+
+
+
+          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','employee','datenow','diasvacaciones','cuotautilidad','cuotavaca','acumulado','ultimanomina'))->setPaper('a4');
 
           return $pdf->stream();
 
