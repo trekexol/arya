@@ -299,14 +299,19 @@ $interesesacumulado = 0;
       $salariointegral = $sueldodiario +number_format($cuotautilidad, 2, '.', '.') + number_format($cuotavaca, 2, '.', '.');
 
 
+
+
+
     $feini = new DateTime($employee->fecha_ingreso);
     $fefin = new DateTime($employee->fecha_egreso);
+
 
     $diferencia = $feini->diff($fefin);
 
     $años = $diferencia->format('%Y');
     $mes = $diferencia->format('%M');
     $dias = $diferencia->format('%D');
+
 
       if($años > 0){
 
@@ -319,6 +324,7 @@ $interesesacumulado = 0;
       }
 
      $prestaarticulo =  30 * $añoservicio * ($employee->monto_pago / 30);
+
 
     ?>
 
@@ -352,6 +358,7 @@ $interesesacumulado = 0;
       </tr>
       <tr>
         <td class="text-center font-weight-normal"></td>
+
         <td class="text-center font-weight-normal">{{ $ultimopago->ultimopago}}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('Y') ?? '' }}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('M') ?? '' }}</td>
@@ -401,6 +408,7 @@ $interesesacumulado = 0;
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">A - Garantia de Prestaciones Acumuladas</th>
             <th  class="text-center" style="width: 16%;">{{number_format($acumulado, 2, ',', '.')}}</th>
+
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
