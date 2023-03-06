@@ -299,14 +299,33 @@ $interesesacumulado = 0;
       $salariointegral = $sueldodiario +number_format($cuotautilidad, 2, '.', '.') + number_format($cuotavaca, 2, '.', '.');
 
 
+
+
+
     $feini = new DateTime($employee->fecha_ingreso);
     $fefin = new DateTime($employee->fecha_egreso);
+
 
     $diferencia = $feini->diff($fefin);
 
     $años = $diferencia->format('%Y');
     $mes = $diferencia->format('%M');
     $dias = $diferencia->format('%D');
+
+
+      if($años > 0){
+
+        $añoservicio = $años;
+
+      }elseif($mes > 5){
+        $añoservicio = 1;
+      }else{
+        $añoservicio = 0;
+      }
+
+     $prestaarticulo =  30 * $añoservicio * ($employee->monto_pago / 30);
+
+
     ?>
 
 
@@ -339,9 +358,10 @@ $interesesacumulado = 0;
       </tr>
       <tr>
         <td class="text-center font-weight-normal"></td>
-        <td class="text-center font-weight-normal">{{ $ultimanomina}}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimanomina)->format('Y') ?? '' }}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimanomina)->format('M') ?? '' }}</td>
+
+        <td class="text-center font-weight-normal">{{ $ultimopago->ultimopago}}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('Y') ?? '' }}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('M') ?? '' }}</td>
 
       </tr>
     </table>
@@ -387,18 +407,29 @@ $interesesacumulado = 0;
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">A - Garantia de Prestaciones Acumuladas</th>
-            <th  class="text-center" style="width: 16%;">{{$acumulado}}</th>
+            <th  class="text-center" style="width: 16%;">{{number_format($acumulado, 2, ',', '.')}}</th>
+
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
-            <td  class="text-left" style="width: 68%;">B - Prestaciones Sociales LOTTT Art. 142 Literal "C"</td>
-            <td  class="text-center" style="width: 16%;"></td>
-            <td  class="text-center" style="width: 16%;"></td>
+            <th  class="text-left font-weight-normal" style="width: 68%;">B - Prestaciones Sociales LOTTT Art. 142 Literal "C"</th>
+            <th  class="text-center" style="width: 16%;">{{number_format($prestaarticulo, 2, ',', '.')}}</th>
+            <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
             <td  class="text-left" style="width: 68%;">Total Prestaciones Sociales LOTTT Art. 142 Literal "D". Monto mayor entre A y B</td>
             <td  class="text-center" style="width: 16%;"></td>
-            <td  class="text-center" style="width: 16%;"></td>
+            <th  class="text-center" style="width: 16%;">
+                <?php
+                    if($acumulado > $prestaarticulo){
+                        $totaloot = $acumulado;
+                    }else{
+                        $totaloot = $prestaarticulo;
+                    }
+                ?>
+
+                {{number_format($totaloot, 2, ',', '.')}}
+            </th>
           </tr>
         </table>
 
@@ -411,13 +442,13 @@ $interesesacumulado = 0;
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">Intereses Garantia Prestaciones LOTTT 2014. Art. 143</th>
-            <th  class="text-center" style="width: 16%;"></th>
+            <th  class="text-center" style="width: 16%;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
             <td  class="text-left" style="width: 68%;">Total Intereses Garantia Prestaciones LOTTT 2014. Art. 143</td>
             <td  class="text-center" style="width: 16%;"></td>
-            <td  class="text-center" style="width: 16%;"></td>
+            <th  class="text-center" style="width: 16%;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</th>
           </tr>
         </table>
 
