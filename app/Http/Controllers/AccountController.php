@@ -222,14 +222,6 @@ class AccountController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
 
-        $company = Company::on(Auth::user()->database_name)->find(1);
-
-
-        if (!isset($period)){
-        $period = $company->period;
-        } else {
-        $period = $period;
-        }
 
         if($users_role == '1'){
            /*
@@ -261,6 +253,25 @@ class AccountController extends Controller
             }
 
 
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+
+
+            if (!isset($period)){
+                
+                if (count($periodselect) > 0) {
+                    $period = $periodselect[0];
+                } else {
+                $period = $company->period;
+                }
+
+            } else {
+            $period = $period;
+            }
+
+            
+
+
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
             //->join('quotations', 'quotations.id', '=', 'detail_vouchers.id_invoice')
@@ -280,7 +291,7 @@ class AccountController extends Controller
            // ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
             ->where('detail_vouchers.status','C')
             ->where('detail_vouchers.id_account',$id_account)
-            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+           // ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
             ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo','header_vouchers.reference as reference')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('detail_vouchers.id','asc')

@@ -72,6 +72,9 @@
                     $saldos_USD = 0;
                     $cont0 = 0;
                     $cont = 0;
+                    
+                    $saldo_most[] = array(0,0);
+                    $saldo_most_usd[] = array(0,0);
 
                         foreach ($detailvouchers_most as $row) {
  
