@@ -327,11 +327,14 @@ $interesesacumulado = 0;
     $feini = new DateTime($fechaex[0].'-'.$fechaex[1]);
     $fefin = new DateTime($fechaexplode[0].'-'.$fechaexplode[1]);
 
+
+
     $diferencia = $feini->diff($fefin);
 
     $años = $diferencia->format('%Y');
     $mes = $diferencia->format('%M');
     $dias = $diferencia->format('%D');
+
 
       if($años > 0){
 
@@ -370,6 +373,7 @@ $interesesacumulado = 0;
     $pagovacaciones =  number_format($pagovacaciones, 2, ',', '.');
     $pagovacaciones = str_replace(".", "", $pagovacaciones);
 
+
     ?>
 
 
@@ -402,6 +406,7 @@ $interesesacumulado = 0;
       </tr>
       <tr>
         <td class="text-center font-weight-normal"></td>
+
         <td class="text-center font-weight-normal">{{ $ultimopago->ultimopago}}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('Y') ?? '' }}</td>
         <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('M') ?? '' }}</td>
@@ -450,7 +455,9 @@ $interesesacumulado = 0;
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">A - Garantia de Prestaciones Acumuladas</th>
+
             <th  class="text-center" style="width: 16%;">{{$acumulado}}</th>
+
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>

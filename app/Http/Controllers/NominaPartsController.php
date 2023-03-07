@@ -138,6 +138,7 @@ class NominaPartsController extends Controller
             ->first();
 
 
+
             if($employee->amount_utilities == 'Ma'){
                 $diasutilidades = 120;
 
@@ -156,6 +157,7 @@ class NominaPartsController extends Controller
 
 
             foreach($datospresta as $datosprestaciones){
+
 
 
                 $bcvtasa   = DB::connection($this->conection_logins)
@@ -178,7 +180,6 @@ class NominaPartsController extends Controller
                     $tasaaver = $bcvtasa->rate_average_a_p;
 
                 }
-
 
 
                 $sueldodiario = $datosprestaciones->monto/30;
@@ -206,6 +207,7 @@ class NominaPartsController extends Controller
 
 
 
+
             if($cantidadmeses == 4)
             {
                 $asig =   $salariointegral * $diasvacaciones;
@@ -229,6 +231,7 @@ class NominaPartsController extends Controller
 
 
 
+
                 $cantidadmeses++;
                 $o++;
                 $i++;
@@ -237,7 +240,10 @@ class NominaPartsController extends Controller
 
 
 
+
           $pdf = $pdf->loadView('pdf.prestations',compact('diasutilidades','diasvacaciones','company','tipo','employee','datenow','cuotautilidad','cuotavaca','acumulado','ultimopago','interesesacumulado'))->setPaper('a4');
+
+
 
           return $pdf->stream();
 
