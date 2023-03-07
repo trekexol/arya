@@ -223,13 +223,7 @@ class AccountController extends Controller
         $users_role =   $user->role_id;
 
 
-        if($users_role == '1'){
-           /*
-            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
-            ->where('status','C')
-            ->where('id_account',$id_account)
-            ->orderBy('id','desc')
-            ->get(); */
+        if($users_role == '1' || $users_role == '1'){
 
 
             $periods = DetailVoucher::on(Auth::user()->database_name)
@@ -269,8 +263,6 @@ class AccountController extends Controller
             $period = $period;
             }
 
-            
-
 
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
@@ -291,7 +283,7 @@ class AccountController extends Controller
            // ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
             ->where('detail_vouchers.status','C')
             ->where('detail_vouchers.id_account',$id_account)
-           // ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
+            ->where('header_vouchers.date','LIKE' ,'%'.$period.'%')
             ->select('detail_vouchers.*','header_vouchers.date as date','header_vouchers.description as description','header_vouchers.id_anticipo as id_anticipo','header_vouchers.reference as reference')
             ->orderBy('header_vouchers.date','asc')
             ->orderBy('detail_vouchers.id','asc')
@@ -314,7 +306,6 @@ class AccountController extends Controller
                    // $saldo = $var->saldo;
                 }
             }    */
-
 
 
             if (!empty($detailvouchers)) {
