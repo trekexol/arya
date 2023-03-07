@@ -241,8 +241,8 @@ class NominaPartsController extends Controller
 
 
 
+          $pdf = $pdf->loadView('pdf.prestations',compact('diasutilidades','diasvacaciones','company','tipo','employee','datenow','cuotautilidad','cuotavaca','acumulado','ultimopago','interesesacumulado'))->setPaper('a4');
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('company','tipo','employee','datenow','diasvacaciones','cuotautilidad','cuotavaca','acumulado','ultimopago','interesesacumulado'))->setPaper('a4');
 
 
           return $pdf->stream();
