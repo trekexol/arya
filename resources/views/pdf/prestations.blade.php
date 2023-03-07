@@ -1,5 +1,25 @@
 <?php
   use Carbon\Carbon;
+
+  function number_words($valor, $sep, $desc_decimal) {
+        $arr = explode(".", $valor);
+        $entero = $arr[0];
+        if (isset($arr[1])) {
+        $decimos = strlen($arr[1]) == 1 ? $arr[1] . '0' : $arr[1];
+        }
+
+        $fmt = new \NumberFormatter('es', \NumberFormatter::SPELLOUT);
+        if (is_array($arr)) {
+        $num_word = ($arr[0]>=1000000) ? "{$fmt->format($entero)} de " : "{$fmt->format($entero)} ";
+        if (isset($decimos) && $decimos > 0) {
+        $num_word .= " $sep {$fmt->format($decimos)} $desc_decimal";
+        }
+        }
+return $num_word;
+}
+
+
+
 ?>
 @if($tipo == 'prestacion')
 
@@ -237,14 +257,14 @@ $interesesacumulado = 0;
         <tr>
           <th style="text-align: left; font-weight: normal; width: 15%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}"  height="50" class="d-inline-block align-top" alt="">
           </th>
-          <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h6>{{Auth::user()->company->razon_social ?? ''}}  <h6>{{Auth::user()->company->code_rif ?? ''}}</h6></h6> </th>
+          <th style="text-align: left; font-weight: normal; width: 80%; border-color: white; font-weight: bold;"><h6>{{Auth::user()->company->razon_social ?? ''}}  <h6>{{Auth::user()->company->code_rif ?? ''}}</h6></h6> </th>
         </tr>
       </table>
-<div class="small">
+<div class="small" style="font-size: 12px;">
 
   <div class="text-center h6">RECIBO DE LIQUIDACION</div>
 
- <div class="small">
+<div class="small">
 
 
     <table style="width: 25%;">
@@ -295,12 +315,17 @@ $interesesacumulado = 0;
       }
 
       $sueldodiario = number_format($employee->monto_pago / 30, 2, '.', '.');
+      $cuotautilidad = $sueldodiario*$diasutilidades/360;
+      $cuotavaca = $sueldodiario*$diasvacaciones/360;
 
-      $salariointegral = $sueldodiario +number_format($cuotautilidad, 2, '.', '.') + number_format($cuotavaca, 2, '.', '.');
+      $salariointegral = $sueldodiario + number_format($cuotautilidad, 2, '.', '.') + number_format($cuotavaca, 2, '.', '.');
+
+     $fechaex = explode('-',$employee->fecha_ingreso);
+     $fechaexplode = explode('-',$employee->fecha_egreso);
 
 
-    $feini = new DateTime($employee->fecha_ingreso);
-    $fefin = new DateTime($employee->fecha_egreso);
+    $feini = new DateTime($fechaex[0].'-'.$fechaex[1]);
+    $fefin = new DateTime($fechaexplode[0].'-'.$fechaexplode[1]);
 
     $diferencia = $feini->diff($fefin);
 
@@ -311,14 +336,39 @@ $interesesacumulado = 0;
       if($años > 0){
 
         $añoservicio = $años;
+        $tiempoparautili = $mes;
 
       }elseif($mes > 5){
         $añoservicio = 1;
+        $tiempoparautili = $mes;
       }else{
         $añoservicio = 0;
+        $tiempoparautili = $mes;
       }
 
-     $prestaarticulo =  30 * $añoservicio * ($employee->monto_pago / 30);
+    $prestaarticulo =  30 * $añoservicio * ($employee->monto_pago / 30);
+    $prestaarticulo =  number_format($prestaarticulo, 2, ',', '.');
+    $prestaarticulo = str_replace(".", "", $prestaarticulo);
+
+
+
+    $acumulado =  number_format($acumulado, 2, ',', '.');
+    $acumulado = str_replace(".", "", $acumulado);
+
+
+
+    $interesesacumulado =  number_format($interesesacumulado, 2, ',', '.');
+    $interesesacumulado = str_replace(".", "", $interesesacumulado);
+
+
+    $pagovacaciones = $employee->monto_pago / 30 * $diasvacaciones;
+
+    $vacapaga = $pagovacaciones * 2;
+    $vacapaga =  number_format($vacapaga, 2, ',', '.');
+    $vacapaga = str_replace(".", "", $vacapaga);
+
+    $pagovacaciones =  number_format($pagovacaciones, 2, ',', '.');
+    $pagovacaciones = str_replace(".", "", $pagovacaciones);
 
     ?>
 
@@ -372,11 +422,11 @@ $interesesacumulado = 0;
         </tr>
         <tr>
           <td class="text-center font-weight-normal"></td>
-          <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago, 2, ',', '.') }}</td>
-          <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago / 30, 2, ',', '.') }}</td>
-          <td class="text-center font-weight-normal">{{number_format($cuotautilidad, 2, ',', '.')}}</td>
-          <td class="text-center font-weight-normal">{{number_format($cuotavaca, 2, ',', '.')}}</td>
-          <td class="text-center font-weight-normal">{{number_format($salariointegral, 2, ',', '.')}}</td>
+          <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago, 2, '.', '.') }}</td>
+          <td class="text-center font-weight-normal">{{ number_format($employee->monto_pago / 30, 2, '.', '.') }}</td>
+          <td class="text-center font-weight-normal">{{number_format($cuotautilidad, 2, '.', '.')}}</td>
+          <td class="text-center font-weight-normal">{{number_format($cuotavaca, 2, '.', '.')}}</td>
+          <td class="text-center font-weight-normal">{{number_format($salariointegral, 2, '.', '.')}}</td>
         </tr>
       </table>
 
@@ -400,12 +450,12 @@ $interesesacumulado = 0;
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">A - Garantia de Prestaciones Acumuladas</th>
-            <th  class="text-center" style="width: 16%;">{{number_format($acumulado, 2, ',', '.')}}</th>
+            <th  class="text-center" style="width: 16%;">{{$acumulado}}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">B - Prestaciones Sociales LOTTT Art. 142 Literal "C"</th>
-            <th  class="text-center" style="width: 16%;">{{number_format($prestaarticulo, 2, ',', '.')}}</th>
+            <th  class="text-center" style="width: 16%;">{{$prestaarticulo}}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
@@ -413,14 +463,15 @@ $interesesacumulado = 0;
             <td  class="text-center" style="width: 16%;"></td>
             <th  class="text-center" style="width: 16%;">
                 <?php
-                    if($acumulado > $prestaarticulo){
-                        $totaloot = $acumulado;
+                    if(str_replace(",", ".", $acumulado) > str_replace(",", ".", $prestaarticulo)){
+                        $totaloot =  $acumulado;
+
                     }else{
                         $totaloot = $prestaarticulo;
                     }
                 ?>
 
-                {{number_format($totaloot, 2, ',', '.')}}
+                {{$totaloot}}
             </th>
           </tr>
         </table>
@@ -434,13 +485,13 @@ $interesesacumulado = 0;
         <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">Intereses Garantia Prestaciones LOTTT 2014. Art. 143</th>
-            <th  class="text-center" style="width: 16%;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</th>
+            <th  class="text-center" style="width: 16%;">{{ $interesesacumulado }}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
             <td  class="text-left" style="width: 68%;">Total Intereses Garantia Prestaciones LOTTT 2014. Art. 143</td>
             <td  class="text-center" style="width: 16%;"></td>
-            <th  class="text-center" style="width: 16%;">{{ number_format(($interesesacumulado), 2, ',', '.') }}</th>
+            <th  class="text-center" style="width: 16%;">{{ $interesesacumulado }}</th>
           </tr>
         </table>
 
@@ -458,13 +509,13 @@ $interesesacumulado = 0;
 
         <table style="width: 100%;">
           <tr>
-            <th  class="text-left font-weight-normal" style="width: 68%;">Dias de Vacaciones: Dia(s)</th>
-            <th  class="text-center" style="width: 16%;"></th>
+            <th  class="text-left font-weight-normal" style="width: 68%;">Dias de Vacaciones: {{$diasvacaciones}} Dia(s)</th>
+            <th  class="text-center" style="width: 16%;">{{$pagovacaciones}}</th>
             <th  class="text-center" style="width: 16%;"></th>
           </tr>
           <tr>
-            <td  class="text-left" style="width: 68%;">Bono Vacacional: Dia(s)</td>
-            <td  class="text-center" style="width: 16%;"></td>
+            <td  class="text-left" style="width: 68%;">Bono Vacacional: {{$diasvacaciones}} Dia(s)</td>
+            <th  class="text-center" style="width: 16%;">{{$pagovacaciones}}</th>
             <td  class="text-center" style="width: 16%;"></td>
           </tr>
           <tr>
@@ -479,13 +530,13 @@ $interesesacumulado = 0;
           </tr>
           <tr>
             <td  class="text-left" style="width: 68%;">Otras Asignaciones:</td>
-            <td  class="text-right" style="width: 16%;">{{ number_format($employee->otras_asignaciones, 2, ',', '.') }}</td>
+            <td  class="text-right" style="width: 16%;"></td>
             <td  class="text-center" style="width: 16%;"></td>
           </tr>
           <tr>
             <td  class="text-left" style="width: 68%;">Total Vacaciones y Bonificaciones:</td>
             <td  class="text-right" style="width: 16%;"></td>
-            <td  class="text-center" style="width: 16%;">{{ number_format($total_vacaciones_bonificaciones, 2, ',', '.') }}</td>
+            <th  class="text-center" style="width: 16%;">{{ $vacapaga }}</th>
           </tr>
         </table>
 
@@ -500,7 +551,17 @@ $interesesacumulado = 0;
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">Total de Utilidades:</th>
             <th  class="text-center" style="width: 16%;"></th>
-            <th  class="text-center" style="width: 16%;"></th>
+            <th  class="text-center" style="width: 16%;">
+            <?php
+                if($tiempoparautili == 0){
+                    $pagotiempo = 30 / 12 * 1;
+                }else{
+                    $pagotiempo = 30 / 12 * $tiempoparautili;
+                }
+            ?>
+
+            {{ $totalud = number_format($pagotiempo * $employee->monto_pago / 30, 2, '.', '.')}}
+            </th>
           </tr>
         </table>
 
@@ -510,6 +571,13 @@ $interesesacumulado = 0;
         $total_otras_deducciones = 0;
 
 
+        /***REMPLACE PARA LA SUMA**/
+        $totaloot = str_replace(",", ".", $totaloot);
+        $interesesacumulado = str_replace(",", ".", $interesesacumulado);
+        $vacapaga = str_replace(",", ".", $vacapaga);
+        $totaliquidacion1 = $totaloot +  $interesesacumulado + $vacapaga;
+        $totaliquidacion2 = $totaloot;
+        $totalapgarto = $totaliquidacion1 + $totaliquidacion2;
         ?>
 
 
@@ -566,19 +634,51 @@ $interesesacumulado = 0;
         </table>
 
         <table style="width: 100%;">
+            <tr>
+              <th  class="text-left font-weight-normal" style="width: 68%;">Total Liquidacion</th>
+              <th  class="text-center" style="width: 16%;"></th>
+              <th  class="text-center" style="width: 16%;">{{ str_replace(".", ",", $totaliquidacion1) }}</th>
+            </tr>
+          </table>
+
+
+          <table style="width: 100%;">
+            <tr>
+              <th  class="text-left" style="background: rgb(221, 221, 221)">INDEMNIZACION ART.. 92 LOTTT
+              </th>
+            </tr>
+          </table>
+
+          <table style="width: 100%;">
+              <tr>
+                <th  class="text-left font-weight-normal" style="width: 68%;">Total Liquidacion</th>
+                <th  class="text-center" style="width: 16%;"></th>
+                <th  class="text-center" style="width: 16%;">{{  str_replace(".", ",", $totaliquidacion2) }}</th>
+              </tr>
+            </table>
+
+
+
+        <table style="width: 100%;">
+            <tr>
+              <th  class="text-left" style="background: rgb(221, 221, 221)">TOTAL LIQUIDACIÓN
+              </th>
+            </tr>
+          </table>
+
+        <table style="width: 100%;">
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">Total a pagar....</th>
             <th  class="text-center" style="width: 16%;"></th>
-            <th  class="text-center" style="width: 16%;"></th>
+            <th  class="text-center" style="width: 16%;">{{ str_replace(".", ",", $totalapgarto) }}</th>
           </tr>
         </table>
-
-        <div class="small">El suscrito trabajador declara haber recibido de la empresa EMPRESA DEMO C.A. la cantidad de Bolivares a su entera satisfacción por concepto de pago completo e indemnizaciones, hasta la fecha de la
+        <p>El suscrito trabajador declara haber recibido de la empresa {{ $company->razon_social ?? ''}} la cantidad de Bolivares <b>{{number_words($totalapgarto,"con","centavos")}}</b>
+         a su entera satisfacción por concepto de pago completo e indemnizaciones, hasta la fecha de la
           presente liquidación, no teniendo nada que reclamar en relación a salarios e indemnizaciones causadas por el contrato de trabajo que hoy queda
-          terminado
-        </div>
+          terminado</p>
 
-      <br>
+
 
 
       <table style="width: 100%;">
@@ -587,13 +687,14 @@ $interesesacumulado = 0;
           <th  class="text-left" style="border-color: #ffffff; width: 50%;">__________________________________</th>
         </tr>
         <tr>
-          <td  class="text-left font-weight-normal" style="border-color: #ffffff; width: 50%;">Empleado: {{ $employee->nombres }} {{ $employee->apellidos }}</td>
+          <td  class="text-left font-weight-normal" style="border-color: #ffffff; width: 50%;">Empleado: {{ $employee->nombres }} {{ $employee->apellidos }} C.I : {{ $employee->id_empleado }}</td>
           <td  class="text-left" style="border-color: #ffffff; width: 50%;">Testigo</td>
         </tr>
         <tr>
-          <td  class="text-left font-weight-normal" style="border-color: #ffffff; width: 50%;"> C.I : {{ $employee->id_empleado }} </td>
-          <td  class="text-left" style="border-color: #ffffff; width: 50%;">C.I :</td>
-        </tr>
+            <td  class="text-left font-weight-normal" style="border-color: #ffffff; width: 50%;"> C.I : {{ $employee->id_empleado }}</td>
+            <td  class="text-left" style="border-color: #ffffff; width: 50%;">C.I :</td>
+          </tr>
+
       </table>
 
 </div>
