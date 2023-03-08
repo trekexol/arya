@@ -693,7 +693,7 @@ class GlobalController extends Controller
         ->where('combo_products.id_combo',$id_product)
         ->get();
         
-        if(!empty($combo_product)) {
+        if(!isset($combo_product)) {
             foreach ($combo_product as $int_product) {
                    
                     if ($sucursal == 1) {

@@ -158,7 +158,7 @@
                                     <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
         
                                     <div class="col-md-4">
-                                        <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ $combo->price }}" required autocomplete="price">
+                                        <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ $combo->price }}" required autocomplete="price">
         
                                         @error('price')
                                             <span class="invalid-feedback" role="alert">
@@ -169,7 +169,7 @@
                                     <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio Compra</label>
         
                                     <div class="col-md-4">
-                                        <input id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ $combo->price_buy }}" required autocomplete="price_buy">
+                                        <input onkeyup="noespac(this)" id="price_buy" type="text" class="form-control @error('price_buy') is-invalid @enderror" name="price_buy" value="{{ $combo->price_buy }}" required autocomplete="price_buy">
         
                                         @error('price_buy')
                                             <span class="invalid-feedback" role="alert">
@@ -184,7 +184,7 @@
                                     <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
         
                                     <div class="col-md-4">
-                                        <input id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ $combo->cost_average }}" required autocomplete="cost_average">
+                                        <input onkeyup="noespac(this)" id="cost_average" type="text" class="form-control @error('cost_average') is-invalid @enderror" name="cost_average" value="{{ $combo->cost_average }}" required autocomplete="cost_average">
         
                                         @error('cost_average')
                                             <span class="invalid-feedback" role="alert">
@@ -247,7 +247,7 @@
                                     <label for="special_impuesto" class="col-md-2 col-form-label text-md-right">Impuesto Especial</label>
         
                                     <div class="col-md-4">
-                                        <input id="special_impuesto" type="text" class="form-control @error('special_impuesto') is-invalid @enderror" name="special_impuesto" value="{{ $combo->special_impuesto }}" required autocomplete="special_impuesto">
+                                        <input onkeyup="noespac(this)" id="special_impuesto" type="text" class="form-control @error('special_impuesto') is-invalid @enderror" name="special_impuesto" value="{{ $combo->special_impuesto }}" required autocomplete="special_impuesto">
         
                                         @error('special_impuesto')
                                             <span class="invalid-feedback" role="alert">
@@ -294,22 +294,6 @@
  @endsection
  @section('validacion')
     <script>    
-        $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000,000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#price_buy").mask('000.000.000.000.000,000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#cost_average").mask('000.000.000.000.000,000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#special_impuesto").mask('000.000.000.000.000,00', { reverse: true });
-            
-        });
 
 	$(function(){
         soloAlfaNumerico('code_comercial');
