@@ -202,7 +202,7 @@
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: white; border-right-color: white;" ></th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">Sub Total</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? '' : '$'}}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">{{($coin == 'bolivares') ? '' : '$'}}{{ number_format(bcdiv($quotation->amount / ($bcv ?? 1), '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: white; border-right-color: white;" ></th>
