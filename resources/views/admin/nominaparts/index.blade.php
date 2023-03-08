@@ -112,9 +112,6 @@ $liqui_active = '';
                 <th>Apellidos</th>
                 <th>Sueldo</th>
                 @if ($type == 'prestaciones')
-                <th>Prestaciones</th>
-                <th>Intereses</th>
-                <th>Prestaciones + Int</th>
                 <th></th>
                 @endif
                 @if ($type == 'utilidades')
@@ -133,12 +130,6 @@ $liqui_active = '';
                 <th></th>
                 @endif
                 @if ($type == 'liquidaciones')
-                <th>Salario Diario</th>
-                <th>Salario Integral</th>
-                <th>Prestaciones Acumuladas</th>
-                <th>Prestaciones Sociales</th>
-                <th>Intereses</th>
-                <th>Total Bonificación y Vacaciones</th>
                 <th></th>
                 @endif
 
@@ -157,9 +148,6 @@ $liqui_active = '';
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
 
                             @if ($type == 'prestaciones')
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
                             <td>
                             <a href="{{ route('pdf.prestations',[$employee->id,'prestacion']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
@@ -184,12 +172,6 @@ $liqui_active = '';
                             </td>
                             @endif
                             @if ($type == 'liquidaciones')
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
                             <td>
                             <a href="{{ route('pdf.prestations',[$employee->id,'liquidacion']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
