@@ -483,10 +483,10 @@ class InventoryController extends Controller
         $amount_old = request('amount_old');
         $id_user = request('id_user');
 
-        $valor_sin_formato_amount_new = str_replace(',', '.', str_replace('.', '', request('amount_new')));
+        $valor_sin_formato_amount_new = request('amount_new');
         $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
        
-        $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '', request('price_buy')));
+        $valor_sin_formato_price_buy = request('price_buy');
 
 
         $id_inventory = request('id_inventory');

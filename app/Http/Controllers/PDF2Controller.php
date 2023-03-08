@@ -1274,7 +1274,7 @@ class PDF2Controller extends Controller
                 $quotation_origin = Quotation::on(Auth::user()->database_name)->findOrFail($quotation->id_quotation);
 
 
-                $pdf = $pdf->loadView('pdf.creditnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor'));
+                $pdf = $pdf->loadView('pdf.creditnotemediacarta',compact('quotation','quotation_origin','inventories_quotations','bcv','company','valor','coin'));
                 return $pdf->stream();
 
             }else{

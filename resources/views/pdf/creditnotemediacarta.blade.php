@@ -171,7 +171,12 @@
     <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);"></th>
   </tr> 
   <tr>
-    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">MONTO TOTAL</th>
+    @if($coin == 'bolivares')
+    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">MONTO TOTAL Bs.</th>
+    @endif
+    @if($coin == 'dolares')
+    <th style="text-align: right; font-weight: normal; width: 79%; border-top-color: rgb(17, 9, 9); ">MONTO TOTAL $</th>
+    @endif
     <th style="text-align: right; font-weight: normal; width: 21%; border-top-color: rgb(17, 9, 9);">{{ number_format($total, 2, ',', '.') }}</th>
   </tr> 
   
