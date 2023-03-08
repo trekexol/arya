@@ -238,7 +238,7 @@
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: white; border-right-color: white; font-weight: normal; padding-left: 5px;" >{{$texto_tasa}}</th>
     <th style="text-align: right; font-weight: normal; width: 21%; border-bottom-color: white;">MONTO TOTAL USD</th>
-    <th style="text-align: right; font-weight: normal; width: 21%;">${{number_format(bcdiv($total, '1', 2), 2, ',', '.') }}{{($coin == 'bolivares') ? ''}}</th>
+    <th style="text-align: right; font-weight: normal; width: 21%;">${{ number_format(bcdiv($total, '1', 2), 2, ',', '.') }}</th>
   </tr> 
   <tr>
     <th style="text-align: left; width: 38%; border-bottom-color: black; border-right-color: white;" ></th>
