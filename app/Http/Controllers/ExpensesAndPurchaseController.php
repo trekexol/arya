@@ -3364,6 +3364,28 @@ public function notas(request $request)
                                                     ->where('status','P')
                                                     ->get();
 
+        foreach($expensesandpurchases as $expensesandpurchaser){
+        $debinot = DebitNoteExpense::on(Auth::user()->database_name)->where('id_expense',$expensesandpurchaser->id)->get();
+
+        if($debinot->count() > 0){
+
+            foreach($debinot as $debinot){
+
+                    if($debinot->percentage == '0.00'){
+                        $expensesandpurchaser->credit = TRUE;
+                    }else{
+                        $expensesandpurchaser->debit = TRUE;
+                    }
+
+            }
+        }else{
+            $expensesandpurchaser->credit = FALSE;
+            $expensesandpurchaser->debit = FALSE;
+        }
+
+        }
+
+
         $route = 'crearnota';
 
         return view('admin.expensesandpurchases.selectinvoice',compact('expensesandpurchases','route'));
@@ -3414,6 +3436,18 @@ public function notas(request $request)
                         if($pordes > 100){
                             $pordes = 100;
                         }
+
+
+                    if($pordes == 0){
+
+                        $resp['error'] = false;
+                        $resp['msg'] = 'Debe Ingresar un Monto en Descuento';
+                        return response()->json($resp);
+
+                    } else{
+
+
+
 
                         if($expensesandpurchases->coin == 'bolivares'){
 
@@ -3532,7 +3566,10 @@ public function notas(request $request)
                                 $resp['msg'] = 'Verifique la moneda';
                                 return response()->json($resp);
 
-                        }
+                            }
+
+                        }//else de poders 0
+
 
                     }elseif($tipocuenta == 'devolucion'){
                         $preciodeduccion = 0;
@@ -3724,7 +3761,7 @@ public function notas(request $request)
 
                     /********************* NOTAS DE CREDITOS***********/
 
-                    $pordes = '0';
+                    $pordes = 0;
                     $note = null;
 
 
