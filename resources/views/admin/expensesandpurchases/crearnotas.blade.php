@@ -28,6 +28,8 @@
         $id = decrypt($_POST['id']);
         $idp = decrypt($_POST['idp']);
         $coin = decrypt($_POST['coin']);
+        $debit = decrypt($_POST['debit']);
+        $credit = decrypt($_POST['credit']);
         $activo = true;
 
 
@@ -40,6 +42,8 @@
             $idp = '';
             $activo = false;
             $coin = 'bolivares';
+            $debit = false;
+            $credit = false;
         }
 
 
@@ -76,11 +80,15 @@
                         <div class="form-group row">
                             <label for="invoices" class="col-sm-3 col-form-label text-md-right">Tipo de Nota:</label>
                             <div class="col-sm-2">
+
                                 <select class="form-control form-control-sm" id="tiponota" name="tiponota">
                                     <option value="">Seleccione..</option>
-
-                                    <option  value="credito" {{ old('tiponota') == 'credito' ? 'selected' : '' }}>Credito</option>
+                                    @if($debit == FALSE)
                                     <option  value="debito"  {{ old('tiponota') == 'debito' ? 'selected' : '' }}>Debito</option>
+                                    @endif
+                                    @if($credit == FALSE)
+                                    <option  value="credito" {{ old('tiponota') == 'credito' ? 'selected' : '' }}>Credito</option>
+                                    @endif
                                 </select>
                             </div>
 
