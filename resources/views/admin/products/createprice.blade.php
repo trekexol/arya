@@ -54,7 +54,7 @@
                                 <label for="price">Precio:</label>
                             </div>
                             <div class="col-sm-4">
-                                <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="Precio" value="{{ old('Precio') }}"  autocomplete="price">
+                                <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="Precio" value="{{ old('Precio') }}"  autocomplete="price">
                                 @error('price')
                                 <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -97,18 +97,6 @@
             }
         }
 
-        $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000,00', { reverse: true });
-
-        });
-        $(document).ready(function () {
-            $("#price_buy").mask('000.000.000.000.000,00', { reverse: true });
-
-        });
-        $(document).ready(function () {
-            $("#cost_average").mask('000.000.000.000.000,00', { reverse: true });
-
-        });
 
         $(document).ready(function () {
             $("#degree").mask('000.000.000.000.000,00', { reverse: true });
@@ -120,10 +108,7 @@
 
         });
 
-        $(document).ready(function () {
-            $("#special_impuesto").mask('000.000.000.000.000,00', { reverse: true });
 
-        });
 
 	$(function(){
         soloAlfaNumerico('code_comercial');

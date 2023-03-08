@@ -233,10 +233,10 @@ class ComboController extends Controller
  
          $var->id_user = request('id_user');
  
-         $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '',request('price')));
-         $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '',request('price_buy')));
-         $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
-         $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
+         $valor_sin_formato_price = request('price');
+         $valor_sin_formato_price_buy = request('price_buy');
+         $valor_sin_formato_cost_average = request('cost_average');
+         $valor_sin_formato_special_impuesto = request('special_impuesto');
          
  
  
@@ -302,7 +302,7 @@ class ComboController extends Controller
                         if(substr($key,0, 6) == 'amount'){
                             $collection = collect();
                             $collection->id = substr($key,6);
-                            $collection->amount = str_replace(',', '.', str_replace('.', '', $item));
+                            $collection->amount = $item;
                             $amounts->push($collection);
                         }
                     }
@@ -380,8 +380,8 @@ class ComboController extends Controller
             $update_prices = request('updatePrices');
 
             if(isset($update_prices)){
-                $price = str_replace(',', '.', str_replace('.', '', $request->price));
-                $price_buy = str_replace(',', '.', str_replace('.', '', $request->price_buy));
+                $price = $request->price;
+                $price_buy = $request->price_buy;
             
                 $this->updatePrice($request->id_combo,$price,$price_buy);
             }
@@ -477,13 +477,12 @@ class ComboController extends Controller
     
         $var->code_comercial = request('code_comercial');
         $var->description = request('description');
-    
-        $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '',request('price')));
-        $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '',request('price_buy')));
-        $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
-        $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
-            
-    
+
+        $valor_sin_formato_price = request('price');
+
+        $valor_sin_formato_price_buy = request('price_buy');
+        $valor_sin_formato_cost_average = request('cost_average');
+        $valor_sin_formato_special_impuesto = request('special_impuesto');
     
         $var->price = $valor_sin_formato_price;
         $var->price_buy = $valor_sin_formato_price_buy;

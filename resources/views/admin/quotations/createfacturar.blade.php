@@ -32,22 +32,22 @@
                     @csrf   
                 <div class="card-body" >
 
-                        <input type="hidden" name="coin" value="{{$coin}}" readonly>
-                        <input type="hidden" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
+                        <input type="text" name="coin" value="{{$coin}}" readonly>
+                        <input type="text" id="date-begin-form" name="date-begin-form" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
-                        <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
-                        <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
+                        <input type="text" name="price_cost_total" value="{{$price_cost_total}}" readonly>
+                        <input id="user_id" type="text" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                        
-                        <input type="hidden" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
-                        <input type="hidden" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
+                        <input type="text" id="total_mercancia_credit" name="total_mercancia_credit" value="{{$total_mercancia ?? 0 }}" readonly>
+                        <input type="text" id="total_servicios_credit" name="total_servicios_credit" value="{{$total_servicios ?? 0 }}" readonly>
 
-                        <input type="hidden" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
+                        <input type="text" id="grandtotal_form_credit" name="grandtotal_form"  readonly>
                         
-                        <input type="hidden" id="IGTF_input_pre_credit" name="IGTF_input_pre">
+                        <input type="text" id="IGTF_input_pre_credit" name="IGTF_input_pre">
 
-                        <input type="hidden" id="debitnote_input_pre_credit" name="debitnote_input_pre_credit">
-                        <input type="hidden" id="creditnote_input_pre_credit" name="creditnote_input_pre_credit">
+                        <input type="text" id="debitnote_input_pre_credit" name="debitnote_input_pre_credit">
+                        <input type="text" id="creditnote_input_pre_credit" name="creditnote_input_pre_credit">
 
                         <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha:</label>
@@ -325,7 +325,7 @@
                         </div>
 
 
-                        <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
+                        <input type="text" name="id_quotation" value="{{$quotation->id}}" readonly>
 
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total a Cobrar</label>
@@ -387,60 +387,60 @@
             <form id="primer_form" method="POST" action="{{ route('quotations.storefactura') }}" enctype="multipart/form-data">
                 @csrf   
 
-                        <input type="hidden" name="id_quotation" value="{{$quotation->id}}" readonly>
-                        <input type="hidden" id="date-begin-form2" name="date-begin-form2" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
-                        <input type="hidden" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
+                        <input type="text" name="id_quotation" value="{{$quotation->id}}" readonly>
+                        <input type="text" id="date-begin-form2" name="date-begin-form2" value="{{$quotation->date_billing ?? $quotation->date_delivery_note ?? $datenow}}" readonly>
+                        <input type="text" id="date-payment-form" name="date-payment-form" value="{{$datenow ?? null}}" readonly>
                         
-                        <input type="hidden" name="coin" value="{{$coin}}" readonly>
+                        <input type="text" name="coin" value="{{$coin}}" readonly>
 
                         <!--Precio de costo de todos los productos-->
-                        <input type="hidden" name="price_cost_total" value="{{$price_cost_total}}" readonly>
+                        <input type="text" name="price_cost_total" value="{{$price_cost_total}}" readonly>
 
                         <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                        <input type="hidden" id="amount_of_payments" name="amount_of_payments"  readonly>
+                        <input type="text" id="amount_of_payments" name="amount_of_payments"  readonly>
 
                          <!--CANTIDAD DE PAGOS QUE QUIERO ENVIAR-->
-                         <input type="hidden" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 }}" readonly>
+                         <input type="text" id="amount_exento" name="amount_exento" value="{{$retiene_iva ?? 0 }}" readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="base_imponible_form" name="base_imponible_form"  readonly>
+                        <input type="text" id="base_imponible_form" name="base_imponible_form"  readonly>
 
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura }}" readonly>
+                        <input type="text" id="sub_total_form" name="sub_total_form" value="{{ $quotation->total_factura }}" readonly>
                         
                         <!--Total de la factura sin restarle nada que se va a realizar-->
-                        <input type="hidden" id="grandtotal_form" name="grandtotal_form"  readonly>
+                        <input type="text" id="grandtotal_form" name="grandtotal_form"  readonly>
                         
                         <!--Total del pago que se va a realizar-->
-                        <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="text" id="total_pay_form" name="total_pay_form"  readonly>
                           
                         <!--IGTF-->
-                        <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
+                        <input type="text" id="total_pay_form_before" name="total_pay_form_before">
 
-                        <input id="IGTF_input_pre" type="hidden" name="IGTF_input_pre">
-                        <input id="IGTF_input_store" type="hidden" name="IGTF_input_store" value="0">
-                        <input id="IGTF_general" type="hidden" name="IGTF_general">
-                        <input id="IGTF_general_form" type="hidden" name="IGTF_general_form">
-                        <input id="total_pay_before" type="hidden" name="total_pay_before">
-                        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
+                        <input id="IGTF_input_pre" type="text" name="IGTF_input_pre">
+                        <input id="IGTF_input_store" type="text" name="IGTF_input_store" value="0">
+                        <input id="IGTF_general" type="text" name="IGTF_general">
+                        <input id="IGTF_general_form" type="text" name="IGTF_general_form">
+                        <input id="total_pay_before" type="text" name="total_pay_before">
+                        <input id="IGTF_porc" type="text" name="IGTF_porc" value="{{$igtfporc}}">
 
-                        <input id="debitnote_input_pre" type="hidden"  name="debitnote_input_pre">
-                        <input id="creditnote_input_pre" type="hidden"  name="creditnote_input_pre">
+                        <input id="debitnote_input_pre" type="text"  name="debitnote_input_pre">
+                        <input id="creditnote_input_pre" type="text"  name="creditnote_input_pre">
 
                         <!--Porcentaje de iva aplicado que se va a realizar-->
-                        <input type="hidden" id="iva_form" name="iva_form"  readonly>
-                        <input type="hidden" id="iva_amount_form" name="iva_amount_form"  readonly>
+                        <input type="text" id="iva_form" name="iva_form"  readonly>
+                        <input type="text" id="iva_amount_form" name="iva_amount_form"  readonly>
 
                         <!--Anticipo aplicado que se va a realizar-->
-                        <input type="hidden" id="anticipo_form" name="anticipo_form"  readonly>
+                        <input type="text" id="anticipo_form" name="anticipo_form"  readonly>
 
-                        <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
+                        <input id="user_id" type="text" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                         
-                        <input type="hidden" id="total_retiene_iva" name="total_retiene_iva"  readonly>
-                        <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{$total_retiene_islr }}" readonly>
+                        <input type="text" id="total_retiene_iva" name="total_retiene_iva"  readonly>
+                        <input type="text" id="total_retiene_islr" name="total_retiene_islr" value="{{$total_retiene_islr }}" readonly>
 
-                        <input type="hidden" id="total_mercancia" name="total_mercancia" value="{{$total_mercancia ?? 0 }}" readonly>
-                        <input type="hidden" id="total_servicios" name="total_servicios" value="{{$total_servicios ?? 0 }}" readonly>
+                        <input type="text" id="total_mercancia" name="total_mercancia" value="{{$total_mercancia ?? 0 }}" readonly>
+                        <input type="text" id="total_servicios" name="total_servicios" value="{{$total_servicios ?? 0 }}" readonly>
 
                         
                         <div class="form-group row" id="formulario1" >
@@ -1003,8 +1003,8 @@
                         @endif
 
                         <div>     
-                            <input type="hidden" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
-                            <input type="hidden" id="anticipo_form2" name="anticipo_form2">
+                            <input type="text" id="id_quotation2" name="id_quotation2" value="{{$quotation->id}}">
+                            <input type="text" id="anticipo_form2" name="anticipo_form2">
                         </div>
 
                         @if (!isset($quotation->date_billing))

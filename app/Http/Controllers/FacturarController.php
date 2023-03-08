@@ -172,9 +172,9 @@ class FacturarController extends Controller
 
                 if($coin != "bolivares"){
                     if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
-                        $total_mercancia += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                        $total_mercancia += (($var->price * $var->amount_quotation) - $percentage);
                     }else{
-                        $total_servicios += (($var->price * $var->amount_quotation) - $percentage) * $quotation->bcv;
+                        $total_servicios += (($var->price * $var->amount_quotation) - $percentage);
                     }
                 }else{
                     if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
@@ -196,6 +196,11 @@ class FacturarController extends Controller
              $datenow = $date->format('Y-m-d');    
              }
              $anticipos_sum = 0;
+
+            if ($coin == null) {    /// condicion de la moneda
+                $coin = $quotation->coin;
+            } 
+
              if(isset($coin)){
                  if($coin == 'dolares'){
                     $bcv = $quotation->bcv;
@@ -410,6 +415,12 @@ class FacturarController extends Controller
 
              foreach($inventories_quotations as $var){
                  //Se calcula restandole el porcentaje de descuento (discount)
+
+                if($coin != "bolivares"){
+                    $var->price = $var->price / $var->rate;
+                }
+
+                 //Se calcula restandole el porcentaje de descuento (discount)
                     $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
 
                     $total += ($var->price * $var->amount_quotation) - $percentage;
@@ -429,12 +440,18 @@ class FacturarController extends Controller
 
                 }
 
+
                 //me suma todos los precios de costo de los productos
-                 if($var->money == 'Bs'){
+
+
+                //me suma todos los precios de costo de los productos
+                if(($var->money == 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
                     $price_cost_total += $var->price_buy * $var->amount_quotation;
-                }else{
+                }else if(($var->money != 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
                     $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
                 }
+
+
             }
 
              $quotation->total_factura = $total;
@@ -443,22 +460,31 @@ class FacturarController extends Controller
              $date = Carbon::now();
              $datenow = $date->format('Y-m-d');    
              $anticipos_sum = 0;
+
+
+
+            if ($coin == null) {    /// condicion de la moneda
+                $coin = $quotation->coin;
+            } 
+
+
              if(isset($coin)){
-                 if($coin == 'dolares'){
-                    $bcv = $quotation->bcv; 
-                    //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
-                     $anticipos_sum_bolivares =  $anticipos_sum_bolivares / $quotation->bcv;
-                     $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
-                     $total_debit_notes = $notasdedebito[0]->dolar;
-                     $total_credit_notes = $notasdecredito[0]->dolar; 
+                if($coin == 'dolares'){
+                    $bcv = $quotation->bcv;
+                     //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando 
+                    $anticipos_sum_bolivares =   $this->anticipos_bolivares_to_dolars($quotation);
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->dolar; 
+                    $total_credit_notes = $notasdecredito[0]->dolar;
                  }else{
+
                     $bcv = null;
                     //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
                     $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
-                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares; 
-                    $total_debit_notes = $notasdedebito[0]->bolivares; 
-                    $total_credit_notes = $notasdecredito[0]->bolivares; 
-                }
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->bolivares;
+                    $total_credit_notes = $notasdecredito[0]->bolivares;
+                 }
              }else{
                 $bcv = null;
                 $total_debit_notes = $notasdedebito[0]->bolivares;
@@ -497,7 +523,8 @@ class FacturarController extends Controller
             /*-------------- */
 
             $is_after = false;
-     
+
+
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
@@ -560,7 +587,7 @@ class FacturarController extends Controller
 
             $sin_formato_grand_total = $sin_formato_base_imponible + $sin_formato_amount_iva;
             
-          
+
 
            if($sin_formato_grand_total ==   0){
             $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
@@ -576,7 +603,8 @@ class FacturarController extends Controller
             $total_retiene_islr = $total_retiene_islr * $bcv;
             $anticipo = $anticipo * $bcv;
    
-          
+            $total_mercancia = $total_mercancia * $bcv;
+            $total_servicios = $total_servicios * $bcv;
         }
 
 
@@ -1824,7 +1852,7 @@ class FacturarController extends Controller
             }
             
 
-        if ($quotation->status != 'P' ){
+        if ($quotation->status == 1){
 
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
@@ -1850,10 +1878,11 @@ class FacturarController extends Controller
                 $sin_formato_amount = $sin_formato_amount * $bcv;
                 $sin_formato_total_pay = $sin_formato_total_pay * $bcv;
                 $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
-                $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
                 $sub_total = $sub_total * $bcv;
+                $total_mercancia = $total_mercancia * $bcv;
+                $total_servicios = $total_servicios * $bcv;
 
-                if ($quotation->status != 'P' ){
+                if ($quotation->status == 1 ){
                 $quotation->base_imponible = $base_imponible;
                 $quotation->amount_exento =  $amount_exento * $bcv;
                 $quotation->amount =  $sin_formato_amount;
@@ -1871,16 +1900,14 @@ class FacturarController extends Controller
             
             
             if($coin == 'dolares'){
-            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote * $bcv;
-            $sin_formato_grandtotal = $sin_formato_grandtotal  - $creditnote * $bcv;        
+            $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
+            
             } else {
-            $sin_formato_grandtotal = $sin_formato_grandtotal  + $debitnote;
-            $sin_formato_grandtotal = $sin_formato_grandtotal  - $creditnote;
+            $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
+            
             }
 
-
             //incluyendo el todal de debit note en el total asiento cuanta por cobrar
-
 
             /*Anticipos*/
             
@@ -1940,7 +1967,7 @@ class FacturarController extends Controller
             }
             
             
-            if(($quotation_status != 'C') && ($quotation_status != 'P')){ //numeracion factura
+            if($quotation_status == 1){ //numeracion factura
 
                 if(empty($quotation->number_invoice))
                 {   //Me busco el ultimo numero en factura
@@ -2016,7 +2043,7 @@ class FacturarController extends Controller
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');   
 
-            if(($quotation_status != 'C') && ($quotation_status != 'P')){
+            if($quotation_status == 1){
 
                 $header_voucher  = new HeaderVoucher();
                 $header_voucher->setConnection(Auth::user()->database_name);
