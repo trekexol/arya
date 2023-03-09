@@ -35,7 +35,7 @@
     </tr> 
   </table>
   @else
-  <br><br><br><br>
+  <br><br><br><br><br>
   @endif
 
 <table style="width: 100%;">
