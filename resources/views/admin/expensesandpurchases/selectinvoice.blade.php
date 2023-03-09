@@ -18,7 +18,6 @@
             <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
-                        <th class="text-center">Orden</th>
                         <th class="text-center">Factura</th>
                         <th class="text-center">N° Serie</th>
                         <th class="text-center">Proveedor</th>
@@ -32,13 +31,15 @@
 
                     <tbody>
                             @foreach ($expensesandpurchases as $expensesandpurchases)
+                            @if($expensesandpurchases->credit == FALSE OR $expensesandpurchases->debit == FALSE)
+
                             <?php
 
                                 $amount_bcv = $expensesandpurchases->amount_with_iva / $expensesandpurchases->rate;
                             ?>
 
                                 <tr>
-                                    <td>{{$expensesandpurchases->id ?? ''}}</td>
+
                                     <td class="text-center font-weight-bold font-weight-bold text-dark">{{ $expensesandpurchases->invoice }}</td>
                                     <td class="text-center font-weight-bold">{{$expensesandpurchases->serie ?? ''}}</td>
                                     <td class="text-center font-weight-bold">{{$expensesandpurchases->providers['razon_social'] ?? ''}}</td>
@@ -54,13 +55,17 @@
                                             <input type="hidden" name="tasa" id="fac" value="{{ encrypt($expensesandpurchases->rate)}}"/>
                                             <input type="hidden" name="serie" id="fac" value="{{ encrypt($expensesandpurchases->serie)}}"/>
                                             <input type="hidden" name="coin" id="coin" value="{{ encrypt($expensesandpurchases->coin)}}"/>
+                                            <input type="hidden" name="credit" id="credit" value="{{ encrypt($expensesandpurchases->credit)}}"/>
+                                            <input type="hidden" name="debit" id="debit" value="{{ encrypt($expensesandpurchases->debit)}}"/>
 
 
                                             <button type="submit"><i class="fa fa-check"></i></button>
                                         </form>
+
                                     </td>
 
                                 </tr>
+                                @endif
                             @endforeach
 
                     </tbody>
@@ -82,7 +87,7 @@
     $('#dataTable').DataTable({
         "ordering": false,
         "order": [],
-        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+        'aLengthMenu': [[10, 100, 150, -1], [10, 100, 150, "All"]]
     });
 
 
