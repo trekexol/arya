@@ -117,7 +117,7 @@
                                                     <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                                                 </td>
                                                 <td >
-                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onkeyup="noespac(this)" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0" autocomplete="amount{{ $product->id }}">
                                                 </td>
                                                 <td class="text-center">{{$product->id}}</td>
                                                 <td class="text-center">{{$product->code_comercial ?? ''}}</td>
@@ -157,7 +157,7 @@
                                 <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                             </td>
                             <td>
-                                <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                <input style="text-align: right;" id="amount{{ $product->id }}" onkeyup="noespac(this)" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
                             </td>
                             <td class="text-center">{{$product->id}}</td>
                             <td class="text-center">{{$product->code_comercial ?? ''}}</td>
@@ -190,22 +190,10 @@
 </form>
 @endsection
 @section('javascript')
-    @foreach ($products as $product)
-    <script>
-        $(document).ready(function () {
-            $("#amount{{ $product->id }}").mask('000.000.000.000.000.000.000,00', { reverse: true });
-        });
-        
-    </script>
-    @endforeach
+
     
     <script>
-        $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000.000.000,000', { reverse: true });
-        });
-        $(document).ready(function () {
-            $("#price_buy").mask('000.000.000.000.000.000.000,000', { reverse: true });
-        });
+
         
         $('#dataTable').DataTable({
             "ordering": true,
@@ -234,9 +222,9 @@
             }
             
             if(isChecked){
-                document.getElementById('amount'+product.id).value = "1,00";
+                document.getElementById('amount'+product.id).value = "1";
             }else{
-                document.getElementById('amount'+product.id).value = "0,00";
+                document.getElementById('amount'+product.id).value = "0";
             }
             
             updateValuePrice(isChecked,product.price,product.price_buy);
@@ -245,7 +233,7 @@
         }
 
         function valueOld(product){
-            value_old = parseFloat(newFormat(document.getElementById('amount'+product.id).value));
+            value_old = parseFloat(document.getElementById('amount'+product.id).value);
         }
 
         function updateAmount(product){
@@ -257,7 +245,7 @@
 
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
 
-            var amount = parseFloat(newFormat(document.getElementById('amount'+product.id).value));
+            var amount = parseFloat(document.getElementById('amount'+product.id).value);
 
             amount = amount - value_old;
 
@@ -268,9 +256,9 @@
         function updateValuePrice(isChecked,price,price_buy){
             
            
-            var price_form = newFormat(document.getElementById("price").value);
+            var price_form = document.getElementById("price").value;
 
-            var price_buy_form = newFormat(document.getElementById("price_buy").value); 
+            var price_buy_form = document.getElementById("price_buy").value; 
             
             if(isChecked){
                 document.getElementById("price").value = (parseFloat(price_form) + parseFloat(price)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});
@@ -336,14 +324,14 @@
                 products.push("{{ $combo->id_product }}");
                 document.getElementById("combo_products").value = products;
                 document.getElementById("flexCheckChecked{{ $combo->id_product }}").checked = true;
-                document.getElementById("amount{{ $combo->id_product }}").value = "{{ number_format($combo->amount_per_product, 2, ',', '.') }}";
+                document.getElementById("amount{{ $combo->id_product }}").value = "{{ $combo->amount_per_product }}";
                 document.getElementById("id_products").value = products;
             </script> 
         @endforeach
         <script>
             //aqui asignamos los precios
-            document.getElementById("price").value = "{{ number_format($total_price, 3, ',', '.') }}";
-            document.getElementById("price_buy").value = "{{ number_format($total_price_buy, 3, ',', '.') }}";
+            document.getElementById("price").value = "{{ $total_price }}";
+            document.getElementById("price_buy").value = "{{ $total_price_buy }}";
         </script> 
     @endif
 @endsection
