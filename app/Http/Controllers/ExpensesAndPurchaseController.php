@@ -713,6 +713,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_payment_after(request $request,$id_expense,$coin)
     {
+        
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;

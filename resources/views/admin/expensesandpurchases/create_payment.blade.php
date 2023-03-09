@@ -1090,7 +1090,8 @@ function calculate(valor) {
 
 
     //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
-    var total_iva_exento =  parseFloat(totalIva);
+
+    var total_iva_exento =  parseFloat(myRound(totalIva));
 
     var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
@@ -1205,6 +1206,12 @@ function calculate(valor) {
     }
 
 }
+
+function myRound(num, dec) {
+  var exp = Math.pow(10, dec || 2); // 2 decimales por defecto
+  return parseInt(num * exp, 10) / exp;
+}
+
             $("#date_payment").on('change',function(){
                  document.getElementById("date_payment_form").value = document.getElementById("date_payment").value;
             });
