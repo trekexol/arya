@@ -53,6 +53,7 @@
     
   </tr>
 </table>
+
 <table style="width: 100%;">
   <tr>
     <th style="font-weight: normal;">Domicilio Fiscal: &nbsp;  {{ $quotation->clients['direction'] ?? ''}}</th>
