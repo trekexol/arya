@@ -673,7 +673,12 @@ class InventoryController extends Controller
                 'id_product'    =>'required'
                 
             ]); */
+
+            $us = Auth::user()->id;
         
+            dd($us);
+            exit;
+
             $type_add = request('type_add');
             $id_product = request('id_product');
             $cantidad_disponible = request('cant_disponible');
@@ -744,27 +749,45 @@ class InventoryController extends Controller
                       
     
                         // CREANDO COMPROBANTEE //////////////////////////////////////////////////////
+                        
+                        $bcv = 1;
+                        $company = Company::on(Auth::user()->database_name)->find(1); // tasa de la compania
+                        $bcv = $company->rate;
 
+                        $headervoucher = new HeaderVoucher(); // Creando cabecera
+                        $headervoucher->setConnection(Auth::user()->database_name);
+                        $headervoucher->description  = 'Aumento de Inventario de Producto Combo '.$inventory->id ;
+                        $headervoucher->date   = $date;
+                        $headervoucher->status   = 1;
+                        $headervoucher->save();
 
                         $account = Account::on(Auth::user()->database_name)
                         ->where('description','LIKE','%Materia Prima%')
                         ->where('level','5')
                         ->first();
-            
-                        if(isset($account)){
-                            $this->add_movement($expense->rate,$header_voucher->id,$account->id,$expense->id,$user_id,$var->price * $var->amount,0);
-                        }
-                    
-                        //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
-                        $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
-                
-                        if(isset($account_cuentas_por_pagar_proveedores)){
-                            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva);
-                        }
-                        
 
+                        $account_two = Account::on(Auth::user()->database_name)
+                        ->where('description','LIKE','%Mercancia para la Venta%')
+                        ->where('level','5')
+                        ->first();
+
+                        $amount = 0;
+
+                        $amount = $inventory->price_buy * $cantidad;
+
+                        if($inventory->money == 'D'){
+                        $amount = ($inventory->price_buy * $bcv) * $cantidad ;
+                        }
+
+                        if(isset($account) and isset($account_two) ){
+                             
+                            /*
+                            $this->add_movement($bcv,$headervoucher->id,$account->id,0,Auth::user()->id,0,$amount);
+                            $this->add_movement($bcv,$headervoucher->id,$account_two->id,0,Auth::user()->id,$amount,0); */
                         
-                         return redirect('inventories/index/todos')->withSuccess($transaccion); 
+                        }
+                           
+                        return redirect('inventories/index/todos')->withSuccess($transaccion); 
                     
 
                     } 
