@@ -537,18 +537,18 @@ class InventoryController extends Controller
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
 
-                if ($inventory->id_account == null) {
-                    $inventory->id_account = 17; 
+
+                if ($inventory->id_account != null) {
+                    
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,$id_user,$total,0);
+    
+                    $account_counterpart = Account::on(Auth::user()->database_name)->find(request('Subcontrapartida'));            
+                    //$account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
+        
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_counterpart->id,$id_user,0,$total); 
                 }
                 
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,$id_user,$total,0);
-    
-                                
-                $account_counterpart = Account::on(Auth::user()->database_name)->find(request('Subcontrapartida'));            
-                //$account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
-    
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_counterpart->id,
-                                    $id_user,0,$total);
+
             
             }
             
@@ -590,16 +590,16 @@ class InventoryController extends Controller
         $amount_old = request('amount_old');
         $id_user = request('id_user');
 
-        $valor_sin_formato_amount_new = str_replace(',', '.', str_replace('.', '', request('amount_new')));
+        $valor_sin_formato_amount_new = request('amount_new');
         $valor_sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
-        $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '', request('price_buy')));
-        
+        $valor_sin_formato_price_buy = request('price_buy');
+
         $id_inventory = request('id_inventory');
 
         if($valor_sin_formato_amount_new > 0){
             if($valor_sin_formato_amount_new <= $amount_old){
 
-                $inventory = Product::on(Auth::user()->database_name)->findOrFail($id_inventory);
+                $inventory = Product::on(Auth::user()->database_name)->find($id_inventory);
 
                 if($inventory->type == 'COMBO'){
                     $global = new GlobalController;
@@ -617,15 +617,7 @@ class InventoryController extends Controller
 
                 $global = new GlobalController; 
                 $global->transaction_inv('salida',$id_inventory,'Salida de Inventario',$valor_sin_formato_amount_new,$valor_sin_formato_price_buy,$datenow,1,1,0,0,0,0,0);
-
-                $header_voucher  = new HeaderVoucher();
-
-                $header_voucher->description = "Disminucion de Inventario";
-                $header_voucher->date = $datenow;
-                
-                $header_voucher->status =  "1";
-            
-                $header_voucher->save();
+ 
 
                 if($inventory->money == 'Bs'){
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy;
@@ -633,18 +625,26 @@ class InventoryController extends Controller
                     $total = $valor_sin_formato_amount_new * $valor_sin_formato_price_buy * $valor_sin_formato_rate;
                 }
 
-                if ($inventory->id_account == null) {
-                    $inventory->id_account = 17; 
+                if ($inventory->id_account != null) {
+
+                    $header_voucher  = new HeaderVoucher();
+                    $header_voucher->setConnection(Auth::user()->database_name);
+                    $header_voucher->description = "Disminucion de Inventario";
+                    $header_voucher->date = $datenow;
+                    $header_voucher->status =  "1";
+                    $header_voucher->save();
+
+
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,$id_user,0,$total);
+                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Gastos de ajuste de inventario%')->first();  
+                    $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,$id_user,$total,0);
+                    
+                
                 }
                 
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$inventory->id_account,
-                                    $id_user,0,$total);
+                
 
-                $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('code_one',6)->where('code_two',1)->where('code_three',3)->where('code_four',2)->where('code_five',1)->first();  
-
-                $this->add_movement($valor_sin_formato_rate,$header_voucher->id,$account_gastos_ajuste_inventario->id,
-                                    $id_user,$total,0);
-            
+                
                 return redirect('inventories/index/todos')->withSuccess('Actualizado el inventario del producto: '.$inventory->description.' Exitosamente!');
             
             }else{
@@ -681,8 +681,8 @@ class InventoryController extends Controller
             $description = request('name_combo');
             $serie = request('serie');
 
-            $cantidad = str_replace(',', '.', str_replace('.', '', request('disponible')));
-  
+            //$cantidad = str_replace(',', '.', str_replace('.', '', request('disponible')));
+            $cantidad = request('disponible');
 
  
             $inventory = Product::on(Auth::user()->database_name)->find($id_product);
@@ -740,9 +740,36 @@ class InventoryController extends Controller
                         $transaccion = $global->transaction_inv('salida',$inventory->id,'Salida de Inventario tipo Combo',$cantidad,$inventory->price,$datenow,1,1,0,0,0,0,0);
                     } 
 
-                    if($transaccion != ''){   
-                    return redirect('inventories/index/todos')->withSuccess($transaccion); 
+                    if($transaccion != ''){ 
+                      
+    
+                        // CREANDO COMPROBANTEE //////////////////////////////////////////////////////
+
+
+                        $account = Account::on(Auth::user()->database_name)
+                        ->where('description','LIKE','%Materia Prima%')
+                        ->where('level','5')
+                        ->first();
+            
+                        if(isset($account)){
+                            $this->add_movement($expense->rate,$header_voucher->id,$account->id,$expense->id,$user_id,$var->price * $var->amount,0);
+                        }
+                    
+                        //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
+                        $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
+                
+                        if(isset($account_cuentas_por_pagar_proveedores)){
+                            $this->add_movement($expense->rate,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_amount_with_iva);
+                        }
+                        
+
+                        
+                         return redirect('inventories/index/todos')->withSuccess($transaccion); 
+                    
+
                     } 
+
+
 
                 } else {
 

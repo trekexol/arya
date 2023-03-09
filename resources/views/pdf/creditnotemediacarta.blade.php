@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -5,13 +6,9 @@
 <title>Nota de Crédito</title>
 <style>
   
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-  }
-
   table, td, th {
     border: 1px solid black;
-    font-size: 9pt;
+    font-size: x-small;
   }
   
   table {
@@ -19,18 +16,15 @@
     width: 50%;
   }
   
-  th {  
+  th {
+   
     text-align: left;
   }
-
-  #top {
-    margin-top: -35px;
-  }
-
   </style>
 </head>
 @if($valor == 1)
 <body>
+  @if (Auth::user()->company->id != 1)  
   <table>
     <tr>
       @if (Auth::user()->company->foto_company != '')  
@@ -40,16 +34,18 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h5>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h5></th>    </tr> 
     </tr> 
   </table>
-<div style="margin-top: -15px; margin-top: -15px; color: black;font-size: 9pt;font-weight: bold; text-align: right;">NOTA DE CRÉDITO NRO: {{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</div>
-<table>
+  @else
+  <br><br><br><br>
+  @endif
 
+<table style="width: 100%;">
   <tr>
-    <td style="width: 40%;">Fecha de Emisión:</td>
-    <td>{{ date_format(date_create($quotation->date),"d-m-Y") }}</td>
-    
+    <td style="width: 10%;">Fecha de Emisión:</td>
+    <td style="width: 10%;">{{ date_format(date_create($quotation->date),"d-m-Y") }}</td>
+    <td  style="font-size: 11pt; width: 40%; color: black; font-weight: bold; text-align: right; border-top-color: white; border-right-color: white;">NOTA DE CRÉDITO NRO: {{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</td>
   </tr>
-  
 </table>
+
 <table style="width: 100%;">
   <tr>
     <th style="font-weight: normal;">Nombre / Razón Social: &nbsp;  {{ $quotation->clients['name'] ?? ''}} </th>

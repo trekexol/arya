@@ -262,12 +262,13 @@
                                     <div class="col-md-4">
                                     <select id="id_account"  name="id_account" class="form-control" required>
                                         @if (isset($product->id_account))
-                                        <option value="actual">
+                                        <option selected value="actual">
                                             {{ $product->accounts['description'] ?? ''}}
                                         </option>
                                         @else
 
                                         @endif
+
                                         <option value="">Seleccione una Cuenta</option>
                                         @foreach($accounts as $account)
                                             <option value="{{ $account->id }}">

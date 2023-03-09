@@ -91,7 +91,7 @@
                             <label for="price" class="col-md-2 col-form-label text-md-right">Precio de Venta</label>
 
                             <div class="col-md-4">
-                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{ number_format($inventory->price, 2, ',', '.')}}" name="price" required autocomplete="price">
+                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{$inventory->price ?? 0}}" name="price" required autocomplete="price">
 
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -120,7 +120,7 @@
                             <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio de Compra</label>
 
                             <div class="col-md-4">
-                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ number_format($inventory->price_buy ?? 0, 2, ',', '.')}}" name="price_buy" required autocomplete="price_buy">
+                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ $inventory->price_buy ?? 0}}" name="price_buy" required autocomplete="price_buy">
 
                                 @error('price_buy')
                                     <span class="invalid-feedback" role="alert">
