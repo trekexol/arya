@@ -161,7 +161,7 @@ class ProductController extends Controller
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $id     = request('id_product');
-          $valor_sin_formato_precio =   trim(str_replace(',', '.', str_replace('.', '',request('Precio'))));
+          $valor_sin_formato_precio =   trim(request('Precio'));
 
             
             $var = new ProductPrice();
@@ -278,10 +278,10 @@ class ProductController extends Controller
 
         $var->id_user = request('id_user');
 
-        $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '',request('price')));
-        $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '',request('price_buy')));
-        $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
-        $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
+        $valor_sin_formato_price = request('price');
+        $valor_sin_formato_price_buy = request('price_buy');
+        $valor_sin_formato_cost_average = request('cost_average');
+        $valor_sin_formato_special_impuesto = request('special_impuesto');
         
         //Empreas licores
         $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));
@@ -467,10 +467,10 @@ class ProductController extends Controller
     $var->type = request('type');
     $var->description = request('description');
 
-    $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '',request('price')));
-    $valor_sin_formato_price_buy = str_replace(',', '.', str_replace('.', '',request('price_buy')));
-    $valor_sin_formato_cost_average = str_replace(',', '.', str_replace('.', '',request('cost_average')));
-    $valor_sin_formato_special_impuesto = str_replace(',', '.', str_replace('.', '',request('special_impuesto')));
+    $valor_sin_formato_price = request('price');
+    $valor_sin_formato_price_buy = request('price_buy');
+    $valor_sin_formato_cost_average = request('cost_average');
+    $valor_sin_formato_special_impuesto = request('special_impuesto');
        
     //Empreas licores
     $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));

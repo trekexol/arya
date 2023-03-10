@@ -657,8 +657,8 @@ class Report2Controller extends Controller
     function accounts_pdf($coin,$level,$date_begin = null,$date_end = null)
     {
 
-        $pdf = App::make('dompdf.wrapper');
 
+        $pdf = App::make('dompdf.wrapper');
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -684,8 +684,11 @@ class Report2Controller extends Controller
 
 
         if(isset($coin) && ($coin == "bolivares")){
+
             $accounts_all = $this->calculation($from,$to);
+        
         }else{
+
             $accounts_all = $this->calculation_dolar("dolares");
         }
 
@@ -1738,6 +1741,11 @@ class Report2Controller extends Controller
     //agregar que retorne el monto en dolares
     public function calculation($date_begin,$date_end)
     {
+        
+        $period_ini = date_format(date_create($date_begin),"Y");
+        
+        $period_end = date_format(date_create($date_end),"Y");
+
 
         //dd($date_begin);
         $accounts = Account::on(Auth::user()->database_name)->orderBy('code_one', 'asc')
@@ -1845,6 +1853,8 @@ class Report2Controller extends Controller
                                                                                 ->where('accounts.code_two', $var->code_two)
                                                                                 ->where('accounts.code_three', $var->code_three)
                                                                                 ->where('accounts.code_four', $var->code_four)
+                                                                                ->where('accounts.period','>',$period_ini)
+                                                                                ->where('accounts.period','<',$period_end)
                                                                                 ->sum('balance_previus');
                                                             /*---------------------------------------------------*/
 
@@ -1892,6 +1902,8 @@ class Report2Controller extends Controller
                                                                         ->where('accounts.code_one', $var->code_one)
                                                                         ->where('accounts.code_two', $var->code_two)
                                                                         ->where('accounts.code_three', $var->code_three)
+                                                                        ->where('accounts.period','>',$period_ini)
+                                                                        ->where('accounts.period','<',$period_end)
                                                                         ->sum('balance_previus');
                                                     /*---------------------------------------------------*/
 
@@ -1935,6 +1947,8 @@ class Report2Controller extends Controller
                                             $total_balance = DB::connection(Auth::user()->database_name)->table('accounts')
                                                                             ->where('accounts.code_one', $var->code_one)
                                                                             ->where('accounts.code_two', $var->code_two)
+                                                                            ->where('accounts.period','>',$period_ini)
+                                                                            ->where('accounts.period','<',$period_end)
                                                                             ->sum('balance_previus');
                                         /*---------------------------------------------------*/
 
@@ -1971,8 +1985,11 @@ class Report2Controller extends Controller
                                                         "(DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') >= ? AND DATE_FORMAT(detail_vouchers.created_at, '%Y-%m-%d') <= ?)",
                                                         [$date_begin, $date_end])
                                                         ->sum('haber');
+
                             $total_balance = DB::connection(Auth::user()->database_name)->table('accounts')
                                                         ->where('accounts.code_one', $var->code_one)
+                                                        ->where('accounts.period','>',$period_ini)
+                                                        ->where('accounts.period','<',$period_end)
                                                         ->sum('balance_previus');
                             /*---------------------------------------------------*/
 

@@ -222,22 +222,8 @@ class AccountController extends Controller
         $user       =   auth()->user();
         $users_role =   $user->role_id;
 
-        $company = Company::on(Auth::user()->database_name)->find(1);
 
-
-        if (!isset($period)){
-        $period = $company->period;
-        } else {
-        $period = $period;
-        }
-
-        if($users_role == '1'){
-           /*
-            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
-            ->where('status','C')
-            ->where('id_account',$id_account)
-            ->orderBy('id','desc')
-            ->get(); */
+        if($users_role == '1' || $users_role == '1'){
 
 
             $periods = DetailVoucher::on(Auth::user()->database_name)
@@ -258,6 +244,23 @@ class AccountController extends Controller
             foreach ($periods->unique('date') as $periodss) {
 
                 $periodselect[] = $periodss->date;
+            }
+
+
+
+            $company = Company::on(Auth::user()->database_name)->find(1);
+
+
+            if (!isset($period)){
+                
+                if (count($periodselect) > 0) {
+                    $period = $periodselect[0];
+                } else {
+                $period = $company->period;
+                }
+
+            } else {
+            $period = $period;
             }
 
 
@@ -303,7 +306,6 @@ class AccountController extends Controller
                    // $saldo = $var->saldo;
                 }
             }    */
-
 
 
             if (!empty($detailvouchers)) {

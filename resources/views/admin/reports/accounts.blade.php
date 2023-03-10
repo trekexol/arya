@@ -45,6 +45,13 @@
     <th style="text-align: center; ">Haber</th>
     <th style="text-align: center; ">Saldo Actual</th>
   </tr> 
+    <?php
+          $total_dif_anterior = 0; 
+          $total_debe = 0; 
+          $total_haber = 0; 
+          $total_saldo = 0; 
+    ?>
+
   @foreach ($accounts as $account)
     
       @if ($account->level <= 4)
@@ -70,19 +77,26 @@
         <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0)+($account->debe ?? 0)-($account->haber ?? 0), 2, ',', '.') }}</th>
       </tr> 
       @endif
-      
+
+      <?php
+      $total_dif_anterior += number_format(0, 2, '.', '');
+      $total_debe += number_format($account->debe, 2, '.', '');
+      $total_haber += number_format($account->haber, 2, '.', '');
+      $total_saldo += number_format(($account->balance_previus ?? 0)+($account->debe ?? 0)-($account->haber ?? 0), 2, '.', '')
+      ?>
       
   @endforeach 
 
   <tfoot>
 
-      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"></th>
-      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"><th>
-      <th style="text-align: center; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;"></th>
-      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.')}}</th>
-      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
-      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format(0, 2, ',', '.') }}</th>
+      <th style="border-color: white;"></th>
+      <th style="border-color: white;"></th>
+      <th style="border-color: white;"></th>
+      <th style="border-color: white;"></th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format($total_dif_anterior, 2, ',', '.')}}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format($total_debe, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format($total_haber, 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal; width: 10%; border-color: white; font-weight: bold;border: 0;">{{ number_format($total_saldo, 2, ',', '.') }}</th>
   
   </tfoot>  
 </table>

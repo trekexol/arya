@@ -36,7 +36,7 @@
                             <label for="code" class="col-md-2 col-form-label text-md-right">Código de Vendedor (Opcional)</label>
 
                             <div class="col-md-4">
-                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ old('code') ?? '' }}" autocomplete="code" autofocus>
+                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ 0 ?? old('code') }}" autocomplete="code" autofocus>
 
                                 @error('code')
                                     <span class="invalid-feedback" role="alert">
