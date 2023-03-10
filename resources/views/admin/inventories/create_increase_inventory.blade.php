@@ -78,7 +78,7 @@
                             </div>
                             <label for="cantidad" class="col-md-2 col-form-label text-md-right">Cantidad a Aumentar</label>
                             <div class="col-md-4">
-                                <input onkeyup="numeric(this)"  id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
+                                <input onkeyup="noespac(this)"  id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
 
                                 @error('amount_new')
                                     <span class="invalid-feedback" role="alert">
@@ -95,7 +95,7 @@
                             <label for="price" class="col-md-2 col-form-label text-md-right">Precio de Venta</label>
 
                             <div class="col-md-4">
-                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{ number_format($inventory->price ?? 0, 2, ',', '.')}}" name="price" required autocomplete="price">
+                                <input id="price" type="text" readonly class="form-control @error('price') is-invalid @enderror" value="{{ $inventory->price ?? 0}}" name="price" required autocomplete="price">
 
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -124,7 +124,7 @@
                             <label for="price_buy" class="col-md-2 col-form-label text-md-right">Precio de Compra</label>
 
                             <div class="col-md-4">
-                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ number_format($inventory->price_buy ?? 0, 2, ',', '.')}}" name="price_buy" required autocomplete="price_buy">
+                                <input id="price_buy" type="text" readonly class="form-control @error('price_buy') is-invalid @enderror" value="{{ $inventory->price_buy ?? 0 }}" name="price_buy" required autocomplete="price_buy">
 
                                 @error('price_buy')
                                     <span class="invalid-feedback" role="alert">
@@ -201,12 +201,7 @@
 @endsection
 @section('validacion')
     <script>    
-	    $(document).ready(function () {
-            $("#amount").mask('000.000.000.000.000,00', { reverse: true });
 
-             document.getElementById("amount_new").focus();    
-        
-        });
         
         
         $("#contrapartida").on('change',function(){

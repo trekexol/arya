@@ -713,6 +713,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_payment_after(request $request,$id_expense,$coin)
     {
+        
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
@@ -2272,7 +2273,7 @@ class ExpensesAndPurchaseController extends Controller
 
                     $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
 
-                    foreach($expense_details as $var){
+                    foreach($expense_details as $var){ // CUENTAS USADAS EN LA FACTURA DE COMPRA por producto
                         $account = Account::on(Auth::user()->database_name)->find($var->id_account);
 
                         if(isset($account)){

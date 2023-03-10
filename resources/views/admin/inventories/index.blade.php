@@ -372,7 +372,7 @@
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
                             <td class="text-right">{{ $var->amount }}</td>
-                            <td class="text-right">{{number_format($var->price_buy ?? 0, 3, ',', '.') }}</td>
+                            <td class="text-right">{{$var->price_buy ?? 0}}</td>
 
                             @if($var->money == "D")
                             <td class="text-center">USD</td>
@@ -388,13 +388,12 @@
                                 <div class="file-footer-buttons">
                                 <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
-
                             </td>
                             @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
                             <td class="text-center">
                                 @if($var->type == 'COMBO')
-                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span>
-                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{number_format($var->amount ?? 0, 3, ',', '')}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span>
+                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{$var->amount ?? 0}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span>
+                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{$var->amount ?? 0}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span>
                                 <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
                                 @else
                                 <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
