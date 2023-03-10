@@ -9,7 +9,15 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+    <style>
+        .error {
+
+       color: #dc3545;
+       font-size:100%;
+
+
+       }
+       </style>
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -26,7 +34,7 @@
                 <div class="card-header text-center font-weight-bold h3">Registro de Proveedores</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('providers.store') }}" enctype="multipart/form-data">
+                    <form method="POST" id="providerstore">
                         @csrf
 
                         <div class="form-group row">
@@ -44,7 +52,8 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <input id="code_provider" type="text" class="form-control @error('code_provider') is-invalid @enderror" name="code_provider" value="{{ old('code_provider') }}" required autocomplete="code_provider" autofocus>
+                                <input id="code_provider" type="text" class="form-control @error('code_provider') is-invalid @enderror" name="code_provider" value="{{ old('code_provider') }}" autocomplete="code_provider" autofocus>
+
                                 @error('code_provider')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -63,7 +72,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                         <div class="form-group row">
                             <label for="country" class="col-md-2 col-form-label text-md-right">Pais</label>
 
@@ -88,7 +97,7 @@
                                 @enderror
                             </div>
                         </div>
-                       
+
                         <div class="form-group row">
                                 <label for="direction" class="col-md-2 col-form-label text-md-right">Dirección</label>
 
@@ -101,15 +110,15 @@
                                         </span>
                                     @enderror
                                 </div>
-                                
+
                             </div>
-                            
-                        </div>
+
+
                         <div class="form-group row">
                             <label for="phone1" class="col-md-2 col-form-label text-md-right">Teléfono</label>
 
                             <div class="col-md-4">
-                                <input id="phone1" type="text" class="form-control @error('phone1') is-invalid @enderror" name="phone1" value="{{ old('phone1') ?? 0 }}" required autocomplete="phone1">
+                                <input id="phone1" type="text" class="form-control @error('phone1') is-invalid @enderror" name="phone1" value="{{ old('phone1') ?? 0 }}" autocomplete="phone1">
 
                                 @error('phone1')
                                     <span class="invalid-feedback" role="alert">
@@ -120,7 +129,7 @@
                             <label for="phone2" class="col-md-2 col-form-label text-md-right">Teléfono 2</label>
 
                             <div class="col-md-4">
-                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ old('phone2') ?? 0 }}" required autocomplete="phone2">
+                                <input id="phone2" type="text" class="form-control @error('phone2') is-invalid @enderror" name="phone2" value="{{ old('phone2') ?? 0 }}" autocomplete="phone2">
 
                                 @error('phone2')
                                     <span class="invalid-feedback" role="alert">
@@ -130,13 +139,13 @@
                             </div>
                         </div>
 
-                       
+
 
                         <div class="form-group row">
                             <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
 
                             <div class="col-md-4">
-                                <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{old('amount_max_credit') ?? 0}}" required autocomplete="amount_max_credit">
+                                <input id="amount_max_credit" type="text" class="form-control @error('amount_max_credit') is-invalid @enderror" name="amount_max_credit" value="{{old('amount_max_credit') ?? 0}}" autocomplete="amount_max_credit">
 
                                 @error('amount_max_credit')
                                     <span class="invalid-feedback" role="alert">
@@ -144,12 +153,12 @@
                                     </span>
                                 @enderror
                             </div>
-                              
+
                               <label for="balance" class="col-md-2 col-form-label text-md-right">Saldo</label>
 
                               <div class="col-md-4">
-                                  <input id="balance" type="text" class="form-control @error('balance') is-invalid @enderror" name="balance" value="{{ old('balance') ?? 0 }}" required autocomplete="balance">
-  
+                                  <input id="balance" type="text" class="form-control @error('balance') is-invalid @enderror" name="balance" value="{{ old('balance') ?? 0 }}" autocomplete="balance">
+
                                   @error('balance')
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $message }}</strong>
@@ -158,33 +167,33 @@
                               </div>
                         </div>
 
-                       
+
                         <div class="form-group row">
                                 <label for="" class="col-md-2 col-form-label text-md-right">Tiene Crédito</label>
 
                                 <div class="form-check">
-                                    <input class="form-check-input position-static" onclick="calc();" type="checkbox" id="has_credit" name="has_credit" value="1" aria-label="...">
+                                    <input class="form-check-input position-static creditcheck"  type="checkbox" id="has_credit" name="has_credit" value="1" aria-label="...">
                                 </div>
                                 <div class="col-md-2">
                                     <label id="days_credit_label" for="days_credit_label" class=" col-form-label text-md-right">Dias de Crédito</label>
                                 </div>
                                 <div class="col-md-1">
                                   <input id="days_credit" type="text" class="form-control @error('days_credit') is-invalid @enderror" name="days_credit" value="{{ old('days_credit') ?? 0 }}" autocomplete="days_credit">
-  
+
                                   @error('days_credit')
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $message }}</strong>
                                       </span>
                                   @enderror
                                 </div>
-                               
+
                         </div>
 
                         <div class="form-group row">
                             <label for="porc_retencion_iva" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de IVA</label>
 
                             <div class="col-md-4">
-                                <input id="porc_retencion_iva" type="text" class="form-control @error('porc_retencion_iva') is-invalid @enderror" name="porc_retencion_iva" value="{{ old('porc_retencion_iva') ?? 0}}" required autocomplete="porc_retencion_iva">
+                                <input id="porc_retencion_iva" type="text" class="form-control @error('porc_retencion_iva') is-invalid @enderror" name="porc_retencion_iva" value="{{ old('porc_retencion_iva') ?? 0}}"  autocomplete="porc_retencion_iva">
 
                                 @error('porc_retencion_iva')
                                     <span class="invalid-feedback" role="alert">
@@ -195,7 +204,7 @@
                             <label for="porc_retencion_islr" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
 
                             <div class="col-md-4">
-                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') ?? 0}}" required autocomplete="porc_retencion_islr">
+                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') ?? 0}}"  autocomplete="porc_retencion_islr">
 
                                 @error('porc_retencion_islr')
                                     <span class="invalid-feedback" role="alert">
@@ -204,8 +213,8 @@
                                 @enderror
                             </div>
                         </div>
-                       
-                        
+
+
                         <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-3 offset-md-4">
@@ -214,11 +223,14 @@
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('providers') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                <a href="{{ route('providers') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
                             </div>
+                        </div>
                         </div>
                         <br>
                     </form>
+
+
                 </div>
                 </div>
             </div>
@@ -226,36 +238,124 @@
     </div>
 </div>
 @endsection
-@section('validacion')
-    <script>    
-        $(document).ready(function () {
-            $("#phone1").mask('0000 000-0000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#phone2").mask('0000 000-0000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#porc_retencion_iva").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#porc_retencion_islr").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#amount_max_credit").mask('000.000.000.000.000.000,00', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#balance").mask('000.000.000.000.000.000,00', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#days_credit").mask('000', { reverse: true });
-            
-        });
+@section('javascript')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<script>
+
+$('#dataTable').dataTable( {
+        "ordering": false,
+        "order": [],
+            'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+    } );
+$(document).ready(function() {
+
+            $("#providerstore").validate({
+                rules: {
+                    code_provider: {
+                        required: true,
+                        maxlength: 20,
+                    },
+                    razon_social: {
+                        required: true,
+                        maxlength: 80,
+                    },
+                    country: {
+                        required: true,
+                    },
+                    city:{
+                        required: true,
+                    },
+                    direction:{
+                        required: true,
+                    },
+
+                },
+                messages: {
+                    code_provider: {
+                        required: "Ingrese Codigo de Proveedor",
+                        maxlength: "El Codigo no puede ser mayor a 20 digitos"
+                        },
+                    razon_social: {
+                        required: "Ingrese Razon Social",
+                        maxlength: "Razon Social no puede Contener mas de 80 caracteres"
+                        },
+                    country: {
+                        required: "Ingrese Pais",
+                        },
+                    city:{
+                        required: "Ingrese Ciudad",
+                    },
+                    direction:{
+                        required: "Ingrese Direccion",
+                    }
+                },
+
+
+
+
+        submitHandler: function (form) {
+
+
+
+            $.ajax({
+            type: "post",
+            url: "{{ route('providers.store') }}",
+            dataType: "json",
+            data: $(form).serialize(),
+            success:function(response){
+             if(response.error == true){
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Exito!',
+                        html: response.msg,
+
+
+                        })
+                setTimeout("location.reload()", 2500);
+
+             }else{
+
+                Swal.fire({
+                        icon: 'info',
+                        title: 'Error..',
+                        html: response.msg,
+                        })
+             }
+
+
+
+
+         },
+         error:(response)=>{
+
+
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Error2...',
+                    html: response.msg,
+                    });
+         }
+            });
+
+
+
+            return false; // required to block normal submit since you used ajax
+        }
+            });
+
+
+
+
+    $("#phone1").mask('0000 000-0000', { reverse: true });
+    $("#phone2").mask('0000 000-0000', { reverse: true });
+    $("#porc_retencion_iva").mask('000', { reverse: true });
+    $("#porc_retencion_islr").mask('000', { reverse: true });
+    $("#amount_max_credit").mask('000.000.000.000.000.000,00', { reverse: true });
+    $("#balance").mask('000.000.000.000.000.000,00', { reverse: true });
+    $("#days_credit").mask('000', { reverse: true });
+
+
 
         $(function(){
             soloLetras('country');
@@ -268,21 +368,29 @@
         document.getElementById('days_credit').value = 0;
 
 
-        function calc()
-        {
-            if (document.getElementById('has_credit').checked) 
+        $(".creditcheck").click(function(e){
+
+            if (document.getElementById('has_credit').checked)
             {
                 $("#days_credit_label").show();
                 $("#days_credit").show();
-                
+
                 document.getElementById('days_credit').value = 0;
             } else {
                 $("#days_credit_label").hide();
                 $("#days_credit").hide();
                 document.getElementById('days_credit').value = 0;
             }
-        }
 
 
-    </script>
+    });
+
+
+
+
+        });
+
+</script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @endsection

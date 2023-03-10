@@ -556,18 +556,6 @@ Route::group(["prefix"=>'bankmovements'],function(){
      Route::get('pdfDetail/{id_header}','BankMovementController@bankmovementPdfDetail')->name('bankmovements.bankmovementPdfDetail');
 
 
-
-
-/****************************** MOVIMIENTOS MASIVOS*****/
-    Route::post('importmovimientos','BankMovementController@importmovimientos')->name('importmovimientos');
-    Route::post('facturasmovimientos','BankMovementController@facturasmovimientos')->name('facturasmovimientos');
-    Route::post('procesarfact','BankMovementController@procesarfact')->name('procesarfact');
-    Route::get('listcontrapartidanew/{type_var?}','BankMovementController@listcontrapartidanew')->name('listcontrapartidanew');
-    Route::post('procesarcontrapartidanew','BankMovementController@procesarcontrapartidanew')->name('procesarcontrapartidanew');
-
-
-
-
 });
 
 Route::group(["prefix"=>'nominas'],function(){
