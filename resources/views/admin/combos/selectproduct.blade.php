@@ -117,13 +117,13 @@
                                                     <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                                                 </td>
                                                 <td >
-                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onkeyup="noespac(this)" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0" autocomplete="amount{{ $product->id }}">
+                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
                                                 </td>
                                                 <td class="text-center">{{$product->id}}</td>
                                                 <td class="text-center">{{$product->code_comercial ?? ''}}</td>
                                                 <td>{{$product->description ?? ''}}</td>
-                                                <td class="text-right">{{ number_format($product->price_buy ?? 0, 3, ',', '.')}}</td>
-                                                <td class="text-right">{{ number_format($product->price_buy * $productwo->amount_per_product ?? 0, 3, ',', '.')}}</td>
+                                                <td class="text-right">{{ $product->price_buy ?? 0}}</td>
+                                                <td class="text-right">{{ $product->price_buy * $productwo->amount_per_product ?? 0}}</td>
                                                 @if($product->money == "D")
                                                     <td class="text-center">USD</td>
                                                 @else
@@ -157,13 +157,14 @@
                                 <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                             </td>
                             <td>
-                                <input style="text-align: right;" id="amount{{ $product->id }}" onkeyup="noespac(this)" onblur="updateAmount({{$product}})" onclick="valueOld({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control amountp @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" data-amountid="amountold{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                <input style="text-align: right; display:none;" id="amountold{{ $product->id }}" type="text" class="form-control amountold" name="amountold{{ $product->id }}">
                             </td>
                             <td class="text-center">{{$product->id}}</td>
                             <td class="text-center">{{$product->code_comercial ?? ''}}</td>
                             <td>{{$product->description ?? ''}}</td>
-                            <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
-                            <td class="text-right">{{ number_format($product->price_buy ?? 0, 2, ',', '.')}}</td>
+                            <td class="text-right">{{ $product->price_buy ?? 0}}</td>
+                            <td class="text-right">{{ $product->price_buy ?? 0}}</td>
                             @if($product->money == "D")
                                 <td class="text-center">Dolar</td>
                             @else
@@ -190,11 +191,9 @@
 </form>
 @endsection
 @section('javascript')
-
     
     <script>
 
-        
         $('#dataTable').DataTable({
             "ordering": true,
             "order": [[ 0, 'asc' ]],
@@ -215,60 +214,100 @@
         function selectProduct(product){
 
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
-
-            if(product.money == 'Bs'){
-                product.price = product.price;
-                product.price_buy = product.price_buy;
-            }
             
             if(isChecked){
-                document.getElementById('amount'+product.id).value = "1";
-            }else{
+                $('#amount'+product.id).removeAttr('disabled');
                 document.getElementById('amount'+product.id).value = "0";
+
+            }else{
+                var amount = document.getElementById('amount'+product.id).value;
+                
+                if (amount > 0){
+
+                    var price_form = document.getElementById("price").value;
+                    var price_buy_form = document.getElementById("price_buy").value; 
+                    
+                    var price = product.price * amount;
+                    var price_buy = product.price_buy * amount;
+                    
+                    if (price_form > 0 ) {
+                        document.getElementById("price").value = parseFloat(price_form) - parseFloat(price);
+                    } else {
+                        document.getElementById("price").value = 0;
+                    }
+                    if (price_buy_form > 0 ) {
+                    document.getElementById("price_buy").value = parseFloat(price_buy_form) - parseFloat(price_buy);
+                    } else {
+                    document.getElementById("price_buy").value = 0;   
+                    }
+
+                } else {
+
+                    document.getElementById('amount'+product.id).value = 0;
+                
+                }
+                
+                $('#amount'+product.id).attr('disabled', true);
+                
             }
-            
-            updateValuePrice(isChecked,product.price,product.price_buy);
             
             addProduct(product.id);
         }
 
-        function valueOld(product){
-            value_old = parseFloat(document.getElementById('amount'+product.id).value);
-        }
+
 
         function updateAmount(product){
-           
-            if(product.money == 'Bs'){
-                product.price = product.price ;
-                product.price_buy = product.price_buy;
-            }
 
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
+             
+            var amount = document.getElementById('amount'+product.id).value;
+            var value_old = document.getElementById('amountold'+product.id).value;
 
-            var amount = parseFloat(document.getElementById('amount'+product.id).value);
-
-            amount = amount - value_old;
-
-            updateValuePrice(isChecked,product.price * amount,product.price_buy * amount);
-        }
-
-
-        function updateValuePrice(isChecked,price,price_buy){
-            
-           
             var price_form = document.getElementById("price").value;
-
             var price_buy_form = document.getElementById("price_buy").value; 
             
+            var price = product.price * amount;
+            var price_buy =product.price_buy * amount;
+
+            if (isChecked == true) {
+
+                if (price_form >= 0){
+                   document.getElementById("price").value = parseFloat(price_form) + parseFloat(price);
+                } else {
+                   document.getElementById("price").value = parseFloat(price_form);
+                }
+
+                if (price_buy_form >= 0){
+                    document.getElementById("price_buy").value = parseFloat(price_buy_form) + parseFloat(price_buy);
+                } else {
+                    document.getElementById("price_buy").value = parseFloat(price_form);
+                }
+                /*updateValuePrice(isChecked,product.price * amount,product.price_buy * amount);*/
+            
+            } else {
+                
+                /*updateValuePrice(isChecked,product.price * amount,product.price_buy * amount);*/
+
+            }
+            
+        }
+
+       /* function updateValuePrice(isChecked,price,price_buy){
+            
+
+            var price_form = document.getElementById("price").value;
+                var price_buy_form = document.getElementById("price_buy").value; 
+
+            
             if(isChecked){
-                document.getElementById("price").value = (parseFloat(price_form) + parseFloat(price)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});
-                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + parseFloat(price_buy)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});
+                document.getElementById("price").value = parseFloat(price_form) + parseFloat(price);
+                document.getElementById("price_buy").value = parseFloat(price_buy_form) + parseFloat(price_buy);
             }else{
-                document.getElementById("price").value = (parseFloat(price_form) + (parseFloat(price)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});   
-                document.getElementById("price_buy").value = (parseFloat(price_buy_form) + (parseFloat(price_buy)*-1)).toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 3});   
+                document.getElementById("price").value = (parseFloat(price_form) - parseFloat(price)) ; 
+                document.getElementById("price_buy").value = (parseFloat(price_buy_form) - parseFloat(price_buy)) 
             }
            
-        }
+        }*/
         
 
         
@@ -293,11 +332,28 @@
             document.getElementById("id_products").value = products;
         }
 
-        function newFormat(old_format){
+
+        
+        /*$(".amountp").on('change',function(){
+            var amountid = $(this).attr('data-amountid');
+            var amount = $(this).val();
+
+            $('#'+amountid).val(amount);
+
+        });*/
+
+        function amountold(id){
+
+            var amount = $('#amount'+id).val();
+            $('#amountold'+id).val(amount);
+            
+        }
+
+       /* function newFormat(old_format){
             var montoFormat = old_format.replace(/[$.]/g,'');
 
             return montoFormat.replace(/[,]/g,'.');       
-        }
+        }*/
 
     </script> 
         
@@ -324,14 +380,14 @@
                 products.push("{{ $combo->id_product }}");
                 document.getElementById("combo_products").value = products;
                 document.getElementById("flexCheckChecked{{ $combo->id_product }}").checked = true;
-                document.getElementById("amount{{ $combo->id_product }}").value = "{{ $combo->amount_per_product }}";
+                document.getElementById("amount{{ $combo->id_product }}").value = "{{ number_format($combo->amount_per_product, 2, ',', '.') }}";
                 document.getElementById("id_products").value = products;
             </script> 
         @endforeach
         <script>
             //aqui asignamos los precios
-            document.getElementById("price").value = "{{ $total_price }}";
-            document.getElementById("price_buy").value = "{{ $total_price_buy }}";
+            document.getElementById("price").value = "{{ number_format($total_price, 3, ',', '.') }}";
+            document.getElementById("price_buy").value = "{{ number_format($total_price_buy, 3, ',', '.') }}";
         </script> 
     @endif
 @endsection
