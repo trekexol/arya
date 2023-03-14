@@ -92,7 +92,7 @@
                 <th class="text-center" width="1%">Moneda</th>
                 <th class="text-center" >Segmento</th>
                 <th class="text-center" width="1%">Stock</th>
-                <th class="text-left" width="1%">Unidad/M</th>
+                <th class="text-left" width="1%">Unidad/Med</th>
                 
                 
             </tr>
