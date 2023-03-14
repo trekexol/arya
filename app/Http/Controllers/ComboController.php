@@ -78,6 +78,7 @@ class ComboController extends Controller
 
     public function create_assign(request $request,$id_combo)
     {
+        
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $combo = Product::on(Auth::user()->database_name)->find($id_combo);
         $global = new GlobalController();
