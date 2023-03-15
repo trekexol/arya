@@ -217,12 +217,12 @@ class NominaPartsController extends Controller
 
 
 
-            if($cantidadmeses == 4)
+            if($cantidadmeses == 3)
             {
                 $asig =   $salariointegral * $diasvacaciones;
                 $diasvaca = 15;
                 $diasextrass = $diasextras;
-                $cantidadmeses = 1;
+                $cantidadmeses = 0;
                 $ultimodia = 15;
                 $acumulado += $asig;
                 $interes = $acumulado * $tasaaver / 1200;
