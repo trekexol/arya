@@ -918,6 +918,14 @@ $interesesacumulado = 0;
     <?php
     $total = 0;
     $i = 0;
+
+            if($employee->amount_utilities == 'Ma'){
+
+        $diasutilidades = 120;
+
+        }else{
+        $diasutilidades = 30;
+        }
     ?>
 
   <table>
@@ -982,7 +990,7 @@ $interesesacumulado = 0;
         <tr>
           <td class="text-center font-weight-normal">{{ $employee->fecha_ingreso }}</td>
           <td class="text-center font-weight-normal">Utilidades</td>
-          <td class="text-center font-weight-normal"></td>
+          <td class="text-center font-weight-normal">{{$diasutilidades}}</td>
         </tr>
       </table>
 
