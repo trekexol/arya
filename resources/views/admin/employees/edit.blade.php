@@ -392,15 +392,18 @@
                                     <div class="col-md-4">
                                         <select class="form-control" id="amount_utilities" name="amount_utilities" title="amount_utilities">
                                             @if($var->amount_utilities == "Ma")
-                                                <option value="Ma">Máximo</option>
-                                            @else
+                                                <option selected value="Ma">Máximo</option>
                                                 <option value="Mi">Minimo</option>
+
+                                            @else
+                                                <option selected value="Mi">Minimo</option>
+                                                <option value="Ma">Máximo</option>
+
                                             @endif
-                                            <option value="nulo">----------------</option>
 
                                             <div class="dropdown">
+                                                <option selected value="Mi">Minimo</option>
                                                 <option value="Ma">Máximo</option>
-                                                <option value="Mi">Minimo</option>
                                             </div>
 
 
@@ -480,7 +483,7 @@
                                         <label for="centro_costo" class="col-md-2 col-form-label text-md-right">Fecha de Egreso</label>
 
                                         <div class="col-md-4">
-                                            <input id="fecha_egreso" type="date" class="form-control @error('fecha_egreso') is-invalid @enderror" name="fecha_egreso" value="{{ $var->fecha_egreso  }}" required autocomplete="fecha_egreso">
+                                            <input id="fecha_egreso" type="date" class="form-control @error('fecha_egreso') is-invalid @enderror" name="fecha_egreso" value="{{ $var->fecha_egreso  }}" autocomplete="fecha_egreso">
 
                                         </div>
 

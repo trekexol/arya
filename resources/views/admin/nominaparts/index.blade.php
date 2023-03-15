@@ -64,12 +64,28 @@ $liqui_active = '';
         @endif
         @if ($type == 'vacaciones')
         <h2>Vacaciones de Empleados</h2>
+        <div class="col-md-6" style="display: none;">
+            <a href="{{ route('employees.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
+          </div>
         @endif
         @if ($type == 'liquidaciones')
         <h2>Liquidación de Empleados</h2>
         @endif
 
       </div>
+
+      @if ($type == 'utilidades')
+
+      <div class="col-md-6" >
+          Seleccione Año de Utilidades
+          <select class="form-control form-control-sm" name="yearuti" id="yearuti">
+          @foreach ($datospresta as $datospresta)
+             <option value="{{$datospresta->año}}"> {{$datospresta->año}}</option>
+          @endforeach
+          </select>
+        </div>
+      @endif
+
       <div class="col-md-6" style="display: none;">
         <a href="{{ route('employees.create')}}" class="btn btn-primary btn-lg float-md-right" role="button" aria-pressed="true">Registrar Empleado</a>
       </div>
@@ -110,24 +126,13 @@ $liqui_active = '';
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
-                <th>Sueldo</th>
                 @if ($type == 'prestaciones')
                 <th></th>
                 @endif
                 @if ($type == 'utilidades')
-                <th>Periodo</th>
-                <th>Dias</th>
-                <th>Alicuota de Utilidad</th>
-                <th>Banavih</th>
-                <th>INCES</th>
-                <th>Total Utilidades</th>
                 <th></th>
                 @endif
                 @if ($type == 'vacaciones')
-                <th>Dias de Vac. del Periodo</th>
-                <th>Dias de Vac. Disfutadas</th>
-                <th>Dias de Vac. Acumuladas</th>
-                <th></th>
                 @endif
                 @if ($type == 'liquidaciones')
                 <th></th>
@@ -145,7 +150,6 @@ $liqui_active = '';
                             <td>{{$employee->nombres}}</td>
                             <td>{{$employee->apellidos}}</td>
 
-                            <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
 
                             @if ($type == 'prestaciones')
                             <td>
@@ -153,23 +157,12 @@ $liqui_active = '';
                             </td>
                             @endif
                             @if ($type == 'utilidades')
-                            <td>{{' '}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
                             <td>
-                            <a href="{{ route('pdf.quotation',[$employee->id]) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                            <a href="{{ route('pdf.prestations',[$employee->id,'utilidades']) }}" title="Imprimir" target="_blank"><i class="fa fa-print utili" style="color: rgb(46, 132, 243);"></i></a>
                             </td>
                             @endif
                             @if ($type == 'vacaciones')
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>{{'0'}}</td>
-                            <td>
-                            <!--<a href="{{ ''/*route('pdf.quotation',[$employee->id]) */}}" title="Imprimir"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a> -->
-                            </td>
+
                             @endif
                             @if ($type == 'liquidaciones')
                             <td>
@@ -233,5 +226,12 @@ $liqui_active = '';
          $('#id_employee_modal').val(id_employee);
 
     });
+
+    $(document).on('click','.utili',function(){
+
+var yearuti = $('#yearuti').val();
+        console.log(yearuti);
+
+});
     </script>
 @endsection
