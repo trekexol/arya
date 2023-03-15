@@ -234,13 +234,8 @@ $liqui_active = '';
 
         var url = "{{ route('pdf.prestations',['temp','utilidades','year']) }}";
         //Aqui sustituyes la palabra temp por el valor de valorId
-
-
         url = url.replace('temp', idempleado);
         url = url.replace('year',yearuti);
-
-
-        //location.href = url;
 
         window.open (url);
 

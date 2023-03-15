@@ -926,6 +926,7 @@ $interesesacumulado = 0;
         }else{
         $diasutilidades = 30;
         }
+
     ?>
 
   <table>

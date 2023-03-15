@@ -286,8 +286,8 @@ class NominaPartsController extends Controller
             ->get();
 
 
-            if($datospresta->count() > 0){
 
+            if($datospresta->count() > 0){
 
             foreach($datospresta as $datosprestaciones){
                 $bcvtasa   = DB::connection($this->conection_logins)
@@ -315,6 +315,7 @@ class NominaPartsController extends Controller
 
             }
 
+
             $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta','datenow'))->setPaper('a4');
 
             return $pdf->stream();
@@ -324,8 +325,6 @@ class NominaPartsController extends Controller
             return redirect('nominaparts/utilidades')->withDelete('No Posee Registro de ese año!');
 
         }
-
-
 
 
 
