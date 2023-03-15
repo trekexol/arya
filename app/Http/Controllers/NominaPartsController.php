@@ -55,7 +55,7 @@ class NominaPartsController extends Controller
 
 
 
-    function completcalcs($employee = null, $tipo = null)
+    function completcalcs($employee = null, $tipo = null , $year = null)
     {
 
 
@@ -279,11 +279,15 @@ class NominaPartsController extends Controller
             ->table('nomina_calculations AS a')
             ->join('nominas as b', 'a.id_nomina','b.id')
             ->where('a.id_employee',$idempleado)
+            ->where(DB::raw('SUBSTR(b.date_end,1,4)'),$year)
             ->wherein('a.id_nomina_concept', ['2','3','4'])
             ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
             ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
             ->get();
 
+
+
+            if($datospresta->count() > 0){
 
             foreach($datospresta as $datosprestaciones){
                 $bcvtasa   = DB::connection($this->conection_logins)
@@ -312,11 +316,17 @@ class NominaPartsController extends Controller
             }
 
 
+            $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta','datenow'))->setPaper('a4');
+
+            return $pdf->stream();
+
+        }else{
+
+            return redirect('nominaparts/utilidades')->withDelete('No Posee Registro de ese año!');
+
+        }
 
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta','datenow'))->setPaper('a4');
-
-          return $pdf->stream();
 
         }
 

@@ -158,7 +158,7 @@ $liqui_active = '';
                             @endif
                             @if ($type == 'utilidades')
                             <td>
-                            <a href="{{ route('pdf.prestations',[$employee->id,'utilidades']) }}" title="Imprimir" target="_blank"><i class="fa fa-print utili" style="color: rgb(46, 132, 243);"></i></a>
+                            <i class="fa fa-print utili" data-utili="{{$employee->id}}" style="color: rgb(46, 132, 243);"></i>
                             </td>
                             @endif
                             @if ($type == 'vacaciones')
@@ -229,9 +229,16 @@ $liqui_active = '';
 
     $(document).on('click','.utili',function(){
 
-var yearuti = $('#yearuti').val();
-        console.log(yearuti);
+        var idempleado = $(this).attr('data-utili');
+        var yearuti = $('#yearuti').val();
 
-});
+        var url = "{{ route('pdf.prestations',['temp','utilidades','year']) }}";
+        //Aqui sustituyes la palabra temp por el valor de valorId
+        url = url.replace('temp', idempleado);
+        url = url.replace('year',yearuti);
+
+        window.open (url);
+
+        });
     </script>
 @endsection
