@@ -36,15 +36,15 @@
         <div class="col-md-6">
             <h2>Nóminas Registradas</h2>
         </div>
-       
+
         @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
         <div class="col-md-6">
             <a href="{{ route('nominas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Nómina</a>
-         
+
         </div>
         @endif
     </div>
-  </div>   
+  </div>
 
 <!-- container-fluid -->
 <div class="container-fluid" style="display:none;">
@@ -56,7 +56,7 @@
                 id="dropdownMenuButton" data-toggle="dropdown" >
                 <i class="fas fa-bars"></i>
                     Recibos
-                
+
             </button>
             <div class="dropdown-menu animated--fade-in"
                 aria-labelledby="dropdownMenuButton">
@@ -64,8 +64,8 @@
                 <a class="dropdown-item" href="{{ route('nominas.create_recibo_prestaciones') }}">Recibo de Prestaciones</a>
                 <a class="dropdown-item" href="{{ route('nominas.create_recibo_utilidades') }}">Recibo de Utilidades</a>
             </div>
-        </div> 
-       
+        </div>
+
         <div class="col-sm-3">
             <a href="{{ route('nominas.create_recibo_liquidacion_auto') }}" class="btn btn-light2"><i class="fas fa-print" ></i>
                 Calcula Liquidación Auto
@@ -88,8 +88,8 @@
 {{-- VALIDACIONES-RESPUESTA --}}
 
 <div class="card shadow mb-4">
-   
-   
+
+
     <div class="card-body">
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -105,10 +105,10 @@
                 <th class="text-center">Calcular</th>
                <th class="text-center" style="width:8%">PDF</th>
                <th class="text-center">Acción</th>
-              
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($nominas))
 
@@ -121,30 +121,31 @@
                     <td class="text-center">{{ date_format(date_create($nomina->date_begin),"d-m-Y")}}</td>
                     <td class="text-center">{{date_format(date_create($nomina->date_end),"d-m-Y")}}</td>
                     <td class="text-center">{{$nomina->nomina_type_id_name}}</td>
-                    
+
                     <td class="text-center">
-                        <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a> 
+                        <a href="{{route('nominas.selectemployee',$nomina->id) }}" title="Ver Detalles"><i class="fa fa-binoculars"></i></a>
                     </td>
 
-                    <td class="text-center">  
-                        <a href="{{route('nominas.calculate',$nomina->id) }}" title="Recalcular Conceptos de Nómina"><i class="fa fa-calculator"></i> </a>   
+                    <td class="text-center">
+                        <a href="{{route('nominas.calculate',$nomina->id) }}" title="Recalcular Conceptos de Nómina"><i class="fa fa-calculator"></i> </a>
                         @if ($nomina->check_exist == 'Existe')
-                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Recrear Asiento Contable"><i class="fa fa-list-alt" style="color: green"></i></a>      
-                        <a href="{{route('nominas.searchMovementNomina',$nomina->id) }}" title="Ver Movimiento Contable Nomina"><i class="fa fa-search"></i></a>  
+                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Recrear Asiento Contable"><i class="fa fa-list-alt" style="color: green"></i></a>
+                        <a href="{{route('nominas.searchMovementNomina',$nomina->id) }}" title="Ver Movimiento Contable Nomina"><i class="fa fa-search"></i></a>
                         @else
-                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Crear Asiento Contable"><i class="fa fa-list-alt" ></i></a>     
-                        @endif    
+                        <a href="{{route('nominas.calculatecont',$nomina->id) }}" title="Crear Asiento Contable"><i class="fa fa-list-alt" ></i></a>
+                        @endif
                     </td>
 
-                    <td class="text-center">    
-                    <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" target="_blank" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>  
-                    <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" target="_blank" onclick="" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>  
-                    <a href="{{route('nominas.print_payrool_summary_all',$nomina->id)}}" target="_blank" onclick="" title="Reporte de la Nomina"><i class="fa fa-print"></i></a>  
-                    </td>  
-                    
+                    <td class="text-center">
+                    <a href="{{route('nominas.print_nomina_calculation_all',$nomina->id)}}" target="_blank" title="Todos los Recibos Individuales"><i class="fa fa-print"></i></a>
+                    <a href="{{route('nominas.print_payrool_summary',$nomina->id)}}" target="_blank" onclick="" title="Resumen de la Nomina"><i class="fa fa-print"></i></a>
+                    <a href="{{route('nominas.print_payrool_summary_all',$nomina->id)}}" target="_blank" onclick="" title="Reporte de la Nomina"><i class="fa fa-print"></i></a>
+                    </td>
+
                     <td class="text-center">
                         <a href="{{route('nominas.edit',$nomina->id) }}" title="Editar"><i class="fa fa-edit"></i></a>
-                        <a href="#" class="delete" data-id-nomina={{$nomina->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                        <a href="#" class="send" data-toggle="modal" data-idnomina={{$nomina->id}} data-target="#emailModal" title="Enviar por Correo"><i class="fa fa-paper-plane" style="color: rgb(128, 119, 119);"></i></a>
+                        <a href="#" class="delete" data-id-nomina={{$nomina->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                     </td>
                     </tr>
                     @endforeach
@@ -170,9 +171,9 @@
                 @csrf
                 @method('DELETE')
                 <input id="id_nomina_modal" type="hidden" class="form-control @error('id_nomina_modal') is-invalid @enderror" name="id_nomina_modal" readonly required autocomplete="id_nomina_modal">
-                       
+
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -182,6 +183,35 @@
         </div>
     </div>
   </div>
+
+
+  <div class="modal modal-danger fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enviar Recibo de pago por Correo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('enviarecibopago') }}" method="post">
+                @csrf
+                @method('POST')
+
+                <input id="idnomina" type="hidden" class="form-control @error('idnomina') is-invalid @enderror" name="idnomina" readonly required autocomplete="idnomina">
+
+                <input id="message_modal" type="hidden" class="form-control @error('message_modal') is-invalid @enderror" name="message_modal" value="{{ 'RECIBO DE PAGO' }}" required autocomplete="message_modal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Enviar Correo</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @if (isset($exist_nomina_calculation))
 <div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
@@ -194,15 +224,15 @@
                 </button>
             </div>
             <div class="modal-body">
-            
+
                 <h5 class="text-center">Seguro desea volver a calcular la nómina? Nota: (Se perderán los conceptos que no esten programados con el cálculo automático de la nómina) </h5>
-                
+
             </div>
             <div class="modal-footer">
                 <a href="{{ route('nominas.recalculate',$exist_nomina_calculation->id) }}" type="submit" class="btn btn-info">Recalcular</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
-           
+
         </div>
     </div>
   </div>
@@ -220,15 +250,15 @@
                 </button>
             </div>
             <div class="modal-body">
-            
+
                 <h5 class="text-center">Seguro desea recrear los comprobantes nuevamente? </h5>
-                
+
             </div>
             <div class="modal-footer">
                 <a href="{{ route('nominas.recalculatecont',$exist_nomina_calculationcont->id) }}" type="submit" class="btn btn-info">Recrear</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             </div>
-           
+
         </div>
     </div>
   </div>
@@ -247,7 +277,7 @@
     });
 
     $(document).on('click','.delete',function(){
-         
+
          let id_nomina = $(this).attr('data-id-nomina');
 
          $('#id_nomina_modal').val(id_nomina);
@@ -262,6 +292,14 @@
     if("{{isset($exist_nomina_calculationcont)}}"){
         $('#recalculateModalcont').modal('show'); // abrir
     }
-   
-    </script> 
+
+
+    $(document).on('click','.send',function(){
+
+let idnomina = $(this).attr('data-idnomina');
+
+$('#idnomina').val(idnomina);
+});
+
+    </script>
 @endsection
