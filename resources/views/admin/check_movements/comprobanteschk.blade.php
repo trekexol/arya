@@ -72,6 +72,24 @@
                          $total_debe = 0;
                          $total_haber = 0;
                          $total_diferencia = 0;
+
+                         $total_debe_1 = 0;
+                         $total_debe_2 = 0;
+                         $total_debe_3 = 0;
+                         $total_debe_4 = 0;
+                         $total_debe_5 = 0;
+                         $total_debe_6 = 0;
+                         $total_debe_7 = 0;
+                         
+                         $total_haber_1 = 0;
+                         $total_haber_2 = 0;
+                         $total_haber_3 = 0;
+                         $total_haber_4 = 0;
+                         $total_haber_5 = 0;
+                         $total_haber_6 = 0;
+                         $total_haber_7 = 0;
+
+
                         
             ?>
                     @for ($q=0; $q < count($a_headers);$q++)
@@ -84,20 +102,119 @@
                                 <td class="text-right">{{number_format($a_headers[$q][3], 2, '.', '')}}</td>
                                 <td class="text-right">{{number_format($a_headers[$q][2], 2, '.', '') - number_format($a_headers[$q][3], 2, '.', '')}}</td>
 
-                            </tr> 
+                            </tr>    
                         @endif  
                         
                         <?php
                          $total_debe += number_format($a_headers[$q][2], 2, '.', '');
                          $total_haber += number_format($a_headers[$q][3], 2, '.', '');
                          $total_diferencia += number_format($a_headers[$q][2], 2, '.', '') - number_format($a_headers[$q][3], 2, '.', '');
+                         
+                         if ($a_headers[$q][4] == 1){
+                             
+                            $total_debe_1 += number_format($a_headers[$q][2], 2, '.', '');
+                            $total_haber_1 += number_format($a_headers[$q][3], 2, '.', '');
+
+                         }
+                        
+                         if ($a_headers[$q][4] == 2){
+                             
+                             $total_debe_2 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_2 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+                          if ($a_headers[$q][4] == 3){
+                             
+                             $total_debe_3 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_3 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+                          if ($a_headers[$q][4] == 4){
+                             
+                             $total_debe_4 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_4 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+                          if ($a_headers[$q][4] == 5){
+                             
+                             $total_debe_5 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_5 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+                          if ($a_headers[$q][4] == 6){
+                             
+                             $total_debe_6 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_6 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+                          if ($a_headers[$q][4] == 7){
+                             
+                             $total_debe_7 += number_format($a_headers[$q][2], 2, '.', '');
+                             $total_haber_7 += number_format($a_headers[$q][3], 2, '.', '');
+ 
+                          }
+
                         ?>
                         
                     @endfor
 
                 </tbody>
 
+
+
+
                 <tfoot>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">ACTIVO</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_1}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_1}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_1 - $total_haber_1}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">PASIVO</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_2}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_2}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_2 - $total_haber_2}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">PATRIMONIO</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_3}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_3}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_3 - $total_haber_3}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">INGRESOS</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_4}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_4}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_4 - $total_haber_4}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">COSTOS</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_5}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_5}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_5 - $total_haber_5}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">GASTOS</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_6}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_6}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_6 - $total_haber_6}}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-right"></th>
+                        <th class="text-right">OTROS INGRESOS Y EGRESOS</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_7}}</th>
+                        <th class="text-right font-weight-bold">{{$total_haber_7}}</th>
+                        <th class="text-right font-weight-bold">{{$total_debe_7 - $total_haber_7}}</th>
+                    </tr>
+
+
                     <tr>
                         <th class="text-right"></th>
                         <th class="text-right">Total</th>
