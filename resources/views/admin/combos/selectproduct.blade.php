@@ -210,7 +210,7 @@
         var value_old = 0;
 
         var bcv = "{{$bcv ?? 1}}";
-
+        
         function selectProduct(product){
 
             var isChecked = document.getElementById('flexCheckChecked'+product.id).checked;
