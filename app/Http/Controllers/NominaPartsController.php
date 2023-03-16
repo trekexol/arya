@@ -41,12 +41,21 @@ class NominaPartsController extends Controller
 
         }
 
-        return view('admin.nominaparts.index',compact('employees','type'));
+        $datospresta = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'))
+            ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)'))
+            ->get();
+
+
+        return view('admin.nominaparts.index',compact('employees','type','datospresta'));
     }
 
 
 
-    function completcalcs($employee = null, $tipo = null)
+    function completcalcs($employee = null, $tipo = null , $year = null)
     {
 
 
@@ -208,12 +217,12 @@ class NominaPartsController extends Controller
 
 
 
-            if($cantidadmeses == 4)
+            if($cantidadmeses == 3)
             {
                 $asig =   $salariointegral * $diasvacaciones;
                 $diasvaca = 15;
                 $diasextrass = $diasextras;
-                $cantidadmeses = 1;
+                $cantidadmeses = 0;
                 $ultimodia = 15;
                 $acumulado += $asig;
                 $interes = $acumulado * $tasaaver / 1200;
@@ -246,6 +255,78 @@ class NominaPartsController extends Controller
 
 
           return $pdf->stream();
+
+        }
+
+
+
+
+        if($tipo == 'utilidades'){
+            $idempleado = $employee;
+            $pdf = App::make('dompdf.wrapper');
+            $company = Company::on(Auth::user()->database_name)->find(1);
+
+            $employee = Employee::on(Auth::user()->database_name)
+            ->join('positions','positions.id','position_id') // Buscamos el empleado
+            ->where('employees.id','=',$idempleado)
+            ->first();
+
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+           $datospresta = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->where('a.id_employee',$idempleado)
+            ->where(DB::raw('SUBSTR(b.date_end,1,4)'),$year)
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
+            ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
+            ->get();
+
+
+
+            if($datospresta->count() > 0){
+
+            foreach($datospresta as $datosprestaciones){
+                $bcvtasa   = DB::connection($this->conection_logins)
+                ->table('bvc_rates_social_benefits')
+                ->where('period',$datosprestaciones->año)
+                ->where('month',$datosprestaciones->mes)
+                ->first();
+
+                if($bcvtasa){
+
+                $datosprestaciones->tasaaver = $bcvtasa->rate_average_a_p;
+
+                }else{
+
+                    $bcvtasa   = DB::connection($this->conection_logins)
+                    ->table('bvc_rates_social_benefits')
+                    ->orderBy('id','DESC')
+                    ->first();
+
+                    $datosprestaciones->tasaaver = $bcvtasa->rate_average_a_p;
+
+                }
+
+
+
+            }
+
+
+            $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta','datenow'))->setPaper('a4');
+
+            return $pdf->stream();
+
+        }else{
+
+            return redirect('nominaparts/utilidades')->withDelete('No Posee Registro de ese año!');
+
+        }
+
+
 
         }
 
