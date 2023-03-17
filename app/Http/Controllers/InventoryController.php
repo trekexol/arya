@@ -664,7 +664,7 @@ class InventoryController extends Controller
 
      
     
-    public function store_inventory_combo(Request $request)
+    public function store_inventory_combo(Request $request) // disminuye e incrementa
     {
         
           /*  $data = request()->validate([
@@ -674,11 +674,7 @@ class InventoryController extends Controller
                 
             ]); */
 
-            $us = Auth::user()->id;
-        
-            dd($us);
-            exit;
-
+            $user       =   auth()->user();
             $type_add = request('type_add');
             $id_product = request('id_product');
             $cantidad_disponible = request('cant_disponible');
@@ -731,7 +727,6 @@ class InventoryController extends Controller
                 }
             }
                    
-            
 
                 if ($agregar == 'true'){
 
@@ -756,7 +751,13 @@ class InventoryController extends Controller
 
                         $headervoucher = new HeaderVoucher(); // Creando cabecera
                         $headervoucher->setConnection(Auth::user()->database_name);
+                        if($type_add == '1') {
                         $headervoucher->description  = 'Aumento de Inventario de Producto Combo '.$inventory->id ;
+                        }
+                        if($type_add == '0') {
+                        $headervoucher->description  = 'Disminucion de Inventario de Producto Combo '.$inventory->id ;
+                        }
+
                         $headervoucher->date   = $date;
                         $headervoucher->status   = 1;
                         $headervoucher->save();
@@ -781,27 +782,25 @@ class InventoryController extends Controller
 
                         if(isset($account) and isset($account_two) ){
                              
-                            /*
-                            $this->add_movement($bcv,$headervoucher->id,$account->id,0,Auth::user()->id,0,$amount);
-                            $this->add_movement($bcv,$headervoucher->id,$account_two->id,0,Auth::user()->id,$amount,0); */
-                        
+                            if($type_add == '1') {
+                            $this->add_movement($bcv,$headervoucher->id,$account->id,$user->id,0,$amount); // incrementa
+                            $this->add_movement($bcv,$headervoucher->id,$account_two->id,$user->id,$amount,0); 
+                            } 
+                            if($type_add == '0') {
+                            $this->add_movement($bcv,$headervoucher->id,$account->id,$user->id,$amount,0); // disminuye
+                            $this->add_movement($bcv,$headervoucher->id,$account_two->id,$user->id,0,$amount); 
+                            }
                         }
                            
                         return redirect('inventories/index/todos')->withSuccess($transaccion); 
                     
-
                     } 
-
-
 
                 } else {
 
                     return redirect('inventories/index/todos')->withDanger('Transacción no disponible');
 
                 }
-
-
-
     }
 
 

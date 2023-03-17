@@ -38,6 +38,7 @@
   <tr>
     <th style="text-align: center; width:1%;">Código</th>
     <th style="text-align: center; ">Descripción</th>
+    <th style="text-align: center; width:1%;">ID</th>
     <th style="text-align: center; width:1%;">Nivel</th>
     <th style="text-align: center; width:1%;">Tipo</th>
     <th style="text-align: center; ">Saldo Anterior</th>
@@ -58,6 +59,7 @@
       <tr>
           <th style="text-align: center; ">{{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</th>
           <th style="text-align: center; ">{{ $account->description ?? ''}}</th>
+          <th style="text-align: center; ">{{ $account->id ?? ''}}</th>
           <th style="text-align: center; ">{{ $account->level ?? ''}}</th>
           <th style="text-align: center; ">{{ $account->type ?? ''}}</th>
           <th style="text-align: right; ">{{ number_format(($account->balance_previus ?? 0), 2, ',', '.')}}</th>
@@ -69,6 +71,7 @@
       <tr>
         <th style="text-align: center; font-weight: normal;">{{ $account->code_one ?? ''}}.{{ $account->code_two ?? ''}}.{{ $account->code_three ?? ''}}.{{ $account->code_four ?? ''}}.{{ $account->code_five ?? ''}}</th>
         <th style="text-align: center; font-weight: normal;">{{ $account->description ?? ''}}</th>
+        <th style="text-align: center; font-weight: normal;">{{ $account->id ?? ''}}</th>
         <th style="text-align: center; font-weight: normal;">{{ $account->level ?? ''}}</th>
         <th style="text-align: center; font-weight: normal;">{{ $account->type ?? ''}}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format(($account->balance_previus ?? 0), 2, ',', '.')}}</th>
@@ -89,6 +92,7 @@
 
   <tfoot>
 
+      <th style="border-color: white;"></th>
       <th style="border-color: white;"></th>
       <th style="border-color: white;"></th>
       <th style="border-color: white;"></th>

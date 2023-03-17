@@ -62,7 +62,7 @@ class CheckMovementController extends Controller
 
 
 
-   public function comprobanteschk()
+   public function comprobanteschk() //index
    {
         if($this->userAccess->validate_user_access($this->modulo)){
             $user= auth()->user();
@@ -74,7 +74,8 @@ class CheckMovementController extends Controller
             $debe = 0;
             $haber = 0;
             $cuenta = '';
-            $a_headers[] = array('0','0',0,0);
+            $a_headers[] = array('0','0',0,0,'');
+            $cuentas[] = array(0,'',0,0,0); 
 
             $com_headers = DB::connection(Auth::user()->database_name)->table('header_vouchers')
             ->where('date','>=',$date_begin)
@@ -96,6 +97,18 @@ class CheckMovementController extends Controller
                 ->groupBy('id_header_voucher')
                 ->first();
 
+                $account = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                ->join('accounts','accounts.id','=','detail_vouchers.id_account')
+                ->where('detail_vouchers.id_header_voucher',$headers->id)
+                ->where('detail_vouchers.status','C')
+                ->select('detail_vouchers.id_account as id_account','accounts.code_one as code_one')
+                ->first();
+
+                $account_name = DB::connection(Auth::user()->database_name)->table('accounts')
+                ->where('level',1)
+                ->where('code_one',$account->code_one)
+                ->select('description')
+                ->first();
 
                 if (empty($suma_mov)) {
                     $debe = 0;
@@ -109,12 +122,12 @@ class CheckMovementController extends Controller
 
 
               //  if ($debe <> $haber){
-                    $a_headers[] = array($headers->id,$headers->date,$debe,$haber);
+                    $a_headers[] = array($headers->id,$headers->date,$debe,$haber,$account->code_one,$account_name->description);
                 //}
 
             } 
 
-    
+
             return view('admin.check_movements.comprobanteschk',compact('a_headers','date_begin','date_end'));
             
         }else{
@@ -123,7 +136,7 @@ class CheckMovementController extends Controller
    }
 
 
- public function comprobanteschks(request $request)
+ public function comprobanteschks(request $request) // buscador en index
    {
         if($this->userAccess->validate_user_access($this->modulo)){
             $user= auth()->user();
@@ -134,7 +147,7 @@ class CheckMovementController extends Controller
             $debe = 0;
             $haber = 0;
             $cuenta = '';
-            $a_headers[] = array('0','0',0,0);
+            $a_headers[] = array('0','0',0,0,'');
 
             $com_headers = DB::connection(Auth::user()->database_name)->table('header_vouchers')
             ->where('date','>=',$date_begin)
@@ -147,6 +160,8 @@ class CheckMovementController extends Controller
                 $suma_mov = '';
                 $debe = 0;
                 $haber = 0;
+                $id_code = '';
+                $account_name = '';
                 
 
                 $suma_mov = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
@@ -155,6 +170,35 @@ class CheckMovementController extends Controller
                 ->select('id_header_voucher',DB::raw('SUM(debe) As debe'),DB::raw('SUM(haber) As haber'))
                 ->groupBy('id_header_voucher')
                 ->first();
+
+                $account = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+                ->join('accounts','accounts.id','=','detail_vouchers.id_account')
+                ->where('detail_vouchers.id_header_voucher',$headers->id)
+                ->where('detail_vouchers.status','C')
+                ->select('detail_vouchers.id_account as id_account','accounts.code_one as code_one')
+                ->first();
+ 
+                if (!empty($account)){
+                    $account_name = DB::connection(Auth::user()->database_name)->table('accounts')
+                    ->where('level',1)
+                    ->where('code_one',$account->code_one)
+                    ->select('description')
+                    ->first();
+
+                    $id_code = $account->code_one;
+                    $account_name = $account_name->description;
+                    
+
+                } else {
+                    $account_name = 'Sin Nombre';
+
+                    $id_code = '';
+                    $account_name = '';
+                    
+                }
+
+
+
 
 
                 if (empty($suma_mov)) {
@@ -169,7 +213,7 @@ class CheckMovementController extends Controller
 
 
               //  if ($debe <> $haber){
-                    $a_headers[] = array($headers->id,$headers->date,$debe,$haber);
+                $a_headers[] = array($headers->id,$headers->date,$debe,$haber,$account->code_one,$account_name->description);
                 //}
 
             } 

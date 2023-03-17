@@ -9,6 +9,9 @@ use App\Company;
 use App\Product;
 use App\ExpensePayment;
 use App\ExpensesDetail;
+use App\HeaderVoucher;
+use App\Account;
+use App\DetailVoucher;
 use App\Inventory;
 use App\QuotationPayment;
 use App\QuotationProduct;
@@ -692,6 +695,8 @@ class GlobalController extends Controller
         $combo_product = ComboProduct::on(Auth::user()->database_name)
         ->where('combo_products.id_combo',$id_product)
         ->get();
+
+        $cantidad_combos = 0;
         
         if(!empty($combo_product)) {
             foreach ($combo_product as $int_product) {
@@ -726,23 +731,25 @@ class GlobalController extends Controller
                 $disponible = intval($inventario/$int_product->amount_per_product);
 
                 $a_producto[] = array($int_product->id_product,$disponible);
+
+                    if(count($a_producto) > 0) {
+
+                            foreach ($a_producto as $clave => $fila) {
+                            $orden[$clave] = $fila[1];
+                            }
+                            
+                            array_multisort($orden, SORT_ASC, $a_producto);
+
+                        //  dd($a_producto);
+
+                            $cantidad_combos = $a_producto[0][1];
+
+                    } else {
+                            $cantidad_combos = 0;
+                    }
             }
 
-                if(count($a_producto) > 0) {
 
-                    foreach ($a_producto as $clave => $fila) {
-                    $orden[$clave] = $fila[1];
-                    }
-                    
-                    array_multisort($orden, SORT_ASC, $a_producto);
-
-                  //  dd($a_producto);
-
-                    $cantidad_combos = $a_producto[0][1];
-
-                } else {
-                    $cantidad_combos = 0;
-               }
 
         } else {
 
@@ -823,8 +830,10 @@ class GlobalController extends Controller
                 ->get()->last();	
             }
 
+
+        
                 if (empty($inventories_quotations)) {
-                    $msg = 'El Producto no tiene inventario o no existe.';
+                    //$msg = 'El Producto no tiene inventario o no existe.';
                     $amount_real = 0;
                 } else {
                     
@@ -846,6 +855,7 @@ class GlobalController extends Controller
 
             $transaccion = 0;
             $agregar = 'true';
+            $validar_combo = 'true';
     
             if ($amount > 0 ) {
     
@@ -888,7 +898,6 @@ class GlobalController extends Controller
                     break;
                     case 'venta':
 
-
                         if ($id_historial_inv != 0) {
                             $inventories_quotations_hist = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
@@ -901,6 +910,7 @@ class GlobalController extends Controller
                                         $amount = 0;
                                         $transaccion = $amount_real;
                                         $description = 'De Nota a Factura'; 
+                                        $validar_combo = 'false'; 
                                 }
         
                         } else {
@@ -948,7 +958,7 @@ class GlobalController extends Controller
                                 $transaccion = $amount_real-$amount; 
                         }
     
-                    break;               
+                    break;                
                     case 'rev_nota':
                     $transaccion = $amount_real+$amount;
                     break;
@@ -1032,8 +1042,14 @@ class GlobalController extends Controller
     
                 }
     
+                                            
+                $buscar = Product::on(Auth::user()->database_name)
+                ->where('status','!=','X')
+                ->select('type')
+                ->find($id_product);
+
     
-                    if ($transaccion < 0) {
+                    if ($transaccion < 0 and $buscar->type != 'COMBO') {
     
                        $msg = "La cantidad es mayor a la disponible en inventario";
                 
@@ -1056,12 +1072,13 @@ class GlobalController extends Controller
                             'amount' => $amount,
                             'amount_real' => $transaccion,
                             'status' => 'A']);
-                            
+
+                            //////CONSULTANDO EL ULTIMO ID DE HISTORIAL///////////////////////
+
                             $id_last = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
                             ->select('id')
                             ->get()->last(); 
-
 
                             if ($type == 'nota' || $type == 'venta' || $type == 'aju_nota' || $type == 'factura'){
                                 DB::connection(Auth::user()->database_name)->table('quotation_products')
@@ -1074,22 +1091,22 @@ class GlobalController extends Controller
                                 ->where('id','=',$id)
                                 ->update(['id_inventory_histories' => $id_last->id]);
                             }  
-                                
-                            //PRODUCTO COMBO 
                             
-                            $buscar = Product::on(Auth::user()->database_name)
-                            ->where('status','!=','X')
-                            ->select('type')
-                            ->find($id_product);
+                            //////FIN CONSULTANDO EL ULTIMO ID DE HISTORIAL///////////////////////
+                                
+                            //////PRODUCTO COMBO//////////////////////////////////////////////////
+
 
                             if($buscar->type == 'COMBO'){ // producto combo
                                         
-                                    $user     =   auth()->user();
+                                $user     =   auth()->user();
+
+                                $invento_combo = $global->consul_prod_invt($id_product);
+                                $combos_disponibles = $global->consul_cant_combo($id_product,1);
+ 
+
+                                if ($invento_combo <= 0) {
                                     
-                                
-                                
-                                if ($type == 'salida' || $type == 'entrada') {
-                                   
                                     $combo_products = ComboProduct::on(Auth::user()->database_name)
                                     ->where('id_combo',$id_product)
                                     ->orderBy('id' ,'desc')
@@ -1108,15 +1125,28 @@ class GlobalController extends Controller
                                                 $amount_interno = $productwo->amount_per_product;
                 
                                                 $transaccion_interna = $global->consul_prod_invt($productwo->id_product);
-                                                
+                                            
                                                 if ($type == 'salida') {
                                                     $type_interno = 'entrada';
                                                     $transaccion_interna = $transaccion_interna + $productwo->amount_per_product;
-                                                }else {
+                                                }
+
+                                                if ($type == 'entrada') {
                                                     $type_interno = 'salida';
                                                     $transaccion_interna = $transaccion_interna - $productwo->amount_per_product;
                                                 }
 
+                                                if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
+                                                    $type_interno = 'salida';
+                                                    $transaccion_interna = $transaccion_interna - $productwo->amount_per_product;    
+                                                }
+
+                                                if ($type == 'compra' || $type == 'rev_venta' || $type == 'rev_nota') {
+                                                    $type_interno = 'entrada';
+                                                    $transaccion_interna = $transaccion_interna + $productwo->amount_per_product;
+                                                }
+
+                                                if ($agregar == 'true' and $validar_combo == 'true') {
 
                                                     $mov_trans = DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
                                                     'id_product' => $productwo->id_product,
@@ -1132,13 +1162,74 @@ class GlobalController extends Controller
                                                     'amount' => $amount_interno,
                                                     'amount_real' => $transaccion_interna,
                                                     'status' => 'A']);
-
+                                               
+                                                }
                                             
-                                        }
-                    
+                                                    // CREANDO COMPROBANTEE //////////////////////////////////////////////////////
+                                                if ($type != 'salida' and $type != 'entrada') {        
+                                                    
+                                                    $bcv = 1;
+                                                    $amount = 0;
+                                                    $price_buy = 0;
 
+                                                    $company = Company::on(Auth::user()->database_name)->find(1); // tasa de la compania
+                                                    $bcv = $company->rate;
+ 
+                                                    $productc = Product::on(Auth::user()->database_name)
+                                                    ->select('price_buy','description','money')
+                                                    ->find($productwo->id_product);
+
+                                                    $headervoucher = new HeaderVoucher(); // Creando cabecera
+                                                    $headervoucher->setConnection(Auth::user()->database_name);
+                                                
+
+                                                    if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
+                                                    $headervoucher->description  = 'Materia Prima a Mercancia para la Venta Producto '.$productwo->id_product.' '.$productc->description;
+                                                    }
+                                                    if ($type == 'compra' || $type == 'rev_venta' || $type == 'rev_nota') {
+                                                    $headervoucher->description  = 'Aumento de Materia prima de Producto '.$productwo->id_product.' '.$productc->description;
+                                                    }
+
+                                                    $headervoucher->date   = $date;
+                                                    $headervoucher->status   = 1;
+                                                    $headervoucher->save();
+
+                                                    $account = Account::on(Auth::user()->database_name)
+                                                    ->where('description','LIKE','%Materia Prima%')
+                                                    ->where('level','5')
+                                                    ->first();
+
+                                                    $account_two = Account::on(Auth::user()->database_name)
+                                                    ->where('description','LIKE','%Mercancia para la Venta%')
+                                                    ->where('level','5')
+                                                    ->first();
+
+
+                                                    $amount = $productc->price_buy * $amount_interno;
+
+                                                    if($productc->money == 'D'){
+                                                    $amount = ($productc->price_buy * $bcv) * $amount_interno ;
+                                                    }
+
+                                                    if(isset($account) and isset($account_two) ){
+                                                            
+                                                        
+                                                        if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
+                                                        $this->add_movement($bcv,$headervoucher->id,$account->id,$quotation,$user->id,0,$amount); // incrementa
+                                                        $this->add_movement($bcv,$headervoucher->id,$account_two->id,$quotation,$user->id,$amount,0); 
+                                                        } 
+                                                        if ($type == 'compra' || $type == 'rev_venta' || $type == 'rev_nota') {
+                                                        $this->add_movement($bcv,$headervoucher->id,$account->id,$quotation,$user->id,$amount,0); // disminuye
+                                                        $this->add_movement($bcv,$headervoucher->id,$account_two->id,$quotation,$user->id,0,$amount); 
+                                                        }
+                                                    } 
+                                                }     
+
+                                            }
+                
                                     }
-                                }
+                                } 
+                                                           
                             }       
                             ////fin PRODUCTO COMBO
 
@@ -1179,7 +1270,7 @@ class GlobalController extends Controller
                     }
     
             } else { // condicion cantidad 0
-                if($type == 'creado') {
+                /*if($type == 'creado') {
                     
                     $user       =   auth()->user();
 
@@ -1199,10 +1290,10 @@ class GlobalController extends Controller
 
                     $msg = "Producto Creado";
             
-                } else {
+                } else { */
 
                     $msg = "La cantidad de la oprecion debe ser mayor a cero";
-                }
+                //}
 
             }
     
@@ -1258,5 +1349,30 @@ class GlobalController extends Controller
     }
    // fin funcion para subir imagenes
 
+    public function add_movement($tasa,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
+
+        $detail = new DetailVoucher();
+        $detail->setConnection(Auth::user()->database_name);
+
+        $detail->id_account = $id_account;
+        $detail->id_header_voucher = $id_header;
+        $detail->id_invoice = $id_invoice;
+        $detail->user_id = $id_user;
+        $detail->tasa = $tasa;
+        $detail->debe = $debe;
+        $detail->haber = $haber;
+        $detail->status =  "C";
+        $detail->save();
+
+        /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+        $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+        if($account->status != "M"){
+            $account->status = "M";
+            $account->save();
+        }
+
+
+    }
    
 }

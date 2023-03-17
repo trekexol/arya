@@ -18,6 +18,37 @@
 return $num_word;
 }
 
+function mesletras($valor) {
+    if($valor == '01'){
+        $mes = 'ENERO';
+    }if($valor == '02'){
+        $mes = 'FEBRERO';
+    }if($valor == '03'){
+        $mes = 'MARZO';
+    }if($valor == '04'){
+        $mes = 'ABRIL';
+    }if($valor == '05'){
+        $mes = 'MAYO';
+    }if($valor == '06'){
+        $mes = 'JUNIO';
+    }if($valor == '07'){
+        $mes = 'JULIO';
+    }if($valor == '08'){
+        $mes = 'AGOSTO';
+    }if($valor == '09'){
+        $mes = 'SEPTIEMBRE';
+    }if($valor == '10'){
+        $mes = 'OCTUBRE';
+    }if($valor == '11'){
+        $mes = 'NOVIMEBRE';
+    }if($valor == '12'){
+        $mes = 'DICIEMBRE';
+    }
+
+    return $mes;
+     }
+
+
 
 
 ?>
@@ -134,12 +165,12 @@ $interesesacumulado = 0;
 
 
 
-    if($cantidadmeses == 4)
+    if($cantidadmeses == 3)
     {
       $asig =   $salariointegral * $diasvacaciones;
       $diasvaca = 15;
       $diasextrass = $diasextras;
-      $cantidadmeses = 1;
+      $cantidadmeses = 0;
       $ultimodia = 15;
       $acumulado += $asig;
       $interes = $acumulado * $datospresta->tasaaver / 1200;
@@ -349,7 +380,7 @@ $interesesacumulado = 0;
         $tiempoparautili = $mes;
       }
 
-    $prestaarticulo =  30 * $añoservicio * ($employee->monto_pago / 30);
+    $prestaarticulo =  30 * $añoservicio * $salariointegral;
     $prestaarticulo =  number_format($prestaarticulo, 2, ',', '.');
     $prestaarticulo = str_replace(".", "", $prestaarticulo);
 
@@ -553,19 +584,20 @@ $interesesacumulado = 0;
             <th  class="text-left" style="background: rgb(221, 221, 221)">4 - UTILIDADES:</th>
           </tr>
         </table>
+        <?php
+        if($tiempoparautili == 0){
+            $tiempoparautili = 1;
+            $pagotiempo = 30 / 12 * $tiempoparautili;
 
+        }else{
+            $pagotiempo = 30 / 12 * $tiempoparautili;
+        }
+    ?>
         <table style="width: 100%;">
           <tr>
-            <th  class="text-left font-weight-normal" style="width: 68%;">Total de Utilidades:</th>
+            <th  class="text-left font-weight-normal" style="width: 68%;">Total de Utilidades Fraccionadas a 30 Dias /12 * {{$tiempoparautili}} Mes: {{$pagotiempo}} Dias</th>
             <th  class="text-center" style="width: 16%;"></th>
             <th  class="text-center" style="width: 16%;">
-            <?php
-                if($tiempoparautili == 0){
-                    $pagotiempo = 30 / 12 * 1;
-                }else{
-                    $pagotiempo = 30 / 12 * $tiempoparautili;
-                }
-            ?>
 
             {{ $totalud = number_format($pagotiempo * $employee->monto_pago / 30, 2, '.', '.')}}
             </th>
@@ -847,5 +879,187 @@ $interesesacumulado = 0;
 </html>
 
 
+
+
+@elseif($tipo == 'utilidades')
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>utilidades</title>
+<style>
+     table, td, th {
+    border: 1px solid black;
+    font-size: x-small;
+    font-size: 8pt;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+  }
+
+  th {
+
+    text-align: left;
+  }
+  </style>
+
+
+</head>
+
+<body>
+
+    <?php
+    $total = 0;
+    $i = 0;
+
+            if($employee->amount_utilities == 'Ma'){
+
+        $diasutilidades = 120;
+
+        }else{
+        $diasutilidades = 30;
+        }
+
+    ?>
+
+  <table>
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
+      </th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
+    </tr>
+  </table>
+  <h4 style="color: black; text-align: center">RECIBO DE UTILIDADES</h4>
+
+  <div class="small" style="font-size: 12px;">
+
+  <div class="small">
+
+
+      <table style="width: 25%;">
+        <tr>
+          <th >Fecha: {{ $datenow }}</th>
+      </table>
+
+      <table style="width: 100%;">
+        <tr>
+          <th style="width: 72%; border-right: none;">Nombre de la Empresa: {{ $company->razon_social ?? ''}}</th>
+          <th style="width: 28%;" class="font-weight-normal">Rif: {{ $company->code_rif ?? ''}}</th>
+        </tr>
+      </table>
+
+
+      <table style="width: 100%;">
+        <tr>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Domicilio Fiscal:</th>
+
+        </tr>
+        <tr>
+          <td class="text-center font-weight-normal">{{ $company->address ?? ''}}</td>
+
+        </tr>
+      </table>
+
+      <table style="width: 100%;">
+        <tr>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Trabajador:</th>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Cargo</th>
+
+        </tr>
+        <tr>
+          <td class="text-center font-weight-normal">{{ $employee->id_empleado }} {{ $employee->nombres }} {{ $employee->apellidos}}</td>
+          <td class="text-center font-weight-normal">{{ $employee->name }}</td>
+
+        </tr>
+      </table>
+
+
+
+      <table style="width: 100%;">
+        <tr>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Fecha de Ingreso</th>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Motivo del Recibo</th>
+          <th  class="text-center" style="background: rgb(221, 221, 221)">Dias a Pagar</th>
+        </tr>
+        <tr>
+          <td class="text-center font-weight-normal">{{ $employee->fecha_ingreso }}</td>
+          <td class="text-center font-weight-normal">Utilidades</td>
+          <td class="text-center font-weight-normal">{{$diasutilidades}}</td>
+        </tr>
+      </table>
+
+
+
+      <br>
+
+
+
+          <table style="width: 100%;">
+            <tr>
+              <th  class="text-center" >Periodo</th>
+              <th  class="text-center" >Mes</th>
+              <th  class="text-center" >Monto</th>
+            </tr>
+            @foreach ($datospresta as $datospresta)
+            <?php
+                $total += $datospresta->monto;
+            ?>
+            <tr>
+                <td  class="text-center" >{{$datospresta->año}}</td>
+                <td  class="text-center" >{{mesletras($datospresta->mes)}}</td>
+                <td  class="text-center" >{{$datospresta->monto}}</td>
+              </tr>
+              @php
+                $i++;
+              @endphp
+            @endforeach
+            <tr>
+
+                <th  class="text-center" colspan="2" >Acumulado en el año.</th>
+                <td  class="text-center"  >{{number_format($total, 2, ',', '.')}}</td>
+            </tr>
+            <tr>
+
+                <th  class="text-center" colspan="2" >Utilidades.  (acumulado en el año dividido por los meses transcurridos)</th>
+                <td  class="text-center"  >{{number_format($total / $i, 2, ',', '.')}}</td>
+            </tr>
+            <tr>
+
+                <th  class="text-center" colspan="2" >Banavih deducción del 1%. </th>
+                <td  class="text-center"  >-{{number_format(1 * ($total / $i) / 100, 2, ',', '.')}}</td>
+            </tr>
+            <tr>
+
+                <th  class="text-center" colspan="2" >INCES deducción del 0.5%</th>
+                <td  class="text-center"  >-{{number_format(0.5 * ($total / $i) / 100, 2, ',', '.')}}</td>
+            </tr>
+            <tr>
+
+                <th  class="text-center" colspan="2" >Total Asignacion</th>
+                <td  class="text-center"  >{{number_format(($total / $i) - (1 * ($total / $i) / 100) -(0.5 * ($total / $i) / 100), 2, ',', '.')}}</td>
+            </tr>
+          </table>
+
+
+
+
+
+
+
+  </div>
+  </div>
+
+
+
+
+</body>
+</html>
 
 @endif

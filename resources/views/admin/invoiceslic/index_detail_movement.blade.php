@@ -50,7 +50,7 @@
             <tr>
                 <th class="text-center font-weight-bold" width="12%">Fecha</th>
                 <th class="text-center font-weight-bold">Cuenta</th>
-                <th class="text-center font-weight-bold">Referencia</th>
+                <th class="text-center font-weight-bold">Comp.</th>
                 <th class="text-center font-weight-bold">Factura</th>
                 <th class="text-center font-weight-bold">Descripción</th>
                 <th class="text-center font-weight-bold">Debe</th>
@@ -67,7 +67,7 @@
                     <tr>
                     <td class="text-center font-weight-bold">{{$var->headers['date']}}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
-                    <td class="text-center font-weight-bold">{{$var->id_header_voucher}}</td>
+                    <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
                     <td class="text-center font-weight-bold">{{$var->id_invoice}}</td>
                     <td class="font-weight-bold">{{$var->headers['description']}} fact(@foreach ($invoices as $invoice) {{$invoice->id_quotation}}, @endforeach) / {{$var->accounts['description']}}</td>
 
@@ -97,7 +97,7 @@
                     <tr>
                     <td class="text-center font-weight-bold">{{$var->headers['date']}}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
-                    <td class="text-center font-weight-bold">{{$var->id_header_voucher}}</td>
+                    <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
                     <td class="text-center font-weight-bold">{{$var->id_invoice}}</td>
                     <td class="font-weight-bold">{{$var->headers['description']}} fact({{ $var->id_invoice }}) / {{$var->accounts['description']}}</td>
 

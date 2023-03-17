@@ -667,7 +667,7 @@ Route::group(["prefix"=>'invoices'],function(){
 
     Route::get('quotation/{id_quotation}/{coin?}/{photo?}','PDF2Controller@printQuotation')->name('pdf.quotation');
 
-    Route::get('prestations/{employee_id?}/{tipo?}','NominaPartsController@completcalcs')->name('pdf.prestations');
+    Route::get('prestations/{employee_id?}/{tipo?}/{year?}','NominaPartsController@completcalcs')->name('pdf.prestations');
 
     Route::post('prestationsbalance','NominaPartsController@balancecomprobacion')->name('pdf.prestationsbalance');
 
@@ -1438,6 +1438,11 @@ Route::group(["prefix"=>'mails'],function(){
     Route::post('receipt/{id_quotation}/{coin}','Mail\ReceiptMailController@sendreceipt')->name('mails.receipt');
     Route::post('receiptmasive','Mail\ReceiptMailController@sendreceiptmasive')->name('mails.receiptmasive');
     Route::post('quotationindex/{coin}','Mail\QuotationMailController@sendQuotationIndex')->name('mails.quotationIndex');
+
+
+    /*******ENVIAR RECIBO DE PAGO */
+    Route::post('enviarecibopago','Mail\QuotationMailController@enviarecibopago')->name('enviarecibopago');
+
 });
 
 
