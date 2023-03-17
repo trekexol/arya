@@ -79,7 +79,7 @@ class ExpensesAndPurchaseController extends Controller
 
         foreach($expensesandpurchases as $expensesandpurchasesr){
 
-            if(Auth::user()->company == '26'){
+            if(Auth::user()->id_company == '26'){
 
 
            $validarfact = FacturasCour::on(Auth::user()->database_name)
@@ -713,7 +713,7 @@ class ExpensesAndPurchaseController extends Controller
 
     public function create_payment_after(request $request,$id_expense,$coin)
     {
-        
+
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
@@ -3032,6 +3032,20 @@ class ExpensesAndPurchaseController extends Controller
 
         $id_expense = $id_expense;
 
+                 /******COURIERTOOL */
+                 if(Auth::user()->id_company == '26'){
+
+
+                    FacturasCour::on(Auth::user()->database_name)
+                       ->where('id_expense',$id_expense)
+                       ->delete();
+
+                       }
+
+
+
+                  /******* */
+
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
 
         $exist_multipayment = MultipaymentExpense::on(Auth::user()->database_name)
@@ -3077,9 +3091,13 @@ class ExpensesAndPurchaseController extends Controller
 
                 }
 
+
+
+
                 $historial_expense = new HistorialExpenseController();
 
                 $historial_expense->registerAction($expense,"expense","Se Reversó la Compra");
+
 
                 return redirect('expensesandpurchases/indexhistorial')->withSuccess('Reverso de Compra Exitosa!');
             }
@@ -3094,6 +3112,20 @@ class ExpensesAndPurchaseController extends Controller
     {
 
         $id_expense = $id_expense;
+
+              /******COURIERTOOL */
+              if(Auth::user()->id_company == '26'){
+
+
+                FacturasCour::on(Auth::user()->database_name)
+                   ->where('id_expense',$id_expense)
+                   ->delete();
+
+                   }
+
+
+
+              /******* */
 
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail($id_expense);
 
@@ -3152,6 +3184,21 @@ class ExpensesAndPurchaseController extends Controller
 
 
         if(isset($id_header)){
+
+                  /******COURIERTOOL */
+                  if(Auth::user()->id_company == '26'){
+
+
+                    FacturasCour::on(Auth::user()->database_name)
+                       ->where('id_expense',$id_expense)
+                       ->delete();
+
+                       }
+
+
+
+                  /******* */
+
             $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
 
             //aqui reversamos todo el movimiento del multipago
