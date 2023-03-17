@@ -61,7 +61,7 @@
                             <label for="bono" class="col-md-2 col-form-label text-md-right">Bono Vacacional</label>
 
                             <div class="col-md-4">
-                                <input id="bono" type="text" class="form-control @error('bono') is-invalid @enderror" name="bono"  required autocomplete="bono">
+                                <input id="bono" type="text" class="form-control @error('bono') is-invalid @enderror" name="bono" value="15"  required autocomplete="bono">
 
                                 @error('bono')
                                     <span class="invalid-feedback" role="alert">
@@ -69,8 +69,8 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>  
-                        <div class="form-group row"> 
+                        </div>
+                        <div class="form-group row">
                             <label for="bono" class="col-md-2 col-form-label text-md-right">Habilitar Dias:</label>
 
                             <div class="col-md-6">
@@ -95,7 +95,7 @@
                             <label for="lph" class="col-md-2 col-form-label text-md-right">L.P.H (Opcional) Monto:</label>
 
                             <div class="col-md-4">
-                                <input id="lph" type="text" class="form-control @error('lph') is-invalid @enderror" name="lph" autocomplete="lph" value="0"> 
+                                <input id="lph" type="text" class="form-control @error('lph') is-invalid @enderror" name="lph" autocomplete="lph" value="0">
 
                                 @error('lph')
                                     <span class="invalid-feedback" role="alert">
@@ -103,7 +103,7 @@
                                     </span>
                                 @enderror
                             </div>
-                        </div>  
+                        </div>
                     <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-2">
@@ -119,7 +119,7 @@
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('nominas') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>  
+                                <a href="{{ route('nominas') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Volver</a>
                             </div>
                         </div>
                     </form>
@@ -130,28 +130,33 @@
 </div>
 @endsection
 @section('validacion')
-    <script>    
+    <script>
         $(document).ready(function () {
             $("#days").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
             $("#bono").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
             $("#monday").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
             $("#lph").mask('000.000.000.000.000,00', { reverse: true });
-            
+
+
+    $("#id_employee").change(function () {
+        var url = "{{ route('nominas.diavacaciones') }}";
+
+        $("#id_employee option:selected").each(function () {
+            id_employee = $(this).val();
+            $.post(url,{id_employee: id_employee,"_token": "{{ csrf_token() }}"}, function(data){
+                    $("#days").val(data);
+            });
         });
+})
+
+
+        });
+
         function pdf() {
                 window.open('about:blank','print_popup','width=1000,height=800')
-               
+
             }
 
-        
+
     </script>
 @endsection
