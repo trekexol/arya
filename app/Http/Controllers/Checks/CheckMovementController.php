@@ -213,7 +213,7 @@ class CheckMovementController extends Controller
 
 
               //  if ($debe <> $haber){
-                $a_headers[] = array($headers->id,$headers->date,$debe,$haber,$account->code_one,$account_name->description);
+                $a_headers[] = array($headers->id,$headers->date,$debe,$haber,$id_code,$account_name);
                 //}
 
             } 

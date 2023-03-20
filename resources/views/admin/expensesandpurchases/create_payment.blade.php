@@ -1091,7 +1091,7 @@ function calculate(valor) {
 
     //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
 
-    var total_iva_exento =  parseFloat(myRound(totalIva));
+    var total_iva_exento =  parseFloat(totalIva);
 
     var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
