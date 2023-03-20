@@ -13,13 +13,14 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class PdfNominaController extends Controller
 {
 
     public function create_recibo_vacaciones()
     {
-        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBY('nombres','asc')->get();
+        $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('status','NOT LIKE','5')->orderBY('nombres','asc')->get();
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
@@ -616,5 +617,33 @@ class PdfNominaController extends Controller
         }
 
         return $cantidad_de_dias_lunes;
+    }
+
+
+
+
+    public function diavacaciones(Request $request){
+
+        if($request->ajax()){
+            try{
+
+            $employee = Employee::on(Auth::user()->database_name)->find($request->id_employee);
+
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            $fechaex = explode('-',$employee->fecha_ingreso);
+            $fechaexplode = explode('-',$datenow);
+
+            return response()->json(View::make('admin.nominas.diavacaciones',compact('employee','fechaex','fechaexplode'))->render());
+
+
+
+            }catch(\Throwable $th){
+                return response()->json(false,500);
+            }
+        }
+
+
     }
 }

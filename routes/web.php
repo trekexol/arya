@@ -1011,6 +1011,10 @@ Route::group(["prefix"=>'pdfnomina'],function(){
     Route::get('printpayroolsummary/{id_nomina}','PdfNominaController@print_payrool_summary')->name('nominas.print_payrool_summary');
     Route::get('printpayroolsummaryall/{id_nomina}','PdfNominaController@print_payrool_summary_all')->name('nominas.print_payrool_summary_all');
 
+
+    Route::post('diavacaciones','PdfNominaController@diavacaciones')->name('nominas.diavacaciones');
+
+
  });
 
 
