@@ -149,6 +149,19 @@ class DailyListingController extends Controller
 
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
 
+
+       /*
+
+        ///////////MODIFICACIONES DONA PAULA////////////////////////////
+
+        foreach ($detailvouchers as $detail){
+
+            $detail->id_invoice 
+ 
+        } */
+
+
+
         $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
                                 ,'datenow','date_begin','date_end'));
         return $pdf->stream();

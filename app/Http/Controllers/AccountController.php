@@ -1561,6 +1561,7 @@ public function calculation_superavit($var,$code,$coin,$ini,$fin)
                      AND SUBSTR(d.created_at,1,10) BETWEEN ? AND ?
                      '
                      , [$code,'C',$ini,$fin]);
+                     
      $total_haber =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(d.haber) AS haber
                      FROM accounts a
                      INNER JOIN detail_vouchers d

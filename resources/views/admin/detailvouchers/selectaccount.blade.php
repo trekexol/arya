@@ -5,7 +5,7 @@
     <div class="row py-lg-2">
        
         <div class="col-sm-6">
-            <h2>Seleccione una Cuenta.</h2>
+            <h2>Seleccione una Cuenta</h2>
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="coin" id="coin">
