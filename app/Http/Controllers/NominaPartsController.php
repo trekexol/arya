@@ -331,6 +331,42 @@ class NominaPartsController extends Controller
         }
 
 
+        if($tipo == 'ARC'){
+            $idempleado = $employee;
+            $pdf = App::make('dompdf.wrapper');
+            $company = Company::on(Auth::user()->database_name)->find(1);
+
+            $employee = Employee::on(Auth::user()->database_name)
+            ->join('positions','positions.id','position_id') // Buscamos el empleado
+            ->where('employees.id','=',$idempleado)
+            ->first();
+
+
+            $date = Carbon::now();
+            $years = $date->format('Y');
+
+            $años = $years - 1;
+
+
+           $datospresta = DB::connection(Auth::user()->database_name)
+            ->table('nomina_calculations AS a')
+            ->join('nominas as b', 'a.id_nomina','b.id')
+            ->where('a.id_employee',$idempleado)
+            ->where(DB::raw('SUBSTR(b.date_end,1,4)'), $años)
+            ->wherein('a.id_nomina_concept', ['2','3','4'])
+            ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept')
+            ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
+            ->get();
+
+
+
+          $pdf = $pdf->loadView('pdf.prestations',compact('employee','company','tipo','datospresta','años'))->setPaper('a4');
+
+          return $pdf->stream();
+
+        }
+
+
 
     }
 

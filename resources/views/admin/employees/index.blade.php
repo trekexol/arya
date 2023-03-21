@@ -58,13 +58,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
+            <tr>
                 <th>Cedula</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
@@ -74,10 +74,10 @@
                 <th></th>
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($employees))
-                @else  
+                @else
                     @foreach ($employees as $employee)
                         <tr>
                             <td>{{$employee->id_empleado}}</td>
@@ -87,18 +87,20 @@
                             <td>{{number_format($employee->monto_pago, 2, ',', '.')}}</td>
                             <td>{{$employee->status}}</td>
                             <td>
+                                <a href="{{ route('pdf.prestations',[$employee->id,'ARC']) }}" title="Imprimir ARC" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+
                                 <a href="employees/{{$employee->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                                <a href="#" class="delete" data-id-employee={{$employee->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
+                                <a href="#" class="delete" data-id-employee={{$employee->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                             </td>
-                        </tr>     
-                    @endforeach   
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
         </div>
     </div>
 </div>
-@if (empty($employee->id)) 
+@if (empty($employee->id))
 @else
 <!-- Delete Warning Modal -->
 <div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
@@ -115,9 +117,9 @@
                 @csrf
                 @method('DELETE')
                 <input id="id_employee_modal" type="hidden" class="form-control @error('id_employee_modal') is-invalid @enderror" name="id_employee_modal" readonly required autocomplete="id_employee_modal">
-                       
+
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -129,7 +131,7 @@
   </div>
 @endif
 
-    
+
 @endsection
 @section('javascript')
     <script>
@@ -140,11 +142,11 @@
     });
 
     $(document).on('click','.delete',function(){
-         
+
          let id_employee = $(this).attr('data-id-employee');
 
          $('#id_employee_modal').val(id_employee);
 
     });
-    </script> 
+    </script>
 @endsection
