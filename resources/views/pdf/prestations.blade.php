@@ -1062,4 +1062,101 @@ $interesesacumulado = 0;
 </body>
 </html>
 
+
+@elseif($tipo == 'ARC')
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>ARC</title>
+<style>
+     table, td, th {
+    border: 1px solid black;
+    font-size: x-small;
+    font-size: 8pt;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+  }
+
+  th {
+
+    text-align: left;
+  }
+  </style>
+
+
+</head>
+
+<body>
+  <table>
+    <tr>
+      <th style="text-align: left; font-weight: normal; width: 10%; border-color: white; font-weight: bold;"> <img src="{{ asset(Auth::user()->company->foto_company ?? 'img/northdelivery.jpg') }}" width="90" height="30" class="d-inline-block align-top" alt="">
+      </th>
+      <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>
+    </tr>
+  </table>
+  <h4 style="color: black; text-align: center">RELACIÓN DE INGRESO ANUAL / ARC</h4>
+  <h4 style="color: black; text-align: center">AÑO FISCAL {{$años}}</h4>
+
+<table>
+
+    <tr>
+        <th style="text-align: center;" >Empleado</th>
+        <th style="text-align: center;" >Cargo</th>
+        <th style="text-align: center;" >Fecha de Ingreso</th>
+    </tr>
+
+    <tr>
+        <th style="text-align: center;" >{{ $employee->id_empleado }} {{ $employee->nombres }} {{ $employee->apellidos}}</th>
+        <th style="text-align: center;" >{{ $employee->name }}</th>
+        <th style="text-align: center;" >{{ $employee->fecha_ingreso }}</th>
+    </tr>
+</table>
+
+<br>
+
+    <table>
+
+    <tr>
+    <th style="text-align: center;" >Mes</th>
+    <th style="text-align: center;" >Remuneración</th>
+    <th style="text-align: center;">Remuneración Acumulada</th>
+    </tr>
+
+    <?php
+    $total = 0;
+    ?>
+
+
+    @foreach ($datospresta as $datospresta)
+        <tr>
+            <td style="text-align: center;">{{ mesletras($datospresta->mes) }}</td>
+            <td style="text-align: center;">{{ $datospresta->monto }} Bs.</td>
+
+        @php
+            $total += $datospresta->monto;
+        @endphp
+
+            <td style="text-align: center;">{{number_format($total, 2, ',', '.')  }} Bs.</td>
+        </tr>
+    @endforeach
+
+
+</table>
+
+
+
+
+</body>
+</html>
+
+
 @endif
