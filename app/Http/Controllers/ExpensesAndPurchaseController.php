@@ -224,7 +224,6 @@ class ExpensesAndPurchaseController extends Controller
                                                            ,'expenses_details.islr as retiene_islr_expense')
                                                            ->get();
 
-
            $total= 0;
            $base_imponible= 0;
 
@@ -280,6 +279,37 @@ class ExpensesAndPurchaseController extends Controller
         return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
 
      }
+   }
+
+   public function deletedeliverynote(Request $request)
+   {
+       if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
+
+       $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find(request('id_expense_modal'));
+
+       $detail = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice',$expense->id)
+       ->update(['status' => 'X']);
+
+
+       $global = new GlobalController();
+       $global->deleteAllProductsExpense($expense->id);
+
+       ExpensePayment::on(Auth::user()->database_name)
+                       ->where('id_expense',$expense->id)
+                       ->update(['status' => 'X']);
+
+       $expense->status = 'X';
+       $expense->save();
+
+       $historial_expense = new HistorialExpenseController();
+
+       $historial_expense->registerAction($expense,"expense","Se elimino la Orden de compra");
+
+       return redirect('/expensesandpurchases')->withDanger('Se elimino la Orden de Compra!!');
+       }else{
+
+           return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso!');
+       }
    }
 
 

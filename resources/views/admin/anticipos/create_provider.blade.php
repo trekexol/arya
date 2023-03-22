@@ -36,7 +36,7 @@
                                 <a href="{{ route('anticipos.selectprovider') }}" title="Seleccionar Proveedor"><i class="fa fa-eye"></i></a>  
                             </div>
                         </div>
-                        @if (isset($expenses) && (count($expenses)>0))
+                        @if (isset($expenses))
                         <div class="form-group row">
                             <label for="clients" class="col-md-3 col-form-label text-md-right">Gasto o Compra</label>
                             <div class="col-md-6">

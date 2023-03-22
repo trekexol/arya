@@ -928,6 +928,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('reversarcompra/{id_expense}','ExpensesAndPurchaseController@reversar_expense')->name('expensesandpurchases.reversar_expense');
 
     Route::get('notadeentregaexpense/{id_expense}/{coin}','ExpensesAndPurchaseController@createdeliverynote')->name('expensesandpurchases.createdeliverynote');
+    Route::delete('deletedeliverynote','ExpensesAndPurchaseController@deletedeliverynote')->name('expensesandpurchases.deletedeliverynote');
     Route::get('indexnotasdeentrega/','ExpensesAndPurchaseController@index_delivery_note')->name('expensesandpurchases.indexdeliverynote');
 
 
@@ -1097,6 +1098,11 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('accounts','Report2Controller@index_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.accounts');
     Route::post('storeaccounts','Report2Controller@store_accounts')->middleware('valimodulo:Listado de Cuentas')->name('reports.store_accounts');
     Route::get('accountspdf/{coin?}/{level?}/{date_begin?}/{date_end?}','Report2Controller@accounts_pdf')->name('reports.accounts_pdf');
+
+    Route::get('accounts_bc','Report2Controller@index_accounts_bc')->name('reports.accounts_bc');
+    Route::post('storeaccounts_bc','Report2Controller@store_accounts_bc')->name('reports.store_accounts_bc');
+    Route::get('accounts_bcpdf/{coin?}/{level?}/{date_begin?}/{date_end?}','Report2Controller@accounts_bc_pdf')->name('reports.accounts_bc_pdf');
+
 
     Route::get('bankmovements','Report2Controller@index_bankmovements')->name('reports.bankmovements');
     Route::post('storebankmovements','Report2Controller@store_bankmovements')->name('reports.store_bankmovements');

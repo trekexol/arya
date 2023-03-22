@@ -103,7 +103,7 @@
                     <tr>
                         <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
                         <td class="text-center">{{date_format(date_create($anticipo->date),"d-m-Y")}}</td>
-                        @if (isset($anticipo->expenses['serie']))
+                    @if (isset($anticipo->expenses['serie']))
                         <td class="text-center">{{$anticipo->providers['razon_social'] ?? ''}} , fact({{$anticipo->expenses['serie'] ?? ''}})</td>
                     @else
                         <td class="text-center">{{$anticipo->providers['razon_social'] ?? ''}}</td>
