@@ -63,11 +63,11 @@
                                         <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
                                         <option disabled  value="{{ $coin }}">-----------</option>
                                     @else
-                                        <option disabled selected value="bolivares">Moneda</option>
+                                        <option disabled selected value="bolivares">Bolívares</option>
                                     @endif
                                     
                                     <option  value="bolivares">Bolívares</option>
-                                    <option value="dolares">Dólares</option>
+                                    <option disabled value="dolares">Dólares</option>
                                 </select>
                             </div>
                             <div class="col-sm-1">
