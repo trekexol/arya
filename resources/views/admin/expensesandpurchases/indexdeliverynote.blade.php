@@ -113,7 +113,7 @@
             <form action="{{ route('expensesandpurchases.deletedeliverynote') }}" method="post">
                 @csrf
                 @method('DELETE')
-                <input id="id_expense_modal" type="text" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" autocomplete="id_expense_modal">
+                <input id="id_expense_modal" type="hidden" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" autocomplete="id_expense_modal">
 
                 <h5 class="text-center">Seguro que desea eliminar?</h5>
 
