@@ -28,6 +28,38 @@
         <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('nominaparts','liquidaciones') }}" role="tab" aria-controls="profile" aria-selected="false">Liquidaciones</a>
     </li>
 </ul>
+
+@php
+    function mesletras($valor) {
+    if($valor == '01'){
+        $mes = 'ENERO';
+    }if($valor == '02'){
+        $mes = 'FEBRERO';
+    }if($valor == '03'){
+        $mes = 'MARZO';
+    }if($valor == '04'){
+        $mes = 'ABRIL';
+    }if($valor == '05'){
+        $mes = 'MAYO';
+    }if($valor == '06'){
+        $mes = 'JUNIO';
+    }if($valor == '07'){
+        $mes = 'JULIO';
+    }if($valor == '08'){
+        $mes = 'AGOSTO';
+    }if($valor == '09'){
+        $mes = 'SEPTIEMBRE';
+    }if($valor == '10'){
+        $mes = 'OCTUBRE';
+    }if($valor == '11'){
+        $mes = 'NOVIMEBRE';
+    }if($valor == '12'){
+        $mes = 'DICIEMBRE';
+    }
+
+    return $mes;
+     }
+@endphp
 <!-- container-fluid -->
 <div class="container-fluid">
 
@@ -37,10 +69,22 @@
             <h2>Nóminas Registradas</h2>
         </div>
 
-        @if (Auth::user()->role_id  == '1' || Auth::user()->role_id  == '2' )
-        <div class="col-md-6">
+        @if (Auth::user()->role_id  == '1' )
+        <div class="col-sm-3">
             <a href="{{ route('nominas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Nómina</a>
 
+        </div>
+        <div class="col-sm-3 ">
+            <button class="btn btn-success" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
+                aria-expanded="false">
+                <i class="fas fa-bars"></i>
+                Exportaciones
+            </button>
+            <div class="dropdown-menu animated--fade-in"
+                aria-labelledby="dropdownMenuButton">
+                <a href="#" data-toggle="modal" data-target="#reportIslrModal" class="dropdown-item bg-light">Retención de ISLR Empleados a XML</a>
+            </div>
         </div>
         @endif
     </div>
@@ -213,6 +257,45 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('nominas.islrXmlempleado') }}"  >
+                @csrf
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-3 col-form-label text-md-right">Seleccionar</label>
+
+                    <div class="col-sm-6">
+                        <select class="form-control" name="per" id="per">
+                            <option value="">Seleccione..</option>
+                            @foreach ($datospresta as $datospresta)
+                            <option value="{{$datospresta->año.'/'.$datospresta->mes}}">{{$datospresta->año}} {{mesletras($datospresta->mes)}}</option>
+
+                            @endforeach
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group col-sm-2">
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
+                    </div>
+            </form>
+                    <div class="offset-sm-2 col-sm-3">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 @if (isset($exist_nomina_calculation))
 <div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog" role="document">

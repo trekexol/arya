@@ -13,10 +13,13 @@ use App\NominaCalculation;
 use App\NominaConcept;
 use App\NominaFormula;
 use App\Profession;
+use App\Company;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
+
 
 class NominaController extends Controller
 {
@@ -32,19 +35,26 @@ class NominaController extends Controller
      */
     public function index()
     {
-        
+
         $user       =   auth()->user();
         $users_role =   $user->role_id;
         $nomina_type = '';
 
         if($users_role == '1'){
            $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('id', 'desc')->get();
-           
+
+           $datospresta = DB::connection(Auth::user()->database_name)
+           ->table('nomina_calculations AS a')
+           ->join('nominas as b', 'a.id_nomina','b.id')
+           ->wherein('a.id_nomina_concept', ['2','3','4'])
+           ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'))
+           ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'))
+           ->get();
 
            foreach ($nominas as $key => $nomina) {
                 $nomina_type = NominaType::on(Auth::user()->database_name)->find($nomina->nomina_type_id);
                 $nomina->nomina_type_id_name = $nomina_type->name;
-                
+
                 $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$nomina->id)->where('status','!=','X')->first();
 
                 if (!empty($header_search)) {
@@ -52,17 +62,17 @@ class NominaController extends Controller
                 } else {
                     $check_exist = 'no existe';
                 }
-               
-                $nomina->check_exist = $check_exist; 
+
+                $nomina->check_exist = $check_exist;
            }
 
         }elseif($users_role == '2'){
             return view('admin.index');
         }
 
-    
-        return view('admin.nominas.index',compact('nominas','nomina_type'));
-      
+
+        return view('admin.nominas.index',compact('nominas','nomina_type','datospresta'));
+
     }
 
     public function searchMovementNomina($id_nomina){
@@ -70,13 +80,13 @@ class NominaController extends Controller
         ->where('id_nomina',$id_nomina)
         ->where('status','!=','X')
         ->orderBy('id','desc')->first();
-        
+
         if(isset($header)){
             $detail = new DetailVoucherController();
-        
-         
+
+
             return  redirect('/detailvouchers/register/bolivares/'.$header->id);
-           
+
         }
 
         return redirect('/nominas')->withDanger('No posee movimientos la Nomina !!');
@@ -94,7 +104,7 @@ class NominaController extends Controller
         return view('admin.nominas.create',compact('nomina_type','datenow','bcv'));
     }
 
-   
+
     public function selectemployee($id)
     {
 
@@ -116,14 +126,14 @@ class NominaController extends Controller
             $amount_total_otras_deducciones = 0;
             $amount_total_asignacion_m_deducciones = 0;
             $amount_salary = 0;
-         
+
             $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
             ->where('id_nomina',$id)
             ->where('id_employee',$employee->id)
             ->get();
 
             foreach($calculos_nomina as $calculos) {
-                    
+
                     $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
                     ->find($calculos->id_nomina_concept);
 
@@ -140,13 +150,13 @@ class NominaController extends Controller
                     } else {
                         $amount_salary += 0;
                     }
-                    
+
 
                     // total Deducciones
                     if ($concepto->sign == 'D') {
                         $amount_total_otras_deducciones += $calculos->amount;
                     } else {
-                        $amount_total_otras_deducciones += 0;                        
+                        $amount_total_otras_deducciones += 0;
                     }
 
             }
@@ -159,14 +169,14 @@ class NominaController extends Controller
             $employee->amount_salary = $amount_salary;
 
         }
-    
+
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
        // dd($var);
         return view('admin.nominas.selectemployee',compact('var','employees','datenow','nomina_type_id_name'));
-        
+
     }
 
 
@@ -176,7 +186,7 @@ class NominaController extends Controller
 
         $check_exist_calculation = NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->first();
         $nomina_actual = Nomina::on(Auth::user()->database_name)->find($id_nomina);
-       
+
             //Chequea si hay calculos previos y pregunta si se desea recalcular la nomina
             if(!empty($check_exist_calculation)){
 
@@ -198,14 +208,14 @@ class NominaController extends Controller
                     } else {
                         $check_exist = 'no existe';
                     }
-                
-                    $nomina->check_exist = $check_exist; 
+
+                    $nomina->check_exist = $check_exist;
                 }
-  
+
                 $exist_nomina_calculation = $nomina_actual;
 
                 return view('admin.nominas.index',compact('nominas','exist_nomina_calculation','nomina_type'));
-            
+
             }
 
         $employees = Employee::on(Auth::user()->database_name)
@@ -215,7 +225,7 @@ class NominaController extends Controller
         ->where('nomina_type_id',$nomina_actual->nomina_type_id)->get();
 
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');       
+        $datenow = $date->format('Y-m-d');
         $sum_employees = 0;
         $sum_employees_asignacion_general = 0;
         $sum_sso_patronal = 0;
@@ -225,10 +235,10 @@ class NominaController extends Controller
         if(!isset($nomina_actual->rate) or $nomina_actual->rate == 0){
             $nomina_actual->rate = $bcv;
         }
-       
+
         foreach($employees as $employee){
             $this->addNominaCalculation($nomina_actual,$employee);
-            
+
             // Calcular conceptos de Asignacion
             $amount_total_otras_asignaciones = 0;
             $amount_total_otras_deducciones = 0;
@@ -243,102 +253,102 @@ class NominaController extends Controller
                     ->where('id_nomina',$nomina_actual->id)
                     ->where('id_employee',$employee->id)
                     ->get();
-    
+
                     foreach($calculos_nomina as $calculos) {
-                            
+
                             $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
                             ->find($calculos->id_nomina_concept);
-    
+
                             // Total Asignaciones
                             if ($concepto->sign == 'A'){
                                 $amount_total_otras_asignaciones += $calculos->amount;
                             } else {
                                 $amount_total_otras_asignaciones += 0;
                             }
-    
+
                             // total Deducciones
                             if ($concepto->sign == 'D') {
                                 $amount_total_otras_deducciones += $calculos->amount;
                             } else {
-                                $amount_total_otras_deducciones += 0;                        
+                                $amount_total_otras_deducciones += 0;
                             }
-    
+
                             if($concepto->asignation == 'S'){
-                                $conceptos_asignacion[] = array($concepto->id,$calculos->id,$concepto->type); 
+                                $conceptos_asignacion[] = array($concepto->id,$calculos->id,$concepto->type);
                             }
                     }
-    
-    
+
+
                     if (isset($conceptos_asignacion)){
                         for ($q=0;$q<count($conceptos_asignacion);$q++) {
-                        
+
                             if ($conceptos_asignacion[$q][2] == 'Quincenal'){
                             $asignacion_general_calculate = $employee->asignacion_general/2;
                             }
-            
+
                             if ($conceptos_asignacion[$q][2] == 'Mensual' or $conceptos_asignacion[$q][2] == 'Especial' or $conceptos_asignacion[$q][2] == 'Asignacion'){
                             $asignacion_general_calculate = $employee->asignacion_general;
                             }
-    
+
                             if ($conceptos_asignacion[$q][2] == 'Semanal'){
                             $asignacion_general_calculate = $employee->asignacion_general/4;
                             }
-    
-                        } 
+
+                        }
                     }
-                    
+
                    // cuadrar los calculos para otras asignaciones generales
-    
+
                     $amount_total_asignacion_m_deducciones = $amount_total_otras_asignaciones - $amount_total_otras_deducciones;
                     $asignacion_general = $asignacion_general_calculate * $nomina_actual->rate;
                     $monto_total_asignacion = $asignacion_general - $amount_total_asignacion_m_deducciones;
-                    
-                    
+
+
                     if (isset($conceptos_asignacion)){
-                
+
                         for ($q=0;$q<count($conceptos_asignacion);$q++) {
                             if($employee->asignacion_general > 0) {
-    
+
                             $agrega = NominaCalculation::on(Auth::user()->database_name)
                             ->where('id',$conceptos_asignacion[$q][1])
                             ->where('id_employee',$employee->id)
                             ->update(['amount' => $monto_total_asignacion]);
-                            
+
                             } else {
 
                                 $elimina = NominaCalculation::on(Auth::user()->database_name)
                                 ->where('id',$conceptos_asignacion[$q][1])
                                 ->where('id_employee',$employee->id)
                                 ->delete();
-  
+
                             }
-    
-                        } 
+
+                        }
                     }
-           
-        }    
+
+        }
 
 
-        
+
 
         return redirect('/nominas')->withSuccess('El calculo de la Nomina '.$nomina_actual->description.' fue Exitoso!');
-        
+
     }
 
     public function calculatecont($id_nomina)
     {
         $header_voucher = '';
-        
+
         $nomina = Nomina::on(Auth::user()->database_name)
         ->where('id',$id_nomina)
         ->first();
-        
+
         //Chequea si hay comprovante  y pregunta si se desea recrearlos
 
         $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->where('status','!=','X')->first();
 
         if(!empty($header_search)){
-            
+
             $nomina_type = '';
 
             $nominas      =   Nomina::on(Auth::user()->database_name)
@@ -349,7 +359,7 @@ class NominaController extends Controller
             foreach ($nominas as $key => $nominai) {
                     $nomina_type = NominaType::on(Auth::user()->database_name)->find($nominai->nomina_type_id);
                     $nominai->nomina_type_id_name = $nomina_type->name;
-                    
+
                     $header_search = HeaderVoucher::on(Auth::user()->database_name)->where('id_nomina',$nominai->id)->where('status','!=','X')->first();
 
                     if (!empty($header_search)) {
@@ -357,8 +367,8 @@ class NominaController extends Controller
                     } else {
                         $check_exist = 'no existe';
                     }
-                
-                    $nominai->check_exist = $check_exist; 
+
+                    $nominai->check_exist = $check_exist;
             }
 
                 $exist_nomina_calculationcont = $nomina;
@@ -370,9 +380,9 @@ class NominaController extends Controller
         $header_voucher = $this->calculateAmountTotalNomina($nomina);
 
         return redirect('/nominas')->withSuccess('Los comprobantes de la Nómina '.$nomina->description.' fueron creados exiosamente. Comprobante contable: '.$header_voucher);
-         
+
     }
-    
+
     public function recalculate($id_nomina)
     {
         $this->deleteNomina($id_nomina);
@@ -409,7 +419,7 @@ class NominaController extends Controller
         $amount_total_otras_deducciones = 0;
 
         $amount_total_asignacion_m_deducciones = 0;
-        
+
 
         $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
         ->where('id_nomina',$nomina->id)
@@ -428,7 +438,7 @@ class NominaController extends Controller
 
         foreach($calculos_nomina as $calculos) {
                 $concepto = '';
-                
+
                 $concepto = DB::connection(Auth::user()->database_name)->table('nomina_concepts')
                 ->find($calculos->id_nomina_concept);
 
@@ -462,44 +472,44 @@ class NominaController extends Controller
                         $amount_total_bono_transporte += $calculos->amount;
                     } else {
                         $amount_total_bono_transporte += 0;
-                        
+
                     }
-    
+
                     // retenciones
                     if($concepto->account_name == 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->sign == 'D'){
                         $amount_total_deduccion_sso += $calculos->amount;
                     } else {
                         $amount_total_deduccion_sso += 0;
-                        
+
                     }
 
                     if($concepto->account_name == 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->sign == 'D'){
                         $amount_total_deduccion_faov += $calculos->amount;
                     } else {
                         $amount_total_deduccion_faov += 0;
-                        
+
                     }
 
                     if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
                         $amount_total_deduccion_pie += $calculos->amount;
                     } else {
                         $amount_total_deduccion_pie += 0;
-                        
+
                     }
 
                     if($concepto->account_name == 'Retencion por Aporte al INCES por Pagar' and $concepto->sign == 'D'){
                         $amount_total_deduccion_ince += $calculos->amount;
                     } else {
                         $amount_total_deduccion_ince += 0;
-                        
+
                     }
-                    
+
                     // Otras Asignaciones
                     if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
                        $amount_total_otras_asignaciones += $calculos->amount;
                     } else {
                        $amount_total_otras_asignaciones = 0;
-                       
+
                     }
 
                     // Deducciones diferentes
@@ -507,13 +517,13 @@ class NominaController extends Controller
                         $amount_total_otras_deducciones += $calculos->amount;
                     } else {
                         $amount_total_otras_deducciones += 0;
-                        
+
                     }
 
-                    
+
 
                 } else {
-                    
+
                     $amount_total_asignacion += 0;
                     $amount_total_otras_deducciones += 0;
                     $amount_total_otras_asignaciones += 0;
@@ -528,12 +538,12 @@ class NominaController extends Controller
                 }
 
         }
-        
+
         $amount_total_asignacion = $amount_total_asignacion + $amount_total_otras_asignaciones;
         $amount_total_asignacion_m_deducciones = $amount_total_asignacion - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
-        
 
-                         
+
+
 
 
         if($nomina->rate == 0 or $nomina->rate == null){
@@ -546,18 +556,18 @@ class NominaController extends Controller
         $header_voucher->description = "Nomina ".$nomina->description ?? '';
         $header_voucher->date = $datenow;
         $header_voucher->status =  "1";
-    
+
         $header_voucher->save();
 
 
-        //MOVIMIENTO DE SUELDOS 
+        //MOVIMIENTO DE SUELDOS
         if($amount_total_asignacion > 0){
             $accounts_sueldos = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->where('code_one','=','6')
                 ->where('code_one','NOT LIKE','')
                 ->where('description','LIKE', 'Sueldos y Salarios')
                 ->first();
-            
+
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_asignacion,0);
 
             //AHORA LOS MOVIMIENTOS POR PAGAR
@@ -580,7 +590,7 @@ class NominaController extends Controller
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_alimentacion->id,$nomina->id,$amount_total_bono_alim,0);
 
-            
+
             $accounts_alimentacion_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','2')
             ->where('description','LIKE', 'Bono de Alimentacion por Pagar')
@@ -590,22 +600,22 @@ class NominaController extends Controller
          }
 
 
-                //MOVIMIENTO DE Bono Medico 
+                //MOVIMIENTO DE Bono Medico
            if($amount_total_bono_medico > 0){
                 $accounts_bono_medico = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->where('code_one','=','6')
                 ->where('description','LIKE', 'Bono Medico')
                 ->first();
-    
+
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$amount_total_bono_medico,0);
-    
-              // bono medico    
-    
+
+              // bono medico
+
                 $accounts_bono_medico_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->where('code_one','=','2')
                 ->where('description','LIKE', 'Bono Medico por Pagar')
                 ->first();
-        
+
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$amount_total_bono_medico);
            }
 
@@ -618,18 +628,18 @@ class NominaController extends Controller
 
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico->id,$nomina->id,$amount_total_bono_transporte,0);
 
-            // bono medico    
+            // bono medico
 
                 $accounts_bono_medico_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
                 ->where('code_one','=','2')
                 ->where('description','LIKE', 'Bono de Transporte por Pagar')
                 ->first();
-        
+
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_bono_medico_por_pagar->id,$nomina->id,0,$amount_total_bono_transporte);
-            
+
         }
 
-       
+
        //RETENCIONES
         if ($amount_total_deduccion_sso > 0) {
             $accounts_sso_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
@@ -638,16 +648,16 @@ class NominaController extends Controller
             ->first();
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$amount_total_deduccion_sso);
-                
+
         }
-     
+
         if ($amount_total_deduccion_faov > 0){
             $accounts_faov_por_pagar = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','2')
             ->where('description','LIKE', 'Retencion por Aporte al FAOV empleados por Pagar')
             ->first();
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$amount_total_deduccion_faov);
-       
+
         }
 
         if ($amount_total_deduccion_pie > 0){
@@ -656,7 +666,7 @@ class NominaController extends Controller
             ->where('description','LIKE', 'Retencion por Aporte al PIE por Pagar')
             ->first();
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_faov_por_pagar->id,$nomina->id,0,$amount_total_deduccion_pie);
-       
+
         }
 
         if ($amount_total_deduccion_ince > 0) {
@@ -666,15 +676,15 @@ class NominaController extends Controller
             ->first();
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sso_por_pagar->id,$nomina->id,0,$amount_total_deduccion_ince);
-                
+
         }
-        
-        //MOVIMIENTO DE aporte patronal            
-        if ($amount_total_deduccion_sso > 0) {     
-           
+
+        //MOVIMIENTO DE aporte patronal
+        if ($amount_total_deduccion_sso > 0) {
+
            /* $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
             */
-            
+
             $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','6')
             ->where('description','LIKE', 'Gasto por Aporte al SSO Patronal')
@@ -707,7 +717,7 @@ class NominaController extends Controller
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_aporte_patronal->id,$nomina->id,0,$total_faov_patronal);
         }
-        
+
         if ($amount_total_deduccion_pie > 0){
 
             $total_pie_patronal =  (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->pie_company/100);
@@ -751,7 +761,7 @@ class NominaController extends Controller
     }
 
 
-  
+
     public function add_movement($bcv,$id_header,$id_account,$id_nomina,$debe,$haber){
 
         $detail = new DetailVoucher();
@@ -762,7 +772,7 @@ class NominaController extends Controller
         $detail->id_header_voucher = $id_header;
         $detail->user_id = $user->id;
         $detail->tasa = $bcv;
-       
+
 
       /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
         $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
@@ -770,29 +780,29 @@ class NominaController extends Controller
 
         $detail->debe = $debe;
         $detail->haber = $haber;
-       
-      
+
+
         $detail->status =  "C";
 
          /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
-         
+
             $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
 
             if($account->status != "M"){
                 $account->status = "M";
                 $account->save();
             }
-         
-    
+
+
         $detail->save();
 
     }
 
     public function addNominaCalculation($nomina,$employee)
     {
-        
+
         if(($nomina->type == "Primera Quincena") || ($nomina->type == "Segunda Quincena")){
-            
+
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
             ->where('calculate','S')
             ->where('type','LIKE','%Quincenal%')
@@ -800,7 +810,7 @@ class NominaController extends Controller
         }
 
         if(($nomina->type == "Primera Quincena")){
-            
+
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
             ->where('calculate','S')
             ->where('type','LIKE','%Primera Quincena%')
@@ -808,13 +818,13 @@ class NominaController extends Controller
             ->get();
 
         }else if(($nomina->type == "Segunda Quincena")){
-            
+
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
             ->where('calculate','S')
             ->where('type','LIKE','%Segunda Quincena%')
-            ->Orwhere('type','LIKE','%Quincenal%')                       
+            ->Orwhere('type','LIKE','%Quincenal%')
             ->get();
-            
+
         }else if(($nomina->type == "Quincenal")){
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
             ->where('calculate','S')
@@ -844,7 +854,7 @@ class NominaController extends Controller
             ->where('type','LIKE','%'.$nomina->type.'%')
             ->get();
         }
-       
+
         if(isset($nominaconcepts))
         {
             foreach($nominaconcepts as $nominaconcept){
@@ -855,25 +865,25 @@ class NominaController extends Controller
                 $vars->id_nomina = $nomina->id;
                 $vars->id_nomina_concept = $nominaconcept->id;
                 $vars->id_employee = $employee->id;
-            
+
                 $vars->number_receipt = 0;
-                
+
                 $vars->type = 'No';
 
                 $vars->days = 0;
                 $vars->hours = 0;
                 $vars->cantidad = 0;
-        
+
                 $amount = 0;
                 $tiene_calculo = false;
 
                 if(($nomina->type == "Primera Quincena") || ($nomina->type == "Segunda Quincena")){
-                    
+
                     if(isset($nominaconcept->id_formula_q)){
                         $tiene_calculo = true;
                         $amount = $this->formula($nominaconcept->id_formula_q,$employee,$nomina,$vars);
                     }
-                    
+
                 }else if(($nomina->type == "Mensual")){
                     if(isset($nominaconcept->id_formula_m)){
                         $tiene_calculo = true;
@@ -892,7 +902,7 @@ class NominaController extends Controller
                         $amount = $this->formula($nominaconcept->id_formula_e,$employee,$nomina,$vars);
                     }
                 }else if(($nomina->type == "Asignacion")){ //crear un id_formula_t para la asignacion
-                    
+
                     if(isset($nominaconcept->id_formula_a)){
                         $tiene_calculo = true;
                         $amount = $this->formula($nominaconcept->id_formula_a,$employee,$nomina,$vars);
@@ -903,30 +913,30 @@ class NominaController extends Controller
                 $vars->status =  "1";
 /*
                 if ($nominaconcept->asignation == 'S' and $employee->asignacion_general <= 0) {
-                    $tiene_calculo = false;   
+                    $tiene_calculo = false;
                 } */
-            
+
                 if($tiene_calculo == true){
                     $vars->save();
-                
+
 
                 }
             }
 
-           
-        }        
-        
+
+        }
+
     }
 
     public function formula($id_formula,$employee,$nomina,$nomina_calculation)
     {
 
-        
+
         $lunes = 0;
         $hours = 0;
         $days = 0;
         $cestaticket = 0;
-        
+
 
         if(isset($nomina_calculation->days)){
             if($nomina_calculation->days != 0){
@@ -953,7 +963,7 @@ class NominaController extends Controller
 
 
         $lunes = $this->calcular_cantidad_de_lunes($nomina);
-        
+
         //$tasa = $global->search_bcv();
 
 		$variables = [
@@ -970,7 +980,7 @@ class NominaController extends Controller
             "faovq"=> ($employee->monto_pago/2) * 0.01,
             "faovm"=> ($employee->monto_pago) * 0.01,
             "faovs"=> ($employee->monto_pago/4) * 0.01,
-            
+
             "pieq"=> (($employee->monto_pago/2) * 12) / 52 * $lunes * 0.05,
             "piem"=> (($employee->monto_pago) * 12) / 52 * $lunes * 0.05,
             "pies"=> (($employee->monto_pago/4) * 12) / 52 * $lunes * 0.05,
@@ -987,10 +997,10 @@ class NominaController extends Controller
         if($total){
             $total = $total;
         } else {
-            $total = 0; 
+            $total = 0;
         }
 
-        
+
         return $total;
     }
 
@@ -998,7 +1008,7 @@ class NominaController extends Controller
     {
         $fechaInicio= strtotime($nomina->date_begin);
         $fechaFin= strtotime($nomina->date_end);
-       
+
 
         $cantidad_de_dias_lunes = 0;
         //Recorro las fechas y con la función strotime obtengo los lunes
@@ -1053,18 +1063,18 @@ class NominaController extends Controller
             $return = $a_param[0];
         } else {
             $return = $this->calcularopracion($a_param[0],$a_param[2],$a_param[1]);
-    
+
             $j = 0;
             $a_param2 = ['',''];
             $tope = count($a_param);
-            for ($i=3; $i < $tope ; $i++) { 
+            for ($i=3; $i < $tope ; $i++) {
                 if ($j > 1) {
                     $return = $this->calcularopracion($return,$a_param2[1],$a_param2[0]);
                     $a_param2 = ['',''];
                     $j=0;
                 }
                 $a_param2[$j] = $a_param[$i];
-                $j += 1; 
+                $j += 1;
             }
         }
         if ($a_param2[1] != '') {
@@ -1072,19 +1082,19 @@ class NominaController extends Controller
         }
         return $return;
     }
-    
+
     public function store(Request $request)
     {
-       
+
         $data = request()->validate([
-           
+
             'nomina_type'     =>'required',
             'description'       =>'required|max:60',
             'type'              =>'required',
             'date_begin'        =>'required',
-            
-            
-           
+
+
+
         ]);
 
         $nomina = new Nomina();
@@ -1093,18 +1103,18 @@ class NominaController extends Controller
         $nomina->nomina_type_id = request('nomina_type');
         $nomina->description = request('description');
         $nomina->type = request('type');
-       
+
         $nomina->date_begin = request('date_begin');
-        
+
         $nomina->date_end = request('date_end');
         $nomina->status =  "1";
-       
+
         $nomina->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
         $nomina->save();
 
         $this->calculate($nomina->id);
-        
+
         return redirect('/nominas')->withSuccess('Nómina creada con exito!.. Ingrese en Ver Detalles para verificar los conceptos creados, luego de confirmar puede terminar el proceso en Crear el Asiento Contable para contabilizar los montos.');
     }
 
@@ -1121,20 +1131,20 @@ class NominaController extends Controller
         $global = new GlobalController();
         $bcv = $global->search_bcv();
 
-        
+
         return view('admin.nominas.edit',compact('var','nomina_type','datenow','bcv'));
-        
+
     }
 
-   
+
 
 
     public function update(Request $request,$id)
     {
-       
+
         $vars =  Nomina::on(Auth::user()->database_name)->find($id);
         $var_status = $vars->status;
-      
+
 
         $data = request()->validate([
 
@@ -1142,9 +1152,9 @@ class NominaController extends Controller
             'description'         =>'required|max:255',
             'type'         =>'required',
             'date_begin'         =>'required|max:255',
-            
-            
-           
+
+
+
         ]);
 
         $var          = Nomina::on(Auth::user()->database_name)->findOrFail($id);
@@ -1155,13 +1165,13 @@ class NominaController extends Controller
         $var->date_begin = request('date_begin');
         $var->date_end = request('date_end');
         $var->rate = str_replace(',', '.', str_replace('.', '', request('rate')));
-       
+
         if(request('status') == null){
             $var->status = $var_status;
         }else{
             $var->status = request('status');
         }
-       
+
 
         $var->save();
 
@@ -1192,14 +1202,14 @@ class NominaController extends Controller
    }
 
     public function deleteNomina($id_nomina){
-        
+
         NominaCalculation::on(Auth::user()->database_name)->where('id_nomina',$id_nomina)->delete();
 
 
     }
 
     public function deleteNominacont($id_nomina){
-        
+
         $header_id = HeaderVoucher::on(Auth::user()->database_name)
         ->where('id_nomina',$id_nomina)
         ->where('status','!=','X')
@@ -1214,7 +1224,67 @@ class NominaController extends Controller
         ->update(['status' => 'X']);
 
 
-    
+
+    }
+
+
+
+
+    public function islrXmlempleado(Request $request)
+    {
+
+        $fe = explode("/",$request->per);
+        $año = $fe[0];
+        $mes = $fe[1];
+
+
+        $company = Company::on(Auth::user()->database_name)->first();
+
+
+        $content = '<?xml version="1.0" encoding="UTF-8"?>
+         <RelacionRetencionesISLR RifAgente="'.str_replace("-","",$company->code_rif).'" Periodo="'.trim($año.$mes).'">';
+
+
+
+        $datospresta = DB::connection(Auth::user()->database_name)
+         ->table('nomina_calculations AS a')
+         ->join('nominas as b', 'a.id_nomina','b.id')
+         ->join('employees as c', 'a.id_employee','c.id')
+         ->where(DB::raw('SUBSTR(b.date_end,1,4)'),$año)
+         ->where(DB::raw('SUBSTR(b.date_end,6,2)'),$mes)
+         ->wherein('a.id_nomina_concept', ['2','3','4'])
+         ->select('id_empleado',DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'), DB::raw('sum(a.amount) as monto'), 'a.id_nomina_concept',DB::raw('max(b.date_end) as fin'))
+         ->groupBy('id_empleado',DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'),  'a.id_nomina_concept')
+         ->get();
+
+             foreach ($datospresta as  $datospresta) {
+
+                $newDate = date("d/m/Y", strtotime($datospresta->fin));
+
+                 $content .= '<DetalleRetencion>
+                   <RifRetenido>'.$datospresta->id_empleado.'</RifRetenido>
+                   <NumeroFactura>'.$mes.$año.'</NumeroFactura>
+                   <NumeroControl>'.$mes.$año.'</NumeroControl>
+                   <FechaOperacion>'.$newDate.'</FechaOperacion>
+                   <CodigoConcepto>001</CodigoConcepto>
+                   <MontoOperacion>'.bcdiv($datospresta->monto,'1',2) .'</MontoOperacion>
+                   <PorcentajeRetencion>0.00</PorcentajeRetencion>
+                  </DetalleRetencion>';
+
+             }
+
+             $content .= '</RelacionRetencionesISLR>';
+
+
+         // file name to download
+         $fileName = "retencionislrempleado.xml";
+
+
+         // make a response, with the content, a 200 response code and the headers
+         return Response::make($content, 200, [
+         'Content-type' => 'text/xml',
+         'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+         'Content-Length' => strlen($content)]);
     }
 
 

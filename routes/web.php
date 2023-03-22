@@ -578,6 +578,10 @@ Route::group(["prefix"=>'nominas'],function(){
 
     Route::get('recalculatecont/{id}','NominaController@recalculatecont')->name('nominas.recalculatecont');
 
+
+    Route::post('islrXmlempleado','NominaController@islrXmlempleado')->name('nominas.islrXmlempleado');
+
+
 });
 
 
