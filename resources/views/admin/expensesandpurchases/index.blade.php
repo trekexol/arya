@@ -64,7 +64,7 @@
                 @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
                 <th ></th>
                 @endif
-                <th class="text-center">ID</th>
+                <th class="text-center">ID.</th>
                 <th class="text-center">Factura de Compra</th>
                 <th class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>

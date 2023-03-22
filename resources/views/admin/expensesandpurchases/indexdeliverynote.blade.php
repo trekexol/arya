@@ -76,6 +76,7 @@
                                 @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1' )
                             <a href="{{ route('expensesandpurchases.create_detail',[$expense->id,$expense->coin])}}" title="Seleccionar"><i class="fa fa-check"></i></a>
                             <a href="{{ route('expensesandpurchases.createdeliverynote',[$expense->id,$expense->coin])}}" title="Mostrar"><i class="fa fa-file-alt"></i></a>
+                            <a href="#" class="delete" data-id-expense={{$expense->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                                 @endif
                         </td>
                            <td class="text-center">{{$expense->id}}</td>
@@ -98,6 +99,35 @@
     </div>
 </div>
 
+<!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <form action="{{ route('expensesandpurchases.deletedeliverynote') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <input id="id_expense_modal" type="hidden" class="form-control @error('id_expense_modal') is-invalid @enderror" name="id_expense_modal" autocomplete="id_expense_modal">
+
+                <h5 class="text-center">Seguro que desea eliminar?</h5>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+  </div>
+
+
 @endsection
 
 @section('javascript')
@@ -108,7 +138,12 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+    $(document).on('click','.delete',function(){
 
-    </script>
+    let id_expense = $(this).attr('data-id-expense');
+
+    $('#id_expense_modal').val(id_expense);
+    });
+</script>
 
 @endsection

@@ -601,17 +601,12 @@ class GlobalController extends Controller
         
         if(isset($expense_products)){
             foreach($expense_products as $expense_product){
-                if(isset($expense_product) && $expense_product->status == "C"){
+             
                     ExpensesDetail::on(Auth::user()->database_name)
-                        ->join('inventories','inventories.id','expenses_details.id_inventory')
-                        ->join('products','products.id','inventories.product_id')
-                        ->where(function ($query){
-                            $query->where('products.type','MERCANCIA')
-                                ->orWhere('products.type','COMBO');
-                        })
                         ->where('expenses_details.id',$expense_product->id)
-                        ->update(['inventories.amount' => DB::raw('inventories.amount-expenses_details.amount'), 'expenses_details.status' => 'X']);
-                }
+                        ->where('expenses_details.id_expense',$id_expense)
+                        ->update(['expenses_details.status' => 'X']);
+                
             }
         }
     }     
