@@ -61,6 +61,13 @@
 
                 </a>
             </div>
+            <div class="col-sm-3">
+                <a href="{{ route('reports.accounts_bc')}}" class="btn btn-light2" role="button" aria-pressed="true">
+        
+                   Balance de Comprobación
+        
+                </a>
+            </div>
         @endif
 
     </div>
@@ -95,19 +102,8 @@
             <option value="5">Todos</option>
         </select>
     </div>
-    <div class="col-sm-2">
-    <form method="post" action="{{ route('pdf.prestationsbalance') }}"   target="print_popup" onsubmit="window.open('about:blank','print_popup','width=1000,height=800');">
-        @csrf
 
-        <input id="ini" name="ini" type="date" class="form-control" value="{{$ini}}" >
-
-    </div>
-    <div class="col-sm-2">
-        <input id="fin" name='fin' type="date" class="form-control"  value="{{$fin}}" >
-
-    </div>
-    <div class="col-sm-2">
-    <input type="submit" class="btn btn-primary btn-sm" value="Balance de Comprobacion">
+    
     </div>
     </div>
 
