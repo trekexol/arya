@@ -969,15 +969,13 @@ function calculate(valor) {
 
     var porc_discount = 0;
     var discount = 0;
-
-
+    let totalIva = 0;
     let inputIva = document.getElementById("iva").value;
     //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
     let totalFactura = "<?php echo $expense->total_factura ?>";
     let descuentonota = "<?php echo $expense->total_factura ?>";
     //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
     let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
-
 
     if (valor == '0'){
         porc_discount = "<?php echo $expense->porc_discount ?>";
@@ -987,9 +985,12 @@ function calculate(valor) {
     if (valor == '1'){
         porc_discount = $("#porc_descuento_general").val();
         discount = totalFactura * porc_discount / 100;
+       
 
         if (totalBaseImponible != totalFactura) {
-        totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
+           
+            totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
+             
         }
 
 
@@ -999,33 +1000,31 @@ function calculate(valor) {
     }
 
 
-                if (valor == '2'){
-                    discount = $("#descuento_general").val();
+    if (valor == '2'){
+        discount = $("#descuento_general").val();
+        totalBaseImponible = totalFactura - discount;
+        porcentaje = (discount * 100) / totalFactura; // Regla de tres
+        porc_discount = porcentaje;  // Quitar los decimales
+
+        $("#porc_descuento_general").val(porc_discount);
+        $("#porc_descuento_form").val(porc_discount);
 
 
-
-                    totalBaseImponible = totalFactura - discount;
-
-                    porcentaje = (discount * 100) / totalFactura; // Regla de tres
-                    porc_discount = porcentaje;  // Quitar los decimales
-
-                    $("#porc_descuento_general").val(porc_discount);
-                    $("#porc_descuento_form").val(porc_discount);
-                }
-
+    }
 
 
     totalFactura = totalFactura - discount;
 
-    if (totalBaseImponible > 0){
+            if (totalBaseImponible > 0){
 
                totalIvaMenos = (totalFactura * inputIva) / 100;
                totalIva = (totalBaseImponible * inputIva) / 100;
 
+
            } else {
                totalIvaMenos = 0;
-           }
 
+           }
 
     //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
 
