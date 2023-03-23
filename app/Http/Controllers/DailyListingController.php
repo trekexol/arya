@@ -7,7 +7,7 @@ use App\Account;
 use App\Company;
 use App\Quotation;
 use App\QuotationPayment;
-
+use App\ExpensesAndPurchase;
 use App\Anticipo;
 use App\Client;
 use App\DetailVoucher;
@@ -73,10 +73,7 @@ class DailyListingController extends Controller
             
         
             'date_begin'        =>'required',
-            'date_end'  =>'required',
-           
-        
-        
+            'date_end'  =>'required'
         ]);
         
         $date_begin = request('date_begin');
@@ -150,16 +147,153 @@ class DailyListingController extends Controller
         $date_end = Carbon::parse($date_end)->format('d-m-Y');
 
 
-       /*
-
         ///////////MODIFICACIONES DONA PAULA////////////////////////////
 
         foreach ($detailvouchers as $detail){
+            
+            $id_quotation = $detail->id_invoice;
+            $id_expense = $detail->id_expense;
 
-            $detail->id_invoice 
+
+            $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
+            ->where('id','=',$id_quotation)
+            ->get()->first();    
+
+            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
+
+            /*
+            $expense = ExpensePayment::on(Auth::user()->database_name) // buscar referencia
+            ->where('id_expense','=',$id_expese)->get();  */
+            
+            $anticipo = Anticipo::on(Auth::user()->database_name) // buscar anticipo
+                ->where('id','=',$detail->id_anticipo)
+                ->get()->first();  
+
+
+            if (isset($quotation)) {
+
+                $detail->header_description .= ' Factura: '.$quotation->number_invoice;
+
+                $client = Client::on(Auth::user()->database_name) // buscar factura
+                ->where('id','=',$quotation->id_client)
+                ->get()->first();
+                
+                $detail->header_description .= '. '.$client->name.'. '.$quotation->coin;
+            
+                $referenciab = QuotationPayment::on(Auth::user()->database_name) // buscar referencia
+                ->where('id_quotation','=',$quotation->id)  
+                ->first();
+
+                if($referenciab != null ){
+
+                         $detail->reference = $referenciab->reference;
+                   
+                }
+
+            } else {
+
+
+                if (isset($anticipo)) {
+                    $id_client = '';
+                    $coin_mov = '';
+                   if ($anticipo->id_quotation != null){ //con anticipo
+                        
+   
+                        $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
+                        ->where('id','=',$anticipo->id_quotation)
+                        ->where('date_billing','!=',null)
+                        ->get()->first();
+                        
+
+                        $quotation_delivery = Quotation::on(Auth::user()->database_name) // buscar Nota de entrega
+                        ->where('id','=',$anticipo->id_quotation)
+                        ->where('date_billing','=',null)
+                        ->where('number_invoice','=',null)
+                        ->get()->first();
+                        
+                        if (isset($quotation)) { // descriocion  Anticipo factura
+                        $detail->header_description .= ' Factura: '.$quotation->number_invoice;
+                        $id_client = $quotation->id_client;
+                        $coin_mov = $quotation->coin;
+                        }
+                        if (isset($quotation_delivery)) {
+                        $detail->header_description .= ' Nota de Entrega: '.$quotation_delivery->number_delivery_note;
+                        $id_client = $quotation_delivery->id_client;
+                        $coin_mov = $quotation_delivery->coin;    
+                        }
+                        
+                        if(isset($id_client)) {
+                            $client = Client::on(Auth::user()->database_name) // buscar cliente de factura
+                            ->where('id','=',$id_client)
+                            ->get()->first();
+                            
+                            if(!empty($client)) {
+                            $detail->header_description .= $client->name;
+                            }
+                       }
+
+
+                       // $detail->header_description .= '. '.$coin_mov;
+
+                        //descripcon Anticipo Compra
+                        
+                        
+
+                } else { // sin anticipo
+
+
+
+
+                        if (isset($anticipo->id_client)) {
+                                                    
+                            $client = Client::on(Auth::user()->database_name) // buscar factura
+                            ->where('id','=',$anticipo->id_client)
+                            ->get()->first();
+                                 if (isset($client)) {
+                                 $detail->header_description .= '. '.$client->name;
+                                 }
+                        }
+
+                        if (isset($anticipo->id_provider)) {
+                        
+                            $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
+                            ->where('id','=',$anticipo->id_provider)
+                            ->get()->first();
+
+                                 if (isset($proveedor)) {
+                                 $detail->header_description .= '. '.$proveedor->razon_social;
+                                 }
+                        } 
+
+                        //$detail->header_description .= '. '.$anticipo->coin;
+                   }
+                    
+
+                }
+
+                if(isset($expense)){
+
+
+                    $detail->header_description .= ' Factura: '.$expense->invoice;
+
+                    $proveedor = Provider::on(Auth::user()->database_name) // buscar factura
+                    ->where('id','=',$expense->id_provider)
+                    ->get()->first();
+
+                         if (isset($proveedor)) {
+                         $detail->header_description .= '. '.$proveedor->razon_social;
+                         }  
+
+                }
+
+
+            }
  
-        } */
+        } 
 
+
+
+       ///////////FIN MODIFI DONA PAULA/////////////////////////////////////////////////////////////
 
 
         $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
@@ -441,7 +575,7 @@ class DailyListingController extends Controller
 
             if (isset($quotation)) {
 
-                $detail->header_description .= ' FAC: '.$quotation->number_invoice;
+                $detail->header_description .= ' Factura: '.$quotation->number_invoice;
                 $client = Client::on(Auth::user()->database_name) // buscar factura
                 ->where('id','=',$quotation->id_client)
                 ->get()->first();
@@ -485,12 +619,12 @@ class DailyListingController extends Controller
 
                         
                         if (isset($quotation)) { // descriocion  Anticipo factura
-                        $detail->header_description .= ' FAC: '.$quotation->number_invoice;
+                        $detail->header_description .= ' Factura: '.$quotation->number_invoice;
                         $id_client = $quotation->id_client;
                         $coin_mov = $quotation->coin;
                         }
                         if (isset($quotation_delivery)) {
-                        $detail->header_description .= ' NE: '.$quotation_delivery->number_delivery_note;
+                        $detail->header_description .= ' Nota de Entrega: '.$quotation_delivery->number_delivery_note;
                         $id_client = $quotation_delivery->id_client;
                         $coin_mov = $quotation_delivery->coin;    
                         }
@@ -512,7 +646,7 @@ class DailyListingController extends Controller
                         
                         
 
-                   } else { // sin anticipo
+                } else { // sin anticipo
 
 
 

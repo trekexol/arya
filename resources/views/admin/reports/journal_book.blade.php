@@ -60,10 +60,9 @@
       @if ($marcador == true)
         @if ($primera_tabla == true)
           </table>
-          <table style="width: 100%;">
+          <table style="width: 100%; margin-top:-2px;">
             <tr>
-              <td style="text-align: center; width: 20%;">Descripción</td>
-              <td style="text-align: left; width: 40%;">{{ $description_final ?? '' }}</td>
+              <td style="text-align: center; width: 60%; text-align: left;" colspan="2">{{ $description_final ?? '' }}</td>
               <td style="text-align: right; width: 20%;">{{ number_format($total_debe ?? 0, 2, ',', '.')}}</td>
               <td style="text-align: right; width: 20%;">{{ number_format($total_haber ?? 0, 2, ',', '.')}}</td>
             </tr>
@@ -104,10 +103,9 @@
         ?>
       
     @endforeach
-    <table style="width: 100%;">
+    <table style="width: 100%; margin-top:-1px;">
       <tr>
-        <td style="text-align: center; width: 20%;">Descripción</td>
-        <td style="text-align: center; width: 40%;">{{ $description_final ?? '' }}</td>
+        <td style="text-align: center; width: 60%; text-align: left" colspan="2">{{ $description_final ?? '' }}</td>
         <td style="text-align: right; width: 20%;">{{ number_format($total_debe ?? 0, 2, ',', '.')}}</td>
         <td style="text-align: right; width: 20%;">{{ number_format($total_haber ?? 0, 2, ',', '.')}}</td>
       </tr>
