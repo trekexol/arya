@@ -1009,201 +1009,198 @@ calculate(1);
 
 function calculate(valor) {
 
-    var porc_discount = 0;
-    var discount = 0;
+var porc_discount = 0;
+var discount = 0;
+let totalIva = 0;
+let inputIva = document.getElementById("iva").value;
+//let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
+let totalFactura = "<?php echo $expense->total_factura ?>";
+let descuentonota = "<?php echo $expense->total_factura ?>";
+//AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
+let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
 
+if (valor == '0'){
+    porc_discount = "<?php echo $expense->porc_discount ?>";
+    discount = "<?php echo $expense->discount ?>";
 
-    let inputIva = document.getElementById("iva").value;
-    //let totalIva = (inputIva * "<?php echo $expense->total_factura; ?>") / 100;
-    let totalFactura = "<?php echo $expense->total_factura ?>";
-    //AQUI VAMOS A SACAR EL MONTO DEL IVA DE LOS QUE ESTAN EXENTOS, PARA LUEGO RESTARSELO AL IVA TOTAL
-    let totalBaseImponible = "<?php echo $expense->base_imponible ?>";
+}
+if (valor == '1'){
+    porc_discount = $("#porc_descuento_general").val();
+    discount = totalFactura * porc_discount / 100;
+   
 
-
-    if (valor == '0'){
-        porc_discount = "<?php echo $expense->porc_discount ?>";
-        discount = "<?php echo $expense->discount ?>";
-
-    }
-    if (valor == '1'){
-        porc_discount = $("#porc_descuento_general").val();
-        discount = totalFactura * porc_discount / 100;
-
-        if (totalBaseImponible != totalFactura) {
+    if (totalBaseImponible != totalFactura) {
+       
         totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
-        }
-
-
-        if (totalBaseImponible == totalFactura) {
-        totalBaseImponible = totalFactura - discount;
-        }
+         
     }
 
 
-                 if (valor == '2'){
-                    discount = $("#descuento_general").val();
-
-
-
-                    totalBaseImponible = totalFactura - discount;
-
-                    porcentaje = (discount * 100) / totalFactura; // Regla de tres
-                    porc_discount = porcentaje;  // Quitar los decimales
-
-                    $("#porc_descuento_general").val(porc_discount);
-                    $("#porc_descuento_form").val(porc_discount);
-                }
-
-                let totalIva = 0
-
-           totalFactura = totalFactura - discount;
-
-           if (totalBaseImponible > 0){
-
-               totalIvaMenos = (totalFactura * inputIva) / 100;
-               totalIva = (totalBaseImponible * inputIva) / 100;
-           } else {
-               totalIvaMenos = 0;
-               totalIva = 0;
-           }
-
-
-
-    //let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
-
-    //Toma la Base y la envia por form
-    let base_imponible_form = document.getElementById("base_imponible").value;
-
-    var montoFormat = base_imponible_form.replace(/[$.]/g,'');
-
-    var montoFormat_base_imponible_form = montoFormat.replace(/[,]/g,'.');
-
-    document.getElementById("base_imponible_form").value =  montoFormat_base_imponible_form;
-
-    //Toma la Base y la envia por form
-
-    let sub_total_form = document.getElementById("total_factura").value;
-
-    var montoFormat = sub_total_form.replace(/[$.]/g,'');
-
-    var montoFormat_sub_total_form = montoFormat.replace(/[,]/g,'.');
-
-
-    //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
-
-    var total_iva_exento =  parseFloat(totalIva);
-
-    var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-    //retencion de iva
-
-    var retencion_iva_check = $("#retencion_iva_check").is(':checked');
-
-    let porc_retencion_iva = "<?php echo $provider->porc_retencion_iva ?>";
-    var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
-    var total_retencion_iva = calc_retencion_iva.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-
-    document.getElementById("iva_retencion").value =  total_retencion_iva;
-
-    if(retencion_iva_check){
-        document.getElementById("total_retiene_iva").value =  calc_retencion_iva;
-    }else{
-        document.getElementById("total_retiene_iva").value = 0;
+    if (totalBaseImponible == totalFactura) {
+    totalBaseImponible = totalFactura - discount;
     }
-    //-----------------------
-
-    //retencion de islr
-    var retencion_islr_check = $("#retencion_islr_check").is(':checked');
-    let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
-
-    let porc_retencion_islr = islr_concept;
-    var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
-    var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-    document.getElementById("islr_retencion").value =  total_retencion_islr;
-
-    if(retencion_islr_check){
-        document.getElementById("total_retiene_islr").value =  calc_retencion_islr;
-    }else{
-        document.getElementById("total_retiene_islr").value = 0;
-    }
-    //------------------------------------
-
-    document.getElementById("iva_amount").value = iva_format;
+}
 
 
-    var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
-    var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
+if (valor == '2'){
+    discount = $("#descuento_general").val();
+    totalBaseImponible = totalFactura - discount;
+    porcentaje = (discount * 100) / totalFactura; // Regla de tres
+    porc_discount = porcentaje;  // Quitar los decimales
 
-    // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
-    var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
-
-
-    var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-
-
-    document.getElementById("grand_total").value = grand_totalformat;
-
-
-    let inputAnticipo = document.getElementById("anticipo").value;
-
-    var montoFormat = inputAnticipo.replace(/[$.]/g,'');
-
-    var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
-
-    if(inputAnticipo){
-
-        document.getElementById("anticipo_form").value =  montoFormat_anticipo;
-    }else{
-        document.getElementById("anticipo_form").value = 0;
-    }
-
-
-    var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
-
-    // var total_pay = parseFloat(totalFactura) + total_iva_exento - inputAnticipo;
-
-    var total_iva_retencion = document.getElementById("total_retiene_iva").value;
-
-    var total_islr_retencion = document.getElementById("total_retiene_islr").value;
-
-    var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
-
-    var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-    document.getElementById("total_pay").value =  total_payformat;
-
-    document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
-
-    document.getElementById("iva_form").value =  inputIva;
-
-    document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
-
-    document.getElementById("grandtotal_form").value = grand_totalformat;
-
-
-
-    var grand_totalformat_m_discount = discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-    var totalFactura_form = totalFactura.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-    $("#descuento_general").val(grand_totalformat_m_discount);
-    $("#total_descuento_general").val(totalFactura_form);
-
-    $("#descuento_general_form").val(discount);
-    $("#descuento_form").val(discount);
+    $("#porc_descuento_general").val(porc_discount);
     $("#porc_descuento_form").val(porc_discount);
 
-    //Quiere decir que el monto total a pagar es negativo o igual a cero
-    if(total_pay.toFixed(2) <= 0){
-        document.getElementById("amount_pay").required = false;
-        document.getElementById("payment_type").required = false;
-        $("#amount_pay").hide();
-        $("#payment_type").hide();
-        $("#btn_agregar").hide();
-        $("#label_amount_pays").hide();
-    }
+
+}
+
+
+totalFactura = totalFactura - discount;
+
+        if (totalBaseImponible > 0){
+
+           totalIvaMenos = (totalFactura * inputIva) / 100;
+           totalIva = (totalBaseImponible * inputIva) / 100;
+
+
+       } else {
+           totalIvaMenos = 0;
+
+       }
+
+//let totalIvaMenos = parseInt(inputIva * "<?php echo $expense->base_imponible ; ?>", 10) / 100
+
+//Toma la Base y la envia por form
+let base_imponible_form = document.getElementById("base_imponible").value;
+
+var montoFormat = base_imponible_form.replace(/[$.]/g,'');
+
+var montoFormat_base_imponible_form = montoFormat.replace(/[,]/g,'.');
+
+document.getElementById("base_imponible_form").value =  montoFormat_base_imponible_form;
+
+//Toma la Base y la envia por form
+
+let sub_total_form = document.getElementById("total_factura").value;
+
+var montoFormat = sub_total_form.replace(/[$.]/g,'');
+
+var montoFormat_sub_total_form = montoFormat.replace(/[,]/g,'.');
+
+
+//document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
+var total_iva_exento =  parseFloat(totalIva);
+
+var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+//retencion de iva
+
+var retencion_iva_check = $("#retencion_iva_check").is(':checked');
+
+let porc_retencion_iva = "<?php echo $provider->porc_retencion_iva ?>";
+var calc_retencion_iva = total_iva_exento * porc_retencion_iva / 100;
+var total_retencion_iva = calc_retencion_iva.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+
+document.getElementById("iva_retencion").value =  total_retencion_iva;
+
+if(retencion_iva_check){
+    document.getElementById("total_retiene_iva").value =  calc_retencion_iva;
+}else{
+    document.getElementById("total_retiene_iva").value = 0;
+}
+//-----------------------
+
+//retencion de islr
+var retencion_islr_check = $("#retencion_islr_check").is(':checked');
+let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
+
+let porc_retencion_islr = islr_concept;
+var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+document.getElementById("islr_retencion").value =  total_retencion_islr;
+
+if(retencion_islr_check){
+    document.getElementById("total_retiene_islr").value =  calc_retencion_islr;
+}else{
+    document.getElementById("total_retiene_islr").value = 0;
+}
+//------------------------------------
+
+document.getElementById("iva_amount").value = iva_format;
+
+
+var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
+var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
+
+// var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
+var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
+
+
+var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+
+
+document.getElementById("grand_total").value = grand_totalformat;
+
+let inputAnticipo = document.getElementById("anticipo").value;
+
+var montoFormat = inputAnticipo.replace(/[$.]/g,'');
+
+var montoFormat_anticipo = montoFormat.replace(/[,]/g,'.');
+
+if(inputAnticipo){
+
+    document.getElementById("anticipo_form").value =  montoFormat_anticipo;
+}else{
+    document.getElementById("anticipo_form").value = 0;
+}
+
+
+var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
+
+// var total_pay = parseFloat(totalFactura) + total_iva_exento - inputAnticipo;
+
+var total_iva_retencion = document.getElementById("total_retiene_iva").value;
+
+var total_islr_retencion = document.getElementById("total_retiene_islr").value;
+
+var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
+
+var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+document.getElementById("total_pay").value =  total_payformat;
+
+document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+
+document.getElementById("iva_form").value =  inputIva;
+
+document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
+
+document.getElementById("grandtotal_form").value = grand_totalformat;
+
+
+
+var grand_totalformat_m_discount = discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+var totalFactura_form = totalFactura.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+$("#descuento_general").val(grand_totalformat_m_discount);
+$("#total_descuento_general").val(totalFactura_form);
+
+$("#descuento_general_form").val(discount);
+$("#descuento_form").val(discount);
+$("#porc_descuento_form").val(porc_discount);
+
+//Quiere decir que el monto total a pagar es negativo o igual a cero
+if(total_pay.toFixed(2) <= 0){
+    document.getElementById("amount_pay").required = false;
+    document.getElementById("payment_type").required = false;
+    $("#amount_pay").hide();
+    $("#payment_type").hide();
+    $("#btn_agregar").hide();
+    $("#label_amount_pays").hide();
+}
 
 }
 
