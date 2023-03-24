@@ -58,16 +58,28 @@
                                 </select>
                             </div>
                             <div class="col-sm-2">
-                                <select class="form-control" name="coin" id="coin">
+                                <select class="form-control" name="coin" id="coin" required>
                                     @if(isset($coin))
-                                        <option disabled selected value="{{ $coin }}">{{ $coin }}</option>
-                                        <option disabled  value="{{ $coin }}">-----------</option>
+                                        @if($coin == 'bolivares')
+                                        <option disabled selected value="{{ $coin }}">Bolívares</option>                                        
+                                        @elseif($coin == 'dactual')
+                                        <option disabled selected value="{{ $coin }}">Dólares a tasa BCV</option>
+                                        @elseif($coin == 'dolares')
+                                        <option disabled selected value="{{ $coin }}">Dólares a tasa Promedio</option>                                      
+                                        @endif
+                                        <option disabled  value="">-----------</option>
+                                        <option  value="bolivares">Bolívares</option>
+                                        <option  value="dactual">Dólares a tasa BCV</option>
+                                        <option  value="dolares">Dólares a tasa Promedio</option>
                                     @else
-                                        <option disabled selected value="bolivares">Bolívares</option>
+
+                                        <option selected value="bolivares">Bolívares</option>
+                                        <option value="dactual">Dólares a tasa BCV</option>
+                                        <option value="dolares">Dólares a tasa Promedio</option>
+
                                     @endif
                                     
-                                    <option  value="bolivares">Bolívares</option>
-                                    <option disabled value="dolares">Dólares</option>
+
                                 </select>
                             </div>
                             <div class="col-sm-1">
