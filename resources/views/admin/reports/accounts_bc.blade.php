@@ -31,6 +31,13 @@
     </tr> 
   </table>
   <h4 style="color: black; text-align: center">BALANCE DE COMPROBACIÓN</h4>
+  @if($coin == 'bolivares')
+   <h5 style="color: black; text-align: center">Bolívares</h5>                                        
+  @elseif($coin == 'dactual')
+   <h5 style="color: black; text-align: center">Dólares a tasa BCV</h5>
+  @elseif($coin == 'dolares')
+   <h5 style="color: black; text-align: center">Dólares a tasa Promedio</h5>                                      
+  @endif
   <h5 style="color: black; text-align: center">Fecha de Emisión: {{ $date_end ?? $datenow ?? '' }}</h5>
    
  
