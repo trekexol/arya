@@ -250,8 +250,20 @@
                                 <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
     
                                 <div class="col-md-6">
+                                    Predeterminada
                                     <select class="form-control" name="cuenta_contable" id="cuenta_contable">
                                         <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
                                         @if (isset($accounts))
                                             @foreach ($accounts as $account)
                                                       
@@ -262,9 +274,20 @@
                                                     @endif
                                             @endforeach
                                         @endif
+
+                                        @if (isset($accounts_tree))
+                                            @foreach ($accounts_tree as $account_tree)
+                                                    
+                                                    @if ($var->account_name == $account_tree->description)
+                                                    <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
                                         @if (isset($accounts_two))
                                         @foreach ($accounts_two as $account_two)
-                                                 
+                                                
                                                 @if ($var->account_name == $account_two->description)
                                                 <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
                                                 @else
@@ -276,6 +299,281 @@
                                 </div>
     
                             </div>
+                            <div class="form-group row">
+                                <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+    
+                                <div class="col-md-6">
+                                    General
+                                    <select class="form-control" name="cuenta_contable1" id="cuenta_contable1">
+                                        <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name1 == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
+                                        @if (isset($accounts))
+                                            @foreach ($accounts as $account)
+                                                      
+                                                    @if ($var->account_name1 == $account->description)
+                                                    <option selected value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                        @foreach ($accounts_tree as $account_tree)
+                                                
+                                                @if ($var->account_name1 == $account_tree->description)
+                                                <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @else
+                                                <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        @if (isset($accounts_two))
+                                        @foreach ($accounts_two as $account_two)
+                                                
+                                                @if ($var->account_name1 == $account_two->description)
+                                                <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                                @else
+                                                <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+    
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+    
+                                <div class="col-md-6">
+                                    Administrativa
+                                    <select class="form-control" name="cuenta_contable2" id="cuenta_contable2">
+                                        <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name2 == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
+                                        @if (isset($accounts))
+                                            @foreach ($accounts as $account)
+                                                      
+                                                    @if ($var->account_name2 == $account->description)
+                                                    <option selected value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                        @foreach ($accounts_tree as $account_tree)
+                                                
+                                                @if ($var->account_name2 == $account_tree->description)
+                                                <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @else
+                                                <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @endif
+                                        @endforeach
+                                    @endif
+                                    @if (isset($accounts_two))
+                                    @foreach ($accounts_two as $account_two)
+                                            
+                                            @if ($var->account_name2 == $account_two->description)
+                                            <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @else
+                                            <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @endif
+                                    @endforeach
+                                    @endif
+                                    </select>
+                                </div>
+    
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+    
+                                <div class="col-md-6">
+                                    Obrero
+                                    <select class="form-control" name="cuenta_contable3" id="cuenta_contable3">
+                                        <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name3 == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
+                                        @if (isset($accounts))
+                                            @foreach ($accounts as $account)
+                                                      
+                                                    @if ($var->account_name3 == $account->description)
+                                                    <option selected value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                        @foreach ($accounts_tree as $account_tree)
+                                                
+                                                @if ($var->account_name3 == $account_tree->description)
+                                                <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @else
+                                                <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                        @foreach ($accounts_tree as $account_tree)
+                                                
+                                                @if ($var->account_name3 == $account_tree->description)
+                                                <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @else
+                                                <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @endif
+                                        @endforeach
+                                    @endif
+                                    @if (isset($accounts_two))
+                                    @foreach ($accounts_two as $account_two)
+                                            
+                                            @if ($var->account_name3 == $account_two->description)
+                                            <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @else
+                                            <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @endif
+                                    @endforeach
+                                    @endif
+                                    </select>
+                                </div>
+    
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+    
+                                <div class="col-md-6">
+                                    Destajo
+                                    <select class="form-control" name="cuenta_contable4" id="cuenta_contable4">
+                                        <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name4 == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
+                                        @if (isset($accounts))
+                                            @foreach ($accounts as $account)
+                                                      
+                                                    @if ($var->account_name4 == $account->description)
+                                                    <option selected value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                        @foreach ($accounts_tree as $account_tree)
+                                                
+                                                @if ($var->account_name4 == $account_tree->description)
+                                                <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @else
+                                                <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                @endif
+                                        @endforeach
+                                    @endif
+                                    @if (isset($accounts_two))
+                                    @foreach ($accounts_two as $account_two)
+                                            
+                                            @if ($var->account_name4 == $account_two->description)
+                                            <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @else
+                                            <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            @endif
+                                    @endforeach
+                                    @endif
+                                    </select>
+                                </div>
+    
+                            </div>
+  
+                            <div class="form-group row">
+                                <label for="cuenta_contable" class="col-md-2 col-form-label text-md-right">Cuenta Contable:</label>
+    
+                                <div class="col-md-6">
+                                    Gerencial
+                                    <select class="form-control" name="cuenta_contable5" id="cuenta_contable5">
+                                        <option value="">Seleccionar Cuenta Contable</option>
+                                        @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                                  
+                                                @if ($var->account_name5 == $account_one->description)
+                                                <option selected value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @else
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                        
+                                        @if (isset($accounts))
+                                            @foreach ($accounts as $account)
+                                                      
+                                                    @if ($var->account_name5 == $account->description)
+                                                    <option selected value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account->description }}">{{$account->code_one.'.'.$account->code_two.'.'.$account->code_three.'.'.$account->code_four.'.'.str_pad($account->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_tree))
+                                            @foreach ($accounts_tree as $account_tree)
+                                                    
+                                                    @if ($var->account_name5 == $account_tree->description)
+                                                    <option selected value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                    @else
+                                                    <option value="{{ $account_tree->description }}">{{$account_tree->code_one.'.'.$account_tree->code_tree.'.'.$account_tree->code_three.'.'.$account_tree->code_four.'.'.str_pad($account_tree->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_tree->description }}</option>
+                                                    @endif
+                                            @endforeach
+                                        @endif
+                                        @if (isset($accounts_two))
+                                        @foreach ($accounts_two as $account_two)
+                                                
+                                                @if ($var->account_name5 == $account_two->description)
+                                                <option selected value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                                @else
+                                                <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                                @endif
+                                        @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+    
+                            </div>
+
                             <div class="form-group row">
 
                                     <label for="sign" class="col-md-4 col-form-label text-md-right">Calcular Asignación con Nómina:</label>

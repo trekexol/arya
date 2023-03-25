@@ -169,6 +169,13 @@
                             <div class="col-md-6">
                                 <select class="form-control" name="cuenta_contable" id="cuenta_contable">
                                     <option value="">Seleccionar Cuenta Contable</option>
+                                    @if (isset($accounts_one))
+                                        @foreach ($accounts_one as $account_one)
+                                            
+                                                <option value="{{ $account_one->description }}">{{$account_one->code_one.'.'.$account_one->code_two.'.'.$account_one->code_three.'.'.$account_one->code_four.'.'.str_pad($account_one->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_one->description }}</option>
+                                            
+                                        @endforeach
+                                    @endif
                                     @if (isset($accounts))
                                         @foreach ($accounts as $account)
                                             
@@ -176,13 +183,21 @@
                                             
                                         @endforeach
                                     @endif
-                                    @if (isset($accounts_two))
-                                    @foreach ($accounts_two as $account_two)
+                                    @if (isset($accounts_tree))
+                                    @foreach ($accounts_tree as $account_tree)
                                         
                                             <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
                                         
                                     @endforeach
-                                @endif
+                                    @endif
+                                    @if (isset($accounts_two))
+                                        @foreach ($accounts_two as $account_two)
+                                            
+                                                <option value="{{ $account_two->description }}">{{$account_two->code_one.'.'.$account_two->code_two.'.'.$account_two->code_three.'.'.$account_two->code_four.'.'.str_pad($account_two->code_five, 3, "0", STR_PAD_LEFT)}} {{ $account_two->description }}</option>
+                                            
+                                        @endforeach
+                                    @endif
+
                                 </select>
                             </div>
 

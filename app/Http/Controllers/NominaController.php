@@ -444,7 +444,7 @@ class NominaController extends Controller
 
                 if (!empty($concepto)){
 
-                    // Sueldo
+                    // Sueldo A
                     if($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
                         $amount_total_asignacion += $calculos->amount;
 
