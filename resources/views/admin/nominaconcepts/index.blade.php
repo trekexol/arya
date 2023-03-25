@@ -113,6 +113,26 @@
                         @if (isset($nominaconcept->account_name))
                         <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code}} {{$nominaconcept->account_name}}</span>
                         @endif
+                        @if (isset($nominaconcept->account_name1))
+                        <br>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code1}} {{$nominaconcept->account_name1}}</span>
+                        @endif
+                        @if (isset($nominaconcept->account_name2))
+                        <br>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code2}} {{$nominaconcept->account_name2}}</span>
+                        @endif
+                        @if (isset($nominaconcept->account_name3))
+                        <br>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code3}} {{$nominaconcept->account_name3}}</span>
+                        @endif
+                        @if (isset($nominaconcept->account_name4))
+                        <br>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code4}} {{$nominaconcept->account_name4}}</span>
+                        @endif
+                        @if (isset($nominaconcept->account_name5))
+                        <br>
+                        <span style="font-size: 10pt;"><b>Cuenta</b> = {{$nominaconcept->account_code5}} {{$nominaconcept->account_name5}}</span>
+                        @endif
                     </td>
 
                     <!--<td class="text-center">{{ ''/*$nominaconcept->formulasm['description'] ?? ''*/}}</td>-->
