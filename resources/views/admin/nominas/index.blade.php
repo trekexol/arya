@@ -257,6 +257,29 @@
     </div>
 </div>
 
+<div class="modal modal-danger fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina {{$exist_nomina_calculation->id}}: {{$exist_nomina_calculation->description ?? ''}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <h5 class="text-center">Seguro desea volver a calcular la nómina? Nota: (Se perderán los conceptos que no esten programados con el cálculo automático de la nómina) </h5>
+
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('nominas.recalculate',$exist_nomina_calculation->id) }}" type="submit" class="btn btn-info">Recalcular</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+  </div>
+
 
 <div class="modal fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -296,6 +319,8 @@
                 </div>
             </div>
         </div>
+
+
 @if (isset($exist_nomina_calculation))
 <div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog" role="document">
