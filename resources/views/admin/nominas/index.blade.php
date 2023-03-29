@@ -257,57 +257,12 @@
     </div>
 </div>
 
-
-@if(isset($datospresta))
-
-<div class="modal fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <form method="POST" action="{{ route('nominas.islrXmlempleado') }}"  >
-                @csrf
-            <div class="modal-body">
-                <div class="form-group row">
-                    <label for="date_end" class="col-sm-3 col-form-label text-md-right">Seleccionar</label>
-
-                    <div class="col-sm-6">
-                        <select class="form-control" name="per" id="per">
-                            <option value="">Seleccione..</option>
-
-                            @foreach ($datospresta as $datospresta)
-                            <option value="{{$datospresta->año.'/'.$datospresta->mes}}">{{$datospresta->año}} {{mesletras($datospresta->mes)}}</option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <div class="form-group col-sm-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
-                    </div>
-            </form>
-                    <div class="offset-sm-2 col-sm-3">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
 @if (isset($exist_nomina_calculation))
 <div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina {{$exist_nomina_calculation->id}}: {{$exist_nomina_calculation->description ?? ''}}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ya se calculó la Nómina {{$exist_nomina_calculation->id ?? ''}}: {{$exist_nomina_calculation->description ?? ''}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -353,6 +308,50 @@
   </div>
 
 @endif
+
+@if($datospresta->count() > 0)
+<div class="modal modal-danger fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('nominas.islrXmlempleado') }}"  >
+                @csrf
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="date_end" class="col-sm-3 col-form-label text-md-right">Seleccionar</label>
+
+                    <div class="col-sm-6">
+                        <select class="form-control" name="per" id="per">
+                            <option value="">Seleccione..</option>
+
+                            @foreach ($datospresta as $datospresta)
+                            <option value="{{$datospresta->año.'/'.$datospresta->mes}}">{{$datospresta->año}} {{mesletras($datospresta->mes)}}</option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group col-sm-2">
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
+                    </div>
+            </form>
+                    <div class="offset-sm-2 col-sm-3">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+</div>
+        @endif
+
 
 
 @endsection
