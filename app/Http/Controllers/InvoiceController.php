@@ -39,7 +39,7 @@ class InvoiceController extends Controller
     
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 	
-            curl_setopt_array($ch = curl_init(), array(
+            /*curl_setopt_array($ch = curl_init(), array(
                 CURLOPT_URL => "https://www.couriertool.com/apiinvoice.php",
                 //CURLOPT_POSTFIELDS => http_build_query($params),
                 CURLOPT_RETURNTRANSFER => 1
@@ -63,34 +63,32 @@ class InvoiceController extends Controller
                                     $var->number_order = $item['number_order'];
                                     $var->number_pedido = $item['number_pedido'];
                                     $var->id_branch = $item['id_branch'];
+     
+                                    $cedula=
 
-
-
-
-                                    
-			if ($agregar_cliente == 'true'){
-	
-					$a_clientes = array(
-						"id" => 'AUTO',
-						"id_user" => 217,
-						"id_cost_center" => 1,
-						"type_code" => $letra,
-						"name" => $nombre_completo,
-						"cedula_rif" => $cedula,
-						"direction" => $direccion_completa,
-						"city" => $dir_ciudad,
-						"country" => $dir_pais,
-						"phone1" => $tlf_hab,
-						"phone2" => $telefono2,
-						"email" => $email,
-						"personcontact" => $p_contacto,
-						"status" => 1,
-						"coin" => 0
-					);
-					
-					$id_cliente = DBinsert($connH,"clients",$a_clientes); // registrando cliente en arya
-			} 
-	
+                                    if ($agregar_cliente == 'true'){
+                            
+                                            $a_clientes = array(
+                                                "id" => 'AUTO',
+                                                "id_user" => 217,
+                                                "id_cost_center" => 1,
+                                                "type_code" => $letra,
+                                                "name" => $nombre_completo,
+                                                "cedula_rif" => $cedula,
+                                                "direction" => $direccion_completa,
+                                                "city" => $dir_ciudad,
+                                                "country" => $dir_pais,
+                                                "phone1" => $tlf_hab,
+                                                "phone2" => $telefono2,
+                                                "email" => $email,
+                                                "personcontact" => $p_contacto,
+                                                "status" => 1,
+                                                "coin" => 0
+                                            );
+                                            
+                                            $id_cliente = DBinsert($connH,"clients",$a_clientes); // registrando cliente en arya
+                                    } 
+                            
                                     $var->id_client = $item['id_client'];
                                     
                                     $var->id_vendor = $item['id_vendor'];
@@ -162,7 +160,7 @@ class InvoiceController extends Controller
                                     $detail->status = $item2['status'];
                                     $detail->id_inventory_histories = $item2['id_inventory_histories'];
                                     $detail->save();
-                                }
+                                } */
             
        ///////////////FIN API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 
