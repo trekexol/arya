@@ -1222,13 +1222,19 @@ class NominaController extends Controller
         ->where('status','!=','X')
         ->first();
 
-        $detail = DetailVoucher::on(Auth::user()->database_name)
+        if($header_id){
+
+            $detail = DetailVoucher::on(Auth::user()->database_name)
         ->where('id_header_voucher',$header_id->id)
         ->update(['status' => 'X']);
 
         $header = HeaderVoucher::on(Auth::user()->database_name)
         ->where('id_nomina',$id_nomina)
         ->update(['status' => 'X']);
+
+        }
+
+
 
 
 

@@ -294,6 +294,7 @@
         </div>
     </div>
   </div>
+</div>
 @endsection
 @section('javascript')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>

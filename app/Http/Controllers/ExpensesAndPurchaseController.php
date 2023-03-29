@@ -101,11 +101,11 @@ class ExpensesAndPurchaseController extends Controller
                 if($validarfact->tipo_movimiento == 1){
                     $movimiento = 'PALETA';
                 }
-                elseif($validarfact->tipo_fac == 2){
+                elseif($validarfact->tipo_movimiento == 2){
                     $movimiento = 'CONTENEDOR';
-                }elseif($validarfact->tipo_fac == 3){
+                }elseif($validarfact->tipo_movimiento == 3){
                     $movimiento = 'GUIA MASTER';
-                }elseif($validarfact->tipo_fac == 4){
+                }elseif($validarfact->tipo_movimiento == 4){
                     $movimiento = 'TULA';
                 }
 
@@ -590,7 +590,7 @@ class ExpensesAndPurchaseController extends Controller
     public function create_payment(request $request,$id_expense,$coin)
     {
 
-         
+
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
