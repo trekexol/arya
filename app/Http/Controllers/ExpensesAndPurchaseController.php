@@ -74,7 +74,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
         $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
-                                                    ->whereIn('status',['C','X'])
+                                                    ->whereIn('status',['C','X','P'])
                                                     ->get();
 
         foreach($expensesandpurchases as $expensesandpurchasesr){
