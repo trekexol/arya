@@ -257,7 +257,7 @@
     </div>
 </div>
 
-
+@if(isset($datospresta))
 <div class="modal fade" id="reportIslrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -276,10 +276,12 @@
                     <div class="col-sm-6">
                         <select class="form-control" name="per" id="per">
                             <option value="">Seleccione..</option>
+
                             @foreach ($datospresta as $datospresta)
                             <option value="{{$datospresta->año.'/'.$datospresta->mes}}">{{$datospresta->año}} {{mesletras($datospresta->mes)}}</option>
 
                             @endforeach
+
                         </select>
 
                     </div>
@@ -296,6 +298,7 @@
                 </div>
             </div>
         </div>
+        @endif
 @if (isset($exist_nomina_calculation))
 <div class="modal modal-danger fade" id="recalculateModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
     <div class="modal-dialog" role="document">
