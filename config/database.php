@@ -166,7 +166,7 @@ return [
             ]) : [],
         ],
 
-        
+
         'gsa' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -359,7 +359,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],      
+        ],
         'arviconsult' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -378,7 +378,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],      
+        ],
         'demo' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -397,7 +397,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'mancent' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -416,7 +416,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'aryasoftware' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -435,7 +435,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'condominioh' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -454,7 +454,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'teknosecurity' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -473,7 +473,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'ViloTechnologi' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -492,7 +492,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'ElRoble' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -511,7 +511,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
         'Viajes11.11' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -530,7 +530,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
-        ],  
+        ],
 
         'baifa' => [
             'driver' => 'mysql',
@@ -706,7 +706,7 @@ return [
             ]) : [],
             ],
 
-        'logisticrefres' => [ 
+        'logisticrefres' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('LOGISTICREFRES_HOST', '127.0.0.1'),
@@ -765,7 +765,27 @@ return [
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
                 ]) : [],
             ],
-        
+
+            'prueba' => [
+                'driver' => 'mysql',
+                'url' => env('DATABASE_URL'),
+                'host' => env('PRUEBA_HOST', '127.0.0.1'),
+                'port' => env('PRUEBA_PORT', '3306'),
+                'database' => env('PRUEBA_DATABASE', 'forge'),
+                'username' => env('PRUEBA_USERNAME', 'forge'),
+                'password' => env('PRUEBA_PASSWORD', ''),
+                'unix_socket' => env('PRUEBA_SOCKET', ''),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+                'options' => extension_loaded('pdo_mysql') ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ]) : [],
+            ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

@@ -221,6 +221,16 @@ class NominaController extends Controller
 
                 $exist_nomina_calculation = $nomina_actual;
 
+
+                $datospresta = DB::connection(Auth::user()->database_name)
+                ->table('nomina_calculations AS a')
+                ->join('nominas as b', 'a.id_nomina','b.id')
+                ->wherein('a.id_nomina_concept', ['2','3','4'])
+                ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'))
+                ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'))
+                ->get();
+
+
                 return view('admin.nominas.index',compact('nominas','exist_nomina_calculation','nomina_type','datospresta'));
 
             }
@@ -380,7 +390,15 @@ class NominaController extends Controller
 
                 $exist_nomina_calculationcont = $nomina;
 
-            return view('admin.nominas.index',compact('nominas','exist_nomina_calculationcont','nomina_type'));
+                $datospresta = DB::connection(Auth::user()->database_name)
+                ->table('nomina_calculations AS a')
+                ->join('nominas as b', 'a.id_nomina','b.id')
+                ->wherein('a.id_nomina_concept', ['2','3','4'])
+                ->select(DB::raw('SUBSTR(b.date_end,1,4) AS año'), DB::raw('SUBSTR(b.date_end,6,2) AS mes'))
+                ->groupBy(DB::raw('SUBSTR(b.date_end,1,4)') ,  DB::raw('SUBSTR(b.date_end,6,2)'))
+                ->get();
+
+            return view('admin.nominas.index',compact('nominas','exist_nomina_calculationcont','nomina_type','datospresta'));
         }
 
 
@@ -1222,13 +1240,19 @@ class NominaController extends Controller
         ->where('status','!=','X')
         ->first();
 
-        $detail = DetailVoucher::on(Auth::user()->database_name)
+        if($header_id){
+
+            $detail = DetailVoucher::on(Auth::user()->database_name)
         ->where('id_header_voucher',$header_id->id)
         ->update(['status' => 'X']);
 
         $header = HeaderVoucher::on(Auth::user()->database_name)
         ->where('id_nomina',$id_nomina)
         ->update(['status' => 'X']);
+
+        }
+
+
 
 
 
