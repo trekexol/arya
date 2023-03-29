@@ -74,7 +74,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
         $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
-                                                    ->where('amount_with_iva','<>',null)
+                                                    ->whereIn('status',['C','X'])
                                                     ->get();
 
         foreach($expensesandpurchases as $expensesandpurchasesr){
@@ -1028,14 +1028,14 @@ class ExpensesAndPurchaseController extends Controller
     public function store(Request $request)
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
-
+          //validador de formulario
             $rules = [
-                'id_provider' => 'required',
-                'invoice' => 'required',
+                'id_provider' => 'required'
+               // 'invoice' => 'required',
             ];
             $messages = [
                 'id_provider.required' => 'Seleccione un Proveedor.',
-                'invoice.required' => 'Ingrese Numero de factura.',
+              //  'invoice.required' => 'Ingrese Numero de factura.',
 
             ];
             $this->validate($request, $rules, $messages);
@@ -1054,9 +1054,9 @@ class ExpensesAndPurchaseController extends Controller
 
         if(!isset($idprovider)){
             return redirect('expensesandpurchases/registerexpense')->withDelete('Debe seleccionar un proveedor!');
-        }
+       /* }
         elseif(!isset($invoice)){
-            return redirect('expensesandpurchases/registerexpense/'.request('id_provider'))->withDelete('Debe Registrar Factura de Compra!');
+            return redirect('expensesandpurchases/registerexpense/'.request('id_provider'))->withDelete('Debe Registrar Factura de Compra!');*/
         } elseif($validar->count() > 0){
             return redirect('expensesandpurchases/registerexpense/'.request('id_provider'))->withDelete('El Proveedor ya posee una factura con el numero '.$invoice);
         }else{
