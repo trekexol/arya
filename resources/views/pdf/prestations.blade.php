@@ -182,6 +182,7 @@ $interesesacumulado = 0;
         $acumulado += $asig;
         $interes = 0;
         $interesesacumulado += $interes;
+        $ultimodia = 15;
     }
 
 
