@@ -36,10 +36,13 @@ class InvoiceController extends Controller
  
     public function index(request $request)
     {
-    
+        $user       =   auth()->user();
+        $company_user = $user->id_company;
+        
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
-	
-            /*curl_setopt_array($ch = curl_init(), array(
+	    if ($company_user == 26){ //NORTH D CORP
+
+            curl_setopt_array($ch = curl_init(), array(
                 CURLOPT_URL => "https://www.couriertool.com/apiinvoice.php",
                 //CURLOPT_POSTFIELDS => http_build_query($params),
                 CURLOPT_RETURNTRANSFER => 1
@@ -53,115 +56,126 @@ class InvoiceController extends Controller
 
                                 foreach($respuesta as $item) { 
                                   
-                                    ///Guardando cabecera
-                                    $var = new Quotation();
-                                    $var->setConnection(Auth::user()->database_name);
-                    
-                                    $var->id = $item['id'];
-                                    $var->number_invoice = $item['number_invoice'];
-                                    $var->number_delivery_note = $item['number_delivery_note'];
-                                    $var->number_order = $item['number_order'];
-                                    $var->number_pedido = $item['number_pedido'];
-                                    $var->id_branch = $item['id_branch'];
-     
-                                    $cedula=
-
-                                    if ($agregar_cliente == 'true'){
-                            
-                                            $a_clientes = array(
-                                                "id" => 'AUTO',
-                                                "id_user" => 217,
-                                                "id_cost_center" => 1,
-                                                "type_code" => $letra,
-                                                "name" => $nombre_completo,
-                                                "cedula_rif" => $cedula,
-                                                "direction" => $direccion_completa,
-                                                "city" => $dir_ciudad,
-                                                "country" => $dir_pais,
-                                                "phone1" => $tlf_hab,
-                                                "phone2" => $telefono2,
-                                                "email" => $email,
-                                                "personcontact" => $p_contacto,
-                                                "status" => 1,
-                                                "coin" => 0
-                                            );
-                                            
-                                            $id_cliente = DBinsert($connH,"clients",$a_clientes); // registrando cliente en arya
-                                    } 
-                            
-                                    $var->id_client = $item['id_client'];
+                                    //validando si existe la factura
                                     
-                                    $var->id_vendor = $item['id_vendor'];
-                                    $var->id_transport = $item['id_transport'];
-                                    $var->id_user = $item['id_user'];
-                                    $var->serie = $item['serie'];
-                                    $var->date_quotation = $item['date_quotation'];
-                                    $var->date_billing = $item['date_billing'];
-                                    $var->date_delivery_note = $item['date_delivery_note'];
-                                    $var->date_order = $item['date_order'];
-                                    $var->anticipo = $item['anticipo'];
-                                    $var->iva_percentage = $item['iva_percentage'];
-                                    $var->observation = $item['observation'];
-                                    $var->note = $item['note'];
-                                    $var->credit_days = $item['credit_days'];
-                                    $var->coin = $item['coin'];
-                                    $var->bcv = $item['bcv'];
-                                    $var->retencion_iva = $item['retencion_iva'];
-                                    $var->retencion_islr = $item['retencion_islr'];
-                                    $var->IGTF_percentage = $item['IGTF_percentage'];
-                                    $var->IGTF_amount = $item['IGTF_amount'];
-                                    $var->base_imponible = $item['base_imponible'];
-                                    $var->amount_exento = $item['amount_exento'];
-                                    $var->amount = $item['amount'];
-                                    $var->amount_iva = $item['amount_iva'];
-                                    $var->amount_with_iva = $item['amount_with_iva'];
-                                    $var->status = $item['status'];
-                                    $var->date_saldate = $item['date_saldate'];
-                                    $var->id_driver = $item['id_driver'];
-                                    $var->delivery = $item['delivery'];
-                                    $var->licence = $item['licence'];
-                                    $var->destiny = $item['destiny'];
-                                    $var->serie_note = $item['serie_note'];
-                                    $var->serie_note_credit = $item['serie_note_credit'];
-                                    $var->base_imponible_pcb = $item['base_imponible_pcb'];
-                                    $var->iva_percibido = $item['iva_percibido'];
-                                    $var->person_note_delivery = $item['person_note_delivery'];
-                                    $var->ci_person_note_delivery = $item['ci_person_note_delivery'];
-                                    $var->date_expiration = $item['date_expiration'];
-                                    $var->save();           
-                                }
+                                    $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$item['number_invoice'])
+                                    ->get();
 
-                                curl_setopt_array($ch2 = curl_init(), array(
-                                    CURLOPT_URL => "https://www.couriertool.com/apiinvoicecab.php",
-                                    //CURLOPT_POSTFIELDS => http_build_query($params),
-                                    CURLOPT_RETURNTRANSFER => 1
-                                ));
-                    
-                                $response2 = curl_exec($ch2);
-                                curl_close($ch2);
+                                    
+
+                                    if (empty($quotations_valid)){
+
+                                        ///Guardando cabecera
+                                        $var = new Quotation();
+                                        $var->setConnection(Auth::user()->database_name);
+                        
+                                        $var->id = $item['id'];
+                                        $var->number_invoice = $item['number_invoice'];
+                                        $var->number_delivery_note = $item['number_delivery_note'];
+                                        $var->number_order = $item['number_order'];
+                                        $var->number_pedido = $item['number_pedido'];
+                                        $var->id_branch = $item['id_branch'];
+        
+                                        $clients = Client::on(Auth::user()->database_name)->where('cedula_rif', $item['cedula_rif'])->get();
+                                        
+                                        if (empty($clients)){
+                                            
+                                            $client = new client();
+                                            $client->setConnection(Auth::user()->database_name);
+                                            $client->id_user = 217;
+                                            $client->id_cost_center = 1;
+                                            $client->type_code = $item['type_code'];
+                                            $client->name = $item['name'];
+                                            $client->cedula_rif = $item['cedula_rif'];
+                                            $client->direction = $item['direction'];
+                                            $client->city = $item['city'];
+                                            $client->country = $item['country'];
+                                            $client->phone1 = $item['phone1'];
+                                            $client->phone2 = $item['phone2'];
+                                            $client->email = $item['email'];
+                                            $client->status = 1;
+                                            $client->coin = 0;
+                                            $client->save();
+
+                                            $id_client = $client->id;
+                                            
+                                        } else {
+                                            $id_client = $item['id_client'];
+                                        }
                                 
-                                $respuesta2 = json_decode($response2, true);
+                                        $var->id_client = $id_client;
+                                        $var->id_vendor = $item['id_vendor'];
+                                        $var->id_transport = $item['id_transport'];
+                                        $var->id_user = $item['id_user'];
+                                        $var->serie = $item['serie'];
+                                        $var->date_quotation = $item['date_quotation'];
+                                        $var->date_billing = $item['date_billing'];
+                                        $var->date_delivery_note = $item['date_delivery_note'];
+                                        $var->date_order = $item['date_order'];
+                                        $var->anticipo = $item['anticipo'];
+                                        $var->iva_percentage = $item['iva_percentage'];
+                                        $var->observation = $item['observation'];
+                                        $var->note = $item['note'];
+                                        $var->credit_days = $item['credit_days'];
+                                        $var->coin = $item['coin'];
+                                        $var->bcv = $item['bcv'];
+                                        $var->retencion_iva = $item['retencion_iva'];
+                                        $var->retencion_islr = $item['retencion_islr'];
+                                        $var->IGTF_percentage = $item['IGTF_percentage'];
+                                        $var->IGTF_amount = $item['IGTF_amount'];
+                                        $var->base_imponible = $item['base_imponible'];
+                                        $var->amount_exento = $item['amount_exento'];
+                                        $var->amount = $item['amount'];
+                                        $var->amount_iva = $item['amount_iva'];
+                                        $var->amount_with_iva = $item['amount_with_iva'];
+                                        $var->status = $item['status'];
+                                        $var->date_saldate = $item['date_saldate'];
+                                        $var->id_driver = $item['id_driver'];
+                                        $var->delivery = $item['delivery'];
+                                        $var->licence = $item['licence'];
+                                        $var->destiny = $item['destiny'];
+                                        $var->serie_note = $item['serie_note'];
+                                        $var->serie_note_credit = $item['serie_note_credit'];
+                                        $var->base_imponible_pcb = $item['base_imponible_pcb'];
+                                        $var->iva_percibido = $item['iva_percibido'];
+                                        $var->person_note_delivery = $item['person_note_delivery'];
+                                        $var->ci_person_note_delivery = $item['ci_person_note_delivery'];
+                                        $var->date_expiration = $item['date_expiration'];
+                                        $var->save();
+                                            
+
+                                        curl_setopt_array($ch2 = curl_init(), array(
+                                            CURLOPT_URL => "https://www.couriertool.com/apiinvoicecab.php",
+                                            //CURLOPT_POSTFIELDS => http_build_query($params),
+                                            CURLOPT_RETURNTRANSFER => 1
+                                        ));
+                            
+                                        $response2 = curl_exec($ch2);
+                                        curl_close($ch2);
+                                        
+                                        $respuesta2 = json_decode($response2, true);
 
 
-                                foreach($respuesta2 as $item2) { 
+                                        foreach($respuesta2 as $item2) { 
 
-                                    $detail = new DetailVoucher();
-                                    $detail->setConnection(Auth::user()->database_name);
-                                    $detail->id = $item2['id'];
-                                    $detail->id_quotation = $item2['id_quotation'];
-                                    $detail->id_inventory = $item2['id_inventory'];
-                                    $detail->amount = $item2['amount'];
-                                    $detail->discount = $item2['discount'];
-                                    $detail->price = $item2['price'];
-                                    $detail->rate = $item2['rate'];
-                                    $detail->excento = $item2['excento'];
-                                    $detail->retiene_iva = $item2['retiene_iva'];
-                                    $detail->retiene_islr = $item2['retiene_islr'];
-                                    $detail->status = $item2['status'];
-                                    $detail->id_inventory_histories = $item2['id_inventory_histories'];
-                                    $detail->save();
-                                } */
-            
+                                            $detail = new DetailVoucher();
+                                            $detail->setConnection(Auth::user()->database_name);
+                                            $detail->id_quotation = $var->id;
+                                            $detail->id_inventory = $item2['id_inventory'];
+                                            $detail->amount = $item2['amount'];
+                                            $detail->discount = $item2['discount'];
+                                            $detail->price = $item2['price'];
+                                            $detail->rate = $item2['rate'];
+                                            $detail->excento = $item2['excento'];
+                                            $detail->retiene_iva = $item2['retiene_iva'];
+                                            $detail->retiene_islr = $item2['retiene_islr'];
+                                            $detail->status = $item2['status'];
+                                            $detail->id_inventory_histories = $item2['id_inventory_histories'];
+                                            $detail->save();
+                                        }
+                                    }     
+                            }
+        }   
        ///////////////FIN API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 
             $date = Carbon::now();
