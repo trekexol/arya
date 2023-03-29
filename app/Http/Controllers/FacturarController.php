@@ -1852,7 +1852,7 @@ class FacturarController extends Controller
             }
             
 
-        if ($quotation->status == 1){
+        if ($quotation_status == 1){
 
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
@@ -1882,7 +1882,7 @@ class FacturarController extends Controller
                 $total_mercancia = $total_mercancia * $bcv;
                 $total_servicios = $total_servicios * $bcv;
 
-                if ($quotation->status == 1 ){
+                if ($quotation_status == 1){
                 $quotation->base_imponible = $base_imponible;
                 $quotation->amount_exento =  $amount_exento * $bcv;
                 $quotation->amount =  $sin_formato_amount;
@@ -2188,6 +2188,8 @@ public function storeanticiposaldar(Request $request)
     //dd($request);
 
     $quotation = Quotation::on(Auth::user()->database_name)->find(request('id_quotation'));
+
+    $quotation_status =  $quotation->status;
 
     $company = Company::on(Auth::user()->database_name)->find(1);
 
@@ -3270,7 +3272,7 @@ public function storeanticiposaldar(Request $request)
             
             
             //Modifica la factura
-        if ($quotation->status != "P") {
+        if ($quotation_status != "P") {
          
             $quotation->base_imponible = $base_imponible;
             $quotation->amount_exento =  $amount_exento;
