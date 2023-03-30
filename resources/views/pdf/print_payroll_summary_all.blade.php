@@ -46,7 +46,7 @@
   <br>
   <br>
   <?php
-  global $total_monto_neto_global;
+  global $total_bono_alim_global;
   ?>
 <table style="width: 100%;">
   <tbody>
@@ -63,10 +63,11 @@
     <th style="text-align: center; width:1%;">SSO<br>Patronal</th>
     <th style="text-align: center; width:1%;">FAOV<br>Patronal</th>
     <th style="text-align: center; width:1%;">PIE<br>Patronal</th>
+    <th style="text-align: center; width:1%;">Otras<br>Deducciones</th>
+    <th style="text-align: center; width:1%;">Total Neto</th>
     <th style="text-align: center; width:1%;">Total<br>Deducciones</th>
-    <th style="text-align: center; width:1%;">Total Neto {{$total_monto_neto_global}}</th>
     <th style="text-align: center; width:1%;">Total<br>Asignaciones</th>
-    <th style="text-align: center; width:1%;">Total<br>General</th>
+    <th style="text-align: center; width:1%;">Total</th>
 
   
   </tr>
@@ -82,9 +83,10 @@
   $total_sso_patronal_global = 0;
   $total_faov_patronal_global = 0;
   $total_pie_patronal_global = 0;
-  $total_deducciones_global = 0;
+  $total_otras_deducciones_global = 0;
   $total_monto_neto_global = 0;
-  $total_otras_asignaciones_global = 0;
+  $total_asignaciones_global = 0;
+  $total_deducciones_global = 0;
   $total_total_general_global = 0;
 ?>
 
@@ -97,16 +99,20 @@ $total_pie_patronal = 0;
 $deducciones = 0;
 $monto_neto = 0;
 $otras_asignaciones = 0;
+$otras_deducciones = 0;
 $total_general = 0;
 
 $total_sso_patronal = (($employee->asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
 $total_faov_patronal = $employee->asignacion * ($nominabases->faov_company/100);
 $total_pie_patronal =  (($employee->asignacion * 12)/52) * $lunes * ($nominabases->pie_company/100);
 
-$deducciones = $employee->deduccion_sso+$employee->deduccion_faov+$employee->deduccion_pie+$employee->deduccion_ince+$employee->otras_deducciones;
+$otras_deducciones = $employee->otras_deducciones;
 $monto_neto = $employee->total_asignacion_m_deducciones;
-$otras_asignaciones = $employee->bono_medico+$employee->bono_alim+$employee->bono_transporte+$employee->otras_asignaciones;
-$total_general = $monto_neto+$otras_asignaciones;
+$deducciones = $employee->deduccion_sso+$employee->deduccion_faov+$employee->deduccion_pie+$employee->deduccion_ince+$employee->otras_deducciones;
+$asignaciones = $employee->bono_medico+$employee->bono_alim+$employee->bono_transporte+$employee->asignacion;
+
+
+$total_general = $asignaciones - $deducciones;
 
 ?>
   @if ($employee->asignacion > 0)
@@ -123,9 +129,10 @@ $total_general = $monto_neto+$otras_asignaciones;
       <td style="text-align: right;">{{ number_format($total_sso_patronal, 2, ',', '.')}}</td>
       <td style="text-align: right;">{{ number_format($total_faov_patronal, 2, ',', '.')}}</td>
       <td style="text-align: right;">{{ number_format($total_pie_patronal, 2, ',', '.')}}</td>
-      <td style="text-align: right;">{{ number_format($deducciones, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($otras_deducciones, 2, ',', '.')}}</td>
       <td style="text-align: right;">{{ number_format($monto_neto, 2, ',', '.')}}</td>
-      <td style="text-align: right;">{{ number_format($otras_asignaciones, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($deducciones, 2, ',', '.')}}</td>
+      <td style="text-align: right;">{{ number_format($asignaciones, 2, ',', '.')}}</td>
       <td style="text-align: right;">{{ number_format($total_general, 2, ',', '.')}}</td>
     </tr>
 
@@ -140,9 +147,10 @@ $total_deduccion_pie_global += number_format($employee->deduccion_pie, 2, '.', '
 $total_sso_patronal_global += number_format($total_sso_patronal, 2, '.', '');
 $total_faov_patronal_global += number_format($total_faov_patronal, 2, '.', '');
 $total_pie_patronal_global += number_format($total_pie_patronal, 2, '.', '');
-$total_deducciones_global += number_format($deducciones, 2, '.', '');
+$total_otras_deducciones_global += number_format($otras_deducciones, 2, '.', '');
 $total_monto_neto_global += number_format($monto_neto, 2, '.', '');
-$total_otras_asignaciones_global += number_format($otras_asignaciones, 2, '.', '');
+$total_deducciones_global += number_format($deducciones, 2, '.', '');
+$total_asignaciones_global += number_format($asignaciones, 2, '.', '');
 $total_total_general_global += number_format($total_general, 2, '.', '');
 ?>
 
@@ -163,9 +171,10 @@ $total_total_general_global += number_format($total_general, 2, '.', '');
       <th style="text-align: right;">{{ number_format($total_sso_patronal_global, 2, ',', '.')}}</th>
       <th style="text-align: right;">{{ number_format($total_faov_patronal_global, 2, ',', '.')}}</th>
       <th style="text-align: right;">{{ number_format($total_pie_patronal_global, 2, ',', '.')}}</th>
-      <th style="text-align: right;">{{ number_format($total_deducciones_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_otras_deducciones_global, 2, ',', '.')}}</th>
       <th style="text-align: right;">{{ number_format($total_monto_neto_global, 2, ',', '.')}}</th>
-      <th style="text-align: right;">{{ number_format($total_otras_asignaciones_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_deducciones_global, 2, ',', '.')}}</th>
+      <th style="text-align: right;">{{ number_format($total_asignaciones_global, 2, ',', '.')}}</th>
       <th style="text-align: right;">{{ number_format($total_total_general_global, 2, ',', '.')}}</th>
     </tr>
   </tfoot>
