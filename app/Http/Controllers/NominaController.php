@@ -138,14 +138,14 @@ class NominaController extends Controller
                     ->find($calculos->id_nomina_concept);
 
                     // Total Asignaciones
-                    if ($concepto->account_name != 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                    if (($concepto->abbreviation != 'SUEM' or $concepto->abbreviation != 'SUES' or $concepto->abbreviation != 'SUEQ') and $concepto->sign == 'A'){
                         $amount_total_otras_asignaciones += $calculos->amount;
                     } else {
                         $amount_total_otras_asignaciones += 0;
                     }
 
                     // Total Asignaciones
-                    if ($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                    if (($concepto->abbreviation == 'SUEM' or $concepto->abbreviation == 'SUES' or $concepto->abbreviation == 'SUEQ') and $concepto->sign == 'A'){
                         $amount_salary += $calculos->amount;
                     } else {
                         $amount_salary += 0;
@@ -439,12 +439,23 @@ class NominaController extends Controller
         $amount_total_bono_medico = 0;
         $amount_total_bono_alim = 0;
         $amount_total_bono_transporte = 0;
+        $amount_total_anticipo = 0;
 
         $amount_total_otras_asignaciones = 0;
         $amount_total_otras_deducciones = 0;
 
         $amount_total_asignacion_m_deducciones = 0;
 
+        $account_sueldos = '';
+        $account_alim = '';
+        $account_ant = '';
+        $account_bmedic = '';
+        $account_transp = '';
+        $account_sso = '';
+        $account_faov = '';
+        $account_pie = '';
+        $account_inces = '';
+        $account_sueldos = '';
 
         $calculos_nomina = DB::connection(Auth::user()->database_name)->table('nomina_calculations')
         ->where('id_nomina',$nomina->id)
@@ -460,7 +471,6 @@ class NominaController extends Controller
 
 
 
-
         foreach($calculos_nomina as $calculos) {
                 $concepto = '';
 
@@ -470,75 +480,98 @@ class NominaController extends Controller
                 if (!empty($concepto)){
 
                     // Sueldo
-                    if($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                    if(($concepto->abbreviation == 'SUEM' or $concepto->abbreviation == 'SUES' or $concepto->abbreviation == 'SUEQ') and $concepto->sign == 'A'){
                         $amount_total_asignacion += $calculos->amount;
 
                         $total_sso_patronal += (($calculos->amount * 12)/52) * $lunes * ($nominabases->sso_company/100);
+                    
+                        $account_sueldos = $concepto->account_name;
+
+
                     } else {
                         $amount_total_asignacion += 0;
                         $total_sso_patronal += 0;
                     }
 
-                    if($concepto->account_name == 'Bono de Alimentacion' and $concepto->sign == 'A'){
+                    if($concepto->abbreviation == 'BALIM' and $concepto->sign == 'A'){
                         $amount_total_bono_alim += $calculos->amount;
+                        $account_alim = $concepto->account_name;
+
                     } else {
                         $amount_total_bono_alim += 0;
                     }
 
+                    if($concepto->abbreviation == 'ANTC' and $concepto->sign == 'A'){
+                        $amount_total_anticipo += $calculos->amount;
+                        $account_ant = $concepto->account_name;
+
+                    } else {
+                        $amount_total_anticipo += 0;
+                    }
+
                     // Asignaciones Generales
-                    if($concepto->account_name == 'Bono Medico' and $concepto->sign == 'A'){
+                    if($concepto->abbreviation == 'BMED' and $concepto->sign == 'A'){
                         $amount_total_bono_medico += $calculos->amount;
+                        $account_bmedic = $concepto->account_name;
                     } else {
                         $amount_total_bono_medico += 0;
 
                     }
 
-                    if($concepto->account_name == 'Bono de Transporte' and $concepto->sign == 'A'){
+                    if($concepto->abbreviation == 'BTRN' and $concepto->sign == 'A'){
                         $amount_total_bono_transporte += $calculos->amount;
+                        $account_transp = $concepto->account_name;
                     } else {
                         $amount_total_bono_transporte += 0;
 
                     }
 
                     // retenciones
-                    if($concepto->account_name == 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->sign == 'D'){
+                    if($concepto->abbreviation == 'SSO' and $concepto->sign == 'D'){
                         $amount_total_deduccion_sso += $calculos->amount;
+                        $account_sso = $concepto->account_name;
                     } else {
                         $amount_total_deduccion_sso += 0;
 
                     }
 
-                    if($concepto->account_name == 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->sign == 'D'){
+                    if($concepto->abbreviation == 'FAOV' and $concepto->sign == 'D'){
                         $amount_total_deduccion_faov += $calculos->amount;
+                        $account_faov = $concepto->account_name;
                     } else {
                         $amount_total_deduccion_faov += 0;
 
                     }
 
-                    if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
+                    if($concepto->abbreviation == 'PIE' and $concepto->sign == 'D'){
                         $amount_total_deduccion_pie += $calculos->amount;
+                        $account_pie = $concepto->account_name;
                     } else {
                         $amount_total_deduccion_pie += 0;
 
                     }
 
-                    if($concepto->account_name == 'Retencion por Aporte al INCES por Pagar' and $concepto->sign == 'D'){
+                    if($concepto->abbreviation == 'INCES' and $concepto->sign == 'D'){
                         $amount_total_deduccion_ince += $calculos->amount;
+                        $account_inces = $concepto->account_name;
                     } else {
                         $amount_total_deduccion_ince += 0;
 
                     }
 
                     // Otras Asignaciones
-                    if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
+                    if (($concepto->abbreviation != 'SSO' and $concepto->abbreviation != 'FAOV' and $concepto->abbreviation != 'PIE' and $concepto->abbreviation != 'INCES') and $concepto->sign == 'A'){
                        $amount_total_otras_asignaciones += $calculos->amount;
+                        
+                       $account_sueldos = $concepto->account_name;
+
                     } else {
                        $amount_total_otras_asignaciones = 0;
 
                     }
 
                     // Deducciones diferentes
-                    if (($concepto->account_name != 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al PIE por Pagar' and $concepto->account_name != 'Retencion por Aporte al INCES por Pagar') and $concepto->sign == 'D') {
+                    if (($concepto->abbreviation != 'SSO' and $concepto->abbreviation != 'FAOV' and $concepto->abbreviation != 'INCES') and $concepto->sign == 'D') {
                         $amount_total_otras_deducciones += $calculos->amount;
                     } else {
                         $amount_total_otras_deducciones += 0;
@@ -559,6 +592,7 @@ class NominaController extends Controller
                     $amount_total_bono_transporte += 0;
                     $amount_total_bono_medico += 0;
                     $amount_total_bono_alim += 0;
+                    $amount_total_anticipo += 0;
 
                 }
 
@@ -826,14 +860,6 @@ class NominaController extends Controller
     public function addNominaCalculation($nomina,$employee)
     {
 
-        if(($nomina->type == "Primera Quincena") || ($nomina->type == "Segunda Quincena")){
-
-            $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
-            ->where('calculate','S')
-            ->where('type','LIKE','%Quincenal%')
-            ->get();
-        }
-
         if(($nomina->type == "Primera Quincena")){
 
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
@@ -872,11 +898,6 @@ class NominaController extends Controller
             $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
             ->where('calculate','S')
             ->where('type','LIKE','Especial')
-            ->get();
-        }else{
-            $nominaconcepts = NominaConcept::on(Auth::user()->database_name)
-            ->where('calculate','S')
-            ->where('type','LIKE','%'.$nomina->type.'%')
             ->get();
         }
 
@@ -996,7 +1017,9 @@ class NominaController extends Controller
             "lunes"=>$lunes,
             "tasa"=>$nomina->rate,
             "asignaciong"=>0,
-            "cestatickets"=>$nominabases->amount_cestatickets
+            "asig"=>intval($employee->asignacion_general),
+            "cestatickets"=>$nominabases->amount_cestatickets,
+            "sueldoq" => $employee->monto_pago/2
             /*
             "ssoq"=> (($employee->monto_pago/2) * 12) / 52 * $lunes * 0.04,
             "ssom"=> (($employee->monto_pago) * 12) / 52 * $lunes * 0.04,
@@ -1084,7 +1107,7 @@ class NominaController extends Controller
             $operacion = str_replace($sustituir, $value,$operacion);
         }
         $a_param = explode(' ', $operacion);
-        if (count($a_param) <3 ) {
+        if (count($a_param) < 3 ) {
             $return = $a_param[0];
         } else {
             $return = $this->calcularopracion($a_param[0],$a_param[2],$a_param[1]);
@@ -1092,6 +1115,7 @@ class NominaController extends Controller
             $j = 0;
             $a_param2 = ['',''];
             $tope = count($a_param);
+
             for ($i=3; $i < $tope ; $i++) {
                 if ($j > 1) {
                     $return = $this->calcularopracion($return,$a_param2[1],$a_param2[0]);

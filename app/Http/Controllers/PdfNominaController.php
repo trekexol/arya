@@ -375,27 +375,27 @@ class PdfNominaController extends Controller
                         if (!empty($concepto)){
 
                             // Sueldo
-                            if($concepto->account_name == 'Sueldos y Salarios' and $concepto->sign == 'A'){
+                            if(($concepto->abbreviation == 'SUEM' or $concepto->abbreviation == 'SUES' or $concepto->abbreviation == 'SUEQ') and $concepto->sign == 'A'){
                                 $amount_total_asignacion += $calculos->amount;
                             } else {
                                 $amount_total_asignacion += 0;
                             }
 
-                            if($concepto->account_name == 'Bono de Alimentacion' and $concepto->sign == 'A'){
+                            if($concepto->abbreviation == 'BALIM' and $concepto->sign == 'A'){
                                 $amount_total_bono_alim += $calculos->amount;
                             } else {
                                 $amount_total_bono_alim += 0;
                             }
 
                             // Asignaciones Generales
-                            if($concepto->account_name == 'Bono Medico' and $concepto->sign == 'A'){
+                            if($concepto->abbreviation == 'BMED' and $concepto->sign == 'A'){
                                 $amount_total_bono_medico += $calculos->amount;
                             } else {
                                 $amount_total_bono_medico += 0;
 
                             }
 
-                            if($concepto->account_name == 'Bono de Transporte' and $concepto->sign == 'A'){
+                            if($concepto->abbreviation == 'BTRN' and $concepto->sign == 'A'){
                                 $amount_total_bono_transporte += $calculos->amount;
                             } else {
                                 $amount_total_bono_transporte += 0;
@@ -403,28 +403,28 @@ class PdfNominaController extends Controller
                             }
 
                             // retenciones
-                            if($concepto->account_name == 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->sign == 'D'){
+                            if($concepto->abbreviation == 'SSO' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_sso += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_sso += 0;
 
                             }
 
-                            if($concepto->account_name == 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->sign == 'D'){
+                            if($concepto->abbreviation == 'FAOV' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_faov += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_faov += 0;
 
                             }
 
-                            if($concepto->account_name == 'Retencion por Aporte al PIE por Pagar' and $concepto->sign == 'D'){
+                            if($concepto->abbreviation == 'PIE' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_pie += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_pie += 0;
 
                             }
 
-                            if($concepto->account_name == 'Retencion por Aporte al INCES por Pagar' and $concepto->sign == 'D'){
+                            if($concepto->abbreviation == 'INCES' and $concepto->sign == 'D'){
                                 $amount_total_deduccion_ince += $calculos->amount;
                             } else {
                                 $amount_total_deduccion_ince += 0;
@@ -432,7 +432,7 @@ class PdfNominaController extends Controller
                             }
 
                             // Otras Asignaciones
-                            if (($concepto->account_name != 'Sueldos y Salarios' and $concepto->account_name != 'Bono de Alimentacion' and $concepto->account_name != 'Bono Medico' and $concepto->account_name != 'Bono de Transporte') and $concepto->sign == 'A'){
+                            if (($concepto->abbreviation != 'SUEM' or $concepto->abbreviation != 'SUES' or $concepto->abbreviation != 'SUEQ') and  $concepto->abbreviation != 'BALIM' and  $concepto->abbreviation != 'BMED' and  $concepto->abbreviation != 'BTRN' and $concepto->sign == 'A'){
                             $amount_total_otras_asignaciones += $calculos->amount;
                             } else {
                             $amount_total_otras_asignaciones += 0;
@@ -440,7 +440,7 @@ class PdfNominaController extends Controller
                             }
 
                             // Deducciones diferentes
-                            if (($concepto->account_name != 'Retencion por Aporte al SSO empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al FAOV empleados por Pagar' and $concepto->account_name != 'Retencion por Aporte al PIE por Pagar' and $concepto->account_name != 'Retencion por Aporte al INCES por Pagar') and $concepto->sign == 'D') {
+                            if (($concepto->abbreviation != 'SSO' and $concepto->abbreviation != 'FAOV' and $concepto->abbreviation != 'PIE' and $concepto->abbreviation != 'INCES') and $concepto->sign == 'D') {
                                 $amount_total_otras_deducciones += $calculos->amount;
                             } else {
                                 $amount_total_otras_deducciones += 0;
