@@ -45,6 +45,9 @@
   <span><b>Fecha desde: {{ \Carbon\Carbon::parse($nomina->date_begin)->format('d-m-Y')}} , Fecha hasta {{ \Carbon\Carbon::parse($nomina->date_end)->format('d-m-Y') }}</b></span>
   <br>
   <br>
+  <?php
+  global $total_monto_neto_global;
+  ?>
 <table style="width: 100%;">
   <tbody>
   <tr>
@@ -61,7 +64,7 @@
     <th style="text-align: center; width:1%;">FAOV<br>Patronal</th>
     <th style="text-align: center; width:1%;">PIE<br>Patronal</th>
     <th style="text-align: center; width:1%;">Total<br>Deducciones</th>
-    <th style="text-align: center; width:1%;">Total<br>Monto Neto</th>
+    <th style="text-align: center; width:1%;">Total Neto {{$total_monto_neto_global}}</th>
     <th style="text-align: center; width:1%;">Total<br>Asignaciones</th>
     <th style="text-align: center; width:1%;">Total<br>General</th>
 

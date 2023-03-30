@@ -28,7 +28,7 @@ class EmployeeController extends Controller
    public function index()
    {
        $user= auth()->user();
-       $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')
+       $employees = Employee::on(Auth::user()->database_name)
        ->orderBy('status' ,'DESC')
        ->orderBy('nombres' ,'ASC')
        ->get();
