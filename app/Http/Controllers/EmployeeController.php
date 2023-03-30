@@ -29,7 +29,6 @@ class EmployeeController extends Controller
    {
        $user= auth()->user();
        $employees = Employee::on(Auth::user()->database_name)
-       ->orderBy('status' ,'DESC')
        ->orderBy('nombres' ,'ASC')
        ->get();
 

@@ -136,8 +136,8 @@
 @section('javascript')
     <script>
     $('#dataTable').DataTable({
-        "ordering": false,
-        "order": [],
+        "ordering": true,
+        "order": [[5,'asc']],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
