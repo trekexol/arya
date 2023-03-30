@@ -40,7 +40,7 @@ class InvoiceController extends Controller
         $company_user = $user->id_company;
         
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
-	    if ($company_user == 26){ //NORTH D CORP
+	    if ($company_user != 26){ //NORTH D CORP
 
             curl_setopt_array($ch = curl_init(), array(
                 CURLOPT_URL => "https://www.couriertool.com/apiinvoice.php",
@@ -51,10 +51,10 @@ class InvoiceController extends Controller
             $response = curl_exec($ch);
             curl_close($ch);
             
-            $respuesta = json_decode($response, true);
+            $respuesta = print_r($response, true);
             
-
-                                foreach($respuesta as $item) { 
+             echo $respuesta;
+                               /* foreach($respuesta as $item) { 
                                   
                                     //validando si existe la factura
                                     
@@ -174,7 +174,7 @@ class InvoiceController extends Controller
                                             $detail->save();
                                         }
                                     }     
-                            }
+                            } */
         }   
        ///////////////FIN API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 
