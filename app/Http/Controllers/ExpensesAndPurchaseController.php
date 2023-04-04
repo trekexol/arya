@@ -62,6 +62,7 @@ class ExpensesAndPurchaseController extends Controller
    public function index_historial(request $request)
    {
 
+    
     if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Gastos y Compras'){
 
 
@@ -75,6 +76,7 @@ class ExpensesAndPurchaseController extends Controller
 
         $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
                                                     ->whereIn('status',['C','X','P'])
+                                                    ->orderBy(DB::raw('SUBSTR(date,0,4)'),'DESC')
                                                     ->get();
 
         foreach($expensesandpurchases as $expensesandpurchasesr){

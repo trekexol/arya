@@ -46,6 +46,7 @@
                         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+                                    <th style="display:none;">Fecha2</th>
                                     <th class="text-center" style="width: 13%">Fecha</th>
                                     <th class="text-center" style="width: 1%">Comp.</th>
                                     <th class="text-center" style="width: 1%">Codigo</th>
@@ -64,6 +65,7 @@
                                     @else
                                         @foreach ($detailvouchers as $var)
                                         <tr>
+                                        <td style="display:none;">{{strtotime($var->header_date) ?? ''}}</td>
                                         <td style="width: 13%">{{date('d-m-Y',strtotime($var->header_date)) ?? ''}}</td>
                                         <td class="text-center" style="width: 1%">{{$var->id_header_voucher ?? ''}}</td>
                                         <td style="width: 1%">{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
@@ -317,7 +319,21 @@
     <script>
     $('#dataTable').DataTable({
         "ordering": true,
-        "order": [],
+        "order": [[0,'desc'],[2,'desc'] ],
+        "columnDefs": [
+            { "orderable": false, "targets": 0 },//ocultar para columna 0
+            { "orderable": false, "targets": 1 },//ocultar para columna 1
+            { "orderable": true, "targets": 2 },//ocultar para columna 1
+            { "orderable": false, "targets": 3 },//ocultar para columna 1
+            { "orderable": false, "targets": 4 },//ocultar para columna 1
+            { "orderable": false, "targets": 5 },//ocultar para columna 1
+            { "orderable": false, "targets": 6 },//ocultar para columna 1
+            { "orderable": false, "targets": 7 },//ocultar para columna 1
+            { "orderable": false, "targets": 8 },//ocultar para columna 1
+            { "orderable": false, "targets": 9 },//ocultar para columna 1
+            { "orderable": false, "targets": 10 }//ocultar para columna 1
+            //`Asi para cada columna`...
+        ],
         'aLengthMenu': [[100, 200, 300, -1], [100, 200, 300, "All"]]
     });
 

@@ -12,6 +12,8 @@ use App\Company;
 use App\Segment;
 use App\Subsegment;
 use App\ThreeSubsegment;
+use App\NominaBasesCalcs;
+use App\Nomina;
 use App\TwoSubsegment;
 use App\UnitOfMeasure;
 use App\ProductPrice;
@@ -33,6 +35,7 @@ class ProductController extends Controller
 
    public function index(request $request,$type = 'todos')
    {
+
     $user       =   auth()->user();
     $sistemas = UserAccess::on("logins")
                 ->join('modulos','modulos.id','id_modulo')

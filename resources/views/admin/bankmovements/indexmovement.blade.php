@@ -37,11 +37,11 @@ label.error{ color: red; font-size: 1em; }
     </div>
 </div>
 <br>
-<div class="container">
+
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-
+                <div class="card-header text-center font-weight-bold h3">Movimientos Bancarios</div>
                 <div class="card-body">
                         <div class="table-responsive">
 
@@ -52,7 +52,8 @@ label.error{ color: red; font-size: 1em; }
                     <table class="table table-light2 table-bordered dataTableclass"  width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Fecha</th>
+                                    <th style="display: none;" class="text-center">Fecha2</th>
+                                    <th style="width: 11%" class="text-center">Fecha</th>
                                     <th class="text-center">Referencia</th>
                                     <th class="text-center">Nº</th>
                                     <th class="text-center">Cuenta</th>
@@ -70,7 +71,8 @@ label.error{ color: red; font-size: 1em; }
                                     @else
                                         @foreach ($detailvouchers as $var)
                                         <tr>
-                                        <td>{{ date('d-m-Y', strtotime( $var->header_date ?? '')) }}</td>
+                                        <td style="display: none;">{{strtotime($var->header_date) ?? ''}}</td>
+                                        <td style="width: 11%">{{ date('d-m-Y', strtotime( $var->header_date ?? '')) }}</td>
                                         <td class="text-center">{{$var->id_header_voucher ?? ''}}</td>
                                         <td>{{$var->account_code_one ?? ''}}.{{$var->account_code_two ?? ''}}.{{$var->account_code_three ?? ''}}.{{$var->account_code_four ?? ''}}</td>
                                         <td>{{$var->account_description ?? ''}}</td>
@@ -101,7 +103,7 @@ label.error{ color: red; font-size: 1em; }
       
                 </div>            
             </div>
-    </div>
+
 </div>
 </div>
 </div>
@@ -267,8 +269,8 @@ label.error{ color: red; font-size: 1em; }
 
 
  $('.dataTableclass').DataTable({
-        "ordering": false,
-        "order": [],
+        "ordering": true,
+        "order": [[0,'desc']],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 

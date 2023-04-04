@@ -82,14 +82,17 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr>
-                <th>Orden</th>
-                <th class="text-center">Factura de Compra</th>
-                <th class="text-center">N° de Control/Serie</th>
+                
+                <th style="display:none;">Fecha2</th>
+                <th style="width: 11%" class="text-center">Fecha</th>
+                <th style="width: 1%">Orden</th>
+                <th style="width: 1%"class="text-center">Factura de Compra</th>
+                <th style="width: 1%"class="text-center">N° de Control/Serie</th>
                 <th class="text-center">Proveedor</th>
                 @if(Auth::user()->id_company == '26')
                 <th class="text-center">Couriertool</th>
                 @endif
-                <th class="text-center">Fecha</th>
+                
                 <th class="text-center">REF</th>
                 <th class="text-center">Total</th>
                 <th ></th>
@@ -113,13 +116,15 @@
 
                         ?>
                          <tr>
-                           <td>{{$expensesandpurchase->id ?? ''}}</td>
-                            <td class="text-center">
+                           <td style="display:none;">{{strtotime( $expensesandpurchase->date ?? '')}}</td>
+                           <td style="width: 11%" class="text-center">{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }} </td>
+                           <td  style="width: 1%" class="text-center">{{$expensesandpurchase->id ?? ''}}</td>
+                            <td style="width: 1%" class="text-center">
                                 <a href="{{ route('expensesandpurchases.create_expense_voucher',[$expensesandpurchase->id,$expensesandpurchase->coin ?? 'bolivares']) }}" title="Ver Detalle" class="text-center text-dark font-weight-bold">
                                     {{$expensesandpurchase->invoice ?? ''}}
                                 </a>
                             </td>
-                            <td class="text-center">{{$expensesandpurchase->serie ?? ''}}</td>
+                            <td style="width: 1%" class="text-center">{{$expensesandpurchase->serie ?? ''}}</td>
                             <td class="text-center">{{$expensesandpurchase->providers['razon_social'] ?? ''}}</td>
 
 
@@ -127,10 +132,6 @@
                             <td class="text-center">{{$expensesandpurchase->movimientofac.' '.$expensesandpurchase->nombrefac.' '.$expensesandpurchase->numerofac}}</td>
 
                             @endif
-
-
-
-                            <td class="text-center">{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }} </td>
                             <td class="text-right">${{number_format($expensesandpurchase->amount_with_iva / $rate ?? 0, 2, ',', '.')}}</td>
                             <td class="text-right">{{number_format($expensesandpurchase->amount_with_iva, 2, ',', '.')}}</td>
                             @if ($expensesandpurchase->status == "C")
@@ -410,9 +411,22 @@
 
 <script>
     $('#dataTable').dataTable( {
-      "ordering": false,
-      "order": [],
-        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+      "ordering": true,
+      "order": [[0,'desc'],[2,'desc'] ],
+      "columnDefs": [
+          { "orderable": false, "targets": 0 },//ocultar para columna 0
+          { "orderable": false, "targets": 1 },//ocultar para columna 1
+          { "orderable": true, "targets": 2 },//ocultar para columna 1
+          { "orderable": false, "targets": 3 },//ocultar para columna 1
+          { "orderable": false, "targets": 4 },//ocultar para columna 1
+          { "orderable": false, "targets": 5 },//ocultar para columna 1
+          { "orderable": false, "targets": 6 },//ocultar para columna 1
+          { "orderable": false, "targets": 7 },//ocultar para columna 1
+          { "orderable": false, "targets": 8 },//ocultar para columna 1
+          { "orderable": false, "targets": 9 }//ocultar para columna 1
+          //`Asi para cada columna`...
+        ],
+      'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     } );
 
 
