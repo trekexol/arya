@@ -10,7 +10,15 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+    <style>
+        .error {
+
+       color: #dc3545;
+       font-size:100%;
+
+
+       }
+       </style>
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -27,13 +35,13 @@
                 <div class="card-header text-center font-weight-bold h3">Registro de Clientes</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('clients.store') }}" enctype="multipart/form-data">
+                    <form method="POST" id="regclient">
                         @csrf
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" required autocomplete="id_user">
-                        
+
                         <div class="form-group row">
                             <label for="type_code" class="col-md-2 col-form-label text-md-right">Código, Cédula / Rif:</label>
-    
+
                                 <div class="col-md-2">
                                     <select class="form-control" name="type_code" id="type_code">
                                         <option value="V-">V-</option>
@@ -48,7 +56,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <input id="cedula_rif" type="text" class="form-control @error('cedula_rif') is-invalid @enderror" name="cedula_rif" value="{{ old('cedula_rif') }}" required autocomplete="cedula_rif">
-    
+
                                     @error('cedula_rif')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -64,7 +72,7 @@
                                 @foreach($vendors as $vendor)
                                     <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
                                 @endforeach
-                              
+
                             </select>
                             </div>
                         </div>
@@ -91,7 +99,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>                               
+                            </div>
 
                         </div>
                         <div class="form-group row">
@@ -181,7 +189,7 @@
 
                               <div class="col-md-2">
                                   <input id="days_credit" type="text" class="form-control @error('days_credit') is-invalid @enderror" name="days_credit" value="{{ 0 ?? old('days_credit') }}"  autocomplete="days_credit">
-  
+
                                   @error('days_credit')
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $message }}</strong>
@@ -189,7 +197,7 @@
                                   @enderror
                               </div>
                         </div>
-                              
+
 
                         <div class="form-group row">
                             <label for="amount_max_credit" class="col-md-2 col-form-label text-md-right">Monto Máximo de Crédito</label>
@@ -214,8 +222,8 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>    
-                             
+                            </div>
+
                         </div>
 
                         <div class="form-group row">
@@ -230,12 +238,12 @@
                                     </span>
                                 @enderror
                             </div>
-                              
+
                               <label for="percentage_retencion_islr" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
 
                               <div class="col-md-3">
                                   <input id="percentage_retencion_islr" type="text" class="form-control @error('percentage_retencion_islr') is-invalid @enderror" name="percentage_retencion_islr" value="{{ old('percentage_retencion_islr') }}"  autocomplete="percentage_retencion_islr">
-  
+
                                   @error('percentage_retencion_islr')
                                       <span class="invalid-feedback" role="alert">
                                           <strong>{{ $message }}</strong>
@@ -243,10 +251,10 @@
                                   @enderror
                               </div>
                         </div>
-                        
+
                         <div class="form-group row">
                             <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
-                                
+
                             <div class="col-sm-3">
                                 <select class="form-control" id="id_cost_center" name="id_cost_center" title="cost_center">
                                     <option value="1">Ninguno</option>
@@ -254,9 +262,9 @@
                                         @foreach ($branches as $var)
                                             <option value="{{ $var->id }}">{{ $var->description }}</option>
                                         @endforeach
-                                        
+
                                     @endif
-                                
+
                                 </select>
                             </div>
                             <label for="email" class="col-md-3 col-form-label text-md-right">Email</label>
@@ -271,10 +279,10 @@
                                 @enderror
                             </div>
                         </div>
-                       
 
-                       
-                        
+
+
+
                         <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-3">
@@ -283,7 +291,7 @@
                                 <button type="submit" class="btn btn-primary">
                                    Registrar Cliente
                                 </button>
-                                
+
                             </div>
                             <div class="col-md-3">
                                 <a href="{{ route('clients') }}" name="danger" type="button" class="btn btn-danger">Cancelar</a>
@@ -297,59 +305,160 @@
 </div>
 @endsection
 @section('validacion')
-    <script>    
-	$(function(){
-        soloAlfaNumerico('code_client');
-        sololetras('country');
-        sololetras('city');
-        soloAlfaNumerico('direction');
-        sololetras('seller');
-    });
-        
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+<script>
+$(function(){
+    soloAlfaNumerico('code_client');
+    sololetras('country');
+    sololetras('city');
+    soloAlfaNumerico('direction');
+    sololetras('seller');
+});
+
+    $("#days_credit_label").hide();
+    $("#days_credit").hide();
+    document.getElementById('days_credit').value = 0;
+
+
+function calc()
+{
+    if (document.getElementById('has_credit').checked)
+    {
+        $("#days_credit_label").show();
+        $("#days_credit").show();
+
+        document.getElementById('days_credit').value = 0;
+    } else {
         $("#days_credit_label").hide();
         $("#days_credit").hide();
         document.getElementById('days_credit').value = 0;
-
-
-    function calc()
-    {
-        if (document.getElementById('has_credit').checked) 
-        {
-            $("#days_credit_label").show();
-            $("#days_credit").show();
-            
-            document.getElementById('days_credit').value = 0;
-        } else {
-            $("#days_credit_label").hide();
-            $("#days_credit").hide();
-            document.getElementById('days_credit').value = 0;
-        }
     }
+}
 
-        $(document).ready(function () {
-            $("#cedula_rif").mask('00000000000000', { reverse: true });
-            
+    $(document).ready(function () {
+
+
+        $("#regclient").validate({
+            rules: {
+                cedula_rif: {
+                    required: true,
+                    maxlength: 20,
+                },
+                name: {
+                    required: true,
+                    maxlength: 80,
+                },
+                country: {
+                    required: true,
+                },
+                city:{
+                    required: true,
+                },
+                direction:{
+                    required: true,
+                },
+                phone1:{
+                    required: true,
+                },
+                days_credit:{
+                    required: true,
+                },
+
+            },
+            messages: {
+                cedula_rif: {
+                    required: "Ingrese Codigo del cliente",
+                    maxlength: "El Codigo no puede ser mayor a 20 digitos"
+                    },
+                name: {
+                    required: "Ingrese Razon Social",
+                    maxlength: "Razon Social no puede Contener mas de 80 caracteres"
+                    },
+                country: {
+                    required: "Ingrese Pais",
+                    },
+                city:{
+                    required: "Ingrese Ciudad",
+                },
+                direction:{
+                    required: "Ingrese Direccion",
+                },
+                phone1:{
+                    required: "Ingrese Numero de Contacto",
+                },
+                days_credit:{
+                    required: "Ingrese Dia de Creditos",
+                },
+            },
+
+
+
+
+    submitHandler: function (form) {
+
+
+
+        $.ajax({
+        type: "post",
+        url: "{{ route('clients.store') }}",
+        dataType: "json",
+        data: $(form).serialize(),
+        success:function(response){
+         if(response.error == true){
+            Swal.fire({
+                    icon: 'info',
+                    title: 'Exito!',
+                    html: response.msg,
+
+
+                    })
+            setTimeout("location.reload()", 2500);
+
+         }else{
+
+            Swal.fire({
+                    icon: 'info',
+                    title: 'Error..',
+                    html: response.msg,
+                    })
+         }
+
+
+
+
+     },
+     error:(response)=>{
+
+
+        Swal.fire({
+                icon: 'error',
+                title: 'Error2...',
+                html: response.msg,
+                });
+     }
         });
-        $(document).ready(function () {
-            $("#phone1").mask('0000 000-0000', { reverse: true });
-            
+
+
+
+        return false; // required to block normal submit since you used ajax
+    }
         });
-        $(document).ready(function () {
-            $("#phone2").mask('0000 000-0000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#amount_max_credit").mask('000.000.000.000.000.000,00', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#percentage_retencion_iva").mask('000', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#percentage_retencion_islr").mask('000', { reverse: true });
-            
-        });
-    </script>
+
+
+
+        $("#cedula_rif").mask('00000000000000', { reverse: true });
+        $("#phone1").mask('0000 000-0000', { reverse: true });
+        $("#phone2").mask('0000 000-0000', { reverse: true });
+        $("#amount_max_credit").mask('000.000.000.000.000.000,00', { reverse: true });
+        $("#percentage_retencion_iva").mask('000', { reverse: true });
+        $("#percentage_retencion_islr").mask('000', { reverse: true });
+
+
+    });
+
+
+</script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
 
