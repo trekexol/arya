@@ -75,7 +75,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
         $expensesandpurchases = ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('id' ,'DESC')
-                                                    ->whereIn('status',['C','X','P'])
+                                                    ->whereIn('status',['C','X','P']) // 0 es eliminada
                                                     ->orderBy(DB::raw('SUBSTR(date,0,4)'),'DESC')
                                                     ->get();
 
@@ -3035,7 +3035,7 @@ class ExpensesAndPurchaseController extends Controller
                         ->where('id_expense',$expense->id)
                         ->update(['status' => 'X']);
 
-        $expense->status = 'X';
+        $expense->status = '0';
         $expense->save();
 
         $historial_expense = new HistorialExpenseController();
