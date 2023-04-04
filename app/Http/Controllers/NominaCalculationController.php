@@ -181,7 +181,7 @@ class NominaCalculationController extends Controller
 
 
         if(isset($amount)){
-            $nomina_calculation->amount = $amount;
+            $nomina_calculation->amount = 1;
         }else{
             $nomina_calculation->amount = 0;
         }
@@ -404,8 +404,8 @@ class NominaCalculationController extends Controller
         $nomina_calculation->id_employee = request('id_employee');
        
         $nomina_calculation->number_receipt = 0;
-        
-        $nomina_calculation->type = 'No';
+        $nomina_calculation->status = 1;
+       // $nomina_calculation->type = 'No';
 
         $nomina = Nomina::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina);
         $employee = Employee::on(Auth::user()->database_name)->find($nomina_calculation->id_employee);

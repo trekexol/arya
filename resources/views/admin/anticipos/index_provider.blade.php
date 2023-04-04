@@ -74,8 +74,9 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                <th class="text-center" style="width: 1%;">ID</th>
+                <th style="display:none;">Fecha2</th>
                 <th class="text-center" width="11%">Fecha/Anticipo</th>
+                <th class="text-center" style="width: 1%;">ID</th>
                 <th class="text-center">Proveedor</th>
                 <th class="text-center">Caja/Banco</th>
                 <th class="text-center" style="width: 1%;">Comp.</th>
@@ -101,8 +102,10 @@
 
                     ?>
                     <tr>
-                        <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
+                        <td style="display:none;">{{strtotime($anticipo->date)}}</td>
                         <td class="text-center">{{date_format(date_create($anticipo->date),"d-m-Y")}}</td>
+                        <td>{{ $anticipo->id }} {{ (isset($anticipo->id_anticipo_restante)) ? 'Restante de: '.$anticipo->id_anticipo_restante : '' }}</td>
+                       
                     @if (isset($anticipo->expenses['serie']))
                         <td class="text-center">{{$anticipo->providers['razon_social'] ?? ''}} , fact({{$anticipo->expenses['serie'] ?? ''}})</td>
                     @else
@@ -173,7 +176,21 @@
     <script>
     $('#dataTable').DataTable({
         "ordering": true,
-        "order": [],
+        "order": [[0,'desc'],[2,'desc'] ],
+        "columnDefs": [
+            { "orderable": false, "targets": 0 },//ocultar para columna 0
+            { "orderable": false, "targets": 1 },//ocultar para columna 1
+            { "orderable": true, "targets": 2 },//ocultar para columna 1
+            { "orderable": false, "targets": 3 },//ocultar para columna 1
+            { "orderable": false, "targets": 4 },//ocultar para columna 1
+            { "orderable": false, "targets": 5 },//ocultar para columna 1
+            { "orderable": false, "targets": 6 },//ocultar para columna 1
+            { "orderable": false, "targets": 7 },//ocultar para columna 1
+            { "orderable": false, "targets": 8 },//ocultar para columna 1
+            { "orderable": false, "targets": 9 },//ocultar para columna 1
+            { "orderable": false, "targets": 10 }//ocultar para columna 1
+            //`Asi para cada columna`...
+        ],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
 
