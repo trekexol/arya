@@ -126,7 +126,7 @@ class ProviderController extends Controller
 
         }catch(\error $error){
             $resp['error'] = false;
-	        $resp['msg'] = 'Verifique el Archivo.';
+	        $resp['msg'] = 'Error.';
 
             return response()->json($resp);
         }

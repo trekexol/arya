@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\UserAccess;
+use Illuminate\Support\Facades\DB;
 
 
 class ExcelController extends Controller
@@ -155,56 +156,27 @@ class ExcelController extends Controller
 
     public function export_combo() // inventario
     {
-         $products = Product::on(Auth::user()->database_name)
-         ->where('status','1')
-         ->where('type','!=','COMBO')
-         ->where('type','!=','SERVICIO')
-         ->select('id as id_combo','id as nombre_combo','id as codigo_comercial_combo','id as precio_venta_combo','id as cantidad_producto','id as id_producto','code_comercial','description')
-         ->get();
+        $sql = 'WITH a AS (SELECT a.id_combo,a.id_product ,a.amount_per_product,b.code_comercial,b.description,price
+        FROM combo_products a, products b
+        WHERE a.id_combo = b.id),
+        b as (SELECT a.id_combo,a.id_product ,b.code_comercial,b.description
+        FROM combo_products a, products b
+        WHERE a.id_product = b.id)
 
-         $global = new GlobalController();
+           SELECT a.id_combo,a.code_comercial as codigo_comercial_combo, a.description as nombre_combo, a.price as precio_venta_combo, a.amount_per_product as cantidad_producto, b.id_product as id_producto, b.code_comercial,b.description
+           FROM a a, b b
+             WHERE a.id_combo = b.id_combo
+             AND a.id_product = b.id_product';
 
-         $last_combo = Product::on(Auth::user()->database_name)
-         ->where('status','1')
-         ->select('id')
-         ->get()->last();
+        $products = DB::connection(Auth::user()->database_name)->select($sql);
 
-         if (!empty($last_combo)) {
-            $id_last_combo = $last_combo->id + 1;
-         } else {
-            $id_last_combo = 1;
-         }
-
-         $cont = 0;
-
-         foreach ($products as $product) {  // ingresar el monto de inventario al array producto por la funciuon $global->consul_prod_invt()
-            /*$buscar_num = $global->consul_prod_invt($product->id);
-
-            if($buscar_num < 0 || $buscar_num == '0' || $buscar_num == 0 || $buscar_num == '' || $buscar_num == ' ' || $buscar_num == false || $buscar_num == NULL) {
-
-             $product->amount = '0.00';
-
-            } else {
-                $product->amount = $buscar_num;
-            }*/
-            $product->precio_venta_combo = '0';
-            $product->cantidad_producto = '0';
-            $product->nombre_combo = '';
-            $product->codigo_comercial_combo = '';
-
-            if ($cont == 0) {
-            $product->id_combo = $id_last_combo;
-            } else{
-            $product->id_combo = '';
-            }
-
-            $cont++;
+        foreach($products as $products){
+            $datoscombos[] = ['id_combo' => $products->id_combo, 'nombre_combo' => $products->nombre_combo, 'codigo_comercial_combo' => $products->codigo_comercial_combo, 'precio_venta_combo' => $products->precio_venta_combo, 'cantidad_producto' => $products->cantidad_producto, 'id_producto' => $products->id_producto, 'codigo_comercial' => $products->code_comercial, 'descripcion' => $products->description];
         }
-
 
          $export = new ExpensesExport([
              ['id_combo','nombre_combo','codigo_comercial_combo','precio_venta_combo','cantidad_producto','id_producto','codigo_comercial','descripcion'],
-              $products
+             $datoscombos
         ]);
 
         return Excel::download($export, 'guia_combos.xlsx');
