@@ -25,7 +25,15 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+    <style>
+        .error {
+
+       color: #dc3545;
+       font-size:100%;
+
+
+       }
+       </style>
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -47,9 +55,9 @@
                         @csrf
 
                         <input id="id_user" type="hidden" class="form-control @error('id_user') is-invalid @enderror" name="id_user" value="{{ Auth::user()->id }}" readonly required autocomplete="id_user">
-                       
+
                         <div class="form-group row">
-                            
+
                             <label for="description" class="col-md-2 col-form-label text-md-right">Descripción</label>
 
                             <div class="col-md-4">
@@ -61,7 +69,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                             <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
                             <div class="col-md-4">
                             <select class="form-control" name="type" id="type">
@@ -69,16 +77,16 @@
                                 <option selected value="MERCANCIA">Mercancía</option>
                                 <option value="MATERIAP">Materia Prima</option>
                                 <option value="COMBO">Combo</option>
-                                
+
                             </select>
                             </div>
 
                         </div>
-                       
+
                         <div class="form-group row">
-                                    
+
                             <label for="segment" class="col-md-2 col-form-label text-md-right">Segmento</label>
-                        
+
                             <div class="col-md-4">
                             <select id="segment"  name="segment" class="form-control" required>
                                 <option value="">Seleccione un Segmento</option>
@@ -95,9 +103,9 @@
                                     </span>
                                 @endif
                             </div>
-                       
+
                             <label for="subsegment" class="col-md-2 col-form-label text-md-right">Sub Segmento</label>
-                        
+
                             <div class="col-md-4">
                                 <select  id="subsegment"  name="Subsegment" class="form-control" >
                                     <option value="">Selecciona un Sub Segmento</option>
@@ -109,12 +117,12 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>  
+                        </div>
 
                         <div class="form-group row">
-                                    
+
                             <label for="segment" class="col-md-2 col-form-label text-md-right">Sub Segmento 2 (Opcional)</label>
-                        
+
                             <div class="col-md-4">
                                 <select  id="twosubsegment"  name="twoSubsegment" class="form-control" >
                                     <option value=""></option>
@@ -127,7 +135,7 @@
                                 @endif
                             </div>
                             <label for="subsegment" class="col-md-2 col-form-label text-md-right">Sub Segmento 3 (Opcional)</label>
-                        
+
                             <div class="col-md-4">
                                 <select  id="threesubsegment"  name="threeSubsegment" class="form-control" >
                                     <option value=""></option>
@@ -139,9 +147,9 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>  
+                        </div>
 
-                       
+
                         <div class="form-group row">
                             <label for="unitofmeasure" class="col-md-2 col-form-label text-md-right">Unidad de Medida</label>
 
@@ -150,7 +158,7 @@
                                 @foreach($unitofmeasures as $var)
                                     <option value="{{ $var->id }}">{{ $var->description }}</option>
                                 @endforeach
-                              
+
                             </select>
                             </div>
                             <label for="code_comercial" class="col-md-2 col-form-label text-md-right">Código Comercial</label>
@@ -166,8 +174,8 @@
                             </div>
                         </div>
 
-                       
-                       
+
+
                         <div class="form-group row">
                             <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
 
@@ -216,12 +224,12 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>                    
+                            </div>
                         </div>
 
-                        
+
                         <div class="form-group row">
-                           
+
                             <label for="money" class="col-md-2 col-form-label text-md-right">Moneda</label>
 
                             <div class="col-md-4">
@@ -232,16 +240,16 @@
                             </div>
 
                             <label for="exento" class="col-md-2 col-form-label text-md-right">exento</label>
-                            
+
                             <div class="form-check">
                                 <input class="form-check-input position-static" type="checkbox" id="exento" name="exento" value="1" aria-label="...">
                             </div>
                             <label for="islr" class="col-md-1 col-form-label text-md-right">Islr</label>
-                            
+
                             <div class="form-check">
                                 <input class="form-check-input position-static" type="checkbox" id="islr" name="islr" value="1" aria-label="...">
                             </div>
-                            
+
                         </div>
 
 
@@ -295,7 +303,7 @@
                                     @enderror
                                 </div>
                            </div>
-                      
+
                             <div class="form-group row">
                                 <div class="col-sm-2">
                                     <label for="capacity">Capacidad de Litros:</label>
@@ -311,7 +319,7 @@
                             </div>
                         </div>
                         @endif
-                       
+
                         <div class="form-group row">
                             <div style="display: none;">
                             <label for="special_impuesto" class="col-md-2 col-form-label text-md-right">Impuesto Especial</label>
@@ -327,12 +335,12 @@
                             </div>
                             </div>
                             <label id="AssociateAccount" for="account" class="col-md-2 col-form-label text-md-right">Asociar a Cuenta:</label>
-                        
+
                             <div id="AssociateAccount2" class="col-md-4">
                             <select id="id_account"  name="id_account" class="form-control" required>
                                 <option value="">Seleccione una Cuenta</option>
                                 @foreach($accounts as $account)
-                                    
+
                                     @if($account->description == 'Mercancia para la Venta')
                                     <option selected value="{{ $account->id }}">{{ $account->description }}</option>
                                     @else
@@ -347,7 +355,7 @@
                                     </span>
                                 @endif
                             </div>
-                                                        
+
                             <label for="cost_average" class="col-md-2 col-form-label text-md-right">Costo Promedio</label>
 
                             <div class="col-md-4">
@@ -364,13 +372,13 @@
                             <label for="imagen" class="col-md-2 col-form-label text-md-right">Subir Foto</label>
                             <div class="col-md-4">
                                 <input id="fotop" style="border:0;" name="fotop" type="file" data-initial-preview="" accept="image/*">
-                             
+
                            <br>
 
                         </div>
                         </div>
-                        
-                        <p id="valueInput"></p> 
+
+                        <p id="valueInput"></p>
                         <br>
 
                         <div class="form-group row mb-0">
@@ -380,8 +388,20 @@
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('products') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                <a href="{{ route('products') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
                             </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="segmento">
+                                    Registrar Segmento
+                                 </button>
+                                </div>
+
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="subsegmento">
+                                    Registrar SubSegmento
+                                 </button>
+                                </div>
                         </div>
                     </form>
                 </div>
@@ -391,11 +411,18 @@
 </div>
 @endsection
 
+<div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content" id="modalfacturas">
+
+        </div>
+    </div>
+  </div>
 
 
 @section('validacion')
-    
-    <script> 
+
+    <script>
 
         function litros(){
             var n1 = document.getElementById('bottle').value;
@@ -405,55 +432,56 @@
             if ( n1 == '' || n1 == null ) {
                 alert("Agregar la cantidad de botellas");
                 exit;
-            }  
-            
-            
+            }
+
+
             if ( n2 == '' || n2 == null ) {
                 alert("Agregar la cantidad de litros o mililitros");
                 exit;
-            }  
+            }
 
-            
+
             if ( n3 == '' || n3 == null ) {
                 alert("Agregar la cantidad de cajas");
                 exit;
-            }  
+            }
 
-            
+
             if ((n1 != null || n1 != '') && (n2 != null || n2 != '') && (n3 != null || n3 != '')) {
                 // var n2 = document.getElementById('xponcetaje').value; // PORCENTAJE
                 var n2_format  = n2.replace(",", "." );
                 var resultado       = (parseFloat(n1) * parseFloat(n3)  * parseFloat(n2_format));
                 document.getElementsByName("Capacidad")[0].value = resultado;
             }
-        } 
-     
+        }
+
         $("#liter").on('blur',function(){
             litros();
-        }); 
-        
+        });
+
         $("#bottle").on('blur',function(){
             litros();
-        }); 
-        
+        });
+
         $("#box").on('blur',function(){
             litros();
-        }); 
-        
+        });
+
 
         $(document).ready(function () {
             $("#liter").mask('000.000.000.000.000,00', { reverse: true });
-            
+
         });
         $(document).ready(function () {
             $("#degree").mask('000.000.000.000.000,00', { reverse: true });
-            
+
         });
 
-	
+
     </script>
 @endsection
 @section('javascript')
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.6/js/fileinput.min.js"></script>
 <!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`). Uncomment if needed. -->
@@ -462,7 +490,7 @@
 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-fileinput@5.2.6/js/locales/LANG.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.5.0/js/locales/es.min.js" integrity="sha512-q2lXTQuccVsDwaOpJNHbGDL2c5DEK706u1MCjKuGAG4zz+q1Sja3l2RuymU3ySE6RfmTYZ/V4wY5Ol71sRvvWA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script>  
+<script>
 
         $("#fotop").fileinput({
             language: 'es',
@@ -472,7 +500,7 @@
             showClose: false,
             initialPreviewAsData: true,
             dropZoneEnabled: false,
-            theme: "fas"    
+            theme: "fas"
         });
 
         $(".fotop").fileinput({
@@ -483,22 +511,22 @@
           showClose: false,
           initialPreviewAsData: true,
           dropZoneEnabled: false,
-          theme: "fas"    
+          theme: "fas"
       });
 
         $("#type").on('change',function(){
             var type = $(this).val();
-          
+
             if(type == 'SERVICIO'){
                 $("#AssociateAccount").hide();
-                
+
                 $('#id_account').removeAttr('required');
                 $("#AssociateAccount2").hide();
             }else{
                 $("#AssociateAccount").show();
                 $("#AssociateAccount2").show();
                 $('#id_account').prop('required',true);
-                
+
 
             }
         });
@@ -506,7 +534,7 @@
         $("#segment").on('change',function(){
             var segment_id = $(this).val();
             $("#subsegment").val("");
-            
+
             // alert(segment_id);
             getSubsegment(segment_id);
         });
@@ -534,12 +562,12 @@
                     // console.log(htmlOptions);
                     subsegment.html('');
                     subsegment.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
-                    
+
                 }
             })
         }
@@ -553,7 +581,7 @@
 
 
         function get2Subsegment(subsegment_id){
-           
+
             $.ajax({
                 url:"{{ route('twosubsegments.list','') }}" + '/' + subsegment_id,
                 beforSend:()=>{
@@ -574,12 +602,12 @@
                     // console.log(htmlOptions);
                     subsegment.html('');
                     subsegment.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
-                    
+
                 }
             })
         }
@@ -595,7 +623,7 @@
 
 
         function get3Subsegment(subsegment_id){
-           
+
             $.ajax({
                 url:"{{ route('threesubsegments.list','') }}" + '/' + subsegment_id,
                 beforSend:()=>{
@@ -616,15 +644,46 @@
                     // console.log(htmlOptions);
                     subsegment.html('');
                     subsegment.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
-                    
+
                 }
             })
         }
     </script>
+
+<script type="text/javascript">
+
+
+    $(document).ready(function(){
+
+     /********MODAL CUANDO CONSIGUE MATCH**********/
+
+    $('[name="matchvalue"]').click(function(e){
+        e.preventDefault();
+       var value = $(this).data('id');
+       var url = "{{ route('modalsegmentos') }}";
+
+     $.post(url,{value: value,"_token": "{{ csrf_token() }}"},function(data){
+            $("#modalfacturas").empty().append(data);
+
+          });
+
+
+
+     });
+
+
+
+
+
+    });
+        </script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @endsection
 

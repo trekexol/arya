@@ -301,6 +301,9 @@ Route::group(["prefix"=>'products'],function(){
     Route::post('storeprice','ProductController@storeprice')->name('products.storeprice');
     Route::get('listprice/{code_id?}','ProductController@listprice')->name('products.listprice');
 
+    Route::post('modalsegmentos','ProductController@modalsegmentos')->name('modalsegmentos');
+
+
 });
 
 Route::group(["prefix"=>'productsreceipt'],function(){
