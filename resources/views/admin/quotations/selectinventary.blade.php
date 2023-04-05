@@ -2,7 +2,7 @@
 
 @section('header')
 
-<style> 
+<style>
      .krajee-default .file-caption-info,.krajee-default .file-size-info{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:0px;height:0px;margin:auto}
      .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-image,.file-zoom-content>.file-object.type-video{max-width:100%;max-height:100%;width:auto}
      .file-zoom-content>.file-object.type-flash,.file-zoom-content>.file-object.type-video{height:100%}
@@ -38,7 +38,7 @@
      .file-preview-object,.file-preview-other-frame,.kv-zoom-body{display:flex;align-items:center;justify-content:center}
      .kv-file-remove i {display: none; position: fixed;}
      .fa-trash-alt i {display: none; position: fixed;}
-    
+
         canvas{
             display: none;
             position: fixed;
@@ -52,12 +52,12 @@
         }
 
         .btnimg {
-         color:  rgb(78, 115, 223);opacity:0.8; 
+         color:  rgb(78, 115, 223);opacity:0.8;
          background-color: transparent;
          border-style: none !important;
         }
-        
-        .btnimg:hover { 
+
+        .btnimg:hover {
          background-color: rgb(253, 253, 253);opacity:0.8;
         }
     </style>
@@ -67,9 +67,14 @@
 
 <div class="container-fluid">
     <div class="row py-lg-2">
-       
-        <div class="col-sm-10">
+
+        <div class="col-sm-8">
             <h2>Seleccione un Producto del Inventario</h2>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" onclick="myFunction()">
+                Registrar Producto
+             </button>
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="type" id="type">
@@ -78,17 +83,17 @@
                         <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
                     @endif
                     @if ($type == 'todos')
-                        <option disabled selected value="{{$type}}">TODOS</option>    
+                        <option disabled selected value="{{$type}}">TODOS</option>
                     @endif
                     @if ($type == 'MERCANCIA' or $type == 'COMBO' or $type == 'SERVICIO')
-                    <option disabled selected value="{{$type}}">{{$type}}</option> 
+                    <option disabled selected value="{{$type}}">{{$type}}</option>
                     @endif
                     <option value="todos">-------------</option>
                     <option value="todos">TODOS</option>
                     <option value="MERCANCIA">MERCANCIA</option>
                     <option value="MATERIAP">MATERIA PRIMA</option>
                     <option value="COMBO">COMBO</option>
-                    <option value="SERVICIO">SERVICIO</option>  
+                    <option value="SERVICIO">SERVICIO</option>
                 @else
                     <option value="todos">TODOS</option>
                     <option value="MERCANCIA">MERCANCIA</option>
@@ -96,11 +101,11 @@
                     <option value="COMBO">COMBO</option>
                     <option value="SERVICIO">SERVICIO</option>
                 @endif
-                
+
 
             </select>
         </div>
-    
+
     </div>
 </div>
 
@@ -113,7 +118,7 @@
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-    
+
     <div class="card-body">
         <div class="container">
             @if (session('flash'))
@@ -122,13 +127,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
         @endif
         </div>
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-            <tr> 
+            <tr>
                 <th class="text-center"></th>
                 <th class="text-center">ID</th>
                 <th class="text-center">Código Comercial</th>
@@ -139,16 +144,16 @@
                 <th class="text-center">Precio Moneda</th>
                 <th class="text-center">T.Moneda</th>
                 <th class="text-center" width="1%">Foto del Producto</th>
-                
-              
-                
-                
+
+
+
+
             </tr>
             </thead>
-            
+
             <tbody>
                 @if (empty($inventories))
-                @else  
+                @else
                     @foreach ($inventories as $var)
                         <tr>
                             <td>
@@ -159,16 +164,16 @@
                             <td>{{ $var->description}}</td>
                             <td>{{ $var->type ?? ''}}</td>
                             <td>{{ $var->amount ?? 0}}</td>
-                           
+
                             @if($var->money != 'Bs')
                                 <td style="text-align: right">{{number_format($var->price * $bcv_quotation_product, 2, ',', '.')}}</td>
-                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td> 
+                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
                             @else
-                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td> 
-                                <td style="text-align: right"></td> 
+                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
+                                <td style="text-align: right"></td>
                             @endif
-                            
-                           
+
+
                             @if($var->money == "D")
                                 <td>Dolar</td>
                             @else
@@ -180,13 +185,13 @@
                                 <!--arya/storage/app/public/img/-->
                                 <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
                                 <div class="file-footer-buttons">
-                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>  
+                                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
 
-                            </td> 
-                            
-                        </tr>     
-                    @endforeach   
+                            </td>
+
+                        </tr>
+                    @endforeach
                 @endif
             </tbody>
         </table>
@@ -208,7 +213,7 @@
                     <section>
                         <canvas id="canvas"></canvas>
                         <div class="full-img">
-                        <img src="" alt="" id="myImage" class="myImage">      
+                        <img src="" alt="" id="myImage" class="myImage">
                         </div>
                     </section>
                 </main>
@@ -216,7 +221,7 @@
     </div>
   </div>
 </div>
-  
+
 @endsection
 @section('javascript')
     <script>
@@ -232,9 +237,9 @@
         });
 
 
-     
+
         function loadimg (url){
-        
+
             const domString = url
             //console.log(domString)
             var ctx = canvas.getContext('2d')
@@ -243,7 +248,13 @@
             img.onload = function(){
             document.getElementById('myImage').setAttribute('src',domString)
             }
-        }   
-        
-    </script> 
+        }
+
+        urlp = "{{route('products.create')}}";
+
+        function myFunction() {
+            window.open(urlp, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=1000,left=1000,width=1000,height=1000");
+        }
+
+    </script>
 @endsection
