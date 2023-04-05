@@ -19,10 +19,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Unique;
+use Illuminate\Support\Facades\View;
 
 class ProductController extends Controller
 {
- 
+
     public function __construct(){
 
         $this->middleware('auth');
@@ -42,7 +43,7 @@ class ProductController extends Controller
                 ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->get();
-       
+
     $agregarmiddleware = $request->get('agregarmiddleware');
     $actualizarmiddleware = $request->get('actualizarmiddleware');
     $eliminarmiddleware = $request->get('eliminarmiddleware');
@@ -55,12 +56,12 @@ class ProductController extends Controller
         if ($type == 'todos') {
         $cond = '!=';
         $valor = null;
-        } 
+        }
 
         if ($type == 'MERCANCIA') {
             $cond = '=';
             $valor = $type;
-        }   
+        }
         if ($type == 'MATERIAP') {
             $cond = '=';
             $valor = $type;
@@ -68,11 +69,11 @@ class ProductController extends Controller
         if ($type == 'COMBO') {
             $cond = '=';
             $valor = $type;
-        }   
+        }
         if ($type == 'SERVICIO') {
             $cond = '=';
             $valor = $type;
-        }  
+        }
 
         $products = Product::on(Auth::user()->database_name)
         ->where('type',$cond,$valor)
@@ -80,7 +81,7 @@ class ProductController extends Controller
         ->orderBy('status','DESC')
         ->orderBy('id' ,'DESC')->get();
 
-      
+
        return view('admin.products.index',compact('namemodulomiddleware','sistemas','products','company','type','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
@@ -98,7 +99,7 @@ class ProductController extends Controller
        $products = ProductPrice::on(Auth::user()->database_name)->orderBy('id' ,'ASC')->where("id_product",$product_detail->id)->get();
 
        if(empty($products)){
-           
+
         return view('admin.index');
        } else {
         return view('admin.products.productprices',compact('agregarmiddleware','actualizarmiddleware','products','product_detail'));
@@ -117,7 +118,7 @@ class ProductController extends Controller
        $users_role =   $user->role_id;
 
            $product_detail        =   Product::on(Auth::user()->database_name)->find($id);
-  
+
        return view('admin.products.createprice',compact('product_detail'));
     } else{
         return redirect('/products')->withDanger('No Tiene Permiso!');
@@ -126,7 +127,7 @@ class ProductController extends Controller
 
    public function editprice(request $request,$id)
    {
-    
+
     if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
     $product = ProductPrice::on(Auth::user()->database_name)->find($id);
     $product_detail        =   Product::on(Auth::user()->database_name)->where('id',$product->id_product)->get()->first();
@@ -137,7 +138,7 @@ class ProductController extends Controller
     }
    }
 
- 
+
     public function updateproduct($id,Request $request)
     {
         if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
@@ -146,7 +147,7 @@ class ProductController extends Controller
         $var->price = $valor_sin_formato_price;
 
         $var->save();
-        
+
         $id_producto     = request('id_product');
 
         return \redirect()->route('products.productprices',$id_producto)->withSuccess('Actualizacion Exitosa!');
@@ -163,7 +164,7 @@ class ProductController extends Controller
         $id     = request('id_product');
           $valor_sin_formato_precio =   trim(request('Precio'));
 
-            
+
             $var = new ProductPrice();
             $var->setConnection(Auth::user()->database_name);
             $var->id_product        = $id;
@@ -182,7 +183,7 @@ class ProductController extends Controller
 
         //validar si la peticion es asincrona
         if($request->ajax()){
-            try{                
+            try{
                 $productprice = ProductPrice::on(Auth::user()->database_name)->select('id','price')->where('id_product',$code_id)->orderBy('price','asc')->get();
                 return response()->json($productprice,200);
             }catch(Throwable $th){
@@ -192,14 +193,14 @@ class ProductController extends Controller
 
     }
 
-  
+
    public function create(request $request)
    {
     if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->pluck('description','id')->toArray();
-      
+
         $subsegments  = Subsegment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
-     
+
         $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
         $accounts = Account::on(Auth::user()->database_name)->select('id','description')
@@ -215,17 +216,17 @@ class ProductController extends Controller
     }else{
         return redirect('/products')->withDanger('No Tiene Permiso!');
     }
- 
+
     }
 
-  
+
    public function store(Request $request)
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
 
             $rules = [
-  
+
             'segment'         =>'required',
             'unit_of_measure_id'         =>'required',
             'type'         =>'required',
@@ -248,7 +249,7 @@ class ProductController extends Controller
                 'code_comercial.required' => 'Ingrese un codigo comercial',
                 'code_comercial.unique' => 'El codigo comercial ya existe.',
                 'id_account.required' => 'Seleccione una Cuenta.',
-           
+
             ];
             $this->validate($request, $rules, $messages);
 
@@ -261,12 +262,12 @@ class ProductController extends Controller
         $var->subsegment_id= request('Subsegment');
         $var->unit_of_measure_id = request('unit_of_measure_id');
         $var->code_comercial = request('code_comercial');
-        
+
         $product_exist  =   Product::on(Auth::user()->database_name)->where('code_comercial',request('code_comercial'))->first();
-        
+
         if (!empty($product_exist)) {
-            
-           return redirect('/products/register')->withSuccess('El Codigo Comercial '.request('code_comercial').' Ya se encuentra registrado!');  
+
+           return redirect('/products/register')->withSuccess('El Codigo Comercial '.request('code_comercial').' Ya se encuentra registrado!');
            //return \redirect()->route('products.create');
         }
 
@@ -282,14 +283,14 @@ class ProductController extends Controller
         $valor_sin_formato_price_buy = request('price_buy');
         $valor_sin_formato_cost_average = request('cost_average');
         $valor_sin_formato_special_impuesto = request('special_impuesto');
-        
+
         //Empreas licores
         $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));
         $valor_sin_formato_liter            = trim(str_replace(',', '.', str_replace('.', '',request('Litros') ?? 0)));
         $valor_sin_formato_capacity         = trim(str_replace(',', '.', str_replace('.', '',request('Capacidad') ?? 0)));
         //fin Empreas licores
-        
-        
+
+
         $var->price = $valor_sin_formato_price;
         $var->price_buy = $valor_sin_formato_price_buy;
         $var->cost_average = $valor_sin_formato_cost_average;
@@ -301,7 +302,7 @@ class ProductController extends Controller
         }else{
             $var->exento = true;
         }
-        
+
         $islr = request('islr');
         if($islr == null){
             $var->islr = false;
@@ -331,27 +332,27 @@ class ProductController extends Controller
         ->select('products.*')
         ->get()->last();  // consulta el ultimo producto creado para guardarlo en el historial
 
-        
+
         $global = new GlobalController;
 
         //Historial del Inventario producto creado
         $date = Carbon::now();
-        $date = $date->format('Y-m-d');  
-        
+        $date = $date->format('Y-m-d');
+
         $global->transaction_inv('creado',$id_product->id,'inicio',0,$valor_sin_formato_price_buy,$date,1,1,0,0,0,0,0); // guardando registro en historial
 
         // fin Historial del Inventario producto creado
 
         //guardar foto del producto creado----------------------------
         $foto = $global->setCaratula($request->fotop,$id_product->id,$id_product->code_comercial);
-         
+
 
         if($foto != 'false'){// guardar ruta de foto en el producto creado
-           
+
             Product::on(Auth::user()->database_name)
             ->where('id',$id_product->id)
             ->update(['photo_product' => $foto]);
-            
+
         }
 
         //fin foto------------------------
@@ -380,17 +381,17 @@ class ProductController extends Controller
     if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
 
         $company = Company::on(Auth::user()->database_name)->find(1);
-    
+
         $product = Product::on(Auth::user()->database_name)->find($id);
-        
+
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->get();
-       
+
         $subsegments  = Subsegment::on(Auth::user()->database_name)->where('segment_id',$product->segment_id)->orderBY('description','asc')->get();
 
         $twosubsegments  = TwoSubsegment::on(Auth::user()->database_name)->where('subsegment_id',$product->subsegment_id)->orderBY('description','asc')->get();
-     
+
         $threesubsegments  = ThreeSubsegment::on(Auth::user()->database_name)->where('twosubsegment_id',$product->twosubsegment_id)->orderBY('description','asc')->get();
-     
+
         $unitofmeasures   = UnitOfMeasure::on(Auth::user()->database_name)->orderBY('description','asc')->get();
 
         $accounts = Account::on(Auth::user()->database_name)->select('id','description')
@@ -400,7 +401,7 @@ class ProductController extends Controller
                                 ->where('code_four',1)
                                 ->where('code_five', '<>',0)
                                 ->get();
-       
+
         return view('admin.products.edit',compact('accounts','threesubsegments','twosubsegments','product','segments','subsegments','unitofmeasures','company'));
     } else{
         return redirect('/products')->withDanger('No Tiene Permiso!');
@@ -416,26 +417,26 @@ class ProductController extends Controller
     $vars_status = $vars->status;
     $vars_exento = $vars->exento;
     $vars_islr = $vars->islr;
-  
+
     $data = request()->validate([
-        
-       
+
+
         'segment'         =>'required',
         'unit_of_measure_id'         =>'required',
 
 
         'type'         =>'required',
         'description'         =>'required',
-      
+
         'price'         =>'required',
         'price_buy'         =>'required',
         'cost_average'         =>'required',
 
         'money'         =>'required',
-      
+
         'special_impuesto'         =>'required',
         'status'         =>'required',
-       
+
     ]);
 
     $var = Product::on(Auth::user()->database_name)->findOrFail($id);
@@ -459,8 +460,8 @@ class ProductController extends Controller
     }else{
         $var->threesubsegment_id= request('threeSubsegment');
     }
-    
-    
+
+
     $var->unit_of_measure_id = request('unit_of_measure_id');
 
     $var->code_comercial = request('code_comercial');
@@ -471,13 +472,13 @@ class ProductController extends Controller
     $valor_sin_formato_price_buy = request('price_buy');
     $valor_sin_formato_cost_average = request('cost_average');
     $valor_sin_formato_special_impuesto = request('special_impuesto');
-       
+
     //Empreas licores
     $valor_sin_formato_degree           = trim(str_replace(',', '.', str_replace('.', '',request('Grado') ?? 0)));
     $valor_sin_formato_liter            = trim(str_replace(',', '.', str_replace('.', '',request('Litros') ?? 0)));
     $valor_sin_formato_capacity         = trim(str_replace(',', '.', str_replace('.', '',request('Capacidad') ?? 0)));
     //fin Empreas licores
-    
+
 
     $var->price = $valor_sin_formato_price;
     $var->price_buy = $valor_sin_formato_price_buy;
@@ -489,11 +490,11 @@ class ProductController extends Controller
         $foto = $global->setCaratulaup($request->fotop,$var->id,$var->code_comercial,$fotoname);
 
         if($foto != 'false'){// guardar ruta de foto en el producto creado
-           
+
             Product::on(Auth::user()->database_name)
             ->where('id',$var->id)
             ->update(['photo_product' => $foto]);
-            
+
         }
 
         //fin foto------------------------
@@ -518,7 +519,7 @@ class ProductController extends Controller
     if($request->id_account != null && ($request->id_account != 'actual')){
         $var->id_account = $request->id_account;
     }
-   
+
     if(request('status') == null){
         $var->status = $vars_status;
     }else{
@@ -547,14 +548,14 @@ class ProductController extends Controller
    {
     if(Auth::user()->role_id == '1' || $request->get('eliminarmiddleware') == '1'){
 
-        $product = Product::on(Auth::user()->database_name)->find(request('id_product_modal')); 
+        $product = Product::on(Auth::user()->database_name)->find(request('id_product_modal'));
 
         if(isset($product)){
 
             $product->status = 'X';
 
             $product->save();
-    
+
             return redirect('/products')->withSuccess('Se ha Deshabilitado el Producto Correctamente!!');
         }
 
@@ -562,6 +563,33 @@ class ProductController extends Controller
         return redirect('/products')->withDanger('No Tiene Permiso!');
     }
    }
+
+
+
+   public function modalsegmentos(Request $request){
+
+
+
+
+    if($request->value == 'segmento'){
+
+        $data = $request->value;
+
+        return View::make('admin.products.tablasegmento',compact('data'))->render();
+
+
+    }elseif($request->value == 'subsegmento'){
+
+        $data = $request->value;
+        $segments   = Segment::on(Auth::user()->database_name)->orderBy('description', 'asc')->get();
+        return View::make('admin.products.tablasegmento',compact('data','segments'))->render();
+
+
+    }
+
+
+
+    }
 
 
 }
