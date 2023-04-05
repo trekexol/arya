@@ -57,7 +57,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr> 
-                <th class="text-center">Cedula</th>
+                <th class="text-center">Cédula</th>
                 <th class="text-center">Nombres</th>
                 <th class="text-center">Monto</th>
                 <th class="text-center">Salario Neto</th>
