@@ -321,13 +321,25 @@ class PdfNominaController extends Controller
 
         if(isset($nomina)){
 
-            $employees = Employee::on(Auth::user()->database_name)
-            ->where('status','!=','X')
-            ->where('status','!=','0')
-            ->where('status','!=','5')
-            ->where('nomina_type_id',$nomina->nomina_type_id)
-            ->orderby('nombres', 'asc')
-            ->get();
+
+            if ($nomina->nomina_type_id == '1'){
+                $employees = Employee::on(Auth::user()->database_name)
+                ->where('status','!=','X')
+                ->where('status','!=','0')
+                ->where('status','!=','5')
+                ->orderby('nombres', 'asc')
+                ->get();
+    
+            } else {
+                $employees = Employee::on(Auth::user()->database_name)
+                ->where('status','!=','X')
+                ->where('status','!=','0')
+                ->where('status','!=','5')
+                ->where('nomina_type_id',$nomina->nomina_type_id)
+                ->orderby('nombres', 'asc')
+                ->get();
+    
+            }
 
 
             $nominaController = new NominaController();
@@ -351,6 +363,8 @@ class PdfNominaController extends Controller
                 $amount_total_bono_medico = 0;
                 $amount_total_bono_alim = 0;
                 $amount_total_bono_transporte = 0;
+
+                $amount_total_antc = 0;
 
                 $amount_total_otras_asignaciones = 0;
                 $amount_total_otras_deducciones = 0;
@@ -379,6 +393,12 @@ class PdfNominaController extends Controller
                                 $amount_total_asignacion += $calculos->amount;
                             } else {
                                 $amount_total_asignacion += 0;
+                            }
+
+                            if($concepto->abbreviation == 'ANTC' and $concepto->sign == 'A'){
+                                $amount_total_antc += $calculos->amount;
+                            } else {
+                                $amount_total_antc += 0;
                             }
 
                             if($concepto->abbreviation == 'BALIM' and $concepto->sign == 'A'){
@@ -452,6 +472,7 @@ class PdfNominaController extends Controller
                         } else {
 
                             $amount_total_asignacion += 0;
+                            $amount_total_antc += 0;
                             $amount_total_otras_deducciones += 0;
                             $amount_total_otras_asignaciones += 0;
                             $amount_total_deduccion_ince += 0;
@@ -461,13 +482,14 @@ class PdfNominaController extends Controller
                             $amount_total_bono_transporte += 0;
                             $amount_total_bono_medico += 0;
                             $amount_total_bono_alim += 0;
+                            
 
                         }
 
                     }
 
                     //$amount_total_asignacion_general = $amount_total_asignacion + $amount_total_otras_asignaciones;
-                    $amount_total_asignacion_m_deducciones = $amount_total_asignacion - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
+                    $amount_total_asignacion_m_deducciones = ($amount_total_asignacion + $amount_total_antc) - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones);
 
 
                     $employee->asignacion = $amount_total_asignacion;

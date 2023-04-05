@@ -38,7 +38,7 @@
       <th style="text-align: left; font-weight: normal; width: 90%; border-color: white; font-weight: bold;"><h4>{{Auth::user()->company->razon_social ?? ''}}  <h5>{{Auth::user()->company->code_rif ?? ''}}</h5> </h4></th>    </tr> 
   </table>
   <br>
-  <span><b>Nómina: {{ $nomina->id }}</b></span>
+  <span><b>Nómina: {{ $nomina->id }} {{$nomina->type}}</b></span>
   <br>
   <span><b>Descripcción: {{ $nomina->description }}</b></span>
   <br>
@@ -114,8 +114,14 @@ $asignaciones = $employee->bono_medico+$employee->bono_alim+$employee->bono_tran
 
 $total_general = $asignaciones - $deducciones;
 
+
+if ($employee->asignacion == 0){
+
+  $employee->asignacion = $monto_neto;
+} 
+
 ?>
-  @if ($employee->asignacion > 0)
+
     <tr>
       <td style="text-align: center;"> {{$employee->id_empleado}}</td>
       <td style="text-align: center;"> {{$employee->nombres}} {{$employee->apellidos}}</td>
@@ -154,7 +160,7 @@ $total_asignaciones_global += number_format($asignaciones, 2, '.', '');
 $total_total_general_global += number_format($total_general, 2, '.', '');
 ?>
 
-  @endif
+
 @endforeach
   </tbody>
   <tfoot>
