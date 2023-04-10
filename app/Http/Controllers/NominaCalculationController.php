@@ -181,7 +181,7 @@ class NominaCalculationController extends Controller
 
 
         if(isset($amount)){
-            $nomina_calculation->amount = $amount * $nomina_calculation->cantidad;
+            $nomina_calculation->amount = $amount * $cantidad;
         }else{
             $nomina_calculation->amount = 0;
         }
