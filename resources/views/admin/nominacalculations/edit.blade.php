@@ -94,7 +94,14 @@
                                     <div id="cantidad_form" class="form-group row">
                                         <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Cantidad:</label>
                                         <div class="col-md-4">
-                                            <input id="cantidad" type="text" value="{{ number_format($nomina_calculation->cantidad, 2, ',', '.') ?? 0 }}" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad" required>
+                                            <?php
+                                            if (isset($nomina_calculation->cantidad)){
+                                                if ($nomina_calculation->cantidad == 0){
+                                                    $nomina_calculation->cantidad = 1;
+                                                }
+                                            } 
+                                            ?>
+                                            <input id="cantidad" type="text" value="{{ number_format($nomina_calculation->cantidad, 2, ',', '.') ?? 1 }}" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad" required>
                                         </div>
                                     </div>
                                     <div id="amount_form" class="form-group row">
