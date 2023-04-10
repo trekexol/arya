@@ -889,7 +889,7 @@ class ExpensesAndPurchaseController extends Controller
                 $expense->base_imponible = $base_imponible;
             }else{
                 $expense->total_factura = $total;
-                $expense->base_imponible = $total;
+                $expense->base_imponible = $base_imponible;
             }
 
 
