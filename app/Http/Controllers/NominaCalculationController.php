@@ -181,7 +181,7 @@ class NominaCalculationController extends Controller
 
 
         if(isset($amount)){
-            $nomina_calculation->amount = $amount * $cantidad;
+            $nomina_calculation->amount = $amount * $nomina_calculation->cantidad;
         }else{
             $nomina_calculation->amount = 0;
         }
@@ -440,10 +440,10 @@ class NominaCalculationController extends Controller
             if($cantidad != 0){
                 $nomina_calculation->cantidad = $cantidad;
             }else{
-                $nomina_calculation->cantidad = 0;
+                $nomina_calculation->cantidad = 1;
             }
         }else{
-            $nomina_calculation->cantidad = 0;
+            $nomina_calculation->cantidad = 1;
         }
 
         
@@ -455,7 +455,7 @@ class NominaCalculationController extends Controller
         //$amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation,$nominabases);
 
         if(isset($amount)){
-            $nomina_calculation->amount = $amount * $cantidad; 
+            $nomina_calculation->amount = $amount * $nomina_calculation->cantidad; 
         }else{
             $nomina_calculation->amount = 0;
         }
