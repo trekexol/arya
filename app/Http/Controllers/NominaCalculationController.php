@@ -122,7 +122,10 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation = new NominaCalculation();
         $nomina_calculation->setConnection(Auth::user()->database_name);
-        $amount = request('monto');
+        $amount = str_replace(',', '.', str_replace('.', '', request('monto')));
+        $days = request('days');
+        $hours = request('hours');
+        $cantidad = str_replace(',', '.', str_replace('.', '', request('cantidad')));
 
         $nomina_calculation->id_nomina = request('id_nomina');
         $nomina_calculation->id_nomina_concept = request('id_nomina_concept');
@@ -139,10 +142,7 @@ class NominaCalculationController extends Controller
         $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
         
         
-        $days = request('days');
-        $hours = request('hours');
-        $cantidad = str_replace(',', '.', str_replace('.', '', request('cantidad')));
-         
+
         if(isset($days)){
             if($days != 0){
                 $nomina_calculation->days = $days;
