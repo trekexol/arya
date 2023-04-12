@@ -74,11 +74,13 @@ class InvoiceController extends Controller
             foreach ($data as $key) {
      
                
-                $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key->number_invoice)
+                $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key['number_invoice'])
                 ->select('number_invoice')
                 ->first(); 
 
-                if (empty($quotations_valid)) {
+                dd($key['number_invoice']);
+
+               /* if (empty($quotations_valid)) {
                       ///Guardando cabecera
                       $var = new Quotation();
                       $var->setConnection(Auth::user()->database_name);
@@ -197,7 +199,7 @@ class InvoiceController extends Controller
                   
 
                
-                } 
+                } */
 
                     
                                                     
