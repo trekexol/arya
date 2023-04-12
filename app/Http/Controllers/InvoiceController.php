@@ -40,16 +40,13 @@ class InvoiceController extends Controller
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 	    if ($company_user == 26){ // 26 NORTH D CORP
               
-            //FACTURA CABECERA
+     
             $ch = curl_init();
             //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
             curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
             curl_setopt($ch, CURLOPT_HEADER, 0); 
             $data = curl_exec($ch); 
- 
-           // print_r(json_decode($data));
-           // $respuesta = json_decode($data, true);
             $data = json_decode($data);
 
            
@@ -59,6 +56,18 @@ class InvoiceController extends Controller
 
             } else {
            
+                //FACTURA CABECERA
+                $ch = curl_init();
+                //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
+                curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+                curl_setopt($ch, CURLOPT_HEADER, 0); 
+                $data = curl_exec($ch); 
+     
+               // print_r(json_decode($data));
+               // $respuesta = json_decode($data, true);
+                $data = json_decode($data);
+
 
             //FACTURA DETALLE
             $cd = curl_init();
