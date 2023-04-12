@@ -40,47 +40,44 @@ class InvoiceController extends Controller
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 	    if ($company_user == 26){ // 26 NORTH D CORP
               
-     
+            //FACTURA CABECERA
             $ch = curl_init();
             //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
             curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
             curl_setopt($ch, CURLOPT_HEADER, 0); 
             $data = curl_exec($ch); 
+ 
+           // print_r(json_decode($data));
+           // $respuesta = json_decode($data, true);
             $data = json_decode($data);
 
-           
+
             if (isset($data->mensaje)) {
               
                 $msg = 'No hay facturas registradas';
 
             } else {
            
-                //FACTURA CABECERA
-                $ch = curl_init();
-                //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
-                curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-                curl_setopt($ch, CURLOPT_HEADER, 0); 
-                $data = curl_exec($ch); 
-     
-               // print_r(json_decode($data));
-               // $respuesta = json_decode($data, true);
-                $data = json_decode($data);
 
-
-
+            //FACTURA DETALLE
+            $cd = curl_init();
+            //curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php"); 
+            curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");  
+            curl_setopt($cd, CURLOPT_RETURNTRANSFER, true); 
+            curl_setopt($cd, CURLOPT_HEADER, 0); 
+            $data2 = curl_exec($cd); 
+            // print_r(json_decode($data2));
+            // $respuesta = json_decode($data2, true);
+            $data2 = json_decode($data2);
 
             foreach ($data as $key) {
-     
                
-                $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key['number_invoice'])
+                $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key->number_invoice)
                 ->select('number_invoice')
                 ->first(); 
 
-                dd($key['number_invoice']);
-
-               /* if (empty($quotations_valid)) {
+                if (empty($quotations_valid)) {
                       ///Guardando cabecera
                       $var = new Quotation();
                       $var->setConnection(Auth::user()->database_name);
@@ -161,21 +158,8 @@ class InvoiceController extends Controller
                       $var->date_expiration = $key->date_expiration;
                       $var->save(); 
 
-
-                       //FACTURA DETALLE
-                        $cd = curl_init();
-                        curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php"); 
-                        //curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");  
-                        curl_setopt($cd, CURLOPT_RETURNTRANSFER, true); 
-                        curl_setopt($cd, CURLOPT_HEADER, 0); 
-                        $data2 = curl_exec($cd); 
-                        // print_r(json_decode($data2));
-                        // $respuesta = json_decode($data2, true);
-                        $data2 = json_decode($data2);
-
-                        
                       ///////DETALLES DE LA FACTURA 
-                      foreach ($data2->items2 as $key2) {
+                      foreach ($data2 as $key2) {
 
                         if ($key->id == $key2->id_quotation) {
 
@@ -194,22 +178,12 @@ class InvoiceController extends Controller
                             $detail->id_inventory_histories = $key2->id_inventory_histories;
                             $detail->save();
                         }
-                    
                     }
-                  
-
-               
-                } */
-
-                    
-                                                    
-
-
+                }                            
             }
             
-            }
-                            
-        }   
+            }                        
+       }   
        ///////////////FIN API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 
             $date = Carbon::now();
@@ -230,7 +204,6 @@ class InvoiceController extends Controller
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
 
             }*/
-    
     
             return view('admin.invoices.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware')); 
 
