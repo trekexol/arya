@@ -42,8 +42,8 @@ class InvoiceController extends Controller
               
      
             $ch = curl_init();
-            //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
-            curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
+            curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
+            //curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
             curl_setopt($ch, CURLOPT_HEADER, 0); 
             $data = curl_exec($ch); 
@@ -56,32 +56,22 @@ class InvoiceController extends Controller
 
             } else {
            
-                //FACTURA CABECERA
+                /*//FACTURA CABECERA
                 $ch = curl_init();
-                //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
-                curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
+                curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
+                //curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
                 curl_setopt($ch, CURLOPT_HEADER, 0); 
                 $data = curl_exec($ch); 
      
                // print_r(json_decode($data));
                // $respuesta = json_decode($data, true);
-                $data = json_decode($data);
+                $data = json_decode($data);*/
 
 
-            //FACTURA DETALLE
-            $cd = curl_init();
-            //curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php"); 
-            curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");  
-            curl_setopt($cd, CURLOPT_RETURNTRANSFER, true); 
-            curl_setopt($cd, CURLOPT_HEADER, 0); 
-            $data2 = curl_exec($cd); 
-            // print_r(json_decode($data2));
-            // $respuesta = json_decode($data2, true);
-            $data2 = json_decode($data2);
 
 
-            foreach ($data->items as $key) {
+            foreach ($data as $key) {
      
                
                 $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key->number_invoice)
@@ -169,6 +159,19 @@ class InvoiceController extends Controller
                       $var->date_expiration = $key->date_expiration;
                       $var->save(); 
 
+
+                       //FACTURA DETALLE
+                        $cd = curl_init();
+                        curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php"); 
+                        //curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");  
+                        curl_setopt($cd, CURLOPT_RETURNTRANSFER, true); 
+                        curl_setopt($cd, CURLOPT_HEADER, 0); 
+                        $data2 = curl_exec($cd); 
+                        // print_r(json_decode($data2));
+                        // $respuesta = json_decode($data2, true);
+                        $data2 = json_decode($data2);
+
+                        
                       ///////DETALLES DE LA FACTURA 
                       foreach ($data2->items2 as $key2) {
 
