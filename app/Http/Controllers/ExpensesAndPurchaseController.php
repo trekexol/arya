@@ -62,7 +62,7 @@ class ExpensesAndPurchaseController extends Controller
    public function index_historial(request $request)
    {
 
-    
+
     if(Auth::user()->role_id == '1' || $request->get('namemodulomiddleware') == 'Gastos y Compras'){
 
 
@@ -1152,7 +1152,10 @@ class ExpensesAndPurchaseController extends Controller
 
         $var->price = $sin_formato_price;
 
-        $var->id_branch = request('centro_costo');
+
+        $branch = request('centro_costo');
+
+        $var->id_branch = $branch;
 
 
         $percentage = (($sin_formato_price * $sin_formato_amount) * $discount)/100;

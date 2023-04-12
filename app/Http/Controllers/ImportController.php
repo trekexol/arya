@@ -43,17 +43,86 @@ class ImportController extends Controller
         return view('admin.imports.index',compact('imports','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
     }
 
- 
-    public function create(request $request,$id = null)
+
+    public function create(request $request)
     {
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
-        if($id == null){
-            $id == null;
-        }else{
-            $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)->where('id' ,$id)->first();
-           $id = $expenses->id;
+
+
+
+if($request->serv == TRUE){
+            $id = decrypt($request->idfact);
+
+            $sql = "SELECT a.invoice,b.description,b.amount,b.price
+            FROM expenses_and_purchases a, expenses_details b, inventories c, products d
+            WHERE a.id = b.id_expense
+            AND b.id_inventory = c.id
+            AND c.product_id = d.id
+            AND d.type = 'MERCANCIA'
+            AND a.status IN ('C','P')
+            AND a.invoice = '$id'";
+
+            $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+            $idser = $request->idservi;
+
+
+            foreach($idser as $idser){
+
+                $idserarray[] = "'$idser'";
+
+            }
+
+            $cadena_equipo = implode(',',$idserarray);
+
+
+
+            $sql2 = "SELECT a.invoice,b.description,b.price
+            FROM expenses_and_purchases a, expenses_details b, inventories c, products d
+            WHERE a.id = b.id_expense
+            AND b.id_inventory = c.id
+            AND c.product_id = d.id
+            AND d.type = 'SERVICIO'
+            AND a.status IN ('C','P')
+            AND a.invoice IN ($cadena_equipo)";
+
+
+            $datosserv = DB::connection(Auth::user()->database_name)->select($sql2);
+
+
+           return view('admin.imports.create',compact('id','datosinv','datosserv'));
         }
+
+
+
+        elseif($request->inv == TRUE){
+            $id = decrypt($request->id);
+            $datosserv = [];
+            $sql = "SELECT a.invoice,b.description,b.amount,b.price
+            FROM expenses_and_purchases a, expenses_details b, inventories c, products d
+            WHERE a.id = b.id_expense
+            AND b.id_inventory = c.id
+            AND c.product_id = d.id
+            AND d.type = 'MERCANCIA'
+            AND a.status IN ('C','P')
+            AND a.invoice = '$id'";
+
+            $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+           if(count($datosinv) > 0){
+            $id = $id;
+           }else{
+             $id = null;
+           }
+           return view('admin.imports.create',compact('id','datosinv','datosserv'));
+        }elseif($request->id == null){
+            $request->id == null;
+            $id = $request->id;
+
+        }
+
         return view('admin.imports.create',compact('id'));
+
     }else{
         return redirect('/imports')->withDelete('No tiene Permiso!');
 
@@ -61,46 +130,59 @@ class ImportController extends Controller
     }
 
 
-  
+
     public function cargar(request $request)
     {
 
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
-        $quotationss = DB::connection(Auth::user()->database_name)
-            ->table('expenses_and_purchases')
-            ->leftjoin('import_details', 'expenses_and_purchases.id', '=', 'import_details.id_purchases')
-            ->select('expenses_and_purchases.*')
-            ->whereNull('import_details.id_purchases')
-            ->get();
+            $sql = 'SELECT a.invoice, a.serie
+            FROM expenses_and_purchases a, expenses_details b, inventories c, products d
+            WHERE a.id = b.id_expense
+            AND b.id_inventory = c.id
+            AND c.product_id = d.id
+            AND d.type = "MERCANCIA"
+            AND a.status IN ("C","P")
+            GROUP BY a.invoice, a.serie';
 
-        $import_quotationss = DB::connection(Auth::user()->database_name)
-            ->table('expenses_and_purchases')
-            ->leftjoin('imports', 'expenses_and_purchases.id', '=', 'imports.id_purchases')
-            ->select('expenses_and_purchases.*')
-            ->whereNull('imports.id_purchases')
-            ->get();
+            $quotationss = DB::connection(Auth::user()->database_name)->select($sql);
 
-        $imports            =   Import::on(Auth::user()->database_name)->get();
-        $importDetails      =   ImportDetail::on(Auth::user()->database_name)->get();
 
-        return view('admin.imports.importquotation',compact('quotationss','import_quotationss','importDetails'));
-   
+        return view('admin.imports.importquotation',compact('quotationss'));
+
     }else{
         return redirect('/imports')->withDelete('No tiene Permiso!');
 
     }
-   
+
     }
 
-   
-    public function selectquotation($id)
+    public function cargarservicio(request $request)
     {
-        $quotation    =   ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$id)->first();
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+            $sql = 'SELECT a.invoice, a.serie
+            FROM expenses_and_purchases a, expenses_details b, inventories c, products d
+            WHERE a.id = b.id_expense
+            AND b.id_inventory = c.id
+            AND c.product_id = d.id
+            AND d.type = "SERVICIO"
+            AND a.status IN ("C","P")
+            GROUP BY a.invoice, a.serie';
 
-        return redirect()->route('imports.create',$quotation->id);
+            $quotationss = DB::connection(Auth::user()->database_name)->select($sql);
+            $idfact = $request->idfact;
+
+        return view('admin.imports.importser',compact('quotationss','idfact'));
+
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
     }
 
-  
+    }
+
+
+
+
     public function selectimport(request $request,$id)
     {
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
@@ -118,14 +200,14 @@ class ImportController extends Controller
             ->get();
 
         return view('admin.imports.importdetails',compact('quotationss','imports','importDetails','import_id'));
-   
+
     }else{
         return redirect('/imports')->withDelete('No tiene Permiso!');
 
     }
     }
 
-    
+
     public function cargarDetails(request $request,$id,$quotation = null)
     {
 
@@ -223,7 +305,7 @@ class ImportController extends Controller
 
         }else{
             return redirect('/imports')->withDelete('No tiene Permiso!');
-    
+
         }
     }
 
@@ -377,5 +459,5 @@ class ImportController extends Controller
 
 
 
- 
+
 }
