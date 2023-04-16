@@ -122,7 +122,10 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation = new NominaCalculation();
         $nomina_calculation->setConnection(Auth::user()->database_name);
-        $amount = request('monto');
+        $amount = str_replace(',', '.', str_replace('.', '', request('monto')));
+        $days = request('days');
+        $hours = request('hours');
+        $cantidad = str_replace(',', '.', str_replace('.', '', request('cantidad')));
 
         $nomina_calculation->id_nomina = request('id_nomina');
         $nomina_calculation->id_nomina_concept = request('id_nomina_concept');
@@ -139,10 +142,7 @@ class NominaCalculationController extends Controller
         $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);
         
         
-        $days = request('days');
-        $hours = request('hours');
-        $cantidad = str_replace(',', '.', str_replace('.', '', request('cantidad')));
-         
+
         if(isset($days)){
             if($days != 0){
                 $nomina_calculation->days = $days;
@@ -167,10 +167,10 @@ class NominaCalculationController extends Controller
             if($cantidad != 0){
                 $nomina_calculation->cantidad = $cantidad;
             }else{
-                $nomina_calculation->cantidad = 0;
+                $nomina_calculation->cantidad = 1;
             }
         }else{
-            $nomina_calculation->cantidad = 0;
+            $nomina_calculation->cantidad = 1;
         }
 
         
@@ -181,7 +181,7 @@ class NominaCalculationController extends Controller
 
 
         if(isset($amount)){
-            $nomina_calculation->amount = 1;
+            $nomina_calculation->amount = $amount * $nomina_calculation->cantidad;
         }else{
             $nomina_calculation->amount = 0;
         }
@@ -391,7 +391,6 @@ class NominaCalculationController extends Controller
         $data = request()->validate([
            
             'id_nomina'     =>'required',
-            'id_nomina_concept'       =>'required|max:60',
             'id_employee'              =>'required',
             
         ]);
@@ -400,7 +399,7 @@ class NominaCalculationController extends Controller
 
 
         $nomina_calculation->id_nomina = request('id_nomina');
-        $nomina_calculation->id_nomina_concept = request('id_nomina_concept');
+        //$nomina_calculation->id_nomina_concept = request('id_nomina_concept');
         $nomina_calculation->id_employee = request('id_employee');
        
         $nomina_calculation->number_receipt = 0;
@@ -412,10 +411,11 @@ class NominaCalculationController extends Controller
         $nomina_concept = NominaConcept::on(Auth::user()->database_name)->find($nomina_calculation->id_nomina_concept);
         $nominabases  =  NominaBasesCalcs::on(Auth::user()->database_name)->find(1);  
         
+        $amount = str_replace(',', '.', str_replace('.', '', request('amount')));
         $days = request('days');
         $hours = request('hours');
         $cantidad = str_replace(',', '.', str_replace('.', '', request('cantidad')));
-         
+
         if(isset($days)){
             if($days != 0){
                 $nomina_calculation->days = $days;
@@ -440,10 +440,10 @@ class NominaCalculationController extends Controller
             if($cantidad != 0){
                 $nomina_calculation->cantidad = $cantidad;
             }else{
-                $nomina_calculation->cantidad = 0;
+                $nomina_calculation->cantidad = 1;
             }
         }else{
-            $nomina_calculation->cantidad = 0;
+            $nomina_calculation->cantidad = 1;
         }
 
         
@@ -452,10 +452,10 @@ class NominaCalculationController extends Controller
 
         $nomina_calculation->status =  "1";
 
-        $amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation,$nominabases);
+        //$amount = $this->addNominaCalculation($nomina,$nomina_concept,$employee,$nomina_calculation,$nominabases);
 
         if(isset($amount)){
-            $nomina_calculation->amount = $amount;
+            $nomina_calculation->amount = $amount * $nomina_calculation->cantidad; 
         }else{
             $nomina_calculation->amount = 0;
         }

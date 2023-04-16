@@ -44,7 +44,7 @@
                             <div class="form-group row">
                                 <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Concepto:</label>
                                 <div class="col-md-4">
-                                    <select  id="id_nomina_concept"  name="id_nomina_concept" class="form-control">
+                                    <select  id="id_nomina_concept"  name="id_nomina_concept" class="form-control" disabled>
                                         <option selected value="{{ $nomina_concept->id }}">{{ $nomina_concept->abbreviation  }} - {{ $nomina_concept->description }}</option>
                                             @foreach($nominaconcepts as $var)
                                                 <option  value="{{$var->id}}">{{ $var->abbreviation  }} - {{ $var->description }}</option>
@@ -54,30 +54,30 @@
                                 </div>
                                 
                             </div>
-                                    @if($nomina->type == "Primera Quincena" || $nomina->type == "Segunda Quincena")
+                                    <!-- if($nomina->type == "Primera Quincena" || $nomina->type == "Segunda Quincena")
                                         <div class="form-group row">
                                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Formula Quincenal:</label>
                                             <div class="col-md-6">
-                                                <input id="formula_q" type="text" readonly class="form-control @error('formula_q') is-invalid @enderror" name="formula_q"  required autocomplete="formula_q">
+                                                <input id="formula_q" type="text" readonly class="form-control error('formula_q') is-invalid enderror" name="formula_q"  required autocomplete="formula_q">
                                             </div>
                                         </div>
-                                    @endif
-                                    @if($nomina->type == "Mensual" || $nomina->type == "Especial")
+                                    endif
+                                    if($nomina->type == "Mensual" || $nomina->type == "Especial")
                                         <div class="form-group row">
                                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Formula Mensual:</label>
                                             <div class="col-md-6">
-                                                <input id="formula_m" type="text" readonly class="form-control @error('formula_m') is-invalid @enderror" name="formula_m"  required autocomplete="formula_m">
+                                                <input id="formula_m" type="text" readonly class="form-control error('formula_m') is-invalid enderror" name="formula_m"  required autocomplete="formula_m">
                                             </div>
                                         </div>
-                                    @endif
-                                    @if($nomina->type == "Semanal")
+                                    endif
+                                    if($nomina->type == "Semanal")
                                         <div class="form-group row">
                                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Formula Semanal:</label>
                                             <div class="col-md-6">
-                                                <input id="formula_s" type="text" readonly class="form-control @error('formula_s') is-invalid @enderror" name="formula_s"  required autocomplete="formula_s">
+                                                <input id="formula_s" type="text" readonly class="form-control error('formula_s') is-invalid enderror" name="formula_s"  required autocomplete="formula_s">
                                             </div>
                                         </div>
-                                    @endif
+                                    endif -->
                                     
                                     <div id="days_form" class="form-group row">
                                         <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Dias:</label>
@@ -94,7 +94,20 @@
                                     <div id="cantidad_form" class="form-group row">
                                         <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Cantidad:</label>
                                         <div class="col-md-4">
-                                            <input id="cantidad" type="text" value="{{ number_format($nomina_calculation->cantidad, 2, ',', '.') ?? 0 }}" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad">
+                                            <?php
+                                            if (isset($nomina_calculation->cantidad)){
+                                                if ($nomina_calculation->cantidad == 0){
+                                                    $nomina_calculation->cantidad = 1;
+                                                }
+                                            } 
+                                            ?>
+                                            <input id="cantidad" type="text" value="{{ number_format($nomina_calculation->cantidad, 2, ',', '.') ?? 1 }}" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad" required>
+                                        </div>
+                                    </div>
+                                    <div id="amount_form" class="form-group row">
+                                        <label for="amount" class="col-md-2 col-form-label text-md-right">Monto:</label>
+                                        <div class="col-md-4">
+                                            <input id="amount" type="text" value="{{ number_format($nomina_calculation->amount, 2, ',', '.') ?? 0 }}" class="form-control @error('amount') is-invalid @enderror" name="amount"  autocomplete="amount" required>
                                         </div>
                                     </div>
                                
@@ -116,9 +129,9 @@
                 
 @section('validacion')
 <script>
-    $("#days_form").hide();
+   /* $("#days_form").hide();
     $("#hours_form").hide();
-    $("#cantidad_form").hide();
+    $("#cantidad_form").hide();*/
                                 
     $(document).ready(function () {
         $("#amount").mask('000.000.000.000.000,00', { reverse: true });      
@@ -138,24 +151,24 @@
     
     @if($nomina->type == "Primera Quincena" || $nomina->type == "Segunda Quincena")
         <script>
-            getFormulaQ(id_concept);
+            //getFormulaQ(id_concept);
         </script>
     @endif
     @if($nomina->type == "Mensual" || $nomina->type == "Especial")
         <script>
-            getFormulaM(id_concept);
+            //getFormulaM(id_concept);
         </script>
     @endif
     @if($nomina->type == "Semanal")
         <script>
-            getFormulaS(id_concept);
+            //getFormulaS(id_concept);
         </script>
     @endif
 @endsection 
 
 @section('javascript')
     <script>
-            
+        /*    
             $("#id_nomina_concept").on('change',function(){
                 var id_nomina_concept = $(this).val();
                 $("#formula_q").val("");
@@ -365,6 +378,6 @@
                     alert('Presentamos inconvenientes al consultar los datos');
                 }
             })
-        }
+        } */
     </script>
 @endsection

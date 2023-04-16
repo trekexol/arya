@@ -27,7 +27,7 @@
                         <div class="form-group row">
                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Concepto:</label>
                             <div class="col-md-4">
-                                <select  id="id_nomina_concept"  name="id_nomina_concept" class="form-control">
+                                <select  id="id_nomina_concept"  name="id_nomina_concept" class="form-control" required> 
                                     <option selected value="">Seleccione un Concepto</option>
                                         @foreach($nominaconcepts as $nominaconcept)
                                             <option  value="{{$nominaconcept->id}}">{{ $nominaconcept->abbreviation  }} - {{ $nominaconcept->description }}</option>
@@ -112,13 +112,13 @@
                         <div id="cantidad_form" class="form-group row">
                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Cantidad:</label>
                             <div class="col-md-4">
-                                <input id="cantidad" type="text" placeholder="0,00" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad">
+                                <input id="cantidad" type="text" placeholder="0,00" class="form-control @error('cantidad') is-invalid @enderror" name="cantidad"  autocomplete="cantidad" value="1" required>
                             </div>
                         </div>
                         <div id="cantidad_form" class="form-group row">
                             <label for="nominaconcept" class="col-md-2 col-form-label text-md-right">Monto:</label>
                             <div class="col-md-4">
-                                <input id="monto" type="text" placeholder="0,00" class="form-control @error('monto') is-invalid @enderror" name="monto"  autocomplete="monto">
+                                <input id="monto" type="text" placeholder="0,00" class="form-control @error('monto') is-invalid @enderror" name="monto" autocomplete="monto" required>
                             </div>
                         </div>
                     <br>
