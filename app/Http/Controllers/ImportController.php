@@ -32,13 +32,8 @@ class ImportController extends Controller
         $eliminarmiddleware = $request->get('eliminarmiddleware');
 
         $user= auth()->user();
-        $imports = Import::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
-       /* $quotationss = DB::connection(Auth::user()->database_name)
-            ->table('expenses_and_purchases')
-            ->leftjoin('import_details', 'expenses_and_purchases.id', '=', 'import_details.id_purchases')
-            ->select('quotations.*')
-            ->whereNull('import_details.id_purchases')
-            ->get();*/
+        $imports = Import::on(Auth::user()->database_name)->where('status',1)->orderBy('id' ,'DESC')->get();
+
 
         return view('admin.imports.index',compact('imports','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
     }
@@ -50,10 +45,10 @@ class ImportController extends Controller
 
 
 
-if($request->serv == TRUE){
+    if($request->serv == TRUE){
             $id = decrypt($request->idfact);
 
-            $sql = "SELECT a.invoice,b.description,b.amount,b.price
+            $sql = "SELECT b.id_expense,b.id_inventory,a.invoice,b.description,b.amount,b.price
             FROM expenses_and_purchases a, expenses_details b, inventories c, products d
             WHERE a.id = b.id_expense
             AND b.id_inventory = c.id
@@ -77,7 +72,7 @@ if($request->serv == TRUE){
 
 
 
-            $sql2 = "SELECT a.invoice,b.description,b.price
+            $sql2 = "SELECT b.id_expense,a.invoice,b.description,b.price
             FROM expenses_and_purchases a, expenses_details b, inventories c, products d
             WHERE a.id = b.id_expense
             AND b.id_inventory = c.id
@@ -98,7 +93,7 @@ if($request->serv == TRUE){
         elseif($request->inv == TRUE){
             $id = decrypt($request->id);
             $datosserv = [];
-            $sql = "SELECT a.invoice,b.description,b.amount,b.price
+            $sql = "SELECT b.id_expense,b.id_inventory,a.invoice,b.description,b.amount,b.price
             FROM expenses_and_purchases a, expenses_details b, inventories c, products d
             WHERE a.id = b.id_expense
             AND b.id_inventory = c.id
@@ -130,6 +125,120 @@ if($request->serv == TRUE){
     }
 
 
+    public function cargaropciones(request $request)
+    {
+
+        if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
+            $valor = $request->idvalor;
+            $id = $request->id;
+
+            if($valor  == 'calcular'){
+                $sql = "SELECT d.id, b.description, d.price_buy, d.price,a.costo,a.precioventa
+                        FROM import_details a, expenses_details b, inventories c, products d
+                        WHERE a.id_import = $id
+                        AND a.id_purchases = b.id_expense
+                        AND a.id_inventory = c.id
+                        AND d.type = 'MERCANCIA'
+                        AND a.id_inventory = b.id_inventory
+                        AND c.product_id = d.id";
+
+                $calcular = DB::connection(Auth::user()->database_name)->select($sql);
+
+
+                return view('admin.imports.importoption',compact('valor','calcular','id'));
+
+            }
+
+
+            if($valor  == 'eliminar'){
+
+                return view('admin.imports.importoption',compact('valor','id'));
+
+            }
+
+
+
+    }else{
+        return redirect('/imports')->withDelete('No tiene Permiso!');
+
+    }
+
+    }
+
+
+    public function procesaropciones(Request $request){
+
+        $resp = array();
+        $resp['error'] = false;
+        $resp['msg'] = '';
+
+        if($request->ajax()){
+        try{
+            $id = $request->idimport;
+            if($request->idvalor == 'calcular'){
+                $sql = "SELECT d.id, a.costo,a.precioventa
+                FROM import_details a, expenses_details b, inventories c, products d
+                WHERE a.id_import = $id
+                AND a.id_purchases = b.id_expense
+                AND a.id_inventory = c.id
+                AND d.type = 'MERCANCIA'
+                AND a.id_inventory = b.id_inventory
+                AND c.product_id = d.id";
+
+                $calcular = DB::connection(Auth::user()->database_name)->select($sql);
+
+            if(count($calcular) > 0){
+                foreach($calcular as $calcular){
+
+                    $var = Product::on(Auth::user()->database_name)->where('id',$calcular->id)->first();
+                    $var->price =   $calcular->precioventa;
+                    $var->price_buy = $calcular->costo;
+                    $var->save();
+
+
+                }
+
+                $import = Import::on(Auth::user()->database_name)->where('id',$id)->first();
+                $import->status =  0;
+                $import->save();
+
+                $err = TRUE;
+                $msj = 'Actualizacion de Monto Exitosa';
+            }else{
+                $err = FALSE;
+                $msj = 'No Hay Productos para Actualizar';
+            }
+
+            }
+
+
+            if($request->idvalor == 'eliminar'){
+
+
+            Import::on(Auth::user()->database_name)->where('id',$id)->delete();
+            ImportDetail::on(Auth::user()->database_name)->where('id_import',$id)->delete();
+
+                $err = TRUE;
+                $msj = 'Importacion Eliminada con Exito';
+            }
+
+
+
+            $resp['error'] = $err;
+            $resp['msg'] = $msj;
+
+            return response()->json($resp);
+
+
+
+            }
+        catch(\error $error){
+            return response()->json(false,500);
+            }
+        }
+
+    }
+
 
     public function cargar(request $request)
     {
@@ -138,6 +247,7 @@ if($request->serv == TRUE){
             $sql = 'SELECT a.invoice, a.serie
             FROM expenses_and_purchases a, expenses_details b, inventories c, products d
             WHERE a.id = b.id_expense
+            AND a.id NOT IN (SELECT id_purchases FROM import_details WHERE status = "1" GROUP BY id_purchases)
             AND b.id_inventory = c.id
             AND c.product_id = d.id
             AND d.type = "MERCANCIA"
@@ -162,6 +272,7 @@ if($request->serv == TRUE){
             $sql = 'SELECT a.invoice, a.serie
             FROM expenses_and_purchases a, expenses_details b, inventories c, products d
             WHERE a.id = b.id_expense
+            AND a.id NOT IN (SELECT id_purchases FROM import_details WHERE status = "1" GROUP BY id_purchases)
             AND b.id_inventory = c.id
             AND c.product_id = d.id
             AND d.type = "SERVICIO"
@@ -312,22 +423,46 @@ if($request->serv == TRUE){
     public function store(Request $request)
     {
         if(Auth::user()->role_id  == '1' || $request->get('agregarmiddleware') == 1){
-
-        $data = request()->validate([
-            'Fecha'         =>'required',
-        ]);
-
         $user= auth()->user();
         $imports = new Import();
         $imports->setConnection(Auth::user()->database_name);
 
         $imports->id_user         = $user->id;
-        $imports->id_purchases    = request('Nro_Factura');
         $imports->fecha           = request('Fecha');
         $imports->observaciones   = request('Observaciones');
+        $imports->porcentaje_general   = request('porcentaje');
         $imports->save();
 
-        return redirect('/imports')->withSuccess('Registro de Importacion Exitoso!');
+
+
+            if($imports->id){
+
+                foreach ($request->input('idinven', []) as $i => $idinven) {
+
+                $idp = $request->input('idp.' . $i);
+                $idinven = $request->input('idinven.' . $i);
+                $costo = $request->input('valoroculto.' . $i);
+                $precioventa = $request->input('ventanew.' . $i);
+
+
+                $importdetail = new ImportDetail();
+                $importdetail->setConnection(Auth::user()->database_name);
+
+                $importdetail->id_import      = $imports->id;
+                $importdetail->id_purchases   = $idp;
+                $importdetail->id_inventory   = $idinven;
+                $importdetail->costo          = $costo;
+                $importdetail->precioventa    = $precioventa;
+                $importdetail->save();
+
+                }
+
+
+
+            }
+
+            return redirect('/imports')->withSuccess('Registro de Importacion Exitoso!');
+
 
     }else{
         return redirect('/imports')->withDelete('No tiene Permiso!');

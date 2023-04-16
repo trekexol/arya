@@ -23,12 +23,7 @@
                             <div class="col-sm-3">
                                 <a href="#" data-toggle="modal" data-id="inv" data-target="#MatchModal" name="matchvalue"><i class="fa fa-search" style="font-size:24px"></i> Buscar Factura Inventario</a>
                             </div>
-                            <div class="col-sm-2">
-
-                                <input id="nro_factura" type="hidden" class="form-control @error('nro_factura') is-invalid @enderror" name="Nro_Factura" value="{{ $id ?? null }}" required autocomplete="nro_factura" readonly>
-
-                            </div>
-
+                            <input type="hidden" value="{{ $id }}" id="nro_factura">
                             @if($id)
                                 <div class="col-sm-4">
                                     <a href="#" type="btn btn-primary" data-toggle="modal" data-target="#MatchModal" data-id="ser" name="matchvalue"><i class="fa fa-search" style="font-size:24px"></i>Buscar Factura Servicio</a>
@@ -38,33 +33,7 @@
                         </div>
                     @if($id)
 
-                        <div class="form-group row">
 
-                            <div class="col-sm-2">
-                                <label id="date_begin" for="type" >Fecha:</label>
-                            </div>
-                            <div class="col-sm-4">
-                                <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="Fecha" value="{{ old('Fecha') }}" required autocomplete="date_begin" >
-                                @error('date_begin')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="col-sm-2">
-                                <label id="observaciones" for="type" >Observaciones:</label>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <input id="observaciones" type="text" class="form-control @error('observaciones') is-invalid @enderror" name="Observaciones" value="{{ old('Observaciones') }}" required autocomplete="Observaciones" >
-
-                                @error('observaciones')
-                                <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
                         @if (count($datosinv) > 0)
                         <div class="table-responsive">
                             <table class="table table-light2 table-bordered" id="ext" >
@@ -94,7 +63,7 @@
                                    <?php
                                     $total += number_format($datosinv->amount * $datosinv->price,2,'.','');
 
-                                    $arreglo[] = ['descripcion' => $datosinv->description, 'cantidad' => $datosinv->amount, 'precio' => $datosinv->price];
+                                    $arreglo[] = ['idinventory' => $datosinv->id_inventory,'idexpense' => $datosinv->id_expense, 'descripcion' => $datosinv->description, 'cantidad' => $datosinv->amount, 'precio' => $datosinv->price];
 
                                    ?>
 
@@ -131,6 +100,10 @@
                                     $totalser = 0;
                                     @endphp
                                     @foreach($datosserv as $datosserv)
+                                    <input type="hidden"  name="idp[]" value="{{ $datosserv->id_expense }}">
+                                    <input type="hidden"  name="idinven[]" value="{{ $datosserv->id_expense }}">
+                                    <input type="hidden" name="ventanew[]" value="0">
+                                    <input type="hidden" name="valoroculto[]" value="0">
 
                                                         <tr>
                                                             <td class="text-center">{{$datosserv->invoice}}</td>
@@ -163,35 +136,90 @@
                                 <thead>
                                 <tr>
                                     <tr>
-                                        <th class="text-center" colspan="4">Total Costo</th>
+                                        <th class="text-center" colspan="3">Total Costo</th>
+                                        <th class="text-center" >% precio venta <input class="form-control" type="text" name="porcentaje" id="porcentaje" value="0"></th>
+
                                     </tr>
                                     <th class="text-center">Producto</th>
                                     <th class="text-center">Cantidad</th>
-                                    <th class="text-center">Precio Nuevo</th>
+                                    <th class="text-center">Costo de Productos</th>
+                                    <th class="text-center">Precio de Venta</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                    @php $i = 0; @endphp
                                     @foreach ($arreglo as $arreglo)
                                     <tr>
-                                        <td>{{$arreglo['descripcion']}}</td>
-                                        <td>{{$arreglo['cantidad']}}</td>
-                                        <td>{{$totalprecioaumentado = number_format($arreglo['precio'] * $costo,2,'.','')}}</td>
+                                        <input type="hidden"  name="idp[]" id="idp[]" value="{{ $arreglo['idexpense'] }}">
+
+                                        <input type="hidden"  name="idinven[]" id="idinven" value="{{ $arreglo['idinventory'] }}">
+
+                                        <td class="text-center">{{$arreglo['descripcion']}}</td>
+                                        <td class="text-center">{{$arreglo['cantidad']}}</td>
+                                        <td class="text-center">{{$totalprecioaumentado = number_format($arreglo['precio'] * $costo,2,'.','')}}</td>
+                                        <td class="text-center"><input class="form-control ventanew" type="text" name="ventanew[]" id="ventanew{{ $i }}" value="" required></td>
+                                        <input type="hidden" class="valoroculto" name="valoroculto[]" id="valoroculto" value="{{ $totalprecioaumentado }}">
                                     </tr>
+
+                                    @php $i++; @endphp
                                     @endforeach
+
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-2">
+                                <label id="date_begin" for="type" >Fecha de Importacion:</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="Fecha" value="{{ old('Fecha') }}" required autocomplete="date_begin" >
+                                @error('date_begin')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="col-sm-2">
+                                <label id="observaciones" for="type" >Descripcion de Importacion:</label>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <input id="observaciones" type="text" class="form-control @error('observaciones') is-invalid @enderror" required name="Observaciones" value="{{ old('Observaciones') }}" autocomplete="Observaciones" >
+
+                                @error('observaciones')
+                                <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
 
                         @endif
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary btn-sm">
                                    Registrar Importacion
                                 </button>
+                                <a type="button" class="btn btn-danger btn-sm" href="{{ route('imports') }}">
+                                    Volver
+                                  <a>
                             </div>
+
                         </div>
                     @endif
                     </form>
+                    @if(!$id)
+                    <div class="form-group row mb-0">
+                        <div class="col-md-6 offset-md-4">
+
+                            <a type="button" class="btn btn-danger btn-sm" href="{{ route('imports') }}">
+                                Volver
+                              <a>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -208,9 +236,32 @@
 @endsection
 @section('validacion')
     <script>
+    $("#porcentaje").mask('00000000000000000000000.00', { reverse: true });
+    $(".ventanew").mask('00000000000000000000000.00', { reverse: true });
+
+$("#porcentaje").on('change',function(){
+
+    var porcentaje = $(this).val();
+
+
+    $('.valoroculto').each(function(indice, value) {
+    valor = $(value).val();
+
+    total = valor * porcentaje / 100;
+
+
+  $("#ventanew" + indice ).val(total);
+
+
+});
+
+        });
+
+
 
 	$(function(){
         soloAlfaNumerico('description');
+
     });
 
 

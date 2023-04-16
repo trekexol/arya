@@ -33,33 +33,30 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
             <tr>
-                <th>Nro</th>
-                <th>Importacion</th>
-                <th>Factura</th>
+                <th>Nro de Importacion</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
                 @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                 <th>Cerrar</th>
                 @endif
             </tr>
             </thead>
             <tbody>
-                @if (empty($imports))
-                @else
+                @if (count($imports) > 0)
+
                     @foreach ($imports as $key => $var)
                         <tr>
-                            @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
+
                             <td>
-                                <a type="button" class="btn btn-info"  href="{{route('imports.selectimport',$var->id)}}">{{$var->id}}</a>
+                                {{$var->id}}
                             </td>
-                            @else
-                            <td>
-                            {{$var->id}}
-                            </td>
-                            @endif
-                            <td class="text-center">{{$var->id_purchases}}</td>
+
+                            <td class="text-center">{{$var->observaciones}}</td>
                             <td class="text-center">{{$var->fecha}}</td>
                             @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
                             <td>
-                                <a type="button" class="btn btn-success btn-lg btn-block"  href="{{route('imports.calcular',$var->id)}}">Calcular</a>
+                                <a type="button" data-toggle="modal" data-id="calcular" data-valor="{{$var->id}}" data-target="#MatchModal" name="matchvalue" class="btn btn-success btn-sm"  href="#">Calcular</a>
+                                <a type="button" data-toggle="modal" data-id="eliminar" data-valor="{{$var->id}}" data-target="#MatchModal" name="matchvalue" class="btn btn-danger btn-sm"  href="#">Eliminar</a>
                             </td>
                             @endif
                         </tr>
@@ -71,4 +68,36 @@
     </div>
 </div>
 
+
+<div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content" id="modalfacturas">
+
+        </div>
+    </div>
+  </div>
+  @endsection
+
+  @section('validacion')
+  <script>
+    $('[name="matchvalue"]').click(function(e){
+        e.preventDefault();
+        idvalor = $(this).attr('data-id');
+        id = $(this).attr('data-valor');
+        var url = "{{route('imports.cargaropciones')}}";
+
+
+     $.post(url,{"_token": "{{ csrf_token() }}",id: id,idvalor: idvalor},function(data){
+            $("#modalfacturas").empty().append(data);
+
+          });
+
+
+
+     });
+
+
+
+    </script>
 @endsection
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

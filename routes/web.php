@@ -1285,6 +1285,9 @@ Route::group(["prefix"=>'imports'],function(){
     Route::post('cargar','ImportController@cargar')->name('imports.cargar');
     Route::post('cargarservicio','ImportController@cargarservicio')->name('imports.cargarservicio');
 
+    Route::post('cargaropciones','ImportController@cargaropciones')->name('imports.cargaropciones');
+    Route::post('procesaropciones','ImportController@procesaropciones')->name('imports.procesaropciones');
+
 
     Route::get('selectimport/{id}','ImportController@selectimport')->name('imports.selectimport');
     Route::get('cargarDetails/{id}/{quotation?}','ImportController@cargarDetails')->name('imports.cargarDetails');
