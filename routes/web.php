@@ -1274,10 +1274,21 @@ Route::group(["prefix"=>'export'],function(){
 
 Route::group(["prefix"=>'imports'],function(){
     Route::get('/','ImportController@index')->name('imports');
-    Route::get('create/{id?}','ImportController@create')->name('imports.create');
+
+    Route::get('create','ImportController@create')->name('imports.create');
+    Route::post('create','ImportController@create')->name('imports.create');
+
+
+
+
     Route::post('store','ImportController@store')->name('imports.store');
-    Route::get('cargar','ImportController@cargar')->name('imports.cargar');
-    Route::get('selectquotation/{id}','ImportController@selectquotation')->name('imports.selectquotation');
+    Route::post('cargar','ImportController@cargar')->name('imports.cargar');
+    Route::post('cargarservicio','ImportController@cargarservicio')->name('imports.cargarservicio');
+
+    Route::post('cargaropciones','ImportController@cargaropciones')->name('imports.cargaropciones');
+    Route::post('procesaropciones','ImportController@procesaropciones')->name('imports.procesaropciones');
+
+
     Route::get('selectimport/{id}','ImportController@selectimport')->name('imports.selectimport');
     Route::get('cargarDetails/{id}/{quotation?}','ImportController@cargarDetails')->name('imports.cargarDetails');
     Route::get('calcular/{id}','ImportController@calcular')->name('imports.calcular');

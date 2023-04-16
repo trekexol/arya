@@ -12,11 +12,11 @@
     <div class="row justify-content-left">
         <div class="col-md-12">
             <div class="card">
-               
+
                 <div class="card-body">
                   <!--  <div class="list-group">
                       <a href="#" class="list-group-item list-group-item-action">A simple default list group item</a>
-                    
+
                       <a href="#" class="list-group-item list-group-item-action list-group-item-primary">A simple primary list group item</a>
                       <a href="#" class="list-group-item list-group-item-action list-group-item-secondary">A simple secondary list group item</a>
                       <a href="#" class="list-group-item list-group-item-action list-group-item-success">A simple success list group item</a>
@@ -26,7 +26,7 @@
                       <a href="#" class="list-group-item list-group-item-action list-group-item-light">A simple light list group item</a>
                       <a href="#" class="list-group-item list-group-item-action list-group-item-dark">A simple dark list group item</a>
                     </div> -->
-                    
+
                     <div class="row justify-content-center">
                         <div class="col-sm-3">
                           <div class="list-group" id="list-tab" role="tablist">
@@ -60,19 +60,20 @@
                             <li class="list-group-item list-group-item-action list-group-item-ligh text-center" style="padding: 5% 0;" id="list-messages-list" data-bs-toggle="list"  role="tab" aria-controls="messages"><font size="-1">{{ $account_banco2_name }} {{ number_format(bcdiv($account_banco2, '1', 2), 2, ',', '.')}}</font></li>
                             <li class="list-group-item list-group-item-action list-group-item-light text-center" style="padding: 5% 0;" id="list-settings-list" data-bs-toggle="list" role="tab" aria-controls="settings"><font size="-1">{{ $account_banco3_name }} {{ number_format(bcdiv($account_banco3, '1', 2), 2, ',', '.')}}</font></li>
                             <li class="list-group-item list-group-item-action list-group-item-warning text-center" style="padding: 5% 0;" id="list-messages-list" data-bs-toggle="list"  role="tab" aria-controls="messages"><font size="-1">Total {{ number_format(bcdiv($account_banco1+$account_banco2+$account_banco3, '1', 2), 2, ',', '.')}}</font></li>
-                          </div>
+
                         </div>
-                        
+                        </div>
+
                   </div>
-                
+
                <br>
-              
+
                   <div class="row justify-content-center ">
                       <div class="card shadow mb-2 col-sm-8"  style="background-color: white">
                         <div class="card-header py-2" style="background-color: rgb(255, 185, 81);">
                           <div class="form-group row">
                             <div class="m-0 font-weight-bold text-center col-sm-10" style="color: #000000">Ingresos Correspondientes al periodo {{$date->format('Y')}}</div>
-                              
+
                                 @if (empty($coin) || (isset($coin) && $coin == 'bolivares'))
                                   <a href="{{ route('home',"dolares") }}" class="btn btn-circle btn-success btn-sm ">
                                     <i class="fas fa-dollar-sign" ></i>
@@ -82,15 +83,15 @@
                                     Bs
                                   </a>
                                 @endif
-                                
-                              
+
+
                             </div>
                         </div>
                         <div class="card-body">
                             <div class="chart-bar">
                                 <canvas id="myBarChart"></canvas>
                             </div>
-                          
+
                         </div>
                       </div>
                       <div class="col-sm-3" >
@@ -105,13 +106,13 @@
                                     <canvas id="myPieChart"></canvas>
                                 </div>
                                 <hr><h6></h6>
-                          
+
                             </div>
                           </div>
                         </div>
 
                   </div>
-            
+
 
 
     </div>
@@ -120,7 +121,7 @@
 @endsection
 @section('piechart')
   <script>
-    
+
     // Set new default font family and font color to mimic Bootstrap's default styling
       Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
       Chart.defaults.global.defaultFontColor = '#858796';
@@ -162,7 +163,7 @@
 
 @section('javascript')
     <script>
-     
+
               // Set new default font family and font color to mimic Bootstrap's default styling
         Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
         Chart.defaults.global.defaultFontColor = '#858796';
@@ -242,7 +243,7 @@
                   padding: 10,
                   // Include a dollar sign in the ticks
                   callback: function(value, index, values) {
-                    
+
                     if(coin == 'bolivares'){
                       return 'Bs ' + number_format(value);
                     }else{
@@ -282,7 +283,7 @@
                   }else{
                     return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
                   }
-                  
+
                 }
               }
             },
@@ -290,7 +291,7 @@
         });
 
     </script>
-    
-  
-    
+
+
+
 @endsection
