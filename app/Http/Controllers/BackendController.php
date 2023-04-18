@@ -174,6 +174,7 @@ class BackendController extends Controller
            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
            ->where('accounts.id', $accountsbank->id)
+
            ->where('detail_vouchers.status','C')
            ->whereIn('header_vouchers.status',['C',1])
            ->whereRaw(
@@ -200,7 +201,8 @@ class BackendController extends Controller
            ->sum('balance_previus');
 
             $montobank = $total_balance +  $total_debe - $total_haber;
-           $accountsbanks->saldobanks = $montobank;
+           $accountsbank->saldobanks = $montobank;
+
 
 
         }
