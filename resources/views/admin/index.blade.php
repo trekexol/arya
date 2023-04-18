@@ -78,7 +78,6 @@
                 </div>
               </div>
          </div>
-
 {{-- BANCOS --}}
          @php $total = 0; @endphp
       <div class="col-md-3">
