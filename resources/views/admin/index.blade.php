@@ -2,12 +2,9 @@
 
 @section('content')
 
-{{-- VALIDACIONES-RESPUESTA--}}
 @include('admin.layouts.success')   {{-- SAVE --}}
 @include('admin.layouts.danger')    {{-- EDITAR --}}
 @include('admin.layouts.delete')    {{-- DELELTE --}}
-{{-- VALIDACIONES-RESPUESTA --}}
-
 <div class="container">
     <div class="row">
       <div class="col-md-3">
@@ -36,7 +33,6 @@
 <br>
 
       </div>
-
       <div class="col-md-6">
 
               <div class="card-header py-2" style="background-color: rgb(255, 185, 81);">
@@ -284,7 +280,4 @@
         });
 
     </script>
-
-
-
 @endsection
