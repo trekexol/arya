@@ -61,6 +61,7 @@
                       <canvas id="myBarChart"></canvas>
                   </div>
 
+
               </div>
 
               <div class="card shadow" style="background-color: white">
@@ -78,6 +79,21 @@
                 </div>
               </div>
          </div>
+
+{{-- BANCOS --}}
+         @php $total = 0; @endphp
+      <div class="col-md-3">
+        <div class="list-group" id="list-tab" role="tablist">
+            <li class="list-group-item list-group-item-action list-group-item-success text-center" style="padding: 0;" id="list-home-list" data-bs-toggle="list" role="tab" aria-controls="home"><font size="-1">Balance de Bancos</font></li>
+            @foreach ($accountsbanks as $accountsbanks)
+            <li class="list-group-item list-group-item-action list-group-item-light text-center" style="padding: 5% 0;" id="list-profile-list" data-bs-toggle="list"  role="tab" aria-controls="profile"><font size="-1">{{ $accountsbanks->description }} {{ number_format(bcdiv($accountsbanks->saldobanks, '1', 2), 2, ',', '.')}}</font></li>
+            @php $total += $accountsbanks->saldobanks; @endphp
+            @endforeach
+            <li class="list-group-item list-group-item-action list-group-item-warning text-center" style="padding: 5% 0;" id="list-messages-list" data-bs-toggle="list"  role="tab" aria-controls="messages"><font size="-1">Total {{ number_format(bcdiv($total, '1', 2), 2, ',', '.')}}</font></li>
+
+        </div>
+    </div>
+
 
 {{-- BANCOS --}}
          @php $total = 0; @endphp

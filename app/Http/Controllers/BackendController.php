@@ -173,7 +173,8 @@ class BackendController extends Controller
            $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
-           ->where('detail_vouchers.id_account', $accountsbank->id)
+           ->where('accounts.id', $accountsbank->id)
+
            ->where('detail_vouchers.status','C')
            ->whereIn('header_vouchers.status',['C',1])
            ->whereRaw(
@@ -186,7 +187,7 @@ class BackendController extends Controller
            $total_haber = DB::connection(Auth::user()->database_name)->table('accounts')
            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
-           ->where('detail_vouchers.id_account', $accountsbank->id)
+           ->where('accounts.id', $accountsbank->id)
            ->where('detail_vouchers.status','C')
            ->whereIn('header_vouchers.status',['C',1])
            ->whereRaw(
@@ -201,6 +202,7 @@ class BackendController extends Controller
 
             $montobank = $total_balance +  $total_debe - $total_haber;
            $accountsbank->saldobanks = $montobank;
+
 
 
         }
