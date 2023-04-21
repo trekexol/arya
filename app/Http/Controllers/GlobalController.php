@@ -728,10 +728,13 @@ class GlobalController extends Controller
                     }
 
                 if ($int_product->amount_per_product == 0) {
-                    $int_product->amount_per_product == 1;
+
+                   $div = 1;
+                } else {
+                    $div = $int_product->amount_per_product;
                 }
 
-                $disponible = intval($inventario/$int_product->amount_per_product);
+                $disponible = intval($inventario/$div);
 
                 $a_producto[] = array($int_product->id_product,$disponible);
 
