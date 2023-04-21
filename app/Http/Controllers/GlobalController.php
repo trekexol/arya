@@ -734,7 +734,7 @@ class GlobalController extends Controller
                     $div = $int_product->amount_per_product;
                 }
 
-                $disponible = intval($inventario/$div);
+                $disponible = intval($inventario/$div); //validador
 
                 $a_producto[] = array($int_product->id_product,$disponible);
 
