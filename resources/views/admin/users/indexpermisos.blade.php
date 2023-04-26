@@ -28,15 +28,15 @@
           @foreach($sistemas as $sistemas)
 
           <option value="{{$sistemas->id_sistema.','.$id_user.','.$sistemas->sistema}}">{{$sistemas->sistema}}</option>
-      
+
           @endforeach
         </select>
   </div>
   <div class="form-group col-md-3" id="btomax">
-  
+
   </div>
   <div class="form-group col-md-3" id="btomaxeli">
-  
+
 </div>
   <div class="form-group col-md-2" >
     <a href="{{ route('users') }}" class="btn btn-danger">
@@ -49,23 +49,46 @@
   <div class="card-body">
     <div class="container">
     <div class="table-responsive" id="tablaids">
-  
+    </div>
+    </div>
+</div>
+<div class="card-body">
+
+    <div class="container">
+    <div class="table-responsive">
+        <h3>PERMISO ACTUALES</h3>
+        <table class="table" id="dataTablesper">
+            <thead>
+              <tr>
+                <th scope="col">Sistema</th>
+                <th scope="col">Modulo</th>
+              </tr>
+            </thead>
+            <tbody>
+                @foreach ($permisoactivos as $permisoactivos)
+                <tr>
+                <td>{{$permisoactivos->sistema}}</td>
+                <td>{{$permisoactivos->name}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+          </table>
         </div>
     </div>
 </div>
-
-
 @endsection
 @section('javascript')
     <script>
+    $('#dataTablesper').DataTable({
+        'aLengthMenu': [[15], [15]]
+    });
 
-  
 //envia el post
  $(function(){
 
 function showPlanningFormProduct(){
     var value = this.value;
-    
+
    if(value){
     var url = "{{ route('modulos.list') }}" + '/' + value;
 
@@ -82,10 +105,11 @@ function showPlanningFormProduct(){
  });
    }else{
     $('#btomax').empty();
+    $('#btomaxeli').empty();
     $('#tablaids').empty();
-  
+
    }
-    
+
 }
 
 $('#sistemas').change(showPlanningFormProduct);
@@ -96,55 +120,55 @@ $('#sistemas').change(showPlanningFormProduct);
 
 $('#btomax').on('click', '.botonenviomodulototal', function(e){
       e.preventDefault();
-    
+
       var value = $(this).val();
       var nroactas = $(this).val().split(',');
       var idsistema = nroactas[0];
       var iduser = nroactas[1];
-     
+
       var urls = "{{ route('modulos.list') }}" + '/' + value;
 
-        
+
     $.ajax({
         method: "POST",
         url: "{{ route('modulos.insertmasivo') }}",
         data: {idsistema: idsistema, iduser: iduser, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
-             
+
                  if(response == true){
                     $.get(urls, function(data){
-              
+
               $('#tablaids').empty().append(data);
           });
-           
+
                  }else{
                     Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
                         html: 'Error al Asignar Permiso',
-                
-                
+
+
                         })
- 
+
 
 
                  }
-                
-             
-                
-             
+
+
+
+
              },
              error:(xhr)=>{
-              
-          
-       
-             
+
+
+
+
                 Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
                         html: 'Error al Asignar Permiso',
-                
-                
+
+
                         })
              }
          })
@@ -161,55 +185,55 @@ $('#btomax').on('click', '.botonenviomodulototal', function(e){
 
 $('#btomaxeli').on('click', '.eliminarbotonenviomodulototal', function(e){
       e.preventDefault();
-    
+
       var value = $(this).val();
       var nroactas = $(this).val().split(',');
       var idsistema = nroactas[0];
       var iduser = nroactas[1];
-     
+
       var urls = "{{ route('modulos.list') }}" + '/' + value;
 
-        
+
     $.ajax({
         method: "POST",
         url: "{{ route('modulos.eliminarmasivo') }}",
         data: {idsistema: idsistema, iduser: iduser, "_method": "DELETE", "_token": "{{ csrf_token() }}"},
              success:(response)=>{
-             
+
                  if(response == true){
                     $.get(urls, function(data){
-              
+
               $('#tablaids').empty().append(data);
           });
-           
+
                  }else{
                     Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
                         html: 'Error al Eliminar Permiso',
-                
-                
+
+
                         })
- 
+
 
 
                  }
-                
-             
-                
-             
+
+
+
+
              },
              error:(xhr)=>{
-              
-          
-       
-             
+
+
+
+
                 Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
                         html: 'Error al Eliminar Permiso',
-                
-                
+
+
                         })
              }
          })
@@ -221,6 +245,6 @@ $('#btomaxeli').on('click', '.eliminarbotonenviomodulototal', function(e){
 });
 
 
-    </script> 
+    </script>
 
 @endsection
