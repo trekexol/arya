@@ -29,7 +29,7 @@ class ClientController extends Controller
 
             $user= auth()->user();
 
-            $clients = Client::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
+            $clients = Client::on(Auth::user()->database_name)->where('status',1)->orderBy('id' ,'DESC')->get();
 
 
             return view('admin.clients.index',compact('actualizarmiddleware','agregarmiddleware','clients'));
