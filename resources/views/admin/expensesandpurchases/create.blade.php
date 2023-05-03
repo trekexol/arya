@@ -115,6 +115,8 @@
                             <input id="coin_hidde" type="hidden" class="form-control @error('coin_hidde') is-invalid @enderror" name="coin_hidde" value="{{ $coin ?? 'bolivares'}}" readonly required autocomplete="coin_hidde">
 
                                 <div class="form-group row">
+                                    @if($expense->status == 1)
+
                                     <label for="type" class="col-md-2 col-form-label text-md-right">Tipo de Compra:</label>
 
                                     <div class="col-md-4">
@@ -158,7 +160,12 @@
 
                                         @endforeach
                                         </select>
+
                                     </div>
+                                        @else
+                                        <div class="col-md-6">
+                                        </div>
+                                        @endif
 
                                         <label id="centro_costo_label" for="centro_costo" class="col-md-2 col-form-label text-md-right">Centro Costo:</label>
 
@@ -176,10 +183,15 @@
                                         </div>
                                 </div>
 
+
                                 <div class="form-group row">
+
+                                    @if($expense->status == 1)
+
                                     <label for="account" class="col-md-2 col-form-label text-md-right">Cargar a Cuenta:</label>
 
                                     <div class="col-md-4">
+                                        @if($expense->status == 1)
                                         <select  id="account"  name="Account" class="form-control" required>
                                             <option value="">Seleccionar</option>
                                             @if (isset($accounts_inventory))
@@ -189,6 +201,7 @@
                                             @endif
 
                                         </select>
+                                        @endif
 
                                         @if ($errors->has('account'))
                                             <span class="invalid-feedback" role="alert">
@@ -196,6 +209,10 @@
                                             </span>
                                         @endif
                                     </div>
+                                    @else
+                                    <div class="col-md-6">
+                                    </div>
+                                    @endif
                                     <label id="coinlabel" for="coin" class="col-md-1 col-form-label text-md-right">Moneda:</label>
 
                                     <div class="col-md-2">
@@ -216,7 +233,7 @@
                                         </div>
                                         @endif
                                 </div>
-
+                                @if($expense->status == 1)
                                 <div class="form-group row" id="divinventario" style="display:none;">
                                     <label id="code_inventary_label" for="code_inventary" class="col-md-2 col-form-label text-md-right">Código Inventario: </label>
 
@@ -239,6 +256,7 @@
 
                                 </div>
 
+
                                 <br>
                                 <div class="form-row">
                                     <div class="form-group col-md-1">
@@ -256,7 +274,7 @@
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
                                         <input onkeyup="numeric(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
-        
+
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -334,6 +352,7 @@
                                         <button type="submit" title="Agregar"><i class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
+                                @endif
                         </form>
 
 
@@ -393,9 +412,11 @@
                                                         @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                                                         <a href="{{ route('expensesandpurchases.editproduct',[$var->id,$coin]) }}" title="Editar"><i class="fa fa-edit"></i></a>
                                                         @endif
-                                                        @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
+
+                                                        @if ((Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1') AND $expense->status == 1 )
                                                         <a href="#" class="delete" data-id={{$var->id}} data-description={{$var->description}} data-coin={{$coin}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>
                                                         @endif
+
                                                     </td>
 
                                                 </tr>
