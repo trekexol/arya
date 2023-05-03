@@ -436,6 +436,8 @@ class ExcelController extends Controller
    public function import_combo(Request $request)
    {
 
+    $user       =   auth()->user();
+
             $file = $request->file('file');
 
             if (!isset($file)){
@@ -464,7 +466,7 @@ class ExcelController extends Controller
                             $precio_compra = 0;
                         }
 
-                        $a_filas[] = array($row['id_combo'],$row['id_producto'],$row['cantidad_producto'],$precio_compra,$row['cantidad_producto']*$precio_compra,0,0);
+                        $a_filas[] = array($row['id_combo'],$row['id_producto'],$row['cantidad_producto'],$precio_compra,$row['cantidad_producto']*$precio_compra,0,0,$row['codigo_comercial_combo']);
 
                     }
 
@@ -488,8 +490,29 @@ class ExcelController extends Controller
                         if ($a_filas[$q][0] != 0){
 
                             $total_precio_compra = $a_filas[$q][4];
-
                             Product::on(Auth::user()->database_name)->where('id',$a_filas[$q][0])->update([ 'price_buy' => $total_precio_compra]);
+
+
+                            $inv = Inventory::on(Auth::user()->database_name)
+                            ->where('product_id',$a_filas[$q][0])->get();
+
+
+                            if($inv->count() == 0){
+
+                                $inventory = new Inventory();
+                                $inventory->setConnection(Auth::user()->database_name);
+
+                                $inventory->product_id = $a_filas[$q][0];
+                                $inventory->id_user = $user->id;
+                                $inventory->code = $a_filas[$q][7];
+                                $inventory->amount = 0;
+                                $inventory->status = 1;
+
+                                $inventory->save();
+
+                            }
+
+
 
 
                         }

@@ -1179,6 +1179,7 @@ class ExpensesAndPurchaseController extends Controller
         }
 
         $id_inventory = request('id_inventory');
+
         if($id_inventory != -1){
             $var->id_inventory = $id_inventory;
         }
