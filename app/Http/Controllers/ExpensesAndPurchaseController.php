@@ -2105,7 +2105,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-            if(($total_pay == $total_pay_form) || ($sin_formato_total_pay <= 0))
+            if(($total_pay - $total_pay_form) < 1 || ($sin_formato_total_pay <= 0))
             {
 
 
@@ -2427,9 +2427,9 @@ class ExpensesAndPurchaseController extends Controller
                 $global->procesar_anticipos_expense($expense,$sin_formato_total_pay);
 
 
-            }else{
-                return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
-            }
+    }else{
+        return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
+    }
 
             $historial_expense = new HistorialExpenseController();
 
