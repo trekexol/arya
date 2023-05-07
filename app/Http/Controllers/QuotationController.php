@@ -586,6 +586,7 @@ class QuotationController extends Controller
 
         $id_client = request('id_client');
         $id_vendor = request('id_vendor');
+        $type = request('type');
 
 
         if($id_client != '-1'){
@@ -600,13 +601,19 @@ class QuotationController extends Controller
 
                 $id_transport = request('id_transport');
 
-                $type = request('type');
 
-                if(empty($type)){
-                    $type = '';
-                }else if($type == 'factura'){
-                    /*$var->date_billing = request('date_quotation');*/
-                   /* $var = $validateFactura->validateNumberInvoice();*/
+
+            if($type == 'Cotización'){
+                    $var->date_quotation = request('date_quotation');
+
+                }elseif($type == 'Nota de Entrega'){
+                    $var->date_delivery_note = request('date_quotation');
+                    $var->date_quotation = request('date_quotation');
+
+
+                }else{
+                    $var->date_quotation = request('date_quotation');
+
                 }
 
 
@@ -617,7 +624,6 @@ class QuotationController extends Controller
 
                 $var->id_user = request('id_user');
                 $var->serie = request('serie');
-                $var->date_quotation = request('date_quotation');
 
                 $var->observation = request('observation');
                 $var->note = request('note');
@@ -646,14 +652,14 @@ class QuotationController extends Controller
 
                 $historial_quotation = new HistorialQuotationController();
 
-                $historial_quotation->registerAction($var,"quotation","Creó Cotización");
+                $historial_quotation->registerAction($var,"quotation","Creó ".$type);
 
 
                 return redirect('quotations/register/'.$var->id.'/bolivares/'.$type);
 
 
         }else{
-            return redirect('/quotations/registerquotation')->withDanger('Debe Buscar un Cliente');
+            return redirect('/quotations/registerquotation/'.$type)->withDanger('Debe Buscar un Cliente');
         }
 
     }else{
@@ -943,7 +949,6 @@ class QuotationController extends Controller
 
     public function updateQuotation(Request $request, $id)
     {
-
         $user   =   auth()->user();
 
         $persona_entrega = request('person');
@@ -951,7 +956,18 @@ class QuotationController extends Controller
 
         $var = Quotation::on(Auth::user()->database_name)->findOrFail($id);
 
-        $var->date_quotation = request('date_quotation');
+        if($request->type_f == 'Nota de Entrega'){
+            $var->date_delivery_note = request('date_quotation');
+
+        }elseif($request->type_f == 'Cotización'){
+            $var->date_quotation = request('date_quotation');
+
+        }else{
+            $var->date_quotation = request('date_quotation');
+            $var->date_delivery_note = request('date_quotation');
+
+        }
+
         $var->serie = request('serie');
 
         $var->observation = request('observation');

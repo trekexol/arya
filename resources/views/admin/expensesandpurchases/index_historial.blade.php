@@ -82,7 +82,7 @@
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0" >
             <thead>
             <tr>
-                
+
                 <th style="display:none;">Fecha2</th>
                 <th style="width: 11%" class="text-center">Fecha</th>
                 <th style="width: 1%">Orden</th>
@@ -92,7 +92,7 @@
                 @if(Auth::user()->id_company == '26')
                 <th class="text-center">Couriertool</th>
                 @endif
-                
+
                 <th class="text-center">REF</th>
                 <th class="text-center">Total</th>
                 <th ></th>
