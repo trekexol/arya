@@ -857,13 +857,13 @@ class ExpensesAndPurchaseController extends Controller
              if($coin == 'bolivares'){
                 $bcv = null;
 
-                if($creditrue == TRUE){
-                    $total = $total + $montodebito;
-
-                }else{
+               /* if($creditrue == TRUE){
                     $total = $total - $montodebito;
 
-                }
+                }else{
+                    $total = $total + $montodebito;
+
+                }*/
 
 
             }else{
@@ -871,13 +871,13 @@ class ExpensesAndPurchaseController extends Controller
                 $bcv = $expense->rate;
                 $total = $total / $expense->rate;
 
-                if($creditrue == TRUE){
-                    $total = $total + $montodebito;
-
-                }else{
+              /*  if($creditrue == TRUE){
                     $total = $total - $montodebito;
 
-                }
+                }else{
+                    $total = $total + $montodebito;
+
+                }*/
 
 
                 $base_imponible = $base_imponible / $expense->rate;
@@ -3492,11 +3492,11 @@ public function notas(request $request)
                 ->where('status','P')
                 ->first();
 
-                if($tiponota == 'debito'){
+                if($tiponota == 'credito'){
 
                 $tipocuenta = $request->tipocuenta;
                 $note = $request->note;
-                $descripcionfactura = "NOTA DEBITO DE GASTOS Y COMPRA NRO ".$nrofactura;
+                $descripcionfactura = "NOTA CREDITO DE GASTOS Y COMPRA NRO ".$nrofactura;
 
 
                 if($expensesandpurchases){
@@ -3572,7 +3572,7 @@ public function notas(request $request)
                                 }
 
                                 $resp['error'] = true;
-                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                $resp['msg'] = 'Nota de Credito Registrada Exitosamente';
                                 return response()->json($resp);
 
                             }
@@ -3632,7 +3632,7 @@ public function notas(request $request)
 
 
                                 $resp['error'] = true;
-                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                $resp['msg'] = 'Nota de Credito Registrada Exitosamente';
                                 return response()->json($resp);
 
                             }
@@ -3802,7 +3802,7 @@ public function notas(request $request)
 
                             if($validar == TRUE){
                                 $resp['error'] = true;
-                                $resp['msg'] = 'Nota de Debito Registrada Exitosamente';
+                                $resp['msg'] = 'Nota de Credito Registrada Exitosamente';
                                 return response()->json($resp);
                             }
 
@@ -3835,7 +3835,7 @@ public function notas(request $request)
 
                 }else{
 
-                    /********************* NOTAS DE CREDITOS***********/
+                    /********************* NOTAS DE DEBITO***********/
 
                     $pordes = 0;
                     $note = null;
@@ -3856,7 +3856,7 @@ public function notas(request $request)
                     //$montocredito =  str_replace(".", "", $montocredito);
                     $montocredito =  str_replace(",", ".", $montocredito);
 
-                    $descripcionfactura = "NOTA CREDITO DE GASTOS Y COMPRA NRO ".$nrofactura;
+                    $descripcionfactura = "NOTA DEBITO DE GASTOS Y COMPRA NRO ".$nrofactura;
 
 
                     $debit = new DebitNoteExpense();
@@ -3881,7 +3881,7 @@ public function notas(request $request)
                                 $headervoucher->save();
 
                                 $resp['error'] = true;
-                                $resp['msg'] = 'Nota de Credito Registrada Exitosamente';
+                                $resp['msg'] = 'Nota de debito Registrada Exitosamente';
                                 return response()->json($resp);
 
 

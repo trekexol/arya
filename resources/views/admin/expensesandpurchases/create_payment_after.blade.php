@@ -115,42 +115,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if($debitnoteexpense)
-                            <?php if($coin == 'dolares'){
-                                $montodebito =  $debitnoteexpense->monto_perc / $bcv;
-                            } else{
-                                $montodebito =  $debitnoteexpense->monto_perc;
-                            }?>
 
-
-                        @if($debitnoteexpense->percentage > 0)
-                        <div class="form-group row">
-                            <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Descuento Nota de Débito</label>
-                            <div class="col-md-3">
-                                <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
-
-                                @error('descuentonota')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        @elseif($debitnoteexpense->percentage == 0)
-                        <div class="form-group row">
-                            <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Monto Nota de Credito</label>
-                            <div class="col-md-3">
-                                <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
-
-                                @error('descuentonota')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        @endif
-                        @endif
                         <div class="form-group row">
                             <label for="iva_amount" class="col-md-2 col-form-label text-md-right">Monto de Iva</label>
                             <div class="col-md-4">
@@ -296,6 +261,42 @@
 
                         </div>-->
 
+                        @if($debitnoteexpense)
+                        <?php if($coin == 'dolares'){
+                            $montodebito =  $debitnoteexpense->monto_perc / $bcv;
+                        } else{
+                            $montodebito =  $debitnoteexpense->monto_perc;
+                        }?>
+
+
+                    @if($debitnoteexpense->percentage > 0)
+                    <div class="form-group row">
+                        <label for="descuentonota" class="col-md-2 col-form-label text-md-right">Nota de Credito</label>
+                        <div class="col-md-3">
+                            <input id="notacredito" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
+
+                            @error('descuentonota')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    @elseif($debitnoteexpense->percentage == 0)
+                    <div class="form-group row">
+                        <label for="descuentonota" class="col-md-2 col-form-label text-md-right"> Nota de Débito</label>
+                        <div class="col-md-3">
+                            <input id="descuentonota" type="text" class="form-control @error('descuentonota') is-invalid @enderror" name="descuentonota" placeholder="0,00" value="{{ number_format($montodebito, 2, ',', '.') ?? 0 }}" readonly>
+
+                            @error('descuentonota')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                    @endif
+                    @endif
 
 
 
@@ -985,12 +986,12 @@ function calculate(valor) {
     if (valor == '1'){
         porc_discount = $("#porc_descuento_general").val();
         discount = totalFactura * porc_discount / 100;
-       
+
 
         if (totalBaseImponible != totalFactura) {
-           
+
             totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
-             
+
         }
 
 
@@ -1125,6 +1126,19 @@ function calculate(valor) {
     var total_islr_retencion = document.getElementById("total_retiene_islr").value;
 
     var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
+
+    var notacredito = $("#notacredito").val();
+   var debito = $("#descuentonota").val();
+
+    if(notacredito == undefined){
+        var total_pay = parseFloat(debito) + total_pay;
+    }
+
+    if(debito == undefined){
+        var total_pay =  total_pay - parseFloat(notacredito);
+
+    }
+
 
     var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
