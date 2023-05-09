@@ -161,7 +161,9 @@ class BackendController extends Controller
             ->where('code_three', 1)
             ->where('code_four', 2)
             ->where('level', 5)
+            ->orWhere('description','like','%caja%')
             ->get();
+
 
             foreach($accountsbanks as $accountsbank){
 
