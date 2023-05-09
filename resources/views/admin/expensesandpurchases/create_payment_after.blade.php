@@ -1130,11 +1130,16 @@ function calculate(valor) {
     var notacredito = $("#notacredito").val();
    var debito = $("#descuentonota").val();
 
-    if(notacredito == undefined){
+
+   if(notacredito == undefined && debito == undefined){
+    var total_pay = total_pay;
+   }
+
+   else if(notacredito == undefined){
         var total_pay = parseFloat(debito) + total_pay;
     }
 
-    if(debito == undefined){
+    else if(debito == undefined){
         var total_pay =  total_pay - parseFloat(notacredito);
 
     }
