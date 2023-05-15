@@ -137,7 +137,7 @@
                                  <select class="form-control" id="id_account" name="id_account" required>
                                      
                                      <option selected value="Ventas por Bienes">Ventas por Bienes</option>
-                                     <option value="Diferencial cambiario">Diferencial cambiario</option>
+                                    <!-- <option value="Diferencial cambiario">Diferencial cambiario</option>-->
                                  </select>
                              </div>
                              <div class="form-group col-md-1">
