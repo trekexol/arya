@@ -809,8 +809,8 @@ return [
             'vbonpalnd' => [
                 'driver' => 'mysql',
                 'url' => env('DATABASE_URL'),
-                'host' => env('VBONDPLAND_HOST', '127.0.0.1'),
-                'port' => env('VBONDPLAND_PORT', '3306'),
+                'host' => env('VBONPLAND_HOST', '127.0.0.1'),
+                'port' => env('VBONPLAND_PORT', '3306'),
                 'database' => env('VBONPLAND_DATABASE', 'forge'),
                 'username' => env('VBONPLAND_USERNAME', 'forge'),
                 'password' => env('VBONPLAND_PASSWORD', ''),
