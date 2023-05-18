@@ -825,6 +825,25 @@ return [
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
                 ]) : [],
             ],
+            'pepiteria13' => [
+                'driver' => 'mysql',
+                'url' => env('DATABASE_URL'),
+                'host' => env('PEPITERIA13_HOST', '127.0.0.1'),
+                'port' => env('PEPITERIA13_PORT', '3306'),
+                'database' => env('PEPITERIA13_DATABASE', 'forge'),
+                'username' => env('PEPITERIA13_USERNAME', 'forge'),
+                'password' => env('PEPITERIA13_PASSWORD', ''),
+                'unix_socket' => env('PEPITERIA13_SOCKET', ''),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+                'options' => extension_loaded('pdo_mysql') ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ]) : [],
+            ],
 
         'pgsql' => [
             'driver' => 'pgsql',
