@@ -49,7 +49,7 @@
                             <label for="date_end" class="col-md-2 col-form-label text-md-right">Fecha Hasta:</label>
 
                             <div class="col-md-4">
-                                <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" >
+                                <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" required>
 
                                 @error('date_end')
                                     <span class="invalid-feedback" role="alert">
