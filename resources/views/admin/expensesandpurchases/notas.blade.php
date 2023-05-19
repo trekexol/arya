@@ -87,13 +87,13 @@
                             <td>{{$expensesandpurchase->providers['razon_social']}}</td>
                             <td>{{ date('d-m-Y', strtotime( $expensesandpurchase->date ?? ''))  }}</td>
                             @if($expensesandpurchase->percentage == 0)
-                            @php $headatos = 'NOTA CREDITO DE GASTOS Y COMPRA NRO '.$expensesandpurchase->invoice; @endphp
-
-                            <td>NOTA DE CREDITO NRO {{$expensesandpurchase->id}}</td>
-                            @else
                             @php $headatos = 'NOTA DEBITO DE GASTOS Y COMPRA NRO '.$expensesandpurchase->invoice; @endphp
 
                             <td>NOTA DE DEBITO NRO {{$expensesandpurchase->id}}</td>
+                            @else
+                            @php $headatos = 'NOTA CREDITO DE GASTOS Y COMPRA NRO '.$expensesandpurchase->invoice; @endphp
+
+                            <td>NOTA DE CREDITO NRO {{$expensesandpurchase->id}}</td>
                             @endif
                             @if (Auth::user()->role_id  == '1' || $eliminarmiddleware  == '1' )
                             <td>

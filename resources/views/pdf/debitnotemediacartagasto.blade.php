@@ -1,11 +1,11 @@
 <?php
 
 if($DebitNoteExpense->percentage == 0){
-    $titulo = 'NOTA DE CREDITO';
-    $condicion = 'Nota de Credito';
+    $titulo = 'NOTA DE DEBITO';
+    $condicion = 'Nota de debito';
 }else{
-    $titulo = 'NOTA DE DÉBITO';
-    $condicion = 'Nota de Débito';
+    $titulo = 'NOTA DE CREDITO';
+    $condicion = 'Nota de credito';
 
 }
 

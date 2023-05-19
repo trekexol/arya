@@ -104,7 +104,7 @@
 
                         <div class="form-group row">
 
-                            <label  class="col-sm-3 col-form-label text-md-right moncre">Monto Credito a Factura:</label>
+                            <label  class="col-sm-3 col-form-label text-md-right moncre">Monto Debito a Factura:</label>
 
                             <div class="col-sm-2 moncre">
                                 <input id="montocredito" type="text" class="form-control form-control-sm" name="montocredito" value="{{ old('montocredito') }}" >
@@ -396,7 +396,7 @@ $(".moncre").hide();
 
 }
 
-if(value == 'debito'){
+if(value == 'credito'){
 
     $("#pordes").val('');
     $("#despor").val('');
@@ -409,7 +409,7 @@ if(value == 'debito'){
     $(".moncre").hide();
 
 
-}if(value == 'credito'){
+}if(value == 'debito'){
 
     $("#pordes").val('');
     $("#despor").val('');
