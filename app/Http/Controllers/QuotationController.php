@@ -32,6 +32,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use App\ComisionType;
+use App\Employee;
+use App\Estado;
+use App\Municipio;
+use App\Parroquia;
+
+
 
 class QuotationController extends Controller
 {
@@ -524,9 +531,16 @@ class QuotationController extends Controller
     {
         if($id_client != -1){
 
-            $vendors     = vendor::on(Auth::user()->database_name)->get();
+            $vendors     = vendor::on(Auth::user()->database_name)->Where('status',1)->get();
 
-            return view('admin.quotations.selectvendor',compact('vendors','id_client','type'));
+            $estados     = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
+            $municipios  = Municipio::on(Auth::user()->database_name)->get();
+            $parroquias  = Parroquia::on(Auth::user()->database_name)->get();
+
+            $comisions   = ComisionType::on(Auth::user()->database_name)->get();
+            $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
+
+            return view('admin.quotations.selectvendor',compact('vendors','id_client','type','estados','municipios','parroquias','comisions','employees'));
 
         }else{
             return redirect('/quotations/registerquotation')->withDanger('Seleccione un Cliente primero');

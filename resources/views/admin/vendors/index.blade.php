@@ -60,65 +60,143 @@
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
-<div class="card shadow mb-4">
-
-    <div class="card-body">
-        <div class="container">
-            @if (session('flash'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{session('flash')}}
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">
-                    <span aria-hidden="true">&times; </span>
-                </button>
-            </div>
-        @endif
-        </div>
-        <div class="table-responsive">
-        <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Cédula o Rif</th>
-                <th>Comisión</th>
-                <th>Correo Electrónico</th>
-                <th>Teléfono</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-                @if (empty($vendors))
-                @else
-                    @foreach ($vendors as $vendor)
-                        <tr>
-                            <td>{{$vendor->id}}</td>
-                            <td>{{$vendor->name}}</td>
-                            <td>{{$vendor->surname}}</td>
-                            <td>{{$vendor->cedula_rif}}</td>
-                            <td>{{$vendor->comision}}%</td>
-                            <td>{{$vendor->email}}</td>
-                            <td>{{$vendor->phone}}</td>
-                            <td>
-                            @if(Auth::user()->role_id  == '1' || $actualizarmiddleware == 1)
-                                <a href="vendors/{{$vendor->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                            @endif
-                             </td>
-                        </tr>
-                    @endforeach
-                @endif
-            </tbody>
-        </table>
-        </div>
+<nav class="col-md-12">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">ACTIVOS</button>
+      <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">INACTIVOS</button>
     </div>
-</div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+        <div class="card shadow mb-4">
+
+            <div class="card-body">
+                <div class="container">
+                    @if (session('flash'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{session('flash')}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-hidden="true">&times; </span>
+                        </button>
+                    </div>
+                @endif
+                </div>
+                <div class="table-responsive">
+                <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Cédula o Rif</th>
+                        <th>Comisión</th>
+                        <th>Correo Electrónico</th>
+                        <th>Teléfono</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (empty($vendors))
+                        @else
+                            @foreach ($vendors as $vendor)
+                                <tr>
+                                    <td>{{$vendor->id}}</td>
+                                    <td>{{$vendor->name}}</td>
+                                    <td>{{$vendor->surname}}</td>
+                                    <td>{{$vendor->cedula_rif}}</td>
+                                    <td>{{$vendor->comision}}%</td>
+                                    <td>{{$vendor->email}}</td>
+                                    <td>{{$vendor->phone}}</td>
+                                    <td>
+                                    @if(Auth::user()->role_id  == '1' || $actualizarmiddleware == 1)
+                                        <a href="vendors/{{$vendor->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                    @endif
+                                     </td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+            <div class="card shadow mb-4">
+
+                <div class="card-body">
+                    <div class="container">
+                        @if (session('flash'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{session('flash')}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                                <span aria-hidden="true">&times; </span>
+                            </button>
+                        </div>
+                    @endif
+                    </div>
+                    <div class="table-responsive">
+                    <table class="table table-light2 table-bordered" id="dataTables" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th>Cédula o Rif</th>
+                            <th>Comisión</th>
+                            <th>Correo Electrónico</th>
+                            <th>Teléfono</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (empty($vendorsinac))
+                            @else
+                                @foreach ($vendorsinac as $vendorsinac)
+                                    <tr>
+                                        <td>{{$vendorsinac->id}}</td>
+                                        <td>{{$vendorsinac->name}}</td>
+                                        <td>{{$vendorsinac->surname}}</td>
+                                        <td>{{$vendorsinac->cedula_rif}}</td>
+                                        <td>{{$vendorsinac->comision}}%</td>
+                                        <td>{{$vendorsinac->email}}</td>
+                                        <td>{{$vendorsinac->phone}}</td>
+                                        <td>
+                                        @if(Auth::user()->role_id  == '1' || $actualizarmiddleware == 1)
+                                            <a href="vendors/{{$vendorsinac->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                        @endif
+                                         </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+  </div>
+
+
 
 @endsection
 @section('javascript')
 
     <script>
-    $('#dataTable').DataTable({
+    $('#dataTable, #dataTables').DataTable({
         "ordering": false,
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]

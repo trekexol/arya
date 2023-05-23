@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VendorController extends Controller
 {
- 
+
     public $userAccess;
     public $modulo = 'Cotizacion';
 
@@ -29,17 +29,18 @@ class VendorController extends Controller
 
     public function index(request $request)
     {
-         
      $agregarmiddleware = $request->get('agregarmiddleware');
      $actualizarmiddleware = $request->get('actualizarmiddleware');
      $eliminarmiddleware = $request->get('eliminarmiddleware');
      $namemodulomiddleware = $request->get('namemodulomiddleware');
 
-            
-                $vendors = Vendor::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->get();
-            
-            return view('admin.vendors.index',compact('vendors','agregarmiddleware','actualizarmiddleware'));
-       
+
+                $vendors = Vendor::on(Auth::user()->database_name)->Where('status','1')->orderBy('id' ,'DESC')->get();
+                $vendorsinac = Vendor::on(Auth::user()->database_name)->Where('status','0')->orderBy('id' ,'DESC')->get();
+
+
+            return view('admin.vendors.index',compact('vendors','agregarmiddleware','actualizarmiddleware','vendorsinac'));
+
    }
 
 
@@ -48,11 +49,11 @@ class VendorController extends Controller
 
     if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
-     
+
        $estados     = Estado::on(Auth::user()->database_name)->orderBY('descripcion','asc')->pluck('descripcion','id')->toArray();
        $municipios  = Municipio::on(Auth::user()->database_name)->get();
        $parroquias  = Parroquia::on(Auth::user()->database_name)->get();
-     
+
        $comisions   = ComisionType::on(Auth::user()->database_name)->get();
        $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
 
@@ -60,18 +61,18 @@ class VendorController extends Controller
        return view('admin.vendors.create',compact('estados','municipios','parroquias','comisions','employees'));
     }else{
         return redirect('/vendors')->withDanger('No tiene permiso!');
- 
-    }
-  
+
     }
 
-  
+    }
+
+
    public function store(Request $request)
     {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
     $data = request()->validate([
-        
+
         'Parroquia'         =>'required',
         'comision_id'         =>'required',
         'user_id'         =>'required',
@@ -79,14 +80,14 @@ class VendorController extends Controller
         'name'         =>'required',
         'surname'         =>'required',
         'comision'         =>'required'
-      
-       
+
+
     ]);
 
     $var = new Vendor();
     $var->setConnection(Auth::user()->database_name);
 
-    
+
     $var->parroquia_id = request('Parroquia');
     $var->comision_id = request('comision_id');
     $var->employee_id= request('employee_id');
@@ -114,12 +115,19 @@ class VendorController extends Controller
     $var->observation = request('observation');
 
    // $var->direction = request('direction');
-    
+
     $var->status =  1;
-  
+
     $var->save();
 
-    return redirect('/vendors')->withSuccess('Registro Exitoso!');
+    if(request('modalactivo') == null){
+        return redirect('/vendors')->withSuccess('Registro Exitoso!');
+
+    }else{
+        return back()->withSuccess('Registro Exitoso!');
+
+    }
+
 }else{
     return redirect('/vendors')->withDanger('No tiene permiso!');
 
@@ -134,21 +142,21 @@ class VendorController extends Controller
 
 
         $vendor = vendor::on(Auth::user()->database_name)->find($id);
-        
+
         $estados            = Estado::on(Auth::user()->database_name)->get();
         $municipios         = Municipio::on(Auth::user()->database_name)->get();
         $parroquias         = Parroquia::on(Auth::user()->database_name)->get();
-      
+
 
         $comisions   = ComisionType::on(Auth::user()->database_name)->get();
         $employees   = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->get();
 
-      
+
         return view('admin.vendors.edit',compact('vendor','estados','municipios','parroquias','comisions','employees'));
-  
+
     }else{
         return redirect('/vendors')->withDanger('No tiene permiso!');
-    
+
     }
 
    }
@@ -160,9 +168,9 @@ class VendorController extends Controller
     $vars =  Vendor::on(Auth::user()->database_name)->find($id);
 
     $vars_status = $vars->status;
-   
+
     $data = request()->validate([
-        
+
         'Parroquia'         =>'required',
         'comision_id'         =>'required',
         'user_id'         =>'required',
@@ -171,11 +179,11 @@ class VendorController extends Controller
         'phone'         =>'required',
         'comision'         =>'required',
         'status'         =>'required'
-       
+
     ]);
 
     $var = Vendor::on(Auth::user()->database_name)->findOrFail($id);
-    
+
     $var->parroquia_id = request('Parroquia');
     $var->comision_id = request('comision_id');
     $var->employee_id= request('employee_id');
@@ -206,7 +214,7 @@ class VendorController extends Controller
     }else{
         $var->status = request('status');
     }
-   
+
 
     $var->save();
 
@@ -219,5 +227,5 @@ class VendorController extends Controller
     }
 
 
-  
+
 }
