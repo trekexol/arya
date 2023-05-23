@@ -721,12 +721,12 @@ class ExpensesAndPurchaseController extends Controller
 
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
-
+            $igtfporc = 3;
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts'));
+                                ,'islrconcepts','igtfporc'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -916,11 +916,14 @@ class ExpensesAndPurchaseController extends Controller
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
 
+
+                $igtfporc = 3;
+
              return view('admin.expensesandpurchases.create_payment_after',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','debitnoteexpense'));
+                                ,'islrconcepts','debitnoteexpense','igtfporc'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -1237,8 +1240,8 @@ class ExpensesAndPurchaseController extends Controller
                 /************PARA LO DE COURIERTOOL NO TOCAR ********/
                 $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
                 /***************************************************************/
-
-
+        $igftmonto = request('igtfvalor');
+        $IGTF_porc = request('IGTF_porc');
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
@@ -2135,6 +2138,8 @@ class ExpensesAndPurchaseController extends Controller
 
                     $sub_total = $sub_total * $bcv;
 
+                    $igftmonto = $igftmonto * $bcv;
+
                 }
 
 
@@ -2360,6 +2365,8 @@ class ExpensesAndPurchaseController extends Controller
                     $iva_percentage = $iva_percentage;
                     $expense->porc_discount = $porc_descuento;
                     $expense->discount = $descuento;
+                    $expense->IGTF_percentage = $IGTF_porc;
+                    $expense->IGTF_amount = $igftmonto;
                     $expense->status = "C";
 
                     $expense->coin = $coin;
@@ -2372,8 +2379,6 @@ class ExpensesAndPurchaseController extends Controller
 
                     //aumentamos el inventario
                     $retorno = $this->increase_inventory($expense->id,$expense->date);
-
-
 
 
                     if($retorno != "exito"){
@@ -2450,6 +2455,8 @@ class ExpensesAndPurchaseController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
+        $igftmonto = request('igtfvalor');
+        $IGTF_porc = request('IGTF_porc');
 
 
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
@@ -2504,6 +2511,9 @@ class ExpensesAndPurchaseController extends Controller
             $sin_formato_anticipo = $sin_formato_anticipo * $expense->rate;
             $sin_formato_total_pay = $sin_formato_total_pay * $expense->rate;
             $sin_formato_descuento_general = $sin_formato_descuento_general * $expense->rate;
+
+
+            $igftmonto = $igftmonto * $expense->rate;
         }
 
         $id_islr_concept = request('id_islr_concept_credit');
@@ -2522,6 +2532,9 @@ class ExpensesAndPurchaseController extends Controller
         $expense->anticipo =  $sin_formato_anticipo;
         $expense->porc_discount =$porc_descuento_general;
         $expense->discount = $sin_formato_descuento_general;
+
+        $expense->IGTF_percentage = $IGTF_porc;
+        $expense->IGTF_amount = $igftmonto;
 
         $credit = request('credit');
 

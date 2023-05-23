@@ -1054,8 +1054,13 @@ class GlobalController extends Controller
                 ->select('type')
                 ->find($id_product);
 
+                if($buscar == null){
+                    $typebuscar = 'SERVICIO';
+                }else{
+                    $typebuscar = $buscar->type;
+                }
 
-                    if ($transaccion < 0 and $buscar->type != 'COMBO') {
+                    if ($transaccion < 0 and $typebuscar != 'COMBO') {
 
                        $msg = "La cantidad es mayor a la disponible en inventario";
 
