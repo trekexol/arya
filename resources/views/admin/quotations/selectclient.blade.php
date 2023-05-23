@@ -9,8 +9,11 @@
             <h2>Seleccione un Cliente</h2>
         </div>
 
-        <div class="col-md-6">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal">Agregar Cliente Nuevo</button>
+        <div class="col-md-3">
+            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#deleteModal">Agregar Cliente Nuevo</button>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-sm btn-danger" onclick="javascript:history.go(-1);">Volver</button>
         </div>
     </div>
 </div>
