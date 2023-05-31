@@ -326,14 +326,15 @@
           </button>
         </div>
         <div class="modal-body">
-            <form>
+            <form id="fileForm" method="POST" action="{{ route('import_inventary_cantidad') }}" enctype="multipart/form-data" >
+                @csrf
 
                 <div class="form-row">
 
                     <div class="form-group col-md-12">
                       <label for="inputState">Tipo</label>
                       <select id="tipo" name="tipo" class="form-control form-control-sm" >
-                        <option selected>Seleccione..</option>
+                        <option value="">Seleccione..</option>
                         <option value="AI">Aumentar Inventario</option>
                         <option value="DI">Disminuir Inventario</option>
                       </select>
@@ -350,14 +351,14 @@
                         </select>
                       </div>
                       <div class="form-group col-md-12 contradiv">
-                        <select id="subcontrapartida2" class="form-control form-control-sm">
-                          <option selected>Seleccione..</option>
+                        <select id="subcontrapartida2" name="contrapartida" class="form-control form-control-sm">
+                          <option value="">Seleccione..</option>
                         </select>
                       </div>
 
                       <div class="form-group col-md-12 procediv">
                         <label for="exampleFormControlFile1">Seleccionar Archivo</label>
-                        <input type="file" class="form-control-file form-control-sm" id="exampleFormControlFile1">
+                        <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
                     </div>
 
                       <div class="col-md-12 text-center procediv">
@@ -365,8 +366,6 @@
                     <button type="submit" class="btn btn-sm btn-primary procediv">Proceder</button>
                       </div>
                   </div>
-
-
               </form>
         </div>
       </div>
