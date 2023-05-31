@@ -1230,6 +1230,7 @@ Route::group(["prefix"=>'export'],function(){
     Route::post('productsimport','ExcelController@import_product')->name('import_product');
 
     Route::post('inventaryimport','ExcelController@import_inventary')->name('import_inventary');
+    Route::post('importinventarycantidad','ExcelController@import_inventary_cantidad')->name('import_inventary_cantidad');
 
     Route::post('comboimport','ExcelController@import_combo')->name('import_combo');
 
