@@ -40,6 +40,14 @@
                         <label for="login" class="col-sm-2 col-form-label">Login(*)</label>
 
                         <div class="col-sm-4">
+                            <?php
+                            if ($company->login == 'nestornarvaez'){
+                                
+                                $company->login = 'frigosur';
+                            
+                            }
+                            ?>
+                            
                             <input id="login" type="text" class="form-control @error('login') is-invalid @enderror" name="Login" value="{{ $company->login }}" required autocomplete="login" autofocus>
 
                             @error('login')
