@@ -623,6 +623,10 @@ class GlobalController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
+
+        $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
+
+        if($tasahoy == null){ //procedo a guardar la tasa del dia.
         //$url = "https://s3.amazonaws.com/dolartoday/data.json";
         $url = "https://www.aryasoftware.net/apidolarbcv/";
         $ch = curl_init();
@@ -637,9 +641,6 @@ class GlobalController extends Controller
 
         if($datos['fechadehoy'] == $datos['fechaoficial']){
 
-            $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
-
-            if($tasahoy == null){ //procedo a guardar la tasa del dia.
 
                 $dolaroficial = str_replace(array(","),".",$datos['dolaroficial']);
 
@@ -655,12 +656,6 @@ class GlobalController extends Controller
                 ->update(["rate_bcv" => $dolaroficial, "date_consult_bcv" => $datenow]);
 
 
-            }else{
-                $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
-                $bcv = $company->rate_bcv;
-                return bcdiv($bcv, '1', 2);
-            }
-
         }else{
 
                 $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
@@ -668,7 +663,12 @@ class GlobalController extends Controller
                 return bcdiv($bcv, '1', 2);
         }
 
-
+    }//fin primer nulll
+    else{
+        $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+        $bcv = $company->rate_bcv;
+        return bcdiv($bcv, '1', 2);
+    }
 
     }
 
