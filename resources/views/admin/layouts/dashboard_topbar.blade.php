@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-light topbar mb-4 static-top shadow">
        
      <input id="id_company" type="hidden" value="{{Auth::user()->company->id ?? ''}}">
+     <input id="status_company" type="hidden" value="{{Auth::user()->company->status ?? ''}}">
     <!-- Sidebar Toggle (Topbar) -->
         <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
