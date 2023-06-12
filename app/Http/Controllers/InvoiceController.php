@@ -1507,7 +1507,8 @@ class InvoiceController extends Controller
         $multipayment->save();
     }
 
-    public function add_movement($bcv,$id_header,$id_account,$id_user,$debe,$haber)
+
+    public function add_movement($bcv,$id_header,$id_account,$id_quotation = null,$id_user,$debe,$haber)
     {
 
         $detail = new DetailVoucher();
@@ -1516,6 +1517,7 @@ class InvoiceController extends Controller
 
         $detail->id_account = $id_account;
         $detail->id_header_voucher = $id_header;
+        $detail->id_invoice = $id_quotation;
         $detail->user_id = $id_user;
         $detail->tasa = $bcv;
 
