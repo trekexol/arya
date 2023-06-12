@@ -196,12 +196,12 @@ class InvoiceController extends Controller
     
                     $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
                     if(isset($account_cuentas_por_cobrar)){
-                        $this->add_movement($key->bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$var->id,$key->user_id,$key->amount_with_iva,0);
+                        $this->add_movement($key->bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$var->id,$key->id_user,$key->amount_with_iva,0);
                     }
                     $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
 
                     if(isset($account_subsegmento)){
-                        $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->user_id,0,$key->amount_with_iva);
+                        $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->id_user,0,$key->amount_with_iva);
                     }
 
                 }                            
