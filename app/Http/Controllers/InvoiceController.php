@@ -158,6 +158,7 @@ class InvoiceController extends Controller
                       $var->date_expiration = $key->date_expiration;
                       $var->save(); 
 
+
                       ///////DETALLES DE LA FACTURA 
                       foreach ($data2 as $key2) {
 
@@ -179,6 +180,30 @@ class InvoiceController extends Controller
                             $detail->save();
                         }
                     }
+
+
+                    $header_voucher  = new HeaderVoucher();
+                    $header_voucher->setConnection(Auth::user()->database_name);
+    
+                    $header_voucher->description = "Ventas de Bienes o servicios.";
+                    $header_voucher->date = $key->date_billing;
+                    $header_voucher->status =  "1";
+                    $header_voucher->save();
+    
+                    /*Busqueda de Cuentas*/
+    
+                    //Cuentas por Cobrar Clientes
+    
+                    $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+                    if(isset($account_cuentas_por_cobrar)){
+                        $this->add_movement($key->bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$var->id,$key->user_id,$key->amount_with_iva,0);
+                    }
+                    $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
+
+                    if(isset($account_subsegmento)){
+                        $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->user_id,0,$key->amount_with_iva);
+                    }
+
                 }                            
             }
             
