@@ -661,10 +661,13 @@ class GlobalController extends Controller
 
 
 
-
             }else{
                 $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
                 $bcv = $company->rate_bcv;
+
+                $companies  = Company::on("logins")
+                ->update(["rate_bcv" => $bcv, "date_consult_bcv" => $datenow]);
+
                 return bcdiv($bcv, '1', 2);
             }
 
