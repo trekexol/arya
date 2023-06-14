@@ -610,9 +610,14 @@ $interesesacumulado = 0;
 
         $total_otras_deducciones = 0;
 
+        if($employee->motivo == 1){
 
+            $totaloot = 0;
+        }else{
+            $totaloot = str_replace(",", ".", $totaloot);
+        }
         /***REMPLACE PARA LA SUMA**/
-        $totaloot = str_replace(",", ".", $totaloot);
+
         $interesesacumulado = str_replace(",", ".", $interesesacumulado);
         $vacapaga = str_replace(",", ".", $vacapaga);
         $totaliquidacion1 = $totaloot +  $interesesacumulado + $vacapaga;
