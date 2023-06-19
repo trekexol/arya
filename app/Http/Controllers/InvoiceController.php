@@ -36,7 +36,8 @@ class InvoiceController extends Controller
     {
         $user       =   auth()->user();
         $company_user = $user->id_company;
-        
+
+
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 	    if ($company_user == 26){ // 26 NORTH D CORP
               
