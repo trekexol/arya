@@ -249,6 +249,9 @@ class FacturarController extends Controller
             /*-------------- */
             $company = Company::on(Auth::user()->database_name)->find(1);
             $igtfporc = $company->IGTF_porc ?? 3;
+            $impuesto = $company->tax_1 ?? 1;
+            $impuesto2 = $company->tax_2 ?? 1;
+            $impuesto3 = $company->tax_3 ?? 1;
 
             $is_after = false;
             if(empty($quotation->credit_days)){
@@ -257,7 +260,7 @@ class FacturarController extends Controller
              return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
-                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes','total_credit_notes'));
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          }
@@ -519,12 +522,16 @@ class FacturarController extends Controller
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $igtfporc = $company->IGTF_porc ?? 3;
 
-            /*-------------- */
+                $impuesto = $company->tax_1 ?? 1;
+                $impuesto2 = $company->tax_2 ?? 1;
+                $impuesto3 = $company->tax_3 ?? 1;
 
+            /*-------------- */
             $is_after = false;
 
 
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes'));
+
+             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          }
