@@ -160,9 +160,15 @@
                             </div>
                             <label for="iva" class="col-md-2 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
-                            <select class="form-control" name="iva" id="iva">
-                                <option value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
-                            </select>
+                                <select class="form-control" name="iva" id="iva">
+                                    @if(isset($quotation->iva_percentage))
+                                        <option selected value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
+                                    @else
+                                        <option value="{{$impuesto}}">{{$impuesto}}%</option>
+                                        <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
+                                        <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         @if (isset($quotation->IGTF_amount) && $quotation->IGTF_amount != 0)

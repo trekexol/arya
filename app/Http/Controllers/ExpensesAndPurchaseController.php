@@ -718,15 +718,18 @@ class ExpensesAndPurchaseController extends Controller
              /*Aqui revisamos el porcentaje de retencion de iva que tiene el proveedor, para aplicarlo a productos que retengan iva */
              $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
-
+             $company = Company::on(Auth::user()->database_name)->find(1);
+             $igtfporc = $company->IGTF_porc ?? 3;
+             $impuesto = $company->tax_1 ?? 1;
+             $impuesto2 = $company->tax_2 ?? 1;
+             $impuesto3 = $company->tax_3 ?? 1;
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
-            $igtfporc = 3;
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','igtfporc'));
+                                ,'islrconcepts','igtfporc','impuesto','impuesto2','impuesto3'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');

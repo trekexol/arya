@@ -234,10 +234,16 @@
                             </div>
                             <label for="iva" class="col-md-1 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
-                            <select class="form-control" name="iva" id="iva">
-                                <option value="16">16%</option>
-                                <option value="12">12%</option>
-                            </select>
+                                <select class="form-control" name="iva" id="iva">
+                                    @if(isset($expense->iva_percentage))
+                                        <option selected value="{{ $expense->iva_percentage }}">{{ $expense->va_percentage }}%</option>
+                                    @else
+                                        <option value="{{$impuesto}}">{{$impuesto}}%</option>
+                                        <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
+                                        <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
+                                    @endif
+                                    
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <select class="form-control" name="coin" id="coin">
