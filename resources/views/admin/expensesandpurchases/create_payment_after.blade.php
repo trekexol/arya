@@ -1188,14 +1188,16 @@ function calculate(valor) {
    }
 
    else if(notacredito == undefined){
-    debito = debito.replace(/,/g, '.');
+     debito = debito.replace('.', '');
+        debito = debito.replace(',', '.');
         var total_pay = debito + total_pay;
     }
 
     else if(debito == undefined){
-        notacredito = notacredito.replace(/,/g, '.');
-
+        notacredito = notacredito.replace('.', '');
+        notacredito = notacredito.replace(',', '.');
         var total_pay =  total_pay - notacredito;
+
 
     }
 
