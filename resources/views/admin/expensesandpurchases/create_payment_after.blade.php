@@ -1213,6 +1213,7 @@ var IGTF_input = IGTF_input.toLocaleString('de-DE', {minimumFractionDigits: 2,ma
 document.getElementById("IGTF_input").value = IGTF_input;
 document.getElementById("igtfvalor").value = IGTF_input;
 
+
 total_pay = total_pay + parseFloat(IGTF_input);
 
     }else{
@@ -1234,9 +1235,10 @@ total_pay = total_pay + parseFloat(IGTF_input);
 
 
 
+
     document.getElementById("total_pay").value =  total_payformat;
 
-    document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+    document.getElementById("total_pay_form").value =  total_payformat;
 
     document.getElementById("iva_form").value =  inputIva;
 
