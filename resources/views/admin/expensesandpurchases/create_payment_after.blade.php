@@ -1100,6 +1100,7 @@ function calculate(valor) {
     //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
     var total_iva_exento =  parseFloat(totalIva);
 
+
     var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
     //retencion de iva
@@ -1142,7 +1143,6 @@ function calculate(valor) {
 
     var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
     var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
-
     // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
     var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
 
@@ -1166,10 +1166,8 @@ function calculate(valor) {
         document.getElementById("anticipo_form").value = 0;
     }
 
+    var total_pay = totalFactura + total_iva_exento - montoFormat_anticipo;
 
-    var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
-
-    // var total_pay = parseFloat(totalFactura) + total_iva_exento - inputAnticipo;
 
     var total_iva_retencion = document.getElementById("total_retiene_iva").value;
 
@@ -1184,21 +1182,24 @@ function calculate(valor) {
 
 
 
+
    if(notacredito == undefined && debito == undefined){
     var total_pay = total_pay;
    }
 
    else if(notacredito == undefined){
-        var total_pay = parseFloat(debito) + total_pay;
+    debito = debito.replace(/,/g, '.');
+        var total_pay = debito + total_pay;
     }
 
     else if(debito == undefined){
-        var total_pay =  total_pay - parseFloat(notacredito);
+        notacredito = notacredito.replace(/,/g, '.');
+
+        var total_pay =  total_pay - notacredito;
 
     }
 
     var porcentajeigft = document.getElementById("IGTF_porc").value;
-
 
 
     if (valor == '3'){
