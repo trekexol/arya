@@ -2,21 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 
+
 <title></title>
 <style>
   table, td, th {
     border: 1px solid black;
     font-size: x-small;
   }
-  
+
   table {
     border-collapse: collapse;
     width: 100%;
   }
-  
+
   th {
-    
+
     text-align: left;
   }
   </style>
@@ -26,11 +26,11 @@
   <br>
   <h4 style="color: black; text-align: center">NOTAS DE ENTREGA</h4>
   <h5 style="color: black; text-align: center">Fecha de Desde: {{date_format(date_create($date_frist),"d-m-Y") ?? ''}}   /   Fecha de Hasta: {{ date_format(date_create($date_end),"d-m-Y")  ?? '' }}</h5>
- <?php 
-    
+ <?php
+
     $total_por_facturar = 0;
     $total_por_cobrar = 0;
-  
+
   ?>
 <table style="width: 100%;">
   <tr>
@@ -46,35 +46,36 @@
     <th style="text-align: center;">Total</th>
     <th style="text-align: center;">Abono</th>
     <th style="text-align: center;">Por Cobrar</th>
-  </tr> 
+  </tr>
 
   @foreach ($quotations as $quotation)
-    <?php 
-    
+    <?php
+
       if(isset($coin) && $coin != 'bolivares'){
 
-        $quotation->amount_with_iva = ($quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0)) / ($quotation->bcv ?? 1);
+        $totales1 =  $quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0);
+        $quotation->amount_with_iva = $totales1 / ($quotation->bcv ?? 1);
         //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
 
         $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
-         
+
         if ($quotation->status == 'X') {
           $total_por_cobrar += 0;
           $total_por_facturar += 0;
         } else {
           $total_por_cobrar += $por_cobrar;
-          $total_por_facturar += $quotation->amount_with_iva;       
+          $total_por_facturar += $quotation->amount_with_iva;
         }
       }else{
         $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
         $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
-         
+
         if ($quotation->status == 'X') {
           $total_por_cobrar += 0;
           $total_por_facturar += 0;
         } else {
           $total_por_cobrar += $por_cobrar;
-          $total_por_facturar += $quotation->amount_with_iva;       
+          $total_por_facturar += $quotation->amount_with_iva;
         }
       }
 
@@ -95,7 +96,7 @@
       if(isset($quotation->date_quotation)){
         $quotation->date_quotation = date_format(date_create($quotation->date_quotation),"d-m-Y");
       }
-    
+
     ?>
     <tr>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->date_delivery_note}}</th>
@@ -119,20 +120,20 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}} {{ $quotation->surname_vendor ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->number_pedido ?? ''}}</th>
 
-      @if(isset($coin) && $coin == 'bolivares'){
+      @if(isset($coin) && $coin == 'bolivares')
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
         @endif
-        @if(isset($coin) && $coin == 'dolares'){
+        @if(isset($coin) && $coin == 'dolares')
           <th style="text-align: right; font-weight: normal;">${{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
           <th style="text-align: right; font-weight: normal;">${{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
           <th style="text-align: right; font-weight: normal;">${{ number_format($por_cobrar, 2, ',', '.') }}</th>
-        @endif 
+        @endif
 
-   
-    </tr> 
-  @endforeach 
+
+    </tr>
+  @endforeach
 
 
 
@@ -149,19 +150,19 @@
     <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;">TOTAL</th>
 
 
-     
-    @if(isset($coin) && $coin == 'bolivares'){
+
+    @if(isset($coin) && $coin == 'bolivares')
       <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;"> Bs.</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
       @endif
-      @if(isset($coin) && $coin == 'dolares'){
+      @if(isset($coin) && $coin == 'dolares')
         <th style="text-align: right; font-weight: normal;">${{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
         <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;">USD</th>
         <th style="text-align: right; font-weight: normal;">${{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
-        @endif 
-  
-  </tr> 
+        @endif
+
+  </tr>
 </table>
 
 </body>
