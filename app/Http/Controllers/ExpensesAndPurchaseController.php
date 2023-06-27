@@ -28,7 +28,7 @@ use App\DebitNoteExpense;
 use App\DebitNoteDetailExpense;
 use App\InventoryHistories;
 use App\FacturasCour;
-
+use Faker\Core\Number;
 
 class ExpensesAndPurchaseController extends Controller
 {
@@ -1282,8 +1282,13 @@ class ExpensesAndPurchaseController extends Controller
         $base_imponible = request('base_imponible_form');
         $sin_formato_amount = request('sub_total_form');
         $iva_percentage = request('iva_form');
-        $sin_formato_total_pay = request('total_pay_form');
-        $total_pay_form = request('total_pay_form');
+
+        //$sin_formato_total_pay = request('total_pay_form');
+        //$total_pay_form = request('total_pay_form');
+
+        $sin_formato_total_pay = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
+        $total_pay_form = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
+
 
         $porc_descuento = request('porc_descuento_form');
 
@@ -2110,8 +2115,9 @@ class ExpensesAndPurchaseController extends Controller
             }
 
 
+            $total_pay = (string) $total_pay;
                 //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-            if(($total_pay - $total_pay_form) < 1 || ($sin_formato_total_pay <= 0))
+            if(($total_pay - $total_pay_form) < "1" || ($sin_formato_total_pay <= "0"))
             {
 
 
