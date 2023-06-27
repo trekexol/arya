@@ -209,10 +209,17 @@
                         @if($expense->status == 'P')
                            @php $expense->IGTF_amount = 0; @endphp
                         @endif
+
+                        @php
+
+                       $totales1 = $expense->amount_with_iva + $expense->IGTF_amount;
+                        $totales = $totales1 / $bcv;
+                        @endphp
+
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total:</label>
                             <div class="col-md-3">
-                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" value="{{ number_format($expense->amount_with_iva + $expense->IGTF_amount / ($bcv ?? 1), 2, ',', '.') }}" readonly  required autocomplete="total_pay">
+                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" value="{{ number_format($totales, 2, ',', '.') }}" readonly  required autocomplete="total_pay">
 
                                 @error('total_pay')
                                     <span class="invalid-feedback" role="alert">
