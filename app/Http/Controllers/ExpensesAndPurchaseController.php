@@ -580,7 +580,7 @@ class ExpensesAndPurchaseController extends Controller
         if($coin != 'bolivares'){
             $bcv = $expense->rate;
         }else{
-            $bcv = null;
+            $bcv = 1;
         }
 
         return view('admin.expensesandpurchases.create_payment_voucher',compact('coin','expense','datenow','bcv'));

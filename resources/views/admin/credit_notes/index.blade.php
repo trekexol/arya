@@ -130,8 +130,6 @@
                             <td class="text-center">{{ number_format($creditnote->amount_with_iva ?? 0, 2, ',', '.')}}</td>
                             @if($creditnote->status == 'C')
                             <td class="text-center" style="color:darkgreen">{{ $creditnote->status ?? ''}}</td>
-                            <td>
-                            </td>
                             @else
                             <td class="text-center">P</td>
                             @endif
@@ -162,7 +160,7 @@
           <form action="{{ route('creditnotes.deletecreditnote') }}" method="post">
               @csrf
               @method('DELETE')
-              <input id="id_creditnote_modal" type="hidden" class="form-control @error('id_creditnote_modal') is-invalid @enderror" name="id_creditnote_modal" readonly required autocomplete="id_creditnote_modal">
+              <input id="id_creditnote_modal" type="hidden" class="form-control @error('id_creditnote_modal') is-invalid @enderror" name="id_creditnote_modal" required autocomplete="id_creditnote_modal">
 
               <h5 class="text-center">Seguro que desea eliminar?</h5>
 
