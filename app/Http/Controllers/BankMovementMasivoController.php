@@ -124,7 +124,7 @@ public function facturasmovimientos(Request $request){
         $moneda = $data[5];
         $bcv = $data[6];
         $monto = $data[0] / $bcv;
-
+        $conta = $data[7];
 
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
@@ -134,7 +134,7 @@ public function facturasmovimientos(Request $request){
         ->get();
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta'))->render();
 
 
     }elseif($tipo == 'contra'){
@@ -266,21 +266,21 @@ public function procesarfact(Request $request){
 
 
             $quotations = Quotation::on(Auth::user()->database_name)
-            ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,'amount_with_iva')
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
-            ->where('tempmovimientos.moneda','coin')
             ->where('number_invoice','=',$request->nrofactura)
             ->where('status','=','P')
             ->where('amount_with_iva','=',$request->montoiva)
             ->where('id','=',$request->id)->first();
 
 
-
             if($quotations){
 
                 $quotations->status = 'C';
                 $quotations->save();
+
+                if($request->conta == 'debe'){
 
 
                 $header_voucher  = new HeaderVoucher();
@@ -303,6 +303,8 @@ public function procesarfact(Request $request){
                 if(isset($account_subsegmento)){
                     $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
                 }
+
+            }
 
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
                 ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
