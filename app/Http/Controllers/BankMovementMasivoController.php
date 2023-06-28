@@ -122,12 +122,15 @@ public function facturasmovimientos(Request $request){
 
     if($tipo == 'match'){
         $moneda = $data[5];
+        $bcv = $data[6];
+        $monto = $data[0] / $bcv;
+
+
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
         ->where('number_invoice','<>',null)
         ->where('status','=','P')
-        ->where('amount_with_iva','=',$data[0])
-        ->where('coin', $moneda)
+        ->where('amount_with_iva','=',$monto)
         ->get();
 
 
