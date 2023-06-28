@@ -30,7 +30,17 @@
                             <td>
                                @if (!empty($quotations))
                                     @foreach($quotations as $quotation)
-                                        @if($var->debe == $quotation->amount_with_iva AND $var->moneda == $quotation->coin)
+
+                                    @php
+                                    if($var->moneda == 'dolares'){
+                                        $bcv = $quotation->bcv;
+                                    }else{
+                                        $bcv = 1;
+                                    }
+                                       $monto = $quotation->amount_with_iva / $bcv;
+                                    @endphp
+
+                                        @if($var->debe == $monto)
 
                                         <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match'.$var->moneda}}">Match</span>
 
@@ -53,7 +63,7 @@
             <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content" id="modalfacturas">
-            
+
                     </div>
                 </div>
               </div>
