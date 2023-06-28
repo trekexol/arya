@@ -41,14 +41,14 @@
                                     @endphp
 
                                         @if($var->debe == $monto)
-
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match'.$var->moneda.'/'.$bcv}}">Match debe</span>
+                                        @php $conta = 'debe'; @endphp
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$bcv.'/'.$conta}}">Match debe</span>
 
                                         @endif
 
                                         @if($var->haber == $monto)
-
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->haber.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match'.$var->moneda.'/'.$bcv}}">Match haber</span>
+                                        @php $conta = 'haber'; @endphp
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->haber.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$bcv.'/'.$conta}}">Match haber</span>
 
                                         @endif
                                           @endforeach
