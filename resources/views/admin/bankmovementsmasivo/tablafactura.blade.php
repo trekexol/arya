@@ -11,7 +11,7 @@ if($tipo == 'match'){
 </div>
 <div class="modal-body" >
 
-<table class="table table-light2 table-bordered" id="dataTable" >
+<table class="table table-light2 table-bordered" id="dataTablematch" >
     <thead>
     <tr>
         <th>Nro. Factura</th>
@@ -114,7 +114,7 @@ $('.procesarfactura').click(function(e){
 
 });
 
-$('#dataTable').DataTable({
+$('#dataTablematch').DataTable({
             "ordering": false,
             "order": [],
             'aLengthMenu': [[10, 20, 30, -1], [10, 20, 30, "All"]]
