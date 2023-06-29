@@ -122,9 +122,8 @@ public function facturasmovimientos(Request $request){
 
     if($tipo == 'match'){
         $moneda = $data[5];
-        $bcv = $data[6];
-        $monto = $data[0] / $bcv;
-        $conta = $data[7];
+        $monto = $data[0];
+        $conta = $data[6];
 
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
@@ -741,27 +740,107 @@ public function listardatos(Request $request){
             $actualizarmiddleware = $request->get('actualizarmiddleware');
             $eliminarmiddleware = $request->get('eliminarmiddleware');
                   /********MOVIMIENTOS MASIVOS ********/
-        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+        $movimientosmasivoss   = TempMovimientos::on(Auth::user()->database_name)
         ->where('estatus','0')
         ->where('banco',$request->bancos)
         ->where(DB::raw("SUBSTR(fecha,1,7)"), $request->fechabancos)
         ->orderBy('fecha','asc')->get();
 
-        $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-                    ->where('date_billing','<>',null)
-                    ->where('number_invoice','<>',null)
-                    ->where('status','=','P')
-                    ->get();
+        foreach($movimientosmasivoss as $movimientosmasivos){
+
+            if($movimientosmasivos->haber == 0 OR $movimientosmasivos->haber == '0.00'){
+                $momasivo = $movimientosmasivos->debe;
+                $movimientosmasivos->conta = 'debe';
+            }else{
+                $momasivo = $movimientosmasivos->haber;
+                $movimientosmasivos->conta = 'haber';
+            }
+
+
+            if($movimientosmasivos->moneda == 'dolares'){
+
+                    $sql = "SELECT * FROM quotations
+                    WHERE amount_with_iva / bcv = '$momasivo'
+                    AND status = 'P'
+                    AND date_billing <> 'null'
+                    AND number_invoice <> 'null'";
+
+                    $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+                    if(count($datosinv) > 1){
+                        $movimientosmasivos->match = 1;
+                        $movimientosmasivos->idinvoice = 0;
+                        $movimientosmasivos->amount_with_iva = 0;
+                        $movimientosmasivos->bcv = 0;
+                    }
+                    elseif(count($datosinv) == 1){
+
+                        foreach($datosinv as $datosinv){
+                            $movimientosmasivos->match = $datosinv->number_invoice;
+                            $movimientosmasivos->idinvoice = $datosinv->id;
+                            $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
+                            $movimientosmasivos->bcv = $datosinv->bcv;
+                        }
+                    }
+                    else{
+                        $movimientosmasivos->match = 0;
+                        $movimientosmasivos->idinvoice = 0;
+                        $movimientosmasivos->amount_with_iva = 0;
+                        $movimientosmasivos->bcv = 0;
+
+                    }
 
 
 
 
-    return response()->json(View::make('admin.bankmovementsmasivo.listardatos',compact('movimientosmasivos','quotations','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'))->render());
+            }else{
+
+                $sql = "SELECT * FROM quotations
+                WHERE amount_with_iva = '$momasivo'
+                AND status = 'P'
+                AND date_billing <> 'null'
+                AND number_invoice <> 'null'";
+                 $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+                 if(count($datosinv) > 1){
+                    $movimientosmasivos->match = 1;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+                }
+                elseif(count($datosinv) == 1){
+
+                    foreach($datosinv as $datosinv){
+                        $movimientosmasivos->match = $datosinv->number_invoice;
+                        $movimientosmasivos->idinvoice = $datosinv->id;
+                        $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
+                        $movimientosmasivos->bcv = $datosinv->bcv;
+                    }
+                }
+                else{
+                    $movimientosmasivos->match = 0;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+
+                }
+            }
 
 
 
-        }catch(\Throwable $th){
-            return response()->json(false,500);
+
+        }
+
+
+
+
+
+    return response()->json(View::make('admin.bankmovementsmasivo.listardatos',compact('movimientosmasivoss','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'))->render());
+
+
+
+        }catch(Throwable $th){
+            return response()->json($th,500);
         }
     }
 
