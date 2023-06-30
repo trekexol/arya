@@ -24,6 +24,7 @@
 
 <div class="container" >
     <div class="row justify-content-center" >
+        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" ><h3>Gasto o Compras</h3></div>
@@ -224,10 +225,15 @@
                             </div>
                             <label for="iva" class="col-md-1 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
-                            <select class="form-control" name="iva" id="iva">
-                                <option value="16">16%</option>
-                                <option value="12">12%</option>
-                            </select>
+                                <select class="form-control" name="iva" id="iva">
+                                    @if(isset($expense->iva_percentage))
+                                        <option selected value="{{ $expense->iva_percentage }}">{{ $expense->iva_percentage }}%</option>
+                                    @else
+                                        <option value="{{$impuesto}}">{{$impuesto}}%</option>
+                                        <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
+                                        <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
+                                    @endif
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <select class="form-control" name="coin" id="coin">
@@ -302,6 +308,35 @@
 
                         <input type="hidden" name="id_expense" value="{{$expense->id}}" readonly>
 
+
+                        @if ($expense->IGTF_amount > 0)
+                        <div class="form-group row IGTF" style="display: visibilty;">
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
+                            <div class="col-md-3">
+
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{$expense->IGTF_amount}}" readonly>
+
+                            </div>
+
+
+                        </div>
+                        @else
+                        <div class="form-group row IGTF" style="display: none;" >
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
+                            <div class="col-md-3">
+
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{ 0}}" readonly>
+
+                            </div>
+
+
+                        </div>
+                        @endif
+
+
+
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total</label>
                             <div class="col-md-4">
@@ -313,12 +348,27 @@
                                     </span>
                                 @enderror
                             </div>
+
+                            <div class="col-md-3" id="IGTF_buttom">
+                                <div class="custom-control custom-switch">
+
+                                    @if ($expense->IGTF_amount > 0 )
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal" checked>
+                                    @else
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal">
+                                    @endif
+                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF: 3% (Total General)</label>
+                                </div>
+                            </div>
                         </div>
 
 
 
             <form method="POST" action="{{ route('expensesandpurchases.store_expense_payment') }}" enctype="multipart/form-data">
                 @csrf
+                <input id="igtfvalor" type="hidden" class="form-control @error('IGTF_input') is-invalid @enderror" name="igtfvalor" readonly>
+                <input  type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
+
                         <input type="hidden" id="id_islr_concept" name="id_islr_concept" value="{{ $expense->id_islr_concept ?? null }}" readonly>
 
                         <input type="hidden" name="id_expense" value="{{$expense->id}}" readonly>
@@ -1050,6 +1100,7 @@ function calculate(valor) {
     //document.getElementById("sub_total_form").value =  montoFormat_sub_total_form;
     var total_iva_exento =  parseFloat(totalIva);
 
+
     var iva_format = total_iva_exento.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
     //retencion de iva
@@ -1092,7 +1143,6 @@ function calculate(valor) {
 
     var numbertotalfactura = parseFloat(totalFactura).toFixed(2);
     var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
-
     // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
     var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
 
@@ -1116,10 +1166,8 @@ function calculate(valor) {
         document.getElementById("anticipo_form").value = 0;
     }
 
+    var total_pay = totalFactura + total_iva_exento - montoFormat_anticipo;
 
-    var total_pay = parseFloat(totalFactura) + total_iva_exento - montoFormat_anticipo;
-
-    // var total_pay = parseFloat(totalFactura) + total_iva_exento - inputAnticipo;
 
     var total_iva_retencion = document.getElementById("total_retiene_iva").value;
 
@@ -1131,25 +1179,68 @@ function calculate(valor) {
    var debito = $("#descuentonota").val();
 
 
+
+
+
+
    if(notacredito == undefined && debito == undefined){
     var total_pay = total_pay;
    }
 
    else if(notacredito == undefined){
-        var total_pay = parseFloat(debito) + total_pay;
+     debito = debito.replace('.', '');
+        debito = debito.replace(',', '.');
+        var total_pay = debito + total_pay;
     }
 
     else if(debito == undefined){
-        var total_pay =  total_pay - parseFloat(notacredito);
+        notacredito = notacredito.replace('.', '');
+        notacredito = notacredito.replace(',', '.');
+        var total_pay =  total_pay - notacredito;
+
 
     }
+
+    var porcentajeigft = document.getElementById("IGTF_porc").value;
+
+
+    if (valor == '3'){
+        $(".IGTF").show();
+
+
+var calc_porc = grand_total * porcentajeigft / 100;
+
+var IGTF_input = calc_porc.toFixed(2);
+var IGTF_input = IGTF_input.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+document.getElementById("IGTF_input").value = IGTF_input;
+document.getElementById("igtfvalor").value = IGTF_input;
+
+
+total_pay = total_pay + parseFloat(IGTF_input);
+
+    }else{
+        $(".IGTF").hide();
+        $('#customSwitchesIGTFTotal').prop('checked',false);
+
+                    //$("#IGTF_input").val(0);
+                    var IGTF_input = 0;
+                    document.getElementById("igtfvalor").value = IGTF_input;
+
+                    //document.getElementById("IGTF_input").value = IGTF_input;
+
+                    total_pay = total_pay + parseFloat(IGTF_input);
+    }
+
 
 
     var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
+
+
+
     document.getElementById("total_pay").value =  total_payformat;
 
-    document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+    document.getElementById("total_pay_form").value =  total_payformat;
 
     document.getElementById("iva_form").value =  inputIva;
 
@@ -1161,6 +1252,9 @@ function calculate(valor) {
 
     var grand_totalformat_m_discount = discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
     var totalFactura_form = totalFactura.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+
+
+
 
     $("#descuento_general").val(grand_totalformat_m_discount);
     $("#total_descuento_general").val(totalFactura_form);
@@ -1205,6 +1299,27 @@ $("#porc_descuento_general").on('change',function(){
 $("#descuento_general").on('change',function(){
     calculate(2);
 });
+
+var valorigtf = $("#IGTF_input").val();
+
+if(valorigtf > 0){
+    $('#customSwitchesIGTFTotal').prop('checked',true);
+
+    calculate(3);
+
+    }
+$("#customSwitchesIGTFTotal").on('change', function() {
+                if ($(this).is(':checked')) {
+                    calculate(3);
+
+                } else {
+                    calculate(1);
+
+
+                    }
+
+            });
+
 
 $("#checkdescuento").on('change', function() {
 

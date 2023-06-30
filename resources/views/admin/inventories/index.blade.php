@@ -244,7 +244,7 @@
 
     <div class="row py-lg-2">
         <div class="col-sm-2">
-            <button class="btn btn-dark" type="button"
+            <button class="btn btn-sm btn-dark" type="button"
             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
             aria-expanded="false">
             <i class="fas fa-bars"></i>
@@ -261,13 +261,11 @@
                 <br>
                 <button type="submit" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</button>
                 </form>
-            <!-- <a href="#" onclick="import_product();" class="dropdown-item bg-warning text-white h5"></a>
-           <a href="#" onclick="import_product_update_price();" class="dropdown-item bg-info text-white h5">Actualizar Precio Productos</a> -->
         </div>
         </div>
 
         <div class="col-md-3">
-            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+            <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
                 Imprimir
             </button>
@@ -279,8 +277,11 @@
 
 
         @if(Auth::user()->role_id  == '1' || $valor == 1)
-        <div class="col-sm-3 offset-sm-2  dropdown mb-4">
-            <a href="{{ route('products.create')}}" class="btn btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
+        <div class="col-sm-3 ">
+            <a href="{{ route('products.create')}}" class="btn btn-sm btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#exampleModal">Actualizar Productos</button>
         </div>
           @endif
         <div class="col-sm-2">
@@ -314,6 +315,62 @@
     </div>
 
 
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Actualizar Cantidad de Productos Masivamente</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="fileForm" method="POST" action="{{ route('import_inventary_cantidad') }}" enctype="multipart/form-data" >
+                @csrf
+
+                <div class="form-row">
+
+                    <div class="form-group col-md-12">
+                      <label for="inputState">Tipo</label>
+                      <select id="tipo" name="tipo" class="form-control form-control-sm" >
+                        <option value="">Seleccione..</option>
+                        <option value="AI">Aumentar Inventario</option>
+                        <option value="DI">Disminuir Inventario</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-12 contradiv">
+                        <label for="inputState">Contrapartida</label>
+                        <select id="contrapartida2" class="form-control form-control-sm">
+                          <option selected>Seleccione..</option>
+                        @foreach($contrapartidas as $index => $value)
+                          <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
+                              {{ $value }}
+                          </option>
+                        @endforeach
+                        </select>
+                      </div>
+                      <div class="form-group col-md-12 contradiv">
+                        <select id="subcontrapartida2" name="contrapartida" class="form-control form-control-sm">
+                          <option value="">Seleccione..</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-12 procediv">
+                        <label for="exampleFormControlFile1">Seleccionar Archivo</label>
+                        <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
+                    </div>
+
+                      <div class="col-md-12 text-center procediv">
+
+                    <button type="submit" class="btn btn-sm btn-primary procediv">Proceder</button>
+                      </div>
+                  </div>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
  </div>
   <!-- /.container-fluid -->
@@ -434,8 +491,110 @@
         </div>
 </div>
 
-@endsection
 
+<div class="modal modal-danger fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Vista Previa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main>
+                    <section>
+                        <canvas id="canvas"></canvas>
+                        <div class="full-img">
+                        <img src="" alt="" id="myImage" class="myImage">
+                        </div>
+                    </section>
+                </main>
+            </div>
+    </div>
+</div>
+</div>
+
+@endsection
+@section('validacion')
+    <script>
+        $('.contradiv').hide();
+        $('.procediv').hide();
+        $("#tipo").on('change',function(){
+                var tipo = $(this).val();
+
+                if(tipo == 'AI'){
+                    $('.contradiv').show();
+                    $('.procediv').hide();
+                }else if(tipo == 'DI'){
+                    $('.contradiv').hide();
+                    $('.procediv').show();
+
+                }else{
+                    $('.contradiv').hide();
+                    $('.procediv').hide();
+                }
+            });
+
+
+        $("#contrapartida2").on('change',function(){
+            var contrapartida_id = $(this).val();
+            $("#subcontrapartida2").val("");
+
+            getSubcontrapartida(contrapartida_id);
+
+
+                $('.procediv').hide();
+
+        });
+
+        function getSubcontrapartida(contrapartida_id){
+
+            $.ajax({
+                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                beforSend:()=>{
+                    alert('consultando datos');
+                },
+                success:(response)=>{
+                    let subcontrapartida = $("#subcontrapartida2");
+                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    // console.clear();
+                    if(response.length > 0){
+                        response.forEach((item, index, object)=>{
+                            let {id,description} = item;
+                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                        });
+                    }
+                    //console.clear();
+                    // console.log(htmlOptions);
+                    subcontrapartida.html('');
+                    subcontrapartida.html(htmlOptions);
+
+
+
+                },
+                error:(xhr)=>{
+                    alert('Presentamos inconvenientes al consultar los datos');
+                }
+            })
+        }
+
+        $("#subcontrapartida2").on('change',function(){
+                var subcontrapartida_id = $(this).val();
+
+                if(subcontrapartida_id == 0){
+
+                    $('.procediv').hide();
+                }else{
+                    $('.procediv').show();
+                }
+
+                var contrapartida_id    = document.getElementById("contrapartida").value;
+
+            });
+    </script>
+@endsection
 @section('javascript')
 <script>
     if("{{isset($total_amount_for_import)}}"){

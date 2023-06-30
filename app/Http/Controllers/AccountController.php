@@ -32,7 +32,6 @@ class AccountController extends Controller
 
    public function index(request $request,$coin = null,$level = null,$ini = null, $fin = null)
    {
-
     $agregarmiddleware = $request->get('agregarmiddleware');
     $actualizarmiddleware = $request->get('actualizarmiddleware');
     $eliminarmiddleware = $request->get('eliminarmiddleware');
@@ -193,7 +192,6 @@ class AccountController extends Controller
 
 
         $total_saldo_anterior = $total_saldo_anterior1 + $total_saldo_anterior2 + $total_saldo_anterior3;
-
 
        return view('admin.accounts.index',compact('eliminarmiddleware','actualizarmiddleware','agregarmiddleware','total_debe','total_haber','total_saldo_anterior','accounts','coin','level','ini','fin'));
 

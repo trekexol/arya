@@ -124,7 +124,7 @@
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
-
+                                            
                                             @if (
                                                 $value == 'Activos Depreciables' ||
                                                 $value == 'PROPIEDAD, PLANTA Y EQUIPOS' ||
@@ -151,10 +151,13 @@
                                                 $value == 'GASTOS DE PERSONAL DE PRODUCCION' ||
                                                 $value == 'COMPRAS INTERNACIONALES' ||
                                                 $value == 'Inventario'
+                                                AND Auth::user()->id_company  != '40'
                                                 )
 
                                                 <option value="{{ $index }}" {{ $account == $index ? 'selected' : '' }}>{{ $value }}</option>
 
+                                            @else
+                                            <option value="{{ $index }}" {{ $account == $index ? 'selected' : '' }}>{{ $value }}</option>
                                             @endif
 
 

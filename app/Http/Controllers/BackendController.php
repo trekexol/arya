@@ -164,14 +164,15 @@ class BackendController extends Controller
             ->orWhere('description','like','%caja%')
             ->get();
 
+            $iniciayear = $date->startOfYear()->format("Y-m-d");
+            $finyear = $date->endOfYear()->format("Y-m-d");
+            $soloyear = $date->startOfYear()->format("Y");
 
             foreach($accountsbanks as $accountsbank){
 
 
-
-
-
-           /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */
+                if($coin == "bolivares"){
+                      /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */
            $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
            ->join('detail_vouchers', 'detail_vouchers.id_account', '=', 'accounts.id')
            ->join('header_vouchers','header_vouchers.id','detail_vouchers.id_header_voucher')
@@ -181,8 +182,9 @@ class BackendController extends Controller
            ->whereIn('header_vouchers.status',['C',1])
            ->whereRaw(
            "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
-           [$date->startOfYear()->format("Y-m-d"),$date->endOfYear()->format("Y-m-d")])
-           ->sum('debe');
+           [$date->startOfYear()->format("Y-m-d"),$date->endOfYear()->format("Y-m-d")])->sum('debe');
+
+
 
 
 
@@ -206,6 +208,64 @@ class BackendController extends Controller
            $accountsbank->saldobanks = $montobank;
 
 
+                }
+
+
+        if($coin == "dolares"){
+
+
+         $total_debe =   DB::connection(Auth::user()->database_name)->select("SELECT SUM(b.debe/b.tasa) AS debe
+         FROM accounts a, detail_vouchers b, header_vouchers c
+         WHERE a.id =  $accountsbank->id
+         AND a.id = b.id_account
+         AND c.id = b.id_header_voucher
+         AND b.status = 'C'
+         AND c.status IN ('C','1')
+         AND c.date >= '$iniciayear'
+         AND c.date <= '$finyear'");
+
+
+         $total_haber = DB::connection(Auth::user()->database_name)->select("SELECT SUM(b.haber/b.tasa) AS haber
+         FROM accounts a, detail_vouchers b, header_vouchers c
+         WHERE a.id =  $accountsbank->id
+         AND a.id = b.id_account
+         AND c.id = b.id_header_voucher
+         AND b.status = 'C'
+         AND c.status IN ('C','1')
+         AND c.date >= '$iniciayear'
+         AND c.date <= '$finyear'");
+
+
+
+        $total_balance = DB::connection(Auth::user()->database_name)->select("SELECT SUM(a.balance_previus/a.rate) AS balance_previus
+        FROM accounts a
+        WHERE a.id =  $accountsbank->id
+        AND a.period = '$soloyear'");
+
+
+            if($total_debe[0]->debe == null){
+                $total_debe = 0;
+            }else{
+                $total_debe = $total_debe[0]->debe;
+            }
+
+            if($total_haber[0]->haber == null){
+                $total_haber = 0;
+            }else{
+                $total_haber = $total_haber[0]->haber;
+            }
+
+            if($total_balance[0]->balance_previus == null){
+                $total_balance = 0;
+            }else{
+                $total_balance = $total_balance[0]->balance_previus;
+            }
+
+        $montobank = $total_balance +  $total_debe - $total_haber;
+         $accountsbank->saldobanks = $montobank;
+
+
+              }
 
         }
             /********************************************* */

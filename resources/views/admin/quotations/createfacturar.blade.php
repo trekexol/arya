@@ -254,10 +254,11 @@
                             <div class="col-md-2">
                                 <select class="form-control" name="iva" id="iva">
                                     @if(isset($quotation->iva_percentage))
-                                        <option value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
+                                        <option selected value="{{ $quotation->iva_percentage }}">{{ $quotation->iva_percentage }}%</option>
                                     @else
-                                        <option value="16">16%</option>
-                                        <option value="12">12%</option>
+                                        <option value="{{$impuesto}}">{{$impuesto}}%</option>
+                                        <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
+                                        <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
                                     @endif
                                     
                                 </select>

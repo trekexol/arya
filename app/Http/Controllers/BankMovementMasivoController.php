@@ -73,7 +73,7 @@ public function importmovimientos(Request $request){
                 $extension = $request->file('file')->extension();
 
 
-    if(($banco == 'Bancamiga' OR $banco == 'Bancamigausd' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
+    if(($banco == 'Bancamiga' OR $banco == 'Bancamigausd'  OR $banco == 'Chase' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
 
     $import = new TempMovimientosImport($banco);
     Excel::import($import, $file);
@@ -83,7 +83,7 @@ public function importmovimientos(Request $request){
 
     }
 
-    elseif(($banco == 'Mercantil' OR $banco == 'Chase' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banplus Custodia') AND $extension == 'txt'){
+    elseif(($banco == 'Mercantil' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banplus Custodia') AND $extension == 'txt'){
         $import = new TempMovimientosImport($banco);
         Excel::import($import, $file);
         $resp['error'] = $import->estatus;
@@ -122,16 +122,18 @@ public function facturasmovimientos(Request $request){
 
     if($tipo == 'match'){
         $moneda = $data[5];
+        $monto = $data[0];
+        $conta = $data[6];
+
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
         ->where('number_invoice','<>',null)
         ->where('status','=','P')
-        ->where('amount_with_iva','=',$data[0])
-        ->where('coin', $moneda)
+        ->where('amount_with_iva','=',$monto)
         ->get();
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta'))->render();
 
 
     }elseif($tipo == 'contra'){
@@ -263,21 +265,21 @@ public function procesarfact(Request $request){
 
 
             $quotations = Quotation::on(Auth::user()->database_name)
-            ->join('tempmovimientos','tempmovimientos.debe','amount_with_iva')
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,'amount_with_iva')
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
-            ->where('tempmovimientos.moneda','coin')
             ->where('number_invoice','=',$request->nrofactura)
             ->where('status','=','P')
             ->where('amount_with_iva','=',$request->montoiva)
             ->where('id','=',$request->id)->first();
 
 
-
             if($quotations){
 
                 $quotations->status = 'C';
                 $quotations->save();
+
+                if($request->conta == 'debe'){
 
 
                 $header_voucher  = new HeaderVoucher();
@@ -300,6 +302,8 @@ public function procesarfact(Request $request){
                 if(isset($account_subsegmento)){
                     $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
                 }
+
+            }
 
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
                 ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
@@ -736,27 +740,107 @@ public function listardatos(Request $request){
             $actualizarmiddleware = $request->get('actualizarmiddleware');
             $eliminarmiddleware = $request->get('eliminarmiddleware');
                   /********MOVIMIENTOS MASIVOS ********/
-        $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+        $movimientosmasivoss   = TempMovimientos::on(Auth::user()->database_name)
         ->where('estatus','0')
         ->where('banco',$request->bancos)
         ->where(DB::raw("SUBSTR(fecha,1,7)"), $request->fechabancos)
         ->orderBy('fecha','asc')->get();
 
-        $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-                    ->where('date_billing','<>',null)
-                    ->where('number_invoice','<>',null)
-                    ->where('status','=','P')
-                    ->get();
+        foreach($movimientosmasivoss as $movimientosmasivos){
+
+            if($movimientosmasivos->haber == 0 OR $movimientosmasivos->haber == '0.00'){
+                $momasivo = $movimientosmasivos->debe;
+                $movimientosmasivos->conta = 'debe';
+            }else{
+                $momasivo = $movimientosmasivos->haber;
+                $movimientosmasivos->conta = 'haber';
+            }
+
+
+            if($movimientosmasivos->moneda == 'dolares'){
+
+                    $sql = "SELECT * FROM quotations
+                    WHERE amount_with_iva / bcv = '$momasivo'
+                    AND status = 'P'
+                    AND date_billing <> 'null'
+                    AND number_invoice <> 'null'";
+
+                    $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+                    if(count($datosinv) > 1){
+                        $movimientosmasivos->match = 1;
+                        $movimientosmasivos->idinvoice = 0;
+                        $movimientosmasivos->amount_with_iva = 0;
+                        $movimientosmasivos->bcv = 0;
+                    }
+                    elseif(count($datosinv) == 1){
+
+                        foreach($datosinv as $datosinv){
+                            $movimientosmasivos->match = $datosinv->number_invoice;
+                            $movimientosmasivos->idinvoice = $datosinv->id;
+                            $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
+                            $movimientosmasivos->bcv = $datosinv->bcv;
+                        }
+                    }
+                    else{
+                        $movimientosmasivos->match = 0;
+                        $movimientosmasivos->idinvoice = 0;
+                        $movimientosmasivos->amount_with_iva = 0;
+                        $movimientosmasivos->bcv = 0;
+
+                    }
 
 
 
 
-    return response()->json(View::make('admin.bankmovementsmasivo.listardatos',compact('movimientosmasivos','quotations','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'))->render());
+            }else{
+
+                $sql = "SELECT * FROM quotations
+                WHERE amount_with_iva = '$momasivo'
+                AND status = 'P'
+                AND date_billing <> 'null'
+                AND number_invoice <> 'null'";
+                 $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+                 if(count($datosinv) > 1){
+                    $movimientosmasivos->match = 1;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+                }
+                elseif(count($datosinv) == 1){
+
+                    foreach($datosinv as $datosinv){
+                        $movimientosmasivos->match = $datosinv->number_invoice;
+                        $movimientosmasivos->idinvoice = $datosinv->id;
+                        $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
+                        $movimientosmasivos->bcv = $datosinv->bcv;
+                    }
+                }
+                else{
+                    $movimientosmasivos->match = 0;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+
+                }
+            }
 
 
 
-        }catch(\Throwable $th){
-            return response()->json(false,500);
+
+        }
+
+
+
+
+
+    return response()->json(View::make('admin.bankmovementsmasivo.listardatos',compact('movimientosmasivoss','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'))->render());
+
+
+
+        }catch(Throwable $th){
+            return response()->json($th,500);
         }
     }
 

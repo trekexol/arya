@@ -55,13 +55,10 @@
   @endif
   
   <tr>
-    @if (isset($quotation->credit_days))
+
       <td style="width: 20%;">Fecha de Emisión:</td>
-      <td style="width: 40%;"> {{ date_format(date_create($quotation->date),"d-m-Y") }}</td>
-    @else
-      <td style="width: 20%;">Fecha de Emisión:</td>
-      <td style="width: 40%;">{{ date_format(date_create($quotation->date),"d-m-Y")}}</td>
-    @endif
+      <td style="width: 40%;">{{ date_format(date_create($quotation->date_quotation),"d-m-Y")}}</td>
+
     
   </tr>
   

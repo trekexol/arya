@@ -24,11 +24,14 @@
 
 <div class="container" >
     <div class="row justify-content-center" >
+        <input id="IGTF_porc" type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
 
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" ><h3>Registrar Pago para Compras/Gastos</h3></div>
                 <form method="POST" action="{{ route('expensesandpurchases.store_expense_credit') }}" enctype="multipart/form-data">
                     @csrf
+                    <input id="igtfvalor" type="hidden" class="form-control @error('IGTF_input') is-invalid @enderror" name="igtfvalor" readonly>
+                    <input  type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
                 <div class="card-body" >
                     <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
@@ -231,10 +234,16 @@
                             </div>
                             <label for="iva" class="col-md-1 col-form-label text-md-right">IVA:</label>
                             <div class="col-md-2">
-                            <select class="form-control" name="iva" id="iva">
-                                <option value="16">16%</option>
-                                <option value="12">12%</option>
-                            </select>
+                                <select class="form-control" name="iva" id="iva">
+                                    @if(isset($expense->iva_percentage))
+                                        <option selected value="{{ $expense->iva_percentage }}">{{ $expense->iva_percentage }}%</option>
+                                    @else
+                                        <option value="{{$impuesto}}">{{$impuesto}}%</option>
+                                        <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
+                                        <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
+                                    @endif
+                                    
+                                </select>
                             </div>
                             <div class="col-md-2">
                                 <select class="form-control" name="coin" id="coin">
@@ -253,9 +262,36 @@
 
                         <input type="hidden" name="id_expense" value="{{$expense->id}}" readonly>
 
+
+                        @if ($expense->IGTF_amount > 0)
+                        <div class="form-group row IGTF" style="display: visible;" >
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
+                            <div class="col-md-3">
+
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{$expense->IGTF_amount ?? 0}}" readonly>
+
+                            </div>
+
+
+                        </div>
+                        @else
+                        <div class="form-group row IGTF" style="display: none;" >
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF:</label>
+
+                            <div class="col-md-3">
+
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{ 0}}" readonly>
+
+                            </div>
+
+
+                        </div>
+                        @endif
+
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total</label>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" readonly  required autocomplete="total_pay">
 
                                 @error('total_pay')
@@ -264,6 +300,19 @@
                                     </span>
                                 @enderror
                             </div>
+
+                            <div class="col-md-3" id="IGTF_buttom">
+                                <div class="custom-control custom-switch">
+
+                                    @if ($expense->IGTF_amount> 0 )
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal" checked>
+                                    @else
+                                    <input type="checkbox" class="custom-control-input igtftotal" id="customSwitchesIGTFTotal" name="customSwitchesIGTFTotal">
+                                    @endif
+                                    <label class="custom-control-label" for="customSwitchesIGTFTotal">IGTF: 3% (Total General)</label>
+                                </div>
+                            </div>
+
                             @if ($expense->status != 'P')
                                 <div class="col-md-2">
                                     <div class="custom-control custom-switch">
@@ -332,6 +381,8 @@
             </form>
             <form method="POST" action="{{ route('expensesandpurchases.store_expense_payment') }}" enctype="multipart/form-data">
                 @csrf
+                <input id="igtfvalor2" type="hidden" class="form-control @error('IGTF_input') is-invalid @enderror" name="igtfvalor" readonly>
+                <input  type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
                         <input type="hidden" id="id_islr_concept" name="id_islr_concept" value="0" readonly>
 
 
@@ -1027,12 +1078,12 @@ if (valor == '0'){
 if (valor == '1'){
     porc_discount = $("#porc_descuento_general").val();
     discount = totalFactura * porc_discount / 100;
-   
+
 
     if (totalBaseImponible != totalFactura) {
-       
+
         totalBaseImponible = totalBaseImponible - (totalBaseImponible * porc_discount / 100);
-         
+
     }
 
 
@@ -1168,6 +1219,39 @@ var total_islr_retencion = document.getElementById("total_retiene_islr").value;
 
 var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
 
+
+
+
+if (valor == '3'){
+        $(".IGTF").show();
+
+var porcentajeigft = document.getElementById("IGTF_porc").value;
+
+var calc_porc = grand_total * porcentajeigft / 100;
+
+var IGTF_input = calc_porc.toFixed(2);
+var IGTF_input = IGTF_input.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+document.getElementById("IGTF_input").value = IGTF_input;
+document.getElementById("igtfvalor").value = IGTF_input;
+document.getElementById("igtfvalor2").value = IGTF_input;
+
+total_pay = total_pay + parseFloat(IGTF_input);
+
+    }else{
+        $(".IGTF").hide();
+        $('#customSwitchesIGTFTotal').prop('checked',false);
+
+                    //$("#IGTF_input").val(0);
+                    var IGTF_input = 0;
+                    document.getElementById("igtfvalor").value = IGTF_input;
+                    document.getElementById("igtfvalor2").value = IGTF_input;
+
+                    //document.getElementById("IGTF_input").value = IGTF_input;
+
+                    total_pay = total_pay + parseFloat(IGTF_input);
+    }
+
+
 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
 document.getElementById("total_pay").value =  total_payformat;
@@ -1231,6 +1315,27 @@ function myRound(num, dec) {
 
             $("#descuento_general").on('change',function(){
                 calculate(2);
+            });
+
+            var valorigtf = $("#IGTF_input").val();
+console.log(valorigtf);
+if(valorigtf > 0){
+    $('#customSwitchesIGTFTotal').prop('checked',true);
+
+    calculate(3);
+
+    }
+
+            $("#customSwitchesIGTFTotal").on('change', function() {
+                if ($(this).is(':checked')) {
+                    calculate(3);
+
+                } else {
+                    calculate(1);
+
+
+                    }
+
             });
 
             $("#checkdescuento").on('change', function() {

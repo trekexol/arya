@@ -139,11 +139,13 @@
               if ($(".sidebar").hasClass("toggled")) {
               $('.sidebar .collapse').collapse('hide');
           };
-          /* suspender
+          /* suspender*/
           id_company = $("#id_company").val();
-          if (id_company == '1') {
+          status_company = $("#status_company").val();
+
+          if (status_company == '0') {
           window.location.href = "{{ route('suspended')}}";
-          }*/
+          }
           
 
       </script>

@@ -9,7 +9,7 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -24,10 +24,10 @@
 
 <div class="container" >
     <div class="row justify-content-center" >
-        
+
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" >Gasto o Compra {{ $retorno ?? 'almacenada' }} con Exito</div>
-                
+
                 <div class="card-body" >
                     <div class="form-group row">
                         <label for="date_payment" class="col-md-2 col-form-label text-md-right">Fecha de Factura:</label>
@@ -50,12 +50,12 @@
                                 </span>
                             @enderror
                         </div>
-                    </div>  
+                    </div>
                         <div class="form-group row">
                             <label for="total_factura" class="col-md-2 col-form-label text-md-right">Total Factura:</label>
                             <div class="col-md-4">
                                 <input id="total_factura" type="text" class="form-control @error('total_factura') is-invalid @enderror" name="total_factura" value="{{ number_format($expense->amount / ($bcv ?? 1), 2, ',', '.') ?? 0 }}" readonly required autocomplete="total_factura">
-    
+
                                 @error('total_factura')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -117,8 +117,8 @@
                         <div class="form-group row">
                             <label for="iva_amounts" class="col-md-2 col-form-label text-md-right">Monto de Iva:</label>
                             <div class="col-md-4">
-                                <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($expense->amount_iva / ($bcv ?? 1), 2, ',', '.') }}"  readonly required autocomplete="iva_amount"> 
-                                
+                                <input id="iva_amounts" type="text" class="form-control @error('iva_amount') is-invalid @enderror" name="iva_amount" value="{{ number_format($expense->amount_iva / ($bcv ?? 1), 2, ',', '.') }}"  readonly required autocomplete="iva_amount">
+
                                 @error('iva_amount')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -136,13 +136,14 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                         </div>
+
                         <div class="form-group row">
                             <label for="grand_totals" class="col-md-2 col-form-label text-md-right">Total General:</label>
                             <div class="col-md-4">
-                                <input id="grand_total" type="text" class="form-control @error('grand_total') is-invalid @enderror" name="grand_total" value="{{ number_format(($expense->amount + $expense->amount_iva ) / ($bcv ?? 1), 2, ',', '.') ?? old('grand_total') }}" readonly required autocomplete="grand_total"> 
-                           
+                                <input id="grand_total" type="text" class="form-control @error('grand_total') is-invalid @enderror" name="grand_total" value="{{ number_format(($expense->amount + $expense->amount_iva ) / ($bcv ?? 1), 2, ',', '.') ?? old('grand_total') }}" readonly required autocomplete="grand_total">
+
                                 @error('grand_total')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -161,13 +162,13 @@
                                 @enderror
                             </div>
                         </div>
-                        
-                        
+
+
                         <div class="form-group row">
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             <div class="col-md-3">
-                                <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($expense->anticipo / ($bcv ?? 1), 2, ',', '.') ?? '0,00' }}" readonly required autocomplete="anticipo"> 
-                           
+                                <input id="anticipo" type="text" class="form-control @error('anticipo') is-invalid @enderror" name="anticipo" value="{{ number_format($expense->anticipo / ($bcv ?? 1), 2, ',', '.') ?? '0,00' }}" readonly required autocomplete="anticipo">
+
                                 @error('anticipo')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -185,19 +186,41 @@
                                     <option value="bolivares">Bolívares</option>
                                     @if($coin == 'dolares')
                                         <option selected value="dolares">Dolares</option>
-                                    @else 
+                                    @else
                                         <option value="dolares">Dolares</option>
                                     @endif
                                 </select>
                             </div>
-                            
+
                         </div>
+                        @if ($expense->IGTF_amount > 0)
+                        <div class="form-group row IGTF" >
+                            <label for="igtf" class="col-md-2 col-form-label text-md-right">IGTF {{$expense->IGTF_percentage ?? 3}}% :</label>
+
+                            <div class="col-md-3">
+
+                                <input id="IGTF_input" type="text" class="form-control @error('IGTF_input') is-invalid @enderror" name="IGTF_input" value="{{$expense->IGTF_amount ?? 0}}" readonly>
+
+                            </div>
+
+
+                        </div>
+                        @endif
+                        @if($expense->status == 'P')
+                           @php $expense->IGTF_amount = 0; @endphp
+                        @endif
+
+                        @php
+
+                       $totales1 = $expense->amount_with_iva + $expense->IGTF_amount;
+                        $totales = $totales1 / $bcv;
+                        @endphp
 
                         <div class="form-group row">
                             <label for="total_pays" class="col-md-2 col-form-label text-md-right">Total:</label>
                             <div class="col-md-3">
-                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" value="{{ number_format($expense->amount_with_iva / ($bcv ?? 1), 2, ',', '.') }}" readonly  required autocomplete="total_pay"> 
-                           
+                                <input id="total_pay" type="text" class="form-control @error('total_pay') is-invalid @enderror" name="total_pay" value="{{ number_format($totales, 2, ',', '.') }}" readonly  required autocomplete="total_pay">
+
                                 @error('total_pay')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -207,7 +230,7 @@
                             @if (isset($expense->credit_days))
                                 <label for="total_pays" class="col-md-2 col-form-label text-md-right">Dias de Crédito:</label>
                                 <div class="col-md-1">
-                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" value="{{ $expense->credit_days ?? '' }}" readonly autocomplete="credit"> 
+                                    <input id="credit" type="text" class="form-control @error('credit') is-invalid @enderror" name="credit" value="{{ $expense->credit_days ?? '' }}" readonly autocomplete="credit">
                                 </div>
                             @endif
 
@@ -222,14 +245,14 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                         </div>
-           
+
                         <br>
                         <div class="form-group row">
-                           
+
                             <div class="col-md-3">
-                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Factura</a>  
+                                <a onclick="pdf();" id="btnimprimir" name="btnimprimir" class="btn btn-info" title="imprimir">Imprimir Factura</a>
                             </div>
                             <div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
@@ -240,23 +263,23 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a onclick="pdf_retencion_iva();" href="#" class="dropdown-item">Imprimir Retención de Iva</a> 
-                                    <a onclick="pdf_retencion_islr();" href="#" class="dropdown-item">Imprimir Retención de ISLR</a> 
-                                    <a onclick="pdf_media();" href="#" class="dropdown-item">Imprimir Factura Media Carta</a> 
-                                    <a href="{{ route('expensesandpurchases.reversar_expense',$expense->id) }}" class="dropdown-item">Reversar Compra</a> 
+                                    <a onclick="pdf_retencion_iva();" href="#" class="dropdown-item">Imprimir Retención de Iva</a>
+                                    <a onclick="pdf_retencion_islr();" href="#" class="dropdown-item">Imprimir Retención de ISLR</a>
+                                    <a onclick="pdf_media();" href="#" class="dropdown-item">Imprimir Factura Media Carta</a>
+                                    <a href="{{ route('expensesandpurchases.reversar_expense',$expense->id) }}" class="dropdown-item">Reversar Compra</a>
                                 </div>
-                            </div> 
-                            
-                            <div class="col-md-3">
-                                <a href="{{ route('expensesandpurchases.movement',[$expense->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>  
                             </div>
-                            
+
                             <div class="col-md-3">
-                                <a href="{{ route('expensesandpurchases.index_historial') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Ver Gastos o Compras</a>  
+                                <a href="{{ route('expensesandpurchases.movement',[$expense->id,$coin]) }}" id="btnmovement" name="btnmovement" class="btn btn-light" title="movement">Ver Movimiento de Cuenta</a>
+                            </div>
+
+                            <div class="col-md-3">
+                                <a href="{{ route('expensesandpurchases.index_historial') }}" id="btnvolver" name="btnvolver" class="btn btn-danger" title="volver">Ver Gastos o Compras</a>
                             </div>
                         </div>
-                        
-                    </form>    
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -275,26 +298,26 @@
             window.location = "{{route('expensesandpurchases.create_expense_voucher', [$expense->id,''])}}"+"/"+coin;
         });
         function pdf() {
-            
+
             var nuevaVentana= window.open("{{ route('pdf.expense',[$expense->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-    
+
         }
         function pdf_media() {
-            
+
             var nuevaVentana2= window.open("{{ route('pdf.expense_media',[$expense->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-    
+
         }
         function pdf_retencion_iva() {
-            
+
             var nuevaVentana= window.open("{{ route('expensesandpurchases.retencioniva',[$expense->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-    
+
         }
 
         function pdf_retencion_islr() {
-            
+
             var nuevaVentana= window.open("{{ route('expensesandpurchases.retencionislr',[$expense->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-    
+
         }
-           
+
     </script>
 @endsection

@@ -28,7 +28,7 @@ use App\DebitNoteExpense;
 use App\DebitNoteDetailExpense;
 use App\InventoryHistories;
 use App\FacturasCour;
-
+use Faker\Core\Number;
 
 class ExpensesAndPurchaseController extends Controller
 {
@@ -580,7 +580,7 @@ class ExpensesAndPurchaseController extends Controller
         if($coin != 'bolivares'){
             $bcv = $expense->rate;
         }else{
-            $bcv = null;
+            $bcv = 1;
         }
 
         return view('admin.expensesandpurchases.create_payment_voucher',compact('coin','expense','datenow','bcv'));
@@ -718,15 +718,18 @@ class ExpensesAndPurchaseController extends Controller
              /*Aqui revisamos el porcentaje de retencion de iva que tiene el proveedor, para aplicarlo a productos que retengan iva */
              $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
-
+             $company = Company::on(Auth::user()->database_name)->find(1);
+             $igtfporc = $company->IGTF_porc ?? 3;
+             $impuesto = $company->tax_1 ?? 1;
+             $impuesto2 = $company->tax_2 ?? 1;
+             $impuesto3 = $company->tax_3 ?? 1;
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
-
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts'));
+                                ,'islrconcepts','igtfporc','impuesto','impuesto2','impuesto3'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -916,11 +919,14 @@ class ExpensesAndPurchaseController extends Controller
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
 
+
+                $igtfporc = 3;
+
              return view('admin.expensesandpurchases.create_payment_after',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','debitnoteexpense'));
+                                ,'islrconcepts','debitnoteexpense','igtfporc'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -1049,9 +1055,8 @@ class ExpensesAndPurchaseController extends Controller
         $validar = ExpensesAndPurchase::on(Auth::user()->database_name)
                     ->where('id_provider',$idprovider)
                     ->where('invoice',$invoice)
-                    ->wherein('status',['C','P'])
+                    ->wherein('status',['C','P','1'])
                     ->get();
-
 
 
         if(!isset($idprovider)){
@@ -1237,8 +1242,8 @@ class ExpensesAndPurchaseController extends Controller
                 /************PARA LO DE COURIERTOOL NO TOCAR ********/
                 $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
                 /***************************************************************/
-
-
+        $igftmonto = request('igtfvalor');
+        $IGTF_porc = request('IGTF_porc');
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
@@ -1276,8 +1281,13 @@ class ExpensesAndPurchaseController extends Controller
         $base_imponible = request('base_imponible_form');
         $sin_formato_amount = request('sub_total_form');
         $iva_percentage = request('iva_form');
-        $sin_formato_total_pay = request('total_pay_form');
-        $total_pay_form = request('total_pay_form');
+
+        //$sin_formato_total_pay = request('total_pay_form');
+        //$total_pay_form = request('total_pay_form');
+
+        $sin_formato_total_pay = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
+        $total_pay_form = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
+
 
         $porc_descuento = request('porc_descuento_form');
 
@@ -2104,8 +2114,9 @@ class ExpensesAndPurchaseController extends Controller
             }
 
 
+            $total_pay = (string) $total_pay;
                 //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-            if(($total_pay - $total_pay_form) < 1 || ($sin_formato_total_pay <= 0))
+            if(($total_pay - $total_pay_form) < "1" || ($sin_formato_total_pay <= "0"))
             {
 
 
@@ -2134,6 +2145,8 @@ class ExpensesAndPurchaseController extends Controller
                     $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
 
                     $sub_total = $sub_total * $bcv;
+
+                    $igftmonto = $igftmonto * $bcv;
 
                 }
 
@@ -2360,6 +2373,8 @@ class ExpensesAndPurchaseController extends Controller
                     $iva_percentage = $iva_percentage;
                     $expense->porc_discount = $porc_descuento;
                     $expense->discount = $descuento;
+                    $expense->IGTF_percentage = $IGTF_porc;
+                    $expense->IGTF_amount = $igftmonto;
                     $expense->status = "C";
 
                     $expense->coin = $coin;
@@ -2372,8 +2387,6 @@ class ExpensesAndPurchaseController extends Controller
 
                     //aumentamos el inventario
                     $retorno = $this->increase_inventory($expense->id,$expense->date);
-
-
 
 
                     if($retorno != "exito"){
@@ -2450,6 +2463,8 @@ class ExpensesAndPurchaseController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
+        $igftmonto = request('igtfvalor');
+        $IGTF_porc = request('IGTF_porc');
 
 
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
@@ -2504,6 +2519,9 @@ class ExpensesAndPurchaseController extends Controller
             $sin_formato_anticipo = $sin_formato_anticipo * $expense->rate;
             $sin_formato_total_pay = $sin_formato_total_pay * $expense->rate;
             $sin_formato_descuento_general = $sin_formato_descuento_general * $expense->rate;
+
+
+            $igftmonto = $igftmonto * $expense->rate;
         }
 
         $id_islr_concept = request('id_islr_concept_credit');
@@ -2522,6 +2540,9 @@ class ExpensesAndPurchaseController extends Controller
         $expense->anticipo =  $sin_formato_anticipo;
         $expense->porc_discount =$porc_descuento_general;
         $expense->discount = $sin_formato_descuento_general;
+
+        $expense->IGTF_percentage = $IGTF_porc;
+        $expense->IGTF_amount = $igftmonto;
 
         $credit = request('credit');
 

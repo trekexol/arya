@@ -11,7 +11,7 @@ if($tipo == 'match'){
 </div>
 <div class="modal-body" >
 
-<table class="table table-light2 table-bordered" id="dataTable" >
+<table class="table table-light2 table-bordered" id="dataTablematch" >
     <thead>
     <tr>
         <th>Nro. Factura</th>
@@ -34,7 +34,7 @@ if($tipo == 'match'){
                         <td>".$quotations['amount_with_iva']."</td>";
 
                         echo "<td>
-                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]'>Procesar</button>
+                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]/$conta'>Procesar</button>
                             </td>";
 
                        echo "</tr>";
@@ -68,10 +68,11 @@ $('.procesarfactura').click(function(e){
     var fechamovimiento = valor[5];
     var bancomovimiento = valor[6];
     var tasa = valor[7];
+    var conta = valor[8];
     $.ajax({
         method: "POST",
         url: "{{ route('procesarfact') }}",
-        data: {tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
+        data: {conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
 
                  if(response == true){
@@ -113,7 +114,7 @@ $('.procesarfactura').click(function(e){
 
 });
 
-$('#dataTable').DataTable({
+$('#dataTablematch').DataTable({
             "ordering": false,
             "order": [],
             'aLengthMenu': [[10, 20, 30, -1], [10, 20, 30, "All"]]
@@ -129,7 +130,7 @@ elseif($tipo == 'contra'){
 
     ?>
 
-    
+
 <div class="modal-header">
 
     <button type="button" class="add_button btn btn-secondary btn-sm">Agregar Contrapartida</button>
@@ -139,7 +140,7 @@ elseif($tipo == 'contra'){
 </div>
 <div class="modal-body" >
     <div class="table-responsive-xl">
-         
+
         <table class="table table-sm">
             <thead>
                 <tr>
@@ -151,9 +152,9 @@ elseif($tipo == 'contra'){
                   <th>Tasa</th>
                 </tr>
               </thead>
-              
+
               <tbody>
-                
+
                 <tr>
                     <th scope="row">{{$bancomovimiento}}</th>
                     <td>{{$descripcionbanco}}</td>
@@ -169,7 +170,7 @@ elseif($tipo == 'contra'){
       <form id='pruebaform' >
 
       @csrf
-      <input id="rate" type="hidden" class="form-control form-control-sm" name="rate" value="{{ $bcv }}" >   
+      <input id="rate" type="hidden" class="form-control form-control-sm" name="rate" value="{{ $bcv }}" >
         <input type="hidden" id="valordebe" name="valordebe" value='{{$valormovimiento}}'>
         <input type="hidden" id="valorhaber" name="valorhaber" value='{{$montohaber}}'>
         <input type="hidden" name="referenciabanco" value='{{$referenciamovimiento}}'>
@@ -201,7 +202,7 @@ elseif($tipo == 'contra'){
         var wrapper = $('.field_wrapper');
 
         var debe = $('#valordebe').val();
-    
+
         if(parseFloat(debe) > '0'){
 
             var montocontra = debe;
@@ -212,7 +213,7 @@ elseif($tipo == 'contra'){
         }
 
 
-       
+
 
         $('.procesarcontrapartida').hide();
 
@@ -345,7 +346,7 @@ $('.procesarcontrapartida').click(function(e){
 
                         $("#"+idmovimiento).empty().append();
                         $('#MatchModal').modal('hide');
-                    
+
                     }else{
                 $('.procesarcontrapartida').prop( 'disabled', false );
                 Swal.fire({
@@ -508,7 +509,7 @@ $('.procesarcontrapartida').click(function(e){
                 if(response.error == true){
                     $('.procesarcontrapartida').prop( 'disabled', false );
 
-                
+
                     Swal.fire({
                         icon: 'info',
                         title: 'Exito!',
@@ -519,7 +520,7 @@ $('.procesarcontrapartida').click(function(e){
 
                         $("#"+idmovimiento).empty().append();
                         $('#MatchModal').modal('hide');
-                    
+
                     }else{
                         $('.procesartransferencia').prop( 'disabled', false );
 

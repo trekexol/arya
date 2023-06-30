@@ -75,60 +75,134 @@
   @include('admin.layouts.delete')    {{-- DELELTE --}}
   {{-- VALIDACIONES-RESPUESTA --}}
 <!-- DataTales Example -->
-<div class="card shadow mb-4">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre / Razón Social</th>
-                    <th>Nombre Comercial</th>
-                    <th>Cedula o Rif</th>
-                    <th>Dirección</th>
-                    <th>Telefono</th>
+<nav class="col-md-12">
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <button class="nav-link active" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">ACTIVOS</button>
+      <button class="nav-link" id="nav-profile-tab" data-toggle="tab" data-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">INACTIVOS</button>
+    </div>
+  </nav>
 
-                    <th>Vendedor</th>
-                    @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
-                    <th></th>
-                    @endif
-                </tr>
-                </thead>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div class="card shadow mb-4">
 
-                <tbody>
-                    @if (empty($clients))
-                    @else
-                        @foreach ($clients as $client)
-                            <tr>
-                                <td>{{$client->id}}</td>
-                                <td>{{$client->name}}</td>
-                                <td>{{$client->name_ref}}</td>
-                                <td>{{$client->type_code}} {{$client->cedula_rif}}</td>
-                                <td>{{$client->direction}}</td>
-                                <td>{{$client->phone1}}</td>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre / Razón Social</th>
+                            <th>Nombre Comercial</th>
+                            <th>Cedula o Rif</th>
+                            <th>Dirección</th>
+                            <th>Telefono</th>
+
+                            <th>Vendedor</th>
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
+                            <th></th>
+                            @endif
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (empty($clients))
+                            @else
+                                @foreach ($clients as $client)
+                                    <tr>
+                                        <td>{{$client->id}}</td>
+                                        <td>{{$client->name}}</td>
+                                        <td>{{$client->name_ref}}</td>
+                                        <td>{{$client->type_code}} {{$client->cedula_rif}}</td>
+                                        <td>{{$client->direction}}</td>
+                                        <td>{{$client->phone1}}</td>
 
 
-                                @if (isset($client->vendors['name']))
-                                    <td>{{$client->vendors['name']}}</td>
-                                @else
-                                    <td></td>
-                                @endif
+                                        @if (isset($client->vendors['name']))
+                                            <td>{{$client->vendors['name']}}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
 
 
-                                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
-                                <td>
-                                    <a href="clients/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
-                                </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
+                                        @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
+                                        <td>
+                                            <a href="clients/{{$client->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                        </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
+
+
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <div class="card shadow mb-4">
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-light2 table-bordered" id="dataTables" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre / Razón Social</th>
+                            <th>Nombre Comercial</th>
+                            <th>Cedula o Rif</th>
+                            <th>Dirección</th>
+                            <th>Telefono</th>
+
+                            <th>Vendedor</th>
+                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
+                            <th></th>
+                            @endif
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (empty($clientsinact))
+                            @else
+                                @foreach ($clientsinact as $clientsinact)
+                                    <tr>
+                                        <td>{{$clientsinact->id}}</td>
+                                        <td>{{$clientsinact->name}}</td>
+                                        <td>{{$clientsinact->name_ref}}</td>
+                                        <td>{{$clientsinact->type_code}} {{$clientsinact->cedula_rif}}</td>
+                                        <td>{{$clientsinact->direction}}</td>
+                                        <td>{{$clientsinact->phone1}}</td>
+
+
+                                        @if (isset($clientsinact->vendors['name']))
+                                            <td>{{$clientsinact->vendors['name']}}</td>
+                                        @else
+                                            <td></td>
+                                        @endif
+
+
+                                        @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
+                                        <td>
+                                            <a href="clients/{{$clientsinact->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                        </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
 
 
 
@@ -136,7 +210,7 @@
 @section('javascript')
 
     <script>
-    $('#dataTable').DataTable({
+    $('#dataTable, #dataTables').DataTable({
         "ordering": false,
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]

@@ -25,7 +25,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\UserAccess;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
+use App\DetailVoucher;
+use App\HeaderVoucher;
 
 class ExcelController extends Controller
 {
@@ -433,6 +435,100 @@ class ExcelController extends Controller
 
 
 
+    public function import_inventary_cantidad(Request $request)
+    {
+
+        $user       =   auth()->user();
+        $file = $request->file('file');
+        $tipo = $request->tipo;
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');
+        $contrapartida = $request->contrapartida;
+
+         if (!isset($file)){
+             return redirect('inventories/index')->with('danger', 'Para importar debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');
+         }
+
+         if($tipo != 'AI' AND $tipo != 'DI'){ //VERIFICO QUE SE SELECCIONE UNA OPCION CORRECTA
+            return redirect('inventories/index')->with('danger', 'Seleccione un Tipo de Acción');
+
+         }
+
+         $rows = Excel::toArray(new ProductReadImport, $file);
+
+         $global = new GlobalController();
+
+         $bcv = $global->search_bcv();
+
+         foreach ($rows[0] as $row) {
+
+            if($row['tipo_mercancia_o_servicio'] == 'MERCANCIA' OR $row['tipo_mercancia_o_servicio'] == 'MATERIAP'){
+
+
+
+                $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->where('id',$row['id'])->first();
+
+                if($products != null){
+                   $id_account = $products->id_account;
+                }else{
+                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Mercancia para la Venta%')->first();
+                    $id_account = $account_gastos_ajuste_inventario->id;
+                }
+
+                if($row['moneda_d_o_bs'] == 'Bs'){
+                    $total = $row['cantidad_actual'] * $row['precio'];
+                }else{
+                    $total = $row['cantidad_actual'] * $row['precio'] * $bcv;
+                }
+
+                if($tipo == 'AI'){
+                    $global->transaction_inv('entrada',$row['id'],'Salida de Inventario',$row['cantidad_actual'],0,$datenow,1,1,0,0,0,0,0);
+
+                    $header_voucher  = new HeaderVoucher();
+                    $header_voucher->setConnection(Auth::user()->database_name);
+                    $header_voucher->description = "Incremento de Inventario";
+                    $header_voucher->date = $datenow;
+                    $header_voucher->status =  "1";
+                    $header_voucher->save();
+
+                    $this->add_movementinvt($bcv,$header_voucher->id,$id_account,$user->id,$total,0);
+
+                    $account_counterpart = Account::on(Auth::user()->database_name)->find($contrapartida);
+
+                    $this->add_movementinvt($bcv,$header_voucher->id,$account_counterpart->id,$user->id,0,$total);
+
+                }elseif($tipo == 'DI'){
+
+                $global->transaction_inv('salida',$row['id'],'Salida de Inventario',$row['cantidad_actual'],0,$datenow,1,1,0,0,0,0,0);
+
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Disminucion de Inventario";
+                $header_voucher->date = $datenow;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+
+                $this->add_movementinvt($bcv,$header_voucher->id,$id_account,$user->id,0,$total);
+                $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Gastos de ajuste de inventario%')->first();
+                $this->add_movementinvt($row['id'],$header_voucher->id,$account_gastos_ajuste_inventario->id,$user->id,$total,0);
+
+
+                }
+
+            }
+
+         }
+
+         return redirect('inventories/index')->with('success', 'Se actualizo la cantidad correctamente');
+
+
+
+     }
+
+
+
    public function import_combo(Request $request)
    {
 
@@ -570,6 +666,44 @@ class ExcelController extends Controller
 
        return redirect('products/index/todos')->with('success', 'Se han actualizado los precios Correctamente');
    }
+
+
+
+
+
+
+   public function add_movementinvt($tasa,$id_header,$id_account,$id_user,$debe,$haber){
+
+    $detail = new DetailVoucher();
+    $detail->setConnection(Auth::user()->database_name);
+
+    $detail->id_account = $id_account;
+    $detail->id_header_voucher = $id_header;
+    $detail->user_id = $id_user;
+    $detail->tasa = $tasa;
+
+  /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+    $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+
+    $detail->debe = $debe;
+    $detail->haber = $haber;
+
+    $detail->status =  "C";
+
+    $detail->save();
+
+     /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+
+     $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+     if($account->status != "M"){
+         $account->status = "M";
+         $account->save();
+     }
+
+
+}
 
 
 

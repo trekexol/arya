@@ -26,6 +26,8 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use App\TasaBcv;
+
 class GlobalController extends Controller
 {
 
@@ -614,65 +616,70 @@ class GlobalController extends Controller
 
 
 
+
     public function search_bcv()
     {
 
-        $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d H:i:s');
+        $datenow = $date->format('Y-m-d');
 
-        $url = "https://s3.amazonaws.com/dolartoday/data.json";
 
+        $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
+
+        if($tasahoy == null){ //procedo a guardar la tasa del dia.
+
+        //$url = "https://s3.amazonaws.com/dolartoday/data.json";
+        $url = "https://www.aryasoftware.net/apidolarbcv/";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec( $ch );
         $error = curl_error($ch);
         curl_close( $ch );
-        $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data), true);
+
+
+        $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF] /', '', $data), true);
+
+
+        if($datos['fechadehoy'] == $datos['fechaoficial']){
+
+            $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
+
+
+                $dolaroficial = str_replace(array(","),".",$datos['dolaroficial']);
+
+                $var = new TasaBcv();
+                $var->setConnection("logins");
+                $var->coin = 'dolares';
+                $var->valor = $dolaroficial;
+                $var->fecha_valor = $datenow;
+                $var->save();
+
+
+                $companies  = Company::on("logins")
+                ->update(["rate_bcv" => $dolaroficial, "date_consult_bcv" => $datenow]);
 
 
 
-        if($datos == null){
-            $bcv = $company->rate_bcv;
-            return bcdiv($bcv, '1', 2);
-
-        }
-
-
-       elseif($datos['USD']['promedio_real'] != $company->rate_bcv){
-
-            if($datos['USD']['promedio_real'] > 0){
-
-                $companies  = Company::on("logins")->findOrFail($company->id);  // guardar taza
-                $companies->rate_bcv = $datos['USD']['promedio_real'];
-                $companies->date_consult_bcv = $datenow;
-                $companies->save();
-                $bcv = $datos['USD']['promedio_real'];
-            }else {
-
-                $bcv = $company->rate_bcv;
-             }
-
-             return bcdiv($bcv, '1', 2);
-
-        }else{
-
-            if($company->tiporate_id == 1){
-                if($company->rate_bcv != 0){
-                    return bcdiv($company->rate_bcv, '1', 2);
-                }else{
-                    return 1;
-                }
             }else{
+                $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+                $bcv = $company->rate_bcv;
 
-                if($company->rate_bcv != 0){
-                    return bcdiv($company->rate, '1', 2);
-                }else{
-                    return 1;
-                }
+                $companies  = Company::on("logins")
+                ->update(["rate_bcv" => $bcv, "date_consult_bcv" => $datenow]);
+
+                return bcdiv($bcv, '1', 2);
             }
-        }
+
+
+    }//fin primer nulll
+    else{
+        $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+        $bcv = $company->rate_bcv;
+        return bcdiv($bcv, '1', 2);
+    }
+
+
     }
 
 
@@ -1054,8 +1061,13 @@ class GlobalController extends Controller
                 ->select('type')
                 ->find($id_product);
 
+                if($buscar == null){
+                    $typebuscar = 'SERVICIO';
+                }else{
+                    $typebuscar = $buscar->type;
+                }
 
-                    if ($transaccion < 0 and $buscar->type != 'COMBO') {
+                    if ($transaccion < 0 and $typebuscar != 'COMBO') {
 
                        $msg = "La cantidad es mayor a la disponible en inventario";
 
