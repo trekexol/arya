@@ -140,7 +140,7 @@ public function facturasmovimientos(Request $request){
         ->get();
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta','moneda'))->render();
 
 
     }elseif($tipo == 'contra'){
