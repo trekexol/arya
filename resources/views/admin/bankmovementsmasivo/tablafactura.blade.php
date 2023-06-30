@@ -34,7 +34,7 @@ if($tipo == 'match'){
                         <td>".$quotations['amount_with_iva']."</td>";
 
                         echo "<td>
-                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]/$conta'>Procesar</button>
+                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]/$conta/$moneda'>Procesar</button>
                             </td>";
 
                        echo "</tr>";
@@ -69,10 +69,11 @@ $('.procesarfactura').click(function(e){
     var bancomovimiento = valor[6];
     var tasa = valor[7];
     var conta = valor[8];
+    var moneda = valor[9];
     $.ajax({
         method: "POST",
         url: "{{ route('procesarfact') }}",
-        data: {conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
+        data: {moneda: moneda,conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
 
                  if(response == true){
