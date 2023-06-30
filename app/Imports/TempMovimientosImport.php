@@ -388,20 +388,33 @@ if($i > 1){
             if(($row[0] == 'CREDIT' OR $row[0] == 'DEBIT') AND is_numeric($row[3])){
 
                        /*******cambio formato de fecha */
+              if(is_numeric(date($row[1])) == true){
+                $fecha = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]));
 
-                       $fecha =   str_replace("/", "-", $row[1]);
+                $fecha = explode('-',$fecha);
 
-
-//$fecha = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[1]));
-
-
-               $fecha = explode('-',$fecha);
-
-                $mes = $fecha[0];
+                $año = $fecha[0];
                 $dia = $fecha[1];
-                //$año = trim(substr($fecha[2],0,2));
-                $año = $fecha[2];
+                $mes = trim(substr($fecha[2],0,2));
+
                 $fechacompleta = $año.'-'.$mes.'-'.$dia;
+
+              }else{
+
+                $fecha =   str_replace("/", "-", $row[1]);
+
+
+
+
+                $fecha = explode('-',$fecha);
+
+                 $mes = $fecha[0];
+                 $dia = $fecha[1];
+                 $año = $fecha[2];
+                 $fechacompleta = $año.'-'.$mes.'-'.$dia;
+
+              }
+
 
 
                 if($row[0] == 'CREDIT'){
