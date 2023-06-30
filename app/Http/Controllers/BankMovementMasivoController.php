@@ -126,9 +126,9 @@ public function facturasmovimientos(Request $request){
         $conta = $data[6];
 
         if($moneda == 'dolares'){
-            $valorquery = 'amount_with_iva / bcv';
+            $valorquery = "amount_with_iva / bcv";
         }else{
-            $valorquery = 'amount_with_iva';
+            $valorquery = "amount_with_iva";
         }
 
 
@@ -136,7 +136,7 @@ public function facturasmovimientos(Request $request){
         ->where('date_billing','<>',null)
         ->where('number_invoice','<>',null)
         ->where('status','=','P')
-        ->where($valorquery,'=',$monto)
+        ->where(DB::raw($valorquery),'=',$monto)
         ->get();
 
 
@@ -276,7 +276,7 @@ public function procesarfact(Request $request){
             }
 
             $quotations = Quotation::on(Auth::user()->database_name)
-            ->join('tempmovimientos','tempmovimientos.'.$request->conta,$valorquery)
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,DB::raw($valorquery))
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
             ->where('number_invoice','=',$request->nrofactura)
