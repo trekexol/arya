@@ -2224,9 +2224,8 @@ class ExpensesAndPurchaseController extends Controller
                 /*Se agregan los movimientos de las retenciones si son diferentes a cero */
 
                 if($retencion_iva !=0){
-                    $account_iva_retenido = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)
-                                                            ->where('code_three',4)->where('code_four',1)->where('code_five',2)->first();
 
+                    $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
                     if(isset($account_iva_retenido)){
                         $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$expense->id,$user_id,0,$retencion_iva);
                     }
@@ -2242,6 +2241,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 if($retencion_islr !=0){
+
                     $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
                                                     ->where('code_four',1)->where('code_five',4)->first();
 
@@ -2262,12 +2262,9 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 if(isset($anticipo) && ($anticipo != 0)){
+                    
 
-                    $account_anticipo_proveedor = Account::on(Auth::user()->database_name)->where('code_one',1)
-                                                            ->where('code_two',1)
-                                                            ->where('code_three',4)
-                                                            ->where('code_four',2)
-                                                            ->where('code_five',1)->first();
+                    $account_anticipo_proveedor = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos a Proveedores Nacionales')->first();
                     if($sin_formato_total_pay < 0){
                         $global->checkAnticipoExpense($expense,$sin_formato_grandtotal);
                         $expense->anticipo =  $sin_formato_grandtotal;
