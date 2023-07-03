@@ -125,15 +125,22 @@ public function facturasmovimientos(Request $request){
         $monto = $data[0];
         $conta = $data[6];
 
+        if($moneda == 'dolares'){
+            $valorquery = "amount_with_iva / bcv";
+        }else{
+            $valorquery = "amount_with_iva";
+        }
+
+
         $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
         ->where('date_billing','<>',null)
         ->where('number_invoice','<>',null)
         ->where('status','=','P')
-        ->where('amount_with_iva','=',$monto)
+        ->where(DB::raw($valorquery),'=',$monto)
         ->get();
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta','moneda'))->render();
 
 
     }elseif($tipo == 'contra'){
@@ -262,10 +269,14 @@ public function procesarfact(Request $request){
 
             /**********VERIFICO QUE LA FACTURA EXITE Y QUE EL MOVIMIENTO Y
              MONTOS SEAN EXACTAMENTE IGUALES CON SUS RESPECTIVOS ID *****/
-
+            if($request->moneda == 'dolares'){
+                $valorquery = 'amount_with_iva / bcv';
+            }else{
+                $valorquery = 'amount_with_iva';
+            }
 
             $quotations = Quotation::on(Auth::user()->database_name)
-            ->join('tempmovimientos','tempmovimientos.'.$request->conta,'amount_with_iva')
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,DB::raw($valorquery))
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
             ->where('number_invoice','=',$request->nrofactura)
