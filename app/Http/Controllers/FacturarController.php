@@ -1918,11 +1918,7 @@ class FacturarController extends Controller
             /*Anticipos*/
 
             if(isset($anticipo) && ($anticipo != 0)){
-                $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('code_one',2)
-                                                        ->where('code_two',3)
-                                                        ->where('code_three',1)
-                                                        ->where('code_four',1)
-                                                        ->where('code_five',2)->first();
+                $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('description','Anticipos Clientes Nacionales')->first();
                 //Si el total a pagar es negativo, quiere decir que los anticipos sobrepasan al monto total de la factura
                 if($sin_formato_total_pay < 0){
                     $this->check_anticipo($quotation,$sin_formato_grandtotal);
@@ -1945,8 +1941,7 @@ class FacturarController extends Controller
             /*---------- */
 
             if($retencion_iva !=0){
-                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)
-                                                        ->where('code_three',4)->where('code_four',1)->where('code_five',2)->first();
+                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Tercero')->first();
 
                 if(isset($account_iva_retenido)){
                     $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$quotation->id,$user_id,$retencion_iva,0);
@@ -1966,7 +1961,7 @@ class FacturarController extends Controller
 
 
             //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
-            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description','like','Cuentas por Cobrar Clientes')->first();
 
             if(isset($account_cuentas_por_cobrar)){
                 $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,0,($sin_formato_grandtotal));
