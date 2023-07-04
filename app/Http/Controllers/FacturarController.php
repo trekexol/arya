@@ -1941,7 +1941,7 @@ class FacturarController extends Controller
             /*---------- */
 
             if($retencion_iva !=0){
-                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Tercero')->first();
+                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
 
                 if(isset($account_iva_retenido)){
                     $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$quotation->id,$user_id,$retencion_iva,0);
