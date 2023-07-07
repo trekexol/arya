@@ -903,6 +903,47 @@ return [
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
                 ]) : [],
             ],
+
+            'vefase' => [
+                'driver' => 'mysql',
+                'url' => env('DATABASE_URL'),
+                'host' => env('VEFASE_HOST', '127.0.0.1'),
+                'port' => env('VEFASE_PORT', '3306'),
+                'database' => env('VEFASE_DATABASE', 'forge'),
+                'username' => env('VEFASE_USERNAME', 'forge'),
+                'password' => env('VEFASE_PASSWORD', ''),
+                'unix_socket' => env('VEFASE_SOCKET', ''),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+                'options' => extension_loaded('pdo_mysql') ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ]) : [],
+            ],
+
+            'tirefase' => [
+                'driver' => 'mysql',
+                'url' => env('DATABASE_URL'),
+                'host' => env('TIREFASE_HOST', '127.0.0.1'),
+                'port' => env('TIREFASE_PORT', '3306'),
+                'database' => env('TIREFASE_DATABASE', 'forge'),
+                'username' => env('TIREFASE_USERNAME', 'forge'),
+                'password' => env('TIREFASE_PASSWORD', ''),
+                'unix_socket' => env('TIREFASE_SOCKET', ''),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+                'options' => extension_loaded('pdo_mysql') ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ]) : [],
+            ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
