@@ -30,13 +30,11 @@
     <br>
     @endfor
   @endif
+<h4 style="color: black"> FACTURA NRO: {{ str_pad($quotation->number_invoice ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
 
-  @if(Auth::user()->company->id == 40)
-   <h4 style="color: black"> FACTURA NRO: {{ str_pad($quotation->number_invoice ?? $quotation->id, 10, "0", STR_PAD_LEFT)}}</h4>
-  @else
-   <h4 style="color: black"> FACTURA NRO: {{ str_pad($quotation->number_invoice ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</h4>
-  @endif
-
+ 
+   
+ 
 <table style="width: 60%;">
   @if (isset($company->franqueo_postal))
     @if ($company->franqueo_postal > 0)
