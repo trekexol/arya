@@ -24,6 +24,7 @@ class ExportExpenseController extends Controller
         $date_end = Carbon::parse(request('date_end'))->format('Y-m-d');
 
         $content = "";
+
         $total_retiene_iva = 0;
         $date = Carbon::now();
         $company = Company::on(Auth::user()->database_name)->first();
@@ -34,7 +35,7 @@ class ExportExpenseController extends Controller
                                             [$date_begin, $date_end])
                                         ->where('status','C')
                                         ->get();
-        if(isset($expenses)){
+        if(!empty($expenses)){
 
             $expense_amont=0;
             $expense_amont_iva =0;             
@@ -67,15 +68,14 @@ class ExportExpenseController extends Controller
 
                 $cont++;
             }    
-        }else{
- 
-            $date_begin_2 = Carbon::parse(request('date_begin'))->format('Ym');
-           
-            $content = str_replace('-', '', $company->code_rif)."\t".$date_begin_2."\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0";
+        }
+       
+        if (count($expenses) == 0){
+            $date_begin2 = Carbon::parse(request('date_begin'))->format('Ym');
+
+            $content .= str_replace('-', '', $company->code_rif)."\t".$date_begin2."\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0";
 
         }
-        
-       
         // file name to download
         $fileName = "retencion-de-iva-provedores.txt";
         // make a response, with the content, a 200 response code and the headers
