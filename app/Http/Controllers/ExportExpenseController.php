@@ -28,9 +28,9 @@ class ExportExpenseController extends Controller
         $date = Carbon::now();
         $company = Company::on(Auth::user()->database_name)->first();
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
-                                        ->where('retencion_iva','<>',0)
+                                        ->WhereNotNull('number_iva')
                                         ->whereRaw(
-                                            "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", 
+                                            "(DATE_FORMAT(date_payment, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_payment, '%Y-%m-%d') <= ?)", 
                                             [$date_begin, $date_end])
                                         ->where('status','C')
                                         ->get();
@@ -39,7 +39,7 @@ class ExportExpenseController extends Controller
             $expense_amont=0;
             $expense_amont_iva =0;             
             $total_amont = 0;
-            $cont = 0;
+            $cont = count($expenses);
 
             foreach ($expenses as  $expense) {
                 $expense->date = Carbon::parse($expense->date);
@@ -59,7 +59,7 @@ class ExportExpenseController extends Controller
                 $total_amont = $expense_amont + $expense_amont_iva;
                   
 
-                $content .= str_replace('-', '', $company->code_rif).'  '.$expense->date->format('Ym').'    '.$expense->date->format('Y-m-d').' C   01  '.str_replace('-', '', $expense->providers['code_provider']).'  '.$expense->invoice.'   '.$expense->serie.' '.bcdiv($total_amont,'1',2).'   '.bcdiv($expense->base_imponible,'1',2).'   '.bcdiv($expense->retencion_iva,'1',2).'    0   '.$expense->date->format('Ym').str_pad($expense->id, 8, "0", STR_PAD_LEFT).'    '.bcdiv($total_retiene_iva,'1',2).' '.bcdiv($expense->iva_percentage,'1',2).'   0';
+                $content .= str_replace('-', '', $company->code_rif)."\t".$expense->date->format('Ym')."\t".$expense->date->format('Y-m-d')."\tC\t01\t".str_replace('-', '', $expense->providers['code_provider'])."\t".$expense->invoice."\t".str_replace('-', '', $expense->serie)."\t".bcdiv($total_amont,'1',2)."\t".bcdiv($expense->base_imponible,'1',2)."\t".bcdiv($expense->retencion_iva,'1',2)."\t0\t".$expense->date->format('Ym').str_pad($expense->id, 8, "0", STR_PAD_LEFT)."\t".bcdiv($total_retiene_iva,'1',2)."\t".bcdiv($expense->iva_percentage,'1',2)."\t0";
                 
                 if($cont > 0){ 
                 $content .= "\n";
@@ -69,20 +69,21 @@ class ExportExpenseController extends Controller
             }    
         }else{
  
+            $date_begin_2 = Carbon::parse(request('date_begin'))->format('Ym');
            
-            $content = str_replace('-', '', $company->code_rif).'   '.$expense->date->format('Ym').'    0   0   0   0   0   0   0   0   0   0   0   0   0   0';
+            $content = str_replace('-', '', $company->code_rif)."\t".$date_begin_2."\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0\t0";
 
         }
         
+       
         // file name to download
         $fileName = "retencion-de-iva-provedores.txt";
-
-      
         // make a response, with the content, a 200 response code and the headers
         return Response::make($content, 200, [
-        'Content-type' => 'text/plain', 
-        'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
-        'Content-Length' => strlen($content)]);
+            'Content-type' => 'text/plain', 
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $fileName),
+            'Content-Length' => strlen($content)
+        ]);
    }
 
 
