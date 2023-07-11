@@ -97,6 +97,8 @@ class ExpensesAndPurchaseController extends Controller
                     $nombre = 'INTERNACIONAL';
                 }elseif($validarfact->tipo_fac == 3){
                     $nombre = 'SEGURO';
+                }elseif($validarfact->tipo_fac == 4){
+                    $nombre = 'PICK UP';
                 }
 
 
@@ -2262,7 +2264,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
                 if(isset($anticipo) && ($anticipo != 0)){
-                    
+
 
                     $account_anticipo_proveedor = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos a Proveedores Nacionales')->first();
                     if($sin_formato_total_pay < 0){
