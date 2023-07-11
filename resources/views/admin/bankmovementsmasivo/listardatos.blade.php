@@ -1,6 +1,6 @@
 
 
-    <table class="table table-light2 table-bordered dataTableclass" id="dataTable"  cellspacing="0">
+    <table class="table table-light2 table-bordered dataTableclass" id="dataTable" >
                 <thead>
                     <tr>
                         <th class="text-center">Fecha</th>
@@ -10,6 +10,8 @@
                         <th class="text-center">Moneda</th>
                         <th class="text-center">Debe</th>
                         <th class="text-center">Haber</th>
+                        <th class="text-center">Factura Ventas</th>
+                        <th class="text-center">Factura Compras</th>
                         <th class="text-center">Accion</th>
                         <th class="text-center">Eliminar</th>
                     </tr>
@@ -31,7 +33,9 @@
                             <td>{{ $var->debe}}</td>
                             <td>{{ $var->haber}}</td>
                             <td>
+                                @if($var->tipofac == 'venta')
                                 @php
+
                                     if($var->conta == 'debe'){
                                         $plata = $var->debe;
                                     }else{
@@ -45,23 +49,54 @@
 
                                         @if($var->match == 1)
 
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta}}">Match</span>
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match</span>
 
                                        @elseif($var->match == 0)
 
                                        @else
 
-                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda}}">Match {{$var->match}}</span>
+                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match {{$var->match}}</span>
 
                                         @endif
+                                @endif
+
+                            </td>
+                            <td>
+                                @if($var->tipofacc == 'compra')
+                                @php
+
+                                    if($var->conta == 'debe'){
+                                        $plata = $var->debe;
+                                    }else{
+                                        $plata = $var->haber;
+                                    }
+                                @endphp
 
 
+
+
+
+                                        @if($var->matchc == 1)
+
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofacc}}">Match</span>
+
+                                       @elseif($var->matchc == 0)
+
+                                       @else
+
+                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match {{$var->matchc}}</span>
+
+                                        @endif
+                                @endif
+
+                            </td>
+                            <td>
                                 <span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span>
                                 <span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span>
                                 <span class="badge badge-pill badge-info" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/deposito/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Deposito</span>
 
                             </td>
-                            <td><span class="badge badge-pill badge-danger"  name="matchvalueliminar" data-id="{{$var->id_temp_movimientos}}">Eliminar Movimiento</span>
+                            <td><span class="badge badge-pill badge-danger"  name="matchvalueliminar" data-id="{{$var->id_temp_movimientos}}">Eliminar</span>
                             </td>
                             </tr>
                             @endforeach
@@ -114,10 +149,11 @@
     var tasa = valor[7];
     var conta = valor[8];
     var moneda = valor[9];
+    var tipofac = valor[10];
     $.ajax({
         method: "POST",
         url: "{{ route('procesarfact') }}",
-        data: {moneda: moneda,conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
+        data: {tipofac: tipofac,moneda: moneda,conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
 
                  if(response == true){
@@ -215,7 +251,7 @@
                 $('#dataTable').DataTable({
                         "ordering": false,
                         "order": [],
-                        'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
+                        'aLengthMenu': [[20], [20, "All"]]
                     });
 
                 });

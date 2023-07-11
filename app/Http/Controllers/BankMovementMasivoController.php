@@ -27,6 +27,7 @@ use App\Provider;
 use Carbon\Carbon;
 use App\Quotation;
 use App\TempMovimientos;
+use App\ExpensesAndPurchase;
 class BankMovementMasivoController extends Controller
 {
 
@@ -124,23 +125,28 @@ public function facturasmovimientos(Request $request){
         $moneda = $data[5];
         $monto = $data[0];
         $conta = $data[6];
+        $tipofac = $data[7];
 
-        if($moneda == 'dolares'){
-            $valorquery = "amount_with_iva / bcv";
-        }else{
-            $valorquery = "amount_with_iva";
+        if($tipofac == 'venta'){
+            $facturas = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
+            ->where('date_billing','<>',null)
+            ->where('number_invoice','<>',null)
+            ->where('status','=','P')
+            ->where('ref','=',$monto)
+            ->get();
+        }
+
+        if($tipofac == 'compra'){
+            $facturas =  ExpensesAndPurchase::on(Auth::user()->database_name)->orderBy('invoice' ,'desc')
+            ->where('status','=','P')
+            ->where('ref','=',$monto)
+            ->get();
         }
 
 
-        $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
-        ->where('date_billing','<>',null)
-        ->where('number_invoice','<>',null)
-        ->where('status','=','P')
-        ->where(DB::raw($valorquery),'=',$monto)
-        ->get();
 
 
-        return View::make('admin.bankmovementsmasivo.tablafactura',compact('quotations','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta','moneda'))->render();
+        return View::make('admin.bankmovementsmasivo.tablafactura',compact('facturas','valormovimiento','idmovimiento','fechamovimiento','bancomovimiento','tipo','conta','moneda','tipofac'))->render();
 
 
     }elseif($tipo == 'contra'){
@@ -269,14 +275,11 @@ public function procesarfact(Request $request){
 
             /**********VERIFICO QUE LA FACTURA EXITE Y QUE EL MOVIMIENTO Y
              MONTOS SEAN EXACTAMENTE IGUALES CON SUS RESPECTIVOS ID *****/
-            if($request->moneda == 'dolares'){
-                $valorquery = 'amount_with_iva / bcv';
-            }else{
-                $valorquery = 'amount_with_iva';
-            }
+
+        if($request->tipofac == 'venta'){
 
             $quotations = Quotation::on(Auth::user()->database_name)
-            ->join('tempmovimientos','tempmovimientos.'.$request->conta,DB::raw($valorquery))
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,'ref')
             ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
             ->where('date_billing','<>',null)
             ->where('number_invoice','=',$request->nrofactura)
@@ -314,7 +317,9 @@ public function procesarfact(Request $request){
                     $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
                 }
 
-            }
+                } //fin if conta debe
+            }//fn if if($quotations){
+
 
                 $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
                 ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
@@ -323,7 +328,63 @@ public function procesarfact(Request $request){
 
                 return response()->json(true,200);
 
-            }else{
+            } //fin if    if($request->tipofac == 'venta'){
+
+            elseif($request->tipofac == 'compra'){
+
+                $quotations = ExpensesAndPurchase::on(Auth::user()->database_name)
+            ->join('tempmovimientos','tempmovimientos.'.$request->conta,'ref')
+            ->where('tempmovimientos.id_temp_movimientos',$request->idmovimiento)
+            ->where('invoice','=',$request->nrofactura)
+            ->where('status','=','P')
+            ->where('amount_with_iva','=',$request->montoiva)
+            ->where('id','=',$request->id)->first();
+
+
+            if($quotations){
+
+                $quotations->status = 'C';
+                $quotations->save();
+
+              /*  if($request->conta == 'debe'){
+
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Cobro Masivo Match de Bienes o servicios.";
+                $header_voucher->date = $request->fechamovimiento;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->id,Auth::user()->id,0,$request->montoiva);
+                }
+
+                //Banco
+
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', $request->bancomovimiento)->first();
+
+                if(isset($account_subsegmento)){
+                    $this->add_movementfacturas($request->tasa,$header_voucher->id,$account_subsegmento->id,$request->id,Auth::user()->id,$request->montoiva,0);
+                }
+
+                } //fin if conta debe*/
+            }//fn if if($quotations){
+
+
+                $movimientosmasivos   = TempMovimientos::on(Auth::user()->database_name)
+                ->find($request->idmovimiento,['id_temp_movimientos', 'estatus']);
+                $movimientosmasivos->estatus = 1;
+                $movimientosmasivos->save();
+
+                return response()->json(true,200);
+
+            }
+
+
+                else{
 
                 return response()->json(false,500);
             }
@@ -768,10 +829,9 @@ public function listardatos(Request $request){
             }
 
 
-            if($movimientosmasivos->moneda == 'dolares'){
 
                     $sql = "SELECT * FROM quotations
-                    WHERE amount_with_iva / bcv = '$momasivo'
+                    WHERE ref = '$momasivo'
                     AND status = 'P'
                     AND date_billing <> 'null'
                     AND number_invoice <> 'null'";
@@ -783,14 +843,16 @@ public function listardatos(Request $request){
                         $movimientosmasivos->idinvoice = 0;
                         $movimientosmasivos->amount_with_iva = 0;
                         $movimientosmasivos->bcv = 0;
+                        $movimientosmasivos->tipofac = 'venta';
                     }
                     elseif(count($datosinv) == 1){
 
                         foreach($datosinv as $datosinv){
                             $movimientosmasivos->match = $datosinv->number_invoice;
                             $movimientosmasivos->idinvoice = $datosinv->id;
-                            $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
+                            $movimientosmasivos->amount_with_iva = $datosinv->ref;
                             $movimientosmasivos->bcv = $datosinv->bcv;
+                            $movimientosmasivos->tipofac = 'venta';
                         }
                     }
                     else{
@@ -798,44 +860,44 @@ public function listardatos(Request $request){
                         $movimientosmasivos->idinvoice = 0;
                         $movimientosmasivos->amount_with_iva = 0;
                         $movimientosmasivos->bcv = 0;
+                        $movimientosmasivos->tipofac = 0;
 
-                    }
+                    }//fin if de venta
 
 
 
 
-            }else{
+                    $sql = "SELECT * FROM expenses_and_purchases
+                            WHERE ref = '$momasivo'
+                            AND status = 'P'";
 
-                $sql = "SELECT * FROM quotations
-                WHERE amount_with_iva = '$momasivo'
-                AND status = 'P'
-                AND date_billing <> 'null'
-                AND number_invoice <> 'null'";
-                 $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+                            $datosinvcon = DB::connection(Auth::user()->database_name)->select($sql);
 
-                 if(count($datosinv) > 1){
-                    $movimientosmasivos->match = 1;
-                    $movimientosmasivos->idinvoice = 0;
-                    $movimientosmasivos->amount_with_iva = 0;
-                    $movimientosmasivos->bcv = 0;
-                }
-                elseif(count($datosinv) == 1){
+                            if(count($datosinvcon) > 1){
+                                $movimientosmasivos->matchc = 1;
+                                $movimientosmasivos->idinvoicec = 0;
+                                $movimientosmasivos->amount_with_ivac = 0;
+                                $movimientosmasivos->bcvc = 0;
+                                $movimientosmasivos->tipofacc = 'compra';
+                            }
+                            elseif(count($datosinvcon) == 1){
 
-                    foreach($datosinv as $datosinv){
-                        $movimientosmasivos->match = $datosinv->number_invoice;
-                        $movimientosmasivos->idinvoice = $datosinv->id;
-                        $movimientosmasivos->amount_with_iva = $datosinv->amount_with_iva;
-                        $movimientosmasivos->bcv = $datosinv->bcv;
-                    }
-                }
-                else{
-                    $movimientosmasivos->match = 0;
-                    $movimientosmasivos->idinvoice = 0;
-                    $movimientosmasivos->amount_with_iva = 0;
-                    $movimientosmasivos->bcv = 0;
+                                foreach($datosinvcon as $datosinvcon){
+                                    $movimientosmasivos->matchc = $datosinvcon->invoice;
+                                    $movimientosmasivos->idinvoicec = $datosinvcon->id;
+                                    $movimientosmasivos->amount_with_ivac = $datosinvcon->ref;
+                                    $movimientosmasivos->bcvc = $datosinvcon->rate;
+                                    $movimientosmasivos->tipofacc = 'compra';
+                                }
+                            }else{
 
-                }
-            }
+                                $movimientosmasivos->matchc = 0;
+                                $movimientosmasivos->idinvoicec = 0;
+                                $movimientosmasivos->amount_with_ivac = 0;
+                                $movimientosmasivos->bcvc = 0;
+                                $movimientosmasivos->tipofacc = 0;
+
+                            }//fin if de compra
 
 
 
