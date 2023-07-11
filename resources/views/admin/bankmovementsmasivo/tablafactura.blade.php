@@ -4,7 +4,7 @@ if($tipo == 'match'){
 ?>
 
 <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Facturas</h5>
+    <h5 class="modal-title" id="exampleModalLabel">Facturas de {{$tipofac}}</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
     </button>
@@ -25,21 +25,38 @@ if($tipo == 'match'){
     <tbody>
 
             <?php
+                if($tipofac == 'venta'){
 
-                foreach($quotations as $quotations){
+                foreach($facturas as $quotations){
+
+                echo "<tr>
+                    <td>".$quotations['number_invoice']."</td>
+                    <td>".$quotations->clients['name']."</td>
+                    <td>".$quotations['ref']."</td>";
+                echo "<td>
+                    <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]/$conta/$moneda/$tipofac'>Procesar</button>
+                    </td>";
+                echo "</tr>";
+
+}
+
+                } elseif($tipofac == 'compra'){
+
+                    foreach($facturas as $quotations){
 
                     echo "<tr>
-                        <td>".$quotations['number_invoice']."</td>
-                        <td>".$quotations->clients['name']."</td>
-                        <td>".$quotations['amount_with_iva']."</td>";
+                        <td>".$quotations['invoice']."</td>
+                        <td>".$quotations->providers['razon_social']."</td>
+                        <td>".$quotations['ref']."</td>";
+                    echo "<td>
+                        <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[rate]/$conta/$moneda/$tipofac'>Procesar</button>
+                        </td>";
+                    echo "</tr>";
 
-                        echo "<td>
-                            <button type='button' class='btn btn-outline-primary procesarfactura' value='$quotations[amount_with_iva]/$quotations[number_invoice]/$valormovimiento/$quotations[id]/$idmovimiento/$fechamovimiento/$bancomovimiento/$quotations[bcv]/$conta/$moneda'>Procesar</button>
-                            </td>";
+                    }
 
-                       echo "</tr>";
+}
 
-                }
 
                 ?>
 
@@ -70,10 +87,11 @@ $('.procesarfactura').click(function(e){
     var tasa = valor[7];
     var conta = valor[8];
     var moneda = valor[9];
+    var tipofac = valor[10];
     $.ajax({
         method: "POST",
         url: "{{ route('procesarfact') }}",
-        data: {moneda: moneda,conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
+        data: {tipofac: tipofac,moneda: moneda,conta: conta,tasa: tasa,bancomovimiento: bancomovimiento,fechamovimiento: fechamovimiento,montoiva: montoiva, nrofactura: nrofactura,montomovimiento: montomovimiento,id: id,idmovimiento: idmovimiento, "_token": "{{ csrf_token() }}"},
              success:(response)=>{
 
                  if(response == true){

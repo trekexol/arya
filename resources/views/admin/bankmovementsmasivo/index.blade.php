@@ -48,14 +48,14 @@
 </div>
 <br>
 
-<div class="container">
+
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header text-center font-weight-bold h3">Movimientos Bancarios MASIVOS</div>
 
-                <div class="card-body">
-                        <div class="table-responsive" id="datosbancos">
+                <div class="card-body ">
+                        <div class="table-responsive-lg" id="datosbancos">
 
 
 
@@ -64,7 +64,7 @@
 </div>
 </div>
 </div>
-</div>
+
 
 
 
