@@ -377,7 +377,7 @@
                             <option value="1">ADUANA</option>
                             <option value="2">INTERNACIONAL</option>
                             <option value="3">SEGURO</option>
-
+                            <option value="4">PICK UP</option>
                         </select>
                     </div>
                 </div>
