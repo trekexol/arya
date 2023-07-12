@@ -22,16 +22,16 @@ use App\Multipayment;
 
 class InvoiceController extends Controller
 {
-   
+
 
     public function __construct()
     {
 
         $this->middleware('auth');
         $this->middleware('valiuser')->only('index');
-        $this->middleware('valimodulo:Facturas');   
+        $this->middleware('valimodulo:Facturas');
     }
- 
+
     public function index(request $request)
     {
         $user       =   auth()->user();
@@ -40,43 +40,43 @@ class InvoiceController extends Controller
 
        ///////////////API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 	    if ($company_user == 26){ // 26 NORTH D CORP
-              
+
             //FACTURA CABECERA
             $ch = curl_init();
-            //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php"); 
-            curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");  
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-            curl_setopt($ch, CURLOPT_HEADER, 0); 
-            $data = curl_exec($ch); 
- 
+            //curl_setopt($ch, CURLOPT_URL, "http://localhost/couriertool/facturacionc.php");
+            curl_setopt($ch, CURLOPT_URL, "https://www.couriertool.com/facturacionc.php");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            $data = curl_exec($ch);
+
            // print_r(json_decode($data));
            // $respuesta = json_decode($data, true);
             $data = json_decode($data);
 
 
             if (isset($data->mensaje)) {
-              
+
                 $msg = 'No hay facturas registradas';
 
             } else {
-           
+
 
             //FACTURA DETALLE
             $cd = curl_init();
-            //curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php"); 
-            curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");  
-            curl_setopt($cd, CURLOPT_RETURNTRANSFER, true); 
-            curl_setopt($cd, CURLOPT_HEADER, 0); 
-            $data2 = curl_exec($cd); 
+            //curl_setopt($cd, CURLOPT_URL, "http://localhost/couriertool/facturaciond.php");
+            curl_setopt($cd, CURLOPT_URL, "https://www.couriertool.com/facturaciond.php");
+            curl_setopt($cd, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cd, CURLOPT_HEADER, 0);
+            $data2 = curl_exec($cd);
             // print_r(json_decode($data2));
             // $respuesta = json_decode($data2, true);
             $data2 = json_decode($data2);
 
             foreach ($data as $key) {
-               
+
                 $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key->number_invoice)
                 ->select('number_invoice')
-                ->first(); 
+                ->first();
 
                 if (empty($quotations_valid)) {
                       ///Guardando cabecera
@@ -88,14 +88,14 @@ class InvoiceController extends Controller
                       $var->number_order = $key->number_order;
                       $var->number_pedido = $key->number_pedido;
                       $var->id_branch = $key->id_branch;
-  
+
                       $clients = Client::on(Auth::user()->database_name)
                       ->where('cedula_rif', $key->cedula_rif)
                       ->select('id','cedula_rif')
                       ->first();
-                      
+
                       if (empty($clients)){
-                          
+
                           $client = new client();
                           $client->setConnection(Auth::user()->database_name);
                           $client->id_user = 217;
@@ -112,13 +112,13 @@ class InvoiceController extends Controller
                           $client->status = 1;
                           $client->coin = 0;
                           $client->save();
-  
+
                           $id_client = $client->id;
-                          
+
                       } else {
                           $id_client = $clients->id;
                       }
-              
+
                       $var->id_client = $id_client;
                       $var->id_vendor = $key->id_vendor;
                       $var->id_transport = $key->id_transport;
@@ -157,10 +157,11 @@ class InvoiceController extends Controller
                       $var->person_note_delivery = $key->person_note_delivery;
                       $var->ci_person_note_delivery = $key->ci_person_note_delivery;
                       $var->date_expiration = $key->date_expiration;
-                      $var->save(); 
+                      $var->ref = $key->ref;
+                      $var->save();
 
 
-                      ///////DETALLES DE LA FACTURA 
+                      ///////DETALLES DE LA FACTURA
                       foreach ($data2 as $key2) {
 
                         if ($key->id == $key2->id_quotation) {
@@ -185,16 +186,16 @@ class InvoiceController extends Controller
 
                     $header_voucher  = new HeaderVoucher();
                     $header_voucher->setConnection(Auth::user()->database_name);
-    
+
                     $header_voucher->description = "Ventas de Bienes o servicios.";
                     $header_voucher->date = $key->date_billing;
                     $header_voucher->status =  "1";
                     $header_voucher->save();
-    
+
                     /*Busqueda de Cuentas*/
-    
+
                     //Cuentas por Cobrar Clientes
-    
+
                     $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
                     if(isset($account_cuentas_por_cobrar)){
                         $this->add_movement($key->bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$var->id,$key->id_user,$key->amount_with_iva,0);
@@ -205,16 +206,16 @@ class InvoiceController extends Controller
                         $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->id_user,0,$key->amount_with_iva);
                     }
 
-                }                            
+                }
             }
-            
-            }                        
-       }   
+
+            }
+       }
        ///////////////FIN API COURIERTOOL TRAER FACTURAS PARA GUARDAR////////////////////////////////
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
-           
+
             $quotations = Quotation::on(Auth::user()->database_name)->orderBy('number_invoice' ,'desc')
                                             ->where('date_billing','<>',null)
                                             ->get();
@@ -224,24 +225,24 @@ class InvoiceController extends Controller
             $actualizarmiddleware = $request->get('actualizarmiddleware');
             $eliminarmiddleware = $request->get('eliminarmiddleware');
             $namemodulomiddleware = $request->get('namemodulomiddleware');
-        
+
 
             /*if(isset($id_quotation)) {
                 $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
 
             }*/
-    
-            return view('admin.invoices.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware')); 
+
+            return view('admin.invoices.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware'));
 
     }
 
     public function movementsinvoice($id_invoice,$coin = null)
     {
-        
+
 
         $user       =   auth()->user();
         $users_role =   $user->role_id;
-        
+
             $quotation = Quotation::on(Auth::user()->database_name)->find($id_invoice);
             $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
                                             ->where('id_invoice',$id_invoice)
@@ -261,8 +262,8 @@ class InvoiceController extends Controller
             if(!isset($coin)){
                 $coin = 'bolivares';
             }
-         
-        
+
+
         return view('admin.invoices.index_detail_movement',compact('detailvouchers','quotation','coin','invoices','multipayments_detail'));
     }
 
@@ -277,12 +278,12 @@ class InvoiceController extends Controller
         $count = 0;
         $facturas_a_procesar = [];
 
-        
+
 
         $total_facturas = new Quotation;
         $total_facturas->setConnection(Auth::user()->database_name);
 
-        foreach ($array as $key => $item) 
+        foreach ($array as $key => $item)
         {
             if($count >= 2){
                 array_push($facturas_a_procesar, $item);
@@ -307,14 +308,14 @@ class InvoiceController extends Controller
                                                 ->where('coin','not like','bolivares')
                                                 ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
                                                 ->get();
-    
-                        
+
+
                         $anticipos_sum_dolares = 0;
                         if(isset($total_dolar_anticipo[0]->dolar)){
                             $anticipos_sum_dolares += $total_dolar_anticipo[0]->dolar;
                         }
 
-                        
+
                     }
 
                         //aqui sacamos los totales de los anticipos por factura
@@ -330,17 +331,17 @@ class InvoiceController extends Controller
                                                     ->where('coin','not like','bolivares')
                                                     ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
                                                     ->get();
-    
-                        
-                        
+
+
+
                         if(isset($total_dolar_anticipo[0]->dolar)){
                             $anticipos_sum_dolares += $total_dolar_anticipo[0]->dolar;
                         }
-                        
+
 
                     $total = $quotation->amount + $quotation->amount_iva - $quotation->retencion_islr - $quotation->retencion_iva;
-                    
-                    
+
+
                     $total_facturas->retencion_iva += $quotation->retencion_iva;
                     $total_facturas->retencion_islr += $quotation->retencion_islr;
                     $total_facturas->base_imponible += $quotation->base_imponible;
@@ -354,12 +355,12 @@ class InvoiceController extends Controller
                 }else{
                     return redirect('invoices')->withDanger('Solo se pueden Pagar Facturas de un mismo Cliente!');
                 }
-            
+
             }
-            
+
             $count ++;
         }
-        
+
         $company = Company::on(Auth::user()->database_name)->find(1);
         $global = new GlobalController();
 
@@ -371,18 +372,18 @@ class InvoiceController extends Controller
             //si la tasa es fija
             $bcv = $company->rate;
         }
-        
 
-        
+
+
         $total_facturas->anticipo = $anticipos_sum_bolivares + ($anticipos_sum_dolares * $bcv);
 
         $total_facturas->amount_with_iva -= $total_facturas->anticipo;
-         
+
         if(empty($facturas_a_procesar)){
             return redirect('invoices')->withDanger('Debe seleccionar facturar para Pagar!');
        }
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d');    
+        $datenow = $date->format('Y-m-d');
 
         $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')
                                     ->where('code_one', 1)
@@ -404,17 +405,17 @@ class InvoiceController extends Controller
                                     ->get();
 
         //dd($total_facturas);
-        
+
         return view('admin.invoices.createmultifacturar',compact('total_facturas',
                  'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                 ,'datenow','facturas_a_procesar'));
-         
-         
+
+
     }
 
     public function storemultipayment(Request $request)
     {
-        
+
         /*Validar cuales son los pagos a guardar */
         $validate_boolean1 = false;
         $validate_boolean2 = false;
@@ -428,7 +429,7 @@ class InvoiceController extends Controller
         $total_retiene_iva = str_replace(',', '.', str_replace('.', '', request('iva_retencion')));
         $total_retiene_islr = str_replace(',', '.', str_replace('.', '', request('islr_retencion')));
         $anticipo = str_replace(',', '.', str_replace('.', '', request('anticipo')));
-        
+
 
         $base_imponible = str_replace(',', '.', str_replace('.', '', request('base_imponible')));
         $amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
@@ -439,18 +440,18 @@ class InvoiceController extends Controller
 
 
         $date = Carbon::now();
-        $datenow = $date->format('Y-m-d'); 
-      
+        $datenow = $date->format('Y-m-d');
+
         $header_voucher  = new HeaderVoucher();
         $header_voucher->setConnection(Auth::user()->database_name);
 
 
         $header_voucher->description = "Ventas de Bienes o servicios.";
         $header_voucher->date = $datenow;
-        
-    
+
+
         $header_voucher->status =  "1";
-    
+
         $header_voucher->save();
 
         $total_pay = 0;
@@ -464,7 +465,7 @@ class InvoiceController extends Controller
 
         $company = Company::on(Auth::user()->database_name)->find(1);
         $global = new GlobalController();
-        
+
         //Si la taza es automatica
         if($company->tiporate_id == 1){
             $bcv = $global->search_bcv();
@@ -483,39 +484,39 @@ class InvoiceController extends Controller
                 $var->setConnection(Auth::user()->database_name);
 
                 $amount_pay = request('amount_pay');
-        
+
                 if(isset($amount_pay)){
-                    
+
                     $valor_sin_formato_amount_pay = str_replace(',', '.', str_replace('.', '', $amount_pay));
                 }else{
                     return redirect('invoices')->withDanger('Debe ingresar un monto de pago 1!');
                 }
-                    
-        
+
+
                 $account_bank = request('account_bank');
                 $account_efectivo = request('account_efectivo');
                 $account_punto_de_venta = request('account_punto_de_venta');
-        
+
                 $credit_days = request('credit_days');
-        
+
                 $reference = request('reference');
-        
+
                 if($valor_sin_formato_amount_pay != 0){
-        
+
                     if($payment_type != 0){
-        
+
                         $var->id_quotation = request('id_quotation');
-        
+
                         //SELECCIONA LA CUENTA QUE SE REGISTRA EN EL TIPO DE PAGO
                         if($payment_type == 1 || $payment_type == 11 || $payment_type == 5 ){
                             //CUENTAS BANCARIAS
                             if(($account_bank != 0)){
                                 if(isset($reference)){
-        
+
                                     $var->id_account = $account_bank;
-        
+
                                     $var->reference = $reference;
-        
+
                                 }else{
                                     return redirect('invoices')->withDanger('Debe ingresar una Referencia Bancaria!');
                                 }
@@ -526,25 +527,25 @@ class InvoiceController extends Controller
                         if($payment_type == 4){
                             //DIAS DE CREDITO
                             if(isset($credit_days)){
-        
+
                                 $var->credit_days = $credit_days;
-        
+
                             }else{
                                 return redirect('invoices')->withDanger('Debe ingresar los Dias de Credito!');
                             }
                         }
-        
+
                         if($payment_type == 6){
                             //DIAS DE CREDITO
                             if(($account_efectivo != 0)){
-        
+
                                 $var->id_account = $account_efectivo;
-        
+
                             }else{
                                 return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Efectivo!');
                             }
                         }
-        
+
                         if($payment_type == 9 || $payment_type == 10){
                             //CUENTAS PUNTO DE VENTA
                             if(($account_punto_de_venta != 0)){
@@ -553,36 +554,36 @@ class InvoiceController extends Controller
                                 return redirect('invoices')->withDanger('Debe seleccionar una Cuenta de Punto de Venta!');
                             }
                         }
-        
-                            
-                    
-        
+
+
+
+
                             $var->payment_type = request('payment_type');
                             $var->amount = $valor_sin_formato_amount_pay;
-                            
+
                             if($coin == 'dolares'){
                                 $var->amount = $var->amount * $bcv;
                             }
 
                             $var->rate = $bcv;
-                            
+
                             $var->status =  1;
-                        
+
                             $total_pay += $valor_sin_formato_amount_pay;
-        
+
                             $validate_boolean1 = true;
-        
-                        
+
+
                     }else{
                         return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 1!');
                     }
-        
-                    
+
+
                 }else{
                         return redirect('invoices')->withDanger('El pago debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
-            }   
+            }
             $payment_type2 = request('payment_type2');
             if($come_pay >= 2){
 
@@ -594,12 +595,12 @@ class InvoiceController extends Controller
                 $amount_pay2 = request('amount_pay2');
 
                 if(isset($amount_pay2)){
-                    
+
                     $valor_sin_formato_amount_pay2 = str_replace(',', '.', str_replace('.', '', $amount_pay2));
                 }else{
                     return redirect('invoices')->withDanger('Debe ingresar un monto de pago 2!');
                 }
-                    
+
 
                 $account_bank2 = request('account_bank2');
                 $account_efectivo2 = request('account_efectivo2');
@@ -607,7 +608,7 @@ class InvoiceController extends Controller
 
                 $credit_days2 = request('credit_days2');
 
-                
+
 
                 $reference2 = request('reference2');
 
@@ -665,35 +666,35 @@ class InvoiceController extends Controller
                         }
                     }
 
-                        
-                
+
+
 
                         $var2->payment_type = request('payment_type2');
                         $var2->amount = $valor_sin_formato_amount_pay2;
-                        
+
                         if($coin == 'dolares'){
                             $var2->amount = $var2->amount * $bcv;
                         }
                         $var2->rate = $bcv;
-                        
+
                         $var2->status =  1;
-                    
+
                         $total_pay += $valor_sin_formato_amount_pay2;
 
                         $validate_boolean2 = true;
 
-                    
+
                 }else{
                     return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 2!');
                 }
 
-                
+
                 }else{
                     return redirect('invoices')->withDanger('El pago 2 debe ser distinto de Cero!');
                 }
                 /*--------------------------------------------*/
-            } 
-            $payment_type3 = request('payment_type3');   
+            }
+            $payment_type3 = request('payment_type3');
             if($come_pay >= 3){
 
                     /*-------------PAGO NUMERO 3----------------------*/
@@ -704,12 +705,12 @@ class InvoiceController extends Controller
                     $amount_pay3 = request('amount_pay3');
 
                     if(isset($amount_pay3)){
-                        
+
                         $valor_sin_formato_amount_pay3 = str_replace(',', '.', str_replace('.', '', $amount_pay3));
                     }else{
                         return redirect('invoices')->withDanger('Debe ingresar un monto de pago 3!');
                     }
-                        
+
 
                     $account_bank3 = request('account_bank3');
                     $account_efectivo3 = request('account_efectivo3');
@@ -717,7 +718,7 @@ class InvoiceController extends Controller
 
                     $credit_days3 = request('credit_days3');
 
-                
+
 
                     $reference3 = request('reference3');
 
@@ -775,29 +776,29 @@ class InvoiceController extends Controller
                                 }
                             }
 
-                        
-                        
+
+
 
                                 $var3->payment_type = request('payment_type3');
                                 $var3->amount = $valor_sin_formato_amount_pay3;
-                                
+
                                 if($coin == 'dolares'){
                                     $var3->amount = $var3->amount * $bcv;
                                 }
                                 $var3->rate = $bcv;
-                                
+
                                 $var3->status =  1;
-                            
+
                                 $total_pay += $valor_sin_formato_amount_pay3;
 
                                 $validate_boolean3 = true;
 
-                            
+
                         }else{
                             return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 3!');
                         }
 
-                        
+
                     }else{
                             return redirect('invoices')->withDanger('El pago 3 debe ser distinto de Cero!');
                         }
@@ -814,12 +815,12 @@ class InvoiceController extends Controller
                     $amount_pay4 = request('amount_pay4');
 
                     if(isset($amount_pay4)){
-                        
+
                         $valor_sin_formato_amount_pay4 = str_replace(',', '.', str_replace('.', '', $amount_pay4));
                     }else{
                         return redirect('invoices')->withDanger('Debe ingresar un monto de pago 4!');
                     }
-                        
+
 
                     $account_bank4 = request('account_bank4');
                     $account_efectivo4 = request('account_efectivo4');
@@ -827,7 +828,7 @@ class InvoiceController extends Controller
 
                     $credit_days4 = request('credit_days4');
 
-                
+
 
                     $reference4 = request('reference4');
 
@@ -885,34 +886,34 @@ class InvoiceController extends Controller
                                 }
                             }
 
-                        
-                        
+
+
 
                                 $var4->payment_type = request('payment_type4');
                                 $var4->amount = $valor_sin_formato_amount_pay4;
-                                
+
                                 if($coin == 'dolares'){
                                     $var4->amount = $var4->amount * $bcv;
                                 }
                                 $var4->rate = $bcv;
-                                
+
                                 $var4->status =  1;
-                            
+
                                 $total_pay += $valor_sin_formato_amount_pay4;
 
                                 $validate_boolean4 = true;
 
-                            
+
                         }else{
                             return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 4!');
                         }
 
-                        
+
                     }else{
                             return redirect('invoices')->withDanger('El pago 4 debe ser distinto de Cero!');
                         }
                     /*--------------------------------------------*/
-            } 
+            }
             $payment_type5 = request('payment_type5');
             if($come_pay >= 5){
 
@@ -924,12 +925,12 @@ class InvoiceController extends Controller
                 $amount_pay5 = request('amount_pay5');
 
                 if(isset($amount_pay5)){
-                    
+
                     $valor_sin_formato_amount_pay5 = str_replace(',', '.', str_replace('.', '', $amount_pay5));
                 }else{
                     return redirect('invoices')->withDanger('Debe ingresar un monto de pago 5!');
                 }
-                    
+
 
                 $account_bank5 = request('account_bank5');
                 $account_efectivo5 = request('account_efectivo5');
@@ -937,7 +938,7 @@ class InvoiceController extends Controller
 
                 $credit_days5 = request('credit_days5');
 
-            
+
 
                 $reference5 = request('reference5');
 
@@ -995,35 +996,35 @@ class InvoiceController extends Controller
                             }
                         }
 
-                    
-                    
+
+
 
                             $var5->payment_type = request('payment_type5');
                             $var5->amount = $valor_sin_formato_amount_pay5;
-                            
+
                             if($coin == 'dolares'){
                                 $var5->amount = $var5->amount * $bcv;
                             }
 
                             $var5->rate = $bcv;
-                            
+
                             $var5->status =  1;
-                        
+
                             $total_pay += $valor_sin_formato_amount_pay5;
 
                             $validate_boolean5 = true;
 
-                        
+
                     }else{
                         return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 5!');
                     }
 
-                    
+
                 }else{
                         return redirect('invoices')->withDanger('El pago 5 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
-            } 
+            }
             $payment_type6 = request('payment_type6');
             if($come_pay >= 6){
 
@@ -1035,12 +1036,12 @@ class InvoiceController extends Controller
                 $amount_pay6 = request('amount_pay6');
 
                 if(isset($amount_pay6)){
-                    
+
                     $valor_sin_formato_amount_pay6 = str_replace(',', '.', str_replace('.', '', $amount_pay6));
                 }else{
                     return redirect('invoices')->withDanger('Debe ingresar un monto de pago 6!');
                 }
-                    
+
 
                 $account_bank6 = request('account_bank6');
                 $account_efectivo6 = request('account_efectivo6');
@@ -1048,7 +1049,7 @@ class InvoiceController extends Controller
 
                 $credit_days6 = request('credit_days6');
 
-                
+
 
                 $reference6 = request('reference6');
 
@@ -1106,12 +1107,12 @@ class InvoiceController extends Controller
                             }
                         }
 
-                    
-                    
+
+
 
                             $var6->payment_type = request('payment_type6');
                             $var6->amount = $valor_sin_formato_amount_pay6;
-                            
+
                             if($coin == 'dolares'){
                                 $var6->amount = $var6->amount * $bcv;
                             }
@@ -1119,22 +1120,22 @@ class InvoiceController extends Controller
                             $var6->rate = $bcv;
 
                             $var6->status =  1;
-                        
+
                             $total_pay += $valor_sin_formato_amount_pay6;
 
                             $validate_boolean6 = true;
 
-                        
+
                     }else{
                         return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 6!');
                     }
 
-                    
+
                 }else{
                         return redirect('invoices')->withDanger('El pago 6 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
-            } 
+            }
             $payment_type7 = request('payment_type7');
             if($come_pay >= 7){
 
@@ -1146,12 +1147,12 @@ class InvoiceController extends Controller
                 $amount_pay7 = request('amount_pay7');
 
                 if(isset($amount_pay7)){
-                    
+
                     $valor_sin_formato_amount_pay7 = str_replace(',', '.', str_replace('.', '', $amount_pay7));
                 }else{
                     return redirect('invoices')->withDanger('Debe ingresar un monto de pago 7!');
                 }
-                    
+
 
                 $account_bank7 = request('account_bank7');
                 $account_efectivo7 = request('account_efectivo7');
@@ -1159,7 +1160,7 @@ class InvoiceController extends Controller
 
                 $credit_days7 = request('credit_days7');
 
-                
+
 
                 $reference7 = request('reference7');
 
@@ -1217,34 +1218,34 @@ class InvoiceController extends Controller
                             }
                         }
 
-                    
-                    
+
+
 
                             $var7->payment_type = request('payment_type7');
                             $var7->amount = $valor_sin_formato_amount_pay7;
-                            
+
                             if($coin == 'dolares'){
                                 $var7->amount = $var7->amount * $bcv;
                             }
                             $var7->rate = $bcv;
-                            
+
                             $var7->status =  1;
-                        
+
                             $total_pay += $valor_sin_formato_amount_pay7;
 
                             $validate_boolean7 = true;
 
-                        
+
                     }else{
                         return redirect('invoices')->withDanger('Debe seleccionar un Tipo de Pago 7!');
                     }
 
-                    
+
                 }else{
                         return redirect('invoices')->withDanger('El pago 7 debe ser distinto de Cero!');
                     }
                 /*--------------------------------------------*/
-            } 
+            }
         }
 
 
@@ -1256,33 +1257,33 @@ class InvoiceController extends Controller
             $facturas_a_procesar = [];
 
             foreach ($array as $key => $item) {
-                
+
                 if(substr($key,0, 12) == 'id_quotation'){
                     array_push($facturas_a_procesar, $item);
                     $this->procesar_quotation($item,$total_pay);
                     $id_quotation = $item;
                 }
-                
+
             }
-            
+
             $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
 
             $bcv = $quotation->bcv;
             $coin = $quotation->coin;
 
-            
+
             $header_voucher  = new HeaderVoucher();
             $header_voucher->setConnection(Auth::user()->database_name);
 
 
             $header_voucher->description = "MultiCobro de Bienes o servicios.";
             $header_voucher->date = $datenow;
-            
-        
+
+
             $header_voucher->status =  "1";
-        
+
             $header_voucher->save();
-            
+
             if($validate_boolean1 == true){
                 $var->id_quotation = $id_quotation;
                 $var->save();
@@ -1293,12 +1294,12 @@ class InvoiceController extends Controller
 
 
                 $this->add_pay_movement($bcv,$payment_type,$header_voucher->id,$var->id_account,$user_id,$var->amount,0);
-                
+
 
                 //LE PONEMOS STATUS C, DE COBRADO
                 $quotation->status = "C";
             }
-            
+
             if($validate_boolean2 == true){
                 $var2->id_quotation = $id_quotation;
                 $var2->save();
@@ -1308,9 +1309,9 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type2,$header_voucher->id,$var2->id_account,$user_id,$var2->amount,0);
-                
+
             }
-            
+
             if($validate_boolean3 == true){
                 $var3->id_quotation = $id_quotation;
                 $var3->save();
@@ -1320,8 +1321,8 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type3,$header_voucher->id,$var3->id_account,$user_id,$var3->amount,0);
-            
-                
+
+
             }
             if($validate_boolean4 == true){
                 $var4->id_quotation = $id_quotation;
@@ -1332,7 +1333,7 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type4,$header_voucher->id,$var4->id_account,$user_id,$var4->amount,0);
-            
+
             }
             if($validate_boolean5 == true){
                 $var5->id_quotation = $id_quotation;
@@ -1343,7 +1344,7 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type5,$header_voucher->id,$var5->id_account,$user_id,$var5->amount,0);
-             
+
             }
             if($validate_boolean6 == true){
                 $var6->id_quotation = $id_quotation;
@@ -1354,7 +1355,7 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type6,$header_voucher->id,$var6->id_account,$user_id,$var6->amount,0);
-            
+
             }
             if($validate_boolean7 == true){
                 $var7->id_quotation = $id_quotation;
@@ -1365,38 +1366,38 @@ class InvoiceController extends Controller
                 }
 
                 $this->add_pay_movement($bcv,$payment_type7,$header_voucher->id,$var7->id_account,$user_id,$var7->amount,0);
-            
+
             }
-            
+
 
             if($coin != 'bolivares'){
                 $anticipo =  $anticipo * $bcv;
                 $total_retiene_iva = $total_retiene_iva * $bcv;
                 $total_retiene_islr = $total_retiene_islr * $bcv;
-              
+
                 $amount_iva = $amount_iva * $bcv;
                 $base_imponible = $base_imponible * $bcv;
                 $amount = $amount * $bcv;
                 $total_pay = $total_pay * $bcv;
 
                 $grand_total = $grand_total * $bcv;
-    
+
             }
-            
-            
+
+
              /*Anticipos*/
              if(isset($anticipo) && ($anticipo != 0)){
                 $account_anticipo_cliente = Account::on(Auth::user()->database_name)->where('code_one',2)
                 ->where('code_two',3)
                 ->where('code_three',1)
                 ->where('code_four',1)
-                ->where('code_five',2)->first(); 
+                ->where('code_five',2)->first();
 
-                
-                
+
+
                 //Si el total a pagar es negativo, quiere decir que los anticipos sobrepasan al monto total de la factura
                 if($amount_with_iva  < 0){
-                    $global = new GlobalController;     
+                    $global = new GlobalController;
                     $global->check_anticipo_multipayment($quotation,$facturas_a_procesar,$grand_total);
                     $quotation->anticipo =  $grand_total;
                     $quotation->status = "C";
@@ -1406,46 +1407,46 @@ class InvoiceController extends Controller
                 }
                 if(isset($account_anticipo_cliente)){
                     $this->add_movement($bcv,$header_voucher->id,$account_anticipo_cliente->id,$user_id,$quotation->anticipo,0);
-                }                           
-                
+                }
+
              }
             /*---------- */
 
             if($total_retiene_iva !=0){
                 $account_iva_retenido = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)
-                                                        ->where('code_three',4)->where('code_four',1)->where('code_five',2)->first();  
-            
+                                                        ->where('code_three',4)->where('code_four',1)->where('code_five',2)->first();
+
                 if(isset($account_iva_retenido)){
                     $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$user_id,$total_retiene_iva,0);
                 }
             }
 
-            
+
             if($total_retiene_islr !=0){
                 $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                ->where('code_four',1)->where('code_five',4)->first();  
+                                                ->where('code_four',1)->where('code_five',4)->first();
 
                 if(isset($account_islr_pagago)){
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$user_id,$total_retiene_islr,0);
                 }
             }
-            
 
-         
-            
+
+
+
             //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
-            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first(); 
-            
+            $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+
             if(isset($account_cuentas_por_cobrar)){
                 $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$user_id,0,$grand_total);
             }
-            
-            
-            $global = new GlobalController;                                                
+
+
+            $global = new GlobalController;
             $global->procesar_anticipos($quotation,$amount_with_iva);
-            
+
             return redirect('invoices')->withSuccess('Facturas Guardadas con Exito!');
-   
+
         }else{
             return redirect('invoices')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');
         }
@@ -1454,24 +1455,24 @@ class InvoiceController extends Controller
 
     public function add_movement_anticipo_total($facturas_a_procesar,$bcv,$header_voucher,$id_account,$user_id)
     {
-        $global = new GlobalController;   
+        $global = new GlobalController;
 
         foreach($facturas_a_procesar as $factura){
-            
+
             $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($factura);
-            
+
             $payment = $global->add_payment($quotation,$id_account,3,$quotation->amount_with_iva,$bcv);
 
             $this->register_multipayment($factura,$header_voucher,$payment,$user_id);
         }
     }
-    
-    
-    
+
+
+
     public function procesar_quotation($id_quotation,$total_pay)
     {
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail($id_quotation);
-        
+
         /*descontamos el inventario, si existe la fecha de nota de entrega, significa que ya hemos descontado del inventario, por ende no descontamos de nuevo*/
         if(!isset($quotation->date_delivery_note) && !isset($quotation->date_order)){
             $retorno = $this->discount_inventory($quotation->id);
@@ -1486,7 +1487,7 @@ class InvoiceController extends Controller
         ->where('id_quotation', '=', $quotation->id)
         ->update(['status' => 'C']);
 
-        
+
         $quotation->status = 'C';
         $quotation->save();
 
@@ -1494,7 +1495,7 @@ class InvoiceController extends Controller
     }
 
 
-   
+
 
     public function register_multipayment($id_quotation,$id_header,$id_payment,$id_user)
     {
@@ -1522,23 +1523,23 @@ class InvoiceController extends Controller
         $detail->user_id = $id_user;
         $detail->tasa = $bcv;
 
-      
+
         $detail->debe = $debe;
         $detail->haber = $haber;
-       
-      
+
+
         $detail->status =  "C";
 
          /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
-         
+
         $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
 
         if($account->status != "M"){
             $account->status = "M";
             $account->save();
         }
-         
-    
+
+
         $detail->save();
 
     }
@@ -1557,8 +1558,8 @@ class InvoiceController extends Controller
                                 ->where('quotation_products.amount','<','inventories.amount')
                                 ->select('inventories.code as code','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id_quotation as id_quotation','quotation_products.discount as discount',
                                 'quotation_products.amount as amount_quotation')
-                                ->first(); 
-    
+                                ->first();
+
         if(isset($no_hay_cantidad_suficiente)){
             return redirect('quotations/facturar/'.$id_quotation.'/bolivares')->withDanger('En el Inventario de Codigo: '.$no_hay_cantidad_suficiente->code.' no hay Cantidad suficiente!');
         }
@@ -1573,7 +1574,7 @@ class InvoiceController extends Controller
         })
         ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id as id_quotation','quotation_products.discount as discount',
         'quotation_products.amount as amount_quotation')
-        ->get(); 
+        ->get();
 
             foreach($inventories_quotations as $inventories_quotation){
 
@@ -1589,13 +1590,13 @@ class InvoiceController extends Controller
                             $inventory->save();
 
                             //CAMBIAMOS EL ESTADO PARA SABER QUE ESE PRODUCTO YA SE COBRO Y SE RESTO DEL INVENTARIO
-                            $quotation_product->status = 'C';  
+                            $quotation_product->status = 'C';
                             $quotation_product->price = $inventories_quotation->price;
                             $quotation_product->save();
                         }else{
                             return redirect('invoices/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario de Codigo: '.$inventory->code.' no tiene Cantidad suficiente!');
                         }
-                        
+
                     }else{
                         return redirect('invoices/multipayment/'.$id_quotation.'/bolivares')->withDanger('El Inventario no existe!');
                     }
@@ -1609,7 +1610,7 @@ class InvoiceController extends Controller
 
 }
 
-    
+
     public function add_pay_movement($bcv,$payment_type,$header_voucher,$id_account,$user_id,$amount_debe,$amount_haber)
     {
 
@@ -1619,33 +1620,33 @@ class InvoiceController extends Controller
             //AGREGA EL MOVIMIENTO DE LA CUENTA CON LA QUE SE HIZO EL PAGO
             if(isset($id_account)){
                 $this->add_movement($bcv,$header_voucher,$id_account,$user_id,$amount_debe,0);
-            
+
             }//SIN DETERMINAR
             else if($payment_type == 7){
                         //------------------Sin Determinar
-                $account_sin_determinar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Otros Ingresos No Identificados')->first(); 
-        
+                $account_sin_determinar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Otros Ingresos No Identificados')->first();
+
                 if(isset($account_sin_determinar)){
                     $this->add_movement($bcv,$header_voucher,$account_sin_determinar->id,$user_id,$amount_debe,0);
                 }
             }//PAGO DE CONTADO
             else if($payment_type == 2){
-                
-                $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica')->first(); 
-        
+
+                $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica')->first();
+
                 if(isset($account_contado)){
                     $this->add_movement($bcv,$header_voucher,$account_contado->id,$user_id,$amount_debe,0);
                 }
             }//CONTRA ANTICIPO
             else if($payment_type == 3){
                         //--------------
-                $account_contra_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos a Proveedores Nacionales')->first(); 
-        
+                $account_contra_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos a Proveedores Nacionales')->first();
+
                 if(isset($account_contra_anticipo)){
                     $this->add_movement($bcv,$header_voucher,$account_contra_anticipo->id,$user_id,$amount_debe,0);
                 }
-            } 
-           
+            }
+
 
     }
 
@@ -1658,10 +1659,10 @@ class InvoiceController extends Controller
         }
 
         if(isset($quotation)){
-                                                           
+
             $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
 
-            
+
 
 
             $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
@@ -1686,13 +1687,13 @@ class InvoiceController extends Controller
                                                            ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
                                                            'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                            ,'quotation_products.retiene_islr as retiene_islr_quotation')
-                                                           ->get(); 
+                                                           ->get();
 
             $total= 0;
             $base_imponible= 0;
             $price_cost_total= 0;
 
-            
+
             $retiene_iva = 0;
 
             $total_retiene_islr = 0;
@@ -1706,19 +1707,19 @@ class InvoiceController extends Controller
                    $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
 
                    $total += ($var->price * $var->amount_quotation) - $percentage;
-               //----------------------------- 
+               //-----------------------------
 
                if($var->retiene_iva_quotation == 0){
 
-                   $base_imponible += ($var->price * $var->amount_quotation) - $percentage; 
+                   $base_imponible += ($var->price * $var->amount_quotation) - $percentage;
 
                }else{
-                   $retiene_iva += ($var->price * $var->amount_quotation) - $percentage; 
+                   $retiene_iva += ($var->price * $var->amount_quotation) - $percentage;
                }
 
                if($var->retiene_islr_quotation == 1){
 
-                   $retiene_islr += ($var->price * $var->amount_quotation) - $percentage; 
+                   $retiene_islr += ($var->price * $var->amount_quotation) - $percentage;
 
                }
 
@@ -1738,28 +1739,28 @@ class InvoiceController extends Controller
 
             $quotation->total_factura = $total;
             $quotation->base_imponible = $base_imponible;
-           
+
            /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
             $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
 
-           
+
            if($client->percentage_retencion_islr != 0){
                $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
            }
 
            /*-------------- */
-    
-           
+
+
            $quotation->price_cost_total = $price_cost_total;
            $quotation->total_retiene_islr = $total_retiene_islr;
            $quotation->total_mercancia = $total_mercancia;
            $quotation->total_servicios = $total_servicios;
 
            return $quotation;
-         
+
         }
     }
- 
+
 
 
 
