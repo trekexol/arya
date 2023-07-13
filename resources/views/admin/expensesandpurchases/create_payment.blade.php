@@ -242,7 +242,7 @@
                                         <option value="{{$impuesto2}}">{{$impuesto2}}%</option>
                                         <option value="{{$impuesto3}}">{{$impuesto3}}%</option>
                                     @endif
-                                    
+
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -435,6 +435,7 @@
                                     <option value="2">CONTENEDOR</option>
                                     <option value="3">GUIA MASTER</option>
                                     <option value="4">TULA</option>
+                                    <option value="5">GUIA TERRESTRE</option>
 
                                 </select>
 
@@ -447,6 +448,7 @@
                                     <option value="1">ADUANA</option>
                                     <option value="2">INTERNACIONAL</option>
                                     <option value="3">SEGURO</option>
+                                    <option value="4">PICK UP</option>
 
                                 </select>
                             </div>
