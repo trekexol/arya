@@ -363,7 +363,7 @@
                             <option value="2">CONTENEDOR</option>
                             <option value="3">GUIA MASTER</option>
                             <option value="4">TULA</option>
-
+                            <option value="5">GUIA TERRESTRE</option>
                         </select>
 
                     </div>

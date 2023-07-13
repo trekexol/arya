@@ -111,6 +111,8 @@ class ExpensesAndPurchaseController extends Controller
                     $movimiento = 'GUIA MASTER';
                 }elseif($validarfact->tipo_movimiento == 4){
                     $movimiento = 'TULA';
+                }elseif($validarfact->tipo_movimiento == 5){
+                    $movimiento = 'GUIA TERRESTRE';
                 }
 
 

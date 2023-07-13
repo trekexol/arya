@@ -207,6 +207,7 @@ class InvoiceController extends Controller
                         $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->id_user,0,$key->amount_with_iva);
                     }
 
+<<<<<<< Updated upstream
                 } else {
 
                    if ($key->status == 'R'){ ///////////STATUS REVERSADA///////////////
@@ -275,6 +276,9 @@ class InvoiceController extends Controller
             
                    }
 
+=======
+                }else{
+>>>>>>> Stashed changes
 
 
                 }
