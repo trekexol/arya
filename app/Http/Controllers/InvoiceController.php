@@ -8,6 +8,7 @@ use App\Client;
 use App\Company;
 use App\DetailVoucher;
 use App\HeaderVoucher;
+use App\Http\Controllers\Historial\HistorialQuotationController;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Inventory;
 use App\Quotation;
@@ -205,6 +206,76 @@ class InvoiceController extends Controller
                     if(isset($account_subsegmento)){
                         $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->id_user,0,$key->amount_with_iva);
                     }
+
+                } else {
+
+                   if ($key->status == 'R'){ ///////////STATUS REVERSADA///////////////
+
+                   
+                    $quotation = Quotation::on(Auth::user()->database_name)->where('number_invoice', $key->number_invoice)->firstOrFail();
+
+                    $id_quotation = $quotation->id;
+
+                    $exist_multipayment = Multipayment::on(Auth::user()->database_name)
+                                        ->where('id_quotation',$quotation->id)
+                                        ->first();
+            
+                    $date = Carbon::now();
+                    $datenow = $date->format('Y-m-d');
+            
+                    if(empty($exist_multipayment)){
+                        if($quotation->status != 'X'){
+            
+                            HeaderVoucher::on(Auth::user()->database_name)
+                            ->join('detail_vouchers','detail_vouchers.id_header_voucher','header_vouchers.id')
+                            ->where('detail_vouchers.id_invoice',$id_quotation)
+                            ->update(['header_vouchers.status' => 'X']);
+            
+                            $detail = DetailVoucher::on(Auth::user()->database_name)
+                            ->where('id_invoice',$id_quotation)
+                            ->update(['status' => 'X']);
+            
+            
+                            $global = new GlobalController();
+                            $global->deleteAllProducts($quotation->id);
+            
+                            QuotationPayment::on(Auth::user()->database_name)
+                                            ->where('id_quotation',$quotation->id)
+                                            ->update(['status' => 'X']);
+            
+                            $quotation->status = 'X';
+                            $quotation->save();
+            
+            
+                            $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                            ->where('id_quotation', '=', $id_quotation)
+                            ->get(); // Conteo de Productos para incluiro en el historial de inventario
+            
+                            foreach($quotation_products as $det_products){ // guardado historial de inventario
+                            $global->transaction_inv('rev_venta',$det_products->id_inventory,'rev_venta',$det_products->amount,$det_products->price,$quotation->date_billing,1,1,0,$det_products->id_inventory_histories,$det_products->id,$quotation->id);
+                            }
+            
+            
+                            //Crear un nuevo anticipo con el monto registrado en la cotizacion
+                            if((isset($quotation->anticipo))&& ($quotation->anticipo != 0)){
+            
+                                $account_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos Clientes')->first();
+                                $anticipoController = new AnticipoController();
+                                $anticipoController->registerAnticipo($datenow,$quotation->id_client,$account_anticipo->id,"bolivares",
+                                $quotation->anticipo,$quotation->bcv,"reverso factura N°".$quotation->number_invoice);
+            
+                            }
+            
+                            $historial_quotation = new HistorialQuotationController();
+            
+                            $historial_quotation->registerAction($quotation,"quotation","Se Reversó la Factura");
+                        }
+            
+                    }
+            
+                   }
+
+
 
                 }
             }
