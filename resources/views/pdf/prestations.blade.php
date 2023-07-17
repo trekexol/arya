@@ -294,7 +294,7 @@ $interesesacumulado = 0;
       </table>
 <div class="small" style="font-size: 12px;">
 
-  <div class="text-center h6">RECIBO DE LIQUIDACION</div>
+  <div class="text-center h6">RECIBO DE LIQUIDACIÓN</div>
 
 <div class="small">
 
@@ -344,6 +344,13 @@ $interesesacumulado = 0;
         $motivo = 'Despido';
       }else{
         $motivo = 'S/D';
+      }
+      if ($employee->id_empleado == 'V-18.933.860'){
+        $motivo = 'Mutuo Acuerdo';
+        $tipo_bono =  'Bonificación Única por Finalización de relación Laboral'
+                
+      } else {
+        $tipo_bono = 'INDEMNIZACION ART.. 92 LOTTT';
       }
 
       $sueldodiario = number_format($employee->monto_pago / 30, 2, '.', '.');
@@ -689,7 +696,7 @@ $interesesacumulado = 0;
 
           <table style="width: 100%;">
             <tr>
-              <th  class="text-left" style="background: rgb(221, 221, 221)">INDEMNIZACION ART.. 92 LOTTT
+              <th  class="text-left" style="background: rgb(221, 221, 221)">{{$tipo_bono}}
               </th>
             </tr>
           </table>

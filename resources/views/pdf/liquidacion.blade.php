@@ -32,7 +32,7 @@
 
 <div class="small">
   <br><br><br>
-  <div class="text-center h6">RECIBO DE LIQUIDACION</div>
+  <div class="text-center h6">RECIBO DE LIQUIDACIÓN</div>
 
  <div class="small">
    
