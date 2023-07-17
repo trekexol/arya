@@ -347,7 +347,7 @@ $interesesacumulado = 0;
       }
       if ($employee->id_empleado == 'V-18.933.860'){
         $motivo = 'Mutuo Acuerdo';
-        $tipo_bono =  'Bonificación Única por Finalización de relación Laboral'
+        $tipo_bono =  'BONIFICACIÓN ÚNICA POR FINALIZACIÓN DE RELACIÓN LABORAL';
                 
       } else {
         $tipo_bono = 'INDEMNIZACION ART.. 92 LOTTT';
