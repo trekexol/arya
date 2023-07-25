@@ -112,7 +112,7 @@
                     @foreach ($quotations as $quotation)
                     <?php
                         $amount_bcv = 1;
-                        $totalbs = $quotation->amount_with_iva + $quotation->IGTF_amount - $quotation->retencion_iva - $quotation->retencion_islr
+                        $totalbs = $quotation->amount_with_iva + $quotation->IGTF_amount - $quotation->retencion_iva - $quotation->retencion_islr;
                         $amount_bcv = $totalbs / $quotation->bcv;
                         $diferencia_en_dias = 0;
                         $validator_date = '';
