@@ -378,6 +378,8 @@
                             <option value="2">INTERNACIONAL</option>
                             <option value="3">SEGURO</option>
                             <option value="4">PICK UP</option>
+                            <option value="5">MANEJO</option>
+                            <option value="6">IMPUESTOS</option>
                         </select>
                     </div>
                 </div>

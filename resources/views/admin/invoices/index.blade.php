@@ -112,7 +112,8 @@
                     @foreach ($quotations as $quotation)
                     <?php
                         $amount_bcv = 1;
-                        $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
+                        $totalbs = $quotation->amount_with_iva + $quotation->IGTF_amount - $quotation->retencion_iva - $quotation->retencion_islr;
+                        $amount_bcv = $totalbs / $quotation->bcv;
                         $diferencia_en_dias = 0;
                         $validator_date = '';
 
@@ -146,7 +147,7 @@
                             <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
                             <td class="text-center font-weight-bold">{{$quotation->vendors['name'] ?? ''}} {{$quotation->vendors['surname'] ?? ''}}</td>
                             <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
-                            <td class="text-right font-weight-bold">{{number_format($quotation->amount_with_iva, 2, ',', '.')}}</td>
+                            <td class="text-right font-weight-bold">{{number_format($totalbs, 2, ',', '.')}}</td>
                             @if ($quotation->coin == 'bolivares')
                             <td class="text-center font-weight-bold">Bs</td>
                             @endif
