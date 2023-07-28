@@ -64,7 +64,7 @@ class ExportExpenseController extends Controller
 
                 $periodoynum = $nueva_fecha.''.str_pad($expense->number_iva, 8, "0", STR_PAD_LEFT);
 
-                $content .= str_replace('-', '', $company->code_rif)."\t".$expense->date->format('Ym')."\t".$expense->date_payment."\tC\t01\t".str_replace('-', '', $expense->providers['code_provider'])."\t".$expense->invoice."\t".str_replace('-', '', $expense->serie)."\t".bcdiv($total_amont,'1',2)."\t".bcdiv($expense->base_imponible,'1',2)."\t".bcdiv($expense->retencion_iva,'1',2)."\t0\t".$periodoynum."\t".bcdiv($total_retiene_iva,'1',2)."\t".bcdiv($expense->iva_percentage,'1',2)."\t0";
+                $content .= str_replace('-', '', $company->code_rif)."\t".$nueva_fecha."\t".$expense->date."\tC\t01\t".str_replace('-', '', $expense->providers['code_provider'])."\t".$expense->invoice."\t".str_replace('-', '', $expense->serie)."\t".bcdiv($total_amont,'1',2)."\t".bcdiv($expense->base_imponible,'1',2)."\t".bcdiv($expense->retencion_iva,'1',2)."\t0\t".$periodoynum."\t".bcdiv($total_retiene_iva,'1',2)."\t".bcdiv($expense->iva_percentage,'1',2)."\t0";
                 
                 if($cont > 0){ 
                 $content .= "\n";
