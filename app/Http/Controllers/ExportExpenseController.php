@@ -60,9 +60,11 @@ class ExportExpenseController extends Controller
                 $total_amont = $expense_amont + $expense_amont_iva;
                 
                 $nueva_fecha = substr($expense->date_payment, 0, 4) . substr($expense->date_payment, 5, 2); // 202306
-
-
                 $periodoynum = $nueva_fecha.''.str_pad($expense->number_iva, 8, "0", STR_PAD_LEFT);
+
+                if ($expense->serie == null || $expense->serie == ''){
+                    $expense->serie = '0';
+                }
 
                 $content .= str_replace('-', '', $company->code_rif)."\t".$nueva_fecha."\t".$expense->date."\tC\t01\t".str_replace('-', '', $expense->providers['code_provider'])."\t".$expense->invoice."\t".str_replace('-', '', $expense->serie)."\t".bcdiv($total_amont,'1',2)."\t".bcdiv($expense->base_imponible,'1',2)."\t".bcdiv($expense->retencion_iva,'1',2)."\t0\t".$periodoynum."\t".bcdiv($total_retiene_iva,'1',2)."\t".bcdiv($expense->iva_percentage,'1',2)."\t0";
                 
@@ -124,7 +126,9 @@ class ExportExpenseController extends Controller
                // $total_retiene_iva = $this->calculatarTotalProductosSinIva($expense);
 
                 $fecha_pago = date_format(date_create($expense->date_payment),"d/m/Y");
-
+                if ($expense->serie == null || $expense->serie == ''){
+                    $expense->serie = '0';
+                }
                 $content .= '<DetalleRetencion>
                   <RifRetenido>'.str_replace("-","",$expense->providers['code_provider']).'</RifRetenido>
                   <NumeroFactura>'.$expense->invoice.'</NumeroFactura>
