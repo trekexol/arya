@@ -338,6 +338,7 @@
                                     <option value="2">CONTENEDOR</option>
                                     <option value="3">GUIA MASTER</option>
                                     <option value="4">TULA</option>
+                                    <option value="5">GUIA TERRESTRE</option>
 
                                 </select>
 
@@ -350,6 +351,9 @@
                                     <option value="1">ADUANA</option>
                                     <option value="2">INTERNACIONAL</option>
                                     <option value="3">SEGURO</option>
+                                    <option value="4">PICK UP</option>
+                                    <option value="5">MANEJO</option>
+                                    <option value="6">IMPUESTO</option>
 
                                 </select>
                             </div>
@@ -449,6 +453,8 @@
                                     <option value="2">INTERNACIONAL</option>
                                     <option value="3">SEGURO</option>
                                     <option value="4">PICK UP</option>
+                                    <option value="5">MANEJO</option>
+                                    <option value="6">IMPUESTO</option>
 
                                 </select>
                             </div>

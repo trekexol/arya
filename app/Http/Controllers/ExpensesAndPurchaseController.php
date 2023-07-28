@@ -101,6 +101,8 @@ class ExpensesAndPurchaseController extends Controller
                     $nombre = 'PICK UP';
                 }elseif($validarfact->tipo_fac == 5){
                     $nombre = 'MANEJO';
+                }elseif($validarfact->tipo_fac == 6){
+                    $nombre = 'IMPUESTO';
                 }
 
 
