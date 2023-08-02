@@ -409,7 +409,7 @@
                                                 <td style="text-align: right">{{$var->porc_discount}}%</td>
                                                 <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
                                                 <?php
-                                                    $suma += $total_less_percentage;
+                                                    $suma += number_format($total_less_percentage, 2, '.', '');
                                                 ?>
                                                     <td style="text-align: right">
                                                         @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
