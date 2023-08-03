@@ -446,9 +446,9 @@ $interesesacumulado = 0;
       <tr>
         <td class="text-center font-weight-normal"></td>
 
-        <td class="text-center font-weight-normal">{{ $ultimopago->ultimopago}}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('Y') ?? '' }}</td>
-        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago->ultimopago)->format('M') ?? '' }}</td>
+        <td class="text-center font-weight-normal">{{ $ultimopago_e}}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago_e)->format('Y') ?? '' }}</td>
+        <td class="text-center font-weight-normal">{{ \Carbon\Carbon::parse($ultimopago_e)->format('M') ?? '' }}</td>
 
       </tr>
     </table>
