@@ -2421,7 +2421,7 @@ class ExpensesAndPurchaseController extends Controller
 
 
            /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null){
+           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);
@@ -4011,19 +4011,39 @@ public function notas(request $request)
 
         if($request->court != null AND $request->tifac != null AND $request->nrofactcou != null){
 
-            $totalFactura =  str_replace(".", "", $request->montomodal);
+            if($request->tipoarya == 'venta'){
+                $totalFactura =  str_replace(".", "", $request->montomodal);
 
-            $factcour  = new FacturasCour();
-            $factcour->setConnection(Auth::user()->database_name);
-            $factcour->id_expense = $request->idexpense;
-            $factcour->tipo_fac = $request->tifac;
-            $factcour->tipo_movimiento = $request->court;
-            $factcour->numero =  $request->nrofactcou;
-            $factcour->monto =  $totalFactura;
-            $factcour->save();
+                $factcour  = new FacturasCour();
+                $factcour->setConnection(Auth::user()->database_name);
+                $factcour->id_ventas = $request->idexpense;
+                $factcour->tipo_fac = $request->tifac;
+                $factcour->tipo_movimiento = $request->court;
+                $factcour->numero =  $request->nrofactcou;
+                $factcour->monto =  $totalFactura;
+                $factcour->save();
+                return redirect('/invoices')->withSuccess('Asignado a Couriertool Exitosa!');
+
+            }
 
 
-            return redirect('expensesandpurchases/indexhistorial')->withSuccess('Asignado a Couriertool Exitosa!');
+            if($request->tipoarya == 'compras'){
+                $totalFactura =  str_replace(".", "", $request->montomodal);
+
+                $factcour  = new FacturasCour();
+                $factcour->setConnection(Auth::user()->database_name);
+                $factcour->id_expense = $request->idexpense;
+                $factcour->tipo_fac = $request->tifac;
+                $factcour->tipo_movimiento = $request->court;
+                $factcour->numero =  $request->nrofactcou;
+                $factcour->monto =  $totalFactura;
+                $factcour->save();
+
+                return redirect('expensesandpurchases/indexhistorial')->withSuccess('Asignado a Couriertool Exitosa!');
+
+
+            }
+
 
 
         }

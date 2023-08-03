@@ -100,6 +100,7 @@
                 <th class="text-center"></th>
                 <th class="text-center"></th>
                 <th class="text-center"></th>
+                <th class="text-center"></th>
             </tr>
             </thead>
 
@@ -162,32 +163,51 @@
                                 </td>
                                 <td class="text-center font-weight-bold">
                                 </td>
-
+                                <td></td>
                             @elseif ($quotation->status == "X")
                                 <td class="text-center font-weight-bold text-danger">Reversado
                                 </td>
                                 <td>
                                 </td>
+                                <td></td>
                             @else
                                 @if (($diferencia_en_dias >= 0) && ($validator_date))
+
                                 @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
 
                                     <td class="text-center font-weight-bold">
                                         <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold" style="color: rgb(255, 183, 0)">Click para Cobrar<br>Vencida ({{$diferencia_en_dias}} dias)</a>
                                     </td>
-                                    @endif
+
+                                @endif
+
                                 @else
+
                                 @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                     <td class="text-center font-weight-bold">
                                         <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
                                     </td>
                                 @endif
+
                                 @endif
+
                                 @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                 <td>
                                     <input type="checkbox" name="check{{ $quotation->id }}" value="{{ $quotation->id }}" onclick="buttom();" id="flexCheckChecked">
                                 </td>
                                 @endif
+
+                                @if(Auth::user()->id_company == '26' AND $quotation->validar == FALSE)
+                                <td>
+                                <i class="fa fa-file-alt cour" data-id-expense='{{$quotation->number_invoice.'/'.$quotation->id.'/'.number_format($totalbs / 1 ?? 0, 2, ',', '.')}}' data-toggle="modal" data-target="#courier"></i>
+                                </td>
+                                @elseif(Auth::user()->id_company == '26')
+                                <td class="text-center">{{$quotation->movimientofac.' '.$quotation->nombrefac.' '.$quotation->numerofac}}</td>
+                                @else
+                                <td></td>
+                                @endif
+
+
                             @endif
 
                         </tr>
@@ -201,6 +221,91 @@
     </div>
 </div>
 </form>
+
+@if(Auth::user()->id_company == '26')
+
+
+
+<div class="modal fade" id="courier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Asignar Factura a Couriertool</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('asignarcouriertool') }}"  id="asignarcouriertool">
+                @csrf
+                <input type="hidden" name="idexpense" id="idexpense">
+                <input type="hidden" name="montomodal" id="montomodal">
+                <input type="hidden" name="tipoarya" id="tipoarya" value="venta">
+            <div class="modal-body">
+
+                <div class="form-group row" id="newcour">
+                    <label for="court" class="col-md-5 col-form-label text-md-right">Factura de Compra: </label>
+                    <span for="court" class="col-md-5 col-form-label text-md-left facnumero"></span>
+
+
+                </div>
+                <div class="form-group row" id="newcour">
+                    <label for="court" class="col-md-5 col-form-label text-md-right">Monto: </label>
+                    <label for="court" class="col-md-5 col-form-label text-md-left montonum"></label>
+
+
+                </div>
+
+                <div class="form-group row" id="newcour">
+                    <label for="court" class="col-md-5 col-form-label text-md-right">Tipo Couriertool:</label>
+
+                    <div class="col-md-5">
+                        <select  id="court"  name="court" class="form-control">
+                            <option value="">Seleccionar</option>
+                            <option value="1">PALETA</option>
+                            <option value="2">CONTENEDOR</option>
+                            <option value="3">GUIA MASTER</option>
+                            <option value="4">TULA</option>
+                            <option value="5">GUIA TERRESTRE</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="form-group row" id="newcour">
+                    <label id="tifaclabel" for="tifac" class="col-md-5 col-form-label text-md-right">Tipo Factura:</label>
+
+                    <div class="col-md-5">
+                        <select class="form-control" name="tifac" id="tifac">
+                            <option value="">Seleccionar</option>
+                            <option value="1">ADUANA</option>
+                            <option value="2">INTERNACIONAL</option>
+                            <option value="3">SEGURO</option>
+                            <option value="4">PICK UP</option>
+                            <option value="5">MANEJO</option>
+                            <option value="6">IMPUESTOS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row" id="newcour">
+                    <label id="tifaclabel" for="tifac" class="col-md-5 col-form-label text-md-right">Nro Couriertool:</label>
+
+                    <div class="col-md-5">
+                        <input id="nrofactcou" type="text" class="form-control" name="nrofactcou" value="{{ old('nrofactcou') }}">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group col-sm-2">
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
+                    </div>
+            </form>
+                    <div class="offset-sm-2 col-sm-3">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
 @endsection
 @section('javascript')
     <script>
@@ -245,6 +350,26 @@
 
     });
 
+    $(document).ready(function(){
+
+$(".cour").click(function(e){
+    e.preventDefault();
+    let id_expense = $(this).attr('data-id-expense').split('/');
+
+    $(".facnumero").html(id_expense[0]);
+    $(".montonum").html(id_expense[2]);
+
+    $("#idexpense").val(id_expense[1]);
+    $("#montomodal").val(id_expense[2]);
+
+
+  });
+
+
+
+
+
+});
 
     </script>
 @endsection

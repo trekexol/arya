@@ -338,6 +338,8 @@
                 @csrf
                 <input type="hidden" name="idexpense" id="idexpense">
                 <input type="hidden" name="montomodal" id="montomodal">
+                <input type="hidden" name="tipoarya" id="tipoarya" value="compras">
+
             <div class="modal-body">
 
                 <div class="form-group row" id="newcour">

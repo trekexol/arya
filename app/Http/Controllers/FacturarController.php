@@ -24,6 +24,7 @@ use App\CreditNote;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\FacturasCour;
 
 class FacturarController extends Controller
 {
@@ -257,7 +258,23 @@ class FacturarController extends Controller
             if(empty($quotation->credit_days)){
                 $is_after = true;
             }
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation'
+
+            if (Auth::user()->company['id']  == '26'){
+                $validarfact = FacturasCour::on(Auth::user()->database_name)
+                ->where('id_ventas',$id_quotation)
+                ->first();
+                    if($validarfact){
+                        $existe = true;
+                    }else{
+                        $existe = false;
+                    }
+            }else{
+                $existe = false;
+            }
+
+
+
+             return view('admin.quotations.createfacturar',compact('existe','price_cost_total','coin','quotation'
                         ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
                         ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
                         ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
@@ -529,9 +546,21 @@ class FacturarController extends Controller
             /*-------------- */
             $is_after = false;
 
+            if (Auth::user()->company['id']  == '26'){
+                $validarfact = FacturasCour::on(Auth::user()->database_name)
+                ->where('id_ventas',$id_quotation)
+                ->first();
+                    if($validarfact){
+                        $existe = true;
+                    }else{
+                        $existe = false;
+                    }
+            }else{
+                $existe = false;
+            }
 
 
-             return view('admin.quotations.createfacturar',compact('price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
+             return view('admin.quotations.createfacturar',compact('existe','price_cost_total','coin','quotation','payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta','datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after','client','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
          }else{
              return redirect('/quotations/index')->withDanger('La cotizacion no existe');
          }
@@ -565,6 +594,9 @@ class FacturarController extends Controller
        /* $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
         $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
 
+          /************PARA LO DE COURIERTOOL NO TOCAR ********/
+          $montocour = str_replace(',', '.', str_replace('.', '', request('total_pay')));
+          /***************************************************************/
 
 
 
@@ -660,6 +692,25 @@ class FacturarController extends Controller
         $quotation->IGTF_percentage = $igtfporc;
 
         $quotation->save();
+
+
+
+                /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+                if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] != '26'){
+
+                    $factcour  = new FacturasCour();
+                    $factcour->setConnection(Auth::user()->database_name);
+                    $factcour->id_ventas = $id_quotation;
+                    $factcour->tipo_fac = $request->tifac;
+                    $factcour->tipo_movimiento = $request->court;
+                    $factcour->numero =  $request->nrofactcou;
+                    $factcour->monto =  $montocour;
+                    $factcour->save();
+
+                }
+            /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+
+
 
         $date_payment = request('date-payment');
 
@@ -786,6 +837,10 @@ class FacturarController extends Controller
 
     public function storefactura(Request $request)
     {
+
+           /************PARA LO DE COURIERTOOL NO TOCAR ********/
+           $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+           /***************************************************************/
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
 
@@ -2149,6 +2204,22 @@ class FacturarController extends Controller
                 }
                 /*----------- */
             }
+
+                   /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] != '26'){
+
+            $factcour  = new FacturasCour();
+            $factcour->setConnection(Auth::user()->database_name);
+            $factcour->id_ventas = $quotation->id;
+            $factcour->tipo_fac = $request->tifac;
+            $factcour->tipo_movimiento = $request->court;
+            $factcour->numero =  $request->nrofactcou;
+            $factcour->monto =  $montocour;
+            $factcour->save();
+
+        }
+    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+
 
 
             $global = new GlobalController;
