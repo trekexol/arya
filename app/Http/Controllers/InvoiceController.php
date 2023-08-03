@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Input\Input;
 use App\Multipayment;
-
+use App\FacturasCour;
 class InvoiceController extends Controller
 {
 
@@ -297,12 +297,65 @@ class InvoiceController extends Controller
             $eliminarmiddleware = $request->get('eliminarmiddleware');
             $namemodulomiddleware = $request->get('namemodulomiddleware');
 
+            foreach($quotations as $quotationsr){
 
-            /*if(isset($id_quotation)) {
-                $quotationsupd = Quotation::on(Auth::user()->database_name)->where('id',$id_quotation)->update(['number_pedido' => $number_pedido]);
 
-            }*/
 
+            if(Auth::user()->id_company == '26'){
+
+
+                $validarfact = FacturasCour::on(Auth::user()->database_name)
+                 ->where('id_ventas',$quotationsr->id)
+                 ->first();
+
+                 if($validarfact){
+
+                     if($validarfact->tipo_fac == 1){
+                         $nombre = 'ADUANA';
+                     }
+                     elseif($validarfact->tipo_fac == 2){
+                         $nombre = 'INTERNACIONAL';
+                     }elseif($validarfact->tipo_fac == 3){
+                         $nombre = 'SEGURO';
+                     }elseif($validarfact->tipo_fac == 4){
+                         $nombre = 'PICK UP';
+                     }elseif($validarfact->tipo_fac == 5){
+                         $nombre = 'MANEJO';
+                     }elseif($validarfact->tipo_fac == 6){
+                         $nombre = 'IMPUESTOS';
+                     }
+
+
+                     if($validarfact->tipo_movimiento == 1){
+                         $movimiento = 'PALETA';
+                     }
+                     elseif($validarfact->tipo_movimiento == 2){
+                         $movimiento = 'CONTENEDOR';
+                     }elseif($validarfact->tipo_movimiento == 3){
+                         $movimiento = 'GUIA MASTER';
+                     }elseif($validarfact->tipo_movimiento == 4){
+                         $movimiento = 'TULA';
+                     }elseif($validarfact->tipo_movimiento == 5){
+                         $movimiento = 'GUIA TERRESTRE';
+                     }
+
+
+                     $quotationsr->validar = true;
+                     $quotationsr->nombrefac =  $nombre;
+                     $quotationsr->movimientofac =  $movimiento;
+                     $quotationsr->numerofac =  $validarfact->numero;
+
+                 }else{
+
+                     $quotationsr->validar = false;
+
+                 }
+
+                 }else{
+                     $quotationsr->validar = false;
+                 }
+
+                }
             return view('admin.invoices.index',compact('quotations','datenow','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware'));
 
     }

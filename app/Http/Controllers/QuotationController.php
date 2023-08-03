@@ -31,6 +31,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\FacturasCour;
 
 use App\ComisionType;
 use App\Employee;
@@ -1315,6 +1316,21 @@ class QuotationController extends Controller
                     $quotation->anticipo,$quotation->bcv,"reverso factura N°".$quotation->number_invoice);
 
                 }
+
+                           /******COURIERTOOL */
+                           if(Auth::user()->id_company == '26'){
+
+
+                            FacturasCour::on(Auth::user()->database_name)
+                               ->where('id_ventas',$id_quotation)
+                               ->delete();
+
+                               }
+
+
+
+                          /******* */
+
 
                 $historial_quotation = new HistorialQuotationController();
 
