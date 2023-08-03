@@ -696,7 +696,7 @@ class FacturarController extends Controller
 
 
                 /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-                if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] != '26'){
+                if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
                     $factcour  = new FacturasCour();
                     $factcour->setConnection(Auth::user()->database_name);
@@ -2206,7 +2206,7 @@ class FacturarController extends Controller
             }
 
                    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] != '26'){
+           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);
