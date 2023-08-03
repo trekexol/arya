@@ -163,6 +163,7 @@ class NominaPartsController extends Controller
                 $diasvaca = '';
                 $acumulado = 0;
                 $interesesacumulado = 0;
+                $cuotautilidad = 0;
 
 
             foreach($datospresta as $datosprestaciones){
