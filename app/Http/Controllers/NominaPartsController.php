@@ -146,6 +146,13 @@ class NominaPartsController extends Controller
             ->select(DB::raw('MAX(b.date_end) AS ultimopago'))
             ->first();
 
+            $ultimopago_e = $ultimopago->ultimopago;
+
+            if (empty($ultimopago)){
+                $ultimopago_e = '';
+                
+            }
+
 
 
             if($employee->amount_utilities == 'Ma'){
@@ -164,6 +171,8 @@ class NominaPartsController extends Controller
                 $acumulado = 0;
                 $interesesacumulado = 0;
                 $cuotautilidad = 0;
+                $cuotavaca = 0;
+                $diasutilidades = 0;
 
 
             foreach($datospresta as $datosprestaciones){
@@ -251,7 +260,7 @@ class NominaPartsController extends Controller
 
 
 
-          $pdf = $pdf->loadView('pdf.prestations',compact('diasutilidades','diasvacaciones','company','tipo','employee','datenow','cuotautilidad','cuotavaca','acumulado','ultimopago','interesesacumulado'))->setPaper('a4');
+          $pdf = $pdf->loadView('pdf.prestations',compact('diasutilidades','diasvacaciones','company','tipo','employee','datenow','cuotautilidad','cuotavaca','acumulado','ultimopago_e','interesesacumulado'))->setPaper('a4');
 
 
 
