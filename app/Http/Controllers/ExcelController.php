@@ -482,7 +482,7 @@ class ExcelController extends Controller
                 }
 
                 if($tipo == 'AI'){
-                    $global->transaction_inv('entrada',$row['id'],'Salida de Inventario',$row['cantidad_actual'],0,$datenow,1,1,0,0,0,0,0);
+                    $global->transaction_inv('entrada',$row['id'],'Salida de Inventario',$row['cantidad_actual'],$row['precio'],$datenow,1,1,0,0,0,0,0);
 
                     $header_voucher  = new HeaderVoucher();
                     $header_voucher->setConnection(Auth::user()->database_name);
@@ -499,7 +499,7 @@ class ExcelController extends Controller
 
                 }elseif($tipo == 'DI'){
 
-                $global->transaction_inv('salida',$row['id'],'Salida de Inventario',$row['cantidad_actual'],0,$datenow,1,1,0,0,0,0,0);
+                $global->transaction_inv('salida',$row['id'],'Salida de Inventario',$row['cantidad_actual'],$row['precio'],$datenow,1,1,0,0,0,0,0);
 
 
                 $header_voucher  = new HeaderVoucher();
@@ -515,6 +515,15 @@ class ExcelController extends Controller
                 $this->add_movementinvt($row['id'],$header_voucher->id,$account_gastos_ajuste_inventario->id,$user->id,$total,0);
 
 
+                }
+
+                if ($row['precio_compra'] > 0) {
+                    $precio_compra = $row['precio_compra'];
+                    Product::on(Auth::user()->database_name)->where('id',$row['id'])->update(['price_buy' => $precio_compra]);
+                }
+                if ($row['precio'] > 0) {
+                    $precio = $row['precio'];
+                    Product::on(Auth::user()->database_name)->where('id',$row['id'])->update(['price' => $precio]);
                 }
 
             }

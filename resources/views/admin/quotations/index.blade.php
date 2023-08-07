@@ -42,7 +42,7 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
       <div class="col-sm-1">
-          <h2>Cotizaciones</h2>
+          <h2>Cotizaciones {{$coin}}</h2>
       </div>
         <div class="col-sm-3 offset-sm-2  dropdown mb-4">
             <button class="btn btn-success" type="button"
@@ -130,15 +130,18 @@
                 <tr>
                     <td>
                         @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
-                        <a href="{{ route('quotations.create',[$quotation->id,'bolivares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
+                            
+                                <a href="{{ route('quotations.create',[$quotation->id,'dolares']) }}" title="Seleccionar"><i class="fa fa-check" style="color: orange;"></i></a>
                         @endif
                         @if($quotation->photo == true)
-                        <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a>
-                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares',$quotation->photo]) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a>
+                        
+                        
+                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'dolares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print"  style="color: rgb(46, 132, 243);"></i></a>
+                                <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'dolares',$quotation->photo]) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(243, 46, 46);"></i></a>
 
 
                         @else
-                            <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'bolivares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
+                               <a href="{{ route('pdf.quotation',[$quotation->id,$coin ?? 'dolares','false']) }}" title="Imprimir" target="_blank"><i class="fa fa-print" style="color: rgb(46, 132, 243);"></i></a>
 
                         @endif
 

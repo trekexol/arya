@@ -344,14 +344,14 @@
                         <select id="contrapartida2" class="form-control form-control-sm">
                           <option selected>Seleccione..</option>
                         @foreach($contrapartidas as $index => $value)
-                          <option value="{{ $index }}" {{ old('Contrapartida') == $index ? 'selected' : '' }}>
+                          <option value="{{ $index }}" {{ old('contrapartida2') == $index ? 'selected' : '' }}>
                               {{ $value }}
                           </option>
                         @endforeach
                         </select>
                       </div>
                       <div class="form-group col-md-12 contradiv">
-                        <select id="subcontrapartida2" name="contrapartida" class="form-control form-control-sm">
+                        <select id="subcontrapartida2" name="subcontrapartida2" class="form-control form-control-sm">
                           <option value="">Seleccione..</option>
                         </select>
                       </div>
@@ -541,14 +541,14 @@
             var contrapartida_id = $(this).val();
             $("#subcontrapartida2").val("");
 
-            getSubcontrapartida(contrapartida_id);
+            getSubcontrapartida2(contrapartida_id);
 
 
                 $('.procediv').hide();
 
         });
 
-        function getSubcontrapartida(contrapartida_id){
+        function getSubcontrapartida2(contrapartida_id){
 
             $.ajax({
                 url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
@@ -728,11 +728,13 @@
 
 
         $("#contrapartida").on('change',function(){
+     
             var contrapartida_id = $(this).val();
             $("#subcontrapartida").val("");
-
             getSubcontrapartida(contrapartida_id);
+
         });
+
 
         function getSubcontrapartida(contrapartida_id){
 

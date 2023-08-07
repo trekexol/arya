@@ -28,6 +28,15 @@ class InventoryImport implements ToModel,WithHeadingRow, SkipsOnError
         $user       =   auth()->user();
         $date = Carbon::now();
 
+        if ($row['precio_compra'] > 0) {
+            $precio_compra = $row['precio_compra'];
+            Product::on(Auth::user()->database_name)->where('id',$row['id'])->update(['price_buy' => $precio_compra]);
+        }
+        if ($row['precio'] > 0) {
+            $precio = $row['precio'];
+            Product::on(Auth::user()->database_name)->where('id',$row['id'])->update(['price' => $precio]);
+        }
+
         $global = new GlobalController; 
         $global->transaction_inv('entrada',$row['id'],'Entrada Masiva de Inventario',$row['cantidad_actual'],$row['precio'],$date,1,1,0,0,0,0,0);
 
