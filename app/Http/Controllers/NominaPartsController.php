@@ -146,11 +146,13 @@ class NominaPartsController extends Controller
             ->select(DB::raw('MAX(b.date_end) AS ultimopago'))
             ->first();
 
-            $ultimopago_e = $ultimopago->ultimopago;
-
             if (empty($ultimopago)){
                 $ultimopago_e = '';
                 
+            } else {
+                
+            $ultimopago_e = $ultimopago->ultimopago;
+
             }
 
 

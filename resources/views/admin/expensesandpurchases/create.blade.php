@@ -404,7 +404,11 @@
                                                     <td style="text-align: center">{{ $var->description}}</td>
                                                 @endif
 
-                                                <td style="text-align: right">{{number_format($var->amount, 2, ',', '.')}}</td>
+                                                @if(Auth::user()->id_company == '24')
+                                                    <td style="text-align: right">{{number_format($var->amount, 3, ',', '.')}}</td>
+                                                @else
+                                                    <td style="text-align: right">{{number_format($var->amount, 2, ',', '.')}}</td>
+                                                @endif
                                                 <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
                                                 <td style="text-align: right">{{$var->porc_discount}}%</td>
                                                 <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
