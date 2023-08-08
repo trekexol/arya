@@ -106,7 +106,7 @@
                     @foreach ($quotations as $quotation)
                     <?php
                     $amount_bcv = 1;
-                    $amount_bcv = $quotation->amount_with_iva / ($quotation->bcv ?? 1);
+                    $amount_bcv = ($quotation->amount_with_iva ?? 1) / ($quotation->bcv ?? 1);
 
                     ?>
 
