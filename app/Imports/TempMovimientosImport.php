@@ -200,7 +200,6 @@ class TempMovimientosImport implements  ToCollection
 
 
        elseif($this->banco == 'Mercantil'){
-        dd($rows);
 
                 foreach($rows as $row){
 
