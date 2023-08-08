@@ -201,7 +201,6 @@ class TempMovimientosImport implements  ToCollection
 
        elseif($this->banco == 'Mercantil'){
 
-
                 foreach($rows as $row){
 
        if($row[5] == 'SI' OR $row[5] == 'SF'){
