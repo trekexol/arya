@@ -928,13 +928,17 @@ class ExpensesAndPurchaseController extends Controller
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
 
 
-                $igtfporc = 3;
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $igtfporc = $company->IGTF_porc ?? 3;
+            $impuesto = $company->tax_1 ?? 1;
+            $impuesto2 = $company->tax_2 ?? 1;
+            $impuesto3 = $company->tax_3 ?? 1;
 
              return view('admin.expensesandpurchases.create_payment_after',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','debitnoteexpense','igtfporc'));
+                                ,'islrconcepts','debitnoteexpense','igtfporc','impuesto','impuesto2','impuesto3'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
