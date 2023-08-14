@@ -35,7 +35,8 @@
                             @if (isset($provider))
                                 <label id="provider_label1" for="providers" class="col-sm-1 text-md-right">Proveedor:</label>
                                 <label id="provider_label2" name="id_provider" value="{{ $provider->id }}" for="providers" class="col-sm-3">{{ $provider->razon_social ?? ''}}</label>
-                            @endif
+                                <input name="providernew" id="providernew" value="{{ $provider->id }}" type="hidden"/>
+                                @endif
 
 
                             <div id="client_label3" class="form-group col-sm-1">
@@ -93,7 +94,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('report_payment_expenses.pdf',[$coin ?? 'bolivares',$date_begin ?? $datenow,$date_end ?? $datenow,$typeperson ?? 'ninguno',$provider->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('report_payment_expenses.pdf',[$coin ?? 'bolivares',$date_begin ?? $datenow,$date_end ?? $datenow,$typeperson ?? 'ninguno',$id_provider ?? null]) }}" allowfullscreen></iframe>
                           </div>
 
                         </div>
