@@ -51,7 +51,6 @@ class PaymentExpenseReportController extends Controller
 
     public function store(Request $request)
     {
-
         $date_begin = request('date_begin');
         $date_end = request('date_end');
         $type = request('type');
@@ -68,7 +67,7 @@ class PaymentExpenseReportController extends Controller
 
         }
 
-        return view('admin.reports.payments_expenses.index_payments',compact('coin','date_end','date_begin','provider','typeperson'));
+        return view('admin.reports.payments_expenses.index_payments',compact('coin','date_end','date_begin','provider','typeperson','id_provider'));
     }
 
     function pdf($coin,$date_begin,$date_end,$typeperson,$id_provider = null)

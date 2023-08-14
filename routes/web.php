@@ -1530,7 +1530,7 @@ Route::group(["prefix"=>'report_payments'],function(){
 Route::group(["prefix"=>'report_payment_expenses'],function(){
     Route::get('menu/{typeperson}/{id_client?}','Reports\PaymentExpenseReportController@index')->name('report_payment_expenses.index');
     Route::post('store','Reports\PaymentExpenseReportController@store')->name('report_payment_expenses.store');
-    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_provider?}','Reports\PaymentExpenseReportController@pdf')->name('report_payment_expenses.pdf');
+    Route::get('pdf/{coin}/{date_begin}/{date_end}/{typeperson}/{id_provider?}','Reports\PaymentExpenseReportController@pdf')->name('report_payment_expenses.pdf');
     Route::get('selectprovider','Reports\PaymentExpenseReportController@selectProvider')->name('report_payment_expenses.selectProvider');
   });
 
