@@ -73,21 +73,22 @@ class PaymentExpenseReportController extends Controller
     function pdf($coin,$date_begin,$date_end,$typeperson,$id_provider = null)
     {
 
+
         $pdf = App::make('dompdf.wrapper');
         $expense_payments = null;
 
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y');
 
-        if(empty($date_end)){
+      /*  if(empty($date_end)){
             $date_end = $datenow;
 
             $date_consult = $date->format('Y-m-d');
         }else{
-            $date_end = Carbon::parse($date_end)->format('d-m-Y');
+            $date_begin = Carbon::parse($date_end)->format('d-m-Y');
 
             $date_consult = Carbon::parse($date_end)->format('Y-m-d');
-        }
+        }*/
 
 
         $period = $date->format('Y');
@@ -102,11 +103,11 @@ class PaymentExpenseReportController extends Controller
                                 ->where('expenses_and_purchases.amount','<>',null)
                                 ->whereRaw(
                                     "(DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') <= ?)",
-                                    [$date_begin, $date_consult])
+                                    [$date_begin, $date_end])
                                 ->where('expenses_and_purchases.id_provider',$id_provider)
                                 ->where('expenses_and_purchases.status','<>','X')
-                                ->select('expenses_and_purchases.rate','expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
-                                ->orderBy('expense_payments.id','desc')
+                                ->select('expenses_and_purchases.rate','expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account','expenses_and_purchases.date')
+                                ->orderBy('expenses_and_purchases.date','desc')
                                 ->get();
 
 
@@ -120,10 +121,12 @@ class PaymentExpenseReportController extends Controller
 
                     ->whereRaw(
                         "(DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(expenses_and_purchases.date, '%Y-%m-%d') <= ?)",
-                        [$date_begin, $date_consult])
-                    ->select('expenses_and_purchases.rate','expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account')
-                    ->orderBy('expense_payments.id','desc')
+                        [$date_begin, $date_end])
+                    ->select('expenses_and_purchases.rate','expense_payments.*','providers.razon_social as name_provider','accounts.description as description_account','expenses_and_purchases.date')
+                    ->orderBy('expenses_and_purchases.date','desc')
                     ->get();
+
+
         }
 
 
