@@ -411,6 +411,8 @@ class InvoiceController extends Controller
         {
             if($count >= 2){
                 array_push($facturas_a_procesar, $item);
+
+
                 $quotation = $this->calcularfactura($item);
 
                 if((empty($id_client_old)) || ($id_client_old == $quotation->id_client))

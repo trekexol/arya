@@ -66,7 +66,7 @@
                   {{ $expense_payment->id }}
               </td>
               <td class="text-center ">{{$expense_payment->id_expense ?? ''}}</td>
-              <td class="text-center ">{{date_format(date_create($expense_payment->created_at),"d-m-Y")}}</td>
+              <td class="text-center ">{{date_format(date_create($expense_payment->date),"d-m-Y")}}</td>
               <td class="text-center ">{{$expense_payment->name_provider ?? ''}}</td>
               <td class="text-center ">{{ $expense_payment->reference ?? ''}}</td>
               <td class="text-center ">{{ $expense_payment->payment_type ?? ''}}</td>
