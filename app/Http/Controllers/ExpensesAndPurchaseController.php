@@ -4017,7 +4017,7 @@ public function notas(request $request)
 
             if($request->tipoarya == 'venta'){
                 $totalFactura =  str_replace(".", "", $request->montomodal);
-
+                $totalFactura =  str_replace(",", ".", $totalFactura);
                 $factcour  = new FacturasCour();
                 $factcour->setConnection(Auth::user()->database_name);
                 $factcour->id_ventas = $request->idexpense;
@@ -4033,7 +4033,7 @@ public function notas(request $request)
 
             if($request->tipoarya == 'compras'){
                 $totalFactura =  str_replace(".", "", $request->montomodal);
-
+                $totalFactura =  str_replace(",", ".", $totalFactura);
                 $factcour  = new FacturasCour();
                 $factcour->setConnection(Auth::user()->database_name);
                 $factcour->id_expense = $request->idexpense;
