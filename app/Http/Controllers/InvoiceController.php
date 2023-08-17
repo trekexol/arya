@@ -175,9 +175,9 @@ class InvoiceController extends Controller
                             $detail->discount = $key2->discount;
                             $detail->price = $key2->price;
                             $detail->rate = $key2->rate;
-                            $detail->excento = $key2->excento;
-                            $detail->retiene_iva = $key2->retiene_iva;
-                            $detail->retiene_islr = $key2->retiene_islr;
+                            $detail->excento = 1;
+                            $detail->retiene_iva = 1;
+                            $detail->retiene_islr = 0;
                             $detail->status = $key2->status;
                             $detail->id_inventory_histories = $key2->id_inventory_histories;
                             $detail->save();
@@ -208,6 +208,62 @@ class InvoiceController extends Controller
                     }
 
                 } else {
+
+                    if ($key->status == 'P'){ /////////////////MODIFICAR FACTURA///////////////// 
+                    
+                        $quotation = Quotation::on(Auth::user()->database_name)->where('number_invoice', $key->number_invoice)->firstOrFail();
+                        $quotation->amount = $key->amount;
+                        $quotation->amount_with_iva = $key->amount_with_iva;
+                        $quotation->save();
+
+                        $detalle_voucher = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice', $quotation->id)->first();
+                        
+                        if (!empty($detalle_voucher)){
+                            $id_voucher = $detalle_voucher->id_header_voucher;
+                        } else {
+                            $id_voucher = null;   
+                        }
+                        /// Borra y Recrea ACTUALIZAR DETALLES DE FACTURA
+
+                        foreach ($data2 as $key2) {
+
+                            if ($key2->status == 'C') {
+
+                                $detail = new QuotationProduct();
+                                $detail->setConnection(Auth::user()->database_name);
+                                $detail->id_quotation = $quotation->id;
+                                $detail->id_inventory = $key2->id_inventory;
+                                $detail->amount = $key2->amount;
+                                $detail->discount = $key2->discount;
+                                $detail->price = $key2->price;
+                                $detail->rate = $key2->rate;
+                                $detail->excento = 1;
+                                $detail->retiene_iva = 1;
+                                $detail->retiene_islr = 0;
+                                $detail->status = $key2->status;
+                                $detail->id_inventory_histories = $key2->id_inventory_histories;
+                                $detail->save();
+                            }
+                        }
+
+                        ///////Borra Y RECREA COMPROBANTES CONTABLES
+                        DetailVoucher::on(Auth::user()->database_name)
+                        ->where('id_header_voucher',$id_voucher)
+                        ->update(['status' => 'X']);
+
+                        $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+                        if(isset($account_cuentas_por_cobrar)){
+                            $this->add_movement($key->bcv,$id_voucher,$account_cuentas_por_cobrar->id,$quotation->id,$key->id_user,$key->amount_with_iva,0);
+                        }
+                        $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
+    
+                        if(isset($account_subsegmento)){
+                            $this->add_movement($key->bcv,$id_voucher,$account_subsegmento->id,$quotation->id,$key->id_user,0,$key->amount_with_iva);
+                        }
+
+                    }
+
+
 
                    if ($key->status == 'R'){ ///////////STATUS REVERSADA///////////////
 

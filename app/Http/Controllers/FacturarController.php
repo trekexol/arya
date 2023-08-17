@@ -40,6 +40,8 @@ class FacturarController extends Controller
 
     public function createfacturar($id_quotation,$coin,$type = 'Cotización')
     {
+        $user       =   auth()->user();
+        $company_user = $user->id_company;
 
          $quotation = null;
 
@@ -102,7 +104,7 @@ class FacturarController extends Controller
                                                             ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                                             ->where('quotation_products.id_quotation',$quotation->id)
                                                             ->whereIn('quotation_products.status',['1','C'])
-                                                            ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                                                            ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id_inventory as id_inventory','quotation_products.discount as discount',
                                                             'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                             ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                             ->get();
@@ -148,6 +150,13 @@ class FacturarController extends Controller
                     $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
 
                     $total += ($var->price * $var->amount_quotation) - $percentage;
+
+                    if ($company_user == 26){ // 26 NORTH D CORP
+                        if($var->id_inventory == 34){
+                            $total -= (($var->price * $var->amount_quotation) - $percentage) * 2;
+                            
+                        } 
+                    } 
                 //-----------------------------
 
                 if($var->retiene_iva_quotation == 0){
@@ -342,7 +351,11 @@ class FacturarController extends Controller
     }
 
     public function createfacturar_after($id_quotation,$coin)
-    {
+    {   
+        
+        $user       =   auth()->user();
+        $company_user = $user->id_company;
+
          $quotation = null;
          if(isset($id_quotation)){
              $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
@@ -415,10 +428,11 @@ class FacturarController extends Controller
                                                             ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
                                                             ->where('quotation_products.id_quotation',$quotation->id)
                                                             ->whereIn('quotation_products.status',['1','C'])
-                                                            ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.discount as discount',
+                                                            ->select('products.*','quotation_products.price as price','quotation_products.id_inventory as id_inventory','quotation_products.rate as rate','quotation_products.discount as discount',
                                                             'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                             ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                             ->get();
+                                                            
 
              $total= 0;
              $base_imponible= 0;
@@ -441,8 +455,17 @@ class FacturarController extends Controller
 
                  //Se calcula restandole el porcentaje de descuento (discount)
                     $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
+                   
 
                     $total += ($var->price * $var->amount_quotation) - $percentage;
+
+                    if ($company_user == 26){ // 26 NORTH D CORP
+                        if($var->id_inventory == 34){
+                            $total -= (($var->price * $var->amount_quotation) - $percentage) * 2;
+                            
+                        } 
+                    } 
+
                 //-----------------------------
 
                 if($var->retiene_iva_quotation == 0){
