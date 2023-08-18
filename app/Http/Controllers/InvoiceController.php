@@ -214,6 +214,7 @@ class InvoiceController extends Controller
                         $quotation = Quotation::on(Auth::user()->database_name)->where('number_invoice', $key->number_invoice)->firstOrFail();
                         $quotation->amount = $key->amount;
                         $quotation->amount_with_iva = $key->amount_with_iva;
+                        $quotation->ref = $key->ref;
                         $quotation->save();
 
                         $detalle_voucher = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice', $quotation->id)->first();
@@ -227,7 +228,7 @@ class InvoiceController extends Controller
 
                         foreach ($data2 as $key2) {
 
-                            if ($key2->status == 'C') {
+                            if ($key2->status == 'C') { //Pendiente por crear
 
                                 $detail = new QuotationProduct();
                                 $detail->setConnection(Auth::user()->database_name);
@@ -244,6 +245,13 @@ class InvoiceController extends Controller
                                 $detail->id_inventory_histories = $key2->id_inventory_histories;
                                 $detail->save();
                             }
+                            if ($key2->status == 'M') { //pendiente por modificar
+                                QuotationProduct::on(Auth::user()->database_name)
+                                ->where('id_quotation',$id_voucher)
+                                ->where('id_inventory',34)
+                                ->update(['price' => $key2->price]);
+                            }
+
                         }
 
                         ///////Borra Y RECREA COMPROBANTES CONTABLES
