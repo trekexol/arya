@@ -445,7 +445,7 @@ class FacturarController extends Controller
              $total_retiene_islr = 0;
              $retiene_islr = 0;
              $total_debit_notes = 0;
-
+            dd($inventories_quotations);
              foreach($inventories_quotations as $var){
                  //Se calcula restandole el porcentaje de descuento (discount)
 

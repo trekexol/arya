@@ -162,6 +162,9 @@
                                     <a href="{{ route('quotations.createfacturado',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Ver Factura" class="text-center text-success font-weight-bold">Cobrado</a>
                                 </td>
                                 <td class="text-center font-weight-bold">
+                                    @if(Auth::user()->id_company == '26' AND $quotation->validar == FALSE)
+                                    <i class="fa fa-file-alt cour" data-id-expense='{{$quotation->number_invoice.'/'.$quotation->id.'/'.number_format($totalbs / 1 ?? 0, 2, ',', '.')}}' data-toggle="modal" data-target="#courier"></i>
+                                    @endif
                                 </td>
                                 <td></td>
                             @elseif ($quotation->status == "X")
@@ -186,6 +189,7 @@
                                 @if(Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                     <td class="text-center font-weight-bold">
                                         <a href="{{ route('quotations.createfacturar_after',[$quotation->id,$quotation->coin ?? 'bolivares']) }}" title="Cobrar Factura" class="font-weight-bold text-dark">Click para Cobrar</a>
+
                                     </td>
                                 @endif
 
