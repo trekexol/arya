@@ -154,9 +154,9 @@ class FacturarController extends Controller
                     if ($company_user == 26){ // 26 NORTH D CORP
                         if($var->id_inventory == 34){
                             $total -= (($var->price * $var->amount_quotation) - $percentage) * 2;
-                            
-                        } 
-                    } 
+
+                        }
+                    }
                 //-----------------------------
 
                 if($var->retiene_iva_quotation == 0){
@@ -351,8 +351,8 @@ class FacturarController extends Controller
     }
 
     public function createfacturar_after($id_quotation,$coin)
-    {   
-        
+    {
+
         $user       =   auth()->user();
         $company_user = $user->id_company;
 
@@ -432,7 +432,7 @@ class FacturarController extends Controller
                                                             'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
                                                             ,'quotation_products.retiene_islr as retiene_islr_quotation')
                                                             ->get();
-                                                            
+
 
              $total= 0;
              $base_imponible= 0;
@@ -445,7 +445,6 @@ class FacturarController extends Controller
              $total_retiene_islr = 0;
              $retiene_islr = 0;
              $total_debit_notes = 0;
-
              foreach($inventories_quotations as $var){
                  //Se calcula restandole el porcentaje de descuento (discount)
 
@@ -455,16 +454,16 @@ class FacturarController extends Controller
 
                  //Se calcula restandole el porcentaje de descuento (discount)
                     $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
-                   
+
 
                     $total += ($var->price * $var->amount_quotation) - $percentage;
 
                     if ($company_user == 26){ // 26 NORTH D CORP
                         if($var->id_inventory == 34){
                             $total -= (($var->price * $var->amount_quotation) - $percentage) * 2;
-                            
-                        } 
-                    } 
+
+                        }
+                    }
 
                 //-----------------------------
 
