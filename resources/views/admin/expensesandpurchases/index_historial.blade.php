@@ -139,6 +139,10 @@
                                 <a href="{{ route('expensesandpurchases.create_expense_voucher',[$expensesandpurchase->id,$expensesandpurchase->coin ?? 'bolivares']) }}" title="Ver Detalle" class="text-center text-success font-weight-bold">Pagado</a>
                             </td>
                             <td>
+                                @if(Auth::user()->id_company == '26' AND $expensesandpurchase->validar == FALSE)
+                                <i class="fa fa-file-alt cour" data-id-expense='{{$expensesandpurchase->invoice.'/'.$expensesandpurchase->id.'/'.number_format($expensesandpurchase->amount_with_iva / $rate ?? 0, 2, ',', '.')}}' data-toggle="modal" data-target="#courier"></i>
+
+                                @endif
                             </td>
                             @elseif ($expensesandpurchase->status == "X")
                             <td class="text-center font-weight-bold">
