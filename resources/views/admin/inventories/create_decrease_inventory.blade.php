@@ -77,7 +77,7 @@
                             </div>
                             <label for="cantidad" class="col-md-2 col-form-label text-md-right">Cantidad a descontar</label>
                             <div class="col-md-4">
-                                <input onkeyup="numeric(this)" id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
+                                <input  onkeyup="noespac(this)" id="amount_new" type="text" class="form-control @error('amount_new') is-invalid @enderror" name="amount_new"  required autocomplete="amount_new" focus>
         
                                 @error('amount_new')
                                     <span class="invalid-feedback" role="alert">
