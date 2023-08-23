@@ -44,13 +44,13 @@
 
                                         @if($var->matchc == 1)
 
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofacc}}">Match</span>
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofacc}}">Match Facturas Compras</span>
 
                                        @elseif($var->matchc == 0)
 
                                        @else
 
-                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match {{$var->matchc}}</span>
+                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match Factura Compra {{$var->matchc}}</span>
 
                                         @endif
                                 @endif
@@ -74,13 +74,13 @@
 
                                         @if($var->match == 1)
 
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match</span>
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match Facturas Ventas</span>
 
                                        @elseif($var->match == 0)
 
                                        @else
 
-                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match {{$var->match}}</span>
+                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match Factura Venta {{$var->match}}</span>
 
                                         @endif
                                 @endif
