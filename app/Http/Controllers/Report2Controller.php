@@ -719,14 +719,14 @@ class Report2Controller extends Controller
         if(isset($coin)){
 
             $accounts_all = $this->calculation($from,$to,$coin);
-        
+
         }
 
         $accounts = $accounts_all->filter(function($account) use ($level)
         {
 
             if($account->level <= $level){
-                
+
                 //aqui se valida que la cuentas de code_one de 4 para arriba no se toma en cuenta el balance previo
                 if($account->code_one != 0){
                     $total = $account->balance_previus + $account->debe - $account->haber;
@@ -738,11 +738,11 @@ class Report2Controller extends Controller
                     return $account;
                 }
 
-        
+
                 //return $account;
-                
+
             }
-           
+
         });
 
 
@@ -784,14 +784,14 @@ class Report2Controller extends Controller
         if(isset($coin)){
 
             $accounts_all = $this->calculation($from,$to,$coin);
-        
+
         }
 
         $accounts = $accounts_all->filter(function($account) use ($level)
         {
 
             if($account->level <= $level){
-                
+
                 //aqui se valida que la cuentas de code_one de 4 para arriba no se toma en cuenta el balance previo
                 if($account->code_one != 0){
                     $total = $account->balance_previus + $account->debe - $account->haber;
@@ -803,11 +803,11 @@ class Report2Controller extends Controller
                     return $account;
                 }
 
-        
+
                 //return $account;
-                
+
             }
-           
+
         });
 
 
@@ -1498,6 +1498,8 @@ class Report2Controller extends Controller
 
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->get();
+
+
                 }else if(isset($typeinvoice) && ($typeinvoice == 'facturas')){
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
@@ -1513,6 +1515,8 @@ class Report2Controller extends Controller
                     ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva','quotations.credit_days')
                     ->orderBy('quotations.date_billing','desc')
                     ->get();
+
+
                 }else
                 {
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
@@ -1529,7 +1533,8 @@ class Report2Controller extends Controller
                                         ->orderBy('quotations.date_delivery_note','desc')
                                         ->orderBy('quotations.date_billing','desc')
                                         ->get();
-                }
+
+                                    }
             }else{
                 //PARA CUANDO EL REPORTE ESTE EN DOLARES
                 if(isset($typeinvoice) && ($typeinvoice == 'notas')){
@@ -1614,6 +1619,8 @@ class Report2Controller extends Controller
                     ->groupBy('quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva','quotations.credit_days')
                     ->orderBy('quotations.date_billing','desc')
                     ->get();
+
+
                 }else
                 {
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
@@ -1781,9 +1788,12 @@ class Report2Controller extends Controller
                                         ->orderBy('quotations.date_delivery_note','desc')
                                         ->orderBy('quotations.date_billing','desc')
                                         ->get();
+
                 }
             }
         }
+
+
 
         $pdf = $pdf->loadView('admin.reports.accounts_receivable',compact('coin','quotations','datenow','date_end'))->setPaper('letter', 'landscape');
         return $pdf->stream();
@@ -2420,7 +2430,7 @@ class Report2Controller extends Controller
 
     public function calculation($date_begin,$date_end,$coin = 'bolivares')
     {
-        
+
         $period_ini = date_format(date_create($date_begin),"Y");
         $period_end = date_format(date_create($date_end),"Y");
 
@@ -2456,7 +2466,7 @@ class Report2Controller extends Controller
                                         }else{
 
 
-                
+
 
                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */
                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
@@ -2556,7 +2566,7 @@ class Report2Controller extends Controller
                                                 ->where('accounts.code_four', $var->code_four)
                                                 ->where('accounts.period', $period_ini)
                                                 ->sum('balance_previus');
-                        
+
 
                                                 $var->debe = $total_debe;
                                                 $var->haber = $total_haber;
@@ -2606,7 +2616,7 @@ class Report2Controller extends Controller
                                                             ->where('accounts.code_three', $var->code_three)
                                                             ->where('accounts.period', $period_ini)
                                                             ->sum('balance_previus');
-                                                           
+
 
                                                             $var->debe = $total_debe;
                                                             $var->haber = $total_haber;
@@ -2652,8 +2662,8 @@ class Report2Controller extends Controller
                                                                 ->where('accounts.code_two', $var->code_two)
                                                                 ->where('accounts.period', $period_ini)
                                                                 ->sum('balance_previus');
-                                                               
-    
+
+
                                                                 $var->debe = $total_debe;
                                                                 $var->haber = $total_haber;
                                                                 $var->balance_previus = $total_balance;
@@ -2697,7 +2707,7 @@ class Report2Controller extends Controller
                                             ->where('accounts.code_one', $var->code_one)
                                             ->where('accounts.period', $period_ini)
                                             ->sum('balance_previus');
-                                           
+
 
                                             $var->debe = $total_debe;
                                             $var->haber = $total_haber;
@@ -2737,7 +2747,7 @@ class Report2Controller extends Controller
                                                         }else{
 
 
-                                
+
 
                                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */
 
@@ -2825,7 +2835,7 @@ class Report2Controller extends Controller
                                                                         a.code_three = ? AND
                                                                         a.code_four = ? AND d.status = ? AND (c.status = ? OR c.status = ?)'
                                                                         , [$var->code_one,$var->code_two,$var->code_three,$var->code_four,$var->code_five,'C','C',1]);
-                                                                       
+
                                                                        $total_balance =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(a.balance_previus) AS balance
                                                                         FROM accounts a
                                                                         WHERE a.code_one = ? AND
@@ -2835,7 +2845,7 @@ class Report2Controller extends Controller
                                                                         a.period = ?
                                                                         '
                                                                         , [$var->code_one,$var->code_two,$var->code_three,$var->code_four,$period_ini]);
-            
+
                                                                         $var->debe = $total_debe[0]->debe;
                                                                         $var->haber = $total_haber[0]->haber;
                                                                         /*---------------------------------------------------*/
@@ -2880,12 +2890,12 @@ class Report2Controller extends Controller
                                                                 a.period = ?
                                                                 '
                                                                 , [$var->code_one,$var->code_two,$var->code_three,$period_ini]);
-    
+
                                                                 $var->debe = $total_debe[0]->debe;
                                                                 $var->haber = $total_haber[0]->haber;
                                                                 /*---------------------------------------------------*/
                                                                 $var->balance_previus = $total_balance[0]->balance;
-            
+
                                                     }
                                                     }
                                     }else{
@@ -2912,7 +2922,7 @@ class Report2Controller extends Controller
                                                     WHERE a.code_one = ? AND
                                                     a.code_two = ? AND d.status = ? AND (c.status = ? OR c.status = ?)'
                                                     , [$var->code_one,$var->code_two,$var->code_three,$var->code_four,$var->code_five,'C','C',1]);
-                                                   
+
                                                    $total_balance =   DB::connection(Auth::user()->database_name)->select('SELECT SUM(a.balance_previus) AS balance
                                                     FROM accounts a
                                                     WHERE a.code_one = ? AND
@@ -2981,7 +2991,7 @@ class Report2Controller extends Controller
         if ($coin == 'dactual') {
                 $global = new GlobalController();
                 $rate = $global->search_bcv();
-            
+
 
             if(isset($accounts)) {
                                 foreach ($accounts as $var) {
@@ -3005,7 +3015,7 @@ class Report2Controller extends Controller
                                                         }else{
 
 
-                                
+
 
                                                             /*CALCULA LOS SALDOS DESDE DETALLE COMPROBANTE */
                                                             $total_debe = DB::connection(Auth::user()->database_name)->table('accounts')
@@ -3052,7 +3062,7 @@ class Report2Controller extends Controller
                                                             ->sum('balance_previus');
 
 
-                                                            $var->debe = $total_debe / $rate; 
+                                                            $var->debe = $total_debe / $rate;
                                                             $var->haber = $total_haber / $rate;
                                                             /*---------------------------------------------------*/
                                                             $var->balance_previus = $total_balance / $rate;
@@ -3105,7 +3115,7 @@ class Report2Controller extends Controller
                                                                 ->where('accounts.code_four', $var->code_four)
                                                                 ->where('accounts.period', $period_ini)
                                                                 ->sum('balance_previus');
-                                        
+
 
                                                                 $var->debe = $total_debe / $rate;
                                                                 $var->haber = $total_haber / $rate;
@@ -3155,12 +3165,12 @@ class Report2Controller extends Controller
                                                                             ->where('accounts.code_three', $var->code_three)
                                                                             ->where('accounts.period', $period_ini)
                                                                             ->sum('balance_previus');
-                                                                        
-                
+
+
                                                                             $var->debe = $total_debe / $rate;
                                                                             $var->haber = $total_haber / $rate;
                                                                             $var->balance_previus = $total_balance / $rate;
-            
+
                                                     }
                                                     }
                                     }else{
@@ -3201,8 +3211,8 @@ class Report2Controller extends Controller
                                                                                 ->where('accounts.code_two', $var->code_two)
                                                                                 ->where('accounts.period', $period_ini)
                                                                                 ->sum('balance_previus');
-                                                                            
-                    
+
+
                                                                                 $var->debe = $total_debe / $rate;
                                                                                 $var->haber = $total_haber / $rate;
                                                                                 $var->balance_previus = $total_balance / $rate;
@@ -3246,7 +3256,7 @@ class Report2Controller extends Controller
                                                             ->where('accounts.code_one', $var->code_one)
                                                             ->where('accounts.period', $period_ini)
                                                             ->sum('balance_previus');
-                                                        
+
 
                                                             $var->debe = $total_debe / $rate;
                                                             $var->haber = $total_haber / $rate;

@@ -5,13 +5,10 @@
                     <tr>
                         <th class="text-center">Fecha</th>
                         <th class="text-center">Referencia</th>
-                        <th class="text-center">Banco</th>
                         <th class="text-center">Descripcion</th>
                         <th class="text-center">Moneda</th>
                         <th class="text-center">Debe</th>
                         <th class="text-center">Haber</th>
-                        <th class="text-center">Factura Ventas</th>
-                        <th class="text-center">Factura Compras</th>
                         <th class="text-center">Accion</th>
                         <th class="text-center">Eliminar</th>
                     </tr>
@@ -27,41 +24,10 @@
                             <tr id="{{$var->id_temp_movimientos}}">
                             <td>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</td>
                             <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
-                            <td>{{$var->banco ?? ''}}</td>
+
                             <td>{{$var->descripcion ?? ''}}</td>
                             <td>{{$var->moneda ?? ''}}</td>
-                            <td>{{ $var->debe}}</td>
-                            <td>{{ $var->haber}}</td>
-                            <td>
-                                @if($var->tipofac == 'venta')
-                                @php
-
-                                    if($var->conta == 'debe'){
-                                        $plata = $var->debe;
-                                    }else{
-                                        $plata = $var->haber;
-                                    }
-                                @endphp
-
-
-
-
-
-                                        @if($var->match == 1)
-
-                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match</span>
-
-                                       @elseif($var->match == 0)
-
-                                       @else
-
-                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match {{$var->match}}</span>
-
-                                        @endif
-                                @endif
-
-                            </td>
-                            <td>
+                            <td>{{ $var->debe}}
                                 @if($var->tipofacc == 'compra')
                                 @php
 
@@ -85,6 +51,36 @@
                                        @else
 
                                         <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match {{$var->matchc}}</span>
+
+                                        @endif
+                                @endif
+
+                            </td>
+                            <td>{{ $var->haber}}
+
+                                @if($var->tipofac == 'venta')
+                                @php
+
+                                    if($var->conta == 'debe'){
+                                        $plata = $var->debe;
+                                    }else{
+                                        $plata = $var->haber;
+                                    }
+                                @endphp
+
+
+
+
+
+                                        @if($var->match == 1)
+
+                                        <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match</span>
+
+                                       @elseif($var->match == 0)
+
+                                       @else
+
+                                        <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match {{$var->match}}</span>
 
                                         @endif
                                 @endif

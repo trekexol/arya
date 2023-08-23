@@ -821,83 +821,97 @@ public function listardatos(Request $request){
         foreach($movimientosmasivoss as $movimientosmasivos){
 
             if($movimientosmasivos->haber == 0 OR $movimientosmasivos->haber == '0.00'){
+                /******FACTURAS DE COMPRA */
                 $momasivo = $movimientosmasivos->debe;
                 $movimientosmasivos->conta = 'debe';
-            }else{
+
+                $sql = "SELECT * FROM expenses_and_purchases
+                WHERE ref = '$momasivo'
+                AND status = 'P'";
+
+                $datosinvcon = DB::connection(Auth::user()->database_name)->select($sql);
+
+                if(count($datosinvcon) > 1){
+                    $movimientosmasivos->matchc = 1;
+                    $movimientosmasivos->idinvoicec = 0;
+                    $movimientosmasivos->amount_with_ivac = 0;
+                    $movimientosmasivos->bcvc = 0;
+                    $movimientosmasivos->tipofacc = 'compra';
+                }
+                elseif(count($datosinvcon) == 1){
+
+                    foreach($datosinvcon as $datosinvcon){
+                        $movimientosmasivos->matchc = $datosinvcon->invoice;
+                        $movimientosmasivos->idinvoicec = $datosinvcon->id;
+                        $movimientosmasivos->amount_with_ivac = $datosinvcon->ref;
+                        $movimientosmasivos->bcvc = $datosinvcon->rate;
+                        $movimientosmasivos->tipofacc = 'compra';
+                    }
+                }else{
+
+                    $movimientosmasivos->matchc = 0;
+                    $movimientosmasivos->idinvoicec = 0;
+                    $movimientosmasivos->amount_with_ivac = 0;
+                    $movimientosmasivos->bcvc = 0;
+                    $movimientosmasivos->tipofacc = 0;
+
+                }//fin if de compra
+
+
+
+            }elseif($movimientosmasivos->debe == 0 OR $movimientosmasivos->debe == '0.00'){
+
+                /*****FACTURAS DE VENTAS */
+
                 $momasivo = $movimientosmasivos->haber;
                 $movimientosmasivos->conta = 'haber';
+
+
+
+                $sql = "SELECT * FROM quotations
+                WHERE ref = '$momasivo'
+                AND status = 'P'
+                AND date_billing <> 'null'
+                AND number_invoice <> 'null'";
+
+                $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
+
+                if(count($datosinv) > 1){
+                    $movimientosmasivos->match = 1;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+                    $movimientosmasivos->tipofac = 'venta';
+                }
+                elseif(count($datosinv) == 1){
+
+                    foreach($datosinv as $datosinv){
+                        $movimientosmasivos->match = $datosinv->number_invoice;
+                        $movimientosmasivos->idinvoice = $datosinv->id;
+                        $movimientosmasivos->amount_with_iva = $datosinv->ref;
+                        $movimientosmasivos->bcv = $datosinv->bcv;
+                        $movimientosmasivos->tipofac = 'venta';
+                    }
+                }
+                else{
+                    $movimientosmasivos->match = 0;
+                    $movimientosmasivos->idinvoice = 0;
+                    $movimientosmasivos->amount_with_iva = 0;
+                    $movimientosmasivos->bcv = 0;
+                    $movimientosmasivos->tipofac = 0;
+
+                }//fin if de venta
+
+            }else{
+                $movimientosmasivos->match = 0;
+                $movimientosmasivos->idinvoice = 0;
+                $movimientosmasivos->amount_with_iva = 0;
+                $movimientosmasivos->bcv = 0;
+                $movimientosmasivos->tipofac = 0;
             }
 
 
 
-                    $sql = "SELECT * FROM quotations
-                    WHERE ref = '$momasivo'
-                    AND status = 'P'
-                    AND date_billing <> 'null'
-                    AND number_invoice <> 'null'";
-
-                    $datosinv = DB::connection(Auth::user()->database_name)->select($sql);
-
-                    if(count($datosinv) > 1){
-                        $movimientosmasivos->match = 1;
-                        $movimientosmasivos->idinvoice = 0;
-                        $movimientosmasivos->amount_with_iva = 0;
-                        $movimientosmasivos->bcv = 0;
-                        $movimientosmasivos->tipofac = 'venta';
-                    }
-                    elseif(count($datosinv) == 1){
-
-                        foreach($datosinv as $datosinv){
-                            $movimientosmasivos->match = $datosinv->number_invoice;
-                            $movimientosmasivos->idinvoice = $datosinv->id;
-                            $movimientosmasivos->amount_with_iva = $datosinv->ref;
-                            $movimientosmasivos->bcv = $datosinv->bcv;
-                            $movimientosmasivos->tipofac = 'venta';
-                        }
-                    }
-                    else{
-                        $movimientosmasivos->match = 0;
-                        $movimientosmasivos->idinvoice = 0;
-                        $movimientosmasivos->amount_with_iva = 0;
-                        $movimientosmasivos->bcv = 0;
-                        $movimientosmasivos->tipofac = 0;
-
-                    }//fin if de venta
-
-
-
-
-                    $sql = "SELECT * FROM expenses_and_purchases
-                            WHERE ref = '$momasivo'
-                            AND status = 'P'";
-
-                            $datosinvcon = DB::connection(Auth::user()->database_name)->select($sql);
-
-                            if(count($datosinvcon) > 1){
-                                $movimientosmasivos->matchc = 1;
-                                $movimientosmasivos->idinvoicec = 0;
-                                $movimientosmasivos->amount_with_ivac = 0;
-                                $movimientosmasivos->bcvc = 0;
-                                $movimientosmasivos->tipofacc = 'compra';
-                            }
-                            elseif(count($datosinvcon) == 1){
-
-                                foreach($datosinvcon as $datosinvcon){
-                                    $movimientosmasivos->matchc = $datosinvcon->invoice;
-                                    $movimientosmasivos->idinvoicec = $datosinvcon->id;
-                                    $movimientosmasivos->amount_with_ivac = $datosinvcon->ref;
-                                    $movimientosmasivos->bcvc = $datosinvcon->rate;
-                                    $movimientosmasivos->tipofacc = 'compra';
-                                }
-                            }else{
-
-                                $movimientosmasivos->matchc = 0;
-                                $movimientosmasivos->idinvoicec = 0;
-                                $movimientosmasivos->amount_with_ivac = 0;
-                                $movimientosmasivos->bcvc = 0;
-                                $movimientosmasivos->tipofacc = 0;
-
-                            }//fin if de compra
 
 
 
