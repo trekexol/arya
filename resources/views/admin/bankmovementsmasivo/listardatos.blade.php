@@ -3,14 +3,13 @@
     <table class="table table-light2 table-bordered dataTableclass" id="dataTable" >
                 <thead>
                     <tr>
-                        <th class="text-center">Fecha</th>
-                        <th class="text-center">Referencia</th>
-                        <th class="text-center">Descripcion</th>
-                        <th class="text-center">Moneda</th>
-                        <th class="text-center">Debe</th>
-                        <th class="text-center">Haber</th>
-                        <th class="text-center">Accion</th>
-                        <th class="text-center">Eliminar</th>
+                        <th class="text-center"><small>Fecha</small></th>
+                        <th class="text-center"><small>Referencia</small></th>
+                        <th class="text-center"><small>Descripcion</small></th>
+                        <th class="text-center"><small>Debe</small></th>
+                        <th class="text-center"><small>Haber</small></th>
+                        <th class="text-center"><small>Accion</small></th>
+                        <th class="text-center"><small>Eliminar</small></th>
                     </tr>
                     </thead>
 
@@ -20,14 +19,21 @@
 
                             @foreach ($movimientosmasivoss as $var)
 
+                            @php
+                                if($var->moneda == 'dolares'){
+                                    $signo = '$';
+                                }else{
+                                    $signo = 'Bs';
+                                }
+
+                            @endphp
 
                             <tr id="{{$var->id_temp_movimientos}}">
-                            <td>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</td>
+                            <td><small>{{ date('d-m-Y', strtotime( $var->fecha ?? '')) }}</small></td>
                             <td class="text-center">{{$var->referencia_bancaria ?? ''}}</td>
 
-                            <td>{{$var->descripcion ?? ''}}</td>
-                            <td>{{$var->moneda ?? ''}}</td>
-                            <td>{{ $var->debe}}
+                            <td><small>{{$var->descripcion ?? ''}}</small></td>
+                            <td><small>{{ $var->debe.$signo }}
                                 @if($var->tipofacc == 'compra')
                                 @php
 
@@ -54,9 +60,9 @@
 
                                         @endif
                                 @endif
-
+                                </small>
                             </td>
-                            <td>{{ $var->haber}}
+                            <td><small>{{ $var->haber.$signo }}
 
                                 @if($var->tipofac == 'venta')
                                 @php
@@ -84,15 +90,15 @@
 
                                         @endif
                                 @endif
-
+                                </small>
                             </td>
                             <td>
-                                <span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span>
-                                <span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span>
-                                <span class="badge badge-pill badge-info" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/deposito/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Deposito</span>
+                                <small><span class="badge badge-pill badge-warning" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/contra/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Contrapartida</span></small>
+                                <small><span class="badge badge-pill badge-primary" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/transferencia/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Transferencia</span></small>
+                                <small><span class="badge badge-pill badge-info" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$var->debe.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/deposito/'.$var->haber.'/'.$var->referencia_bancaria.'/'.$var->moneda.'/'.$var->descripcion}}">Deposito</span></small>
 
                             </td>
-                            <td><span class="badge badge-pill badge-danger"  name="matchvalueliminar" data-id="{{$var->id_temp_movimientos}}">Eliminar</span>
+                            <td><small><span class="badge badge-pill badge-danger"  name="matchvalueliminar" data-id="{{$var->id_temp_movimientos}}">Eliminar</span></small>
                             </td>
                             </tr>
                             @endforeach
