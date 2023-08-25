@@ -215,7 +215,7 @@ class InvoiceController extends Controller
                         $quotation->amount = $key->amount;
                         $quotation->amount_with_iva = $key->amount_with_iva;
                         $quotation->ref = $key->ref;
-                        $quotation->save();
+                       
 
                         $detalle_voucher = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice', $quotation->id)->first();
                         
@@ -258,7 +258,7 @@ class InvoiceController extends Controller
                             }
 
                         }
-
+                        $quotation->save();
                         ///////Borra Y RECREA COMPROBANTES CONTABLES
                         DetailVoucher::on(Auth::user()->database_name)
                         ->where('id_header_voucher',$id_voucher)
