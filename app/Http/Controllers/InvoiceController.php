@@ -77,9 +77,9 @@ class InvoiceController extends Controller
 
                 $quotations_valid = Quotation::on(Auth::user()->database_name)->where('number_invoice' ,$key->number_invoice)
                 ->select('number_invoice')
-                ->first();
+                ->first(); 
 
-                if (empty($quotations_valid)) {
+                if (empty($quotations_valid)) { // valida si existe la factura
                       ///Guardando cabecera
                       $var = new Quotation();
                       $var->setConnection(Auth::user()->database_name);
@@ -221,6 +221,7 @@ class InvoiceController extends Controller
                         
                         if (!empty($detalle_voucher)){
                             $id_voucher = $detalle_voucher->id_header_voucher;
+                           // $id_invoice = $detalle_voucher->id_invoice;
                         } else {
                             $id_voucher = null;   
                         }
@@ -228,29 +229,32 @@ class InvoiceController extends Controller
 
                         foreach ($data2 as $key2) {
 
-                            if ($key2->status == 'C') { //Pendiente por crear
+                            if($key2->id_quotation == $key->id){
 
-                                $detail = new QuotationProduct();
-                                $detail->setConnection(Auth::user()->database_name);
-                                $detail->id_quotation = $quotation->id;
-                                $detail->id_inventory = $key2->id_inventory;
-                                $detail->amount = $key2->amount;
-                                $detail->discount = $key2->discount;
-                                $detail->price = $key2->price;
-                                $detail->rate = $key2->rate;
-                                $detail->excento = 1;
-                                $detail->retiene_iva = 1;
-                                $detail->retiene_islr = 0;
-                                $detail->status = $key2->status;
-                                $detail->id_inventory_histories = $key2->id_inventory_histories;
-                                $detail->save();
-                            }
-                            if ($key2->status == 'M') { //pendiente por modificar
+                                if ($key2->status == 'C') { //Pendiente por crear
 
-                                QuotationProduct::on(Auth::user()->database_name)
-                                ->where('id_quotation',$quotation->id)
-                                ->where('id_inventory',$key2->id_inventory)
-                                ->update(['price' => $key2->price]);
+                                    $detail = new QuotationProduct();
+                                    $detail->setConnection(Auth::user()->database_name);
+                                    $detail->id_quotation = $quotation->id;
+                                    $detail->id_inventory = $key2->id_inventory;
+                                    $detail->amount = $key2->amount;
+                                    $detail->discount = $key2->discount;
+                                    $detail->price = $key2->price;
+                                    $detail->rate = $key2->rate;
+                                    $detail->excento = 1;
+                                    $detail->retiene_iva = 1;
+                                    $detail->retiene_islr = 0;
+                                    $detail->status = $key2->status;
+                                    $detail->id_inventory_histories = $key2->id_inventory_histories;
+                                    $detail->save();
+                                }
+                                if ($key2->status == 'M') { //pendiente por modificar
+
+                                    QuotationProduct::on(Auth::user()->database_name)
+                                    ->where('id_quotation',$quotation->id)
+                                    ->where('id_inventory',$key2->id_inventory)
+                                    ->update(['price' => $key2->price]);
+                                }
                             }
 
                         }
