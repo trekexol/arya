@@ -246,9 +246,10 @@ class InvoiceController extends Controller
                                 $detail->save();
                             }
                             if ($key2->status == 'M') { //pendiente por modificar
+
                                 QuotationProduct::on(Auth::user()->database_name)
-                                ->where('id_quotation',$id_voucher)
-                                ->where('id_inventory',34)
+                                ->where('id_quotation',$quotation->id)
+                                ->where('id_inventory',$key2->id_inventory)
                                 ->update(['price' => $key2->price]);
                             }
 
