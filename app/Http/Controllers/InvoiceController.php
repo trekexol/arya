@@ -207,7 +207,7 @@ class InvoiceController extends Controller
                         $this->add_movement($key->bcv,$header_voucher->id,$account_subsegmento->id,$var->id,$key->id_user,0,$key->amount_with_iva);
                     }
 
-                } else {
+                } else { // si encuentra la factura
 
                     if ($key->status == 'P'){ /////////////////MODIFICAR FACTURA///////////////// 
                     
@@ -229,7 +229,7 @@ class InvoiceController extends Controller
 
                         foreach ($data2 as $key2) {
 
-                            if($key2->id_quotation == $key->id){
+                            if($key->id == $key2->id_quotation){
 
                                 if ($key2->status == 'C') { //Pendiente por crear
 
@@ -251,7 +251,7 @@ class InvoiceController extends Controller
                                 if ($key2->status == 'M') { //pendiente por modificar
 
                                     QuotationProduct::on(Auth::user()->database_name)
-                                    ->where('id_quotation',$quotation->id)
+                                    ->where('id_quotation',$key2->id_quotation)
                                     ->where('id_inventory',$key2->id_inventory)
                                     ->update(['price' => $key2->price]);
                                 }
