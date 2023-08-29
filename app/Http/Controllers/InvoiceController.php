@@ -215,7 +215,7 @@ class InvoiceController extends Controller
                         $quotation->amount = $key->amount;
                         $quotation->amount_with_iva = $key->amount_with_iva;
                         $quotation->ref = $key->ref;
-                       
+                        $quotation->save();
 
                         $detalle_voucher = DetailVoucher::on(Auth::user()->database_name)->where('id_invoice', $quotation->id)->first();
                         
@@ -231,6 +231,7 @@ class InvoiceController extends Controller
 
                             if($key->id == $key2->id_quotation){
 
+                                
                                 if ($key2->status == 'C') { //Pendiente por crear
 
                                     $detail = new QuotationProduct();
@@ -248,17 +249,18 @@ class InvoiceController extends Controller
                                     $detail->id_inventory_histories = $key2->id_inventory_histories;
                                     $detail->save();
                                 }
+
                                 if ($key2->status == 'M') { //pendiente por modificar
 
                                     QuotationProduct::on(Auth::user()->database_name)
-                                    ->where('id_quotation',$key2->id_quotation)
+                                    ->where('id_quotation',$quotation->id)
                                     ->where('id_inventory',$key2->id_inventory)
                                     ->update(['price' => $key2->price]);
                                 }
                             }
 
                         }
-                        $quotation->save();
+
                         ///////Borra Y RECREA COMPROBANTES CONTABLES
                         DetailVoucher::on(Auth::user()->database_name)
                         ->where('id_header_voucher',$id_voucher)
