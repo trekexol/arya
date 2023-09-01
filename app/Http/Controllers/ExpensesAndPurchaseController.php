@@ -248,9 +248,9 @@ class ExpensesAndPurchaseController extends Controller
            foreach($inventories_expenses as $var){
                //Se calcula restandole el porcentaje de descuento (discount)
 
-               $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
+                   $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
 
-               $total_less_percentage = ($var->price * $var->amount) - $percentage;
+                   $total_less_percentage = ($var->price * $var->amount) - $percentage;
 
                    $total += ($var->price * $var->amount_expense);
                //-----------------------------

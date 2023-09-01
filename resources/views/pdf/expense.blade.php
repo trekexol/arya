@@ -161,10 +161,11 @@
           $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
 
           $total_less_percentage = ($var->price * $var->amount) - $percentage;
-          $var->price =  $total_less_percentage / $expense->rate;
+        
+          $var->price =  $var->price / $expense->rate;
         }
 
-        $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
+          $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
 
           $total_less_percentage = ($var->price * $var->amount) - $percentage;
 
