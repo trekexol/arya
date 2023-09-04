@@ -52,7 +52,9 @@
     <th style="text-align: center;">Cliente</th>
     <th style="text-align: center; width:1%;">Vendedor</th>
     <th style="text-align: center;">Total</th>
+  
     <th style="text-align: center;">Abono</th>
+    <th style="text-align: center;">Total Anticipos</th>
     <th style="text-align: center;">Por Cobrar</th>
     <th style="text-align: center; width:10%;">Status</th>
   </tr>
@@ -91,12 +93,23 @@
         $quotation->amount_with_iva = ($quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0)) / ($quotation->bcv ?? 1);
         //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
 
-        $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
+        $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0));
+        
+        if($por_cobrar < 0){
+          $por_cobrar = 0;
+        }
+
         $total_por_cobrar += $por_cobrar;
+        
         $total_por_facturar += $quotation->amount_with_iva;
       }else{
         $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
-        $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0);
+        $por_cobrar = ($quotation->amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0);
+        
+        if($por_cobrar < 0){
+          $por_cobrar = 0;
+        }
+        
         $total_por_cobrar += $por_cobrar;
         $total_por_facturar += $quotation->amount_with_iva;
       }
@@ -131,6 +144,8 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->anticipo_s ?? 0), 2, ',', '.') }}</th>
+      
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_cobrar, 2, ',', '.') }}</th>
       @if (($diferencia_en_dias >= 0) && ($validator_date))
       <td style="text-align: center; font-weight: normal;" class="text-center font-weight-bold">
@@ -161,6 +176,7 @@
     <th style="text-align: center; font-weight: bold; border-color: white; border-right-color: black;"></th>
     <th style="text-align: right; font-weight: bold;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: bold;">{{ number_format(($total_anticipos ?? 0), 2, ',', '.') }}</th>
+    <th style="text-align: right; font-weight: bold;">{{ number_format((0), 2, ',', '.') }}</th>
     <th style="text-align: right; font-weight: bold;">{{ number_format($total_por_cobrar, 2, ',', '.') }}</th>
     <th style="text-align: center; font-weight: bold; border-color: white;"></th>
   </tr>
