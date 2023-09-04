@@ -113,6 +113,7 @@ class NominaPartsController extends Controller
         }
 
         if($tipo == 'liquidacion'){
+
             $idempleado = $employee;
 
             $pdf = App::make('dompdf.wrapper');
@@ -121,6 +122,14 @@ class NominaPartsController extends Controller
 
             $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
+
+            $diasextras = 0;
+            $diasvaca = '';
+            $acumulado = 0;
+            $interesesacumulado = 0;
+            $cuotautilidad = 0;
+            $cuotavaca = 0;
+            $diasutilidades = 0;
 
             $employee = Employee::on(Auth::user()->database_name)
             ->join('positions','positions.id','position_id') // Buscamos el empleado
@@ -148,9 +157,9 @@ class NominaPartsController extends Controller
 
             if (empty($ultimopago)){
                 $ultimopago_e = '';
-                
+
             } else {
-                
+
             $ultimopago_e = $ultimopago->ultimopago;
 
             }
@@ -168,13 +177,7 @@ class NominaPartsController extends Controller
                 $o = 1;
                 $cantidadmeses = 1;
                 $diasvacaciones = 15;
-                $diasextras = 0;
-                $diasvaca = '';
-                $acumulado = 0;
-                $interesesacumulado = 0;
-                $cuotautilidad = 0;
-                $cuotavaca = 0;
-                $diasutilidades = 0;
+
 
 
             foreach($datospresta as $datosprestaciones){
