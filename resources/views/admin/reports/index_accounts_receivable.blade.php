@@ -69,19 +69,45 @@
                         <div class="form-group row">
                             <div class="col-sm-2 offset-sm-1">
                                 <select class="form-control" name="type" id="type">
-                                    @if (isset($client))
-                                        <option value="todo">Todo</option>
-                                        <option selected value="cliente">Por Cliente</option>
-                                        <option value="vendor">Por Vendedor</option>
-                                    @elseif (isset($vendor))
-                                        <option value="todo">Todo</option>
-                                        <option value="cliente">Por Cliente</option>
-                                        <option selected value="vendor">Por Vendedor</option>
-                                    @else
-                                        <option selected value="todo">Todo</option>
-                                        <option value="cliente">Por Cliente</option>
-                                        <option value="vendor">Por Vendedor</option>
+                                    @if (isset($client) and $type == 'Cliente')
+                                        <option value="todo">Todo Resumen con Abonos y Anticipos</option>
+                                        <option value="todoa">Todo Resumen y Abonos</option>
+                                        <option value="todod">Todo Detalle y Abonos</option>
+                                        <option selected value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
                                     @endif
+                                    
+                                    @if (isset($vendor) and $type == 'Vendedor') 
+                                        <option value="todo">Todo Resumen con Abonos y Anticipos</option>
+                                        <option value="todoa">Todo Resumen y Abonos</option>
+                                        <option value="todod">Todo Detalle y Abonos</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option selected value="Vendedor">Por Vendedor</option>
+                                        
+                                    @endif
+                                         
+                                    @if($type == 'todo')
+                                        <option selected value="todo">Todo Resumen con Abonos y Anticipos</option>
+                                        <option value="todoa">Todo Resumen y Abonos</option>
+                                        <option value="todod">Todo Detalle y Abonos</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
+                                    @endif
+                                    @if($type == 'todoa')
+                                        <option value="todo">Todo Resumen con Abonos y Anticipos</option>
+                                        <option selected value="todoa">Todo Resumen y Abonos</option>
+                                        <option value="todod">Todo Detalle y Abonos</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
+                                    @endif
+                                    @if($type == 'todod')
+                                        <option value="todo">Todo Resumen con Abonos y Anticipos</option>
+                                        <option value="todoa">Todo Resumen y Abonos</option>
+                                        <option selected value="todod">Todo Detalle y Abonos</option>
+                                        <option value="Cliente">Por Cliente</option>
+                                        <option value="Vendedor">Por Vendedor</option>
+                                    @endif
+
                                 </select>
                             </div>
                             <div class="col-sm-4">
@@ -130,9 +156,9 @@
                             <?php
                             $typeinvoice = 'facturas';
                             ?>
-                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'dolares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'dolares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                             @else
-                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                             @endif
                             
                           </div>
@@ -188,12 +214,14 @@
                 $("#client_label1").hide();
                 $("#client_label2").hide();
                 $("#client_label3").hide();
-            }else if(type == 'vendor'){
+            }
+            if(type == 'Vendedor'){
                 document.getElementById("route_select").href = "{{ route('reports.select_vendor') }}";
                 $("#client_label1").show();
                 $("#client_label2").show();
                 $("#client_label3").show();
-            }else{
+            }    
+            if(type == 'Cliente'){
                 document.getElementById("route_select").href = "{{ route('reports.select_client') }}";
                 $("#client_label1").show();
                 $("#client_label2").show();
