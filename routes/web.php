@@ -1076,10 +1076,10 @@ Route::group(["prefix"=>'balanceingresos'],function(){
 });
 
 Route::group(["prefix"=>'reports'],function(){
-    Route::get('accountsreceivable/{typeperson}/{id_client?}','Report2Controller@index_accounts_receivable')->name('reports.accounts_receivable');
+    Route::get('accountsreceivable/{typeperson}/{id_client?}/{type?}','Report2Controller@index_accounts_receivable')->name('reports.accounts_receivable');
     Route::post('storeaccounts_receivable','Report2Controller@store_accounts_receivable')->name('reports.store_accounts_receivable');
     //Route::get('accounts_receivablepdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Report2Controller@accounts_liquidacionreceivable_pdf')->name('reports.accounts_receivable_pdf');
-    Route::get('accounts_receivablepdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{id_client_or_vendor?}','Report2Controller@accounts_receivable_pdf')->name('reports.accounts_receivable_pdf');
+    Route::get('accounts_receivablepdf/{coin}/{date_end}/{typeinvoice}/{typeperson}/{type?}/{id_client_or_vendor?}','Report2Controller@accounts_receivable_pdf')->name('reports.accounts_receivable_pdf');
 
 
     Route::get('selectclient','Report2Controller@select_client')->name('reports.select_client');
