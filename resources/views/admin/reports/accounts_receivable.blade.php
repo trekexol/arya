@@ -131,7 +131,7 @@
       } else {
       $total_anticipo += 0;
       }
-      
+
       $total_por_facturar += $quotation->amount_with_iva;
       $total_anticipos += $quotation->amount_anticipo;
 
@@ -188,7 +188,6 @@
       @endif
     </tr>
   @endforeach
-
   <tr>
     <th style="text-align: center; font-weight: bold; border-color: white;"></th>
     <th style="text-align: center; font-weight: bold; border-color: white;"></th>

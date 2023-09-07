@@ -10,7 +10,9 @@ use App;
 use App\Account;
 use App\Client;
 use App\Anticipo;
+use App\DebitNote;
 use App\Company;
+use App\CreditNote;
 use App\DetailVoucher;
 use App\Employee;
 use App\ExpensesAndPurchase;
@@ -935,10 +937,24 @@ class Report2Controller extends Controller
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y');
         $period = $date->format('Y');
+        
         $quotations = Quotation::on(Auth::user()->database_name)
         ->where('date_billing','<>',null)
         ->whereRaw("(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", [$date_begin, $date_end])
         ->orderBy('number_invoice','asc')->get();
+
+        $notas_d = DebitNote::on(Auth::user()->database_name)
+        ->where('status','C')
+        ->whereRaw("(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", [$date_begin, $date_end])
+        ->get();
+
+        $notas_c = CreditNote::on(Auth::user()->database_name)
+        ->where('status','C')
+        ->whereRaw("(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", [$date_begin, $date_end])
+        ->get();
+
+        
+        $company = Company::on(Auth::user()->database_name)->first();
 
         $date_begin = Carbon::parse($date_begin);
         $date_begin = $date_begin->format('d-m-Y');
@@ -946,7 +962,7 @@ class Report2Controller extends Controller
         $date_end = $date_end->format('d-m-Y');
 
 
-        $pdf = $pdf->loadView('admin.reports.sales_books',compact('coin','quotations','datenow','date_begin','date_end'))->setPaper('a4', 'landscape');
+        $pdf = $pdf->loadView('admin.reports.sales_books',compact('coin','quotations','datenow','date_begin','date_end','notas_c','notas_d','company'))->setPaper('a4', 'landscape');
         return $pdf->stream();
 
     }
