@@ -42,7 +42,7 @@
   <tr>
     <td style="width: 10%;">Fecha de Emisión:</td>
     <td style="width: 10%;">{{ date_format(date_create($quotation->date),"d-m-Y") }}</td>
-    <td  style="font-size: 11pt; width: 40%; color: black; font-weight: bold; text-align: right; border-top-color: white; border-right-color: white;">NOTA DE CRÉDITO NRO: {{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</td>
+    <td  style="font-size: 11pt; width: 40%; color: black; font-weight: bold; text-align: right; border-top-color: white; border-right-color: white;">NOTA DE DÉBITO NRO: {{ str_pad($quotation->number_delivery_note ?? $quotation->id, 6, "0", STR_PAD_LEFT)}}</td>
   </tr>
 </table>
 

@@ -254,6 +254,138 @@
 
   @endforeach 
 
+
+  @foreach ($notas_d as $nota) <!-- notas de debito -->
+   
+  
+  <tr>
+      <td style="text-align: center; ">{{ $conteo }}</td>
+      <td style="text-align: center; ">{{ $nota->date ?? ''}}</td>
+      
+      <td style="text-align: center; font-weight: normal;">{{$nota->clients['type_code']}}{{ $nota->clients['cedula_rif'] ?? '' }}</td>
+      <td style="text-align: center; font-weight: normal;">{{$nota->clients['name'] ?? '' }}</td>
+
+      <td style="text-align: center; font-weight: normal;">{{'Activa'}}</td>
+      
+      <td style="text-align: center; ">{{''}}</td>
+      <td style="text-align: center; font-weight: normal;">{{''}}</td>
+      <td style="text-align: center; font-weight: normal;">{{$nota->id}}</td><!--D-->
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--C-->
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--FA-->
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--CA-->
+
+      @if (isset($coin) && ($coin == 'bolivares'))
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->amount_with_iva ?? 0) , 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!-- IvaA-->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($company->tax_1,0,'','') }}</td> <!--16B -->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->amount_iva ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->retencion_iva ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
+        
+      @else
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->amount_with_iva / $nota->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!-- IvaA-->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($company->tax_1,0,'','') }}</td><!--16B -->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->amount_iva / $nota->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($nota->retencion_iva / $nota->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
+      @endif
+     
+    </tr>
+
+    <?php
+
+     if (isset($coin) && ($coin == 'bolivares')){
+
+      $total_amount_with_iva += number_format($nota->amount_with_iva,2,'.','');
+
+     } else {
+
+      $total_amount_with_iva += number_format(($nota->amount_with_iva / $nota->rate ?? 0),2,'.','');
+     }
+
+   
+
+    $conteo++;
+  ?>   
+ 
+
+  @endforeach 
+
+
+  @foreach ($notas_c as $notas) <!-- notas de credito -->
+   
+  
+  <tr>
+      <td style="text-align: center; ">{{ $conteo }}</td>
+      <td style="text-align: center; ">{{ $nota->date ?? ''}}</td>
+      
+      <td style="text-align: center; font-weight: normal;">{{$notas->clients['type_code']}}{{ $notas->clients['cedula_rif'] ?? '' }}</td>
+      <td style="text-align: center; font-weight: normal;">{{$notas->clients['name'] ?? '' }}</td>
+
+      <td style="text-align: center; font-weight: normal;">{{'Activa'}}</td>
+      
+      <td style="text-align: center; ">{{''}}</td>
+      <td style="text-align: center; font-weight: normal;">{{''}}</td>
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--D-->
+      <td style="text-align: center; font-weight: normal;">{{$notas->id}}</td><!--C-->
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--FA-->
+      <td style="text-align: center; font-weight: normal;">{{''}}</td><!--CA-->
+
+      @if (isset($coin) && ($coin == 'bolivares'))
+        <td style="text-align: right; font-weight: normal;">{{ '-'.number_format(($notas->amount_with_iva ?? 0) , 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!-- IvaA-->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($company->tax_1,0,'','') }}</td> <!--16B -->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($notas->amount_iva ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($notas->retencion_iva ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
+        
+      @else
+        <td style="text-align: right; font-weight: normal;">{{ '-'.number_format(($notas->amount_with_iva / $notas->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format((0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--BIA-->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!--16A -->
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td><!-- IvaA-->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(0, 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format($company->tax_1,0,'','') }}</td><!--16B -->
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($notas->amount_iva / $notas->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ number_format(($notas->retencion_iva / $notas->rate ?? 0), 2, ',', '.') }}</td>
+        <td style="text-align: right; font-weight: normal;">{{ '' }}</td>
+      @endif
+     
+    </tr>
+
+    <?php
+
+     if (isset($coin) && ($coin == 'bolivares')){
+
+      $total_amount_with_iva -= number_format($notas->amount_with_iva,2,'.','');
+
+     } else {
+
+      $total_amount_with_iva -= number_format(($notas->amount_with_iva / $notas->rate ?? 0),2,'.','');
+     }
+
+   
+
+    $conteo++;
+  ?>   
+ 
+
+  @endforeach 
+
   <tr>
   
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>

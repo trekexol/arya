@@ -47,7 +47,7 @@
 <table style="width: 100%;">
   <tr>
     <th style="text-align: center; width:7%;">Fecha</th>
-    <th style="text-align: center; width:12%;">Tipo {{$type}}</th>
+    <th style="text-align: center; width:12%;">Tipo</th>
     <th style="text-align: center; width:5%;">N°</th>
     <th style="text-align: center; width:1%;">Ctrl/Serie</th>
     <th style="text-align: center;">Cliente</th>
@@ -61,12 +61,19 @@
     <th style="text-align: center;">Por Cobrar</th>
     <th style="text-align: center; width:10%;">Status</th>
   </tr>
-  @foreach ($quotations as $quotation)
-    <?php
 
+
+<?php
+
+
+if($type == 'todo' || $type == 'todoa') {
+ $quotations = $quotations->unique('id_client');
+} 
+
+  foreach ($quotations as $quotation){
 
         $amount_bcv = 1;
-        $amount_bcv = $quotation->amount_with_iva / $quotation->bcv;
+        $amount_bcv = $quotation->total_amount_with_iva;
         $diferencia_en_dias = 0;
         $diferencia_en_dias2 = 0;
         $validator_date = '';
@@ -91,38 +98,19 @@
 
         }
 
-      if(isset($coin) && $coin != 'bolivares'){
 
-        $quotation->amount_with_iva = ($quotation->amount_with_iva - ($quotation->retencion_iva ?? 0) - ($quotation->retencion_islr ?? 0)) / ($quotation->bcv ?? 1);
-        //$quotation->amount_anticipo = ($quotation->amount_anticipo ?? 0) / ($quotation->bcv ?? 1);
-          
-        if($type == 'todo' || $type == 'todoa'){
-          $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0));
-          if($por_cobrar < 0){
-          $por_cobrar = 0;
-        }
-        } else {
-          $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
-        }
-
-
-
-      }else{
-        $quotation->amount_with_iva = ($quotation->amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
+        $quotation->total_amount_with_iva = ($quotation->total_amount_with_iva - $quotation->retencion_iva - $quotation->retencion_islr);
         
         if($type == 'todo' || $type == 'todoa'){
-          $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0));
+          $por_cobrar = (($quotation->total_amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0));
           if($por_cobrar < 0){
           $por_cobrar = 0;
         }
         
         } else {
-          $por_cobrar = (($quotation->amount_with_iva ?? 0) - ($quotation->amount_anticipo ?? 0));
+          $por_cobrar = (($quotation->total_amount_with_iva ?? 0) - ($quotation->total_anticipo ?? 0));
         }
 
-
-
-      }
     
       $total_por_cobrar += $por_cobrar;
 
@@ -131,11 +119,22 @@
       } else {
       $total_anticipo += 0;
       }
-      
-      $total_por_facturar += $quotation->amount_with_iva;
-      $total_anticipos += $quotation->amount_anticipo;
+
+      $total_por_facturar += $quotation->total_amount_with_iva;
+      $total_anticipos += $quotation->total_anticipo;
 
       $tipo = '';
+
+      if ($typeinvoice == 'facturas'){
+        $tipo = 'Facturas';
+      }
+      if ($typeinvoice == 'notas'){
+        $tipo = 'Notas';
+      }
+      if ($typeinvoice == 'todo'){
+        $tipo = 'Todo';
+      }
+
       if ($quotation->number_delivery_note > 0) {
         $tipo = 'Nota de Entrega';
       }
@@ -161,9 +160,9 @@
       <th style="text-align: center; font-weight: normal;">{{ $quotation->serie ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_client ?? ''}}</th>
       <th style="text-align: center; font-weight: normal;">{{ $quotation->name_vendor ?? ''}}</th>
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_with_iva ?? 0), 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->total_amount_with_iva ?? 0), 2, ',', '.') }}</th>
  
-      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->amount_anticipo ?? 0), 2, ',', '.') }}</th>
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->total_anticipo ?? 0), 2, ',', '.') }}</th>
       
       @if($type == 'todo' || $type == 'todoa')
       <th style="text-align: right; font-weight: normal;">{{ number_format(($quotation->anticipo_s ?? 0), 2, ',', '.') }}</th>
@@ -187,7 +186,9 @@
       </td>
       @endif
     </tr>
-  @endforeach
+<?php
+}
+?>
 
   <tr>
     <th style="text-align: center; font-weight: bold; border-color: white;"></th>
