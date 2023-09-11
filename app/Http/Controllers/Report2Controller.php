@@ -71,7 +71,7 @@ class Report2Controller extends Controller
 
     }
 
-    public function index_debtstopay($id_provider = null)
+    public function index_debtstopay($id_provider = null,$type = 'todo')
     {
 
 
@@ -81,9 +81,10 @@ class Report2Controller extends Controller
 
             if(isset($id_provider)){
                 $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
+                $type = 'proveedor';
             }
 
-        return view('admin.reports.index_debtstopay',compact('provider','datenow'));
+        return view('admin.reports.index_debtstopay',compact('provider','datenow','type'));
 
     }
 
@@ -359,14 +360,14 @@ class Report2Controller extends Controller
 
         $provider = null;
 
-        if($type != 'todos'){
+        if($type == 'proveedor'){
 
             if(isset($id_provider)){
                 $provider    = Provider::on(Auth::user()->database_name)->find($id_provider);
             }
         }
 
-        return view('admin.reports.index_debtstopay',compact('date_end','provider','coin'));
+        return view('admin.reports.index_debtstopay',compact('date_end','provider','coin','type'));
     }
 
     public function store_ledger(Request $request)
@@ -526,8 +527,7 @@ class Report2Controller extends Controller
     }
 
 
-    function debtstopay_pdf($coin,$date_end,$id_provider = null)
-    {
+    function debtstopay_pdf($coin,$date_end,$type = 'todo',$id_provider = null){
 
         $pdf = App::make('dompdf.wrapper');
 
@@ -550,7 +550,7 @@ class Report2Controller extends Controller
             $coin = "bolivares";
         }
 
-        if(isset($id_provider)){
+        if(isset($id_provider) and $type == 'proveedor'){
 
             if((isset($coin)) && ($coin == "bolivares")){
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
@@ -580,7 +580,9 @@ class Report2Controller extends Controller
                                     ->get();
             }
 
-        }else{
+        }
+
+        if ($type == 'todod'){
             if((isset($coin)) && ($coin == "bolivares")){
                 $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
                                     ->join('providers', 'providers.id','=','expenses_and_purchases.id_provider')
@@ -607,6 +609,41 @@ class Report2Controller extends Controller
                                     ->get();
             }
         }
+
+    
+        if ($type == 'todo'){
+
+
+            if((isset($coin)) && ($coin == "bolivares")){
+                $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
+                                    ->join('providers', 'providers.id','=','expenses_and_purchases.id_provider')
+                                    ->leftjoin('anticipos', 'anticipos.id_expense','=','expenses_and_purchases.id')
+                                    ->whereIn('expenses_and_purchases.status',[1,'P'])
+                                    ->where('expenses_and_purchases.amount','<>',null)
+                                    ->where('expenses_and_purchases.date','<=',$date_consult)
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva','expenses_and_purchases.id_provider as id_provider')
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva','expenses_and_purchases.id_provider')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
+                                    ->get();
+            }else{
+                $expenses = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
+                                    ->join('providers', 'providers.id','=','expenses_and_purchases.id_provider')
+                                    ->leftjoin('anticipos', 'anticipos.id_expense','=','expenses_and_purchases.id')
+                                    ->whereIn('expenses_and_purchases.status',[1,'P'])
+                                    ->where('expenses_and_purchases.amount','<>',null)
+                                    ->where('expenses_and_purchases.date','<=',$date_consult)
+                                    ->select('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social as name_provider','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva','expenses_and_purchases.id_provider as id_provider')
+                                    ->groupBy('expenses_and_purchases.invoice','expenses_and_purchases.rate','expenses_and_purchases.date','expenses_and_purchases.id','expenses_and_purchases.serie','providers.razon_social','expenses_and_purchases.amount','expenses_and_purchases.amount_with_iva','expenses_and_purchases.id_provider')
+                                    ->orderBy('expenses_and_purchases.date','desc')
+                                    ->orderBy('expenses_and_purchases.invoice','desc')
+                                    ->get();
+            }
+
+
+        }
+
+
 
         $anticipos = 0;
 
@@ -616,29 +653,69 @@ class Report2Controller extends Controller
 
             foreach ($expenses as $expense){
 
-            $total_anticipo = 0;
+                $expense->anticipo_s = 1;
 
-            $anticipos = DB::connection(Auth::user()->database_name)->table('anticipos')
-            ->where('id_expense',$expense->id)
-            ->where('date','<=',$date_end_anti)
-            ->get();
+                if ($type == 'todo'){
 
-            //dd($date_end_anti);
+                    $facturas = DB::connection(Auth::user()->database_name)->table('expenses_and_purchases')
+                    ->where('id_provider',$expense->id_provider)
+                    ->whereIn('status',[1,'P'])
+                    ->where('amount_with_iva','>',0)
+                    ->select(DB::raw('SUM(amount_with_iva) As amount_with_iva'))
+                    ->first(); 
+                    
+                    
+                    /// anticipos
+                    if($coin == "bolivares"){
+                        $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)
+                        ->whereIn('status',[1,'M'])
+                        ->where('id_provider',$expense->id_provider)
+                        ->where('coin','like','bolivares')
+                        ->sum('amount');
+                        $anticipos = $anticipos_sum_bolivares;
 
-                foreach ($anticipos as $anticiposum){
+                    } else {
+                        $total_dolar_anticipo = Anticipo::on(Auth::user()->database_name)
+                        ->whereIn('status',[1,'M'])
+                        ->where('id_provider',$expense->id_provider)
+                        ->where('coin','like','dolares')
+                        ->select(DB::connection(Auth::user()->database_name)->raw('SUM(amount/rate) as dolar'))->first();
+                        $anticipos = $total_dolar_anticipo->dolar;
+                    }
+                
+                    if(!empty($facturas)) {
+                        $expense->amount_with_iva = $facturas->amount_with_iva;
+                    } else {
+                        $expense->amount_with_iva = 0;
+                    }
+                    
 
-                    $total_anticipo += $anticiposum->amount;
-
+                    $expense->anticipo_s = $anticipos;
+        
+                    $expense->invoice = ''; 
+                    $expense->serie = '';
                 }
 
-                    $expense->amount_anticipo = $total_anticipo;
+
+                $anticipo = DB::connection(Auth::user()->database_name)->table('anticipos')
+                ->where('id_expense',$expense->id)
+                ->whereIn('status',[1,'M'])
+                ->select(DB::raw('SUM(amount) As amount_anticipo'))
+                ->first();
+
+                //dd($date_end_anti);
+                if (!empty($anticipo)){
+                    $expense->amount_anticipo = $anticipo->amount_anticipo;
+                } else {
+                    $expense->amount_anticipo = 0;
+                }
 
             }
         }
 
 
 
-        $pdf = $pdf->loadView('admin.reports.debtstopay',compact('expenses','datenow','date_end','coin'));
+        $pdf = $pdf->loadView('admin.reports.debtstopay',compact('expenses','datenow','date_end','coin','type'));
         return $pdf->stream();
 
     }
@@ -4059,9 +4136,10 @@ class Report2Controller extends Controller
 
     public function select_provider()
     {
+        $type = 'proveedor';
         $providers    = Provider::on(Auth::user()->database_name)->get();
 
-        return view('admin.reports.selectprovider',compact('providers'));
+        return view('admin.reports.selectprovider',compact('providers','type'));
     }
 
 

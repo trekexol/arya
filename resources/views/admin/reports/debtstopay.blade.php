@@ -41,6 +41,10 @@
     
     $total_por_facturar = 0;
     $total_por_pagar = 0;
+
+    if($type == 'todo'){
+      $expenses = $expenses->unique('id_provider');
+    }
   
   ?>
 <table style="width: 100%;">
@@ -52,9 +56,13 @@
     <th style="text-align: center; ">N° Serie</th>
     <th style="text-align: center; ">Total</th>
     <th style="text-align: center; ">Abono</th>
+    @if($type == 'todo')
+    <th style="text-align: center; ">Anticipos</th>
+    @endif
     <th style="text-align: center; ">Por Pagar</th>
   </tr> 
   @if (isset($expenses))
+
   @foreach ($expenses as $expense)
     <?php 
 
@@ -63,9 +71,23 @@
       $expense->amount_anticipo = $expense->amount_anticipo / $expense->rate;
     }
     
+    if($type == 'todo'){
+    $por_pagar = ($expense->amount_with_iva ?? 0) - ($expense->anticipo_s ?? 0);
+      if($por_pagar < 0){
+            $por_pagar = 0;
+      }
+        
+    } else {
     $por_pagar = ($expense->amount_with_iva ?? 0) - ($expense->amount_anticipo ?? 0);
+    if($por_pagar < 0){
+          $por_pagar = 0;
+    }
+        
+  }
+
     $total_por_pagar += $por_pagar;
     $total_por_facturar += $expense->amount_with_iva;
+
     ?>
     <tr>
       <th style="text-align: center; font-weight: normal; width:10%">{{ $expense->date ?? ''}}</th>
@@ -75,6 +97,9 @@
       <th style="text-align: center; font-weight: normal;">{{ $expense->serie ?? ''}}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_with_iva ?? 0), 2, ',', '.') }}</th>
       <th style="text-align: right; font-weight: normal;">{{ number_format(($expense->amount_anticipo ?? 0), 2, ',', '.') }}</th>
+      @if($type == 'todo')
+      <th style="text-align: right; font-weight: normal;">{{ number_format(($expense->anticipo_s ?? 0), 2, ',', '.') }}</th>
+      @endif
       <th style="text-align: right; font-weight: normal;">{{ number_format($por_pagar, 2, ',', '.') }}</th>
     </tr> 
   @endforeach 
@@ -85,7 +110,13 @@
     <th style="text-align: center; font-weight: normal; border-color: white;"></th>
     <th style="text-align: center; font-weight: normal; border-color: white; border-right-color: black;"></th>
     <th style="text-align: right; font-weight: normal;">{{ number_format(($total_por_facturar ?? 0), 2, ',', '.') }}</th>
+    
+    @if($type == 'todo')
+    <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: white;"></th>
+    <th style="text-align: right; font-weight: normal; border-color: white; border-left-color: white; border-right-color: black;"></th>
+    @else
     <th style="text-align: right; font-weight: normal; border-color: white; border-right-color: black;"></th>
+    @endif
     <th style="text-align: right; font-weight: normal;">{{ number_format($total_por_pagar, 2, ',', '.') }}</th>
   </tr> 
 </table>
