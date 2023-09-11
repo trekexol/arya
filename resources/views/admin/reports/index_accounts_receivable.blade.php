@@ -8,9 +8,9 @@
                 <form id="formPost" method="POST" action="{{ route('reports.store_accounts_receivable') }}">
                     @csrf
 
-                <input type="hidden" name="id_client" value="{{$client->id ?? null}}" readonly>
-                <input type="hidden" name="id_vendor" value="{{$vendor->id ?? null}}" readonly>
-                <input type="hidden" name="coin_form" value="{{$coin ?? 'bolivares'}}" readonly>
+                <input type="hidden" id="id_hidden_client" name="id_client" value="{{$client->id ?? null}}">
+                <input type="hidden" id="id_hidden_vendor" name="id_vendor" value="{{$vendor->id ?? null}}">
+                <input type="hidden"  id="coin_form" name="coin_form" value="{{$coin ?? 'bolivares'}}">
 
                 <div class="card-header text-center h4">
                         Cuentas por Cobrar
@@ -59,7 +59,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-1">
-                                <button type="submit" class="btn btn-primary ">
+                                <button onclick="buttonvali()" type="submit" class="btn btn-primary ">
                                     Buscar
                                 </button>
                             </div>
@@ -153,12 +153,10 @@
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             @if (Auth::user()->company->id == '1')
-                            <?php
-                            $typeinvoice = 'facturas';
-                            ?>
-                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'dolares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+
+                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'dolares',$date_end ?? $datenow,$typeinvoice ?? 'facturas',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                             @else
-                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'todo',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.accounts_receivable_pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeinvoice ?? 'facturas',$typeperson ?? 'todo',$type ?? 'todo',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                             @endif
                             
                           </div>
@@ -183,11 +181,39 @@
 
     
     function exportToExcel(){
+        
+        alert('El reporte en excel esta deshabilitado en este momento por actualización intente más tarde');
+        event.preventDefault();
+        return;
+
         var old_action = document.getElementById("formPost").action;
         document.getElementById("formPost").action = "{{ route('export_reports.accountsreceivable') }}";
         document.getElementById("formPost").submit();
         document.getElementById("formPost").action = old_action;
     }
+
+    
+    function buttonvali(){
+
+        var type = $("#type").val();
+        var client = $("#id_hidden_client").val();
+        var vendedor = $("#id_hidden_vendor").val();
+
+        if (type == 'Cliente' && (client == null || client == '' || client <= 0)) {
+        alert('Debe elegir un cliente en el icono azul');
+        event.preventDefault();
+        return;
+        }
+
+        if (type == 'Vendedor' && (vendedor == null || vendedor == '' || vendedor <= 0)) {
+        alert('Debe elegir un vendedor en el icono azul');
+        event.preventDefault();
+        return;
+        }
+    }
+
+
+
 
     let client  = "<?php echo $client->name ?? 0 ?>";  
     let vendor  = "<?php echo $vendor->name ?? 0 ?>"; 
@@ -228,6 +254,8 @@
                 $("#client_label3").show();
             }
         });
+
+
 
     </script> 
     @isset($vendor)
