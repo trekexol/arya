@@ -1094,9 +1094,9 @@ Route::group(["prefix"=>'reports'],function(){
     Route::get('select_client_fac_det','ReportDeliveryFacController@select_client_fac_det')->name('reports.select_client_fac_det'); //dacson nota de entrega
     Route::get('select_vendor_fac_det','ReportDeliveryFacController@select_vendor_fac_det')->name('reports.select_vendor_fac_det'); // dacson nota de entrega
 
-    Route::get('debtstopay/{id_provider?}','Report2Controller@index_debtstopay')->name('reports.debtstopay');
+    Route::get('debtstopay/{id_provider?}/{type?}','Report2Controller@index_debtstopay')->name('reports.debtstopay');
     Route::post('storedebtstopay','Report2Controller@store_debtstopay')->name('reports.store_debtstopay');
-    Route::get('debtstopaypdf/{coin}/{date_end}/{id_provider?}','Report2Controller@debtstopay_pdf')->name('reports.debtstopay_pdf');
+    Route::get('debtstopaypdf/{coin}/{date_end}/{type?}/{id_provider?}','Report2Controller@debtstopay_pdf')->name('reports.debtstopay_pdf');
 
     Route::get('selectprovider','Report2Controller@select_provider')->name('reports.select_provider');
 

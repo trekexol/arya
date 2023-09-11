@@ -29,14 +29,24 @@
                             </div>
                             <div class="col-sm-2">
                                 <select class="form-control" name="type" id="type">
-                                    @if (isset($provider))
-                                        <option value="todo">Todo</option>
+                                    @if (isset($provider) && $type == 'proveedor')
+                                        <option value="todo">Todo Resumen</option>
+                                        <option value="todod">Todo por Factura</option>
                                         <option selected value="proveedor">Por Proveedor</option>
-                                    @else
-                                        <option selected value="todo">Todo</option>
-                                        <option value="proveedor">Por Proveedor</option>
                                     @endif
-                                    
+                                
+                                    @if($type == 'todo')
+                                    <option selected value="todo">Todo Resumen</option>
+                                    <option value="todod">Todo por Factura</option>
+                                    <option value="proveedor">Por Proveedor</option>
+                                    @endif
+
+                                    @if($type == 'todod')
+                                    <option value="todo">Todo Resumen</option>
+                                    <option selected value="todod">Todo por Factura</option>
+                                    <option value="proveedor">Por Proveedor</option>
+                                    @endif
+                        
                                     
                                 </select>
                             </div>
@@ -82,7 +92,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('reports.debtstopay_pdf',[$coin ?? "bolivares",$date_end ?? $datenow,$provider->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('reports.debtstopay_pdf',[$coin ?? "bolivares",$date_end ?? $datenow,$type ?? "todo",$provider->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>
@@ -124,18 +134,21 @@
     }
     
 
-    $("#type").on('change',function(){
+        $("#type").on('change',function(){
+
             type = $(this).val();
             
-            if(type == 'todo'){
+            if(type == 'todo' || type == 'todod'){
                 $("#provider_label1").hide();
                 $("#provider_label2").hide();
                 $("#provider_label3").hide();
-            }else{
+            }
+            if(type == 'proveedor'){
                 $("#provider_label1").show();
                 $("#provider_label2").show();
                 $("#provider_label3").show();
             }
+
         });
 
     </script> 

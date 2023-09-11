@@ -105,10 +105,13 @@ if($type == 'todo' || $type == 'todoa') {
           $por_cobrar = (($quotation->total_amount_with_iva ?? 0) - ($quotation->anticipo_s ?? 0));
           if($por_cobrar < 0){
           $por_cobrar = 0;
-        }
+          }
         
         } else {
           $por_cobrar = (($quotation->total_amount_with_iva ?? 0) - ($quotation->total_anticipo ?? 0));
+          if($por_cobrar < 0){
+          $por_cobrar = 0;
+          }
         }
 
     
