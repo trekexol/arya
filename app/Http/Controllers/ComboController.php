@@ -289,7 +289,8 @@ class ComboController extends Controller
      {
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
-        try{ 
+           try{
+
             if(isset($request->combo_products) || isset($request->id_products)){
                 $array = $request->all();
             
@@ -348,6 +349,7 @@ class ComboController extends Controller
                     }
                     //Revisar si todas los montos estan actualizados, sino actualizar
                     foreach($amounts as $amount){
+
                         $combo_actual = ComboProduct::on(Auth::user()->database_name)->where('id_combo',$request->id_combo)->where('id_product',$amount->id)->first();
                         if(isset($combo_actual)){
                             if($combo_actual->amount_per_product != $amount->amount){
@@ -390,7 +392,7 @@ class ComboController extends Controller
             return redirect('combos')->withSuccess('Registro del Combo Exitosamente!');
         } catch (Exception $e) {
 
-            return redirect('combos/assign/'.$request->id_combo.'')->withDanger('Debe ingresar la cantidad al seleccionar un Producto!!');
+            return redirect('combos/assign/'.$request->id_combo.'')->withDanger('Verifique las cantidades ingresadas ingresados!!');
         }
 
      } else{

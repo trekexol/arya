@@ -68,14 +68,15 @@
           </div> 
       </div> 
 
-      
-      <div class="col-sm-3">
-      </div>
-      
+    
       @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
-      <div class="col-md-6">
-        <a href="{{ route('combos.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Combo</a>
-      </div>
+      <!--<div class="col-md-6">
+        <a href="{{ ''/*route('combos.create')*/}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Combo</a>
+      </div> -->
+
+        <div class="col-sm-3">
+            <a href="{{ route('products.create',['COMBO'])}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Combo </a>
+        </div>
       @endif
     </div>
 

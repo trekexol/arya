@@ -7,11 +7,15 @@
 
     <!-- Page Heading -->
     <div class="row py-lg-2">
-        <div class="col-sm-7">
-            <h2>Selección de Productos Combo {{$combo->id}}</h2>
+        <div class="col-sm-12">
+            <h2>Materia prima para Combo {{$combo->id}} {{$combo->description}}</h2>
         </div>
-        <div class="col-sm-3">
-           <input type="button" title="Agregar" value="Guardar Cambios" class="btn btn-primary float-md-right" role="button" aria-pressed="true"  onclick="formSend();" >
+    </div>
+  
+    <div class="row py-lg-2">
+
+        <div class="col-sm-10">
+             <input type="button" title="Agregar" value="Guardar Cambios" class="btn btn-primary float-md-right" role="button" aria-pressed="true"  onclick="formSend();" >
         </div>
         <div class="col-sm-2">
             <a href="{{ route('combos') }}" class="btn btn-danger">
@@ -19,7 +23,7 @@
             </a>
         </div>
     </div>
-  </div>
+</div>
   <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
   @include('admin.layouts.success')   {{-- SAVE --}}
@@ -117,7 +121,7 @@
                                                     <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                                                 </td>
                                                 <td >
-                                                    <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
+                                                    <input onkeyup="noespac(this)" style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" placeholder="0" autocomplete="amount{{ $product->id }}">
                                                 </td>
                                                 <td class="text-center">{{$product->id}}</td>
                                                 <td class="text-center">{{$product->code_comercial ?? ''}}</td>
@@ -131,7 +135,7 @@
                                                 @endif
                                                 <td>{{$product->segments['description'] ?? ''}}</td>
      
-                                                <td class="text-right">{{number_format($productwo->amount ?? 0, 0, ',', '')}}</td> 
+                                                <td class="text-right">{{$productwo->amount}}</td> 
                                                 <td class="text-left" style="text-align: left;">{{$product->unit_of_measure_id ?? ''}}</td> 
                                             </tr> 
                                             <?php
@@ -157,8 +161,8 @@
                                 <input onclick="selectProduct({{ $product }});" type="checkbox" id="flexCheckChecked{{$product->id}}">                        
                             </td>
                             <td>
-                                <input style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control amountp @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" data-amountid="amountold{{ $product->id }}" placeholder="0,00" autocomplete="amount{{ $product->id }}">
-                                <input style="text-align: right; display:none;" id="amountold{{ $product->id }}" type="text" class="form-control amountold" name="amountold{{ $product->id }}">
+                                <input onkeyup="noespac(this)" style="text-align: right;" id="amount{{ $product->id }}" onblur="updateAmount({{$product}})" type="text" class="form-control amountp @error('amount{{ $product->id }}') is-invalid @enderror" name="amount{{ $product->id }}" data-amountid="amountold{{ $product->id }}" placeholder="0" autocomplete="amount{{ $product->id }}">
+                                <input onkeyup="noespac(this)" style="text-align: right; display:none;" id="amountold{{ $product->id }}" type="text" class="form-control amountold" name="amountold{{ $product->id }}">
                             </td>
                             <td class="text-center">{{$product->id}}</td>
                             <td class="text-center">{{$product->code_comercial ?? ''}}</td>
@@ -171,7 +175,7 @@
                                 <td class="text-center">Bolívar</td>
                             @endif
                             <td>{{$product->segments['description'] ?? ''}}</td>
-                            <td class="text-right">{{number_format($product->amount ?? 0, 0, ',', '')}}</td> 
+                            <td class="text-right">{{$product->amount}}</td> 
                             <td class="text-left" style="text-align: left;">{{$product->unit_of_measure_id ?? ''}}</td> 
                         </tr>          
                         @endif 
@@ -380,7 +384,7 @@
                 products.push("{{ $combo->id_product }}");
                 document.getElementById("combo_products").value = products;
                 document.getElementById("flexCheckChecked{{ $combo->id_product }}").checked = true;
-                document.getElementById("amount{{ $combo->id_product }}").value = "{{ number_format($combo->amount_per_product, 2, ',', '.') }}";
+                document.getElementById("amount{{ $combo->id_product }}").value = "{{ $combo->amount_per_product}}";
                 document.getElementById("id_products").value = products;
             </script> 
         @endforeach

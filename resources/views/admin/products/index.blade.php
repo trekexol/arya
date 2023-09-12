@@ -135,7 +135,7 @@
 
       @if (Auth::user()->role_id  == '1' || $agregarmiddleware  == '1')
       <div class="col-sm-3">
-        <a href="{{ route('products.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Producto </a>
+        <a href="{{ route('products.create',['MERCANCIA'])}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar un Producto </a>
       </div>
       @endif
       <div class="col-sm-2">
