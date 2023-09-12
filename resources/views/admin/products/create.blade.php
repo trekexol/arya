@@ -73,11 +73,43 @@
                             <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
                             <div class="col-md-4">
                             <select class="form-control" name="type" id="type">
-                                <option value="SERVICIO">Servicio</option>
-                                <option selected value="MERCANCIA">Mercancía</option>
-                                <option value="MATERIAP">Materia Prima</option>
-                                <option value="COMBO">Combo</option>
+                                @if(isset($type))
+                                     
+                                     @if($type == 'SERVICIO')
+                                     <option selected value="SERVICIO">Servicio</option>
+                                     <option value="MERCANCIA">Mercancía</option>
+                                     <option value="MATERIAP">Materia Prima</option>
+                                     <option value="COMBO">Combo</option>
+                                     @endif
 
+                                     @if($type == 'MERCANCIA')
+                                     <option value="SERVICIO">Servicio</option>
+                                     <option selected value="MERCANCIA">Mercancía</option>
+                                     <option value="MATERIAP">Materia Prima</option>
+                                     <option value="COMBO">Combo</option>
+                                     @endif
+
+                                     @if($type == 'MATERIAP')
+                                     <option value="SERVICIO">Servicio</option>
+                                     <option value="MERCANCIA">Mercancía</option>
+                                     <option selected value="MATERIAP">Materia Prima</option>
+                                     <option value="COMBO">Combo</option>
+                                     @endif
+
+                                     @if($type == 'COMBO')
+                                     <option value="SERVICIO">Servicio</option>
+                                     <option value="MERCANCIA">Mercancía</option>
+                                     <option value="MATERIAP">Materia Prima</option>
+                                     <option selected value="COMBO">Combo</option>
+                                     @endif
+                                     
+
+                                @else
+                                    <option value="SERVICIO">Servicio</option>
+                                    <option selected value="MERCANCIA">Mercancía</option>
+                                    <option value="MATERIAP">Materia Prima</option>
+                                    <option value="COMBO">Combo</option>
+                                @endif
                             </select>
                             </div>
 

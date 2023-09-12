@@ -283,7 +283,7 @@ Route::group(["prefix"=>'vendors'],function(){
 
 Route::group(["prefix"=>'products'],function(){
     Route::get('index/{type?}','ProductController@index')->name('products');
-    Route::get('register','ProductController@create')->name('products.create');
+    Route::get('register/{type?}','ProductController@create')->name('products.create');
     Route::post('store','ProductController@store')->name('products.store');
 
     Route::get('{id}/edit','ProductController@edit')->name('products.edit');

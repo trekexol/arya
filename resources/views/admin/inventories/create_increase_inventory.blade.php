@@ -68,7 +68,7 @@
                         <div class="form-group row">
                             <label for="cantidad" class="col-md-2 col-form-label text-md-right">Cantidad Actual</label>
                             <div class="col-md-4">
-                                <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($inventory->amount ?? 0, 2, ',', '.') }}" readonly required autocomplete="amount">
+                                <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ $inventory->amount }}" readonly required autocomplete="amount">
 
                                 @error('amount')
                                     <span class="invalid-feedback" role="alert">

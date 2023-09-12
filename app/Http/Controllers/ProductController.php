@@ -197,7 +197,7 @@ class ProductController extends Controller
     }
 
 
-   public function create(request $request)
+   public function create(request $request,$type)
    {
     if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $segments     = Segment::on(Auth::user()->database_name)->orderBY('description','asc')->pluck('description','id')->toArray();
@@ -215,7 +215,7 @@ class ProductController extends Controller
                                 ->get();
 
 
-        return view('admin.products.create',compact('segments','subsegments','unitofmeasures','accounts'));
+        return view('admin.products.create',compact('segments','subsegments','unitofmeasures','accounts','type'));
     }else{
         return redirect('/products')->withDanger('No Tiene Permiso!');
     }
