@@ -1453,7 +1453,7 @@ Route::group(["prefix"=>'export_reports'],function(){
     Route::post('diarybookdetails','Exports\DailyListing\DiaryBookDetailExportController@exportExcel')->name('export_reports.diary_book_details');
     Route::post('ledger','Exports\DailyListing\LedgerExportController@exportExcel')->name('export_reports.ledger');
 
-    Route::post('journalbooks','Exports\DailyListing\JournalbookExportController@exportExcel')->name('export_reports.journalbooks');
+    Route::post('journalbooks','Exports\DailyListing\JournalBookExportController@exportExcel')->name('export_reports.journalbooks');
     Route::post('orderpayments','Exports\DailyListing\OrderPaymentListExportController@exportExcel')->name('export_reports.orderpayments');
     Route::post('bankmovements','Exports\DailyListing\BankMovementExportController@exportExcel')->name('export_reports.bankmovements');
 
