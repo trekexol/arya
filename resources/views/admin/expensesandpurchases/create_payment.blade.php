@@ -28,7 +28,7 @@
 
             <div class="card" style="width: 70rem;" >
                 <div class="card-header" ><h3>Registrar Pago para Compras/Gastos</h3></div>
-                <form method="POST" action="{{ route('expensesandpurchases.store_expense_credit') }}" enctype="multipart/form-data">
+                <form id="guarda_credito" method="POST" action="{{ route('expensesandpurchases.store_expense_credit') }}" enctype="multipart/form-data">
                     @csrf
                     <input id="igtfvalor" type="hidden" class="form-control @error('IGTF_input') is-invalid @enderror" name="igtfvalor" readonly>
                     <input  type="hidden" name="IGTF_porc" value="{{$igtfporc}}">
@@ -36,7 +36,8 @@
                     <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
                     <input type="hidden" id="id_islr_concept_credit" name="id_islr_concept_credit" value="0" readonly>
-
+                    <input type="hidden" id="valida_com" name="valida_com" value="0" readonly>
+                    
                         <div class="form-group row">
                             <label for="date_payment" class="col-md-2 col-form-label text-md-right">Fecha de Factura:</label>
                             <div class="col-md-4">
@@ -373,7 +374,7 @@
                             <div class="col-md-2">
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary">
+                                <button id="boton_val" type="submit" class="btn btn-primary">
                                     Guardar
                                  </button>
                             </div>
@@ -421,8 +422,8 @@
 
                         <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
 
-                        <input type="text" id="total_retiene_iva" name="total_retiene_iva" value="0" readonly>
-                        <input type="text" id="total_retiene_islr" name="total_retiene_islr" value="{{ $total_retiene_islr ?? 0 }}" readonly>
+                        <input type="hidden" id="total_retiene_iva" name="total_retiene_iva" value="0" readonly>
+                        <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{ $total_retiene_islr ?? 0 }}" readonly>
 
                         <input type="hidden" id="date_payment_form" name="date_payment_form" value="{{$expense->date}}" readonly>
 
@@ -998,6 +999,15 @@
         $("#formenviarcredito").hide();
         $("#newcour").hide();
         var switchStatus = false;
+
+        $("#boton_val").on('click', function(event) {
+                if (confirm('Desea generar el Comprobante de IVA ó ISLR con el correlativo?')) {
+                    $("#valida_com").val(1);
+                } else {
+                    $("#valida_com").val(0);
+                }
+        });
+
         $("#customSwitches").on('change', function() {
             if ($(this).is(':checked')) {
                 switchStatus = $(this).is(':checked');

@@ -356,8 +356,8 @@ class ExpensesAndPurchaseController extends Controller
 
         } else {
 
-            $periodo_pago = '';
-            $mes_pago = '';
+            $periodo_pago = substr($expense->date,0,4);
+            $mes_pago = substr($expense->date,5,2);
         }
 
         if((isset($expense)) && ($expense->retencion_iva != 0)){
@@ -2240,7 +2240,7 @@ class ExpensesAndPurchaseController extends Controller
 
                 /*Se agregan los movimientos de las retenciones si son diferentes a cero */
 
-                if($retencion_iva !=0){
+                if($retencion_iva !=0 and $expense->number_iva == NULL){
 
                     $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
                     if(isset($account_iva_retenido)){
@@ -2256,8 +2256,8 @@ class ExpensesAndPurchaseController extends Controller
                     }
                 }
 
-
-                if($retencion_islr !=0){
+            
+                if($retencion_islr !=0 and $expense->number_islr == NULL){
 
                     $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
                                                     ->where('code_four',1)->where('code_five',4)->first();
@@ -2479,7 +2479,7 @@ class ExpensesAndPurchaseController extends Controller
 
         $igftmonto = request('igtfvalor');
         $IGTF_porc = request('IGTF_porc');
-
+        $valida_com = request('valida_com');
 
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
         $sin_formato_base_imponible = str_replace(',', '.', str_replace('.', '', request('base_imponible')));
@@ -2566,7 +2566,6 @@ class ExpensesAndPurchaseController extends Controller
 
         $expense->status = "P";
 
-        $expense->save();
 
 
          //preparando para guardar historial
@@ -2628,6 +2627,52 @@ class ExpensesAndPurchaseController extends Controller
 
         $header_voucher->save();
 
+        if ($valida_com == 1){ 
+        
+            if($sin_formato_iva_retencion > 0){
+
+                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
+                if(isset($account_iva_retenido)){
+                    $this->add_movement($expense->rate,$header_voucher->id,$account_iva_retenido->id,$expense->id,$user_id,0,$sin_formato_iva_retencion);
+                }
+                $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_iva','<>',NULL)->where('status','C')->orderBy('number_iva','desc')->first();
+                //Asigno un numero incrementando en 1
+                if(isset($last_number)){
+                    $expense->number_iva = $last_number->number_iva + 1;
+                }else{
+                    $expense->number_iva = 1;
+                }
+            }
+
+
+            if($sin_formato_islr_retencion > 0){
+
+                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
+                                                ->where('code_four',1)->where('code_five',4)->first();
+                if(isset($account_islr_pagago)){
+                    $this->add_movement($expense->rate,$header_voucher->id,$account_islr_pagago->id,$expense->id,$user_id,0,$sin_formato_islr_retencion);
+                }
+                $last_number = ExpensesAndPurchase::on(Auth::user()->database_name)->where('number_islr','<>',NULL)->where('status','C')->orderBy('number_islr','desc')->first();
+
+                //Asigno un numero incrementando en 1
+                if(isset($last_number)){
+                    $expense->number_islr = $last_number->number_islr + 1;
+                
+                }else{
+                    $expense->number_islr = 1;
+                }
+            }
+
+            $expense->date_payment = $expense->date;
+        }
+        
+        $expense->save();
+
+
+
+
+
+
         $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
 
         foreach($expense_details as $var){
@@ -2662,6 +2707,17 @@ class ExpensesAndPurchaseController extends Controller
                 $this->add_movement($expense->rate,$header_voucher->id,$account_descount->id,$expense->id,$user_id,0,$sin_formato_descuento_general);
             }
         }
+
+
+
+          /* $providers = Provider::on(Auth::user()->database_name) /// BUSCAR PROVEEDOR
+        ->find($expense->id_provider);*/
+      
+
+
+
+
+
 
 
         $historial_expense = new HistorialExpenseController();
