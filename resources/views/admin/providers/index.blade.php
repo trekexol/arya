@@ -53,6 +53,8 @@
                     <th>Ciudad</th>
                     <th>Pais</th>
                     <th>Telefono</th>
+                    <th>Ret. IVA</th>
+                    <th>Ret. ISLR</th>
                     @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                     <th></th>
                     @endif
@@ -70,6 +72,9 @@
                                 <td>{{$var->city}}</td>
                                 <td>{{$var->country}}</td>
                                 <td>{{$var->phone1}}</td>
+                                <td>{{$var->porc_retencion_iva.'%'}}</td>
+                                <td>{{$var->porc_retencion_islr.'%'}}</td>
+                                
                                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' ) 
                                 <td>
                                     <a href="providers/{{$var->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>

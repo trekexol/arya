@@ -737,6 +737,7 @@ class ExpensesAndPurchaseController extends Controller
              $impuesto3 = $company->tax_3 ?? 1;
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
+            
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
@@ -1255,9 +1256,9 @@ class ExpensesAndPurchaseController extends Controller
     public function store_expense_payment(Request $request)
     {
 
-                /************PARA LO DE COURIERTOOL NO TOCAR ********/
-                $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
-                /***************************************************************/
+        /************PARA LO DE COURIERTOOL NO TOCAR ********/
+        $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+        /***************************************************************/
         $igftmonto = request('igtfvalor');
         $IGTF_porc = request('IGTF_porc');
         $date = Carbon::now();
