@@ -67,7 +67,7 @@
                     @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1 || $actualizarmiddleware == 1 || $eliminarmiddleware == 1)
                         <td class="text-center">
                            
-                           @if ( $user->id != 2)
+                           @if ( $user->id != 2 || $user->id != 312)
 
                                 @if (Auth::user()->role_id  == '1' || $agregarmiddleware == 1)
                                 <a href="{{ route('users.indexpermisos',['id_user' => $user->id, 'name_user' => $user->name]) }}" title="Seleccionar"><i class="fa fa-check"></i></a>
@@ -78,6 +78,7 @@
                                 @if (Auth::user()->role_id  == '1' || $eliminarmiddleware == 1)
                                 <a href="#" class="delete" data-id-user={{$user->id}} data-toggle="modal" data-target="#deleteModal" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                 @endif
+
                            @endif
                         </td>
                     @endif

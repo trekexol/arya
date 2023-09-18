@@ -201,20 +201,33 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="porc_retencion_islr" class="col-md-2 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
 
-                            <div class="col-md-4">
-                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') ?? 0}}"  autocomplete="porc_retencion_islr">
-
-                                @error('porc_retencion_islr')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
 
+                                <div class="col-sm-3">
+                                <select class="form-control" name="islr_concept" id="islr_concept">
+                                    <option disabled selected value="0">Seleccionar</option>
+                                    @if (isset($islrconcepts))
+                                        @foreach ($islrconcepts as $islrconcept)
+                                            <option value="{{$islrconcept->id}}"  data-id="{{$islrconcept->value}}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                </div>
+                                <label for="porc_retencion_islr" class="col-md-3 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
 
+                                <div class="col-sm-3">
+                                    <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ old('porc_retencion_islr') ?? 0}}"  autocomplete="porc_retencion_islr" readonly>
+    
+                                    @error('porc_retencion_islr')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                       </div>
                         <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-3 offset-md-4">
@@ -222,8 +235,8 @@
                                    Registrar proveedor
                                 </button>
                             </div>
-                            <div class="col-md-2">
-                                <a href="{{ route('providers') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
+                            <div class="col-md-3">
+                                <a href="{{ route('providers') }}" id="btnfacturar" name="btnfacturar" class="btn btn-info" title="facturar">Ver Listado de Proveedores</a>
                             </div>
                         </div>
                         </div>
@@ -350,7 +363,6 @@ $(document).ready(function() {
     $("#phone1").mask('0000 000-0000', { reverse: true });
     $("#phone2").mask('0000 000-0000', { reverse: true });
     $("#porc_retencion_iva").mask('000', { reverse: true });
-    $("#porc_retencion_islr").mask('000', { reverse: true });
     $("#amount_max_credit").mask('000.000.000.000.000.000,00', { reverse: true });
     $("#balance").mask('000.000.000.000.000.000,00', { reverse: true });
     $("#days_credit").mask('000', { reverse: true });
@@ -383,12 +395,16 @@ $(document).ready(function() {
             }
 
 
-    });
-
-
-
-
         });
+
+        $("#islr_concept").on('change',function(){
+            
+            document.getElementById("porc_retencion_islr").value = $(this).find(':selected').data('id');
+           
+        });
+
+
+});
 
 </script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

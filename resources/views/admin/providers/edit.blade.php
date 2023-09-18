@@ -244,18 +244,42 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="porc_retencion_islr" class="col-sm-2 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
-
-                            <div class="col-sm-4">
-                                <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ $var->porc_retencion_islr }}" required autocomplete="porc_retencion_islr">
-
-                                @error('porc_retencion_islr')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
                         </div>
+
+                        <div class="form-group row">
+                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
+
+                                <div class="col-sm-3">
+                                
+                                <select class="form-control" name="islr_concept" id="islr_concept">
+                                    <option disabled selected value="0">Seleccionar</option>
+                                    @if ($var->concepto_islr > 0)
+                                        @foreach ($islrconcepts as $islrconcept)
+                                             @if($var->concepto_islr == $islrconcept->id)
+                                             <option selected value="{{$islrconcept->id}}" data-id="{{$islrconcept->value}}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                             @else
+                                             <option value="{{$islrconcept->id}}" data-id="{{$islrconcept->value}}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                             @endif
+                                        @endforeach
+                                    @else
+                                        @foreach ($islrconcepts as $islrconcept)
+                                        <option value="{{$islrconcept->id}}" data-id="{{$islrconcept->value}}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                       @endforeach
+                                    @endif
+                                </select>
+                                </div>
+                                <label for="porc_retencion_islr" class="col-md-3 col-form-label text-md-right">Porcentaje Retención de ISLR</label>
+
+                                <div class="col-sm-3">
+                                    <input id="porc_retencion_islr" type="text" class="form-control @error('porc_retencion_islr') is-invalid @enderror" name="porc_retencion_islr" value="{{ $var->porc_retencion_islr ?? 0}}"  autocomplete="porc_retencion_islr" readonly>
+    
+                                    @error('porc_retencion_islr')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                       </div>
 
                         <div class="form-group row">
                             <label for="segmento" class="col-sm-2 col-form-label text-md-right">Status</label>
@@ -332,6 +356,14 @@
             $("#days_credit").mask('000', { reverse: true });
             
         });
+
+        $("#islr_concept").on('change',function(){
+            
+            document.getElementById("porc_retencion_islr").value = $(this).find(':selected').data('id');
+           
+        });
+
+
 
         var has_credit = document.getElementById('has_credit').value;
         

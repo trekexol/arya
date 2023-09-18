@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Provider;
+use App\IslrConcept;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,7 +33,10 @@ class ProviderController extends Controller
    {
     if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
 
-       return view('admin.providers.create');
+       $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
+       
+       return view('admin.providers.create',compact('islrconcepts'));
+
     }else{
         return redirect('/providers')->withDanger('No Tiene Permiso!');
     }
@@ -47,7 +51,6 @@ class ProviderController extends Controller
         $resp['msg'] = '';
 
     if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
-
 
 
     if($request->ajax()){
@@ -98,7 +101,6 @@ class ProviderController extends Controller
             $users->country = request('country');
             $users->phone1 = $request->phone1;
             $users->phone2 = $request->phone1;
-
             $has_credit = request('has_credit');
             if($has_credit == null){
                 $users->has_credit = false;
@@ -114,6 +116,7 @@ class ProviderController extends Controller
             $users->amount_max_credit = $sin_formato_amount_max_credit;
             $users->porc_retencion_iva = $request->porc_retencion_iva;
             $users->porc_retencion_islr = $request->porc_retencion_islr;
+            $users->concepto_islr = request('islr_concept');
             $users->balance = $sin_formato_balance;
             $users->status =  1;
             $users->save();
@@ -132,9 +135,6 @@ class ProviderController extends Controller
         }
     }
 
-
-
-
         }else{
             return redirect('/providers')->withDanger('No Tiene Permiso!');
         }
@@ -145,11 +145,13 @@ class ProviderController extends Controller
    public function edit(request $request,$id)
    {
     if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
-
+       
+        $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
+       
         $var = Provider::on(Auth::user()->database_name)->find($id);
 
 
-        return view('admin.providers.edit',compact('var'));
+        return view('admin.providers.edit',compact('var','islrconcepts'));
 
     }else{
         return redirect('/providers')->withDanger('No Tiene Permiso!');
@@ -171,13 +173,9 @@ class ProviderController extends Controller
         'country'               =>'required|max:20',
         'phone1'                =>'required|max:20',
         'phone2'                =>'required|max:20',
-
-
         'days_credit'           =>'required',
         'amount_max_credit'     =>'required',
         'porc_retencion_iva'    =>  'numeric|min:0|max:100',
-        'porc_retencion_islr'   => 'numeric|min:0|max:100',
-
         'balance'               =>'required',
 
 
@@ -212,6 +210,7 @@ class ProviderController extends Controller
     $users->amount_max_credit = $sin_formato_amount_max_credit;
     $users->porc_retencion_iva = request('porc_retencion_iva');
     $users->porc_retencion_islr = request('porc_retencion_islr');
+    $users->concepto_islr = request('islr_concept');
 
     $users->balance = $sin_formato_balance;
     $users->status =  request('status');

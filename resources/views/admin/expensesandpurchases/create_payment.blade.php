@@ -421,8 +421,8 @@
 
                         <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
 
-                        <input type="hidden" id="total_retiene_iva" name="total_retiene_iva" value="0" readonly>
-                        <input type="hidden" id="total_retiene_islr" name="total_retiene_islr" value="{{ $total_retiene_islr ?? 0 }}" readonly>
+                        <input type="text" id="total_retiene_iva" name="total_retiene_iva" value="0" readonly>
+                        <input type="text" id="total_retiene_islr" name="total_retiene_islr" value="{{ $total_retiene_islr ?? 0 }}" readonly>
 
                         <input type="hidden" id="date_payment_form" name="date_payment_form" value="{{$expense->date}}" readonly>
 
