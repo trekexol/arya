@@ -50,7 +50,7 @@
         <a href="{{ route('quotations.indexdeliverynotesald',"Nota de Entrega")}}" class="btn btn-success float-md-right" role="button" aria-pressed="true">Notas Saldadas</a>
       </div>
       <div class="col-md-3">
-        <a href="{{ route('quotations.createquotation',"Nota de Entrega")}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Nota de Entrega</a>
+        <a href="{{ route('quotations.createquotation')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar Nota de Entrega desde Cotización</a>
       </div>
     </div>
   </div>
