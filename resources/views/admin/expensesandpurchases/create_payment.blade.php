@@ -198,9 +198,15 @@
                             <select class="form-control" name="islr_concept" id="islr_concept">
                                 <option disabled selected value="0">Seleccionar</option>
                                 @if (isset($islrconcepts))
+
                                     @foreach ($islrconcepts as $islrconcept)
-                                        <option value="{{$islrconcept->value}}"  data-id="{{ $islrconcept->id }}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @if($provider->concepto_islr > 0 and $islrconcept->id == $provider->concepto_islr)
+                                            <option selected value="{{$islrconcept->value}}"  data-id="{{ $islrconcept->id }}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @else
+                                            <option value="{{$islrconcept->value}}"  data-id="{{ $islrconcept->id }}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @endif
                                     @endforeach
+                                
                                 @endif
                             </select>
                             </div>
