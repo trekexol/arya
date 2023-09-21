@@ -307,7 +307,7 @@
         let totalBaseImponible = "<?php echo $quotation->base_imponible ?>";
 
         let totalIvaMenos = inputIva * "<?php echo $quotation->base_imponible ; ?>" / 100;
-
+        console.log(totalIvaMenos);
         /*-----------------------------------*/
         /*Toma la Base y la envia por form*/
         let sub_total_form = document.getElementById("total_factura").value;

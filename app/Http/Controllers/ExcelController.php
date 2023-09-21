@@ -443,7 +443,7 @@ class ExcelController extends Controller
         $tipo = $request->tipo;
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
-        $contrapartida = $request->contrapartida;
+        $contrapartida = $request->subcontrapartida2;
 
          if (!isset($file)){
              return redirect('inventories/index')->with('danger', 'Para importar debe seleccionar un Archivo tipo excel.. El archivo es la plantilla previamente descargada del sistema en el botón Opciones');
