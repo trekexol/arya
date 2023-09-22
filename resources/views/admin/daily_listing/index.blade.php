@@ -9,16 +9,16 @@
     <!-- Page Heading -->
     <div class="row py-lg-2">
         <div class="col-sm-8 offset-sm-3 h4">
-            Listado de Comprobantes Contables detallados 
+            Listado de Comprobantes Contables detallados
         </div>
-       
+
     </div>
     <div class="row py-lg-2">
         <div class="col-sm-4">
             <a class="btn btn-light2" href="#" data-toggle="modal" data-target="#libroModalAccount"><i class="fas fa-eye" ></i>
                 &nbsp Imprimir Libro Diario por Cuentas
             </a>
-            
+
         </div>
         <div class="col-sm-3">
             <a href="#" data-toggle="modal" data-target="#libroModal" class="btn btn-light2"><i class="fas fa-eye" ></i>
@@ -37,8 +37,8 @@
                 &nbsp Libro Mayor por Cuentas
             </a>
         </div>
-        
-    
+
+
     </div>
     <div class="row py-lg-2">
         <form method="POST" action="{{ route('daily_listing.store') }}">
@@ -68,7 +68,7 @@
                         @enderror
                     </div>
                     <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Buscar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Buscar</button>
                     </div>
                 </div>
             </div>
@@ -88,30 +88,30 @@
                 <thead>
                 <tr>
                     <th class="text-center">Fecha</th>
-                   
+
                     <th class="text-center">Cuenta</th>
                     <th class="text-center">Tipo de Movimiento</th>
-                    
+
                     <th class="text-center">Ref</th>
-                  
+
                     <th class="text-center">Descripción</th>
                     <th class="text-center">Debe</th>
                     <th class="text-center">Haber</th>
-                   
-                   
-                  
+
+
+
                 </tr>
                 </thead>
-                
+
                 <tbody>
                     @if (empty($detailvouchers))
                     @else
                         @foreach ($detailvouchers as $var)
                         <tr>
                         <td class="text-center">{{$var->date ?? ''}}</td>
-                        
+
                         <td>{{$var->account_description ?? ''}}</td>
-                        
+
                         @if(isset($var->id_invoice))
                             <td class="text-center">Factura</td>
                             <td class="text-center">
@@ -122,27 +122,27 @@
                             <td class="text-center">
                             {{ $var->id_expense }}
                             </td>
-                        @elseif(isset($var->id_header_voucher)) 
+                        @elseif(isset($var->id_header_voucher))
                             <td class="text-center">Otro</td>
                             <td class="text-center">
                             {{ $var->id_header_voucher }}
                             </td>
                         @endif
-                        
-                                       
-                       
+
+
+
                         @if (isset($var->id_invoice))
-                            
+
                             <td>{{$var->description ?? ''}}</td>
-                        
+
                         @elseif (isset($var->id_expense))
-                            
+
                             <td>{{$var->description ?? ''}}</td>
                         @else
-                            
+
                             <td>{{ $var->description ?? ''}}</td>
                         @endif
-                       
+
                         @if(isset($var->accounts['coin']))
                             @if(($var->debe != 0) && ($var->tasa))
                                 <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}<br>{{number_format($var->debe/$var->tasa, 2, ',', '.')}}{{ $var->accounts['coin'] }}</td>
@@ -158,7 +158,7 @@
                             <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
                             <td class="text-right font-weight-bold">{{number_format($var->haber, 2, ',', '.')}}</td>
                         @endif
-                        
+
                         </tr>
                         @endforeach
                     @endif
@@ -190,7 +190,7 @@
                                 @foreach($accounts as $var)
                                     <option value="{{ $var->id }}">{{ $var->description }}</option>
                                 @endforeach
-                              
+
                             </select>
                         </div>
                 </div>
@@ -205,10 +205,10 @@
                 </div>
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
-    
+
                         @error('date_begin')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -218,10 +218,10 @@
                 </div>
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
-    
+
                         @error('date_end')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -230,7 +230,7 @@
                     </div>
                 </div>
             </div>
-          
+
                 <div class="col-sm-6  dropdown mb-4">
                     <button class="btn btn-success" type="button"
                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
@@ -240,12 +240,12 @@
                     </button>
                     <div class="dropdown-menu animated--fade-in"
                         aria-labelledby="dropdownMenuButton">
-                        <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                        <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                     </div>
-                </div> 
+                </div>
                 <div class="modal-footer">
                     <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                     </div>
             </form>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -300,13 +300,13 @@
                 </button>
                 <div class="dropdown-menu animated--fade-in"
                     aria-labelledby="dropdownMenuButton">
-                    <a href="#" onclick="exportToExcelJournalbook();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                    <a href="#" onclick="exportToExcelJournalbook();" class="dropdown-item bg-light">Exportar a Excel</a>
                 </div>
-            </div> 
+            </div>
         </div>
             <div class="modal-footer">
                 <div class="form-group col-md-2">
-                    <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                    <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                 </div>
         </form>
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -335,9 +335,18 @@
                                 @foreach($accounts as $var)
                                     <option value="{{ $var->id }}">{{ $var->description }}</option>
                                 @endforeach
-                              
+
                             </select>
                         </div>
+                </div>
+                <div class="form-group row">
+                    <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Resumen:</label>
+                    <div class="col-md-6">
+                        <select class="form-control" name="resumen" id="resumen">
+                            <option selected value="NO">NO</option>
+                            <option value="SI">SI</option>
+                        </select>
+                    </div>
                 </div>
                <!-- <div class="form-group row">
                     <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Moneda:</label>
@@ -350,10 +359,10 @@
                 </div> -->
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">Desde</label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_begin') is-invalid @enderror" name="date_begin" value="{{  $date_begin ?? $datenow ?? '' }}" required autocomplete="date_begin">
-    
+
                         @error('date_begin')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -363,10 +372,10 @@
                 </div>
                 <div class="form-group row">
                     <label for="date_end" class="col-sm-2 col-form-label text-md-right">hasta </label>
-    
+
                     <div class="col-sm-6">
                         <input id="date_begin" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ $date_end ?? $datenow ?? '' }}" required autocomplete="date_end">
-    
+
                         @error('date_end')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -383,13 +392,13 @@
                     </button>
                     <div class="dropdown-menu animated--fade-in"
                         aria-labelledby="dropdownMenuButton">
-                        <a href="#" onclick="exportToExcelJournalbookAccount();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                        <a href="#" onclick="exportToExcelJournalbookAccount();" class="dropdown-item bg-light">Exportar a Excel</a>
                     </div>
-                </div> 
+                </div>
             </div>
                 <div class="modal-footer">
                     <div class="form-group col-md-2">
-                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>  
+                        <button type="submit" class="btn btn-info" title="Buscar">Enviar</button>
                     </div>
             </form>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
@@ -397,7 +406,7 @@
             </div>
         </div>
     </div>
-    
+
 @endsection
 
 @section('javascript')
@@ -426,5 +435,5 @@
         document.getElementById("formPostJournalbookAccount").submit();
         document.getElementById("formPostJournalbookAccount").action = old_action;
     }
-    </script> 
+    </script>
 @endsection

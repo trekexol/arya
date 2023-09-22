@@ -471,7 +471,7 @@ class ExcelController extends Controller
                 if($products != null){
                    $id_account = $products->id_account;
                 }else{
-                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Mercancia para la Venta%')->first();
+                    $account_gastos_ajuste_inventario = Account::on(Auth::user()->database_name)->where('description','LIKE','%Materia Prima%')->first();
                     $id_account = $account_gastos_ajuste_inventario->id;
                 }
 

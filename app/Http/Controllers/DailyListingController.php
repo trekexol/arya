@@ -103,6 +103,8 @@ class DailyListingController extends Controller
 
     public function print_journalbook(Request $request)
     {
+
+        $resumen = request('resumen');
         $date_begin = request('date_begin');
         $date_end = request('date_end');
 
@@ -114,7 +116,7 @@ class DailyListingController extends Controller
         $id_account = request('id_account');
 
         $company = Company::on(Auth::user()->database_name)->find(1);
-
+        if($resumen != "SI"){
         if(isset($id_account)){
             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('header_vouchers')
             ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
@@ -296,9 +298,46 @@ class DailyListingController extends Controller
        ///////////FIN MODIFI DONA PAULA/////////////////////////////////////////////////////////////
 
 
-        $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
-                                ,'datenow','date_begin','date_end'));
-        return $pdf->stream();
+
+    }//fin if resumen
+
+    else{
+
+        if(isset($id_account)){
+            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('header_vouchers')
+            ->join('detail_vouchers', 'detail_vouchers.id_header_voucher', '=', 'header_vouchers.id')
+            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+            ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                $query->select('id_header_voucher')
+                ->from('detail_vouchers')
+                ->where('id_account',$id_account);
+            })
+            ->whereIn('detail_vouchers.status', ['F','C'])
+            ->select(DB::raw("SUM(detail_vouchers.debe) AS debe"),DB::raw("SUM(detail_vouchers.haber) AS haber")
+            ,'accounts.description as account_description')->groupBy('accounts.description')->get();
+        }else{
+            $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+            ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+            ->whereBetween('header_vouchers.date', [$date_begin, $date_end])
+            ->whereIn('detail_vouchers.status', ['F','C'])
+            ->select('detail_vouchers.debe','detail_vouchers.haber'
+            ,'accounts.description as account_description')->get();
+        }
+
+
+
+
+
+
+    }
+
+    $pdf = $pdf->loadView('admin.reports.journal_book',compact('company','detailvouchers'
+    ,'datenow','date_begin','date_end','resumen'));
+return $pdf->stream();
+
+
     }
 
 
