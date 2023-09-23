@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentReportController extends Controller
 {
+    /// antes PaymentLicReportController
     public $userAccess;
     public $modulo = 'Reportes';
 
@@ -28,7 +29,7 @@ class PaymentReportController extends Controller
 
     public function index($typeperson,$id_client_or_vendor = null)
     {
-
+      
         $userAccess = new UserAccessController();
 
         if($userAccess->validate_user_access($this->modulo)){
@@ -36,7 +37,6 @@ class PaymentReportController extends Controller
             $datenow = $date->format('Y-m-d');
             $client = null;
             $vendor = null;
-
 
             if(isset($typeperson) && $typeperson == 'Cliente'){
                 if(isset($id_client_or_vendor)){
