@@ -250,7 +250,7 @@
             }
         }
 
-        urlp = "{{route('products.create')}}";
+        urlp = "{{route('products.create',['MERCANCIA'])}}";
 
         function myFunction() {
             window.open(urlp, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=1000,left=1000,width=1000,height=1000");
