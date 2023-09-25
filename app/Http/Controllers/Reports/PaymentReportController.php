@@ -48,7 +48,7 @@ class PaymentReportController extends Controller
                 }
             }
 
-            return view('admin.reports.paymentslic.index_payments',compact('client','datenow','typeperson','vendor'));
+            return view('admin.reports.payments.index_payments',compact('client','datenow','typeperson','vendor'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -82,7 +82,7 @@ class PaymentReportController extends Controller
         }
 
 
-        return view('admin.reports.paymentslic.index_payments',compact('coin','date_end','client','vendor','typeperson'));
+        return view('admin.reports.payments.index_payments',compact('coin','date_end','client','vendor','typeperson'));
     }
 
     function pdf($coin,$date_end,$typeperson,$id_client_or_vendor = null)
@@ -155,7 +155,7 @@ class PaymentReportController extends Controller
 
         }
 
-        $pdf = $pdf->loadView('admin.reports.paymentslic.payments',compact('coin','quotation_payments','datenow','date_end'));
+        $pdf = $pdf->loadView('admin.reports.payments.payments',compact('coin','quotation_payments','datenow','date_end'));
         return $pdf->stream();
 
     }
@@ -164,14 +164,14 @@ class PaymentReportController extends Controller
     {
         $clients    = Client::on(Auth::user()->database_name)->get();
 
-        return view('admin.reports.paymentslic.selectclient',compact('clients'));
+        return view('admin.reports.payments.selectclient',compact('clients'));
     }
 
     public function selectVendor()
     {
         $vendors    = Vendor::on(Auth::user()->database_name)->get();
 
-        return view('admin.reports.paymentslic.selectvendor',compact('vendors'));
+        return view('admin.reports.payments.selectvendor',compact('vendors'));
     }
 
     function asignar_payment_type($type){
