@@ -17,7 +17,20 @@
                 
                 <div class="card-body">
                         <div class="form-group row">
-                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">hasta:</label>
+                            
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Desde:</label>
+
+                            <div class="col-sm-3">
+                                <input id="date_ini" type="date" class="form-control @error('date_ini') is-invalid @enderror" name="date_ini" value="{{ date('Y-m-d', strtotime($date_ini ?? $datenow))}}" required autocomplete="date_ini">
+
+                                @error('date_ini')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            
+                            <label for="date_end" class="col-sm-1 col-form-label text-md-right">Hasta:</label>
 
                             <div class="col-sm-3">
                                 <input id="date_end" type="date" class="form-control @error('date_end') is-invalid @enderror" name="date_end" value="{{ date('Y-m-d', strtotime($date_end ?? $datenow))}}" required autocomplete="date_end">
@@ -95,7 +108,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ route('report_payments.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ route('report_payments.pdf',[$coin ?? 'bolivares',$date_end ?? $datenow,$date_ini ?? $datenow,$typeperson ?? 'ninguno',$client->id ?? $vendor->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
                         
                         </div>

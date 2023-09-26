@@ -616,9 +616,9 @@ class FacturarController extends Controller
        /* $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
         $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
 
-          /************PARA LO DE COURIERTOOL NO TOCAR ********/
-          $montocour = str_replace(',', '.', str_replace('.', '', request('total_pay')));
-          /***************************************************************/
+        /************PARA LO DE COURIERTOOL NO TOCAR ********/
+        $montocour = str_replace(',', '.', str_replace('.', '', request('total_pay')));
+        /***************************************************************/
 
 
 
@@ -635,29 +635,17 @@ class FacturarController extends Controller
         $total_mercancia = request('total_mercancia_credit');
         $total_servicios = request('total_servicios_credit');
 
-
-
         if($moneda == 'dolares'){
             $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
             $sin_formato_amount_iva = round($sin_formato_amount_iva, 2);
 
-
             $sin_formato_base_imponible = $sin_formato_base_imponible * $bcv;
             $sin_formato_base_imponible = round($sin_formato_base_imponible, 2);
 
-            $sin_formato_grand_total = $sin_formato_base_imponible + $sin_formato_amount_iva;
-
-
-
-           if($sin_formato_grand_total ==   0){
-            $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
             $sin_formato_grand_total = $sin_formato_grand_total * $bcv;
-
-             }
 
             $sin_formato_amount = $sin_formato_amount * $bcv;
             $sin_formato_amount = round($sin_formato_amount, 2);
-
 
             $total_retiene_iva = $total_retiene_iva * $bcv;
             $total_retiene_islr = $total_retiene_islr * $bcv;
@@ -717,20 +705,20 @@ class FacturarController extends Controller
 
 
 
-                /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-                if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
+        /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+        if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
-                    $factcour  = new FacturasCour();
-                    $factcour->setConnection(Auth::user()->database_name);
-                    $factcour->id_ventas = $id_quotation;
-                    $factcour->tipo_fac = $request->tifac;
-                    $factcour->tipo_movimiento = $request->court;
-                    $factcour->numero =  $request->nrofactcou;
-                    $factcour->monto =  $montocour;
-                    $factcour->save();
+            $factcour  = new FacturasCour();
+            $factcour->setConnection(Auth::user()->database_name);
+            $factcour->id_ventas = $id_quotation;
+            $factcour->tipo_fac = $request->tifac;
+            $factcour->tipo_movimiento = $request->court;
+            $factcour->numero =  $request->nrofactcou;
+            $factcour->monto =  $montocour;
+            $factcour->save();
 
-                }
-            /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+        }
+    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
 
 
@@ -1647,8 +1635,6 @@ class FacturarController extends Controller
                                 return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 6!');
                             }
                         }
-
-
 
 
                             $var6->payment_type = request('payment_type6');
