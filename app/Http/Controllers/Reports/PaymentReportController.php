@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Reports;
 
 use App;
 use App\Client;
+use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserAccess\UserAccessController;
 use App\Vendor;
@@ -34,7 +35,12 @@ class PaymentReportController extends Controller
 
         if($userAccess->validate_user_access($this->modulo)){
             $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');
+            $global = new GlobalController();
+            $datenow = $date->format('d-m-Y');
+
+            $date_ini = $global->data_first_month_day();
+            $date_end = $global->data_last_month_day();
+
             $client = null;
             $vendor = null;
 
@@ -48,7 +54,7 @@ class PaymentReportController extends Controller
                 }
             }
 
-            return view('admin.reports.payments.index_payments',compact('client','datenow','typeperson','vendor'));
+            return view('admin.reports.payments.index_payments',compact('client','datenow','typeperson','vendor','date_ini','date_end'));
         }else{
             return redirect('/home')->withDanger('No tiene Acceso al modulo de '.$this->modulo);
         }
@@ -57,7 +63,9 @@ class PaymentReportController extends Controller
     public function store(Request $request)
     {
 
+        $date_ini = request('date_ini');
         $date_end = request('date_end');
+    
         $type = request('type');
         $id_client = request('id_client');
         $id_vendor = request('id_vendor');
@@ -82,10 +90,10 @@ class PaymentReportController extends Controller
         }
 
 
-        return view('admin.reports.payments.index_payments',compact('coin','date_end','client','vendor','typeperson'));
+        return view('admin.reports.payments.index_payments',compact('coin','date_end','date_ini','client','vendor','typeperson','date_ini'));
     }
 
-    function pdf($coin,$date_end,$typeperson,$id_client_or_vendor = null)
+    function pdf($coin,$date_end,$date_ini,$typeperson,$id_client_or_vendor = null)
     {
 
         $pdf = App::make('dompdf.wrapper');
@@ -93,16 +101,20 @@ class PaymentReportController extends Controller
 
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y');
-        if(empty($date_end)){
-            $date_end = $datenow;
+        $global = new GlobalController();
 
-            $date_consult = $date->format('Y-m-d');
+        if(empty($date_ini)){
+            $date_ini = $global->data_first_month_day();
         }else{
-            $date_end = Carbon::parse($date_end)->format('d-m-Y');
-
-            $date_consult = Carbon::parse($date_end)->format('Y-m-d');
+            $date_ini = Carbon::parse($date_ini)->format('Y-m-d');
         }
 
+
+        if(empty($date_end)){
+            $date_end = $global->data_last_month_day();
+        }else{
+            $date_end = Carbon::parse($date_end)->format('Y-m-d');
+        }
 
         $period = $date->format('Y');
 
@@ -113,13 +125,18 @@ class PaymentReportController extends Controller
                                 ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                                 ->join('quotation_payments', 'quotation_payments.id_quotation','=','quotations.id')
                                 ->join('accounts', 'accounts.id','=','quotation_payments.id_account')
+                                ->leftjoin('detail_vouchers', 'detail_vouchers.id_invoice','=','quotations.id')
+                                ->leftjoin('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
                                 ->where('quotations.amount','<>',null)
-                                ->where('quotations.date_quotation','<=',$date_consult)
+                                ->whereRaw("(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
+                                [$date_ini,$date_end])
                                 ->where('quotations.id_client',$id_client_or_vendor)
-
-                                ->select('quotation_payments.*','quotations.number_invoice','clients.name as name_client','accounts.description as description_account')
+                                ->select('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','clients.name as name_client','accounts.description as description_account','header_vouchers.date as date')
+                                ->groupBy('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','name_client','description_account','date')
                                 ->orderBy('quotation_payments.id','desc')
+                                ->orderBy('header_vouchers.date','desc')
                                 ->get();
+            
 
 
         }else if(isset($typeperson) && $typeperson == 'Vendedor'){
@@ -129,12 +146,16 @@ class PaymentReportController extends Controller
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
                     ->join('quotation_payments', 'quotation_payments.id_quotation','=','quotations.id')
                     ->join('accounts', 'accounts.id','=','quotation_payments.id_account')
+                    ->leftjoin('detail_vouchers', 'detail_vouchers.id_invoice','=','quotations.id')
+                    ->leftjoin('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
                     ->where('quotations.amount','<>',null)
-                    ->where('quotations.date_quotation','<=',$date_consult)
+                    ->whereRaw("(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
+                    [$date_ini,$date_end])
                     ->where('quotations.id_vendor',$id_client_or_vendor)
-
-                    ->select('quotation_payments.*','quotations.number_invoice','clients.name as name_client','accounts.description as description_account')
+                    ->select('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','clients.name as name_client','accounts.description as description_account','header_vouchers.date as date')
+                    ->groupBy('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','name_client','description_account','date')
                     ->orderBy('quotation_payments.id','desc')
+                    ->orderBy('header_vouchers.date','desc')
                     ->get();
 
         }else{
@@ -142,20 +163,29 @@ class PaymentReportController extends Controller
                     ->leftjoin('clients', 'clients.id','=','quotations.id_client')
                     ->join('quotation_payments', 'quotation_payments.id_quotation','=','quotations.id')
                     ->join('accounts', 'accounts.id','=','quotation_payments.id_account')
+                    ->leftjoin('detail_vouchers', 'detail_vouchers.id_invoice','=','quotations.id')
+                    ->leftjoin('header_vouchers', 'header_vouchers.id','=','detail_vouchers.id_header_voucher')
                     ->where('quotations.amount','<>',null)
-                    ->where('quotations.date_quotation','<=',$date_consult)
-                    ->select('quotation_payments.*','quotations.number_invoice','clients.name as name_client','accounts.description as description_account')
+                    ->where('header_vouchers.status','1')
+                    ->where('detail_vouchers.status','C')
+                    ->whereRaw("(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
+                    [$date_ini,$date_end])
+                    ->select('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','clients.name as name_client','accounts.description as description_account','header_vouchers.date as date')
+                    ->groupBy('quotation_payments.id','quotation_payments.id_quotation','quotation_payments.id_account','quotation_payments.payment_type','quotation_payments.amount','quotation_payments.rate','quotation_payments.IGTF_percentage','quotation_payments.credit_days','quotation_payments.reference','quotation_payments.status','quotations.number_invoice','name_client','description_account','date')
                     ->orderBy('quotation_payments.id','desc')
+                    ->orderBy('header_vouchers.date','desc')
                     ->get();
+
         }
 
+        $quotation_payments = $quotation_payments ->unique('id');
 
         foreach($quotation_payments as $var){
             $var->payment_type = $this->asignar_payment_type($var->payment_type);
 
         }
 
-        $pdf = $pdf->loadView('admin.reports.payments.payments',compact('coin','quotation_payments','datenow','date_end'));
+        $pdf = $pdf->loadView('admin.reports.payments.payments',compact('coin','quotation_payments','datenow','date_end','date_ini'));
         return $pdf->stream();
 
     }

@@ -1524,7 +1524,7 @@ Route::group(["prefix"=>'vendor_list'],function(){
 Route::group(["prefix"=>'report_payments'],function(){
     Route::get('menu/{typeperson}/{id_client?}','Reports\PaymentReportController@index')->name('report_payments.index');
     Route::post('store','Reports\PaymentReportController@store')->name('report_payments.store');
-    Route::get('pdf/{coin}/{date_end}/{typeperson}/{id_client_or_vendor?}','Reports\PaymentReportController@pdf')->name('report_payments.pdf');
+    Route::get('pdf/{coin}/{date_end}/{date_ini}/{typeperson}/{id_client_or_vendor?}','Reports\PaymentReportController@pdf')->name('report_payments.pdf');
     Route::get('selectclient','Reports\PaymentReportController@selectClient')->name('report_payments.selectClient');
     Route::get('selectvendor','Reports\PaymentReportController@selectVendor')->name('report_payments.selectVendor');
 });
