@@ -984,6 +984,26 @@ return [
                 ]) : [],
             ],
 
+            'kozaka' => [
+                'driver' => 'mysql',
+                'url' => env('DATABASE_URL'),
+                'host' => env('KOZAKA_HOST', '127.0.0.1'),
+                'port' => env('KOZAKA_PORT', '3306'),
+                'database' => env('KOZAKA_DATABASE', 'forge'),
+                'username' => env('KOZAKA_USERNAME', 'forge'),
+                'password' => env('KOZAKA_PASSWORD', ''),
+                'unix_socket' => env('KOZAKA_SOCKET', ''),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+                'options' => extension_loaded('pdo_mysql') ? array_filter([
+                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                ]) : [],
+            ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
