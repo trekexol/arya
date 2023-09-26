@@ -40,7 +40,7 @@
 <table style="width: 100%;">
   <tr>
     <th class="text-center">Nº</th>
-    <th class="text-center">Fecha</th>
+    <th style="width: 9%" class="text-center">Fecha</th>
     <th class="text-center">Nº Factura</th>
 
     <th class="text-center">{{$typeperson ?? 'Cliente'}}</th>
