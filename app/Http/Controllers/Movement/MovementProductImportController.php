@@ -24,7 +24,7 @@ class MovementProductImportController extends Controller
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d'); 
         $user =   auth()->user();
-        $header_voucher->description = "Incremento de Inventario de Forma Masiva";
+        $header_voucher->description = "Incremento de Inventario de Forma Masiva "." Tasa: ".$rate;
         $header_voucher->date = $datenow;
         $header_voucher->status =  "1";
         $header_voucher->save();

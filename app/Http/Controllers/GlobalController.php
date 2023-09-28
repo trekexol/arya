@@ -1376,6 +1376,9 @@ class GlobalController extends Controller
 
     public function add_movement($tasa,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
 
+
+       /* $tasa = str_replace(',', '.', str_replace('.', '', $tasa));*/
+        
         $detail = new DetailVoucher();
         $detail->setConnection(Auth::user()->database_name);
 

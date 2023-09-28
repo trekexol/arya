@@ -162,7 +162,7 @@
                            <div class="form-group row">
                                 <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
                                 <div class="col-sm-3">
-                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format($bcv ?? 1, 4, '.', '') }}" required autocomplete="rate">
+                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format($bcv ?? 1, 2, '.', '') }}" required autocomplete="rate">
                                     @error('rate')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

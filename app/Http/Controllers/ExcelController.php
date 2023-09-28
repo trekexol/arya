@@ -655,7 +655,7 @@ class ExcelController extends Controller
             $subcontrapartida = $request->Subcontrapartida;
             $amount = $request->amount;
             $amountp = $request->amountp;
-            $rate = str_replace(',', '.', str_replace('.', '', $request->rate));
+            $rate = $request->rate;
 
             $file = $request->file('file');
 
