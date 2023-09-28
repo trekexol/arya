@@ -3514,13 +3514,6 @@ public function notas(request $request)
         }
 
 
-
-
-
-
-
-
-
     }
 
 
@@ -3557,11 +3550,6 @@ public function notas(request $request)
 
         return view('admin.expensesandpurchases.selectinvoice',compact('expensesandpurchases','route'));
     }
-
-
-
-
-
 
 
     public function notastore(Request $request)

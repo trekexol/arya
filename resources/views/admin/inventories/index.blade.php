@@ -127,19 +127,42 @@
                     <form action="{{ route('import_product_procesar') }}" method="post"  enctype="multipart/form-data" >
                         @csrf
                         <input id="amount" type="hidden" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($total_amount_for_import ?? 0, 2, '.', '') }}" readonly required autocomplete="amount">
-
+                        <input id="amountp" type="hidden" class="form-control @error('amountp') is-invalid @enderror" name="amountp" value="{{ number_format($total_amount_for_import_materiap ?? 0, 2, '.', '') }}" readonly required autocomplete="amountp">
                         <div class="form-group row">
                             <div class="offset-sm-1">
                                 <input id="file_form" type="file" value="import" accept=".xlsx" name="file" class="file" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="contrapartida" class="col-sm-12 col-form-label text-md-center">El Total del costo a Cargar es: {{number_format($total_amount_for_import ?? 0, 2, ',', '.')}}</label>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td style="width: 60%">
+                                        <span class="col-sm-12 text-md-left">Costo Mercancia para la Venta:</span>
+                                    </td>
+                                    <td style="text-align:right; width:20%">
+                                        ${{number_format($total_amount_for_import ?? 0, 2, '.', '')}}
+                                    </td>
+                                    <td style="text-align:right; width:20%">
+                                        {{number_format($total_amount_for_import ?? 0, 2, '.', '') * number_format($bcv ?? 1, 2, '.', '')}} Bs
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 60%">
+                                        <span class="col-sm-12 text-md-left">Costo Materia Prima:</span>
+                                    </td>
+                                    <td style="text-align:right; width:20%">
+                                        ${{number_format($total_amount_for_import_materiap ?? 0, 2, '.', '')}}
+                                    </td>
+                                    <td style="text-align:right; width:20%">
+                                        {{number_format($total_amount_for_import_materiap ?? 0, 2, '.', '') * number_format($bcv ?? 1, 2, '.', '')}} Bs
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                            <div class="form-group row">
                                 <label for="rate" class="col-sm-2 col-form-label text-md-right">Tasa:</label>
                                 <div class="col-sm-3">
-                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format(bcdiv($bcv ?? 0, '1', 2) , 2, ',', '.') }}" required autocomplete="rate">
+                                    <input id="rate" type="text" class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{  number_format($bcv ?? 1, 2, '.', '') }}" required autocomplete="rate">
                                     @error('rate')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -600,8 +623,9 @@
     if("{{isset($total_amount_for_import)}}"){
         $('#movementModal').modal('show');
     }
-
-
+    if("{{isset($total_amount_for_import_materiap)}}"){
+        $('#movementModal').modal('show');
+    }
 </script>
 
     <script type="text/javascript">

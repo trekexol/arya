@@ -613,7 +613,7 @@ class FacturarController extends Controller
         $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('total_factura')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount')));
         $sin_formato_amount_with_iva = str_replace(',', '.', str_replace('.', '', request('total_pay')));
-       /* $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
+       /*$sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
         $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
 
         /************PARA LO DE COURIERTOOL NO TOCAR ********/
