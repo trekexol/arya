@@ -409,9 +409,19 @@ class ExcelController extends Controller
         $rows = Excel::toArray(new ProductReadImport, $file);
 
         $total_amount_for_import = 0;
-
+        $total_amount_for_import_materiap = 0;
+        $cantidad_actual = 0;
+        
         foreach ($rows[0] as $row) {
-            $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
+
+
+            if ($row['tipo_mercancia_o_servicio'] == 'MERCANCIA'){ 
+                $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
+            }
+            if ($row['tipo_mercancia_o_servicio'] == 'MATERIAP'){ 
+                $total_amount_for_import_materiap += $row['precio_compra'] * $row['cantidad_actual'];
+            }
+                 
         }
 
         $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();
@@ -428,7 +438,7 @@ class ExcelController extends Controller
 
         $bcv = $global->search_bcv();
 
-        return view('admin.inventories.index',compact('namemodulomiddleware','eliminarmiddleware','actualizarmiddleware','agregarmiddleware','sistemas','products','total_amount_for_import','contrapartidas','bcv'))->with(compact('file'));
+        return view('admin.inventories.index',compact('namemodulomiddleware','eliminarmiddleware','actualizarmiddleware','agregarmiddleware','sistemas','products','total_amount_for_import','contrapartidas','bcv','total_amount_for_import_materiap'))->with(compact('file'));
 
     }
 
@@ -644,6 +654,7 @@ class ExcelController extends Controller
 
             $subcontrapartida = $request->Subcontrapartida;
             $amount = $request->amount;
+            $amountp = $request->amountp;
             $rate = str_replace(',', '.', str_replace('.', '', $request->rate));
 
             $file = $request->file('file');
@@ -653,7 +664,7 @@ class ExcelController extends Controller
             Excel::import(new InventoryImport, $file);
 
             $movement = new MovementProductImportController();
-            $movement->add_movement($subcontrapartida,$amount,$rate,$coin);
+            $movement->add_movement($subcontrapartida,$amount,$amountp,$rate,$coin);
 
 
             return redirect('inventories/index')->with('success', 'Archivo importado con Exito!');

@@ -13,6 +13,7 @@ use App\HeaderVoucher;
 use App\Account;
 use App\DetailVoucher;
 use App\Inventory;
+use App\Quotation;
 use App\QuotationPayment;
 use App\QuotationProduct;
 use Carbon\Carbon;
@@ -1190,17 +1191,23 @@ class GlobalController extends Controller
                                                     $amount = 0;
                                                     $price_buy = 0;
 
-                                                    $company = Company::on(Auth::user()->database_name)->find(1); // tasa de la compania
-                                                    $bcv = $company->rate;
-
+                                                    $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
+                                                    
+                                                    $quotation_done = Quotation::on(Auth::user()->database_name)->find($quotation);   
+                                                    
+                                                    if(isset($quotation_done)){
+                                                        $bcv = $quotation_done->bcv;
+                                                    } else {
+                                                        $bcv = $company->rate_bcv;
+                                                    }
+                                                    
                                                     $productc = Product::on(Auth::user()->database_name)
                                                     ->select('price_buy','description','money')
                                                     ->find($productwo->id_product);
 
                                                     $headervoucher = new HeaderVoucher(); // Creando cabecera
                                                     $headervoucher->setConnection(Auth::user()->database_name);
-
-
+                                                     
                                                     if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
                                                     $headervoucher->description  = 'Materia Prima a Mercancia para la Venta Producto '.$productwo->id_product.' '.$productc->description;
                                                     }
@@ -1208,8 +1215,8 @@ class GlobalController extends Controller
                                                     $headervoucher->description  = 'Aumento de Materia prima de Producto '.$productwo->id_product.' '.$productc->description;
                                                     }
 
-                                                    $headervoucher->date   = $date;
-                                                    $headervoucher->status   = 1;
+                                                    $headervoucher->date = $date;
+                                                    $headervoucher->status = 1;
                                                     $headervoucher->save();
 
                                                     $account = Account::on(Auth::user()->database_name)
