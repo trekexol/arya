@@ -346,6 +346,7 @@ return $pdf->stream();
     public function print_diary_book_detail(Request $request)
     {
 
+        $resumen = request('resumen');
 
         $id_account = request('id_account');
         $coin = request('coin');
@@ -365,6 +366,9 @@ return $pdf->stream();
         $mesdia = Carbon::parse($date_begin)->format('m-d');
 
         $account = Account::on(Auth::user()->database_name)->find($id_account);
+
+
+            if($resumen != 'SI'){
 
                    //consulta normal Bs.
                    $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
@@ -537,13 +541,6 @@ return $pdf->stream();
         }
 
 
-       /* if($coin != "bolivares"){ //saldos Anteriores del historial
-        $account_historial->balance_previous = $account_historial->balance_previous / $account_historial->rate;
-        } else {
-        $account_historial->balance_previous = $account_historial->balance_previous;
-        } */
-
-
 
         $primer_movimiento = true;
         $saldo = 0;
@@ -552,8 +549,6 @@ return $pdf->stream();
 
 
         foreach($detailvouchers as $detail){
-
-            //$detailvouchers->account_counterpart = '';
 
             $quotation = Quotation::on(Auth::user()->database_name) // buscar factura
             ->where('id','=',$detail->id_invoice)
@@ -632,9 +627,6 @@ return $pdf->stream();
                 }
 
 
-
-
-
             } else {
 
 
@@ -683,8 +675,6 @@ return $pdf->stream();
 
                         //descripcon Anticipo Compra
 
-
-
                 } else { // sin anticipo
 
 
@@ -717,7 +707,6 @@ return $pdf->stream();
                 }
 
             }
-
 
 
                 if($coin != "bolivares"){
@@ -771,23 +760,11 @@ return $pdf->stream();
                             $saldo = $detail->saldo;
                     }
 
-                   /* if($counterpart == ""){
-                        $last_detail = $detail;
-                    }else{
-                        $detail->account_counterpart = $counterpart;
-                    }*/
+
 
                     $detail->account_counterpart = '';
 
                 }else{
-                   /*if(isset($last_detail)){
-                        $last_detail->account_counterpart = $detail->account_description;
-
-                    }else{
-                        $counterpart = $detail->account_description;
-                    }*/
-
-                   // $account = Account::on(Auth::user()->database_name)->find($detail->id_account);
 
                    $detail->account_counterpart = '';
 
@@ -821,12 +798,42 @@ return $pdf->stream();
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
-
+        dd($detailvouchers);
 
                 $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
+    }else{ ///RESUMIDO
+        $detailvouchers_saldo_debe = 0;
+        $detailvouchers_saldo_haber = 0;
+        $primer_movimiento = true;
+        $saldo = 0;
+        $saldo_anterior =0;
+        $counterpart = "";
+        $saldo_inicial = 0;
+             //consulta normal Bs.
+             $detailvouchers =  DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+             ->join('header_vouchers', 'header_vouchers.id', '=', 'detail_vouchers.id_header_voucher')
+             ->join('accounts', 'accounts.id', '=', 'detail_vouchers.id_account')
+             ->whereRaw(
+                 "(DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') >= ? AND DATE_FORMAT(header_vouchers.date, '%Y-%m-%d') <= ?)",
+                [$date_begin, $date_end])
+             ->whereIn('header_vouchers.id', function($query) use ($id_account){
+                 $query->select('id_header_voucher')
+                 ->from('detail_vouchers')
+                 ->where('id_account',$id_account);
+             })
+             ->whereIn('detail_vouchers.status', ['F','C'])
+             ->select('accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five','detail_vouchers.*','header_vouchers.*'
+             ,'accounts.description as account_description'
+             ,'header_vouchers.id as id_header'
+             ,'accounts.balance_previus as balance_previous'
+             ,'header_vouchers.description as header_description')
+             ->orderBy('header_vouchers.date','asc')
+             ->orderBy('header_vouchers.id','asc')->get();
 
-                //$saldo_inicial = number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
+             dd($detailvouchers);
 
+
+    }
 
         $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
                                 ,'datenow','date_begin','date_end','account','saldo_anterior'
