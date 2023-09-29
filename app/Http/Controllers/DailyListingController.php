@@ -798,7 +798,7 @@ return $pdf->stream();
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
-        dd($detailvouchers);
+
 
                 $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
     }else{ ///RESUMIDO
