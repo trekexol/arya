@@ -737,7 +737,7 @@ class ExpensesAndPurchaseController extends Controller
              $impuesto3 = $company->tax_3 ?? 1;
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
-            
+
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
@@ -2256,7 +2256,7 @@ class ExpensesAndPurchaseController extends Controller
                     }
                 }
 
-            
+
                 if($retencion_islr !=0 and $expense->number_islr == NULL){
 
                     $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
@@ -2627,8 +2627,8 @@ class ExpensesAndPurchaseController extends Controller
 
         $header_voucher->save();
 
-        if ($valida_com == 1){ 
-        
+        if ($valida_com == 1){
+
             if($sin_formato_iva_retencion > 0){
 
                 $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
@@ -2657,7 +2657,7 @@ class ExpensesAndPurchaseController extends Controller
                 //Asigno un numero incrementando en 1
                 if(isset($last_number)){
                     $expense->number_islr = $last_number->number_islr + 1;
-                
+
                 }else{
                     $expense->number_islr = 1;
                 }
@@ -2665,7 +2665,7 @@ class ExpensesAndPurchaseController extends Controller
 
             $expense->date_payment = $expense->date;
         }
-        
+
         $expense->save();
 
 
@@ -2712,7 +2712,7 @@ class ExpensesAndPurchaseController extends Controller
 
           /* $providers = Provider::on(Auth::user()->database_name) /// BUSCAR PROVEEDOR
         ->find($expense->id_provider);*/
-      
+
 
 
 
@@ -3799,7 +3799,15 @@ public function notas(request $request)
                                     ->select('*')
                                     ->get()->last();
 
-                                    $amount_real = $inventories_quotations->amount_real - $cantidad;
+                                    if(is_null($inventories_quotations)){
+                                        $realcantidad = 0;
+                                        $amount_real = $cantidad - $realcantidad;
+                                    }else{
+                                        $realcantidad = $inventories_quotations->amount_real;
+                                        $amount_real = $realcantidad - $cantidad;
+                                    }
+
+
 
 
                                     $invh = new InventoryHistories();
