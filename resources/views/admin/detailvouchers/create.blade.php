@@ -28,7 +28,7 @@ $suma_haber = 0;
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro Comprobante Detalle</div>
+                <div class="card-header text-center font-weight-bold h3">Registro Comprobante Detalles</div>
 
                 <div class="card-body">
                     <form id="headerForm" method="POST" action="{{ route('headervouchers.store') }}" enctype="multipart/form-data">
