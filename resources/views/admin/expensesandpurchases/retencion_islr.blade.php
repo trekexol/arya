@@ -1,23 +1,23 @@
 
-  
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- 
+
 <title>Retencion ISLR</title>
 <style>
   table, td, th {
     border: 1px solid black;
   }
-  
+
   table {
     border-collapse: collapse;
     width: 100%;
   }
-  
+
   th {
-    
+
     text-align: left;
   }
   </style>
@@ -26,8 +26,8 @@
 <body>
   <br><br><br><br>
 <h3 style="text-align: center;">COMPROBANTE DE RETENCION DE I.S.L.R.</h3>
-<h5 style="text-align: center;">Fecha: {{ date_format(date_create($expense->date_payment),"d-m-Y") ?? $datenow }}</h5>
-  
+<h5 style="text-align: center;">Fecha: {{ date_format(date_create($expense->date),"d-m-Y") ?? $datenow }}</h5>
+
 <table>
   <tr>
     <th style="font-size: medium; width: 50%; text-align: center; ">PROVEEDOR</th>
@@ -45,7 +45,7 @@
     <td style="border-top-color: rgb(17, 9, 9);">Dirección: {{ $provider->direction ?? '' }}</td>
     <td style="border-top-color: rgb(17, 9, 9);">Dirección: {{ $company->address ?? ''}}</td>
   </tr>
-  
+
 </table>
 <br><br>
 
@@ -62,7 +62,7 @@
     <th style="font-size: x-small; width: 10%; text-align: center;">Impuesto Retenido menos sustraendo</th>
   </tr>
   <tr>
-    <td style="font-size: x-small; text-align: center;">{{ date_format(date_create($expense->date),"d-m-Y") ?? $datenow}}</td>
+    <td style="font-size: x-small; text-align: center;">{{ date_format(date_create($expense->date_payment),"d-m-Y") ?? $datenow}}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->number_islr ?? $expense->id ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->invoice ?? ''}}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
@@ -70,9 +70,9 @@
     <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv($expense->base_imponible?? 0, '1', 2), 2, ',', '.') }}</td>
     <td style="font-size: x-small; text-align: center;">{{ number_format(bcdiv($expense->iva_percentage ?? 0, '1', 2), 2, ',', '.')}}</td>
     @if (isset($expense->islr_concepts['description']))
-      <td style="font-size: x-small; text-align: right;">{{ $expense->islr_concepts['description'] ?? ''}} - {{ $expense->islr_concepts['value'] ?? ''}} %</td>   
+      <td style="font-size: x-small; text-align: right;">{{ $expense->islr_concepts['description'] ?? ''}} - {{ $expense->islr_concepts['value'] ?? ''}} %</td>
     @else
-      <td style="font-size: x-small; text-align: right;"></td>   
+      <td style="font-size: x-small; text-align: right;"></td>
     @endif
    <td style="font-size: x-small; text-align: right;">{{ number_format(bcdiv($expense->retencion_islr ?? 0, '1', 2), 2, ',', '.')}}</td>
   </tr>
