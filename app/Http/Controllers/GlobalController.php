@@ -615,73 +615,87 @@ class GlobalController extends Controller
     }
 
 
-
-
-
     public function search_bcv()
     {
 
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
-
-        $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
-
-        if($tasahoy == null){ //procedo a guardar la tasa del dia.
-
-        //$url = "https://s3.amazonaws.com/dolartoday/data.json";
-        $url = "https://www.aryasoftware.net/apidolarbcv/";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec( $ch );
-        $error = curl_error($ch);
-        curl_close( $ch );
-
-
-        $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF] /', '', $data), true);
-
-
-        if($datos['fechadehoy'] == $datos['fechaoficial']){
-
-            $tasahoy  = TasaBcv::on("logins")->where('fecha_valor',$datenow)->first();
-
-
-                $dolaroficial = str_replace(array(","),".",$datos['dolaroficial']);
-
-                $var = new TasaBcv();
-                $var->setConnection("logins");
-                $var->coin = 'dolares';
-                $var->valor = $dolaroficial;
-                $var->fecha_valor = $datenow;
-                $var->save();
-
-
-                $companies  = Company::on("logins")
-                ->update(["rate_bcv" => $dolaroficial, "date_consult_bcv" => $datenow]);
-
-
-
-            }else{
-                $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
-                $bcv = $company->rate_bcv;
-
-                $companies  = Company::on("logins")
-                ->update(["rate_bcv" => $bcv, "date_consult_bcv" => $datenow]);
-
-                return bcdiv($bcv, '1', 2);
-            }
-
-
-    }//fin primer nulll
-    else{
         $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
-        $bcv = $company->rate_bcv;
-        return bcdiv($bcv, '1', 2);
+        $date_consult = date_format(date_create($company->date_consult_bcv),"Y-m-d");
+
+        //dd($date_consult.' - - '.$datenow);
+
+        if ($date_consult != $datenow) { 
+
+                    $tasahoy  = TasaBcv::on("logins")
+                    ->where('fecha_valor','LIKE','%'.$datenow.'%')->first();
+
+                    if(empty($tasahoy)){ //procedo a guardar la tasa del dia.
+               
+                            $url = "https://www.aryasoftware.net/apidolarbcv/";
+                            $ch = curl_init();
+                            curl_setopt($ch, CURLOPT_URL, $url);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 3); // Establece el tiempo de espera a 3 segundos
+                            $data = curl_exec($ch);
+
+                        if (curl_errno($ch)) {
+
+                            $bcv = $company->rate_bcv;
+                            return bcdiv($bcv, '1', 4);
+
+                        } else {
+
+                            $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF] /', '', $data), true);
+                    
+                            if (isset($datos['fechadehoy'])){
+
+                                $dolaroficial = str_replace(array(","),".",$datos['dolaroficial']);
+
+                                $var = new TasaBcv();
+                                $var->setConnection("logins");
+                                $var->coin = 'dolares';
+                                $var->valor = $dolaroficial;
+                                $var->fecha_valor = $datenow;
+
+                                try {
+                                    $var->saveOrFail();
+                                } catch (\Throwable $e) {
+
+                                    $bcv = $company->rate_bcv;
+                                    return bcdiv($bcv, '1', 4);
+                                }
+
+                                $companies = Company::on("logins")
+                                ->update(["rate_bcv" => $dolaroficial, "date_consult_bcv" => $datenow]);
+                                /*$company_save = Company::on(Auth::user()->database_name)->update(["rate_bcv" => $dolaroficial, "date_consult_bcv" => $datenow]);*/
+                                $bcv = $dolaroficial;
+                                return bcdiv($bcv, '1', 4);
+
+                            } else {
+
+                                $bcv = $company->rate_bcv;
+                                return bcdiv($bcv, '1', 4);  
+                            }
+                        }
+
+                    }else{ //fin primer nulll
+
+                        $companies  = Company::on("logins")
+                        ->update(["rate_bcv" => $tasahoy->valor, "date_consult_bcv" => $tasahoy->fecha_valor]);
+
+                        $bcv = $tasahoy->valor;
+                        return bcdiv($bcv, '1', 4);
+                    }
+        } else {
+
+            $bcv = $company->rate_bcv;
+            return bcdiv($bcv, '1', 4);
+        }
+                
     }
 
-
-    }
 
 
     public function data_last_month_day() {
