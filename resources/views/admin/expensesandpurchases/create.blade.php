@@ -276,7 +276,7 @@
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
-                                        <input onkeyup="numeric(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
+                                        <input onkeyup="nospac(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
 
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
@@ -329,11 +329,12 @@
 
                                     <div class="form-group col-md-2">
                                         <label for="price" >Precio</label>
-                                        @if(isset($inventory->price_buy))
-                                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy, 2, ',', '.')  }}"  required autocomplete="price">
+                                        @if(Auth::user()->id_company == '24')
+                                        <input onkeyup="nospac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 3, ',', '.')  }}"  required autocomplete="price">
                                         @else
-                                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price"  required autocomplete="price">
+                                        <input onkeyup="nospac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 2, ',', '.')  }}"  required autocomplete="price">
                                         @endif
+        
                                         @error('price')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
