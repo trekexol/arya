@@ -26,7 +26,7 @@
 <body>
   <br><br><br><br>
 <h3 style="text-align: center;">COMPROBANTE DE RETENCION DE I.S.L.R.</h3>
-<h5 style="text-align: center;">Fecha: {{ date_format(date_create($expense->date),"d-m-Y") ?? $datenow }}</h5>
+<h5 style="text-align: center;">Fecha: {{ date_format(date_create($expense->date_payment ?? $expense->date),"d-m-Y") ?? $datenow }}</h5>
 
 <table>
   <tr>
@@ -62,7 +62,7 @@
     <th style="font-size: x-small; width: 10%; text-align: center;">Impuesto Retenido menos sustraendo</th>
   </tr>
   <tr>
-    <td style="font-size: x-small; text-align: center;">{{ date_format(date_create($expense->date_payment),"d-m-Y") ?? $datenow}}</td>
+    <td style="font-size: x-small; text-align: center;">{{ date_format(date_create($expense->date),"d-m-Y") ?? $datenow}}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->number_islr ?? $expense->id ?? '' }}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->invoice ?? ''}}</td>
     <td style="font-size: x-small; text-align: center;">{{ $expense->serie ?? ''}}</td>
