@@ -62,11 +62,11 @@
                     <div class="form-group row">
                         <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
                         <div class="col-md-3">
-                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($expense_detail->price / ($rate ?? 1), 2, ',', '.')}}"  required autocomplete="price">
+                            <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($expense_detail->price / ($rate ?? 1), 3, '.', '')}}"  required autocomplete="price">
                         </div>  
                         <label for="rate" class="col-md-3 col-form-label text-md-right">Tasa</label>
                         <div class="col-md-3">
-                            <input id="rate" type="text" readonly class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($expense_detail->rate, 2, ',', '.')}}"  required autocomplete="rate">
+                            <input id="rate" type="text" readonly class="form-control @error('rate') is-invalid @enderror" name="rate" value="{{ number_format($expense_detail->rate, 10, '.', '')}}"  required autocomplete="rate">
                         </div>  
                         
                     </div>
@@ -82,7 +82,7 @@
                             <label for="amount" class="col-md-2 col-form-label text-md-right">Cantidad</label>
 
                             <div class="col-md-3">
-                                <input id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($expense_detail->amount, 2, ',', '.') }}" required autocomplete="amount">
+                                <input onkeyup="noespac(this)" id="amount" type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="{{ number_format($expense_detail->amount, 3, '.', '') }}" required autocomplete="amount">
 
                                 @error('amount')
                                     <span class="invalid-feedback" role="alert">
@@ -130,14 +130,8 @@
  @section('validacion')
     <script>    
      
-        $(document).ready(function () {
-            $("#amount").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
-            
-        });
-        $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
-            
-        });
+
+
         $(document).ready(function () {
             $("#rate").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
             

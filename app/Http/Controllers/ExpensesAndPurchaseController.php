@@ -3033,7 +3033,7 @@ class ExpensesAndPurchaseController extends Controller
             $coin = request('coin');
             $discount = request('discount');
 
-            $valor_sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
+            $valor_sin_formato_price = request('price');
 
             $var->price = $valor_sin_formato_price;
             $var->porc_discount = $discount;
@@ -3046,7 +3046,7 @@ class ExpensesAndPurchaseController extends Controller
 
             $var->description = request('description');
 
-            $valor_sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('amount')));
+            $valor_sin_formato_amount = request('amount');
 
             $var->amount = $valor_sin_formato_amount;
 
