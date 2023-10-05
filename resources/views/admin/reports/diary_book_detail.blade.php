@@ -244,14 +244,14 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white; border-right-color: black;">Saldo Actual</th>
-      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
+      <th style="text-align: left;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     @else
     <tr>
       <td style="text-align: center;"></td>
       <td style="text-align: center;"></td>
-      <td style="text-align: center;">Saldo Inicial</td>
       <td style="text-align: center;"></td>
+      <td style="text-align: center;">Saldo Inicial</td>
       <td style="text-align: right;">{{ number_format($saldo_inicial, 2, ',', '.')}}</td>
 
     </tr>
@@ -259,7 +259,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white; border-right-color: black;"></th>
+      <th style="text-align: center; border-color: white; border-right-color: black;">Total Gastos</th>
       <th style="text-align: right; border-right-color: black;">{{$moneda}}{{ number_format(bcdiv($total_haber,'1',2) ?? 0, 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     <tr>
