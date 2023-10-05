@@ -3018,7 +3018,6 @@ class ExpensesAndPurchaseController extends Controller
                 'description'   =>'required',
                 'amount'        =>'required',
 
-
                 'coin'   =>'required',
                 'price'   =>'required',
 
