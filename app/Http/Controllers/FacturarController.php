@@ -1800,9 +1800,13 @@ class FacturarController extends Controller
             }
         }*/
 
+
+        $sin_formato_total_pay = floatval($sin_formato_total_pay); 
+        $epsilon = 0.00001;
+
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-        if(($total_pay == $sin_formato_total_pay) || ($sin_formato_total_pay <= 0))
-        {
+        if (abs($total_pay - $sin_formato_total_pay) < $epsilon  || ($sin_formato_total_pay <= 0)) {
+
             $global = new GlobalController();
 
             $comboController = new ComboController();
