@@ -53,7 +53,7 @@ determindados bienes muebles y los receptores de ciertos servicios, a quienes la
   </tr>
   <tr>
     <td style="font-size: x-small;">{{ $company->address ?? ''}}</td>
-    <td style="font-size: x-small;">{{ date_format(date_create($expense->date ?? '00-00-0000'),"d-m-Y") }}</td>
+    <td style="font-size: x-small;">{{ date_format(date_create($expense->date_payment ?? $expense->date ?? '00-00-0000'),"d-m-Y") }}</td>
   </tr>
 
 </table>

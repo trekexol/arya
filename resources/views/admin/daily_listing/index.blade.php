@@ -198,8 +198,8 @@
                     <label id="coinlabel" for="coin" class="col-md-2 col-form-label text-md-right">Resumen:</label>
                     <div class="col-md-6">
                         <select class="form-control" name="resumen" id="resumen">
-                            <option selected value="NO">NO</option>
-                            <option value="SI">SI</option>
+                            <option selected value="NO">Detallado</option>
+                            <option value="SI">Resumen de Gastos</option>
                         </select>
                     </div>
                 </div>
