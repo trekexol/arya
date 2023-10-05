@@ -244,7 +244,7 @@
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white;"></th>
       <th style="text-align: center; border-color: white; border-right-color: black;">Saldo Actual</th>
-      <th style="text-align: left;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
+      <th style="text-align: right;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     @else
     <tr>
@@ -252,7 +252,7 @@
       <td style="text-align: center;"></td>
       <td style="text-align: center;"></td>
       <td style="text-align: center;">Saldo Inicial</td>
-      <td style="text-align: right;">{{ number_format($saldo_inicial, 2, ',', '.')}}</td>
+      <td style="text-align: lefta;">{{ number_format($saldo_inicial, 2, ',', '.')}}</td>
 
     </tr>
     <tr>
