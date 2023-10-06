@@ -56,7 +56,11 @@
                     <div class="form-group row">
                         <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
                         <div class="col-md-3">
-                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 2, ',', '.')}}"  required autocomplete="price">
+                            @if(Auth::user()->id_company == '24')
+                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 3, '.', '')}}"  required autocomplete="price">
+                            @else
+                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 2, '.', '')}}"  required autocomplete="price">
+                            @endif
                         </div>  
                         <label for="rate" class="col-md-3 col-form-label text-md-right">Tasa</label>
                         <div class="col-md-3">
@@ -136,10 +140,6 @@
 
 
         $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
-            
-        });
-        $(document).ready(function () {
             $("#rate").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
             
         });
@@ -178,10 +178,6 @@
             }
             
                 return true;
-           
-
-
-
         }
 
     </script>

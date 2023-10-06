@@ -309,7 +309,7 @@
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
 
-                                        <input onkeyup="numeric(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
+                                        <input onkeyup="noespac(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
 
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
@@ -368,10 +368,10 @@
 
                                             ?>
                                             <label for="cost" >Precio</label>
-                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ number_format($product_Bs, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
+                                            <input onkeyup="noespac(this)"id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ $product_Bs ?? 0}}"  required autocomplete="cost">
                                         @else
                                             <label for="cost" >Precio</label>
-                                            <input id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{number_format($inventory->price ?? 0, 2, ',', '.') ?? '' }}"  required autocomplete="cost">
+                                            <input onkeyup="noespac(this)"id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ $inventory->price ?? 0}}"  required autocomplete="cost">
                                         @endif
 
 
@@ -459,8 +459,8 @@
 
                                                 @endif
 
-                                                <td style="text-align: right">{{ $var->amount_quotation}}</td>
-                                                <td style="text-align: right">{{number_format($var->price, 2, ',', '.')}}</td>
+                                                <td style="text-align: right">{{ $var->amount_quotation ?? 0}}</td>
+                                                <td style="text-align: right">{{ $var->price ?? 0}}</td>
                                                 <td style="text-align: right">{{$var->discount}}%</td>
 
                                                 <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
