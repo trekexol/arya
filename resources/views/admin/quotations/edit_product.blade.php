@@ -27,7 +27,7 @@
                     <div class="form-group row">
                         <label for="description" class="col-md-2 col-form-label text-md-right">Código</label>
                         <div class="col-md-3">
-                            <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $quotation_product->id ?? old('code') }}" readonly required autocomplete="code" autofocus>
+                            <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $inventory->id ?? old('code') }}" readonly required autocomplete="code" autofocus>
                         </div>
                         <label for="description"  class="col-md-3 col-form-label text-md-right">Descripción</label>
                         <div class="col-md-3">
