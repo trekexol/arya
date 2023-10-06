@@ -732,9 +732,9 @@ class QuotationController extends Controller
 
         $amount = request('amount');
 
-        $amount = str_replace(',', '.', $amount);
+        /*$amount = str_replace(',', '.', $amount);*/
 
-        $cost = str_replace(',', '.', str_replace('.', '',request('cost')));
+        $cost = request('cost');
 
         $global = new GlobalController();
 
@@ -1024,7 +1024,7 @@ class QuotationController extends Controller
             $price_old = $var->price;
             $amount_old = $var->amount;
 
-            $sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
+            $sin_formato_price = request('price');
             $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
             $coin = request('coin');
