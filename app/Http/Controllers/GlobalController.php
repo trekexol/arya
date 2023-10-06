@@ -368,7 +368,7 @@ class GlobalController extends Controller
 
     public function check_product($id_quotation,$id_inventory,$amount_new){
 
-        $inventories_quotations = DB::connection(Auth::user()->database_name)
+       /* $inventories_quotations = DB::connection(Auth::user()->database_name)
         ->table('products')
         ->join('inventories', 'products.id', '=', 'inventories.product_id')
         ->where('inventories.id',$id_inventory)
@@ -387,7 +387,7 @@ class GlobalController extends Controller
 
             return $this->check_amount($id_quotation,$inventories_quotations,$amount_new);
 
-        }
+        }*/
 
         return "exito";
 

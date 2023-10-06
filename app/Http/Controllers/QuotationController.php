@@ -1085,7 +1085,7 @@ class QuotationController extends Controller
 
             $historial_quotation = new HistorialQuotationController();
 
-            $historial_quotation->registerAction($var,"quotation_product","Actualizó el Producto: ".$var->inventories['code']."/
+            $historial_quotation->registerAction($var,"quotation_product","Actualizó el Producto: ".$var->id."/
             Precio Viejo: ".number_format($price_old, 2, ',', '.')." Cantidad: ".$amount_old."/ Precio Nuevo: ".number_format($var->price, 2, ',', '.')." Cantidad: ".$var->amount);
 
 
