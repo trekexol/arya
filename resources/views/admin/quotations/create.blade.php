@@ -433,7 +433,7 @@
 
                                             <?php
                                                 if($coin != 'bolivares'){
-                                                    $var->price = bcdiv(($var->price / ($var->rate ?? 1)), '1', 2);
+                                                    $var->price = $var->price / ($var->rate ?? 1);
                                                 }
 
                                                 $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
@@ -460,7 +460,12 @@
                                                 @endif
 
                                                 <td style="text-align: right">{{ $var->amount_quotation ?? 0}}</td>
-                                                <td style="text-align: right">{{ $var->price ?? 0}}</td>
+                                                @if(Auth::user()->id_company == '24')
+                                                <td style="text-align: right">{{ number_format($var->price ?? 0, 3, '.', '')}}</td>
+                                                @else
+                                                <td style="text-align: right">{{ number_format($var->price ?? 0, 2, '.', '')}}</td>
+                                                @endif
+
                                                 <td style="text-align: right">{{$var->discount}}%</td>
 
                                                 <td style="text-align: right">{{number_format($total_less_percentage, 2, ',', '.')}}</td>
