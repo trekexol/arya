@@ -27,7 +27,7 @@
                     <div class="form-group row">
                         <label for="description" class="col-md-2 col-form-label text-md-right">Código</label>
                         <div class="col-md-3">
-                            <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $quotation_product->inventories['code'] ?? old('code') }}" readonly required autocomplete="code" autofocus>
+                            <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" value="{{ $quotation_product->id ?? old('code') }}" readonly required autocomplete="code" autofocus>
                         </div>
                         <label for="description"  class="col-md-3 col-form-label text-md-right">Descripción</label>
                         <div class="col-md-3">
@@ -57,9 +57,9 @@
                         <label for="price" class="col-md-2 col-form-label text-md-right">Precio</label>
                         <div class="col-md-3">
                             @if(Auth::user()->id_company == '24')
-                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 3, '.', '')}}"  required autocomplete="price">
+                            <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 3, '.', '')}}"  required autocomplete="price">
                             @else
-                            <input id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 2, '.', '')}}"  required autocomplete="price">
+                            <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($quotation_product->price / ($rate ?? 1), 2, '.', '')}}"  required autocomplete="price">
                             @endif
                         </div>  
                         <label for="rate" class="col-md-3 col-form-label text-md-right">Tasa</label>
