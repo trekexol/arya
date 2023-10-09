@@ -266,7 +266,7 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo Todas Las Cuentas</h5>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
             </button>
@@ -300,6 +300,10 @@
                     @enderror
                 </div>
             </div>
+            <select style="display:none;" class="form-control" name="resumen" id="resumen">
+                <option selected value="NO">NO</option>
+                <option value="SI">SI</option>
+            </select>
             <div class="col-sm-6  dropdown mb-4">
                 <button class="btn btn-success" type="button"
                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
@@ -328,7 +332,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Seleccione el periodo por Cuenta</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
