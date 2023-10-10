@@ -74,10 +74,8 @@
         <th style="text-align: center;">Saldo</th>
         @else
         <th style="text-align: center; width: 9%;">Fecha</th>
-        <th style="text-align: center; width: 7%;">Comp.</th>
         <th style="text-align: center;">Descripcion</th>
-        <th style="text-align: center;">Referencia</th>
-        <th style="text-align: center;">Haber</th>
+        <th style="text-align: center; width: 22%;"">Haber</th>
         @endif
         
 
@@ -125,7 +123,7 @@
                       $total_haber_d = $detail->haber;
                     }
                   }
-                  $nuevo_array[] = array($detail->date,$detail->id_header,$detail->header_description,$detail->account_counterpart,$detail->reference,$total_debe_d,$total_haber_d,$detail->saldo,$detail->id_account,$detail->id_contrapartida);
+                  $nuevo_array[] = array($detail->date,$detail->id_header,$detail->header_description,$detail->account_counterpart,$detail->account_name,$total_debe_d,$total_haber_d,$detail->saldo,$detail->id_account,$detail->id_contrapartida);
                 }
             }
 
@@ -189,9 +187,7 @@
                   } else { */
                     echo "<tr>";
                     echo "<td style='text-align: center;'>".$nuevo_array[$q][0]."</td>";
-                    echo "<td style='text-align: center;'></td>";
-                    echo "<td style='text-align: left;'>".$nuevo_array[$q][3]."</td>";
-                    echo "<td style='text-align: center;'></td>";
+                    echo "<td style='text-align: left;'>".$nuevo_array[$q][4]."&nbsp;&nbsp;|&nbsp;&nbsp;".$nuevo_array[$q][3]."</td>";
                     echo "<td style='text-align: right;'>".number_format(bcdiv($nuevo_array[$q][6],'1',2) ?? 0, 2, ',', '.')."</td>";
                    
                     
@@ -249,31 +245,27 @@
     @else
     <tr>
       <td style="text-align: center;"></td>
-      <td style="text-align: center;"></td>
-      <td style="text-align: center;"></td>
-      <td style="text-align: center;">Saldo Inicial</td>
+
+      <td style="text-align: right;">Saldo Inicial</td>
       <td style="text-align: lefta;">{{ number_format($saldo_inicial, 2, ',', '.')}}</td>
 
     </tr>
     <tr>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white; border-right-color: black;">Total Gastos</th>
+
+      <th style="text-align: right; border-color: white; border-right-color: black;">Total Gastos</th>
       <th style="text-align: right; border-right-color: black;">{{$moneda}}{{ number_format(bcdiv($total_haber,'1',2) ?? 0, 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     <tr>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo del Mes</th>
+
+      <th style="text-align: right; border-color: white; border-right-color: black;">Saldo del Mes</th>
       <th style="text-align: right; border-right-color: black;">{{$moneda}}{{ number_format(bcdiv($total_debe - $total_haber,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     <tr>
       <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white;"></th>
-      <th style="text-align: center; border-color: white; border-right-color: black;">Saldo Actual</th>
+
+      <th style="text-align: right; border-color: white; border-right-color: black;">Saldo Actual</th>
       <th style="text-align: right; border-right-color: black;">{{$moneda}}{{ number_format(bcdiv($saldo,'1',2), 2, ',', '.')}} {{$monedabs}}</th>
     </tr>
     @endif
