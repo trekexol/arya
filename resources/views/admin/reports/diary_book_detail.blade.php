@@ -73,8 +73,8 @@
         <th style="text-align: center;">Haber</th>
         <th style="text-align: center;">Saldo</th>
         @else
-        <th style="text-align: center; width: 9%;">Fecha</th>
-        <th style="text-align: center;">Descripcion</th>
+        <th style="text-align: center;">Cuenta Nivel 3</th>
+        <th style="text-align: center;">Cuenta Nivel 4</th>
         <th style="text-align: center; width: 22%;"">Haber</th>
         @endif
         
@@ -151,6 +151,10 @@
               $primer_movimiento = true;
               $saldo_d = 0;
 
+              usort($nuevo_array, function($a, $b) {
+                  return strcmp($a[4], $b[4]);
+              });
+
               for ($q=0;$q<count($nuevo_array);$q++) {
                          
                // if($nuevo_array[$q][9] != $id_account){
@@ -186,8 +190,8 @@
                     echo "</tr>";
                   } else { */
                     echo "<tr>";
-                    echo "<td style='text-align: center;'>".$nuevo_array[$q][0]."</td>";
-                    echo "<td style='text-align: left;'>".$nuevo_array[$q][4]."&nbsp;&nbsp;|&nbsp;&nbsp;".$nuevo_array[$q][3]."</td>";
+                    echo "<td style='text-align: center;'>".$nuevo_array[$q][4]."</td>";
+                    echo "<td style='text-align: center;'>".$nuevo_array[$q][3]."</td>";
                     echo "<td style='text-align: right;'>".number_format(bcdiv($nuevo_array[$q][6],'1',2) ?? 0, 2, ',', '.')."</td>";
                    
                     
