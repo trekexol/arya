@@ -780,26 +780,58 @@ return $pdf->stream();
                     ->get()->first();
 
                     if(!empty($account_contrapartida_id)) {
-                    $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id->id_account);
+                         $account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id->id_account);
                     }
 
                     if(empty($account_contrapartida)) {
                         $description_contrapartida = $account->description;
                         $detail->id_contrapartida = 0;
+                        $detail->account_name = '';       
+
                     } else{
+
                         $description_contrapartida = $account_contrapartida->description;
                         $detail->id_contrapartida = $account_contrapartida->id;
+                        $detail->account_name = $account_contrapartida->description; 
+                        
+                        if($resumen == 'SI'){
+                        
+        
+                            $account_name_cuenta = Account::on(Auth::user()->database_name)
+                            ->where('code_one',$account_contrapartida->code_one)
+                            ->where('code_two',$account_contrapartida->code_two)
+                            ->where('code_three',$account_contrapartida->code_three)
+                            ->where('level',3)
+                            ->first();
+
+                            if(!empty($account_name_cuenta)){
+                                $detail->account_name = $account_name_cuenta->description;
+
+                            } else {
+                                $detail->account_name = 'N/A';
+                            }
+
+                        }
+
                     }
 
+                    //$account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id->id_account);
 
                     if($coin != "bolivares"){
-                        $detail->account_counterpart = $description_contrapartida.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
+                        
+                        if($resumen != 'SI'){
+                            $detail->account_counterpart = $description_contrapartida.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
+                        } else{
+                            $detail->account_counterpart = $description_contrapartida;
+                        }
                     } else {
                         $detail->account_counterpart = $description_contrapartida;
                     }
 
-
-                    
+                    if($resumen != 'SI'){
+                        $detail->account_name = ''; 
+                    }
+             
         ////////////////////////////0////////////////1///////////////////2////////////////////////////3/////////////////////////////4//////////////5//////////////6//////////////7//////        8            9
           
 
