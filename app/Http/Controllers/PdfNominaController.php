@@ -329,7 +329,7 @@ class PdfNominaController extends Controller
                 ->where('status','!=','5')
                 ->orderby('nombres', 'asc')
                 ->get();
-    
+
             } else {
                 $employees = Employee::on(Auth::user()->database_name)
                 ->where('status','!=','X')
@@ -338,7 +338,7 @@ class PdfNominaController extends Controller
                 ->where('nomina_type_id',$nomina->nomina_type_id)
                 ->orderby('nombres', 'asc')
                 ->get();
-    
+
             }
 
 
@@ -482,7 +482,7 @@ class PdfNominaController extends Controller
                             $amount_total_bono_transporte += 0;
                             $amount_total_bono_medico += 0;
                             $amount_total_bono_alim += 0;
-                            
+
 
                         }
 
@@ -552,6 +552,7 @@ class PdfNominaController extends Controller
     }
 
     function imprimirLiquidacionAuto(Request $request){
+
 
         $guardar = request('guardar');
 
