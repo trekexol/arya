@@ -345,10 +345,12 @@ $interesesacumulado = 0;
       }else{
         $motivo = 'S/D';
       }
+      $montoespecial = 0;
       if ($employee->id_empleado == 'V-18.933.860'){
         $motivo = 'Mutuo Acuerdo';
         $tipo_bono =  'BONIFICACIÓN ÚNICA POR FINALIZACIÓN DE RELACIÓN LABORAL';
-                
+        $montoespecial = '2661.89';
+
       } else {
         $tipo_bono = 'INDEMNIZACION ART.. 92 LOTTT';
       }
@@ -702,6 +704,11 @@ $interesesacumulado = 0;
           </table>
 
           <table style="width: 100%;">
+            <tr>
+                <th  class="text-left font-weight-normal" style="width: 68%;">{{$tipo_bono}}</th>
+                <th  class="text-center" style="width: 16%;"></th>
+                <th  class="text-center" style="width: 16%;">{{  str_replace(".", ",", $montoespecial) }}</th>
+              </tr>
               <tr>
                 <th  class="text-left font-weight-normal" style="width: 68%;">Total Liquidacion</th>
                 <th  class="text-center" style="width: 16%;"></th>
@@ -722,7 +729,7 @@ $interesesacumulado = 0;
           <tr>
             <th  class="text-left font-weight-normal" style="width: 68%;">Total a pagar....</th>
             <th  class="text-center" style="width: 16%;"></th>
-            <th  class="text-center" style="width: 16%;">{{ str_replace(".", ",", $totalapgarto) }}</th>
+            <th  class="text-center" style="width: 16%;">{{ str_replace(".", ",", $totalapgarto + $montoespecial) }}</th>
           </tr>
         </table>
         <p>El suscrito trabajador declara haber recibido de la empresa {{ $company->razon_social ?? ''}} la cantidad de Bolivares <b>{{number_words($totalapgarto,"con","centavos")}}</b>
