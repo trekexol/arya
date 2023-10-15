@@ -347,7 +347,7 @@ $interesesacumulado = 0;
       }
       $montoespecial = 0;
       if ($employee->id_empleado == 'V-18.933.860'){
-        $motivo = 'Mutuo Acuerdo';
+        $motivo = 'Renuncia';
         $tipo_bono =  'BONIFICACIÓN ÚNICA POR FINALIZACIÓN DE RELACIÓN LABORAL';
         $montoespecial = '2661.89';
 
