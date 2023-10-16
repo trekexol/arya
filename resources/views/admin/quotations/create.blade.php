@@ -368,10 +368,10 @@
 
                                             ?>
                                             <label for="cost" >Precio</label>
-                                            <input onkeyup="noespac(this)"id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ $product_Bs ?? 0}}"  required autocomplete="cost">
+                                            <input  id="cost" type="text" class="form-control cost @error('cost') is-invalid @enderror" name="cost" value="{{ $product_Bs ?? 0}}"  required autocomplete="cost">
                                         @else
                                             <label for="cost" >Precio</label>
-                                            <input onkeyup="noespac(this)"id="cost" type="text" class="form-control @error('cost') is-invalid @enderror" name="cost" value="{{ $inventory->price ?? 0}}"  required autocomplete="cost">
+                                            <input onkeyup="noespac(this)" id="cost" type="text" class="form-control cost @error('cost') is-invalid @enderror" name="cost" value="{{ $inventory->price ?? 0}}"  required autocomplete="cost">
                                         @endif
 
 
@@ -668,10 +668,10 @@
             $("#rate").mask('000.000.000.000.000,00', { reverse: true });
 
         });
-        $(document).ready(function () {
-            $("#cost").mask('000.000.000.000.000,00', { reverse: true });
+        /*$(document).ready(function () {
+            $(".cost").mask('000000000000000.00', { reverse: true });
 
-        });
+        });*/
         $("#code").keydown(function(event){
             if(event.which == 13){   // teclear enter
                 /*sendProduct(callback);
