@@ -1158,13 +1158,13 @@ class ExpensesAndPurchaseController extends Controller
         $var->id_user = request('id_user');
         $var->id_account = request('Account');
         $var->porc_discount = $discount;
-        $sin_formato_amount = str_replace(',', '.', str_replace('.', '', request('amount')));
+        $sin_formato_amount = request('amount');
 
         $var->amount = $sin_formato_amount;
 
         $var->description = request('description');
 
-        $sin_formato_price = str_replace(',', '.', str_replace('.', '', request('price')));
+        $sin_formato_price = request('price');
 
         if($coin != 'bolivares'){
             $sin_formato_price = ($sin_formato_price) * $var->rate;

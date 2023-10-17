@@ -23,7 +23,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras.</div>
+                <div class="card-header text-center font-weight-bold h3">Registro de Gastos y Compras</div>
 
                 <div class="card-body">
 
@@ -276,7 +276,7 @@
                                     </div>
                                     <div class="form-group col-md-1">
                                         <label for="amount" >Cantidad</label>
-                                        <input onkeyup="nospac(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
+                                        <input onkeyup="noespac(this)" id="amount_product"  type="text" class="form-control @error('amount') is-invalid @enderror" name="amount" value="1" required autocomplete="amount">
 
                                         @error('amount')
                                             <span class="invalid-feedback" role="alert">
@@ -330,9 +330,9 @@
                                     <div class="form-group col-md-2">
                                         <label for="price" >Precio</label>
                                         @if(Auth::user()->id_company == '24')
-                                        <input onkeyup="nospac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 3, ',', '.')  }}"  required autocomplete="price">
+                                        <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 3, '.', '')  }}"  required autocomplete="price">
                                         @else
-                                        <input onkeyup="nospac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 2, ',', '.')  }}"  required autocomplete="price">
+                                        <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 2, '.', '')  }}"  required autocomplete="price">
                                         @endif
         
                                         @error('price')
@@ -540,29 +540,6 @@
         "order": [],
             'aLengthMenu': [[200, 300, 400, 500, -1],[200, 300, 400, 500, "All"]],
         } );
-
-        $(document).ready(function () {
-           /* $("#rate").mask('0,0000000000', { reverse: true });*/
-
-
-
-        });
-
-        $(document).ready(function () {
-            $("#price").mask('000.000.000.000.000.000.000.000,00', { reverse: true });
-
-        });
-
-
-        function noespac(e) {
-
-            e.value = e.value.replace(/\./g, ',');
-            e.value = e.value.replace(/[A-Z]/g, '');
-            e.value = e.value.replace(/[a-z]/g, '');
-
-            return e.value;
-
-        }
 
 
         function noslash(e) {
