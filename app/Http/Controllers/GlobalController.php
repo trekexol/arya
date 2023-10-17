@@ -637,7 +637,7 @@ class GlobalController extends Controller
                             $ch = curl_init();
                             curl_setopt($ch, CURLOPT_URL, $url);
                             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_setopt($ch, CURLOPT_TIMEOUT, 3); // Establece el tiempo de espera a 3 segundos
+                            curl_setopt($ch, CURLOPT_TIMEOUT, 4); // Establece el tiempo de espera a 3 segundos
                             $data = curl_exec($ch);
 
                         if (curl_errno($ch)) {
