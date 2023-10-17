@@ -133,6 +133,21 @@ class ExcelController extends Controller
     }
 
 
+    public function export_movimientosbank() // inventario
+    {
+
+
+         $export = new ExpensesExport([
+             ['fecha','Referencia','Concepto','Debito','Credito','Moneda'],
+              ['2/10/2023','1223456','EJEMPLO DE MOVIMIENTO','0','2984,97
+              ','bolivares']
+        ]);
+
+        return Excel::download($export, 'guia_movimientos.xlsx');
+    }
+
+
+
     public function export_product() // inventario
     {
          $products = Product::on(Auth::user()->database_name)
@@ -411,17 +426,17 @@ class ExcelController extends Controller
         $total_amount_for_import = 0;
         $total_amount_for_import_materiap = 0;
         $cantidad_actual = 0;
-        
+
         foreach ($rows[0] as $row) {
 
 
-            if ($row['tipo_mercancia_o_servicio'] == 'MERCANCIA'){ 
+            if ($row['tipo_mercancia_o_servicio'] == 'MERCANCIA'){
                 $total_amount_for_import += $row['precio_compra'] * $row['cantidad_actual'];
             }
-            if ($row['tipo_mercancia_o_servicio'] == 'MATERIAP'){ 
+            if ($row['tipo_mercancia_o_servicio'] == 'MATERIAP'){
                 $total_amount_for_import_materiap += $row['precio_compra'] * $row['cantidad_actual'];
             }
-                 
+
         }
 
         $products = Product::on(Auth::user()->database_name)->orderBy('id' ,'DESC')->where('status',1)->get();

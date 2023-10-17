@@ -19,12 +19,14 @@ class TempMovimientosImport implements  ToCollection
 
 
     public $banco;
+    public $general;
     public $mensaje;
     public $estatus;
 
-            public function __construct($banco)
+            public function __construct($banco,$general)
             {
                 $this->banco = $banco;
+                $this->general = $general;
 
             }
 
@@ -35,16 +37,98 @@ class TempMovimientosImport implements  ToCollection
         $contador = 0;
         $contadorerror = 0;
 
+        if($this->general == 'general'){
 
-       if($this->banco == 'Bancamiga'){
+            foreach($rows as $row){
 
+                if($i > 0){
+
+                    /*******VERIFICO QUE TODOS LOS DATOS SON NUMERICOS. PARA PROCEDER */
+                    if(is_numeric($row[0]) AND is_numeric($row[1]) AND is_numeric($row[3]) AND is_numeric($row[4]))
+                        {
+
+                            /*********DANDO FORMATO A LA FECHA ****/
+                            $arr = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]));
+                                /*********FIN DANDO FORMATO A LA FECHA ****/
+
+
+                              /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
+
+
+                            $vali2   = TempMovimientos::on(Auth::user()->database_name)
+                                        ->where('banco',$this->banco)
+                                        ->where('fecha',$arr)
+                                        ->where('referencia_bancaria',$row[1])
+                                        ->where('moneda',$row[5])
+                                        ->where('haber',$row[4])
+                                        ->where('fecha',$arr)
+                                        ->where('debe',$row[3])->first();
+
+
+                            /******si todo esta correcto inserto en BD */
+                            if(!$vali2){
+
+
+                                        $user = new TempMovimientos();
+                                        $user->setConnection(Auth::user()->database_name);
+                                        $user->banco        = $this->banco;
+                                        $user->referencia_bancaria     = $row[1];
+                                        $user->descripcion       = $row[2];
+                                        $user->fecha    = $arr;
+                                        $user->haber     = $row[4];
+                                        $user->debe   = $row[3];
+                                        $user->moneda      = $row[5];
+                                        $user->save();
+
+
+
+                                            $contador++;
+                                        $estatus = TRUE;
+                                        $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+                                    }else{
+                                            $contadorerror++;
+                                            $estatus = TRUE;
+                                            $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+
+                                        }
+
+                        }else{
+                            $contadorerror++;
+                            $estatus = TRUE;
+                            $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+
+
+                        }
+
+
+
+
+                        }
+
+
+
+                 $i++;
+                        }
+
+        }
+
+       elseif($this->banco == 'Bancamiga' OR $this->banco == 'Bancamigausd'){
+
+        if($this->banco == 'Bancamiga'){
+            $bank = 'BANCAMIGA CUENTA CORRIENTE';
+            $moneda = 'bolivares';
+        }elseif($this->banco == 'Bancamigausd'){
+            $bank = 'Bancamiga Custodia';
+            $moneda = 'dolares';
+        }
 
                 foreach($rows as $row){
 
-        if($i > 2){
+        if($i > 4){
+            $ref = trim($row[2], "'");
 
             /*******VERIFICO QUE TODOS LOS DATOS SON NUMERICOS. PARA PROCEDER */
-            if(is_numeric($row[1]) AND is_numeric($row[2]) AND is_numeric($row[4]) AND is_numeric($row[5]))
+            if(is_numeric($row[1]) AND is_numeric($ref) AND is_numeric($row[4]) AND is_numeric($row[5]))
                 {
 
                     /*********DANDO FORMATO A LA FECHA ****/
@@ -52,15 +136,13 @@ class TempMovimientosImport implements  ToCollection
                         /*********FIN DANDO FORMATO A LA FECHA ****/
 
 
-
-
                       /*******CONSULTO QUE LA INFORMACION A CARGAR NO EXISTA EN LA BD ******/
 
 
                     $vali2   = TempMovimientos::on(Auth::user()->database_name)
-                                ->where('banco','BANCAMIGA CUENTA CORRIENTE')
-                                ->where('referencia_bancaria',$row[2])
-                                ->where('moneda','bolivares')
+                                ->where('banco',$bank)
+                                ->where('referencia_bancaria',$ref)
+                                ->where('moneda',$moneda)
                                 ->where('haber',$row[5])
                                 ->where('fecha',$arr)
                                 ->where('debe',$row[4])->first();
@@ -72,13 +154,13 @@ class TempMovimientosImport implements  ToCollection
 
                                 $user = new TempMovimientos();
                                 $user->setConnection(Auth::user()->database_name);
-                                $user->banco        = 'BANCAMIGA CUENTA CORRIENTE';
-                                $user->referencia_bancaria     = $row[2];
+                                $user->banco        = $bank;
+                                $user->referencia_bancaria     = $ref;
                                 $user->descripcion       = $row[3];
                                 $user->fecha    = $arr;
                                 $user->haber     = $row[5];
                                 $user->debe   = $row[4];
-                                $user->moneda      = 'bolivares';
+                                $user->moneda      = $moneda;
                                 $user->save();
 
 

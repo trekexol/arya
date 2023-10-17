@@ -1226,6 +1226,8 @@ Route::group(["prefix"=>'export'],function(){
 
     Route::get('products','ExcelController@export_product')->name('export.product_template');
     Route::get('inventary','ExcelController@export_inventary')->name('export.product_template_inventary');
+    Route::get('export_movimientosbank','ExcelController@export_movimientosbank')->name('export_movimientosbank');
+
 
     Route::get('combos','ExcelController@export_combo')->name('export.product_template_combo');
 
@@ -1701,6 +1703,7 @@ Route::group(["prefix"=>"bankmasivos"],function(){
     Route::post('listardatos','BankMovementMasivoController@listardatos')->name('listardatos');
 
     Route::post('importmovimientos','BankMovementMasivoController@importmovimientos')->name('importmovimientos');
+    Route::post('importmovimientosgeneral','BankMovementMasivoController@importmovimientosgeneral')->name('importmovimientosgeneral');
     Route::post('facturasmovimientos','BankMovementMasivoController@facturasmovimientos')->name('facturasmovimientos');
     Route::post('procesarfact','BankMovementMasivoController@procesarfact')->name('procesarfact');
     Route::get('listcontrapartidanew/{type_var?}','BankMovementMasivoController@listcontrapartidanew')->name('listcontrapartidanew');

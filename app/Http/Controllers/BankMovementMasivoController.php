@@ -52,7 +52,15 @@ class BankMovementMasivoController extends Controller
     ->groupBy('banco')
     ->orderBy('banco','asc')->get();
 
-       return view('admin.bankmovementsmasivo.index',compact('bancosmasivos','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
+    $cuentasbancarias   = Account::on(Auth::user()->database_name)
+    ->where('code_one','1')
+    ->where('code_two','1')
+    ->where('code_three','1')
+    ->where('code_four','2')
+    ->where('code_five','<>','0')
+    ->orderBy('description','asc')->get();
+
+       return view('admin.bankmovementsmasivo.index',compact('cuentasbancarias','bancosmasivos','agregarmiddleware','actualizarmiddleware','eliminarmiddleware'));
    }
 
 
@@ -72,11 +80,11 @@ public function importmovimientos(Request $request){
                 $banco = $request->banco;
                 $file = $request->file('file');
                 $extension = $request->file('file')->extension();
-
+                $general = "no";
 
     if(($banco == 'Bancamiga' OR $banco == 'Bancamigausd'  OR $banco == 'Chase' OR $banco == 'Banco Banesco' OR $banco == 'Banco del Tesoro') AND $extension == 'xlsx'){
 
-    $import = new TempMovimientosImport($banco);
+    $import = new TempMovimientosImport($banco,$general);
     Excel::import($import, $file);
     $resp['error'] = $import->estatus;
     $resp['msg'] = $import->mensaje;
@@ -85,7 +93,7 @@ public function importmovimientos(Request $request){
     }
 
     elseif(($banco == 'Mercantil' OR $banco == 'BOFA' OR $banco == 'Banco Banplus' OR $banco == 'Banplus Custodia') AND $extension == 'txt'){
-        $import = new TempMovimientosImport($banco);
+        $import = new TempMovimientosImport($banco,$general);
         Excel::import($import, $file);
         $resp['error'] = $import->estatus;
         $resp['msg'] = $import->mensaje;
@@ -94,6 +102,50 @@ public function importmovimientos(Request $request){
 
         $resp['error'] = false;
         $resp['msg'] = 'Verifique Formato. <br> Banesco,Bancamiga,Banco del Tesoro .xlsx <br> Mercantil y Banplus .txt <br> Chase y BOFA .csv';
+
+        return response()->json($resp);
+    }
+
+        }catch(\error $error){
+            $resp['error'] = false;
+	        $resp['msg'] = 'Verifique el Archivo.';
+
+            return response()->json($resp);
+        }
+    }
+
+
+}
+
+
+public function importmovimientosgeneral(Request $request){
+
+    $resp = array();
+	$resp['error'] = false;
+	$resp['msg'] = '';
+
+    if($request->ajax()){
+        try{
+
+
+                $banco = $request->banco;
+                $file = $request->file('file');
+                $extension = $request->file('file')->extension();
+
+
+    if($extension == 'xlsx'){
+    $general = "general";
+    $import = new TempMovimientosImport($banco,$general);
+    Excel::import($import, $file);
+    $resp['error'] = $import->estatus;
+    $resp['msg'] = $import->mensaje;
+      return response()->json($resp);
+
+    }
+    else{
+
+        $resp['error'] = false;
+        $resp['msg'] = 'Verifique Formato debe ser .xlsx';
 
         return response()->json($resp);
     }
