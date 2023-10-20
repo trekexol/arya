@@ -33,7 +33,7 @@ class ExportExpenseController extends Controller
                                         ->whereRaw(
                                             "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)",
                                             [$date_begin, $date_end])
-                                        ->where('status','C')
+                                        ->whereIn('status',['C','P'])
                                         ->get();
         if(!empty($expenses)){
 
@@ -109,7 +109,7 @@ class ExportExpenseController extends Controller
 
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                         ->where('retencion_islr','<>',0)
-                                        ->where('status','C')
+                                        ->whereIn('status',['C','P'])
                                         ->whereRaw(
                                             "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)",
                                             [$date_new_begin, $date_new_end])
