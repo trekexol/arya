@@ -42,13 +42,22 @@ class TempMovimientosImport implements  ToCollection
             foreach($rows as $row){
 
                 if($i > 0){
+                    if(is_null($row[3])){
+                        $debe = 0;
+                    }else{
+                        $debe = $row[3];
+                    }
 
-                    /*******VERIFICO QUE TODOS LOS DATOS SON NUMERICOS. PARA PROCEDER */
-                    if(is_numeric($row[0]) AND is_numeric($row[1]) AND is_numeric($row[3]) AND is_numeric($row[4]))
-                        {
+                    if(is_null($row[4])){
+                        $haber = 0;
+                    }else{
+                        $haber = $row[4];
+                    }
+
+                    //$fecha = $row[0];
 
                             /*********DANDO FORMATO A LA FECHA ****/
-                            $arr = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]));
+                            $fecha = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[0]));
                                 /*********FIN DANDO FORMATO A LA FECHA ****/
 
 
@@ -57,12 +66,11 @@ class TempMovimientosImport implements  ToCollection
 
                             $vali2   = TempMovimientos::on(Auth::user()->database_name)
                                         ->where('banco',$this->banco)
-                                        ->where('fecha',$arr)
+                                        ->where('fecha',$fecha)
                                         ->where('referencia_bancaria',$row[1])
                                         ->where('moneda',$row[5])
-                                        ->where('haber',$row[4])
-                                        ->where('fecha',$arr)
-                                        ->where('debe',$row[3])->first();
+                                        ->where('haber',$haber)
+                                        ->where('debe',$debe)->first();
 
 
                             /******si todo esta correcto inserto en BD */
@@ -74,9 +82,9 @@ class TempMovimientosImport implements  ToCollection
                                         $user->banco        = $this->banco;
                                         $user->referencia_bancaria     = $row[1];
                                         $user->descripcion       = $row[2];
-                                        $user->fecha    = $arr;
-                                        $user->haber     = $row[4];
-                                        $user->debe   = $row[3];
+                                        $user->fecha    = $fecha;
+                                        $user->haber     = $haber;
+                                        $user->debe   = $debe;
                                         $user->moneda      = $row[5];
                                         $user->save();
 
@@ -84,21 +92,15 @@ class TempMovimientosImport implements  ToCollection
 
                                             $contador++;
                                         $estatus = TRUE;
-                                        $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+                                        $mensaje = 'Archivo <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
                                     }else{
                                             $contadorerror++;
                                             $estatus = TRUE;
-                                            $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
+                                            $mensaje = 'Archivo <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
 
                                         }
 
-                        }else{
-                            $contadorerror++;
-                            $estatus = TRUE;
-                            $mensaje = 'Archivo Bancamiga <br> Cargado con Exito: '.$contador.' <br> No Cargados: '.$contadorerror;
 
-
-                        }
 
 
 
