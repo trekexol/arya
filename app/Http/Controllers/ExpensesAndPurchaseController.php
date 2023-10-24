@@ -252,7 +252,8 @@ class ExpensesAndPurchaseController extends Controller
 
                    $total_less_percentage = ($var->price * $var->amount) - $percentage;
 
-                   $total += ($var->price * $var->amount_expense);
+                   $total += number_format($var->price * $var->amount_expense, 2, '.', '');
+                   
                //-----------------------------
 
                if($var->retiene_iva_expense == 0){
@@ -604,7 +605,6 @@ class ExpensesAndPurchaseController extends Controller
     public function create_payment(request $request,$id_expense,$coin)
     {
 
-
         if(Auth::user()->role_id == '1' || $request->get('agregarmiddleware') == '1'){
         $expense = null;
         $provider = null;
@@ -680,7 +680,13 @@ class ExpensesAndPurchaseController extends Controller
                 $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
 
                 $total_less_percentage = ($var->price * $var->amount) - $percentage;
-                $total += $total_less_percentage;
+                
+                if($coin == 'bolivares'){
+                
+                }else {
+                    $total += number_format($total_less_percentage / $expense->rate,2,'.','');
+                }
+                
                   //  $total += ($var->price * $var->amount);
 
                 if($var->exento == 0){
@@ -702,11 +708,11 @@ class ExpensesAndPurchaseController extends Controller
 
              }else{
                 $bcv = $expense->rate;
-                $total = $total / $expense->rate;
+               //$total = number_format($total / $expense->rate,2,'.','');
                 $base_imponible = $base_imponible / $expense->rate;
              }
 
-             $expense->total_factura = $total;
+             $expense->total_factura = number_format($total, 2, '.', '');
              $expense->base_imponible = $base_imponible;
 
              $anticipos_sum = 0;
@@ -854,7 +860,7 @@ class ExpensesAndPurchaseController extends Controller
 
              foreach($expense_details as $var){
 
-                    $total += ($var->price * $var->amount);
+                    $total += number_format($var->price * $var->amount, 2, '.', '');
 
                 if($var->exento == 0){
                     $base_imponible += ($var->price * $var->amount);
@@ -901,10 +907,10 @@ class ExpensesAndPurchaseController extends Controller
 
              }
             if($base_imponible == 0){
-                $expense->total_factura = $total;
+                $expense->total_factura = number_format($total,2,'.','');
                 $expense->base_imponible = $base_imponible;
             }else{
-                $expense->total_factura = $total;
+                $expense->total_factura = number_format($total,2,'.','');
                 $expense->base_imponible = $base_imponible;
             }
 
