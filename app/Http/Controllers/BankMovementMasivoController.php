@@ -1739,11 +1739,11 @@ public function pdflibro(Request $request)
             $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
 
             //$saldo_inicial = number_format(($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0),2,'.','');
-
+    $resumen = "no";
 
     $pdf = $pdf->loadView('admin.reports.diary_book_detail',compact('coin','company','detailvouchers'
                             ,'datenow','date_begin','date_end','account','saldo_anterior'
-                            ,'detailvouchers_saldo_debe','detailvouchers_saldo_haber','saldo','id_account','saldo_inicial'));
+                            ,'detailvouchers_saldo_debe','detailvouchers_saldo_haber','saldo','id_account','saldo_inicial','resumen'));
     return $pdf->stream();
 
 

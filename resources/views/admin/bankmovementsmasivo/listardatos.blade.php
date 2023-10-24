@@ -11,9 +11,9 @@
                         <th class="text-center"><small>Accion</small></th>
                         <th class="text-center"><small>Eliminar</small></th>
                     </tr>
-                    </thead>
+                </thead>
 
-                    <tbody>
+                    <tbody id="pruebatbody">
 
                         @if (!empty($movimientosmasivoss))
 
@@ -44,16 +44,12 @@
                                     }
                                 @endphp
 
-
-
-
-
                                         @if($var->matchc == 1)
 
                                         <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofacc}}">Match Facturas Compras</span>
 
                                        @elseif($var->matchc == 0)
-                                        <input type="checkbox">
+                                        <input type="checkbox" id="checkdebe" name="checkdebe" class="checkdebe">
                                        @else
 
                                         <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match Factura Compra {{$var->matchc}}</span>
@@ -74,16 +70,12 @@
                                     }
                                 @endphp
 
-
-
-
-
                                         @if($var->match == 1)
 
                                         <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match Facturas Ventas</span>
 
                                        @elseif($var->match == 0)
-                                       <input type="checkbox">
+                                       <input type="checkbox" id="checkhaber" name="checkhaber" class="checkhaber">
                                        @else
 
                                         <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match Factura Venta {{$var->match}}</span>
@@ -106,7 +98,9 @@
                     @endif
                 </tbody>
             </table>
-
+            <div class="col-md-12 text-center">
+                <ul class="pagination pagination-lg pager" id="developer_page"></ul>
+            </div>
             <div class="modal modal-danger fade" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content" id="modalfacturas">
@@ -199,7 +193,7 @@
 
 
 
-                 $('[name="matchvalueliminar"]').click(function(e){
+        $('[name="matchvalueliminar"]').click(function(e){
                     e.preventDefault();
                    var idmov = $(this).data('id');
 
@@ -249,12 +243,69 @@
                  });
 
 
+/*$(".checkhaber").change(function () {
 
-                $('#dataTable').DataTable({
-                        "ordering": false,
-                        "order": [],
-                        'aLengthMenu': [[20], [20, "All"]]
-                    });
+if( $(this).is(':checked') ){
+    $('.checkdebe').hide();
+} else {
+    $('.checkdebe').show();
+}
 
-                });
-                    </script>
+$(".checkhaber:checked").each(function () {
+
+    $('.checkdebe').hide();
+
+});
+});*/
+
+var tabladata = $('#dataTable').DataTable({
+    'paging':         true,
+'aLengthMenu': [[20], [20]]
+});
+
+
+
+/*
+$(".checkhaber").change(function () {
+var sList = "";
+$(".checkhaber:checked").each(function () {
+    tabladata.rows().iterator( 'row', function ( context, index ) {
+    var sThisVal = (this.checked ? "1" : "0");
+    sList += (sList=="" ? sThisVal : "," + sThisVal);
+} );
+
+
+});
+
+
+console.log (sList);
+});*/
+
+/*var data = tabladata.rows().nodes();
+tabladata.rows().every(function (rowIdx, tableLoop, rowLoop) {
+      var data = this.node();
+      console.log($(data).find('input').prop('checked'));
+});*/
+
+
+   /* $('#dataTable').on('change', 'tbody input', function() {
+        var total = "";
+      let info = $(this).closest('td small input').attr('id');
+      $('.checkdebe').hide();
+
+      checked = this.checked;
+      console.log(info[0]);
+      total += checked;
+    console.log(total);
+    });
+*/
+
+
+
+
+
+
+
+});
+
+    </script>
