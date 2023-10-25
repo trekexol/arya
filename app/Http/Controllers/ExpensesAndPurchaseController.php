@@ -682,7 +682,7 @@ class ExpensesAndPurchaseController extends Controller
                 $total_less_percentage = ($var->price * $var->amount) - $percentage;
                 
                 if($coin == 'bolivares'){
-                
+                    $total += number_format($total_less_percentage,2,'.','');
                 }else {
                     $total += number_format($total_less_percentage / $expense->rate,2,'.','');
                 }
