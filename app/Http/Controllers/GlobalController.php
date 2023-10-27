@@ -1219,7 +1219,7 @@ class GlobalController extends Controller
                                                     ->find($productwo->id_product);
 
                                                     if (empty($productc)){
-                                                        dd($productwo->id_product);
+                                                        dd("Product: ".$productwo->id_product." Combo:".$id_product);
                                                     }
 
                                                     $headervoucher = new HeaderVoucher(); // Creando cabecera
