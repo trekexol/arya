@@ -1216,14 +1216,17 @@ class GlobalController extends Controller
                                                     }
                                                     
                                                     $productc = Product::on(Auth::user()->database_name)
-                                                    ->select('price_buy','description','money')
                                                     ->find($productwo->id_product);
+
+                                                    if (empty($productc)){
+                                                        dd($productwo->id_product);
+                                                    }
 
                                                     $headervoucher = new HeaderVoucher(); // Creando cabecera
                                                     $headervoucher->setConnection(Auth::user()->database_name);
                                                      
                                                     if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
-                                                    $headervoucher->description  = 'Materia Prima a Mercancia para la Venta Producto '.$productwo->id_product.' '.$productc->description;
+                                                    $headervoucher->description  = 'Materia Prima a Mercancia para la Venta Producto '.$productwo->id_product.' '.$productwo->description;
                                                     }
                                                     if ($type == 'compra' || $type == 'rev_venta' || $type == 'rev_nota') {
                                                     $headervoucher->description  = 'Aumento de Materia prima de Producto '.$productwo->id_product.' '.$productc->description;
