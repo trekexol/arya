@@ -30,13 +30,16 @@ class FacturarController extends Controller
 {
 
 
+    public $userAccess;
+    public $modulo = 'Facturas';
 
+ 
     public function __construct(){
 
-        $this->middleware('auth');
-        $this->userAccess = new UserAccessController();
-    }
-
+       $this->middleware('auth');
+       $this->userAccess = new UserAccessController();
+      
+   }
 
     public function createfacturar($id_quotation,$coin,$type = 'Cotización')
     {
@@ -3578,46 +3581,259 @@ public function storeanticiposaldar(Request $request)
 
 
 
-    public function createfacturado($id_quotation,$coin,$reverso = null)
+  public function createfacturado($id_quotation,$coin,$type = 'Cotización')
     {
-        if($this->userAccess->validate_user_access("Facturas")){
+        $user       =   auth()->user();
+        $company_user = $user->id_company;
 
          $quotation = null;
 
          if(isset($id_quotation)){
-             $quotation = Quotation::on(Auth::user()->database_name)->where('date_billing', '<>', null)->find($id_quotation);
-
+             $quotation = Quotation::on(Auth::user()->database_name)->find($id_quotation);
          }
 
          if(isset($quotation)){
-                // $product_quotations = QuotationProduct::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
-                $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
 
-             $date = Carbon::now();
-             $datenow = $date->format('Y-m-d');
+            $payment_quotations = QuotationPayment::on(Auth::user()->database_name)->where('id_quotation',$quotation->id)->get();
 
-             if(isset($coin)){
-                if($coin == 'bolivares'){
-                   $bcv = null;
-                }else{
-                    $bcv = $quotation->bcv;
-                    $quotation->anticipo = $quotation->anticipo;
-                }
-            }else{
-               $bcv = null;
+
+            $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                        ->where('id_client',$quotation->id_client)
+                                        ->where(function ($query) use ($quotation){
+                                            $query->where('id_quotation',null)
+                                                ->orWhere('id_quotation',$quotation->id);
+                                        })
+                                        ->where('coin','like','bolivares')
+                                        ->sum('amount');
+
+
+            $total_dolar_anticipo = Anticipo::on(Auth::user()->database_name)->where('status',1)
+                                                ->where('id_client',$quotation->id_client)
+                                                ->where(function ($query) use ($quotation){
+                                                    $query->where('id_quotation',null)
+                                                        ->orWhere('id_quotation',$quotation->id);
+                                                })
+                                                ->where('coin','not like','bolivares')
+                                                ->select( DB::raw('SUM(anticipos.amount/anticipos.rate) As dolar'))
+                                                ->get();
+
+
+
+            $anticipos_sum_dolares = 0;
+            if(isset($total_dolar_anticipo[0]->dolar)){
+                $anticipos_sum_dolares = $total_dolar_anticipo[0]->dolar;
             }
 
-             return view('admin.quotations.createfacturado',compact('quotation','payment_quotations', 'datenow','bcv','coin','reverso'));
+
+            $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 2)
+                                            ->where('code_five', '<>',0)
+                                            ->where('description','not like', 'Punto de Venta%')
+                                            ->orderBy('description','ASC')
+                                            ->get();
+            $accounts_efectivo = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
+                                            ->where('code_two', 1)
+                                            ->where('code_three', 1)
+                                            ->where('code_four', 1)
+                                            ->where('code_five', '<>',0)
+                                            ->orderBy('description','ASC')
+                                            ->get();
+            $accounts_punto_de_venta = DB::connection(Auth::user()->database_name)->table('accounts')->where('description','LIKE', 'Punto de Venta%')
+                                            ->get();
+
+            $inventories_quotations = DB::connection(Auth::user()->database_name)->table('products')
+                                                            ->join('quotation_products', 'products.id', '=', 'quotation_products.id_inventory')
+                                                            ->where('quotation_products.id_quotation',$quotation->id)
+                                                            ->whereIn('quotation_products.status',['1','C'])
+                                                            ->select('products.*','quotation_products.price as price','quotation_products.rate as rate','quotation_products.id_inventory as id_inventory','quotation_products.discount as discount',
+                                                            'quotation_products.amount as amount_quotation','quotation_products.retiene_iva as retiene_iva_quotation'
+                                                            ,'quotation_products.retiene_islr as retiene_islr_quotation')
+                                                            ->get();
+
+            $notasdedebito = DB::connection(Auth::user()->database_name)->table('debit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
+
+
+            $notasdecredito = DB::connection(Auth::user()->database_name)->table('credit_notes')
+            ->where('id_quotation','=',$quotation->id)
+            ->where('status','!=','X')
+            ->where('status','!=','C')
+            ->select( DB::raw('SUM(amount_with_iva/rate) As dolar'),DB::raw('SUM(amount_with_iva) As bolivares'))
+            ->get();
+
+
+             $total= 0;
+             $base_imponible= 0;
+             $price_cost_total= 0;
+
+
+             $total_retiene_iva = 0;
+             $retiene_iva = 0;
+
+             $total_retiene_islr = 0;
+             $retiene_islr = 0;
+
+             $total_mercancia= 0;
+             $total_servicios= 0;
+             $total_debit_notes = 0;
+
+             foreach($inventories_quotations as $var){
+
+                if($coin != "bolivares"){
+                    $var->price = $var->price / $var->rate;
+                }
+
+                 //Se calcula restandole el porcentaje de descuento (discount)
+                    $percentage = (($var->price * $var->amount_quotation) * $var->discount)/100;
+
+                    $total += ($var->price * $var->amount_quotation) - $percentage;
+
+                    if ($company_user == 26){ // 26 NORTH D CORP
+                        if($var->id_inventory == 34){
+                            $total -= (($var->price * $var->amount_quotation) - $percentage) * 2;
+
+                        }
+                    }
+                //-----------------------------
+
+                if($var->retiene_iva_quotation == 0){
+
+                    $base_imponible += ($var->price * $var->amount_quotation) - $percentage;
+
+                }else{
+                    $retiene_iva += ($var->price * $var->amount_quotation) - $percentage;
+                }
+
+                if($var->retiene_islr_quotation == 1){
+
+                    $retiene_islr += ($var->price * $var->amount_quotation) - $percentage;
+
+                }
+
+                //me suma todos los precios de costo de los productos
+                 if(($var->money == 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
+                    $price_cost_total += $var->price_buy * $var->amount_quotation;
+                }else if(($var->money != 'Bs') && (($var->type == "MERCANCIA") || ($var->type == "COMBO"))){
+                    $price_cost_total += $var->price_buy * $var->amount_quotation * $quotation->bcv;
+                }
+
+                if($coin != "bolivares"){
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += (($var->price * $var->amount_quotation) - $percentage);
+                    }else{
+                        $total_servicios += (($var->price * $var->amount_quotation) - $percentage);
+                    }
+                }else{
+                    if(($var->type == "MERCANCIA") || ($var->type == "COMBO")){
+                        $total_mercancia += ($var->price * $var->amount_quotation) - $percentage;
+                    }else{
+                        $total_servicios += ($var->price * $var->amount_quotation) - $percentage;
+                    }
+                }
+             }
+
+             $quotation->total_factura = $total;
+             $quotation->base_imponible = $base_imponible;
+
+             $date = Carbon::now();
+
+             if($type == 'factura'){
+             $datenow = date_format(date_create($quotation->date_quotation),"Y-m-d");
+             }else{
+             $datenow = $date->format('Y-m-d');
+             }
+             $anticipos_sum = 0;
+
+            if ($coin == null) {    /// condicion de la moneda
+                $coin = $quotation->coin;
+            }
+
+             if(isset($coin)){
+                 if($coin == 'dolares'){
+                    $bcv = $quotation->bcv;
+                     //Si la factura es en Dolares, y tengo anticipos en bolivares, divido los bolivares por la tasa a la que estoy facturando
+                    $anticipos_sum_bolivares =   $this->anticipos_bolivares_to_dolars($quotation);
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->dolar;
+                    $total_credit_notes = $notasdecredito[0]->dolar;
+                 }else{
+
+                    $bcv = null;
+                    //Si la factura es en BS, y tengo anticipos en dolares, los multiplico los dolares por la tasa a la que estoy facturando
+                    $anticipos_sum_dolares =  $anticipos_sum_dolares * $quotation->bcv;
+                    $anticipos_sum = $anticipos_sum_bolivares + $anticipos_sum_dolares;
+                    $total_debit_notes = $notasdedebito[0]->bolivares;
+                    $total_credit_notes = $notasdecredito[0]->bolivares;
+                 }
+             }else{
+                $bcv = null;
+                $total_debit_notes = $notasdedebito[0]->bolivares;
+                $total_credit_notes = $notasdecredito[0]->bolivares;
+             }
+
+             if (count($notasdedebito) <= 0){
+                $total_debit_notes = 0;
+             }
+
+             if (count($notasdecredito) <= 0){
+                $total_credit_notes = 0;
+             }
+
+
+            /*Aqui revisamos el porcentaje de retencion de iva que tiene el cliente, para aplicarlo a productos que retengan iva */
+             $client = Client::on(Auth::user()->database_name)->find($quotation->id_client);
+
+                if($client->percentage_retencion_iva != 0){
+                    $total_retiene_iva = ($retiene_iva * $client->percentage_retencion_iva) /100;
+                } else {
+                    $total_retiene_iva = 0;
+                }
+
+                if($client->percentage_retencion_islr != 0){
+                    $total_retiene_islr = ($retiene_islr * $client->percentage_retencion_islr) /100;
+                }
+
+            /*-------------- */
+            $company = Company::on(Auth::user()->database_name)->find(1);
+            $igtfporc = $company->IGTF_porc ?? 3;
+            $impuesto = $company->tax_1 ?? 1;
+            $impuesto2 = $company->tax_2 ?? 1;
+            $impuesto3 = $company->tax_3 ?? 1;
+
+            $is_after = false;
+            if(empty($quotation->credit_days)){
+                $is_after = true;
+            }
+
+            if (Auth::user()->company['id']  == '26'){
+                $validarfact = FacturasCour::on(Auth::user()->database_name)
+                ->where('id_ventas',$id_quotation)
+                ->first();
+                    if($validarfact){
+                        $existe = true;
+                    }else{
+                        $existe = false;
+                    }
             }else{
-             return redirect('/invoices')->withDanger('La factura no existe');
+                $existe = false;
+            }
+
+
+
+             return view('admin.quotations.createfacturado',compact('existe','price_cost_total','coin','quotation'
+                        ,'payment_quotations', 'accounts_bank', 'accounts_efectivo', 'accounts_punto_de_venta'
+                        ,'datenow','bcv','anticipos_sum','total_retiene_iva','total_retiene_islr','is_after'
+                        ,'total_mercancia','total_servicios','client','retiene_iva','type','igtfporc','total_debit_notes','total_credit_notes','impuesto','impuesto2','impuesto3'));
+         }else{
+             return redirect('/quotations/index')->withDanger('La factura no existe');
          }
 
-        }else{
-            return redirect('/invoices')->withDanger('No Tienes Permiso');
-        }
-
     }
-
-
 
 }

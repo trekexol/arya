@@ -1129,7 +1129,7 @@
 
 @section('consulta')
     <script>
-            $("#newcour").hide();
+        $("#newcour").hide();
         $("#credit").hide();
         $(".igtfunic").hide();
         $("#formenviarcredito").hide();

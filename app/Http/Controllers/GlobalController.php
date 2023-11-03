@@ -1218,6 +1218,10 @@ class GlobalController extends Controller
                                                     $productc = Product::on(Auth::user()->database_name)
                                                     ->find($productwo->id_product);
 
+                                                    /*if (empty($productc)){
+                                                        dd("Product: ".$productwo->id_product." Combo:".$id_product);
+                                                    }*/
+
                                                     $headervoucher = new HeaderVoucher(); // Creando cabecera
                                                     $headervoucher->setConnection(Auth::user()->database_name);
                                                      
