@@ -540,7 +540,7 @@
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                     aria-expanded="false">
                                     <i class="fas fa-bars"></i>
-                                    Opciones
+                                    Opciones Fac
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
@@ -572,6 +572,32 @@
             </div>
         </div>
 </div>
+<!-- Delete Warning Modal -->
+<div class="modal modal-danger fade" id="reversarModal" tabindex="-1" role="dialog" aria-labelledby="reversar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Factura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('quotations.reversarQuotation') }}" method="post">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <h5 class="text-center">Seguro quiere reversar la factura?</h5>
+                    <input id="id_quotation_modal" type="hidden" class="form-control @error('id_quotation_modal') is-invalid @enderror" name="id_quotation_modal" readonly required autocomplete="id_quotation_modal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Reversar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('quotation_facturar')
@@ -580,6 +606,14 @@
 
 
 @section('consulta')
+@if (isset($reverso))
+<script>
+    $( document ).ready(function() {
+        $('#deleteModal').modal('toggle')
+    });
+</script>
+@endif
+
     <script>
         $("#newcour").hide();
         $("#credit").hide();
@@ -683,6 +717,12 @@
 
     </script>
     <script type="text/javascript">
+           $(document).on('click','.delete',function(){
+                let id_quotation = $(this).attr('data-id-quotation');
+
+                $('#id_quotation_modal').val(id_quotation);
+            });
+
             function pdf() {
                 
                 var nuevaVentana= window.open("{{ route('pdf',[$quotation->id,$coin])}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
