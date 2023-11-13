@@ -677,7 +677,7 @@
             } else {
                 $(".igtfunic").hide();
             }
-            window.location = "{{route('quotations.createfacturar', [$quotation->id,''])}}"+"/"+coin;
+            window.location = "{{route('quotations.createfacturado', [$quotation->id,''])}}"+"/"+coin;
         });
 
         $("#date-begin").on('change',function(){
