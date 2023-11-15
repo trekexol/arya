@@ -93,7 +93,7 @@
 
         @endphp
 
-        <td style="text-align: right;">{{ $data['monto'] }}</td>
+        <td style="text-align: right;">{{ $data['monto'].' Bs' }}</td>
         <td></td>
         @elseif($data['sign'] == 'D')
 
@@ -104,19 +104,19 @@
         @endphp
 
         <td></td>
-        <td style="text-align: right;">{{ $data['monto'] }}</td>
+        <td style="text-align: right;">{{ $data['monto'].' Bs' }}</td>
         @endif
       </tr>
       @endforeach
 
       <tr>
         <td>Total:</td>
-        <td style="text-align: right;">{{ $total_asignacion }}</td>
-        <td style="text-align: right;">{{ $total_deduccion }}</td>
+        <td style="text-align: right;">{{ $total_asignacion.' Bs' }}</td>
+        <td style="text-align: right;">{{ $total_deduccion.' Bs' }}</td>
       </tr>
       <tr>
         <td style="text-align: center;">Total a Pagar:</td>
-        <td style="text-align: center;" colspan="2">{{ $total_asignacion - $total_deduccion }}</td>
+        <td style="text-align: center;" colspan="2">{{ $total_asignacion - $total_deduccion.' Bs' }}</td>
       </tr>
 
 
