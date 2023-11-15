@@ -1,5 +1,8 @@
 
-
+<div align="center">
+<span class="badge badge-pill badge-success bsfc" data-toggle="modal" data-target="#MatchModal" name="matchvalue" >Buscar Match Facturas Compras</span>
+<span class="badge badge-pill badge-success bsfv" data-toggle="modal" data-target="#MatchModal" name="matchvalue" >Buscar Match Facturas Ventas</span>
+</div>
     <table class="table table-light2 table-bordered dataTableclass" id="dataTable" >
                 <thead>
                     <tr>
@@ -49,7 +52,7 @@
                                         <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofacc}}">Match Facturas Compras</span>
 
                                        @elseif($var->matchc == 0)
-                                        <input type="checkbox" id="checkdebe" name="checkdebe" class="checkdebe">
+                                        <input type="checkbox" id="checkdebe" name="checkdebe" class="checkdebe" value="{{$var->debe}}">
                                        @else
 
                                         <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_ivac.'/'.$var->matchc.'/'.$plata.'/'.$var->idinvoicec.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcvc.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofacc}}">Match Factura Compra {{$var->matchc}}</span>
@@ -75,7 +78,7 @@
                                         <span class="badge badge-pill badge-success" data-toggle="modal" data-target="#MatchModal" name="matchvalue" data-id="{{$plata.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/match/'.$var->moneda.'/'.$var->conta.'/'.$var->tipofac}}">Match Facturas Ventas</span>
 
                                        @elseif($var->match == 0)
-                                       <input type="checkbox" id="checkhaber" name="checkhaber" class="checkhaber">
+                                       <input type="checkbox" id="checkhaber" name="checkhaber" class="checkhaber" value="{{$var->haber}}">
                                        @else
 
                                         <span class="badge badge-pill badge-success procesarfactura"  data-id="{{$var->amount_with_iva.'/'.$var->match.'/'.$plata.'/'.$var->idinvoice.'/'.$var->id_temp_movimientos.'/'.$var->fecha.'/'.$var->banco.'/'.$var->bcv.'/'.$var->conta.'/'.$var->moneda.'/'.$var->tipofac}}">Match Factura Venta {{$var->match}}</span>
@@ -109,27 +112,23 @@
                 </div>
               </div>
 
-            <script type="text/javascript">
+<script type="text/javascript">
 
 
-                $(document).ready(function(){
+$(document).ready(function(){
+    $('.bsfc').hide();
+    $('.bsfv').hide();
+/********MODAL CUANDO CONSIGUE MATCH**********/
 
-                 /********MODAL CUANDO CONSIGUE MATCH**********/
+    $('[name="matchvalue"]').click(function(e){
+        e.preventDefault();
+        var value = $(this).data('id');
+        var url = "{{ route('facturasmovimientos') }}";
 
-                $('[name="matchvalue"]').click(function(e){
-                    e.preventDefault();
-                   var value = $(this).data('id');
-                   var url = "{{ route('facturasmovimientos') }}";
-
-                 $.post(url,{value: value,"_token": "{{ csrf_token() }}"},function(data){
-                        $("#modalfacturas").empty().append(data);
-
-                      });
-
-
-
-                 });
-
+        $.post(url,{value: value,"_token": "{{ csrf_token() }}"},function(data){
+            $("#modalfacturas").empty().append(data);
+         });
+        });
 
     $('.procesarfactura').click(function(e){
       e.preventDefault();
@@ -169,10 +168,6 @@
                         text: 'Error a Procesar Factura!',
                         })
                  }
-
-
-
-
              },
              error:(xhr)=>{
                 Swal.fire({
@@ -183,20 +178,12 @@
              }
          })
 
-
-
-
-
-
-
 });
 
 
-
-        $('[name="matchvalueliminar"]').click(function(e){
+    $('[name="matchvalueliminar"]').click(function(e){
                     e.preventDefault();
                    var idmov = $(this).data('id');
-
 
                    $.ajax({
             type: "post",
@@ -223,9 +210,6 @@
                         })
              }
 
-
-
-
          },
          error:(response)=>{
 
@@ -242,65 +226,91 @@
 
                  });
 
-
-/*$(".checkhaber").change(function () {
-
-if( $(this).is(':checked') ){
-    $('.checkdebe').hide();
-} else {
-    $('.checkdebe').show();
-}
-
-$(".checkhaber:checked").each(function () {
-
-    $('.checkdebe').hide();
-
-});
-});*/
-
+/***********datatable*********************/
 var tabladata = $('#dataTable').DataTable({
     'paging':         true,
-'aLengthMenu': [[20], [20]]
+'aLengthMenu': [[10], [10]]
+});
+/*******************************************/
+
+var valihaber = 0; ///para verificar que hay check de haber activos
+var validebe = 0; ///para verificar que hay check de debe activos
+
+tabladata.$(".checkhaber").change(function () {
+var sList = 0;
+var totalhaber = 0;
+tabladata.$(".checkhaber:checked").each(function () {
+
+    sThisVal = this.checked;
+    sList += sThisVal;
+    totalhaber += parseFloat($(this).val());
+
+});
+
+if(sList > 0){
+    valihaber = 1;
+    tabladata.$('.checkdebe').hide();
+    tabladata.$('.checkdebe').prop( "disabled", true );
+}else{
+    valihaber = 0;
+    tabladata.$('.checkdebe').show();
+    tabladata.$('.checkdebe').prop( "disabled", false );
+
+}
+
+
+/*****VALIDO QUE SI ESTAN ACTIVO 2 CHECK DE HABER Y DEBE SE LIMPIE TODO DE MANERA DE EVITAR ERRORES*****/
+
+if(validebe > 0 && valihaber > 0){
+    tabladata.$('.checkdebe').hide();
+    tabladata.$('.checkdebe').prop( "disabled", true );
+
+    tabladata.$('.checkhaber').hide();
+    tabladata.$('.checkhaber').prop( "disabled", true );
+
+    tabladata.$('.checkdebe:checked').prop( "checked", false );
+    tabladata.$('.checkhaber:checked').prop( "checked", false );
+    }
+/**********************************************************/
 });
 
 
+tabladata.$(".checkdebe").change(function () {
+var sList = 0;
+var totaldebe = 0;
+tabladata.$(".checkdebe:checked").each(function () {
 
-/*
-$(".checkhaber").change(function () {
-var sList = "";
-$(".checkhaber:checked").each(function () {
-    tabladata.rows().iterator( 'row', function ( context, index ) {
-    var sThisVal = (this.checked ? "1" : "0");
-    sList += (sList=="" ? sThisVal : "," + sThisVal);
-} );
-
+    sThisVal = this.checked;
+    sList += sThisVal;
+    totaldebe += parseFloat($(this).val());
 
 });
+if(sList > 0){
+    validebe = 1;
+    tabladata.$('.checkhaber').hide();
+    tabladata.$('.checkhaber').prop( "disabled", true );
+    tabladata.$('.checkhaber:checked').prop( "checked", false );
+
+}else{
+    validebe = 0;
+    tabladata.$('.checkhaber').show();
+    tabladata.$('.checkhaber').prop( "disabled", false );
+}
 
 
-console.log (sList);
-});*/
+/*****VALIDO QUE SI ESTAN ACTIVO 2 CHECK DE HABER Y DEBE SE LIMPIE TODO DE MANERA DE EVITAR ERRORES*****/
+if(validebe > 0 && valihaber > 0){
+    tabladata.$('.checkdebe').hide();
+    tabladata.$('.checkdebe').prop( "disabled", true );
 
-/*var data = tabladata.rows().nodes();
-tabladata.rows().every(function (rowIdx, tableLoop, rowLoop) {
-      var data = this.node();
-      console.log($(data).find('input').prop('checked'));
-});*/
+    tabladata.$('.checkhaber').hide();
+    tabladata.$('.checkhaber').prop( "disabled", true );
 
-
-   /* $('#dataTable').on('change', 'tbody input', function() {
-        var total = "";
-      let info = $(this).closest('td small input').attr('id');
-      $('.checkdebe').hide();
-
-      checked = this.checked;
-      console.log(info[0]);
-      total += checked;
-    console.log(total);
-    });
-*/
-
-
+    tabladata.$('.checkdebe:checked').prop( "checked", false );
+    tabladata.$('.checkhaber:checked').prop( "checked", false );
+    }
+/**********************************************************************/
+});
 
 
 
