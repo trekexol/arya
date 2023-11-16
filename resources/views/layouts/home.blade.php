@@ -47,7 +47,7 @@
                                
                                 <h4 class="subheading">Administración</h4>
                             </div>
-                            <div class="timeline-body"><p class="text-muted">Puede administrar varias cuentas a la vez, realizar facturas, gestionar pagos, gestionar nomina, controlar de gastos, hacer estimaciones, seguimiento de ventas, flujo de caja, gestión de clientes y de proveedores, alertas, pagos y declraración de impuestos de una forma mucho más fácil y ordenada</p></div>
+                            <div class="timeline-body"><p class="text-muted">Puede administrar varias cuentas a la vez, realizar facturas, gestionar pagos, gestionar nómina, control de gastos, hacer estimaciones, seguimiento de ventas, flujo de caja, gestión de clientes y de proveedores, alertas, pagos y declraración de impuestos de una forma mucho más fácil y ordenada</p></div>
                         </div>
                     </li>
                     <li class="timeline-inverted">
