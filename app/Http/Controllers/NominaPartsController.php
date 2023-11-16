@@ -36,10 +36,14 @@ class NominaPartsController extends Controller
         if($type == 'liquidaciones'){
             $employees = Employee::on(Auth::user()->database_name)->where('status','5')->orderBy('id' ,'DESC')->get();
 
+        }elseif($type == 'utilidades' OR $type == 'prestaciones'){
+            $employees = Employee::on(Auth::user()->database_name)->whereNotIn('status', ['5','X','0'])->orderBy('id' ,'DESC')->get();
+
         }else{
-            $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->orderBy('id' ,'DESC')->get();
+            $employees = Employee::on(Auth::user()->database_name)->where('status','NOT LIKE','X')->where('status','NOT LIKE','5')->orderBy('id' ,'DESC')->get();
 
         }
+
 
         $datospresta = DB::connection(Auth::user()->database_name)
             ->table('nomina_calculations AS a')
