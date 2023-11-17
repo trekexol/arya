@@ -1080,17 +1080,17 @@ $diferencia = $fechaInicio->diff($fechaFin);
             <tr>
 
                 <th  class="text-center" colspan="2" >Banavih deducción del 1%. </th>
-                <td  class="text-center"  >-{{number_format(1 * ($pado2 / $i) / 100, 2, ',', '.')}}</td>
+                <td  class="text-center"  >-{{number_format(1 * $pado2 / 100, 2, ',', '.')}}</td>
             </tr>
             <tr>
 
                 <th  class="text-center" colspan="2" >INCES deducción del 0.5%</th>
-                <td  class="text-center"  >-{{number_format(0.5 * ($pado2 / $i) / 100, 2, ',', '.')}}</td>
+                <td  class="text-center"  >-{{number_format(0.5 * $pado2 / 100, 2, ',', '.')}}</td>
             </tr>
             <tr>
 
                 <th  class="text-center" colspan="2" >Total Asignacion</th>
-                <td  class="text-center"  >{{number_format(($pado2 / $i) - (1 * ($pado2 / $i) / 100) -(0.5 * ($pado2 / $i) / 100), 2, ',', '.')}}</td>
+                <td  class="text-center"  >{{number_format($pado2 - (1 * $pado2 / 100) -(0.5 * $pado2 / 100), 2, ',', '.')}}</td>
             </tr>
           </table>
 
