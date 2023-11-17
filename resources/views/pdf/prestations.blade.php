@@ -1072,12 +1072,10 @@ $diferencia = $fechaInicio->diff($fechaFin);
             <tr>
 
                 <th  class="text-center" colspan="2" >Utilidades.</th>
-                @if($diferencia->y > 0)
-                <td  class="text-center"  >{{number_format($total / $i, 2, ',', '.')}}</td>
-                @else
-                <?php $i = 6; ?>
-                <td  class="text-center"  >{{number_format($total / $i , 2, ',', '.')}}</td>
-                @endif
+                <?php $pago = $employee->monto_pago / 12;
+                        $pado2 = $pago * $i;
+                ?>
+                <td  class="text-center"  >{{number_format($pado2, 2, ',', '.')}}</td>
             </tr>
             <tr>
 
