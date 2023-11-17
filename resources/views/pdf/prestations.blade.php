@@ -18,6 +18,14 @@
 return $num_word;
 }
 
+function verMeses($fechaInicio,$fechaFin){
+
+
+
+echo $intervalo->y;
+
+}
+
 function mesletras($valor) {
     if($valor == '01'){
         $mes = 'ENERO';
@@ -938,8 +946,24 @@ $interesesacumulado = 0;
     <?php
     $total = 0;
     $i = 0;
+    $fecha_actual = date("Y-m-d");
 
-            if($employee->amount_utilities == 'Ma'){
+// Fecha de inicio
+$fechaInicio = new DateTime($employee->fecha_ingreso);
+
+// Fecha de finalización (puede ser la fecha actual)
+$fechaFin = new DateTime($fecha_actual);
+
+// Calcular la diferencia entre las fechas
+$diferencia = $fechaInicio->diff($fechaFin);
+
+// Acceder a los componentes de tiempo deseados
+//echo "Diferencia de días: " . $diferencia->days . " días<br>";
+//echo "Diferencia de meses: " . $diferencia->m . " meses<br>";
+//echo "Diferencia de años: " . $diferencia->y . " años<br>";
+//echo "Diferencia total en días: " . $diferencia->format('%R%a') . " días<br>";
+
+    if($employee->amount_utilities == 'Ma'){
 
         $diasutilidades = 120;
 
@@ -1047,8 +1071,13 @@ $interesesacumulado = 0;
             </tr>
             <tr>
 
-                <th  class="text-center" colspan="2" >Utilidades.  (acumulado en el año dividido por los meses transcurridos)</th>
+                <th  class="text-center" colspan="2" >Utilidades.</th>
+                @if($diferencia->y > 0)
                 <td  class="text-center"  >{{number_format($total / $i, 2, ',', '.')}}</td>
+                @else
+                <?php $i = 6; ?>
+                <td  class="text-center"  >{{number_format($total / $i , 2, ',', '.')}}</td>
+                @endif
             </tr>
             <tr>
 
