@@ -9,7 +9,7 @@
     @include('admin.layouts.danger')    {{-- EDITAR --}}
     @include('admin.layouts.delete')    {{-- DELELTE --}}
     {{-- VALIDACIONES-RESPUESTA --}}
-    
+
 @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -28,9 +28,9 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('vendors.store') }}" enctype="multipart/form-data">
                         @csrf
-                       
+
                         <input type="hidden" class="form-control" name="user_id" value="{{ Auth::user()->id }}" readonly>
-                               
+
 
                         <div class="form-group row">
                             <label for="code" class="col-md-2 col-form-label text-md-right">Código de Vendedor (Opcional)</label>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
 
-                       
+
                         <div class="form-group row">
                             <label for="name" class="col-md-2 col-form-label text-md-right">Nombre</label>
 
@@ -112,11 +112,11 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                         </div>
 
                         <div class="form-group row">
-                            
+
                             <label for="comision_id" class="col-md-2 col-form-label text-md-right">Tipo de Comisión
                             </label>
 
@@ -125,28 +125,29 @@
                                 @foreach($comisions as $var)
                                     <option value="{{ $var->id }}">{{ $var->description }}</option>
                                 @endforeach
-                              
+
                             </select>
                             </div>
                             <label for="employee" class="col-md-2 col-form-label text-md-right">Empleado</label>
 
                             <div class="col-md-4">
-                            
+
                                 @if (count($employees) == 0)
                                 <select class="form-control" id="employee_id" name="employee_id">
                                     <option selected value="0">Ninguno</option>
-                                
+
                                     </select>
-                                
+
                                 @else
-                              
+
                                     <select class="form-control" id="employee_id" name="employee_id">
+                                        <option selected value="">Ninguno</option>
                                     @foreach($employees as $var)
                                         <option value="{{ $var->id }}">{{ $var->nombres }}</option>
                                     @endforeach
-                                    </select>   
+                                    </select>
                                 @endif
-                            
+
                             </div>
                         </div>
 
@@ -175,9 +176,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                                    
+
                             <label for="estado" class="col-md-2 col-form-label text-md-right">Estado</label>
-                        
+
                             <div class="col-md-4">
                                 <select id="estado"  name="estado" class="form-control" required>
                                     <option value="">Seleccione un Estado</option>
@@ -194,9 +195,9 @@
                                         </span>
                                     @endif
                             </div>
-                       
+
                             <label for="municipio" class="col-md-2 col-form-label text-md-right">Municipio</label>
-                        
+
                             <div class="col-md-4">
                                 <select  id="municipio"  name="Municipio" class="form-control" required>
                                     <option value="">Selecciona un Municipio</option>
@@ -208,26 +209,26 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>  
+                        </div>
 
                         <div class="form-group row">
                             <label for="parroquia" class="col-md-2 col-form-label text-md-right">Parroquia</label>
-                       
+
                             <div class="col-md-4">
                                 <select class="form-control" id="parroquia"  name="Parroquia" required class="form-control" value="{{ old('Parroquia')}}" >
                                     <option value="">Selecciona un Parroquia</option>
                                 </select>
                             </div>
-                        
-                       
+
+
                            <!-- <label for="direccion" class="col-md-2 col-form-label text-md-right">Dirección</label>
-                            
+
                             <div class="col-md-4">
-                                
+
                                 <input type="text" class="form-control" id="direction" name="direction" required value="{{ old('direction')}}" >
                             </div>-->
                         </div>
-                      
+
 
                         <div class="form-group row">
                             <label for="instagram" class="col-md-2 col-form-label text-md-right">Instagram</label>
@@ -277,7 +278,7 @@
                                 @enderror
                             </div>
                         </div>
-                      
+
                         <div class="form-group row">
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observación</label>
 
@@ -290,9 +291,9 @@
                                     </span>
                                 @enderror
                             </div>
-                           
+
                         </div>
-                        
+
                         <br>
                         <div class="form-group row mb-0">
                             <div class="col-md-3 offset-md-4">
@@ -301,7 +302,7 @@
                                 </button>
                             </div>
                             <div class="col-md-2">
-                                <a href="{{ route('vendors') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>  
+                                <a href="{{ route('vendors') }}" id="btnfacturar" name="btnfacturar" class="btn btn-danger" title="facturar">Volver</a>
                             </div>
                         </div>
                     </form>
@@ -315,23 +316,23 @@
 <script>
     $(document).ready(function () {
         $("#comision").mask('000.000.000.000.000', { reverse: true });
-        
-    }); 
+
+    });
     $(document).ready(function () {
         $("#phone").mask('0000 000-0000', { reverse: true });
-        
-    }); 
+
+    });
     $(document).ready(function () {
         $("#phone2").mask('0000 000-0000', { reverse: true });
-        
-    }); 
+
+    });
     $(document).ready(function () {
         $("#cedula_rif").mask('000.000.000', { reverse: true });
-        
-    }); 
+
+    });
     </script>
 <script>
-       
+
 $(function(){
     soloAlfaNumerico('code');
     soloLetras('name');
@@ -343,7 +344,7 @@ $(function(){
 
 @section('validacion_vendor')
     <script>
-            
+
             $("#estado").on('change',function(){
                 var estado_id = $(this).val();
                 $("#municipio").val("");
@@ -374,9 +375,9 @@ $(function(){
                     // console.log(htmlOptions);
                     municipio.html('');
                     municipio.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
