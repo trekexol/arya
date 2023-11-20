@@ -626,19 +626,21 @@ class GlobalController extends Controller
 
         //dd($date_consult.' - - '.$datenow);
 
-        if ($date_consult != $datenow) { 
+        if ($date_consult != $datenow) {
 
                     $tasahoy  = TasaBcv::on("logins")
                     ->where('fecha_valor','LIKE','%'.$datenow.'%')->first();
 
                     if(empty($tasahoy)){ //procedo a guardar la tasa del dia.
-               
-                            $url = "https://www.aryasoftware.net/apidolarbcv/";
+
+                            $url = "https://pydolarvenezuela-api.vercel.app/api/v1/dollar/page?page=bcv";
                             $ch = curl_init();
                             curl_setopt($ch, CURLOPT_URL, $url);
                             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                            /* curl_setopt($ch, CURLOPT_TIMEOUT, 4);*/ // Establece el tiempo de espera a 3 segundos
                             $data = curl_exec($ch);
+                            $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF] /', '', $data), true);
+
 
                         if (curl_errno($ch)) {
 
@@ -648,10 +650,10 @@ class GlobalController extends Controller
                         } else {
 
                             $datos = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF] /', '', $data), true);
-                    
-                            if (isset($datos['fechadehoy'])){
 
-                                $dolaroficial = str_replace(array(","),".",$datos['dolaroficial']);
+                            if (isset($datos['datetime']['date'])){
+
+                                $dolaroficial = str_replace(array(","),".",$datos['monitors']['usd']['price_old']);
 
                                 $var = new TasaBcv();
                                 $var->setConnection("logins");
@@ -676,7 +678,7 @@ class GlobalController extends Controller
                             } else {
 
                                 $bcv = $company->rate_bcv;
-                                return bcdiv($bcv, '1', 4);  
+                                return bcdiv($bcv, '1', 4);
                             }
                         }
 
@@ -693,7 +695,7 @@ class GlobalController extends Controller
             $bcv = $company->rate_bcv;
             return bcdiv($bcv, '1', 4);
         }
-                
+
     }
 
 
@@ -1206,15 +1208,15 @@ class GlobalController extends Controller
                                                     $price_buy = 0;
 
                                                     $company = Company::on("logins")->where('login',Auth::user()->database_name)->first();
-                                                    
-                                                    $quotation_done = Quotation::on(Auth::user()->database_name)->find($quotation);   
-                                                    
+
+                                                    $quotation_done = Quotation::on(Auth::user()->database_name)->find($quotation);
+
                                                     if(isset($quotation_done)){
                                                         $bcv = $quotation_done->bcv;
                                                     } else {
                                                         $bcv = $company->rate_bcv;
                                                     }
-                                                    
+
                                                     $productc = Product::on(Auth::user()->database_name)
                                                     ->find($productwo->id_product);
 
@@ -1224,7 +1226,7 @@ class GlobalController extends Controller
 
                                                     $headervoucher = new HeaderVoucher(); // Creando cabecera
                                                     $headervoucher->setConnection(Auth::user()->database_name);
-                                                     
+
                                                     if ($type == 'venta' || $type == 'nota' || $type == 'rev_compra') {
                                                     $headervoucher->description  = 'Materia Prima a Mercancia para la Venta Producto '.$productwo->id_product.' '.$productwo->description;
                                                     }
@@ -1395,7 +1397,7 @@ class GlobalController extends Controller
 
 
        /* $tasa = str_replace(',', '.', str_replace('.', '', $tasa));*/
-        
+
         $detail = new DetailVoucher();
         $detail->setConnection(Auth::user()->database_name);
 

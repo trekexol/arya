@@ -1,7 +1,7 @@
 @extends('admin.layouts.dashboard')
 
 @section('content')
-  
+
     <!-- container-fluid -->
     <div class="container-fluid">
         <!-- Page Heading -->
@@ -40,7 +40,7 @@
                         <div class="col-12 ">
                             <form >
                                 <input type="hidden" class="form-control" name="user_id" value="{{ Auth::user()->id }}" readonly>
-                               
+
 
                         <div class="form-group row">
                             <label for="code" class="col-md-2 col-form-label text-md-right">Código de Vendedor (Opcional)</label>
@@ -101,7 +101,7 @@
                             </div>
                         </div>
 
-                       
+
                         <div class="form-group row">
                             <label for="name" class="col-md-2 col-form-label text-md-right">Nombre</label>
 
@@ -149,7 +149,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            
+
                         </div>
 
                         <div class="form-group row">
@@ -168,8 +168,8 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div> 
-                           
+                            </div>
+
                             <label for="employee" class="col-md-2 col-form-label text-md-right">Empleado</label>
                             <div class="col-md-4">
                                 @if (count($employees) == 0)
@@ -177,14 +177,15 @@
                                     <option selected value="0">Ninguno</option>
                                     </select>
                                 @else
-                              
+
                                     <select class="form-control" id="employee_id" name="employee_id">
+                                    <option selected value="">Ninguno</option>
                                     @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}">{{ $employee->nombres }}</option>
                                     @endforeach
-                                    </select>   
+                                    </select>
                                 @endif
-                            </div> 
+                            </div>
                         </div>
 
                         <div class="form-group row">
@@ -211,7 +212,7 @@
                                 @enderror
                             </div>
                         </div>
-                     
+
                         <div class="form-group row">
                             <label for="estado" class="col-md-2 col-form-label text-md-right">Estado:</label>
                             <div class="col-md-4">
@@ -228,8 +229,8 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div> 
-                            
+                            </div>
+
                             <label for="municipio" class="col-md-2 col-form-label text-md-right">Municipio:</label>
                             <div class="col-md-4">
                                 <select  id="municipio"  name="Municipio" class="form-control">
@@ -246,11 +247,11 @@
                                     @endforeach
                                 </select>
                             </div>
-                           
+
                         </div>
-                     
+
                         <div class="form-group row">
-                            
+
                             <label for="parroquia" class="col-md-2 col-form-label text-md-right">Parroquia:</label>
                             <div class="col-md-4">
                                 <select class="form-control" id="parroquia"  name="Parroquia" class="form-control" >
@@ -321,7 +322,7 @@
                                 @enderror
                             </div>
                         </div>
-                      
+
                         <div class="form-group row">
                             <label for="observation" class="col-md-2 col-form-label text-md-right">Observación</label>
 
@@ -335,7 +336,7 @@
                                 @enderror
                             </div>
                             <label for="rol" class="col-md-2 col-form-label text-md-right">Status</label>
-        
+
                             <div class="col-md-4">
                                 <select class="form-control" id="status" name="status" title="status">
                                     @if($vendor->status == 1)
@@ -344,18 +345,18 @@
                                         <option value="0">Inactivo</option>
                                     @endif
                                     <option value="nulo">----------------</option>
-                                    
+
                                     <div class="dropdown">
                                         <option value="1">Activo</option>
                                         <option value="0">Inactivo</option>
                                     </div>
-                                    
-                                       
+
+
                                 </select>
                             </div>
                         </div>
-                        
-                            
+
+
                 <br>
                 <div class="form-group row mb-0">
                     <div class="col-md-3 offset-md-4">
@@ -376,24 +377,24 @@
     <script>
             $(document).ready(function () {
             $("#comision").mask('000.000.000.000.000,00', { reverse: true });
-            
+
         });
 
         $(document).ready(function () {
             $("#phone").mask('0000 000-0000', { reverse: true });
-            
-        }); 
+
+        });
         $(document).ready(function () {
             $("#phone2").mask('0000 000-0000', { reverse: true });
-            
-        }); 
+
+        });
 
         $(function(){
             soloAlfaNumerico('code');
             soloNumeros('cedula_rif');
             soloLetras('name');
             soloLetras('surname');
-        
+
         });
 
     </script>
@@ -429,9 +430,9 @@
                     console.log(htmlOptions);
                     municipio.html('');
                     municipio.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
@@ -475,6 +476,6 @@
             })
         }
         // Funcion Solo Numero
-        
+
     </script>
 @endsection
