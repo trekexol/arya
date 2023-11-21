@@ -30,6 +30,15 @@
 
                             </div>
                             @endif
+                            <div class="form-group row mb-0">
+                                <div class="col-md-6 offset-md-4">
+
+                                    <a type="button" class="btn btn-danger btn-sm" href="{{ route('imports') }}">
+                                        Volver
+                                      <a>
+                                </div>
+
+                            </div>
                         </div>
                     @if($id)
 
@@ -195,31 +204,19 @@
                                 @enderror
                             </div>
                         </div>
-
-                        @endif
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary btn-sm">
                                    Registrar Importacion
                                 </button>
-                                <a type="button" class="btn btn-danger btn-sm" href="{{ route('imports') }}">
-                                    Volver
-                                  <a>
                             </div>
-
                         </div>
+
+                        @endif
+
                     @endif
                     </form>
-                    @if(!$id)
-                    <div class="form-group row mb-0">
-                        <div class="col-md-6 offset-md-4">
 
-                            <a type="button" class="btn btn-danger btn-sm" href="{{ route('imports') }}">
-                                Volver
-                              <a>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>
