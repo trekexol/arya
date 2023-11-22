@@ -69,7 +69,7 @@
             <h2>Nóminas Registradas</h2>
         </div>
 
-        @if (Auth::user()->role_id  == '1' )
+
         <div class="col-sm-3">
             <a href="{{ route('nominas.create')}}" class="btn btn-primary float-md-right" role="button" aria-pressed="true">Registrar una Nómina</a>
 
@@ -86,7 +86,7 @@
                 <a href="#" data-toggle="modal" data-target="#reportIslrModal" class="dropdown-item bg-light">Retención de ISLR Empleados a XML</a>
             </div>
         </div>
-        @endif
+
     </div>
   </div>
 
