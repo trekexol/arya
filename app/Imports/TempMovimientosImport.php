@@ -54,6 +54,19 @@ class TempMovimientosImport implements  ToCollection
                         $haber = $row[4];
                     }
 
+                    if(is_null($row[1])){
+                        $referencia = null;
+                    }else{
+                        $referencia = $row[1];
+                    }
+
+                    if(is_null($row[2])){
+                        $descri = 'S/D';
+                    }else{
+                        $descri = $row[2];
+                    }
+
+
                     //$fecha = $row[0];
 
                             /*********DANDO FORMATO A LA FECHA ****/
@@ -67,7 +80,7 @@ class TempMovimientosImport implements  ToCollection
                             $vali2   = TempMovimientos::on(Auth::user()->database_name)
                                         ->where('banco',$this->banco)
                                         ->where('fecha',$fecha)
-                                        ->where('referencia_bancaria',$row[1])
+                                        ->where('referencia_bancaria',$referencia)
                                         ->where('moneda',$row[5])
                                         ->where('haber',$haber)
                                         ->where('debe',$debe)->first();
@@ -80,8 +93,8 @@ class TempMovimientosImport implements  ToCollection
                                         $user = new TempMovimientos();
                                         $user->setConnection(Auth::user()->database_name);
                                         $user->banco        = $this->banco;
-                                        $user->referencia_bancaria     = $row[1];
-                                        $user->descripcion       = $row[2];
+                                        $user->referencia_bancaria     = $referencia;
+                                        $user->descripcion       = $descri;
                                         $user->fecha    = $fecha;
                                         $user->haber     = $haber;
                                         $user->debe   = $debe;
