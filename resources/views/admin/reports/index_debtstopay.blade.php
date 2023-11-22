@@ -34,7 +34,7 @@
                                         <option value="todod">Todo por Factura</option>
                                         <option selected value="proveedor">Por Proveedor</option>
                                     @endif
-                                
+
                                     @if($type == 'todo')
                                     <option selected value="todo">Todo Resumen</option>
                                     <option value="todod">Todo por Factura</option>
@@ -46,18 +46,18 @@
                                     <option selected value="todod">Todo por Factura</option>
                                     <option value="proveedor">Por Proveedor</option>
                                     @endif
-                        
-                                    
+
+
                                 </select>
                             </div>
-                            
+
                             <label id="provider_label1" for="providers" class="col-sm-2 text-md-right">Proveedor:</label>
                             @if (isset($provider))
                                 <label id="provider_label2"  for="providers" class="col-sm-2 ">{{ $provider->razon_social }}</label>
                             @endif
-                            
+
                             <div id="provider_label3" class="form-group col-sm-1">
-                                <a href="{{ route('reports.select_provider') }}" title="Seleccionar Proveedor"><i class="fa fa-eye"></i></a>  
+                                <a href="{{ route('reports.select_provider') }}" title="Seleccionar Proveedor"><i class="fa fa-eye"></i></a>
                             </div>
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
@@ -67,13 +67,13 @@
                                     @else
                                         <option disabled selected value="bolivares">Moneda</option>
                                     @endif
-                                    
+
                                     <option  value="bolivares">Bolívares</option>
                                     <option value="dolares">Dólares</option>
                                 </select>
                             </div>
                             <div class="col-sm-1">
-                            <button type="submit" class="btn btn-primary ">
+                            <button id="btn_buscar" type="submit" class="btn btn-primary ">
                                 Buscar
                              </button>
                             </div>
@@ -86,15 +86,15 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{ route('reports.debtstopay_pdf',[$coin ?? "bolivares",$date_end ?? $datenow,$type ?? "todo",$provider->id ?? null]) }}" allowfullscreen></iframe>
                           </div>
-                        
+
                         </div>
                 </div>
             </div>
@@ -119,9 +119,9 @@
         document.getElementById("formPost").submit();
         document.getElementById("formPost").action = old_action;
     }
-    
 
-    let provider  = "<?php echo $provider->razon_social ?? 0 ?>";  
+
+    let provider  = "<?php echo $provider->razon_social ?? 0 ?>";
 
     if(provider != 0){
         $("#provider_label1").show();
@@ -132,12 +132,12 @@
         $("#provider_label2").hide();
         $("#provider_label3").hide();
     }
-    
+
 
         $("#type").on('change',function(){
 
             type = $(this).val();
-            
+
             if(type == 'todo' || type == 'todod'){
                 $("#provider_label1").hide();
                 $("#provider_label2").hide();
@@ -151,6 +151,17 @@
 
         });
 
-    </script> 
+        $(document).on('click','#btn_buscar',function(event){
+
+        var type = $("#type").val();
+        let provider  = "<?php echo $provider->razon_social ?? 0 ?>";
+
+        if(type == 'provider' && provider == 0){
+            alert('Selecciona un Proveedor');
+            event.preventDefault();
+            return;
+        }
+     });
+    </script>
 
 @endsection
