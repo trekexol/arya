@@ -153,6 +153,7 @@
 
         $(document).on('click','#btn_buscar',function(event){
 
+
         var type = $("#type").val();
         let provider  = "<?php echo $provider->razon_social ?? 0 ?>";
 

@@ -40,7 +40,7 @@ class NominaController extends Controller
         $users_role =   $user->role_id;
         $nomina_type = '';
 
-      //  if($users_role == '1'){
+
            $nominas      =   Nomina::on(Auth::user()->database_name)->where('status','!=','X')->orderBy('id', 'desc')->get();
 
            $datospresta = DB::connection(Auth::user()->database_name)
@@ -65,10 +65,6 @@ class NominaController extends Controller
 
                 $nomina->check_exist = $check_exist;
            }
-
-    /*   }elseif($users_role == '2'){
-            return view('admin.index');
-        }*/
 
 
         return view('admin.nominas.index',compact('nominas','nomina_type','datospresta'));

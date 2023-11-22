@@ -67,6 +67,7 @@
 @section('content')
 
 
+
 <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     @if (Auth::user()->role_id  == '1')
 
@@ -75,7 +76,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
+        <a class="nav-link font-weight-bold" style="color: black;"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
       </li>
       <li class="nav-item" role="presentation">
           <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
@@ -87,7 +88,7 @@
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Almacenes</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
       </li>
 
     @else
@@ -112,7 +113,6 @@
 
   @endif
   </ul>
-
 
   <div class="modal modal-danger fade" id="movementModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
 
@@ -266,78 +266,7 @@
 <div class="container-fluid">
     <!-- Page Heading -->
 
-    <div class="row py-lg-2">
-        <div class="col-sm-2">
-            <button class="btn btn-sm btn-dark" type="button"
-            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
-            aria-expanded="false">
-            <i class="fas fa-bars"></i>
-            Opciones
-        </button>
-        <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-            <h6>Importación Masiva de Inventario</h6>
-            <a href="{{ route('export.product_template_inventary') }}" class="dropdown-item bg-success text-white h5">Descargar Plantilla Productos Excel</a>
-                <form id="fileForm" method="POST" action="{{ route('import_inventary') }}" enctype="multipart/form-data" >
-                @csrf
-                <input id="file" type="file" value="import" accept=".xlsx" name="file" class="file">
-
-                <br>
-                <br>
-                <button type="submit" class="dropdown-item bg-warning text-white h5">Subir Plantilla Productos Excel</button>
-                </form>
-        </div>
-        </div>
-
-        <div class="col-md-3">
-            <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-                Imprimir
-            </button>
-            <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton">
-
-                <a class="dropdown-item" onclick="pdfinventory();" style="color: rgb(4, 119, 252)"> <i class="fas fa-download fa-sm fa-fw mr-2 text-blue-400"></i><strong>Imprimir Inventario Actual</strong></a>
-            </div>
-        </div>
-
-
-        @if(Auth::user()->role_id  == '1' || $valor == 1)
-        <div class="col-sm-3 ">
-            <a href="{{ route('products.create',['MERCANCIA'])}}" class="btn btn-sm btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
-        </div>
-        <div class="col-sm-2">
-            <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#exampleModal">Actualizar Productos</button>
-        </div>
-          @endif
-        <div class="col-sm-2">
-            <select class="form-control" name="type" id="type">
-                @if(isset($type))
-                    @if ($type == 'MATERIAP')
-                        <option disabled selected value="{{$type}}">MATERIA PRIMA</option>
-                    @endif
-                    @if ($type == 'todos')
-                        <option disabled selected value="{{$type}}">TODOS</option>
-                    @endif
-                    @if ($type == 'MERCANCIA' or $type == 'COMBO')
-                    <option disabled selected value="{{$type}}">{{$type}}</option>
-                    @endif
-                    <option value="todos">-------------</option>
-                    <option value="todos">TODOS</option>
-                    <option value="MERCANCIA">MERCANCIA</option>
-                    <option value="MATERIAP">MATERIA PRIMA</option>
-                    <option value="COMBO">COMBO</option>
-                @else
-                    <option value="todos">TODOS</option>
-                    <option value="MERCANCIA">MERCANCIA</option>
-                    <option value="MATERIAP">MATERIA PRIMA</option>
-                    <option value="COMBO">COMBO</option>
-
-                @endif
-
-
-            </select>
-        </div>
-    </div>
-
+    
 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -424,15 +353,12 @@
                 <th class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
                 <th class="text-center">Tipo</th>
-                <th class="text-center">Cantidad</th>
-                <th class="text-center">Costo</th>
-
-                <th class="text-center">Moneda</th>
-
-                <th class="text-center"  style="width: 1%">Foto del Producto.</th>
-                @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
-                <th class="text-center"></th>
-                @endif
+                <th class="text-center">Origen</th>
+                <th class="text-center"  style="width: 1%">Cantidad Actual</th>
+                <th class="text-center">Destino</th>
+                <th class="text-center"  style="width: 1%">Cantidad a Transferir</th>
+                <th class="text-center">Foto</th>
+                <th class="text-center" style="width: 1%">Acción</th>
             </tr>
             </thead>
 
@@ -452,15 +378,22 @@
                             <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
-                            <td class="text-right">{{ $var->amount }}</td>
-                            <td class="text-right">{{$var->price_buy ?? 0}}</td>
+                            <td class="text-right">
+                                <select class="origen form-control" name="origen" data-almacen="{{''}}">
+                                    <option value="n/a">Prueba</option>
+                                </select>    
+                            
+                            </td>
+                            <td class="text-right"  style="width: 1%">{{ $var->amount }}</td>
 
-                            @if($var->money == "D")
-                            <td class="text-center">USD</td>
-                            @else
-                            <td class="text-center">Bs</td>
-                            @endif
-
+                            <td class="text-center">
+                                <select class="destino form-control" name="destino" data-almacen="{{''}}">
+                                    <option value="n/a">Prueba2</option>
+                                </select>    
+                            </td>
+                       
+                            <td class="text-right"  style="width: 1%"><input type="text" class="form-control" style="text-align: right;" value="0"></td>
+                            
                             <td class="text-center">
 
                                 @if(isset($var->photo_product))
@@ -470,18 +403,7 @@
                                 <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
                             </td>
-                            @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1')
-                            <td class="text-center">
-                                @if($var->type == 'COMBO')
-                                <span class="inv_combo" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{$var->amount ?? 0}}"><i class="fa fa-plus invent_combo" style="color: blue; cursor: pointer;" title="Crear Combo"></i></span>
-                                <span class="inv_combo_des" data-desc="{{$descripcion}}" data-id_combo="{{$var->id_inventory}}" data-cantidad_combos="{{$var->combos_disponibles}}" data-serie="{{$var->code_comercial}}" data-cantidad_actual="{{$var->amount ?? 0}}"><i class="fa fa-minus" style="color: rgb(248, 62, 62); cursor: pointer;" title="Deshacer Combo"></i></span>
-                                <a href="{{ route('combos.create_assign',$var->id_inventory) }}"  title="Ver Productos del Combo"><i class="fa fa-list"></i></a>
-                                @else
-                                <a href="{{ route('inventories.create_increase_inventory',$var->id_inventory) }}" style="color: blue;" title="Aumentar Inventario"><i class="fa fa-plus"></i></a>
-                                <a href="{{ route('inventories.create_decrease_inventory',$var->id_inventory) }}" style="color: rgb(248, 62, 62);" title="Disminuir Inventario"><i class="fa fa-minus"></i></a>
-                                @endif
-                            </td>
-                            @endif
+                            <td class="text-center" style="width: 1%"><a type="button" href="#" class="btn btn-primary">Transferir</a></td>
                         </tr>
                     @endforeach
                 @endif
