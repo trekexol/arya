@@ -312,7 +312,6 @@ $(function(){
     soloAlfaNumerico('code_client');
     sololetras('country');
     sololetras('city');
-    soloAlfaNumerico('direction');
     sololetras('seller');
 });
 

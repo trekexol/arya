@@ -202,6 +202,21 @@ Route::group(["prefix"=>'providers'],function(){
 
 });
 
+Route::group(["prefix"=>'warehouse'],function(){
+    Route::get('/','WarehouseController@index')->name('warehouse');
+    Route::get('register','WarehouseController@create')->name('warehouse.create');
+    Route::post('store','WarehouseController@store')->name('warehouse.store');
+
+    Route::get('{id}/edit','WarehouseController@edit')->name('warehouse.edit');
+    Route::delete('{id}/delete','WarehouseController@destroy')->name('warehouse.delete');
+    Route::patch('{id}/update','WarehouseController@update')->name('warehouse.update');
+
+    Route::get('movement','WarehouseController@movement')->name('warehouse.movement');
+
+
+});
+
+
 Route::group(["prefix"=>'branches'],function(){
     Route::get('/','BranchController@index')->name('branches');
     Route::get('register','BranchController@create')->name('branches.create');
@@ -212,6 +227,8 @@ Route::group(["prefix"=>'branches'],function(){
     Route::patch('{id}/update','BranchController@update')->name('branches.update');
 
 });
+
+
 
 Route::group(["prefix"=>'nominatypes'],function(){
     Route::get('/','NominaTypeController@index')->name('nominatypes');

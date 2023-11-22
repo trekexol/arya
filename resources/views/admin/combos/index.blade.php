@@ -1,46 +1,52 @@
 @extends('admin.layouts.dashboard')
 
 @section('content')
-<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-  @if (Auth::user()->role_id  == '1')
 
- 
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="profile-tab"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
-    </li>
-    <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
-    </li>
-    
-  
-  @else
+<ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    @if (Auth::user()->role_id  == '1')
+
+
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('products') }}" role="tab" aria-controls="home" aria-selected="true">Productos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;"  href="{{ route('inventories') }}" role="tab" aria-controls="profile" aria-selected="false">Inventario</a>
+      </li>
+      <li class="nav-item" role="presentation">
+          <a class="nav-link active font-weight-bold" style="color: black;" href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Almacenes</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
+      </li>
+
+    @else
 
     @foreach($sistemas as $sistemas)
-        @if($namemodulomiddleware == $sistemas->name)
-    <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
-      </li>
-      @else
-      <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
-      </li>
-      @endif
-      @if($sistemas->name == 'Inventario')
-      <li class="nav-item" role="presentation">
-          <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
-        </li>
-      @endif
-    @endforeach
-  
- 
-@endif
-</ul>
+    @if($namemodulomiddleware == $sistemas->name)
+<li class="nav-item" role="presentation">
+    <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+  </li>
+  @else
+  <li class="nav-item" role="presentation">
+    <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+  </li>
+  @endif
+  @if($sistemas->name == 'Inventario')
+  <li class="nav-item" role="presentation">
+      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+    </li>
+  @endif
+@endforeach
+
+
+  @endif
+  </ul>
 
 
 <!-- container-fluid -->

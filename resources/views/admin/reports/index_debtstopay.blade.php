@@ -73,7 +73,7 @@
                                 </select>
                             </div>
                             <div class="col-sm-1">
-                            <button type="submit" class="btn btn-primary ">
+                            <button id="btn_buscar" type="submit" class="btn btn-primary ">
                                 Buscar
                              </button>
                             </div>
@@ -150,6 +150,20 @@
             }
 
         });
+
+
+    $(document).on('click','#btn_buscar',function(event){
+        
+        var type = $("#type").val();
+        let provider  = "<?php echo $provider->razon_social ?? 0 ?>";  
+    
+        if(type == 'provider' && provider == 0){
+            alert('Selecciona un Proveedor');
+            event.preventDefault();
+            return;
+        }
+     });
+
 
     </script> 
 
