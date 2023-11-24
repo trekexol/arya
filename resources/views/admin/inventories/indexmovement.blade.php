@@ -21,6 +21,7 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Almacenes</a>
       </li>
+
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
       </li>
@@ -45,10 +46,23 @@
 @endforeach
 
 
+    @else
+
+      @foreach($sistemas as $sistemas)
+        <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+        </li>
+
+      @endforeach
+      @if($namemodulomiddleware == 'Inventario')
+      <li class="nav-item" role="presentation">
+          <a class="nav-link active font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+        </li>
+      @endif
+
   @endif
   </ul>
 
-  <!-- /.container-fluid -->
   {{-- VALIDACIONES-RESPUESTA--}}
   @include('admin.layouts.success')   {{-- SAVE --}}
   @include('admin.layouts.danger')    {{-- EDITAR --}}
@@ -64,7 +78,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="close">
                     <span aria-hidden="true">&times; </span>
                 </button>
-            </div>   
+            </div>
             @endif
         </div>
         <div class="col-sm-12">
@@ -72,7 +86,7 @@
                 <form id="formPost" method="POST" action="{{ route('reports.storemovements') }}">
                     @csrf
 
-      
+
 
                 <div class="card-header text-center h4">
                        Historial de Inventario
@@ -102,41 +116,41 @@
                                    $typearray[] = array('salida','Salida de Inventario');
                                    ?>
 
-                                   @if (isset($type)) 
+                                   @if (isset($type))
                                         @for ($q=0;$q<count($typearray);$q++)
                                                 @if ($type == $typearray[$q][0])
                                                 <option selected value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
                                                 @else
                                                 <option value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
                                                 @endif
-                                        @endfor  
+                                        @endfor
                                     @else
-                                        @for ($q=0;$q<count($typearray);$q++)      
-                  
+                                        @for ($q=0;$q<count($typearray);$q++)
+
                                             <option value="{{$typearray[$q][0]}}">{{$typearray[$q][1]}}</option>
-                                        @endfor 
+                                        @endfor
                                     @endif
-                                    
+
                                 </select>
                             </div>
                             <div class="col-sm-3">
                                 <select class="form-control" name="id_account" id="id_account">
-                                    
-                             
-                                            @if (isset($accounts)) 
+
+
+                                            @if (isset($accounts))
                                                    <option value="todas">Todas</option>
                                                     @foreach ($accounts as $var)
                                                         @if($id_account == $var->id)
-                                                        <option selected value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
+                                                        <option selected value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
                                                         @else
-                                                       <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
+                                                       <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
                                                        @endif
-                                                    @endforeach      
+                                                    @endforeach
                                             @else
-                                                    <option selected value="todas">Todas</option>     
+                                                    <option selected value="todas">Todas</option>
                                                     @foreach ($accounts as $var)
-                                                    <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>   
-                                                    @endforeach                                    
+                                                    <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
+                                                    @endforeach
 
                                             @endif
                                 </select>
@@ -151,10 +165,10 @@
                                 </button>
                                 <div class="dropdown-menu animated--fade-in"
                                     aria-labelledby="dropdownMenuButton">
-                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a> 
+                                    <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                                 </div>
-                            </div> 
-                            
+                            </div>
+
                         </div>
 
                         <div class="form-group row">
@@ -169,42 +183,42 @@
                                     </span>
                                 @enderror
                             </div>
-                       
+
 
 
 
                             <div class="col-sm-2">
                                 <select class="form-control" name="coin" id="coin">
                                     @if(isset($coin))
-                                       
+
                                         <option selected value="dolares">Dolares</option>
                                         <option  value="bolivares">Bolívares</option>
                                     @else
                                         <option selected value="dolares">Dolares</option>
                                         <option  value="bolivares">Bolívares</option>
                                     @endif
-                                    
+
 
                                 </select>
                             </div>
                             <div class="col-sm-4">
                                 <select class="form-control" name="id_inventories" id="id_inventories">
-                                    
-                             
-                                            @if (isset($id_inventory)) 
+
+
+                                            @if (isset($id_inventory))
                                                    <option value="todos">Todos</option>
                                                     @foreach ($inventories as $var)
                                                         @if($id_inventory == $var->id_inventory)
-                                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                        <option selected value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>
                                                         @else
-                                                       <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
+                                                       <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>
                                                        @endif
-                                                    @endforeach      
+                                                    @endforeach
                                             @else
-                                                    <option selected value="todos">Todos</option>     
+                                                    <option selected value="todos">Todos</option>
                                                     @foreach ($inventories as $var)
-                                                    <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>   
-                                                    @endforeach                                    
+                                                    <option value="{{$var->id_inventory}}">{{$var->code_comercial}} - {{$var->description}}</option>
+                                                    @endforeach
 
                                             @endif
                                 </select>
@@ -218,16 +232,16 @@
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
                             <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory,$id_account ?? 'todas'])}}" allowfullscreen></iframe>
-                            </div>                                      
-                        
+                            </div>
+
                         </div>
                 </div>
             </div>
-        </div>     
+        </div>
 
     </div>
 </div>
-  
+
 @endsection
 
 @section('javascript')
@@ -237,14 +251,14 @@
             "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
         });
-        
+
         function exportToExcel(){
             var old_action = document.getElementById("formPost").action;
             document.getElementById("formPost").action = "{{ route('export_reports.inventoriesmovement') }}";
             document.getElementById("formPost").submit();
             document.getElementById("formPost").action = old_action;
         }
-              
+
            $("#id_account").on('change',function(){
                 var id_account = $(this).val();
                 $("#id_inventories").val("");
@@ -267,13 +281,13 @@
 
                     // console.clear();
                     if(response.length > 0){
-                        
+
                         htmlOptions = `<option value='todos'>Todos</option>`;
 
                         response.forEach((item, index, object)=>{
                             let {id,description,code_comercial} = item;
                             htmlOptions += `<option value='${id}'>${code_comercial} - ${description}</option>`
-                           
+
                         });
                     } else {
                          htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
@@ -282,19 +296,19 @@
                     // console.log(htmlOptions);
                     inventories.html('');
                     inventories.html(htmlOptions);
-                
-                    
-                
+
+
+
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
                 }
             })
         }
-	
 
-        
-        </script> 
-        
+
+
+        </script>
+
 
 @endsection
