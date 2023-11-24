@@ -43,7 +43,7 @@ class InventoryController extends Controller
                 ->join('modulos','modulos.id','id_modulo')
                 ->where('id_user',$user->id)
                 ->Where('modulos.estatus','1')
-                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos',])
                 ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
                 ->get();
@@ -101,7 +101,7 @@ class InventoryController extends Controller
                                                         ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
                                                         ->orderBY('description','asc')->pluck('description','id')->toArray();
 
-       return view('admin.inventories.index',compact('sistemas','namemodulomiddleware','actualizarmiddleware','inventories','company','type','contrapartidas'));
+       return view('admin.inventories.index',compact('sistemas','namemodulomiddleware','actualizarmiddleware','inventories','company','type','contrapartidas','valor'));
    }
 
 

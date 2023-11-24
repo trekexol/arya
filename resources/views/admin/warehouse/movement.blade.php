@@ -346,7 +346,62 @@
             </div>
         @endif
         </div>
+
+        <div class="form-group row">
+            <label for="begin" class="col-sm-2 col-form-label text-md-right">Almacén de Origen:</label>  
+            <div class="col-sm-2">
+               
+                <select id="id_branch"  name="id_branch" class="form-select mb-3 form-control @error('id_branch') is-invalid @enderror">
+                    @isset($branches)
+                        @foreach($branches as $branchs)
+                        
+                                @if ($branch == $branchs->id)
+                                     <option selected value="{{$branchs->id}}">{{ $branchs->description ?? '' }}</option>
+                                @else
+                                    <option value="{{$branchs->id}}">{{ $branchs->description ?? '' }}</option>
+                                @endif
+    
+                        @endforeach
+                    @endisset
+                </select>
+                @error('id_branch')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+            <label for="end" class="col-sm-2 col-form-label text-md-right">Almacén de Destino:</label>  
+            <div class="col-sm-2">
+               
+                <select id="id_branch_end"  name="id_branch_end" class="form-select mb-3 form-control @error('id_branch') is-invalid @enderror">
+                    @isset($branches)
+                        @foreach($branches as $branchs)
+                        
+                                @if ($branch == $branchs->id)
+                                     <option selected value="{{$branchs->id}}">{{ $branchs->description ?? '' }}</option>
+                                @else
+                                    <option value="{{$branchs->id}}">{{ $branchs->description ?? '' }}</option>
+                                @endif
+    
+                        @endforeach
+                    @endisset
+                </select>
+                @error('id_branch')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-2">
+            <a type="button" href="#" class="btn btn-primary">Transferir Todo</a>
+            </div>
+        </div>
+
         <div class="table-responsive">
+      
+
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <th class="text-center">ID</th>
