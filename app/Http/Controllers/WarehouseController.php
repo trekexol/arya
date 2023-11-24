@@ -7,6 +7,7 @@ use App\Company;
 use App\Product;
 use App\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
@@ -130,10 +131,10 @@ class WarehouseController extends Controller
     return redirect('/warehouse')->withSuccess('Actualizacion Exitosa!');
     }
 
-    public function movement(request $request,$type = 'todos') {
+    public function movement(request $request,$type = 'todos',$branch = 1) {
  /* para hacer el submenu "dinamico" */
- $user       =   auth()->user();
- $sistemas = UserAccess::on("logins")
+    $user       =   auth()->user();
+    $sistemas = UserAccess::on("logins")
              ->join('modulos','modulos.id','id_modulo')
              ->where('id_user',$user->id)
              ->Where('modulos.estatus','1')
@@ -193,8 +194,11 @@ class WarehouseController extends Controller
     })->values();
 
 
-     $company = Company::on(Auth::user()->database_name)->find(1);
+    $branches = DB::connection(Auth::user()->database_name)
+    ->table('branches')
+    ->get();
 
+     $company = Company::on(Auth::user()->database_name)->find(1);
 
      $contrapartidas     = Account::on(Auth::user()->database_name)
                                                      ->orWhere('description', 'LIKE','Bancos')
@@ -204,7 +208,7 @@ class WarehouseController extends Controller
                                                      ->orWhere('description', 'LIKE','Capital Social Suscripto y No Pagado')
                                                      ->orderBY('description','asc')->pluck('description','id')->toArray();
 
-    return view('admin.warehouse.movement',compact('sistemas','namemodulomiddleware','actualizarmiddleware','inventories','company','type','contrapartidas'));
+    return view('admin.warehouse.movement',compact('sistemas','namemodulomiddleware','actualizarmiddleware','inventories','company','type','contrapartidas','branches','branch'));
    
     }
 

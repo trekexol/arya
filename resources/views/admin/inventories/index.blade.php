@@ -299,15 +299,13 @@
             </div>
         </div>
 
-
-        @if(Auth::user()->role_id  == '1' || $valor == 1)
         <div class="col-sm-3 ">
             <a href="{{ route('products.create',['MERCANCIA'])}}" class="btn btn-sm btn-primary  float-md-center"  role="button" aria-pressed="true">Registrar un Producto</a>
         </div>
         <div class="col-sm-2">
             <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#exampleModal">Actualizar Productos</button>
         </div>
-          @endif
+
         <div class="col-sm-2">
             <select class="form-control" name="type" id="type">
                 @if(isset($type))
