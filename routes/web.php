@@ -665,6 +665,7 @@ Route::group(["prefix"=>'facrestaurante'],function(){
     Route::post('facturar','FactrestauranteController@facturar')->name('facturar');
  });
 
+
 /********************************* */
 
 
