@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuotationProduct extends Model
 {
+    protected $fillable = ['amount','price'];
+
+
     public function inventories(){
         return $this->belongsTo('App\Inventory','id_inventory');
     }
     public function product() {
-        return $this->hasMany('App\Product');   
+        return $this->hasMany('App\Product');
     }
 
     public function quotations(){
