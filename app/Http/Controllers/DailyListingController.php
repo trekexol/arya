@@ -712,14 +712,16 @@ return $pdf->stream();
 
                 if($coin != "bolivares"){
 
+                    if($detail->tasa == 0.00){
+                        $detail->tasa = 1;
+                    }
+
+
                     if((isset($detail->debe)) && ($detail->debe != 0) && ($detail->debe != 0.00)){
                     $detail->debe = $detail->debe / ($detail->tasa ?? 1);
                     }
 
                     if((isset($detail->haber)) && ($detail->haber != 0)  && ($detail->haber != 0.00)){
-                        if($detail->tasa < 0){
-                            $detail->tasa = 1;
-                        }
 
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
