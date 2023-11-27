@@ -172,7 +172,7 @@ public function pedidosmesas(Request $request){
     $mesa = $data[0];
     $tipo = $data[1];
 
-
+    $company = Company::on(Auth::user()->database_name)->find(1);
 
     if($tipo == 'agregar'){
 
@@ -191,7 +191,7 @@ public function pedidosmesas(Request $request){
 
         }
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','inventories','mesa'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('tipo','inventories','mesa','company'))->render();
 
 
     }elseif($tipo == 'editar'){
@@ -242,7 +242,7 @@ public function pedidosmesas(Request $request){
 
 
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','quotations','mesa','inven'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('tipo','quotations','mesa','inven','company'))->render();
 
     }
 
