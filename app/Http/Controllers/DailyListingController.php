@@ -717,6 +717,10 @@ return $pdf->stream();
                     }
 
                     if((isset($detail->haber)) && ($detail->haber != 0)  && ($detail->haber != 0.00)){
+                        if($detail->tasa < 0){
+                            $detail->tasa = 1;
+                        }
+
                     $detail->haber = $detail->haber / ($detail->tasa ?? 1);
                     }
 
@@ -786,17 +790,17 @@ return $pdf->stream();
                     if(empty($account_contrapartida)) {
                         $description_contrapartida = $account->description;
                         $detail->id_contrapartida = 0;
-                        $detail->account_name = '';       
+                        $detail->account_name = '';
 
                     } else{
 
                         $description_contrapartida = $account_contrapartida->description;
                         $detail->id_contrapartida = $account_contrapartida->id;
-                        $detail->account_name = $account_contrapartida->description; 
-                        
+                        $detail->account_name = $account_contrapartida->description;
+
                         if($resumen == 'SI'){
-                        
-        
+
+
                             $account_name_cuenta = Account::on(Auth::user()->database_name)
                             ->where('code_one',$account_contrapartida->code_one)
                             ->where('code_two',$account_contrapartida->code_two)
@@ -818,7 +822,7 @@ return $pdf->stream();
                     //$account_contrapartida = Account::on(Auth::user()->database_name)->find($account_contrapartida_id->id_account);
 
                     if($coin != "bolivares"){
-                        
+
                         if($resumen != 'SI'){
                             $detail->account_counterpart = $description_contrapartida.' - Tasa: '.number_format($detail->tasa,2,',','').' Bs.';
                         } else{
@@ -829,18 +833,18 @@ return $pdf->stream();
                     }
 
                     if($resumen != 'SI'){
-                        $detail->account_name = ''; 
+                        $detail->account_name = '';
                     }
-             
+
         ////////////////////////////0////////////////1///////////////////2////////////////////////////3/////////////////////////////4//////////////5//////////////6//////////////7//////        8            9
-          
+
 
         }
 
 
         //voltea los movimientos para mostrarlos del mas actual al mas antiguo
         $detailvouchers = array_reverse($detailvouchers->toArray());
-    
+
 
         $saldo_inicial = $saldo_anterior + ($detailvouchers_saldo_debe ?? 0) - ($detailvouchers_saldo_haber ?? 0);
 
