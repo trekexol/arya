@@ -41,7 +41,6 @@ if($tipo == 'agregar'){
                 <!--arya/storage/app/public/img/-->
 
                 <div class="file-footer-buttons">
-                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                 @endif
 
             </td>
