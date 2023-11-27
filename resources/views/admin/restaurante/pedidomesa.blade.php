@@ -40,9 +40,7 @@ if($tipo == 'agregar'){
                 @if(isset($var->photo_product))
                 <!--arya/storage/app/public/img/-->
                 <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
-                <div class="file-footer-buttons">
-                <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>
-                </div>
+
                 @endif
 
             </td>
@@ -237,9 +235,6 @@ elseif($tipo == 'editar'){
                         @if(isset($var->photo_product))
                         <!--arya/storage/app/public/img/-->
                         <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
-                        <div class="file-footer-buttons">
-                        <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>
-                        </div>
                         @endif
 
                     </td>
