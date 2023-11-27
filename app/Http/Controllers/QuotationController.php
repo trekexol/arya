@@ -66,7 +66,7 @@ class QuotationController extends Controller
             ->where('date_billing','=',null)
             ->where('date_delivery_note','=',null)
             ->where('date_order','=',null)
-            ->where('status','!=','X')
+            ->whereNOTIN('status',['X','O'])
             ->get();
 
             $company = Company::on(Auth::user()->database_name)->find(1);

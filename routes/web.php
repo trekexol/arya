@@ -60,13 +60,6 @@ Route::group(["prefix"=>'users'],function(){
     Route::get('edit','MyUserController@edit')->name('users.edituser');
     Route::patch('update','MyUserController@update')->name('users.updateuser');
 
-
-
-    Route::get('permisos/{id_user}/{name_user}','UserController@indexpermisos')->name('users.indexpermisos');
-
-    Route::get('edit','MyUserController@edit')->name('users.edituser');
-    Route::patch('update','MyUserController@update')->name('users.updateuser');
-
 });
 
 
@@ -659,6 +652,22 @@ Route::group(["prefix"=>'invoices'],function(){
     Route::post('storemultipayment','InvoiceController@storemultipayment')->name('invoices.storemultipayment');
 
  });
+
+
+/********FACTURACION RESTAURANTE */
+Route::group(["prefix"=>'facrestaurante'],function(){
+    Route::get('facrestaurante','FactrestauranteController@index')->name('facrestaurante');
+    Route::get('pedidos','FactrestauranteController@pedidos')->name('pedidos');
+    Route::post('procesarmesas','FactrestauranteController@procesarmesas')->name('procesarmesas');
+    Route::post('pedidosmesas','FactrestauranteController@pedidosmesas')->name('pedidosmesas');
+    Route::post('carrito','FactrestauranteController@carrito')->name('carrito');
+    Route::post('upcarrito','FactrestauranteController@upcarrito')->name('upcarrito');
+    Route::post('facturar','FactrestauranteController@facturar')->name('facturar');
+ });
+
+
+/********************************* */
+
 
  Route::group(["prefix"=>'pdf'],function(){
     Route::get('factura/{id_quotation}/{coin?}','PDF2Controller@imprimirfactura')->name('pdf');
