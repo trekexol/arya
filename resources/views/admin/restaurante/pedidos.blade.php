@@ -12,9 +12,36 @@
 ?>
 
 <style>
+/* Estilos generales para todas las pantallas */
+body {
+  font-size: 16px;
+}
+
+/* Estilos para pantallas pequeñas (hasta 600px de ancho) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Estilos para pantallas medianas (entre 600px y 900px de ancho) */
+@media only screen and (min-width: 600px) and (max-width: 900px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+/* Estilos para pantallas grandes (más de 900px de ancho) */
+@media only screen and (min-width: 900px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+
 .circulo {
-    width: 10rem;
-    height: 10rem;
+    width: 8rem;
+    height: 8rem;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
@@ -23,6 +50,10 @@
     color: #fff;
     margin: 10px;
     display: inline-block;
+}
+
+#accordionSidebar {
+    display: none;
 }
 
 </style>

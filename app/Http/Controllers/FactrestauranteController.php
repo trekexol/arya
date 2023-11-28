@@ -185,13 +185,28 @@ public function pedidosmesas(Request $request){
             ->get();
 
 
+          $segmentos = Product::on(Auth::user()->database_name)
+            ->whereIN('type',['MERCANCIA','COMBO'])
+            ->where('status',1)
+            ->select('segment_id','id')
+            ->GroupBY('segment_id','id')
+            ->get();
+            foreach ($segmentos as $segmento) {
+
+                $segmento->amount = $global->consul_prod_invt($segmento->id);
+
+            }
+
+            $segmentos = $segmentos->unique('segment_id');
+
+
         foreach ($inventories as $inventorie) {
 
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
 
         }
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','inventories','mesa','company'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('segmentos','tipo','inventories','mesa','company'))->render();
 
 
     }elseif($tipo == 'editar'){
@@ -237,12 +252,26 @@ public function pedidosmesas(Request $request){
 
     }
 
+    $segmentos2 = Product::on(Auth::user()->database_name)
+    ->whereIN('type',['MERCANCIA','COMBO'])
+    ->where('status',1)
+    ->select('segment_id','id')
+    ->GroupBY('segment_id','id')
+    ->get();
+    foreach ($segmentos2 as $segmento) {
+
+        $segmento->amount = $global->consul_prod_invt($segmento->id);
+
+    }
+
+    $segmentos2 = $segmentos2->unique('segment_id');
+
 
         /********************* */
 
 
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','quotations','mesa','inven','company'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('segmentos2','tipo','quotations','mesa','inven','company'))->render();
 
     }
 
