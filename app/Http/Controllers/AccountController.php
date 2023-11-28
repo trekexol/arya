@@ -737,6 +737,7 @@ class AccountController extends Controller
         $sin_formato_rate = str_replace(',', '.', str_replace('.', '', request('rate')));
 
         $var->description = request('description');
+        $var->type = request('type');
 
 
         if(request('coin') != 'BsS'){
