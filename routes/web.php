@@ -629,6 +629,7 @@ Route::group(["prefix"=>'facrestaurante'],function(){
     Route::post('carrito','FactrestauranteController@carrito')->name('carrito');
     Route::post('upcarrito','FactrestauranteController@upcarrito')->name('upcarrito');
     Route::post('facturar','FactrestauranteController@facturar')->name('facturar');
+    Route::post('cliente','FactrestauranteController@cliente')->name('cliente');
  });
 
 

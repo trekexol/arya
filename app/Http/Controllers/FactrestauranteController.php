@@ -313,12 +313,21 @@ public function facturar(Request $request){
     /************************************************** */
 
 
-
-
         return View::make('admin.restaurante.facturar',compact('quotations'))->render();
 
 
+}
 
+
+public function cliente(Request $request){
+
+    $data = $request->value;
+
+
+    $clientes = Client::on(Auth::user()->database_name)->where('status',1)->orderBy('id' ,'DESC')->get();
+
+
+        return View::make('admin.restaurante.cliente',compact('data','clientes'))->render();
 
 
 }
