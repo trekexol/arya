@@ -11,17 +11,25 @@ if($tipo == 'agregar'){
 
         <div class="table-responsive-lg">
 <table class="table table-light2 table-bordered dataTablematch" id="dataTablematch" >
-    <small><input type="text"  class="form-control form-control-sm filter-input" placeholder="Buscar Producto" /></small>
+
+        <small><select class="form-control form-control-sm filter-input">
+            <option value="todo">Todo.</option>
+        @foreach ($segmentos as $segmentos)
+        @if($segmentos->amount > 0)
+            <option value="{{$segmentos->segments['description']}}">{{$segmentos->segments['description']}}</option>
+        @endif
+        @endforeach
+        </select>
+        </small>
 
     <thead>
     <tr>
         <th>Producto</th>
-        <th>Cant. Inventario</th>
+        <th>Imagen</th>
+        <th style="display : none;">Tipo</th>
+        <th>Disponible</th>
         <th>Monto</th>
-        <th>---</th>
         <th>Cantidad</th>
-
-
     </tr>
     </thead>
     <tbody>
@@ -33,9 +41,7 @@ if($tipo == 'agregar'){
 
 
 
-            <td><small>{{ $var->description}}</small></td>
-            <td><small>{{ $var->amount ?? 0}}</small></td>
-            <td><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
+            <td style="width : 10%;"><small>{{ $var->description}}</small></td>
             <td>
                 @if(isset($var->photo_product))
                 <!--arya/storage/app/public/img/-->
@@ -44,8 +50,12 @@ if($tipo == 'agregar'){
                 @endif
 
             </td>
-            <td>
-                <small><input class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
+            <td style="display : none;"><small>{{$var->segments['description']}}</small></td>
+            <td style="width : 10%;"><small>{{ $var->amount ?? 0}}</small></td>
+            <td style="width : 15%;"><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
+
+            <td style="width : 15%;">
+                <small><input style="width : 50%;" class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
             </td>
             <input name="id[]" id="id" type="hidden" value="{{ $var->id }}" />
             @csrf
@@ -82,13 +92,21 @@ $(document).ready(function(){
         "bAutoWidth": false
         })
 
-$('.filter-input').keyup(function(){
+$('.filter-input').change(function(){
 
-tabladata.column(0)
-.search($(this).val())
-.draw();
+    var dato = $(this).val();
 
+    if(dato == 'todo'){
+        tabladata.column(2).search("").draw();
+    }else{
+        tabladata.column(2)
+        .search($(this).val())
+        .draw();
+    }
 });
+
+
+
 
     $("#carrito").validate({
       submitHandler: function (form) {
@@ -153,7 +171,7 @@ elseif($tipo == 'editar'){
           <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Actualizar Pedido</a>
         </li>
 </div>
-<div class="modal-body" >
+<div class="modal-body" align="center">
 
 
 
@@ -167,7 +185,7 @@ elseif($tipo == 'editar'){
                     <thead>
                         <tr>
                           <th scope="col">Producto</th>
-                          <th scope="col">Cantida</th>
+                          <th scope="col">Cantidad</th>
                           <th scope="col">Precio</th>
                           <th scope="col">Total</th>
                         </tr>
@@ -206,11 +224,20 @@ elseif($tipo == 'editar'){
 
                 <div class="table-responsive-lg">
         <table class="table table-light2 table-bordered dataTablematch" id="dataTablematch" >
-            <small><input type="text"  class="form-control form-control-sm filter-input" placeholder="Buscar Producto" /></small>
+                <small><select class="form-control form-control-sm filter-input">
+        <option value="todo">Todo.</option>
+    @foreach ($segmentos2 as $segmentos)
+    @if($segmentos->amount > 0)
+        <option value="{{$segmentos->segments['description']}}">{{$segmentos->segments['description']}}</option>
+    @endif
+    @endforeach
+    </select>
+    </small>
 
             <thead>
             <tr>
                 <th>Producto</th>
+                <th>Tipo</th>
                 <th>Cant. Inventario</th>
                 <th>Monto</th>
                 <th>---</th>
@@ -229,6 +256,7 @@ elseif($tipo == 'editar'){
 
 
                     <td><small>{{ $var->description}}</small></td>
+                    <td><small>{{$var->segments['description']}}</small></td>
                     <td><small>{{ $var->amount ?? 0}}</small></td>
                     <td><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
                     <td>
@@ -286,12 +314,17 @@ elseif($tipo == 'editar'){
             "bAutoWidth": false
             })
 
-    $('.filter-input').keyup(function(){
+    $('.filter-input').change(function(){
 
-    tabladata.column(0)
-    .search($(this).val())
-    .draw();
+    var dato = $(this).val();
 
+    if(dato == 'todo'){
+        tabladata.column(1).search("").draw();
+    }else{
+        tabladata.column(1)
+        .search($(this).val())
+        .draw();
+    }
     });
 
         $("#upcarrito").validate({

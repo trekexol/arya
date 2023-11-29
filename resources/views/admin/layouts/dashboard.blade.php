@@ -9,8 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Arya Software 
-      
+    <title>Arya Software
+
     </title>
 
     @yield('header')
@@ -51,7 +51,7 @@
                 <!-- Topbar -->
                 @include('admin.layouts.dashboard_topbar')
                 <!-- End of Topbar -->
-               
+
                 <!-- Begin Page Content -->
 
                 @yield('content')
@@ -92,7 +92,7 @@
                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
                  <a class="btn btn-primary" href="{{ route('logout') }}"onclick="event.preventDefault();
                  document.getElementById('logout-form').submit();">
-                 Cerrar Sesión 
+                 Cerrar Sesión
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                   @csrf
@@ -102,7 +102,7 @@
     </div>
  </div>
 
- 
+
    <!-- END SCRIPTS INDEX -->
         <!-- Bootstrap core JavaScript-->
         <script src="{{asset('vendor/sb-admin/vendor/jquery/jquery.min.js')}}"></script>
@@ -131,7 +131,7 @@
 
         <!-- Para las mascaras -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
-      
+
 
         <script>
           $("body").toggleClass("sidebar-toggled");
@@ -146,7 +146,7 @@
           if (status_company == '0') {
           window.location.href = "{{ route('suspended')}}";
           }
-          
+
 
       </script>
 
@@ -179,7 +179,7 @@
   @yield('validacion_vendor')
   @yield('javascript_iva_payment')
   @yield('imports')
-  
+
 
   <script>
     function soloNumeros(idCampo){
@@ -209,28 +209,28 @@
           });
         }
       </script>
-      <script> 
+      <script>
         function numeric(e) { // funcion no permite letras y reemplaza punto por coma
-            
+
             e.value = e.value.replace(/\./g, ',');
             e.value = e.value.replace(/[A-Z]/g, '');
             e.value = e.value.replace(/[a-z]/g, '');
             e.value = e.value.replace(/-/g, '')
 
             return e.value;
-            
+
         }
       </script>
       <script>
-        function noespac(e) { //funcion no permite letras y reemplaza coma por punto 
-            
+        function noespac(e) { //funcion no permite letras y reemplaza coma por punto
+
             e.value = e.value.replace(/\,/g, '.');
             e.value = e.value.replace(/[A-Z]/g, '');
             e.value = e.value.replace(/[a-z]/g, '');
             e.value = e.value.replace(/-/g, '');
-        
+
             return e.value;
-            
+
         }
       </script>
 </body>
