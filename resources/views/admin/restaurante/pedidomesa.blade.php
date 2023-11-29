@@ -25,10 +25,10 @@ if($tipo == 'agregar'){
     <thead>
     <tr>
         <th>Producto</th>
-        <th>Tipo</th>
-        <th>Cant. Inventario</th>
+        <th>Imagen</th>
+        <th style="display : none;">Tipo</th>
+        <th>Disponible</th>
         <th>Monto</th>
-        <th>---</th>
         <th>Cantidad</th>
     </tr>
     </thead>
@@ -41,10 +41,7 @@ if($tipo == 'agregar'){
 
 
 
-            <td><small>{{ $var->description}}</small></td>
-            <td><small>{{$var->segments['description']}}</small></td>
-            <td><small>{{ $var->amount ?? 0}}</small></td>
-            <td><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
+            <td style="width : 10%;"><small>{{ $var->description}}</small></td>
             <td>
                 @if(isset($var->photo_product))
                 <!--arya/storage/app/public/img/-->
@@ -53,8 +50,12 @@ if($tipo == 'agregar'){
                 @endif
 
             </td>
-            <td>
-                <small><input class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
+            <td style="display : none;"><small>{{$var->segments['description']}}</small></td>
+            <td style="width : 10%;"><small>{{ $var->amount ?? 0}}</small></td>
+            <td style="width : 15%;"><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
+
+            <td style="width : 15%;">
+                <small><input style="width : 50%;" class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
             </td>
             <input name="id[]" id="id" type="hidden" value="{{ $var->id }}" />
             @csrf
