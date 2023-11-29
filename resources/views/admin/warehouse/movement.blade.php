@@ -351,14 +351,77 @@
 
             <label for="begin" class="col-sm-2 col-form-label text-md-right">Tipo Transferencia:</label>  
             <div class="col-sm-3">
-               
+                <?php
+                  
+                  if(isset($typet)) {
+
+                    if($typet == 1){
+                       $atributo1 = 'selected';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 2){
+                       $atributo1 = '';
+                       $atributo2 = 'selected';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 3){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = 'selected';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 4){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = 'selected';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 5){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = 'selected';
+                       $atributo6 = '';
+                    }
+                    if($typet == 6){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = 'selected';
+                    }
+                  } else {
+                       $atributo1 = 'selected';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                  }
+                    
+
+                ?>
+ 
                 <select id="type_transf"  name="type_transf" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
-                    <option selected value="1">Almacén a Almacén</option>
-                    <option value="2">Almacén a Sucursal</option>
-                    <option value="3">Sucursal a Almacén</option>
-                    <option value="3">Sucursal a Sucursal</option>
-                    <option value="4">Devolución a Almacén</option>
-                    <option value="5">Devolución a Sucursal</option>
+                    <option {{$atributo1}} value="1">Almacén a Almacén</option>
+                    <option {{$atributo2}} value="2">Almacén a Sucursal</option>
+                    <option {{$atributo3}} value="3">Sucursal a Almacén</option>
+                    <option {{$atributo4}} value="4">Sucursal a Sucursal</option>
+                    <option {{$atributo5}} value="5">Devolución a Almacén</option>
+                    <option {{$atributo6}} value="6">Devolución a Sucursal</option>
                 </select>
                 @error('type_transf')
                     <span class="invalid-feedback" role="alert">
@@ -391,7 +454,7 @@
             <label for="begin" class="col-sm-2 col-form-label text-md-right">Origen:</label>  
             <div class="col-sm-3">
                
-                <select id="id_branch"  name="id_branch" class="form-select sm-3 form-control @error('id_branch') is-invalid @enderror">
+                <select id="id_branch" name="id_branch" class="form-select sm-3 form-control @error('id_branch') is-invalid @enderror">
                     @isset($branches)
                         @foreach($branches as $branchs)
                         
@@ -459,7 +522,7 @@
                     @foreach ($inventories as $var)
                      <?php
                      if (isset($var->description)){
-                     $descripcion = $var->description;
+                        $descripcion = $var->description;
                      } else {
                         $descripcion = '';
                      }
@@ -582,41 +645,239 @@
                 }
         }
 
+
     
     $("#type_transf").on('change',function(){
-        var type_tansf = $(this).val();
+        var type_transf = $(this).val();
         var type = document.getElementById("type").value;
 
-        get_select(type_tansf);
+        if (type_transf == 1){
+            get_select(1);
+            get_select_end(1);
+        }
 
-       /* var fin = document.getElementById("date_end").value;
-        var level = document.getElementById("level").value;
-        var coin = document.getElementById("coin").value;
-    
-        */
+        if (type_transf == 2){
+            get_select(1);
+            get_select_end(2);
+        }
+        if (type_transf == 3){
+            get_select(2);
+            get_select_end(1);
+        }
+        if (type_transf == 4){
+            get_select(2);
+            get_select_end(2);
+        }
+
+        if (type_transf == 5){
+            get_select_end(1);
+        }
+        if (type_transf == 6){
+            get_select_end(2);
+        }
+
+
+        $.ajax({
+                url: `../warehouse/refreshtable`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type:type },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+
 
     });
 
+
+
+    $("#id_branch").on('change',function(){
+        var branch = $(this).val();
+        var type_transf = document.getElementById("type_transf").value;
+        var type = document.getElementById("type").value;
+
+        $.ajax({
+                url: `../warehouse/refresorigen`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type: type, branch: branch },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+
+    });
+
+
+
+
+    $("#id_branch_end").on('change',function(){
+        var branch_end = $(this).val();
+        var branch = document.getElementById("id_branch").value;;
+        var type_transf = document.getElementById("type_transf").value;
+        var type = document.getElementById("type").value;
+
+        $.ajax({
+                url: `../warehouse/refresdestino`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type: type, branch: branch, branch_end: branch_end },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'>" + row.destino + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+    });
+
     function get_select(typet){
-            // alert(`../municipio/list/${estado_id}`);
-           
-            alert('FUNCION');
-            /* $.ajax({
-                url:`../inventories/getinventory/${id_account}`,
+        $.ajax({
+            url:`../warehouse/getselect/${typet}`,
+        
+            success:(response)=>{
+                let select_origen = $("#id_branch");
+                let htmlOptions = '';
+                if(response.length > 0){
+                    response.forEach((item, index, object)=>{
+                        let {id,description} = item;
+                        htmlOptions += `<option value='${id}'>${description}</option>`
+                    });
+                } else {
+                    htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
+                }
+                select_origen.html('');
+                select_origen.html(htmlOptions);
+            },
+            error:(xhr)=>{
+                alert('error '+xhr);
+            }
+        })
+    }
+
+    function get_select_end(typet){
+
+            $.ajax({
+                url:`../warehouse/getselect/${typet}`,
                 beforSend:()=>{
                     alert('consultando datos');
                 },
                 success:(response)=>{
-                    let inventories = $("#id_inventories");
+                    let select_destino = $("#id_branch_end");
                     let htmlOptions = '';
                     // console.clear();
                     if(response.length > 0){
 
-                        htmlOptions = `<option value='todos'>Todos</option>`;
-
                         response.forEach((item, index, object)=>{
-                            let {id,description,code_comercial} = item;
-                            htmlOptions += `<option value='${id}'>${code_comercial} - ${description}</option>`
+                            let {id,description} = item;
+
+                            htmlOptions += `<option value='${id}'>${description}</option>`
 
                         });
                     } else {
@@ -624,18 +885,20 @@
                     }
                     //console.clear();
                     // console.log(htmlOptions);
-                    inventories.html('');
-                    inventories.html(htmlOptions);
+                    select_destino.html('');
+                    select_destino.html(htmlOptions);
 
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
                 }
-            })*/
+            })
     }
 
 
 
+
+    
 
         /*$("#type").on('change',function(){
             type = $(this).val();
