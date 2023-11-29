@@ -1,5 +1,4 @@
 
-
     <form method="POST" id="carrito">
 
         <div class="tab-pane fade show active table-responsive-lg" id="home" role="tabpanel" aria-labelledby="home-tab">
