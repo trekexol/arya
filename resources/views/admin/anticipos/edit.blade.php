@@ -108,7 +108,7 @@
                                             <option disabled>------------------------------</option>
                                         @endif
                                             @foreach($expenses_to_pay as $invoice)
-                                                <option  value="{{$invoice->id}}">Orden: {{$invoice->expenses['id']}} - Factura: {{$invoice->expenses['invoice'] ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - {{ $invoice->observation ?? ''}}</option>
+                                                <option  value="{{$invoice->id}}">Orden: {{$invoice->id}} - Factura: {{$invoice->invoice ?? ''}} - Ctrl/Serie: {{ $invoice->serie ?? ''}} - {{ $invoice->observation ?? ''}}</option>
                                             @endforeach
 
                                         </select>
