@@ -243,7 +243,7 @@ $suma_haber = 0;
                         </form>
                        <div class="card-body">
                         <div class="table-responsive">
-                        <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <table class="table table-light2 table-bordered"  width="100%" cellspacing="0">
                             <thead>
                             <tr>
                                 <th>Cuenta</th>
@@ -264,9 +264,9 @@ $suma_haber = 0;
                                     <tr>
 
                                         @if($var->status == 'N')
-                                            <td><i class="fa fa-circle" style="color: rgb(252, 128, 128)"></i> {{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{ str_pad($var->accounts['code_five'], 3, "0", STR_PAD_LEFT)}}</td>
+                                            <td><i class="fa fa-circle" style="color: rgb(252, 128, 128)"></i> {{$var->code_one}}.{{$var->code_two}}.{{$var->code_three}}.{{$var->code_four}}.{{ str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}}</td>
                                         @else
-                                            <td><i class="fa fa-circle" style="color: rgb(84, 196, 84)"></i> {{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{ str_pad($var->accounts['code_five'], 3, "0", STR_PAD_LEFT)}}</td>
+                                            <td><i class="fa fa-circle" style="color: rgb(84, 196, 84)"></i> {{$var->code_one}}.{{$var->code_two}}.{{$var->code_three}}.{{$var->code_four}}.{{ str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}}</td>
                                         @endif
 
                                         <td>{{$var->accounts['description']}}</td>
@@ -560,11 +560,11 @@ $suma_haber = 0;
 
 @section('consulta')
     <script>
-        $('#dataTable').DataTable({
-            "ordering": true,
-            "order": [[2],[3],[0,'asc']],
+      /*  $('#dataTable').DataTable({
+            //"ordering": true,
+            //"order": [[2],[3],[0,'asc']],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
-        });
+        });*/
 
 
 

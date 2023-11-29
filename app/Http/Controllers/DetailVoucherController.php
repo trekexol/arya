@@ -83,9 +83,16 @@ class DetailVoucherController extends Controller
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
             if(isset($header) && ($header->status != 'X')){
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)
-                ->where('status','!=','X')
-                ->orderBy('id_account','ASC')
+                ->join('accounts','accounts.id','id_account')
+                ->where('detail_vouchers.status','!=','X')
+                ->orderBy('code_one','desc')
+                ->orderBy('code_two','asc')
+                ->orderBy('code_three','asc')
+                ->orderBy('code_four','asc')
+                ->orderBy('code_five','asc')
                 ->get();
+
+               // dd($detailvouchers);
 
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
                 $detailvouchers_last = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->orderBy('id','desc')->first();
