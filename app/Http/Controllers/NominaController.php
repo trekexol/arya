@@ -1467,6 +1467,10 @@ class NominaController extends Controller
                 ->where('id',$c_sueldo)
                 ->first();
 
+            if(Auth::user()->id_company == 5){
+                dd($header_voucher->id.'   '.$accounts_sueldos->id.'       '.$nomina->id);
+            }
+
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_asignacion,0);
 
 
