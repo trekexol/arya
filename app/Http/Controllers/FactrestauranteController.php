@@ -59,6 +59,12 @@ class FactrestauranteController extends Controller
 
                 if($valimesa){
                     $q->mesa = $valimesa->numero;
+                }else{
+                    Quotation::on(Auth::user()->database_name)
+                    ->where('status','O')
+                    ->where('id',$q->id)
+                    ->delete();
+
                 }
 
 

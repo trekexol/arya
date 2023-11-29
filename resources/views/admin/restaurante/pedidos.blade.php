@@ -53,15 +53,22 @@ body {
 }
 
 #accordionSidebar {
-    display: none;
+ display: none;
 }
 
 </style>
+<div class="modal modal-danger fade bd-example-modal-xl" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content" id="modalfacturas">
+
+        </div>
+    </div>
+  </div>
 <div align="center">
     <?php $numero = 0; ?>
     @foreach ($cantidadmesas as $cantidadmesas)
 
-    @if($numero == 3)
+    @if($numero == 4)
     <br>
     <?php $numero = 0; ?>
     @endif
@@ -79,13 +86,6 @@ body {
     @endforeach
 
 </div>
-<div class="modal modal-danger fade bd-example-modal-xl" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content" id="modalfacturas">
-
-        </div>
-    </div>
-  </div>
 @endsection
 @section('javascript')
     <script>
