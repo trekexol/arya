@@ -792,7 +792,7 @@ class GlobalController extends Controller
 
 
 
-    function consul_prod_invt($id_product,$sucursal = 1){ // buscar solo la cantidad actual del producto
+    function consul_prod_invt($id_product,$sucursal = 1,$almacen = null){ // buscar solo la cantidad actual del producto
 
              //dd($id_product);
              $buscar = DB::connection(Auth::user()->database_name)
@@ -804,6 +804,8 @@ class GlobalController extends Controller
                 $amount_real = 0;
             } else {
 
+
+                    if($almacen == null){
                         if ($sucursal == 1) {
 
                             $inventories_quotations = DB::connection(Auth::user()->database_name)
@@ -821,6 +823,14 @@ class GlobalController extends Controller
                             ->select('amount_real')
                             ->get()->last();
                         }
+                    } else {
+                        $inventories_quotations = DB::connection(Auth::user()->database_name)
+                        ->table('warehouse_histories')
+                        ->where('id_product','=',$id_product)
+                        ->where('id_warehouse','=',$almacen)
+                        ->select('amount_real')
+                        ->get()->last();
+                    }
 
                         if (isset($inventories_quotations)) {
                             if ($inventories_quotations->amount_real > 0) {
