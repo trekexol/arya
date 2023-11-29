@@ -97,9 +97,9 @@ $('.filter-input').change(function(){
     var dato = $(this).val();
 
     if(dato == 'todo'){
-        tabladata.column(1).search("").draw();
+        tabladata.column(2).search("").draw();
     }else{
-        tabladata.column(1)
+        tabladata.column(2)
         .search($(this).val())
         .draw();
     }
