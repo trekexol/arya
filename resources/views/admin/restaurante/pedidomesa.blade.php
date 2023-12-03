@@ -9,15 +9,15 @@ if($tipo == 'agregar'){
 <div class="modal-body" align="center">
     <form method="POST" id="carrito">
 
-        <div class="table-responsive-lg">
-<table class="table table-light2 table-bordered dataTablematch" id="dataTablematch" >
-
+        <div class="table-responsive-md">
+<table class="table table-light2 table-bordered dataTablematch table-sm" id="dataTablematch" >
         <small><select class="form-control form-control-sm filter-input">
             <option value="todo">Todo.</option>
+
         @foreach ($segmentos as $segmentos)
-        @if($segmentos->amount > 0)
+
             <option value="{{$segmentos->segments['description']}}">{{$segmentos->segments['description']}}</option>
-        @endif
+
         @endforeach
         </select>
         </small>
@@ -25,11 +25,11 @@ if($tipo == 'agregar'){
     <thead>
     <tr>
         <th>Producto</th>
-        <th>Imagen</th>
         <th style="display : none;">Tipo</th>
+        <th>Pedido</th>
         <th>Disponible</th>
         <th>Monto</th>
-        <th>Cantidad</th>
+
     </tr>
     </thead>
     <tbody>
@@ -39,24 +39,47 @@ if($tipo == 'agregar'){
         <tr>
             <input type="hidden" name="mesa" id="mesa" value="{{ $mesa }}">
 
-
-
-            <td style="width : 10%;"><small>{{ $var->description}}</small></td>
             <td>
+                <small class="add" data-nombre="{{ $var->id }}">{{ $var->description}}</small>
                 @if(isset($var->photo_product))
                 <!--arya/storage/app/public/img/-->
-                <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
+                <img class="rounded float-right add" data-nombre="{{ $var->id }}" style="width:100px;  height:100px;" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
 
                 @endif
+            </td>
+
+            <td style="display : none;">
+                <small>{{$var->segments['description']}}
+                </small>
+            </td>
+
+            <td>
+                <b style="color:blue">
+                <small class="eli" data-nombre="{{ $var->id }}" id="sma{{ $var->id }}">
+                    0
+                </small>
+                </b>
+                <input style="width : 25%;" class="form-control form-control-sm cantidad" name="cantidad[]" id="{{ $var->id }}" type="hidden" value="" />
 
             </td>
-            <td style="display : none;"><small>{{$var->segments['description']}}</small></td>
-            <td style="width : 10%;"><small>{{ $var->amount ?? 0}}</small></td>
-            <td style="width : 15%;"><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
 
-            <td style="width : 15%;">
-                <small><input style="width : 50%;" class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
+
+            <td style="width : 5%;">
+                <small>
+                {{ $var->amount ?? 0}}
+                <input id="disponible{{ $var->id }}" type="hidden" value="{{ $var->amount ?? 0}}" />
+                </small>
             </td>
+
+
+
+            <td style="width : 5%;">
+                <small>{{ $var->price ?? 0}}
+                    <input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="hidden" value="{{ $var->price ?? 0}}" />
+                </small>
+            </td>
+
+
             <input name="id[]" id="id" type="hidden" value="{{ $var->id }}" />
             @csrf
         </tr>
@@ -84,7 +107,7 @@ $(document).ready(function(){
         "dom": 'lrtip',
         "dom": 'rtip',
         "responsive": true,
-        "aLengthMenu": [[10,20,30 -1], [10,20,30, "All"]],
+        "aLengthMenu": [[10,15,20 -1], [10,15,20, "All"]],
         //"bPaginate": false,
         "bLengthChange": false,
         "bFilter": true,
@@ -97,15 +120,13 @@ $('.filter-input').change(function(){
     var dato = $(this).val();
 
     if(dato == 'todo'){
-        tabladata.column(2).search("").draw();
+        tabladata.column(1).search("").draw();
     }else{
-        tabladata.column(2)
+        tabladata.column(1)
         .search($(this).val())
         .draw();
     }
 });
-
-
 
 
     $("#carrito").validate({
@@ -147,6 +168,57 @@ $('.filter-input').change(function(){
           }
     }); ///fin $("#registro").validate({
 
+
+        tabladata.$('.add').click(function(e){
+        e.preventDefault();
+            var value = $(this).data('nombre');
+
+            valorinput = $("#"+value).val();
+            disponible = $("#disponible"+value).val();
+
+            if(valorinput == disponible){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "Solo Cantidad Disponible "+disponible,
+                        })
+            }
+
+            else if(valorinput > 0){
+                valorinput = parseFloat(valorinput) + 1;
+            }else{
+                valorinput = 1;
+
+            }
+            $("#"+value).val(valorinput);
+            $("#sma"+value).empty().append(valorinput);
+
+    });
+
+
+    tabladata.$('.eli').click(function(e){
+        e.preventDefault();
+            var value = $(this).data('nombre');
+
+            valorinput = $("#"+value).val();
+            disponible = $("#disponible"+value).val();
+
+            if(valorinput == 0){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "No puede ser Menor a Cero (0)",
+                        })
+            }
+
+            else {
+                valorinput = parseFloat(valorinput) - 1;
+            }
+            $("#"+value).val(valorinput);
+            $("#sma"+value).empty().append(valorinput);
+
+    });
+
 });
 
 
@@ -185,18 +257,23 @@ elseif($tipo == 'editar'){
                     <thead>
                         <tr>
                           <th scope="col">Producto</th>
-                          <th scope="col">Cantidad</th>
+                          <th colspan="3" scope="col">Cantidad</th>
                           <th scope="col">Precio</th>
                           <th scope="col">Total</th>
                         </tr>
                       </thead>
 
                       <tbody>
+                        <input type="hidden" name="mesa" id="mesa" value="{{ $mesa.'/'.'editar' }}">
+
                         <?php $total = 0; ?>
                         @foreach ($quotations as $quotations)
                         <tr>
                             <td>{{ $quotations->nombreproducto }}</td>
-                            <td>{{ $quotations->amount }}</td>
+                            <td>{{ $quotations->amount }}
+                            </td>
+                            <td><i style="color: blue;" class="fa fa-plus up" data-id="{{ $quotations->id.'/'.'ADD' }}"></i></td>
+                            <td><i style="color: red;" class="fa fa-minus up" data-id="{{ $quotations->id.'/'.'ELI' }}"></i></td>
                             <td>{{ number_format($quotations->price, 2, ',', '.') }}</td>
                             <td>{{number_format($quotations->price * $quotations->amount, 2, ',', '.')}}</td>
                         </tr>
@@ -207,7 +284,7 @@ elseif($tipo == 'editar'){
                             $totalconiva = $total + $iva;
                         ?>
                         <tr class="alert alert-success">
-                            <td colspan="2" align="center">TOTAL CON iva (16%)</td>
+                            <td colspan="4" align="center">TOTAL CON iva (16%)</td>
                             <td>{{number_format($totalconiva, 2, ',', '.')}} Bs</td>
                             <td>{{number_format($totalconiva / $quotations->rate, 2, ',', '.')}} $</td>
                         </tr>
@@ -237,12 +314,10 @@ elseif($tipo == 'editar'){
             <thead>
             <tr>
                 <th>Producto</th>
-                <th>Tipo</th>
-                <th>Cant. Inventario</th>
+                <th style="display : none;">Tipo</th>
+                <th>Pedido</th>
+                <th>Disponible</th>
                 <th>Monto</th>
-                <th>---</th>
-                <th>Cantidad</th>
-
 
             </tr>
             </thead>
@@ -254,21 +329,47 @@ elseif($tipo == 'editar'){
                     <input type="hidden" name="mesa" id="mesa" value="{{ $mesa }}">
                     <input type="hidden" name="idfac" id="idfac" value="{{ $quotations->id_quotation }}">
 
-
-                    <td><small>{{ $var->description}}</small></td>
-                    <td><small>{{$var->segments['description']}}</small></td>
-                    <td><small>{{ $var->amount ?? 0}}</small></td>
-                    <td><small><input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="number" value="{{ $var->price ?? 0}}" /></small></td>
                     <td>
+                        <small class="add" data-nombre="{{ $var->id }}">{{ $var->description}}</small>
                         @if(isset($var->photo_product))
                         <!--arya/storage/app/public/img/-->
-                        <img style="width:60px; max-width:60px; height:80px; max-height:80px" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
+                        <img class="rounded float-right add" data-nombre="{{ $var->id }}" style="width:100px;  height:100px;" src="{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}">
+
                         @endif
+                    </td>
+
+                    <td style="display : none;">
+                        <small>{{$var->segments['description']}}
+                        </small>
+                    </td>
+
+                    <td>
+                        <b style="color:blue">
+                        <small class="eli" data-nombre="{{ $var->id }}" id="sma{{ $var->id }}">
+                            0
+                        </small>
+                        </b>
+                        <input style="width : 25%;" class="form-control form-control-sm cantidad" name="cantidad[]" id="{{ $var->id }}" type="hidden" value="" />
 
                     </td>
-                    <td>
-                        <small><input class="form-control form-control-sm cantidad" name="cantidad[]" id="cantidad" type="number" /></small>
+
+
+                    <td style="width : 5%;">
+                        <small>
+                        {{ $var->amount ?? 0}}
+                        <input id="disponible{{ $var->id }}" type="hidden" value="{{ $var->amount ?? 0}}" />
+                        </small>
                     </td>
+
+
+
+                    <td style="width : 5%;">
+                        <small>{{ $var->price ?? 0}}
+                            <input  class="form-control form-control-sm precio" name="precio[]" id="precio" type="hidden" value="{{ $var->price ?? 0}}" />
+                        </small>
+                    </td>
+
+
                     <input name="id[]" id="id" type="hidden" value="{{ $var->id }}" />
                     @csrf
                 </tr>
@@ -300,7 +401,7 @@ elseif($tipo == 'editar'){
 
  <script>
 
-    $(document).ready(function(){
+$(document).ready(function(){
 
         var tabladata = $('.dataTablematch').DataTable({
             "dom": 'lrtip',
@@ -326,6 +427,7 @@ elseif($tipo == 'editar'){
         .draw();
     }
     });
+
 
         $("#upcarrito").validate({
           submitHandler: function (form) {
@@ -366,7 +468,105 @@ elseif($tipo == 'editar'){
               }
         }); ///fin $("#registro").validate({
 
+
+
+
+
+
+    $('.up').click(function(e){
+      e.preventDefault();
+
+      var value = $(this).data('id');
+
+        $.ajax({
+        method: "POST",
+        url: "{{ route('upcarritonew') }}",
+        data: {value: value, "_token": "{{ csrf_token() }}"},
+             success:(response)=>{
+                 if(response.error == true){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Exito!',
+                        text: response.msg,
+                        })
+
+            var valor = $("#mesa").val();
+            var url = "{{ route('pedidosmesas') }}";
+            $.post(url,{value: valor,"_token": "{{ csrf_token() }}"},function(data){
+                $("#modalfacturas").empty().append(data);
+            });
+
+                 }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: response.msg,
+                        })
+                 }
+             },
+             error:(xhr)=>{
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: response.msg,
+                        });
+             }
+         })
+
     });
+
+    tabladata.$('.add').click(function(e){
+        e.preventDefault();
+
+            var value = $(this).data('nombre');
+
+            valorinput = $("#"+value).val();
+            disponible = $("#disponible"+value).val();
+
+            if(valorinput == disponible){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "Solo Cantidad Disponible "+disponible,
+                        })
+            }
+
+            else if(valorinput > 0){
+                valorinput = parseFloat(valorinput) + 1;
+            }else{
+                valorinput = 1;
+
+            }
+            $("#"+value).val(valorinput);
+            $("#sma"+value).empty().append(valorinput);
+
+    });
+
+
+    tabladata.$('.eli').click(function(e){
+        e.preventDefault();
+            var value = $(this).data('nombre');
+
+            valorinput = $("#"+value).val();
+            disponible = $("#disponible"+value).val();
+
+            if(valorinput == 0){
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: "No puede ser Menor a Cero (0)",
+                        })
+            }
+
+            else {
+                valorinput = parseFloat(valorinput) - 1;
+            }
+            $("#"+value).val(valorinput);
+            $("#sma"+value).empty().append(valorinput);
+
+    });
+
+});
 
 
 

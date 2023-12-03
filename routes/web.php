@@ -210,7 +210,7 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('refreshtable','WarehouseController@refreshtable')->name('warehouse.refreshtable');
     Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
     Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
-    
+
 });
 
 
@@ -630,6 +630,10 @@ Route::group(["prefix"=>'facrestaurante'],function(){
     Route::post('upcarrito','FactrestauranteController@upcarrito')->name('upcarrito');
     Route::post('facturar','FactrestauranteController@facturar')->name('facturar');
     Route::post('cliente','FactrestauranteController@cliente')->name('cliente');
+    Route::post('upcarritonew','FactrestauranteController@upcarritonew')->name('upcarritonew');
+    Route::post('cambiocliente','FactrestauranteController@cambiocliente')->name('cambiocliente');
+    Route::post('metodos','FactrestauranteController@metodos')->name('metodos');
+    Route::post('facturarpedido','FactrestauranteController@facturarpedido')->name('facturarpedido');
  });
 
 
