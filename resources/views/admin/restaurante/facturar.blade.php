@@ -1,6 +1,7 @@
 
-    <form method="POST" id="carrito">
-
+    <form method="POST" id="facturar">
+        @csrf
+        <input type="hidden" name="idfactura" id="idfactura" value="{{ $data }}">
         <div class="tab-pane fade show active table-responsive-lg" id="home" role="tabpanel" aria-labelledby="home-tab">
 
             <table class="table table-lg">
@@ -35,47 +36,105 @@
                     </tr>
                   </tbody>
             </table>
-
+            <input type="hidden" name="montoculto" id="montoculto" value="{{number_format($totalconiva, 2)}}" />
 
     </div>
     <div class="card-footer">
+        <div class="add">
+        </div>
+
         <div class="form-row">
-            <div class="col-7">
-                <select id="payment_type" required="" name="payment_type" class="form-control form-control-sm">
-                    <option selected="" value="">Forma de Pago 1</option>
-                    <option value="1">Cheque</option>
-                    <option value="2">Contado</option>
-                    <option value="5">Depósito Bancario</option>
-                    <option value="6">Efectivo</option>
-                    <option value="7">Indeterminado</option>
-                    <option value="9">Tarjeta de Crédito</option>
-                    <option value="10">Tarjeta de Débito</option>
-                    <option value="11">Transferencia</option>
-                </select>
-            </div>
-            <div class="col">
-                <input type="submit" class="btn btn-primary btn-sm" value="Facturar" />
-            </div>
-
-          </div>
-
-
+        <div class="col">
+            <button type="button" class="btn btn-warning btn-sm metodo">Agregar Metodo de Pago</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-danger btn-sm eliminar">Eliminar Metodo de Pago</button>
+        </div>
+        <div class="col">
+            <input type="submit" class="btn btn-primary btn-sm" value="Facturar" />
+        </div>
+      </div>
     </div>
+
 </form>
 
 
     <script>
 
 $(document).ready(function(){
+    var numero = 0;
+    $('.metodo').click(function(e){
+        e.preventDefault();
+        numero += 1;
 
+        if(numero < 8){
+        var valor = $("#montoculto").val();
+            var url = "{{ route('metodos') }}";
+            $.post(url,{valor:valor,numero:numero,"_token": "{{ csrf_token() }}"},function(data){
+                $(".add").append(data);
+            });
+
+        }
+
+    });
+
+    $('.eliminar').click(function(e){
+        e.preventDefault();
+        $(".campos"+numero).remove();
+
+        if(numero < 1){
+            numero = 0
+        }else{
+            numero -= 1;
+
+        }
+
+
+    });
+
+
+
+
+    $("#facturar").validate({
+          submitHandler: function (form) {
+            $.ajax({
+                type: "post",
+                url: "{{ route('facturarpedido') }}",
+                dataType: "json",
+                data: $(form).serialize(),
+                success: function (response) {
+                  if(response.error == true){
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Exito!',
+                            text: response.msg,
+                            })
+                            setTimeout("location.reload()", 1800);
+
+                          }else{
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.msg,
+                            })
+
+
+                         }
+
+                       }
+                     });
+
+
+
+
+
+                return false; // required to block normal submit since you used ajax
+              }
+        }); ///fin $("#registro").validate({
 
 });
-
-
 
     </script>
 
 
-
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
