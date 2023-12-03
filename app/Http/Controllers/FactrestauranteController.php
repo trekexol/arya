@@ -59,6 +59,12 @@ class FactrestauranteController extends Controller
 
                 if($valimesa){
                     $q->mesa = $valimesa->numero;
+                }else{
+                    Quotation::on(Auth::user()->database_name)
+                    ->where('status','O')
+                    ->where('id',$q->id)
+                    ->delete();
+
                 }
 
 
@@ -172,7 +178,7 @@ public function pedidosmesas(Request $request){
     $mesa = $data[0];
     $tipo = $data[1];
 
-
+    $company = Company::on(Auth::user()->database_name)->find(1);
 
     if($tipo == 'agregar'){
 
@@ -185,13 +191,28 @@ public function pedidosmesas(Request $request){
             ->get();
 
 
+          $segmentos = Product::on(Auth::user()->database_name)
+            ->whereIN('type',['MERCANCIA','COMBO'])
+            ->where('status',1)
+            ->select('segment_id','id')
+            ->GroupBY('segment_id','id')
+            ->get();
+            foreach ($segmentos as $segmento) {
+
+                $segmento->amount = $global->consul_prod_invt($segmento->id);
+
+            }
+
+            $segmentos = $segmentos->unique('segment_id');
+
+
         foreach ($inventories as $inventorie) {
 
             $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
 
         }
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','inventories','mesa'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('segmentos','tipo','inventories','mesa','company'))->render();
 
 
     }elseif($tipo == 'editar'){
@@ -237,12 +258,26 @@ public function pedidosmesas(Request $request){
 
     }
 
+    $segmentos2 = Product::on(Auth::user()->database_name)
+    ->whereIN('type',['MERCANCIA','COMBO'])
+    ->where('status',1)
+    ->select('segment_id','id')
+    ->GroupBY('segment_id','id')
+    ->get();
+    foreach ($segmentos2 as $segmento) {
+
+        $segmento->amount = $global->consul_prod_invt($segmento->id);
+
+    }
+
+    $segmentos2 = $segmentos2->unique('segment_id');
+
 
         /********************* */
 
 
 
-        return View::make('admin.restaurante.pedidomesa',compact('tipo','quotations','mesa','inven'))->render();
+        return View::make('admin.restaurante.pedidomesa',compact('segmentos2','tipo','quotations','mesa','inven','company'))->render();
 
     }
 
@@ -278,12 +313,21 @@ public function facturar(Request $request){
     /************************************************** */
 
 
-
-
         return View::make('admin.restaurante.facturar',compact('quotations'))->render();
 
 
+}
 
+
+public function cliente(Request $request){
+
+    $data = $request->value;
+
+
+    $clientes = Client::on(Auth::user()->database_name)->where('status',1)->orderBy('id' ,'DESC')->get();
+
+
+        return View::make('admin.restaurante.cliente',compact('data','clientes'))->render();
 
 
 }

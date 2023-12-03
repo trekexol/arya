@@ -12,9 +12,36 @@
 ?>
 
 <style>
+/* Estilos generales para todas las pantallas */
+body {
+  font-size: 16px;
+}
+
+/* Estilos para pantallas pequeñas (hasta 600px de ancho) */
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* Estilos para pantallas medianas (entre 600px y 900px de ancho) */
+@media only screen and (min-width: 600px) and (max-width: 900px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+/* Estilos para pantallas grandes (más de 900px de ancho) */
+@media only screen and (min-width: 900px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+
 .circulo {
-    width: 10rem;
-    height: 10rem;
+    width: 8rem;
+    height: 8rem;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
@@ -25,12 +52,23 @@
     display: inline-block;
 }
 
+#accordionSidebar {
+ display: none;
+}
+
 </style>
+<div class="modal modal-danger fade bd-example-modal-xl" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content" id="modalfacturas">
+
+        </div>
+    </div>
+  </div>
 <div align="center">
     <?php $numero = 0; ?>
     @foreach ($cantidadmesas as $cantidadmesas)
 
-    @if($numero == 3)
+    @if($numero == 4)
     <br>
     <?php $numero = 0; ?>
     @endif
@@ -48,13 +86,6 @@
     @endforeach
 
 </div>
-<div class="modal modal-danger fade bd-example-modal-xl" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content" id="modalfacturas">
-
-        </div>
-    </div>
-  </div>
 @endsection
 @section('javascript')
     <script>

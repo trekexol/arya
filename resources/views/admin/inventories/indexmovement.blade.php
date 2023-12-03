@@ -28,37 +28,23 @@
 
     @else
 
-    @foreach($sistemas as $sistemas)
-    @if($namemodulomiddleware == $sistemas->name)
-<li class="nav-item" role="presentation">
-    <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
-  </li>
-  @else
-  <li class="nav-item" role="presentation">
-    <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
-  </li>
-  @endif
-  @if($sistemas->name == 'Inventario')
-  <li class="nav-item" role="presentation">
-      <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
-    </li>
-  @endif
-@endforeach
+        @foreach($sistemas as $sistemas)
+            @if($namemodulomiddleware == $sistemas->name)
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+            </li>
+            @else
+            <li class="nav-item" role="presentation">
+                <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
+            </li>
+            @endif
+            @if($sistemas->name == 'Inventario')
+            <li class="nav-item" role="presentation">
+                <a class="nav-link font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+                </li>
+            @endif
+        @endforeach
 
-
-    @else
-
-      @foreach($sistemas as $sistemas)
-        <li class="nav-item" role="presentation">
-          <a class="nav-link font-weight-bold" style="color: black;" id="home-tab"  href="{{ route($sistemas->ruta) }}" role="tab" aria-controls="home" aria-selected="false">{{$sistemas->name}}</a>
-        </li>
-
-      @endforeach
-      @if($namemodulomiddleware == 'Inventario')
-      <li class="nav-item" role="presentation">
-          <a class="nav-link active font-weight-bold" style="color: black;" id="contact-tab"  href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
-        </li>
-      @endif
 
   @endif
   </ul>

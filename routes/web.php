@@ -204,8 +204,12 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::delete('{id}/delete','WarehouseController@destroy')->name('warehouse.delete');
     Route::patch('{id}/update','WarehouseController@update')->name('warehouse.update');
 
-    Route::get('movement','WarehouseController@movement')->name('warehouse.movement');
+    Route::get('movement/{type?}/{typet?}/{branch?}/{branch_end?}','WarehouseController@movement')->name('warehouse.movement');
 
+    Route::get('getselect/{typet?}','WarehouseController@getselect')->name('warehouse.getselect');
+    Route::get('refreshtable','WarehouseController@refreshtable')->name('warehouse.refreshtable');
+    Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
+    Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
 
 });
 
@@ -437,24 +441,14 @@ Route::group(["prefix"=>'detailvouchers'],function(){
     Route::get('edit/{coin}/{id}/{id_account?}','DetailVoucherController@edit')->name('detailvouchers.edit');
     Route::delete('delete','DetailVoucherController@check_header')->name('detailvouchers.delete');
     Route::patch('{id}/update','DetailVoucherController@update')->name('detailvouchers.update');
-
     Route::get('selectaccount/{coin}/{id_header}/{id_detail?}','DetailVoucherController@selectaccount')->name('detailvouchers.selectaccount');
-
     Route::get('selectheadervouche','DetailVoucherController@selectheader')->name('detailvouchers.selectheadervouche');
-
    // Route::get('register/{coin}/{id_header}','DetailVoucherController@createselect')->name('detailvouchers.createselect');
-
     //Route::get('register/{coin}/{id_header}/{code_one}/{code_two}/{code_three}/{code_four}/{period}','DetailVoucherController@createselectaccount')->name('detailvouchers.createselectaccount');
-
     Route::get('contabilizar/{coin}/{id_header}','DetailVoucherController@contabilizar')->name('detailvouchers.contabilizar');
-
     Route::get('listheader/{var?}','DetailVoucherController@listheader')->name('detailvouchers.listheader');
-
-
     Route::get('validation/{coin}/{id_header?}/{id_account?}','DetailVoucherController@createvalidation')->name('detailvouchers.createvalidation');
     Route::delete('deletedetail','DetailVoucherController@deleteDetail')->name('detailvouchers.deletedetail');
-
-
     Route::delete('disable','DetailVoucherController@disable')->name('detailvouchers.disable');
 });
 
@@ -465,65 +459,37 @@ Route::group(["prefix"=>'quotations'],function(){
     Route::get('{id}/edit','QuotationController@edit')->name('quotations.edit');
     Route::delete('{id}/delete','QuotationController@destroy')->name('quotations.delete');
     Route::patch('{id}/update','QuotationController@update')->name('quotations.update');
-
     Route::patch('{id}/updateQuotation','QuotationController@updateQuotation')->name('quotations.updateQuotation');
     Route::patch('selectclientQuotation/{id}','QuotationController@selectclientQuotation')->name('quotations.selectclientQuotation');
     Route::get('updateClientQuotation/{id_quotation}/{id_client}/{coin}','QuotationController@updateClientQuotation')->name('quotations.updateClientQuotation');
-
-
     Route::get('registerquotation/{type?}','QuotationController@createquotation')->name('quotations.createquotation');
-
     Route::get('registerquotationclient/{id_client}/{type?}','QuotationController@createquotationclient')->name('quotations.createquotationclient');
     Route::get('selectclient/{type?}','QuotationController@selectclient')->name('quotations.selectclient');
-
     Route::get('registerquotationvendor/{id_client}/{id_vendor}/{type?}','QuotationController@createquotationvendor')->name('quotations.createquotationvendor');
     Route::get('selectvendor/{id_client}/{type?}','QuotationController@selectvendor')->name('quotations.selectvendor');
-
     Route::get('selectproduct/{id_quotation}/{coin}/{type}/{type_quotation?}','QuotationController@selectproduct')->name('quotations.selectproduct');
     Route::get('registerproduct/{id_quotation}/{coin}/{id_product}/{type_quotation?}','QuotationController@createproduct')->name('quotations.createproduct');
-
-
     Route::post('storeproduct','QuotationController@storeproduct')->name('quotations.storeproduct');
-
     Route::get('facturar/{id_quotation}/{coin}/{type?}','FacturarController@createfacturar')->name('quotations.createfacturar');
-
     Route::post('storefactura','FacturarController@storefactura')->name('quotations.storefactura');
     Route::get('facturado/{id_quotation}/{coin}/{reverso?}','FacturarController@createfacturado')->name('quotations.createfacturado');
-
     Route::get('listinventory/{var?}','QuotationController@listinventory')->name('quotations.listinventory');
-
-
     Route::get('notadeentrega/{id_quotation}/{coin}/{type?}','DeliveryNoteController@createdeliverynote')->name('quotations.createdeliverynote');
-
     Route::get('indexnotasdeentrega/{id_quotation?}/{number_pedido?}/{saldar?}','DeliveryNoteController@index')->name('quotations.indexdeliverynote');
-
     Route::get('indexnotasdeentregasald/{id_quotation?}/{number_pedido?}','DeliveryNoteController@indexsald')->name('quotations.indexdeliverynotesald');
-
     Route::get('storesaldar/{id?}/{anticipo?}/{totalfac?}','DeliveryNoteController@storesaldar')->name('quotation.storesaldar');
     Route::post('storesaldarnota','FacturarController@storeanticiposaldar')->name('quotations.storeanticiposaldar');
-
     Route::get('quotationproduct/{id}/{coin}/edit','QuotationController@editquotationproduct')->name('quotations.productedit');
     Route::patch('productupdate/{id}/update','QuotationController@updatequotationproduct')->name('quotations.productupdate');
-
     Route::post('storefacturacredit','FacturarController@storefacturacredit')->name('quotations.storefacturacredit');
-
-
     Route::get('facturarafter/{id_quotation}/{coin}','FacturarController@createfacturar_after')->name('quotations.createfacturar_after');
-
     Route::get('refreshrate/{id_quotation}/{coin}/{rate}','QuotationController@refreshrate')->name('quotations.refreshrate');
-
     Route::delete('deleteproduct','QuotationController@deleteProduct')->name('quotations.deleteProduct');
     Route::delete('deletequotation','QuotationController@deleteQuotation')->name('quotations.deleteQuotation');
-
     Route::delete('reversarquotation','QuotationController@reversar_quotation')->name('quotations.reversarQuotation');
-
     Route::get('reversarquotationmultipayment/{id}/{id_header?}','QuotationController@reversar_quotation_multipayment')->name('quotations.reversar_quotation_multipayment');
-
     Route::delete('reversardeliverynote','DeliveryNoteController@reversar_delivery_note')->name('quotations.reversar_delivery_note');
-
     Route::post('pdfQuotations','QuotationController@pdfQuotations')->name('quotations.pdfQuotations');
-
-
 
 });
 
@@ -663,6 +629,7 @@ Route::group(["prefix"=>'facrestaurante'],function(){
     Route::post('carrito','FactrestauranteController@carrito')->name('carrito');
     Route::post('upcarrito','FactrestauranteController@upcarrito')->name('upcarrito');
     Route::post('facturar','FactrestauranteController@facturar')->name('facturar');
+    Route::post('cliente','FactrestauranteController@cliente')->name('cliente');
  });
 
 

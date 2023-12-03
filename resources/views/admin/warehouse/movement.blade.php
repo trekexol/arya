@@ -348,10 +348,113 @@
         </div>
 
         <div class="form-group row">
-            <label for="begin" class="col-sm-2 col-form-label text-md-right">Almacén de Origen:</label>  
-            <div class="col-sm-2">
+
+            <label for="begin" class="col-sm-2 col-form-label text-md-right">Tipo Transferencia:</label>  
+            <div class="col-sm-3">
+                <?php
+                  
+                  if(isset($typet)) {
+
+                    if($typet == 1){
+                       $atributo1 = 'selected';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 2){
+                       $atributo1 = '';
+                       $atributo2 = 'selected';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 3){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = 'selected';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 4){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = 'selected';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                    }
+                    if($typet == 5){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = 'selected';
+                       $atributo6 = '';
+                    }
+                    if($typet == 6){
+                       $atributo1 = '';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = 'selected';
+                    }
+                  } else {
+                       $atributo1 = 'selected';
+                       $atributo2 = '';
+                       $atributo3 = '';
+                       $atributo4 = '';
+                       $atributo5 = '';
+                       $atributo6 = '';
+                  }
+                    
+
+                ?>
+ 
+                <select id="type_transf"  name="type_transf" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
+                    <option {{$atributo1}} value="1">Almacén a Almacén</option>
+                    <option {{$atributo2}} value="2">Almacén a Sucursal</option>
+                    <option {{$atributo3}} value="3">Sucursal a Almacén</option>
+                    <option {{$atributo4}} value="4">Sucursal a Sucursal</option>
+                    <option {{$atributo5}} value="5">Devolución a Almacén</option>
+                    <option {{$atributo6}} value="6">Devolución a Sucursal</option>
+                </select>
+                @error('type_transf')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+
+
+            <label for="begin" class="col-sm-2 col-form-label text-md-right">Tipo:</label>  
+            <div class="col-sm-3">
                
-                <select id="id_branch"  name="id_branch" class="form-select mb-3 form-control @error('id_branch') is-invalid @enderror">
+                <select id="type"  name="type" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
+                    <option selected value="1">Mercancia y Materia Prima</option>
+                    <option value="2">Mercancia</option>
+                    <option value="3">Matria Prima</option>
+                </select>
+
+                @error('type')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            </div>
+
+        </div>
+
+        <div class="form-group row">
+
+            <label for="begin" class="col-sm-2 col-form-label text-md-right">Origen:</label>  
+            <div class="col-sm-3">
+               
+                <select id="id_branch" name="id_branch" class="form-select sm-3 form-control @error('id_branch') is-invalid @enderror">
                     @isset($branches)
                         @foreach($branches as $branchs)
                         
@@ -370,8 +473,8 @@
                     </span>
                 @enderror
             </div>
-            <label for="end" class="col-sm-2 col-form-label text-md-right">Almacén de Destino:</label>  
-            <div class="col-sm-2">
+            <label for="end" class="col-sm-2 col-form-label text-md-right">Destino:</label>  
+            <div class="col-sm-3">
                
                 <select id="id_branch_end"  name="id_branch_end" class="form-select mb-3 form-control @error('id_branch') is-invalid @enderror">
                     @isset($branches)
@@ -392,16 +495,12 @@
                     </span>
                 @enderror
             </div>
-            <div class="col-sm-2">
-            </div>
-            <div class="col-sm-2">
-            <a type="button" href="#" class="btn btn-primary">Transferir Todo</a>
+            <div class="col-sm-2" style="text-align: right;">
+                <a type="button" href="#" class="btn btn-primary">Transferir Todo</a>
             </div>
         </div>
 
         <div class="table-responsive">
-      
-
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <th class="text-center">ID</th>
@@ -423,7 +522,7 @@
                     @foreach ($inventories as $var)
                      <?php
                      if (isset($var->description)){
-                     $descripcion = $var->description;
+                        $descripcion = $var->description;
                      } else {
                         $descripcion = '';
                      }
@@ -519,178 +618,18 @@
 @endsection
 @section('validacion')
     <script>
-        $('.contradiv').hide();
-        $('.procediv').hide();
-        $("#tipo").on('change',function(){
-                var tipo = $(this).val();
-
-                if(tipo == 'AI'){
-                    $('.contradiv').show();
-                    $('.procediv').hide();
-                }else if(tipo == 'DI'){
-                    $('.contradiv').hide();
-                    $('.procediv').show();
-
-                }else{
-                    $('.contradiv').hide();
-                    $('.procediv').hide();
-                }
-            });
-
-
-        $("#contrapartida2").on('change',function(){
-            var contrapartida_id = $(this).val();
-            $("#subcontrapartida2").val("");
-
-            getSubcontrapartida2(contrapartida_id);
-
-
-                $('.procediv').hide();
-
-        });
-
-        function getSubcontrapartida2(contrapartida_id){
-
-            $.ajax({
-                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
-                beforSend:()=>{
-                    alert('consultando datos');
-                },
-                success:(response)=>{
-                    let subcontrapartida = $("#subcontrapartida2");
-                    let htmlOptions = `<option value='' >Seleccione..</option>`;
-                    // console.clear();
-                    if(response.length > 0){
-                        response.forEach((item, index, object)=>{
-                            let {id,description} = item;
-                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
-
-                        });
-                    }
-                    //console.clear();
-                    // console.log(htmlOptions);
-                    subcontrapartida.html('');
-                    subcontrapartida.html(htmlOptions);
-
-
-
-                },
-                error:(xhr)=>{
-                    alert('Presentamos inconvenientes al consultar los datos');
-                }
-            })
-        }
-
-        $("#subcontrapartida2").on('change',function(){
-                var subcontrapartida_id = $(this).val();
-
-                if(subcontrapartida_id == 0){
-
-                    $('.procediv').hide();
-                }else{
-                    $('.procediv').show();
-                }
-
-                var contrapartida_id    = document.getElementById("contrapartida").value;
-
-            });
+    
     </script>
 @endsection
 @section('javascript')
-<script>
-    if("{{isset($total_amount_for_import)}}"){
-        $('#movementModal').modal('show');
-    }
-    if("{{isset($total_amount_for_import_materiap)}}"){
-        $('#movementModal').modal('show');
-    }
-</script>
 
     <script type="text/javascript">
-            function pdfinventory() {
 
-                var nuevaVentanainventory = window.open("{{ route('pdf.inventory')}}","ventana","left=800,top=800,height=800,width=1000,scrollbar=si,location=no ,resizable=si,menubar=no");
-
-            }
 
         $('#dataTable').DataTable({
             "ordering": true,
             "order": [],
             'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
-        });
-
-        $("#file").on('change',function(){
-
-            var file = document.getElementById("file").value;
-
-            /*Extrae la extencion del archivo*/
-            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
-                                               // (supports `\\` and `/` separators)
-            pos = basename.lastIndexOf(".");       // get last position of `.`
-
-            if (basename === "" || pos < 1) {
-                alert("El archivo no tiene extension");
-            }
-            /*-------------------------------*/
-
-            if(basename.slice(pos + 1) == 'xlsx'){
-
-            }else{
-                alert("Solo puede cargar archivos .xlsx");
-            }
-
-        });
-
-
-
-        $(document).on('click','.inv_combo',function(){
-
-                var desc = $(this).attr("data-desc");
-                var serie = $(this).attr("data-serie");
-                var id_combo = $(this).attr("data-id_combo");
-                var cantidad_combos = $(this).attr("data-cantidad_combos");
-                var cantidad_actual = $(this).attr("data-cantidad_actual");
-
-                $('#id_product').val(id_combo);
-                $('#movementModaltwo').modal('show');
-                $('#exampleModalLabelcombo').html('Crear Combo ID: '+id_combo+' '+desc);
-                $('#exampleModalLabelmed').show();
-                $('#exampleModalLabelmed').html('Combos Disponibles: '+cantidad_combos);
-                $('#exampleModalLabelmed2').html('Inventario Actual: '+cantidad_actual);
-                $('#disponible').val(cantidad_combos);
-                $('#cant_disponible').val(cantidad_combos);
-                $('#cant_actual').val(cantidad_actual);
-                $('#serie').val(serie);
-                $('#name_combo').val(desc);
-                $('#type_add').val('1');
-                $('#type_add_text').html('Ingrese la cantidad a crear:');
-                $('#type_add_button').html('Agregar al Inventario del Combo');
-
-
-        });
-
-        $(document).on('click','.inv_combo_des',function(){
-
-                var desc = $(this).attr("data-desc");
-                var serie = $(this).attr("data-serie");
-                var id_combo = $(this).attr("data-id_combo");
-                var cantidad_combos = $(this).attr("data-cantidad_combos");
-                var cantidad_actual = $(this).attr("data-cantidad_actual");
-
-                $('#id_product').val(id_combo);
-                $('#movementModaltwo').modal('show');
-                $('#exampleModalLabelcombo').html('Deshacer Combo ID: '+id_combo+' '+serie+' '+desc);
-                $('#exampleModalLabelmed').hide();
-                $('#exampleModalLabelmed2').html('Inventario Actual: '+cantidad_actual);
-                $('#disponible').val(0);
-                $('#type_add').val('0');
-                $('#cant_disponible').val(cantidad_combos);
-                $('#cant_actual').val(cantidad_actual);
-                $('#serie').val(serie);
-                $('#name_combo').val(desc);
-                $('#type_add_text').html('Ingrese la cantidad a devolver:');
-                $('#type_add_button').html('Disminuir Inventario del Combo ');
-
         });
 
 
@@ -706,80 +645,265 @@
                 }
         }
 
-        $("#file_form").on('change',function(){
 
-            var file = document.getElementById("file_form").value;
+    
+    $("#type_transf").on('change',function(){
+        var type_transf = $(this).val();
+        var type = document.getElementById("type").value;
 
-            /*Extrae la extencion del archivo*/
-            var basename = file.split(/[\\/]/).pop(),  // extract file name from full path ...
-                                               // (supports `\\` and `/` separators)
-            pos = basename.lastIndexOf(".");       // get last position of `.`
+        if (type_transf == 1){
+            get_select(1);
+            get_select_end(1);
+        }
 
-            if (basename === "" || pos < 1) {
-                alert("El archivo no tiene extension");
+        if (type_transf == 2){
+            get_select(1);
+            get_select_end(2);
+        }
+        if (type_transf == 3){
+            get_select(2);
+            get_select_end(1);
+        }
+        if (type_transf == 4){
+            get_select(2);
+            get_select_end(2);
+        }
+
+        if (type_transf == 5){
+            get_select_end(1);
+        }
+        if (type_transf == 6){
+            get_select_end(2);
+        }
+
+
+        $.ajax({
+                url: `../warehouse/refreshtable`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type:type },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+
+
+    });
+
+
+
+    $("#id_branch").on('change',function(){
+        var branch = $(this).val();
+        var type_transf = document.getElementById("type_transf").value;
+        var type = document.getElementById("type").value;
+
+        $.ajax({
+                url: `../warehouse/refresorigen`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type: type, branch: branch },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+
+    });
+
+
+
+
+    $("#id_branch_end").on('change',function(){
+        var branch_end = $(this).val();
+        var branch = document.getElementById("id_branch").value;;
+        var type_transf = document.getElementById("type_transf").value;
+        var type = document.getElementById("type").value;
+
+        $.ajax({
+                url: `../warehouse/refresdestino`, // Ruta a la función en tu controlador
+                method: 'GET',
+                data: { type_transf: type_transf, type: type, branch: branch, branch_end: branch_end },
+                success: function(data) {
+
+                    $("#dataTable tbody").empty();
+
+                    data.forEach(function(row) {
+                        var photoProduct = row.photo_product; // Asegúrate de tener esta variable disponible en tu código JS
+                        var companyLogin = '<?php $company->login;?>';
+
+                        var newRow = "<tr>";
+                        newRow += "<td class='text-center'>" + row.id + "</td>";
+                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                       
+                        if (typeof row.description !== 'NULL') {
+                            newRow += "<td class='text-center'>" + row.description + "</td>";
+                        } else{
+                            newRow += "<td class='text-center'></td>";
+                        }
+
+                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-right'>" + row.origen + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-center'>" + row.destino + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+
+                        if (typeof photoProduct !== 'NULL') {
+                            var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
+                            newRow += "<td class='text-center'>";
+                            newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
+                            newRow += "<div class='file-footer-buttons'>";
+                            newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
+                            newRow += "</div></td>";
+                        } else {
+                            newRow += "<td class='text-center'></td>";
+                        }
+                        
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "</tr>";
+                        $("#dataTable").append(newRow);
+                    });
+                }
+            });
+    });
+
+    function get_select(typet){
+        $.ajax({
+            url:`../warehouse/getselect/${typet}`,
+        
+            success:(response)=>{
+                let select_origen = $("#id_branch");
+                let htmlOptions = '';
+                if(response.length > 0){
+                    response.forEach((item, index, object)=>{
+                        let {id,description} = item;
+                        htmlOptions += `<option value='${id}'>${description}</option>`
+                    });
+                } else {
+                    htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
+                }
+                select_origen.html('');
+                select_origen.html(htmlOptions);
+            },
+            error:(xhr)=>{
+                alert('error '+xhr);
             }
-            /*-------------------------------*/
+        })
+    }
 
-            if(basename.slice(pos + 1) == 'xlsx'){
-
-            }else{
-                alert("Solo puede cargar archivos .xlsx");
-            }
-
-        });
-
-
-        $("#contrapartida").on('change',function(){
-     
-            var contrapartida_id = $(this).val();
-            $("#subcontrapartida").val("");
-            getSubcontrapartida(contrapartida_id);
-
-        });
-
-
-        function getSubcontrapartida(contrapartida_id){
+    function get_select_end(typet){
 
             $.ajax({
-                url:"{{ route('directpaymentorders.listcontrapartida') }}" + '/' + contrapartida_id,
+                url:`../warehouse/getselect/${typet}`,
                 beforSend:()=>{
                     alert('consultando datos');
                 },
                 success:(response)=>{
-                    let subcontrapartida = $("#subcontrapartida");
-                    let htmlOptions = `<option value='' >Seleccione..</option>`;
+                    let select_destino = $("#id_branch_end");
+                    let htmlOptions = '';
                     // console.clear();
                     if(response.length > 0){
+
                         response.forEach((item, index, object)=>{
                             let {id,description} = item;
-                            htmlOptions += `<option value='${id}' {{ old('Subcontrapartida') == '${id}' ? 'selected' : '' }}>${description}</option>`
+
+                            htmlOptions += `<option value='${id}'>${description}</option>`
 
                         });
+                    } else {
+                         htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
                     }
                     //console.clear();
                     // console.log(htmlOptions);
-                    subcontrapartida.html('');
-                    subcontrapartida.html(htmlOptions);
-
-
+                    select_destino.html('');
+                    select_destino.html(htmlOptions);
 
                 },
                 error:(xhr)=>{
                     alert('Presentamos inconvenientes al consultar los datos');
                 }
             })
-        }
+    }
 
-        $("#subcontrapartida").on('change',function(){
-                var subcontrapartida_id = $(this).val();
-                var contrapartida_id    = document.getElementById("contrapartida").value;
 
-            });
 
-        $("#type").on('change',function(){
+
+    
+
+        /*$("#type").on('change',function(){
             type = $(this).val();
             window.location = "{{route('inventories', [''])}}"+"/"+type;
-        });
+        }); */
 
         </script>
 @endsection

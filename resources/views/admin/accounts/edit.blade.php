@@ -119,6 +119,25 @@
                                     
                                 </div>
                                 
+                                <div class="form-group row">
+                                    <div class="col-sm-2">
+                                    </div>
+                                    <label for="type" class="col-md-2 col-form-label text-md-right">Tipo</label>
+
+                                    <div class="col-md-4">
+                                    <select class="form-control" name="type" id="type">
+                                        @if($var->type == 'Debe')
+                                        <option selected value="Debe">Debe</option>
+                                        <option value="Haber">Haber</option>
+                                        @endif
+                                        @if($var->type == 'Haber')
+                                        <option value="Debe">Debe</option>
+                                        <option selected value="Haber">Haber</option>
+                                        @endif
+                                    </select>
+                                    </div>    
+                                </div>
+
                             
                                 <br>
                                 <div class="form-group row mb-0">
