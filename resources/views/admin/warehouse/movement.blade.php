@@ -503,15 +503,15 @@
         <div class="table-responsive">
         <table class="table table-light2 table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
-                <th class="text-center">ID</th>
-                <th class="text-center">Código Comercial</th>
+                <th style="width:1%;" class="text-center">ID</th>
+                <th style="width:1%;" class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
-                <th class="text-center">Tipo</th>
+                <th style="width:1%;"class="text-center">Tipo</th>
                 <th class="text-center">Origen</th>
                 <th class="text-center"  style="width: 1%">Cantidad Actual</th>
                 <th class="text-center">Destino</th>
                 <th class="text-center"  style="width: 1%">Cantidad a Transferir</th>
-                <th class="text-center">Foto</th>
+                <th style="width:1%;" class="text-center">Foto</th>
                 <th class="text-center" style="width: 1%">Acción</th>
             </tr>
             </thead>
@@ -528,26 +528,20 @@
                      }
                      ?>
                     <tr>
-                            <td class="text-center">{{ $var->id ?? '' }}</td>
-                            <td class="text-center">{{ $var->code_comercial ?? '' }}</td>
+                            <td style="width:1%;"class="text-center">{{ $var->id ?? '' }}</td>
+                            <td style="width:1%;" class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{ $var->description ?? '' }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
                             <td class="text-right">
-                                <select class="origen form-control" name="origen" data-almacen="{{''}}">
-                                    <option value="n/a">Prueba</option>
-                                </select>    
-                            
+                                <?php echo $var->origen ?>
                             </td>
-                            <td class="text-right"  style="width: 1%">{{ $var->amount }}</td>
+                            <td class="text-right" style="width: 1%"><span id='amountext{{$var->id}}'>{{ $var->amount }}</span></td>
 
                             <td class="text-center">
-                                <select class="destino form-control" name="destino" data-almacen="{{''}}">
-                                    <option value="n/a">Prueba2</option>
-                                </select>    
+                                <?php echo $var->destino ?>
                             </td>
                        
-                            <td class="text-right"  style="width: 1%"><input type="text" class="form-control" style="text-align: right;" value="0"></td>
-                            
+                            <td class='text-right' style='width: 1%'><input onkeyup="noespac(this)" id='inputransf{{$var->id}}' type='text' class='form-control' style='text-align: right;' value='0'></td>;
                             <td class="text-center">
 
                                 @if(isset($var->photo_product))
@@ -557,7 +551,9 @@
                                 <button type="button" class="btnimg btn-sm" title="Ver detalles" data-toggle="modal" data-target="#imagenModal" onclick="loadimg('{{asset('arya/storage/app/public/img/'.$company->login.'/productos/'.$var->photo_product)}}')"><i class="fas fa-search-plus"></i></button>     </div>
                                 @endif
                             </td>
-                            <td class="text-center" style="width: 1%"><a type="button" href="#" class="btn btn-primary">Transferir</a></td>
+
+                            <td class='text-center' style='width: 1%'><a type='button' data-origen='1' data-destino='1' data-typet='1' data-product='{{$var->id}}' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>
+
                         </tr>
                     @endforeach
                 @endif
@@ -645,7 +641,48 @@
                 }
         }
 
+   
+        $(document).on('click','.btn_transferir',function(){
 
+             var origen = $(this).attr('data-origen');
+             var destino = $(this).attr('data-destino');
+             var producto = $(this).attr('data-product');
+             var selectdestino = $('#selectdestino'+producto).val();
+             var monto = $('#inputransf'+producto).val();
+             var typet = $(this).attr('data-typet');
+             var amountext = $('#amountext'+producto);
+            monto = Number(monto);
+
+            //alert('origen: '+origen+'- destino: '+destino+'- producto: '+producto+'- selectdestino: '+selectdestino+'- monto: '+monto+'- typet: '+typet+'- amount: '+amountext.text()); 
+    
+            if (monto <= 0 || selectdestino == origen){
+                if(monto <= 0){
+                    alert("La Cantidad a Transferir debe ser mayor a 0 \nProducto ID "+producto);
+                }
+
+                if (selectdestino == origen && (typet == 1 || typet == 4)){
+                    alert("No es posible transferir al mismo almacén");
+                }
+
+            } else {
+
+                $.ajax({
+                    url: `../warehouse/transferencia`, // Ruta a la función en tu controlador
+                    method: 'GET',
+                    data: { origen: origen, producto: producto, typet: typet, selectdestino: selectdestino, monto: monto },
+                    success:(response)=>{
+                        amountext.text(response.amount);
+                    },
+                    error: (xhr, status, error) => {
+                        
+                        alert('La Transferencia no se pudo completar recargar la página: '+ error);
+                        /*console.log(xhr);
+                        console.log(status);
+                        console.log(error);*/
+                    }
+                });
+            }
+        });
     
     $("#type_transf").on('change',function(){
         var type_transf = $(this).val();
@@ -691,9 +728,9 @@
 
                         var newRow = "<tr>";
                         newRow += "<td class='text-center'>" + row.id + "</td>";
-                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                        newRow += "<td style='width:1%;' class='text-center'>" + row.code_comercial + "</td>";
                        
-                        if (typeof row.description !== 'NULL') {
+                        if (typeof row.description !== null) {
                             newRow += "<td class='text-center'>" + row.description + "</td>";
                         } else{
                             newRow += "<td class='text-center'></td>";
@@ -701,11 +738,11 @@
 
                         newRow += "<td class='text-center'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
-                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
-                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
-                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
+                        newRow += "<td class='text-center'>" + row.destino + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input onkeyup='noespac(this)' id='inputransf"+row.id+"' type='text' class='form-control' style='text-align: right;' value='0'></td>";
 
-                        if (typeof photoProduct !== 'NULL') {
+                        if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
                             newRow += "<td class='text-center'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
@@ -716,7 +753,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -747,9 +784,9 @@
 
                         var newRow = "<tr>";
                         newRow += "<td class='text-center'>" + row.id + "</td>";
-                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                        newRow += "<td style='width:1%;' class='text-center'>" + row.code_comercial + "</td>";
                        
-                        if (typeof row.description !== 'NULL') {
+                        if (typeof row.description !== null) {
                             newRow += "<td class='text-center'>" + row.description + "</td>";
                         } else{
                             newRow += "<td class='text-center'></td>";
@@ -757,11 +794,11 @@
 
                         newRow += "<td class='text-center'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
-                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
-                        newRow += "<td class='text-center'><select class='destino form-control' name='destino' data-almacen=''><option value='n/a'>Prueba2</option></select></td>";
-                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
+                        newRow += "<td class='text-center'>" + row.destino + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input onkeyup='noespac(this)' id='inputransf"+row.id+"' type='text' class='form-control' style='text-align: right;' value='0'></td>";
 
-                        if (typeof photoProduct !== 'NULL') {
+                        if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
                             newRow += "<td class='text-center'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
@@ -772,7 +809,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -786,7 +823,7 @@
 
     $("#id_branch_end").on('change',function(){
         var branch_end = $(this).val();
-        var branch = document.getElementById("id_branch").value;;
+        var branch = document.getElementById("id_branch").value;
         var type_transf = document.getElementById("type_transf").value;
         var type = document.getElementById("type").value;
 
@@ -804,9 +841,9 @@
 
                         var newRow = "<tr>";
                         newRow += "<td class='text-center'>" + row.id + "</td>";
-                        newRow += "<td class='text-center'>" + row.code_comercial + "</td>";
+                        newRow += "<td style='width:1%;' class='text-center'>" + row.code_comercial + "</td>";
                        
-                        if (typeof row.description !== 'NULL') {
+                        if (typeof row.description !== null) {
                             newRow += "<td class='text-center'>" + row.description + "</td>";
                         } else{
                             newRow += "<td class='text-center'></td>";
@@ -814,11 +851,11 @@
 
                         newRow += "<td class='text-center'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
-                        newRow += "<td class='text-right' style='width: 1%'>" + row.amount + "</td>";
+                        newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
                         newRow += "<td class='text-center'>" + row.destino + "</td>";
-                        newRow += "<td class='text-right' style='width: 1%'><input type='text' class='form-control' style='text-align: right;' value='0'></td>";
+                        newRow += "<td class='text-right' style='width: 1%'><input onkeyup='noespac(this)' id='inputransf"+row.id+"' type='text' class='form-control' style='text-align: right;' value='0'></td>";
 
-                        if (typeof photoProduct !== 'NULL') {
+                        if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
                             newRow += "<td class='text-center'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
@@ -829,7 +866,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' href='#' class='btn btn-primary'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -847,7 +884,11 @@
                 if(response.length > 0){
                     response.forEach((item, index, object)=>{
                         let {id,description} = item;
-                        htmlOptions += `<option value='${id}'>${description}</option>`
+                        if(id == 1) {
+                            htmlOptions += `<option value='${id}' selected>${description}</option>`;
+                        } else {
+                            htmlOptions += `<option value='${id}'>${description}</option>`;
+                        }
                     });
                 } else {
                     htmlOptions = `<option value='todos' >No Tiene Registros</option>`;
@@ -876,8 +917,11 @@
 
                         response.forEach((item, index, object)=>{
                             let {id,description} = item;
-
-                            htmlOptions += `<option value='${id}'>${description}</option>`
+                            if(id == 1) {
+                                htmlOptions += `<option value='${id}' selected>${description}</option>`;
+                            } else {
+                                htmlOptions += `<option value='${id}'>${description}</option>`;
+                            }
 
                         });
                     } else {
@@ -894,8 +938,6 @@
                 }
             })
     }
-
-
 
 
     
