@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quotation extends Model
 {
+    protected $fillable = ['id_client'];
+
     public function clients(){
         return $this->belongsTo('App\Client','id_client');
     }
@@ -18,15 +20,15 @@ class Quotation extends Model
     }
 
     public function quotation_product() {
-        return $this->hasMany('App\QuotationProduct');   
+        return $this->hasMany('App\QuotationProduct');
     }
 
     public function anticipos() {
-        return $this->hasMany('App\Anticipo');   
+        return $this->hasMany('App\Anticipo');
     }
 
     public function datails() {
-        return $this->hasMany('App\DetailVoucher');   
+        return $this->hasMany('App\DetailVoucher');
     }
 
 }

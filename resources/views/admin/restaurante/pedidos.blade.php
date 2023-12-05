@@ -20,21 +20,21 @@ body {
 /* Estilos para pantallas pequeñas (hasta 600px de ancho) */
 @media only screen and (max-width: 600px) {
   body {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
 /* Estilos para pantallas medianas (entre 600px y 900px de ancho) */
 @media only screen and (min-width: 600px) and (max-width: 900px) {
   body {
-    font-size: 18px;
+    font-size: 14px;
   }
 }
 
 /* Estilos para pantallas grandes (más de 900px de ancho) */
 @media only screen and (min-width: 900px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -57,15 +57,17 @@ body {
 }
 
 </style>
-<div class="modal modal-danger fade bd-example-modal-xl" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+<div class="modal modal-danger fade bd-example-modal-md" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-md" role="document">
         <div class="modal-content" id="modalfacturas">
 
         </div>
     </div>
   </div>
-<div align="center">
-    <?php $numero = 0; ?>
+  <div align="center" class="container">
+    <div class="row">
+      <div class="col-sm-6 col-md-12">
+        <?php $numero = 0; ?>
     @foreach ($cantidadmesas as $cantidadmesas)
 
     @if($numero == 4)
@@ -85,7 +87,10 @@ body {
 
     @endforeach
 
-</div>
+      </div>
+    </div>
+  </div>
+
 @endsection
 @section('javascript')
     <script>

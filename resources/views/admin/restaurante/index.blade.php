@@ -67,7 +67,7 @@
                     <tr>
                         <td class="text-center font-weight-bold" style="width:11%;">{{date_format(date_create($quotation->date_billing),"d-m-Y") ?? ''}} </td>
                         <td class="text-right font-weight-bold">{{$quotation->mesa}}</td>
-                        <td class="text-center font-weight-bold">{{$quotation->clients['name'] ?? ''}}  </td>
+                        <td class="text-center font-weight-bold"><a data-toggle="modal" data-nro="{{$quotation->id}}" data-target="#ModalCenter" class="btn btn-link cliente">{{$quotation->clients['name'] ?? ''}} </a> </td>
                         <td class="text-center font-weight-bold">{{$quotation->vendors['name'] ?? ''}}</td>
                         <td class="text-right font-weight-bold">${{number_format($amount_bcv, 2, ',', '.')}}</td>
                         <td class="text-center font-weight-bold">{{number_format($totalbs, 2, ',', '.')}} Bs</td>
@@ -141,6 +141,16 @@ $(document).ready(function(){
             });
     });
 
+
+    $('.cliente').click(function(e){
+        e.preventDefault();
+            var value = $(this).data('nro');
+            var url = "{{ route('cliente') }}";
+            $.post(url,{value: value,"_token": "{{ csrf_token() }}"},function(data){
+                $("#modalfacturas").empty().append(data);
+            });
+    });
+
     $('.procesarmesa').click(function(e){
       e.preventDefault();
 
@@ -193,4 +203,5 @@ $(document).ready(function(){
     </script>
 
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 @endsection

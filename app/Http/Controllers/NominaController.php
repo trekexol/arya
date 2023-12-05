@@ -586,88 +586,10 @@ class NominaController extends Controller
                             $account = DB::connection(Auth::user()->database_name)->table('accounts')
                             ->where('description','LIKE','%'.$concepto->account_name.'%')
                             ->first();
+
                             $c_sueldo = $account->id;
 
                             $amount_total_asignacion += $calculos->amount;
-
-
-                           } else {
-
-                                if (isset($concepto->account_name1)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '1'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name1.'%')
-                                        ->first();
-
-                                        $c_sueldo1 = $account->id;
-                                        $amount_total_asignacion1 += $calculos->amount;
-                                    }
-
-                                }
-
-                                if (isset($concepto->account_name2)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '2'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name2.'%')
-                                        ->first();
-
-                                        $c_sueldo2 = $account->id;
-                                        $amount_total_asignacion2 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name3)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '3'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name3.'%')
-                                        ->first();
-
-                                        $c_sueldo3 = $account->id;
-                                        $amount_total_asignacion3 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name4)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '4'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name4.'%')
-                                        ->first();
-
-                                        $c_sueldo4 = $account->id;
-                                        $amount_total_asignacion4 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name5)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '5'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name5.'%')
-                                        ->first();
-
-                                        $c_sueldo5 = $account->id;
-                                        $amount_total_asignacion5 += $calculos->amount;
-                                    }
-                                }
 
 
                            }
@@ -691,85 +613,6 @@ class NominaController extends Controller
                             $amount_total_bono_alim += $calculos->amount;
 
 
-                           } else {
-
-                                if (isset($concepto->account_name1)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '1'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name1.'%')
-                                        ->first();
-
-                                        $c_balim1 = $account->id;
-                                        $amount_total_bono_alim1 += $calculos->amount;
-                                    }
-
-                                }
-
-                                if (isset($concepto->account_name2)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '2'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name2.'%')
-                                        ->first();
-
-                                        $c_balim2 = $account->id;
-                                        $amount_total_bono_alim2 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name3)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '3'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name3.'%')
-                                        ->first();
-
-                                        $c_balim3 = $account->id;
-                                        $amount_total_bono_alim3 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name4)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '4'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name4.'%')
-                                        ->first();
-
-                                        $c_balim4 = $account->id;
-                                        $amount_total_bono_alim4 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name5)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '5'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name5.'%')
-                                        ->first();
-
-                                        $c_balim5 = $account->id;
-                                        $amount_total_bono_alim5 += $calculos->amount;
-                                    }
-                                }
-
-
                            }
 
 
@@ -787,85 +630,6 @@ class NominaController extends Controller
                             $c_antc = $account->id;
 
                             $amount_total_anticipo += $calculos->amount;
-
-
-                           } else {
-
-                                if (isset($concepto->account_name1)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '1'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name1.'%')
-                                        ->first();
-
-                                        $c_antc1 = $account->id;
-                                        $amount_total_anticipo1 += $calculos->amount;
-                                    }
-
-                                }
-
-                                if (isset($concepto->account_name2)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '2'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name2.'%')
-                                        ->first();
-
-                                        $c_antc2 = $account->id;
-                                        $amount_total_anticipo2 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name3)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '3'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name3.'%')
-                                        ->first();
-
-                                        $c_antc3 = $account->id;
-                                        $amount_total_anticipo3 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name4)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '4'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name4.'%')
-                                        ->first();
-
-                                        $c_antc4 = $account->id;
-                                        $amount_total_anticipo4 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name5)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '5'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name5.'%')
-                                        ->first();
-
-                                        $c_antc5 = $account->id;
-                                        $amount_total_anticipo5 += $calculos->amount;
-                                    }
-                                }
 
 
                            }
@@ -903,85 +667,6 @@ class NominaController extends Controller
                             $c_btrn = $account->id;
 
                             $amount_total_bono_transporte += $calculos->amount;
-
-
-                           } else {
-
-                                if (isset($concepto->account_name1)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '1'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name1.'%')
-                                        ->first();
-
-                                        $c_btrn1 = $account->id;
-                                        $amount_total_bono_transporte1 += $calculos->amount;
-                                    }
-
-                                }
-
-                                if (isset($concepto->account_name2)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '2'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name2.'%')
-                                        ->first();
-
-                                        $c_btrn2 = $account->id;
-                                        $amount_total_bono_transporte2 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name3)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '3'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name3.'%')
-                                        ->first();
-
-                                        $c_btrn3 = $account->id;
-                                        $amount_total_bono_transporte3 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name4)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '4'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name4.'%')
-                                        ->first();
-
-                                        $c_btrn4 = $account->id;
-                                        $amount_total_bono_transporte4 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name5)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '5'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name5.'%')
-                                        ->first();
-
-                                        $c_btrn5 = $account->id;
-                                        $amount_total_bono_transporte5 += $calculos->amount;
-                                    }
-                                }
 
 
                            }
@@ -1069,87 +754,7 @@ class NominaController extends Controller
                             $amount_total_des_anticipo += $calculos->amount;
 
 
-                           } else {
-
-                                if (isset($concepto->account_name1)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '1'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name1.'%')
-                                        ->first();
-
-                                        $c_des_antc1 = $account->id;
-                                        $amount_total_des_anticipo1 += $calculos->amount;
-                                    }
-
-                                }
-
-                                if (isset($concepto->account_name2)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '2'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name2.'%')
-                                        ->first();
-
-                                        $c_des_antc2 = $account->id;
-                                        $amount_total_des_anticipo2 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name3)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '3'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name3.'%')
-                                        ->first();
-
-                                        $c_des_antc3 = $account->id;
-                                        $amount_total_des_anticipo3 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name4)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '4'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name4.'%')
-                                        ->first();
-
-                                        $c_des_antc4 = $account->id;
-                                        $amount_total_des_anticipo4 += $calculos->amount;
-                                    }
-                                }
-
-                                if (isset($concepto->account_name5)){
-
-                                    $tipo_empleado =  Employee::on(Auth::user()->database_name)->where('id',$calculos->id_employee)->select('nomina_type_id')->first();
-
-                                    if ($tipo_empleado->nomina_type_id == '5'){
-
-                                        $account = DB::connection(Auth::user()->database_name)->table('accounts')
-                                        ->where('description','LIKE','%'.$concepto->account_name5.'%')
-                                        ->first();
-
-                                        $c_des_antc5 = $account->id;
-                                        $amount_total_des_anticipo5 += $calculos->amount;
-                                    }
-                                }
-
-
                            }
-
                     } else {
                         $amount_total_des_anticipo += 0;
                     }
@@ -1234,21 +839,6 @@ class NominaController extends Controller
             if($amount_total_asignacion > 0){
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo,$nomina->id,$amount_total_asignacion,0);
             }
-            if($amount_total_asignacion1 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo1,$nomina->id,$amount_total_asignacion1,0);
-            }
-            if($amount_total_asignacion2 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo2,$nomina->id,$amount_total_asignacion2,0);
-            }
-            if($amount_total_asignacion3 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo3,$nomina->id,$amount_total_asignacion3,0);
-            }
-            if($amount_total_asignacion4 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo4,$nomina->id,$amount_total_asignacion4,0);
-            }
-            if($amount_total_asignacion5 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_sueldo5,$nomina->id,$amount_total_asignacion5,0);
-            }
 
 
 
@@ -1256,21 +846,7 @@ class NominaController extends Controller
             if($amount_total_bono_alim > 0){
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim,$nomina->id,$amount_total_bono_alim,0);
             }
-            if($amount_total_bono_alim1 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim1,$nomina->id,$amount_total_bono_alim1,0);
-            }
-            if($amount_total_bono_alim2 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim2,$nomina->id,$amount_total_bono_alim2,0);
-            }
-            if($amount_total_bono_alim3 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim3,$nomina->id,$amount_total_bono_alim3,0);
-            }
-            if($amount_total_bono_alim4 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim4,$nomina->id,$amount_total_bono_alim4,0);
-            }
-            if($amount_total_bono_alim5 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_balim5,$nomina->id,$amount_total_bono_alim5,0);
-            }
+
 
 
                     //MOVIMIENTO DE Bono Medico
@@ -1282,21 +858,7 @@ class NominaController extends Controller
             if($amount_total_bono_transporte > 0){
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn,$nomina->id,$amount_total_bono_transporte,0);
             }
-            if($amount_total_bono_transporte1 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn1,$nomina->id,$amount_total_bono_transporte1,0);
-            }
-            if($amount_total_bono_transporte2 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn2,$nomina->id,$amount_total_bono_transporte2,0);
-            }
-            if($amount_total_bono_transporte3 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn3,$nomina->id,$amount_total_bono_transporte3,0);
-            }
-            if($amount_total_bono_transporte4 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn4,$nomina->id,$amount_total_bono_transporte4,0);
-            }
-            if($amount_total_bono_transporte5 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_btrn5,$nomina->id,$amount_total_bono_transporte5,0);
-            }
+
 
 
             //RETENCIONES
@@ -1317,40 +879,10 @@ class NominaController extends Controller
             if($amount_total_anticipo > 0){
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc,$nomina->id,$amount_total_anticipo,0);
             }
-            if($amount_total_anticipo1 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc1,$nomina->id,$amount_total_anticipo1,0);
-            }
-            if($amount_total_anticipo2 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc2,$nomina->id,$amount_total_anticipo2,0);
-            }
-            if($amount_total_anticipo3 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc3,$nomina->id,$amount_total_anticipo3,0);
-            }
-            if($amount_total_anticipo4 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc4,$nomina->id,$amount_total_anticipo4,0);
-            }
-            if($amount_total_anticipo5 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_antc5,$nomina->id,$amount_total_anticipo5,0);
-            }
 
             //DESCUENTO DE ANTICIPO
             if($amount_total_des_anticipo > 0){
                 $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc,$nomina->id,0,$amount_total_des_anticipo);
-            }
-            if($amount_total_des_anticipo1 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc1,$nomina->id,0,$amount_total_des_anticipo1);
-            }
-            if($amount_total_des_anticipo2 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc2,$nomina->id,0,$amount_total_des_anticipo2);
-            }
-            if($amount_total_des_anticipo3 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc3,$nomina->id,0,$amount_total_des_anticipo3);
-            }
-            if($amount_total_des_anticipo4 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc4,$nomina->id,0,$amount_total_des_anticipo4);
-            }
-            if($amount_total_des_anticipo5 > 0){
-                $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$c_des_antc5,$nomina->id,0,$amount_total_des_anticipo5);
             }
 
 
@@ -1358,12 +890,12 @@ class NominaController extends Controller
             //MOVIMIENTO BANCO
 
 
-            $total_a_pagar_banco = (($amount_total_asignacion + $amount_total_asignacion1 + $amount_total_asignacion2 + $amount_total_asignacion3 + $amount_total_asignacion4 + $amount_total_asignacion5) +
-            ($amount_total_anticipo + $amount_total_anticipo1 + $amount_total_anticipo2 + $amount_total_anticipo3 + $amount_total_anticipo4 + $amount_total_anticipo5) +
-            ($amount_total_bono_alim + $amount_total_bono_alim1 + $amount_total_bono_alim2 + $amount_total_bono_alim3 + $amount_total_bono_alim4 + $amount_total_bono_alim5) +
+            $total_a_pagar_banco = (($amount_total_asignacion) +
+            ($amount_total_anticipo) +
+            ($amount_total_bono_alim) +
             ($amount_total_bono_medico) +
-            ($amount_total_bono_transporte + $amount_total_bono_transporte1 + $amount_total_bono_transporte2 + $amount_total_bono_transporte3 + $amount_total_bono_transporte4 + $amount_total_bono_transporte5)) -
-            (($amount_total_des_anticipo + $amount_total_des_anticipo1 + $amount_total_des_anticipo2 + $amount_total_des_anticipo3 + $amount_total_des_anticipo4 + $amount_total_des_anticipo5 ) +
+            ($amount_total_bono_transporte)) -
+            (($amount_total_des_anticipo) +
             $amount_total_deduccion_ince +
             $amount_total_deduccion_pie +
             $amount_total_deduccion_faov +
@@ -1380,7 +912,7 @@ class NominaController extends Controller
         //MOVIMIENTO DE aporte patronal
         if ($amount_total_deduccion_sso > 0) {
 
-             $amount_total_asignacion = ($amount_total_asignacion + $amount_total_asignacion1 + $amount_total_asignacion2 + $amount_total_asignacion3 + $amount_total_asignacion4 + $amount_total_asignacion5);
+             $amount_total_asignacion = ($amount_total_asignacion);
 
              $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
 
@@ -1399,7 +931,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_faov > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion + $amount_total_asignacion1 + $amount_total_asignacion2 + $amount_total_asignacion3 + $amount_total_asignacion4 + $amount_total_asignacion5);
+            $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_faov_patronal = $amount_total_asignacion * ($nominabases->faov_company/100);
@@ -1418,7 +950,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_pie > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion + $amount_total_asignacion1 + $amount_total_asignacion2 + $amount_total_asignacion3 + $amount_total_asignacion4 + $amount_total_asignacion5);
+            $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_pie_patronal =  (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->pie_company/100);
@@ -1440,7 +972,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_ince > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion + $amount_total_asignacion1 + $amount_total_asignacion2 + $amount_total_asignacion3 + $amount_total_asignacion4 + $amount_total_asignacion5);
+            $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_pie_patronal =  ($amount_total_asignacion * 12)/52 * $lunes * (1/100);
