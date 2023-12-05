@@ -185,13 +185,15 @@
                                 <option disabled selected value="0">Seleccionar</option>
                                 @if (isset($islrconcepts))
                                     @foreach ($islrconcepts as $islrconcept)
-                                        @if (isset($expense->id_islr_concept) && ($expense->id_islr_concept == $islrconcept->id))
-                                            <option value="{{$islrconcept->value}}" selected>{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @if ($provider->concepto_islr > 0 and ($provider->concepto_islr == $islrconcept->id))
+                                            <option selected value="{{$islrconcept->value}}" selected>{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
                                         @else
                                             <option value="{{$islrconcept->value}}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
                                         @endif
                                          @endforeach
                                 @endif
+
+
                             </select>
                             </div>
                         </div>
@@ -982,7 +984,8 @@
             window.location = "{{route('expensesandpurchases.create_payment_after', [$expense->id,''])}}"+"/"+coin;
         });
 
-        var islr_concept = "<?php echo $expense->islr_concepts['value'] ?? 0 ?>";
+        var islr_concept = '<?php echo $provider->porc_retencion_islr ?>';
+
         if(islr_concept == 0){
             $("#islr-form").hide();
         }else{
@@ -997,8 +1000,10 @@
                 //valor inicial del porcentaje de islr
                 $("#islr-form").show();
             }else{
+                var selectElement = document.getElementById('islr_concept');
                 $("#islr-form").hide();
                 islr_concept = 0;
+                selectElement.selectedIndex = 0;
                 calculate(1);
             }
 

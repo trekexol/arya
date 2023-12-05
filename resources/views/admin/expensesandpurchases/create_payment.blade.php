@@ -195,8 +195,8 @@
                         </div>
                         <div id="islr-form" class="form-group row">
                             <div class="col-sm-3 offset-sm-8">
-                            <select class="form-control" name="islr_concept" id="islr_concept">
-                                <option disabled selected value="0">Seleccionar</option>
+                            <select class="form-control" name="islr_concept" id="islr_concept"> 
+                                <option selected value="0">Seleccionar</option>
                                 @if (isset($islrconcepts))
 
                                     @foreach ($islrconcepts as $islrconcept)
@@ -1052,8 +1052,14 @@
             window.location = "{{route('expensesandpurchases.create_payment', [$expense->id,''])}}"+"/"+coin;
         });
 
-        var islr_concept = 0;
-        $("#islr-form").hide();
+        var islr_concept = '<?php echo $provider->porc_retencion_islr ?>';
+
+        if (islr_concept > 0) {
+            $("#islr-form").show();
+        } else {
+            $("#islr-form").hide();
+        }
+        
 
         function checked_islr() {
             var retencion_islr_check = $("#retencion_islr_check").is(':checked');
@@ -1061,9 +1067,14 @@
             if(retencion_islr_check){
                 //valor inicial del porcentaje de islr
                 $("#islr-form").show();
+                
             }else{
+
+                var selectElement = document.getElementById('islr_concept');
                 $("#islr-form").hide();
                 islr_concept = 0;
+                selectElement.selectedIndex = 0;
+                
                 calculate(0);
             }
 
@@ -1188,6 +1199,7 @@ if(retencion_iva_check){
 
 //retencion de islr
 var retencion_islr_check = $("#retencion_islr_check").is(':checked');
+
 let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
 
 let porc_retencion_islr = islr_concept;
