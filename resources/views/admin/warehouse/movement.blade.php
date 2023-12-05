@@ -496,7 +496,7 @@
                 @enderror
             </div>
             <div class="col-sm-2" style="text-align: right;">
-                <a type="button" href="#" class="btn btn-primary">Transferir Todo</a>
+               <!-- <a type="button" href="#" class="btn btn-primary">Transferir Todo</a> -->
             </div>
         </div>
 
@@ -539,6 +539,9 @@
 
                             <td class="text-center">
                                 <?php echo $var->destino ?>
+                                <span id="mensajet{{''}}">
+                                    Transferido
+                                </span>
                             </td>
                        
                             <td class='text-right' style='width: 1%'><input onkeyup="noespac(this)" id='inputransf{{$var->id}}' type='text' class='form-control' style='text-align: right;' value='0'></td>;
