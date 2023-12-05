@@ -1187,7 +1187,7 @@ class ExpensesAndPurchaseController extends Controller
         $branch = request('centro_costo');
 
 
-        if(isset($branch) and $branch != NULL){
+        if(isset($branch) or $branch != NULL){
             $centro_costo = $branch;
         } else {
             $centro_costo = 1;
