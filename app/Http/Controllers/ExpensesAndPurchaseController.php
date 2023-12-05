@@ -2273,10 +2273,10 @@ class ExpensesAndPurchaseController extends Controller
                 }
 
 
-                if($retencion_islr !=0 and $expense->number_islr == NULL){
+                if($retencion_islr != 0 and $expense->number_islr == NULL){
 
                     $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                    ->where('code_four',1)->where('code_five',4)->first();
+                                                    ->where('code_four',1)->where('code_five',3)->first();
 
                     if(isset($account_islr_pagago)){
                         $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$expense->id,$user_id,0,$retencion_islr);

@@ -2019,9 +2019,9 @@ class FacturarController extends Controller
             }
 
 
-            if($retencion_islr !=0){
-                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                ->where('code_four',1)->where('code_five',4)->first();
+            if($retencion_islr != 0){
+                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',2)->where('code_two',1)->where('code_three',3)
+                                                ->where('code_four',1)->where('code_five',8)->first();
 
                 if(isset($account_islr_pagago)){
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
