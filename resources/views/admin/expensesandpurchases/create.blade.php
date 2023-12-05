@@ -174,11 +174,17 @@
 
                                         <div class="col-sm-3">
                                             <select class="form-control" id="centro_costo" name="centro_costo" title="centro_costo">
-                                                <option value="">Ninguno</option>
+                                                <option value="1">Ninguna</option>
                                                 @if(!empty($branches))
-                                                    @foreach ($branches as $var)
-                                                        <option value="{{ $var->id }}">{{ $var->description }}</option>
-                                                        @endforeach
+                                                       @foreach ($branches as $var)
+
+                                                            @if ($expense->id_branch == $var->id)
+                                                            <option selected value="{{ $var->id }}">{{ $var->description }}</option>
+                                                            @else
+                                                            <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                                            @endif
+
+                                                       @endforeach
 
                                                 @endif
 
@@ -564,6 +570,7 @@
             let serie = document.getElementById("serie").value;
             let date = document.getElementById("date-begin").value;
             let rate = document.getElementById("rate").value;
+            let centro_costo = document.getElementById("centro_costo").value;
 
             if (observation == ''){
                 observation = '-1';
@@ -579,7 +586,7 @@
                 rate = 1;
             }
 
-            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate;
+            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+centro_costo;
 
         }
 

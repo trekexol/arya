@@ -210,7 +210,9 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('refreshtable','WarehouseController@refreshtable')->name('warehouse.refreshtable');
     Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
     Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
-
+    Route::get('transferencia','WarehouseController@transferencia')->name('warehouse.transferencia');
+    
+    
 });
 
 
@@ -875,7 +877,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('registerexpense/{id_provider?}','ExpensesAndPurchaseController@create_expense')->name('expensesandpurchases.create');
     Route::post('store', 'ExpensesAndPurchaseController@store')->name('expensesandpurchases.store');
 
-    Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
+    Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}/{centro_costo?}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
 
     Route::patch('selectproviderexpense/{id}','ExpensesAndPurchaseController@selectproviderexpense')->name('expensesandpurchases.selectproviderexpense');
     Route::get('updateproviderexpense/{id_expense}/{id_provider}/{coin}','ExpensesAndPurchaseController@updateproviderexpense')->name('expensesandpurchases.updateproviderexpense');

@@ -7,6 +7,7 @@ use App\Company;
 use App\Product;
 use App\Account;
 use App\Branch;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -171,6 +172,14 @@ class WarehouseController extends Controller
                 $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory,1,1);
                 return $inventorie->amount != 0;
             })->values();
+
+            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->where('id',1)->get();
+
+            if($typet == 2){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
         }
 
 
@@ -179,6 +188,14 @@ class WarehouseController extends Controller
                 $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory);
                 return $inventorie->amount != 0;
             })->values();
+
+            $origen = Branch::on(Auth::user()->database_name)->where('status',1)->where('id',1)->get();
+
+            if($typet == 4){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
         }
 
         
@@ -186,9 +203,48 @@ class WarehouseController extends Controller
 
         }
 
+        if (!empty($inventories)){
+
+            $texto_select = '';
+            $fin_select = "</select>";
+
+            foreach ($inventories as $var){
+
+                if($typet == 5 || $typet == 6){
+                    $var->origen = 'Devolución';
+                } else {
+                    $var->origen =  $origen[0]['description'];
+                }
+                
+                $texto_select = '';
+
+                foreach($destino as $destin){
+                    if($destin->id == 1){
+                        $texto_select .= '<option selected value="'.$destin->id.'">'.$destin->description.'</option>';
+                    } else {
+                        $texto_select .= '<option value="'.$destin->id.'">'.$destin->description.'</option>';
+                    }
+                }
+                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $var->destino = $select.' '.$texto_select.' '.$fin_select;
+                $var->id_origen = $branch;
+                $var->id_destino = $branch_end;
+
+            }
+        } else {
+            
+            foreach ($inventories as $var){
+                $var->origen = '';
+                $var->destino = '';
+                $var->id_origen = 0;
+                $var->id_destino = 0;
+            }   
+        }
+
+
 
         $branches = DB::connection(Auth::user()->database_name)
-        ->table('branches')
+        ->table('warehouses')
         ->get();
 
         $company = Company::on(Auth::user()->database_name)->find(1);
@@ -246,73 +302,8 @@ class WarehouseController extends Controller
         
         $typet = $request->get('type_transf');
         $type = $request->get('type');
-
-        $user       =   auth()->user();
-
-        $global = new GlobalController();
-
-
-        if ($type == 1) {
-            $cond = '!=';
-            $valor = null;
-        }
-        if ($type == 2) {
-            $cond = '=';
-            $valor = 'MERCANCIA';
-        }
-        if ($type == 3) {
-            $cond = '=';
-            $valor = 'MATERIAP';
-        }
-
-        $inventories = Product::on(Auth::user()->database_name)
-        ->orderBy('id' ,'DESC')
-        ->where('status',1)
-        ->where('status',1)
-        ->where('type',$cond,$valor)
-        ->where('type','NOT LIKE','COMBO')
-        ->select('id as id_inventory','products.*')
-        ->get();
-
-
-        if($typet == 1 || $typet == 2){
-            $inventories = $inventories->filter(function($inventorie) use ($global) {
-                $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory,1,1);
-                return $inventorie->amount != 0;
-            })->values();
-
-            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
-        }
-
-
-        if($typet == 3 || $typet == 4){
-            $inventories = $inventories->filter(function($inventorie) use ($global) {
-                $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory,1,null);
-                return $inventorie->amount != 0;
-            })->values();
-
-            $origen = Branch::on(Auth::user()->database_name)->where('status',1)->get();
-        }
-
-        
-        if($typet == 5 || $typet == 6){
-
-        }
-
-        
-        foreach ($inventories as $var){
-            $var->origen =  $origen[0]['description'];
-        }
-
-
-        return response()->json($inventories);
-    }
-
-    public function refresorigen(Request $request) {
-       
-        $typet = $request->get('type_transf');
-        $type = $request->get('type');
-        $branch = $request->get('branch');
+        $branch = 1;
+        $branch_end = 1;
         
         $global = new GlobalController();
 
@@ -345,6 +336,12 @@ class WarehouseController extends Controller
             })->values();
        
             $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
+
+            if($typet == 2){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
         }
 
 
@@ -358,22 +355,172 @@ class WarehouseController extends Controller
 
             $origen = Branch::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
 
-        }
+            if($typet == 4){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+        } 
 
 
         if($typet == 5 || $typet == 6){
-            $inventories = array(array(''));
+            //$inventories = array(array(''));
+
+            $inventories = $inventories;
+
+            if($typet == 6){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+
         }
 
         if (!empty($inventories)){
 
+            $texto_select = '';
+            $fin_select = "</select>";
+
             foreach ($inventories as $var){
-                $var->origen =  $origen[0]['description'];
+
+                if($typet == 5 || $typet == 6){
+                    $var->origen = 'Devolución';
+                } else {
+                    $var->origen =  $origen[0]['description'];
+                }
+                
+                $texto_select = '';
+
+                foreach($destino as $destin){
+                    if($destin->id == 1){
+                        $texto_select .= '<option selected value="'.$destin->id.'">'.$destin->description.'</option>';
+                    } else {
+                        $texto_select .= '<option value="'.$destin->id.'">'.$destin->description.'</option>';
+                    }
+                }
+                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $var->destino = $select.' '.$texto_select.' '.$fin_select;
+                $var->id_origen = $branch;
+                $var->id_destino = $branch_end;
+
             }
         } else {
             
             foreach ($inventories as $var){
                 $var->origen = '';
+                $var->destino = '';
+                $var->id_origen = 0;
+                $var->id_destino = 0;
+            }   
+        }
+
+       return response()->json($inventories);
+    }
+
+    public function refresorigen(Request $request) {
+       
+        $typet = $request->get('type_transf');
+        $type = $request->get('type');
+        $branch =  $request->get('branch');
+        $branch_end = 1;
+        
+        $global = new GlobalController();
+
+        if ($type == 1) {
+            $cond = '!=';
+            $valor = null;
+        }
+        if ($type == 2) {
+            $cond = '=';
+            $valor = 'MERCANCIA';
+        }
+        if ($type == 3) {
+            $cond = '=';
+            $valor = 'MATERIAP';
+        }
+
+        $inventories = Product::on(Auth::user()->database_name)
+        ->orderBy('id' ,'DESC')
+        ->where('status',1)
+        ->where('type',$cond,$valor)
+        ->where('type','NOT LIKE','COMBO')
+        ->select('id as id_inventory','products.*')
+        ->get();
+
+
+        if($typet == 1 || $typet == 2){
+            $inventories = $inventories->filter(function($inventorie) use ($global, $branch) {
+                $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory,1,$branch);
+                return $inventorie->amount != 0;
+            })->values();
+       
+            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
+            if($typet == 2){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+        }
+
+
+        if($typet == 3 || $typet == 4){
+            
+           
+            $inventories = $inventories->filter(function($inventorie) use ($global, $branch) {
+                $inventorie->amount = $global->consul_prod_invt($inventorie->id_inventory,$branch,null);
+                return $inventorie->amount != 0;
+            })->values();
+
+            $origen = Branch::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
+            if($typet == 4){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+        }
+
+
+        if($typet == 5 || $typet == 6){
+            //$inventories = array(array(''));
+
+            $inventories = $inventories;
+
+            if($typet == 6){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+
+        }
+
+        if (!empty($inventories)){
+
+            $texto_select = '';
+            $fin_select = "</select>";
+
+            foreach ($inventories as $var){
+                $var->origen =  $origen[0]['description'];
+                $texto_select = '';
+                foreach($destino as $destin){
+                    if($destin->id == 1){
+                        $texto_select .= '<option selected value="'.$destin->id.'">'.$destin->description.'</option>';
+                    } else {
+                        $texto_select .= '<option value="'.$destin->id.'">'.$destin->description.'</option>';
+                    }
+
+                }
+                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $var->destino = $select.' '.$texto_select.' '.$fin_select;
+                $var->id_origen = $branch;
+                $var->id_destino = $branch_end;
+            }
+        } else {
+            
+            foreach ($inventories as $var){
+                $var->origen = '';
+                $var->destino = '';
+                $var->id_origen = 0;
+                $var->id_destino = 0;
             }
             
         }
@@ -422,7 +569,11 @@ class WarehouseController extends Controller
             })->values();
        
             $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
-            $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            if($typet == 2){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
         }
 
 
@@ -435,24 +586,37 @@ class WarehouseController extends Controller
             })->values();
 
             $origen = Branch::on(Auth::user()->database_name)->where('status',1)->where('id',$branch)->get();
-            $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            if($typet == 4){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
 
         }
 
 
         if($typet == 5 || $typet == 6){
-            $inventories = array(array(''));
+            //$inventories = array(array(''));
+
+            $inventories = $inventories;
+
+            if($typet == 6){
+                $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
+            } else {
+                $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->get();
+            }
+
         }
 
         if (!empty($inventories)){
 
             $texto_select = '';
-            $select = "<select class='destino form-control' name='destino' data-almacen=''>";
+
             $fin_select = "</select>";
 
             foreach ($inventories as $var){
                 $var->origen =  $origen[0]['description'];
-
+                $texto_select = '';
                 foreach($destino as $destin){
                         
                     if ($branch_end == $destin->id){
@@ -462,15 +626,18 @@ class WarehouseController extends Controller
                     }
 
                 }
-
+                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
                 $var->destino = $select.' '.$texto_select.' '.$fin_select;
-
+                $var->id_origen = $branch;
+                $var->id_destino = $branch_end;
             }
         } else {
             
             foreach ($inventories as $var){
                 $var->origen = '';
                 $var->destino = '';
+                $var->id_origen = 0;
+                $var->id_destino = 0;
             }
             
         }
@@ -479,5 +646,43 @@ class WarehouseController extends Controller
        return response()->json($inventories);
     }
 
+    public function transferencia(Request $request) {
+        
+        $origen = $request->get('origen'); 
+        $producto = $request->get('producto');
+        $selectdestino = $request->get('selectdestino');
+        $typet = $request->get('typet');
+        $monto = $request->get('monto');
+        $amount = 0;
+        $date = Carbon::now();
+        $datenow = $date->format('Y-m-d');
+
+        $global = new GlobalController;
+            
+
+       if($typet == 1){
+            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
+            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = $global->consul_prod_invt($producto,1,$origen);
+        }
+        if($typet == 2){
+            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = $global->consul_prod_invt($producto,1,$origen);
+        }
+        if($typet == 3){
+            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
+            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = $global->consul_prod_invt($producto,$origen,null);
+        }
+        if($typet == 4){
+            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = $global->consul_prod_invt($producto,$origen,null);
+        }  
+
+        return response()->json(['amount' => $amount]);
+
+    }
 }
 

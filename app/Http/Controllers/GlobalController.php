@@ -871,7 +871,6 @@ class GlobalController extends Controller
             }
 
 
-
                 if (empty($inventories_quotations)) {
                     //$msg = 'El Producto no tiene inventario o no existe.';
                     $amount_real = 0;
@@ -1354,6 +1353,138 @@ class GlobalController extends Controller
     return $msg;
 
     } // fin de funcion transaccion
+
+
+
+    function transaction_inv_almac($typet,$type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
+
+        $msg = 'Sin Registro';
+
+        if ($typet == 'sucursal'){       
+
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                ->table('inventory_histories')
+                ->where('id_product','=',$id_product)
+                ->where('id_branch','=',$branch)
+                ->select('*')
+                ->get()->last();
+            
+        }
+
+
+        if ($typet == 'almacen'){       
+
+                $inventories_quotations = DB::connection(Auth::user()->database_name)
+                ->table('warehouse_histories')
+                ->where('id_product','=',$id_product)
+                ->where('id_warehouse','=',$branch)
+                ->select('*')
+                ->get()->last();
+            
+        }
+
+ 
+        if (empty($inventories_quotations)) {
+            //$msg = 'El Producto no tiene inventario o no existe.';
+            $amount_real = 0;
+        } else {
+            $amount_real = $inventories_quotations->amount_real;
+        }
+
+
+            $transaccion = 0;
+            $agregar = 'true';
+
+
+            if ($amount > 0 ) {
+
+                switch ($type) {
+                    case 'entrada':
+                    $transaccion = $amount_real+$amount;
+                    break;
+                    case 'salida':
+                    $transaccion = $amount_real-$amount;
+                    break;
+
+                }
+
+
+                $buscar = Product::on(Auth::user()->database_name)
+                ->where('status','!=','X')
+                ->where('type','!=','SERVICIO')
+                ->where('type','!=','COMBO')
+                ->select('type')
+                ->find($id_product);
+
+
+                    if ($transaccion < 0) {
+
+                       $msg = "La cantidad es mayor a la disponible en inventario";
+
+                    } else {
+
+                        $user       =   auth()->user();
+
+                        if ($agregar == 'true') {
+
+                            if ($typet == 'sucursal'){     
+                                DB::connection(Auth::user()->database_name)->table('inventory_histories')->insert([
+                                'id_product' => $id_product,
+                                'id_user' => $user->id,
+                                'id_branch' => $branch,
+                                'id_centro_costo' => $branch,
+                                'id_quotation_product' => $quotation,
+                                'id_expense_detail' => $expense,
+                                'date' => $date,
+                                'type' => $type,
+                                'price' => $price,
+                                'amount' => $amount,
+                                'amount_real' => $transaccion,
+                                'status' => 'A']);
+                             }
+
+                             if ($typet == 'almacen'){     
+                                DB::connection(Auth::user()->database_name)->table('warehouse_histories')->insert([
+                                'id_product' => $id_product,
+                                'id_user' => $user->id,
+                                'id_warehouse' => $branch,
+                                'id_centro_costo' => $branch,
+                                'date' => $date,
+                                'type' => $type,
+                                'price' => $price,
+                                'amount' => $amount,
+                                'amount_real' => $transaccion,
+                                'status' => 'A']);
+                             }
+
+                            //////CONSULTANDO EL ULTIMO ID DE HISTORIAL///////////////////////
+                            //////FIN CONSULTANDO EL ULTIMO ID DE HISTORIAL///////////////////////
+                        }
+
+                        switch ($type) {
+                          
+                            case 'entrada':
+                                $msg = 'Producto ID '.$id_product.' Agregado a inventario exitosamente';
+                                break;
+                            case 'salida':
+                                $msg = 'Salida de inventario exitoso';
+                                break;
+                            default:
+                                $msg = 'La operacion no es valida';
+                                break;
+                        }
+                    }
+
+            } else { // condicion cantidad 0
+
+                    $msg = "La cantidad de la oprecion debe ser mayor a cero";
+              
+            }
+
+    return $msg;
+
+    } // fin de funcion transaccion
+
 
    // funcion para subir imagenes
     public static function setCaratula($foto,$id = '0',$code_comercial = '0'){

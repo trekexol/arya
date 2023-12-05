@@ -383,6 +383,11 @@ class ExpensesAndPurchaseController extends Controller
 
         if(Auth::user()->role_id == '1' || $request->get('actualizarmiddleware') == '1'){
 
+                    if(isset($request->centro_costo)){
+                        $centro_costo = $request->centro_costo;
+                    } else {
+                        $centro_costo = 1;
+                    }
 
                     if ($request->observation == '-1'){
                         $observation = '';
@@ -401,10 +406,8 @@ class ExpensesAndPurchaseController extends Controller
                         $serie = $request->serie;
                     }
 
-        $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
-                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date]);
-
-
+                    $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
+                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date, 'id_branch' => $centro_costo]);
 
 
             return redirect('/expensesandpurchases/register/'.$request->id_quotation.'/'.$request->coin)->withSuccess('Actualizacion Exitosa!');
@@ -505,7 +508,6 @@ class ExpensesAndPurchaseController extends Controller
                     ->where('code_two', '<>',0)
                     ->where('code_three', '<>',0)
                     ->where('code_four', '<>',0)
-                    ->where('code_five', '<>',0)
                     ->orderBy('description','asc')
                     ->get();
                 }
@@ -1095,6 +1097,7 @@ class ExpensesAndPurchaseController extends Controller
             $var->setConnection(Auth::user()->database_name);
             $var->id_provider = request('id_provider');
             $var->invoice = request('invoice');
+            $var->id_branch = 1;
             $var->id_user = request('id_user');
             $var->serie = request('serie');
             $var->observation = request('observation');
@@ -1183,7 +1186,14 @@ class ExpensesAndPurchaseController extends Controller
 
         $branch = request('centro_costo');
 
-        $var->id_branch = $branch;
+
+        if(isset($branch) or $branch != NULL){
+            $centro_costo = $branch;
+        } else {
+            $centro_costo = 1;
+        }
+
+        $var->id_branch = $centro_costo;
 
 
         $percentage = (($sin_formato_price * $sin_formato_amount) * $discount)/100;
@@ -1239,7 +1249,7 @@ class ExpensesAndPurchaseController extends Controller
                             if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
 
                                 $global = new GlobalController;
-                                $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
+                                $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,$var->id_branch,$var->id_branch,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
 
                             }
 
@@ -2608,7 +2618,7 @@ class ExpensesAndPurchaseController extends Controller
 
                             $global = new GlobalController;
 
-                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
+                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,$var->id_branch,$var->id_branch,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
 
                         }
 
@@ -2757,7 +2767,7 @@ class ExpensesAndPurchaseController extends Controller
 
                             $global = new GlobalController;
 
-                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,1,1,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
+                            $global->transaction_inv('compra',$var->id_inventory,'compra_n',$var->amount,$var->price,$date,$var->id_branch,$var->id_branch,0,$var->id_inventory_histories,$var->id,0,$var->id_expense);
 
 
                         }
@@ -3096,7 +3106,7 @@ class ExpensesAndPurchaseController extends Controller
                                             if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
 
                                                 $global = new GlobalController;
-                                                $global->transaction_inv('aju_compra',$varp->id_inventory,'compra_n',$varp->amount,$varp->price,$date,1,1,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
+                                                $global->transaction_inv('aju_compra',$varp->id_inventory,'compra_n',$varp->amount,$varp->price,$date,$varp->id_branch,$varp->id_branch,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
 
                                             }
 
@@ -3200,7 +3210,7 @@ class ExpensesAndPurchaseController extends Controller
 
                 foreach($quotation_products as $det_products){ // guardando historial de inventario
 
-                $global->transaction_inv('rev_compra',$det_products->id_inventory,'compra_reverso',$det_products->amount,$det_products->price,$datenow,1,1,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
+                $global->transaction_inv('rev_compra',$det_products->id_inventory,'compra_reverso',$det_products->amount,$det_products->price,$datenow,$det_products->id_branch,$det_products->id_branch,0,$det_products->id_inventory_histories,$det_products->id,0,$det_products->id_expense);
 
                 }
 
@@ -3402,7 +3412,7 @@ class ExpensesAndPurchaseController extends Controller
                                     if(($product->type == 'MERCANCIA') || ($product->type == 'COMBO') || ($product->type == 'MATERIAP')){
 
                                         $global = new GlobalController;
-                                        $global->transaction_inv('rev_compra',$varp->id_inventory,'compra_reverso',$varp->amount,$varp->price,$date,1,1,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
+                                        $global->transaction_inv('rev_compra',$varp->id_inventory,'compra_reverso',$varp->amount,$varp->price,$date,$varp->id_branch,$varp->id_branch,0,$varp->id_inventory_histories,$varp->id,0,$varp->id_expense);
 
                                     }
                                 }
