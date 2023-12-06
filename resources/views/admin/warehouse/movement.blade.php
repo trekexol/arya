@@ -513,7 +513,7 @@
                 <th class="text-center"  style="width: 1%">Cantidad a Transferir</th>
                 <th style="width:1%;" class="text-center">Foto</th>
                 <th class="text-center" style="width: 1%">Acción</th>
-            </tr>
+       
             </thead>
 
             <tbody>
@@ -530,7 +530,7 @@
                     <tr>
                             <td style="width:1%;"class="text-center">{{ $var->id ?? '' }}</td>
                             <td style="width:1%;" class="text-center">{{ $var->code_comercial ?? '' }}</td>
-                            <td class="text-center">{{ $var->description ?? '' }}</td>
+                            <td class="text-center">{{$descripcion }}</td>
                             <td class="text-center">{{ $var->type ?? '' }}</td>
                             <td class="text-right">
                                 <?php echo $var->origen ?>
@@ -539,12 +539,10 @@
 
                             <td class="text-center">
                                 <?php echo $var->destino ?>
-                                <span id="mensajet{{''}}">
-                                    Transferido
-                                </span>
+
                             </td>
                        
-                            <td class='text-right' style='width: 1%'><input onkeyup="noespac(this)" id='inputransf{{$var->id}}' type='text' class='form-control' style='text-align: right;' value='0'></td>;
+                            <td class='text-right' style='width: 1%'><input onkeyup="noespac(this)" id='inputransf{{$var->id}}' type='text' class='form-control' style='text-align: right;' value='0'></td>
                             <td class="text-center">
 
                                 @if(isset($var->photo_product))
@@ -555,7 +553,12 @@
                                 @endif
                             </td>
 
-                            <td class='text-center' style='width: 1%'><a type='button' data-origen='1' data-destino='1' data-typet='1' data-product='{{$var->id}}' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>
+                            <td class='text-center' style='width: 1%'>
+                                <a type='button' data-origen='1' data-destino='1' data-typet='1' data-product='{{$var->id}}' href='#' class='btn btn-primary btn_transferir'>Transferir</a>
+                                <span id="mensajet{{$var->id}}" style="display: flex; align-items: center; font-style: normal; font-weight: normal; display:none; white-space: nowrap;" class="text-success">
+                                    <i class="fas fa-check-circle"></i> Transferido
+                                </span>
+                            </td>
 
                         </tr>
                     @endforeach
@@ -591,27 +594,7 @@
 </div>
 
 
-<div class="modal modal-danger fade" id="imagenModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Vista Previa</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <main>
-                    <section>
-                        <canvas id="canvas"></canvas>
-                        <div class="full-img">
-                        <img src="" alt="" id="myImage" class="myImage">
-                        </div>
-                    </section>
-                </main>
-            </div>
-    </div>
-</div>
+
 </div>
 
 @endsection
@@ -645,45 +628,42 @@
         }
 
    
-        $(document).on('click','.btn_transferir',function(){
+        $(document).on('click','.btn_transferir',function(event){ // Añade el parámetro event
 
-             var origen = $(this).attr('data-origen');
-             var destino = $(this).attr('data-destino');
-             var producto = $(this).attr('data-product');
-             var selectdestino = $('#selectdestino'+producto).val();
-             var monto = $('#inputransf'+producto).val();
-             var typet = $(this).attr('data-typet');
-             var amountext = $('#amountext'+producto);
+            event.preventDefault(); // Añade esta línea para prevenir la acción predeterminada
+
+            var origen = $(this).attr('data-origen');
+            var destino = $(this).attr('data-destino');
+            var producto = $(this).attr('data-product');
+            var selectdestino = $('#selectdestino'+producto).val();
+            var inputmonto = $('#inputransf'+producto);
+            var monto = $('#inputransf'+producto).val();
+            var typet = $(this).attr('data-typet');
+            var amountext = $('#amountext'+producto);
+            var mensajet = $('#mensajet'+producto);
+
             monto = Number(monto);
 
-            //alert('origen: '+origen+'- destino: '+destino+'- producto: '+producto+'- selectdestino: '+selectdestino+'- monto: '+monto+'- typet: '+typet+'- amount: '+amountext.text()); 
-    
-            if (monto <= 0 || selectdestino == origen){
-                if(monto <= 0){
-                    alert("La Cantidad a Transferir debe ser mayor a 0 \nProducto ID "+producto);
-                }
-
+            if (monto <= 0){
+                alert("La Cantidad a Transferir debe ser mayor a 0 \nProducto ID "+producto);
+            } else {
                 if (selectdestino == origen && (typet == 1 || typet == 4)){
                     alert("No es posible transferir al mismo almacén");
+                } else {
+                    $.ajax({
+                        url: `../warehouse/transferencia`,
+                        method: 'GET',
+                        data: { origen: origen, producto: producto, typet: typet, selectdestino: selectdestino, monto: monto },
+                        success:(response)=>{
+                            amountext.text(response.amount);
+                            mensajet.show();
+                            inputmonto.val(0);
+                        },
+                        error: (xhr, status, error) => {
+                            alert('La Transferencia no se pudo completar recargar la página: '+ error);
+                        }
+                    });
                 }
-
-            } else {
-
-                $.ajax({
-                    url: `../warehouse/transferencia`, // Ruta a la función en tu controlador
-                    method: 'GET',
-                    data: { origen: origen, producto: producto, typet: typet, selectdestino: selectdestino, monto: monto },
-                    success:(response)=>{
-                        amountext.text(response.amount);
-                    },
-                    error: (xhr, status, error) => {
-                        
-                        alert('La Transferencia no se pudo completar recargar la página: '+ error);
-                        /*console.log(xhr);
-                        console.log(status);
-                        console.log(error);*/
-                    }
-                });
             }
         });
     
@@ -756,7 +736,8 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
+                        newRow += "<span id='mensajet"+row.id+"' style='display: flex; align-items: center; font-style: normal; font-weight: normal; display:none; white-space: nowrap;' class='text-success'><i class='fas fa-check-circle'></i> Transferido</span></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -812,7 +793,8 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
+                        newRow += "<span id='mensajet"+row.id+"' style='display: flex; align-items: center; font-style: normal; font-weight: normal; display:none; white-space: nowrap;' class='text-success'><i class='fas fa-check-circle'></i> Transferido</span></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -869,7 +851,8 @@
                             newRow += "<td class='text-center'></td>";
                         }
                         
-                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a></td>";
+                        newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
+                        newRow += "<span id='mensajet"+row.id+"' style='display: flex; align-items: center; font-style: normal; font-weight: normal; display:none; white-space: nowrap;' class='text-success'><i class='fas fa-check-circle'></i> Transferido</span></td>";
                         newRow += "</tr>";
                         $("#dataTable").append(newRow);
                     });
@@ -877,6 +860,13 @@
             });
     });
 
+
+    $(document).on('change', '.selectdestino', function() {
+        var producto = $(this).attr('data-producto');
+        var mensajet = $('#mensajet' + producto);
+        mensajet.hide();
+    });
+    
     function get_select(typet){
         $.ajax({
             url:`../warehouse/getselect/${typet}`,

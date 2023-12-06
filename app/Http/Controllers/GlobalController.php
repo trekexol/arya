@@ -806,15 +806,6 @@ class GlobalController extends Controller
 
 
                     if($almacen == null){
-                        if ($sucursal == 1) {
-
-                            $inventories_quotations = DB::connection(Auth::user()->database_name)
-                            ->table('inventory_histories')
-                            ->where('id_product','=',$id_product)
-                            ->select('amount_real')
-                            ->get()->last();
-
-                        } else { // prosuctos normal MATERIAP y MERCANCIA con sucursal
 
                             $inventories_quotations = DB::connection(Auth::user()->database_name)
                             ->table('inventory_histories')
@@ -822,7 +813,7 @@ class GlobalController extends Controller
                             ->where('id_branch','=',$sucursal)
                             ->select('amount_real')
                             ->get()->last();
-                        }
+                        
                     } else {
                         $inventories_quotations = DB::connection(Auth::user()->database_name)
                         ->table('warehouse_histories')
@@ -839,7 +830,7 @@ class GlobalController extends Controller
                             $amount_real = 0;
                             }
                         } else {
-                            $amount_real =0;
+                            $amount_real = 0;
                         }
 
 
@@ -1433,8 +1424,8 @@ class GlobalController extends Controller
                                 'id_user' => $user->id,
                                 'id_branch' => $branch,
                                 'id_centro_costo' => $branch,
-                                'id_quotation_product' => $quotation,
-                                'id_expense_detail' => $expense,
+                                'id_quotation_product' => 0,
+                                'id_expense_detail' => 0,
                                 'date' => $date,
                                 'type' => $type,
                                 'price' => $price,
