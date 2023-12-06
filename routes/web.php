@@ -201,7 +201,7 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::post('store','WarehouseController@store')->name('warehouse.store');
 
     Route::get('{id}/edit','WarehouseController@edit')->name('warehouse.edit');
-    Route::delete('{id}/delete','WarehouseController@destroy')->name('warehouse.delete');
+    Route::get('delete/{id}','WarehouseController@destroy')->name('warehouse.delete');
     Route::patch('{id}/update','WarehouseController@update')->name('warehouse.update');
 
     Route::get('movement/{type?}/{typet?}/{branch?}/{branch_end?}','WarehouseController@movement')->name('warehouse.movement');
@@ -211,6 +211,8 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
     Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
     Route::get('transferencia','WarehouseController@transferencia')->name('warehouse.transferencia');
+    Route::get('verificalmacen','WarehouseController@verificalmacen')->name('warehouse.verificalmacen');
+    
     
     
 });
