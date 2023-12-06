@@ -211,15 +211,10 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
     Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
     Route::get('transferencia','WarehouseController@transferencia')->name('warehouse.transferencia');
-<<<<<<< HEAD
     Route::get('verificalmacen','WarehouseController@verificalmacen')->name('warehouse.verificalmacen');
     
     
     
-=======
-
-
->>>>>>> 8923048551d51e8b96fe8cf2296a22e1eb3d87e4
 });
 
 
