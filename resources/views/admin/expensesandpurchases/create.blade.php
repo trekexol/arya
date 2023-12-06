@@ -28,7 +28,7 @@
                 <div class="card-body">
 
                         <div class="form-group row">
-                            <label for="providers" class="col-md-2 col-form-label text-md-right">Proveedor:</label>
+                            <label for="providers" class="col-md-4 col-form-label text-md-right">Proveedor:</label>
                             <div class="col-md-4">
                                 <input id="provider" type="text" class="form-control @error('provider') is-invalid @enderror" name="provider" value="{{ $provider->razon_social ?? '' }}" readonly required autocomplete="provider">
 
@@ -39,8 +39,12 @@
                                 @enderror
                             </div>
 
-                            <label for="date-begin" class="col-md-3 col-form-label text-md-right">Fecha:</label>
-                            <div class="col-md-2 left">
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha de Factura:</label>
+                            <div class="col-md-3 left">
                                 <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $expense->date ?? $datenow }}" autocomplete="date-begin">
 
                                 @error('date')
@@ -49,7 +53,20 @@
                                     </span>
                                 @enderror
                             </div>
+
+                            <label for="date-begin" class="col-md-3 col-form-label text-md-right">Fecha de Registro:</label>
+                            <div class="col-md-3 left">
+                                <input id="date-registro" type="date" class="form-control @error('date-registro') is-invalid @enderror" name="date-registro" value="{{ $expense->dateregistro ?? $datenow }}" autocomplete="date-registro">
+
+                                @error('date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                         </div>
+
 
                         <div class="form-group row">
                             <label for="invoice" class="col-md-2 col-form-label text-md-right">Factura de Compra:</label>
@@ -124,7 +141,7 @@
                                         <select id="type_form"  name="type_form" class="form-control" required>
                                             <option value="">Seleccionar</option>
                                             @foreach($contrapartidas as $index => $value)
-                                            
+
                                             @if (
                                                 $value == 'Activos Depreciables' ||
                                                 $value == 'PROPIEDAD, PLANTA Y EQUIPOS' ||
@@ -340,7 +357,7 @@
                                         @else
                                         <input onkeyup="noespac(this)" id="price" type="text" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ number_format($inventory->price_buy ?? 0, 2, '.', '')  }}"  required autocomplete="price">
                                         @endif
-        
+
                                         @error('price')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -569,6 +586,7 @@
             let invoice = document.getElementById("invoice").value;
             let serie = document.getElementById("serie").value;
             let date = document.getElementById("date-begin").value;
+            let dateregistro = document.getElementById("date-registro").value;
             let rate = document.getElementById("rate").value;
             let centro_costo = document.getElementById("centro_costo").value;
 
@@ -586,7 +604,11 @@
                 rate = 1;
             }
 
+<<<<<<< Updated upstream
             window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+centro_costo;
+=======
+            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+dateregistro;
+>>>>>>> Stashed changes
 
         }
 

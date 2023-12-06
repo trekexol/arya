@@ -31,7 +31,7 @@ class ExportExpenseController extends Controller
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                         ->WhereNotNull('number_iva')
                                         ->whereRaw(
-                                            "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)",
+                                            "(DATE_FORMAT(dateregistro, '%Y-%m-%d') >= ? AND DATE_FORMAT(dateregistro, '%Y-%m-%d') <= ?)",
                                             [$date_begin, $date_end])
                                         ->whereIn('status',['C','P'])
                                         ->get();

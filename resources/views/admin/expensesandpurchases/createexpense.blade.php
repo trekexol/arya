@@ -47,6 +47,11 @@
                             <div class="form-group col-md-1">
                                 <a href="{{ route('expensesandpurchases.selectprovider') }}" title="Seleccionar Proveedor"><i class="fa fa-eye"></i></a>
                             </div>
+
+                        </div>
+
+
+                        <div class="form-group row">
                             <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha de Factura</label>
                             <div class="col-md-3">
                                 <input id="date-begin" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-begin" value="{{ $datenow }}" required autocomplete="date-begin">
@@ -57,6 +62,17 @@
                                     </span>
                                 @enderror
                             </div>
+                            <label for="date-begin" class="col-md-2 col-form-label text-md-right">Fecha de Registro</label>
+                            <div class="col-md-3">
+                                <input id="date-registro" type="date" class="form-control @error('date-begin') is-invalid @enderror" name="date-registro" value="{{ $datenow }}" required autocomplete="date-begin">
+
+                                @error('date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                         </div>
 
                         <div class="form-group row">
