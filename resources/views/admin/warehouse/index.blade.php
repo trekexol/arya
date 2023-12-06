@@ -116,6 +116,7 @@
                                 @if (Auth::user()->role_id  == '1' || $actualizarmiddleware  == '1' )
                                 <td>
                                     <a href="warehouse/{{$var->id }}/edit" title="Editar"><i class="fa fa-edit"></i></a>
+                                    <a href="#" onclick="deletealmacen({{$var->id}})" title="Eliminar"><i class="fa fa-trash text-danger"></i></a>  
                                 </td>
                                 @endif
                             </tr>     
@@ -136,6 +137,29 @@
         "order": [],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
     });
+
+
+    function deletealmacen(almacen) {
+        if (confirm('¿Desea eliminar el almacén?')) { 
+           $.ajax({
+                url: `warehouse/verificalmacen`,
+                method: 'GET',
+                data: { id: almacen},            
+                success: (response) => {
+  
+                    if (response.existe == 'No') {
+                        // Redireccionar a la ruta de eliminación
+                        window.location.href = `warehouse/delete/${almacen}`;
+                    } else {
+                        alert('El almacén tiene movimientos registrados');
+                    }
+                },
+                error: (xhr, status, error) => {
+                    alert('La verificación no se pudo completar, recargar la página: ' + error);
+                }
+            });
+        }
+    }
 
     </script> 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\UserAccess;
 use App\Warehouse;
+use App\WarehouseHistories;
 use App\Company;
 use App\Product;
 use App\Account;
@@ -684,5 +685,36 @@ class WarehouseController extends Controller
         return response()->json(['amount' => $amount]);
 
     }
+
+    public function verificalmacen(Request $request) {
+        $id = $request->get('id'); 
+
+        $almacen = WarehouseHistories::on(Auth::user()->database_name)
+        ->where('id_warehouse',$id)
+        ->first();
+
+        if(empty($almacen)){
+            $existe = 'No';
+        } else {
+            $existe = 'Si';
+        }
+        
+        return response()->json(['existe' => $existe]);
+
+    }
+
+    public function destroy($id)
+    {
+
+        $almacen = Warehouse::on(Auth::user()->database_name)->find($id);
+
+        if($almacen) {
+            $almacen->delete();
+        }
+        
+        return redirect('/warehouse')->withDanger($almacen->description.' Se ha Eliminado Correctamente!');
+  
+    }
+
 }
 
