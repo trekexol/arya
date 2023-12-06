@@ -53,14 +53,14 @@ class Report2Controller extends Controller
             $datenow = $date->format('Y-m-d');
             $client = null;
             $vendor = null;
-            
+
 
 
             if(isset($typeperson) && $typeperson == 'Cliente'){
                 if(isset($id_client_or_vendor)){
                     $client    = Client::on(Auth::user()->database_name)->find($id_client_or_vendor);
                 }
-                
+
             }else if (isset($typeperson) && $typeperson == 'Vendedor'){
                 if(isset($id_client_or_vendor)){
                     $vendor    = Vendor::on(Auth::user()->database_name)->find($id_client_or_vendor);
@@ -610,7 +610,7 @@ class Report2Controller extends Controller
             }
         }
 
-    
+
         if ($type == 'todo'){
 
 
@@ -662,9 +662,9 @@ class Report2Controller extends Controller
                     ->whereIn('status',[1,'P'])
                     ->where('amount_with_iva','>',0)
                     ->select(DB::raw('SUM(amount_with_iva) As amount_with_iva'))
-                    ->first(); 
-                    
-                    
+                    ->first();
+
+
                     /// anticipos
                     if($coin == "bolivares"){
                         $anticipos_sum_bolivares = Anticipo::on(Auth::user()->database_name)
@@ -682,17 +682,17 @@ class Report2Controller extends Controller
                         ->select(DB::connection(Auth::user()->database_name)->raw('SUM(amount/rate) as dolar'))->first();
                         $anticipos = $total_dolar_anticipo->dolar;
                     }
-                
+
                     if(!empty($facturas)) {
                         $expense->amount_with_iva = $facturas->amount_with_iva;
                     } else {
                         $expense->amount_with_iva = 0;
                     }
-                    
+
 
                     $expense->anticipo_s = $anticipos;
-        
-                    $expense->invoice = ''; 
+
+                    $expense->invoice = '';
                     $expense->serie = '';
                 }
 
@@ -1015,7 +1015,7 @@ class Report2Controller extends Controller
         $date = Carbon::now();
         $datenow = $date->format('d-m-Y');
         $period = $date->format('Y');
-        
+
         $quotations = Quotation::on(Auth::user()->database_name)
         ->where('date_billing','<>',null)
         ->whereRaw("(DATE_FORMAT(date_billing, '%Y-%m-%d') >= ? AND DATE_FORMAT(date_billing, '%Y-%m-%d') <= ?)", [$date_begin, $date_end])
@@ -1031,7 +1031,7 @@ class Report2Controller extends Controller
         ->whereRaw("(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)", [$date_begin, $date_end])
         ->get();
 
-        
+
         $company = Company::on(Auth::user()->database_name)->first();
 
         $date_begin = Carbon::parse($date_begin);
@@ -1057,7 +1057,7 @@ class Report2Controller extends Controller
         $expenses = ExpensesAndPurchase::on(Auth::user()->database_name)
                                     ->where('amount','<>',null)
                                     ->whereRaw(
-                                        "(DATE_FORMAT(date, '%Y-%m-%d') >= ? AND DATE_FORMAT(date, '%Y-%m-%d') <= ?)",
+                                        "(DATE_FORMAT(dateregistro, '%Y-%m-%d') >= ? AND DATE_FORMAT(dateregistro, '%Y-%m-%d') <= ?)",
                                         [$date_begin, $date_end])
                                     ->where('status','<>','X')
                                     ->orderBy('date','desc')->get();
@@ -1606,7 +1606,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->where('quotations.id_client',$id_client_or_vendor)
 
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
@@ -1632,18 +1632,18 @@ class Report2Controller extends Controller
                                         ->orderBy('quotations.date_delivery_note','desc')
                                         ->orderBy('quotations.date_billing','desc')->get();
 
-                                        
+
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
@@ -1682,7 +1682,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->where('quotations.id_client',$id_client_or_vendor)
 
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
@@ -1706,18 +1706,18 @@ class Report2Controller extends Controller
                                         ->orderBy('quotations.date_delivery_note','desc')
                                         ->orderBy('quotations.date_billing','desc')->get();
                 }
-                
+
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva / $quotation->bcv;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
@@ -1730,8 +1730,8 @@ class Report2Controller extends Controller
                 }
             }
         }
-        
-        
+
+
         if($type == 'Vendedor'){
             if(isset($coin) && $coin == 'bolivares'){
                 if($typeinvoice == 'notas'){
@@ -1760,7 +1760,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->where('quotations.id_vendor',$id_client_or_vendor)
 
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
@@ -1785,18 +1785,18 @@ class Report2Controller extends Controller
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->orderBy('quotations.date_billing','desc')->get();
                 }
-                
+
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
@@ -1836,7 +1836,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->where('quotations.id_vendor',$id_client_or_vendor)
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
@@ -1862,15 +1862,15 @@ class Report2Controller extends Controller
 
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva / $quotation->bcv;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
@@ -1883,15 +1883,15 @@ class Report2Controller extends Controller
                 }
 
             }
-            
+
         }
-        
+
         if($type == 'todo'){
 
-     
-       
+
+
             if(isset($coin) && $coin == 'bolivares'){
-      
+
                 if($typeinvoice == 'notas'){
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
@@ -1907,10 +1907,10 @@ class Report2Controller extends Controller
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->orderBy('quotations.date_billing','desc')->get();
 
-              
+
                 }else if($typeinvoice == 'facturas'){
 
-                    
+
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
                     ->leftjoin('vendors', 'vendors.id','=','quotations.id_vendor')
@@ -1919,7 +1919,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
@@ -1942,7 +1942,7 @@ class Report2Controller extends Controller
 
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         if($typeinvoice == 'notas'){
                             $facturas = Quotation::on(Auth::user()->database_name)
                             ->where('id_client',$quotation->id_client)
@@ -1959,50 +1959,50 @@ class Report2Controller extends Controller
                             ->where('quotations.amount_with_iva','>',0)
                             ->where('quotations.date_billing','<>',null)
                             ->select(DB::raw('SUM(amount_with_iva) As total_amount_with_iva'))
-                            ->first();                       
+                            ->first();
                         }else{
                             $facturas = Quotation::on(Auth::user()->database_name)
                             ->where('id_client',$quotation->id_client)
                             ->whereIn('status',[1,'P'])
                             ->where('quotations.amount_with_iva','>',0)
                             ->select(DB::raw('SUM(amount_with_iva) As total_amount_with_iva'))
-                            ->first();                        
+                            ->first();
                         }
-    
+
                         $anticipos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_client',$quotation->id_client)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_s'))
                         ->first();
-    
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_a'))
                         ->first();
-    
-    
+
+
                         if(!empty($facturas)) {
                             $quotation->total_amount_with_iva = $facturas->total_amount_with_iva;
                         } else {
                             $quotation->total_amount_with_iva = 0;
                         }
-                        
-    
+
+
                         if(!empty($anticipos)) {
                             $quotation->anticipo_s = $anticipos->amount_anticipo_s;
                         } else {
                             $quotation->anticipo_s = 0;
                         }
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
                             $quotation->total_anticipo = 0;
                         }
 
-        
-                        $quotation->number_invoice = ''; 
+
+                        $quotation->number_invoice = '';
                     }
                 }
 
@@ -2026,7 +2026,7 @@ class Report2Controller extends Controller
                     ->orderBy('quotations.date_billing','desc')->get();
 
                 }else if($typeinvoice == 'facturas'){
-                    
+
 
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                     ->leftjoin('clients', 'clients.id','=','quotations.id_client')
@@ -2035,12 +2035,12 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
                     ->orderBy('quotations.date_billing','desc')->get();
-                    
+
                 }else{
 
 
@@ -2060,12 +2060,12 @@ class Report2Controller extends Controller
                 }
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         if($typeinvoice == 'notas'){
                             $facturas = Quotation::on(Auth::user()->database_name)
                             ->where('id_client',$quotation->id_client)
                             ->whereIn('status',[1,'P'])
-                            
+
                             ->where('amount_with_iva','>',0)
                             ->where('date_delivery_note','<>',null)
                             ->where('date_billing',null)
@@ -2078,49 +2078,49 @@ class Report2Controller extends Controller
                             ->where('amount_with_iva','>',0)
                             ->where('date_billing','<>',null)
                             ->select(DB::raw('SUM(amount_with_iva/bcv) As total_amount_with_iva'))
-                            ->first();                       
+                            ->first();
                         }else{
                             $facturas = Quotation::on(Auth::user()->database_name)
                             ->where('id_client',$quotation->id_client)
                             ->whereIn('status',[1,'P'])
                             ->where('amount_with_iva','>',0)
                             ->select(DB::raw('SUM(amount_with_iva/bcv) As total_amount_with_iva'))
-                            ->first();                        
+                            ->first();
                         }
                         $anticipos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_client',$quotation->id_client)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_s'))
                         ->first();
-    
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_a'))
                         ->first();
-    
-    
+
+
                         if(!empty($facturas)) {
                             $quotation->total_amount_with_iva = $facturas->total_amount_with_iva;
                         } else {
                             $quotation->total_amount_with_iva = 0;
                         }
-                        
-    
+
+
                         if(!empty($anticipos)) {
                             $quotation->anticipo_s = $anticipos->amount_anticipo_s;
                         } else {
                             $quotation->anticipo_s = 0;
                         }
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
                             $quotation->total_anticipo = 0;
                         }
 
-                        $quotation->number_invoice = ''; 
-        
+                        $quotation->number_invoice = '';
+
                     }
                 }
 
@@ -2132,9 +2132,9 @@ class Report2Controller extends Controller
 
         if($type == 'todoa'){
 
-       
+
             if(isset($coin) && $coin == 'bolivares'){
-      
+
                 if($typeinvoice == 'notas'){
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
@@ -2158,7 +2158,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
 
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
@@ -2175,7 +2175,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_quotation','<=',$date_consult)
                     ->Orwhere('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
@@ -2188,7 +2188,7 @@ class Report2Controller extends Controller
 
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $facturas = Quotation::on(Auth::user()->database_name)
                         ->where('id_client',$quotation->id_client)
                         ->whereIn('status',[1,'P'])
@@ -2196,41 +2196,41 @@ class Report2Controller extends Controller
                         ->where('quotations.date_billing','<>',null)
                         ->select(DB::raw('SUM(amount_with_iva) As total_amount_with_iva'))
                         ->first();
-    
+
                         $anticipos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_client',$quotation->id_client)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_s'))
                         ->first();
-    
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_a'))
                         ->first();
-    
-    
+
+
                         if(!empty($facturas)) {
                             $quotation->total_amount_with_iva = $facturas->total_amount_with_iva;
                         } else {
                             $quotation->total_amount_with_iva = 0;
                         }
-                        
-    
+
+
                         if(!empty($anticipos)) {
                             $quotation->anticipo_s = 0;
                         } else {
                             $quotation->anticipo_s = 0;
                         }
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
                             $quotation->total_anticipo = 0;
                         }
 
-        
-                        $quotation->number_invoice = ''; 
+
+                        $quotation->number_invoice = '';
 
                     }
                 }
@@ -2262,7 +2262,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
@@ -2287,7 +2287,7 @@ class Report2Controller extends Controller
 
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $facturas = Quotation::on(Auth::user()->database_name)
                         ->where('id_client',$quotation->id_client)
                         ->whereIn('status',[1,'P'])
@@ -2295,41 +2295,41 @@ class Report2Controller extends Controller
                         ->where('quotations.date_billing','<>',null)
                         ->select(DB::raw('SUM(amount_with_iva/bcv) As total_amount_with_iva'))
                         ->first();
-    
+
                         $anticipos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_client',$quotation->id_client)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_s'))
                         ->first();
-    
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_a'))
                         ->first();
-    
-    
+
+
                         if(!empty($facturas)) {
                             $quotation->total_amount_with_iva = $facturas->total_amount_with_iva;
                         } else {
                             $quotation->total_amount_with_iva = 0;
                         }
-                        
-    
+
+
                         if(!empty($anticipos)) {
                             $quotation->anticipo_s = 0;
                         } else {
                             $quotation->anticipo_s = 0;
                         }
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
                             $quotation->total_anticipo = 0;
                         }
 
-                        $quotation->number_invoice = ''; 
-        
+                        $quotation->number_invoice = '';
+
 
                     }
                 }
@@ -2341,9 +2341,9 @@ class Report2Controller extends Controller
 
         if($type == 'todod'){
 
-       
+
             if(isset($coin) && $coin == 'bolivares'){
-      
+
                 if($typeinvoice == 'notas'){
                     $quotations = DB::connection(Auth::user()->database_name)->table('quotations')
                      ->leftjoin('clients', 'clients.id','=','quotations.id_client')
@@ -2368,7 +2368,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
 
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
@@ -2396,15 +2396,15 @@ class Report2Controller extends Controller
 
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {
@@ -2442,7 +2442,7 @@ class Report2Controller extends Controller
                     ->where('quotations.amount_with_iva','>',0)
                     ->where('quotations.date_billing','<>',null)
                     ->where('quotations.date_billing','<=',$date_consult)
-                    
+
                     ->select('quotations.id_client as id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name as name_vendor','clients.name as name_client','quotations.amount','quotations.amount_with_iva as total_amount_with_iva')
                     ->groupBy('quotations.id_client','quotations.credit_days','quotations.date_billing','quotations.date_delivery_note','quotations.retencion_islr','quotations.retencion_iva','quotations.bcv','quotations.number_invoice','quotations.number_delivery_note','quotations.date_quotation','quotations.id','quotations.serie','vendors.name','clients.name','quotations.amount','quotations.amount_with_iva')
                     ->orderBy('quotations.date_delivery_note','desc')
@@ -2464,18 +2464,18 @@ class Report2Controller extends Controller
 
                 }
 
-                
+
                 if(!empty($quotations)){
                     foreach ($quotations as $quotation){
-                        
+
                         $abonos = Anticipo::on(Auth::user()->database_name)
                         ->whereIn('status',[1,'M'])
                         ->where('id_quotation',$quotation->id)
                         ->select(DB::raw('SUM(amount/rate) As amount_anticipo_a'))
                         ->first();
-    
+
                         $quotation->total_amount_with_iva = $quotation->total_amount_with_iva / $quotation->bcv;
-                        
+
                         if(!empty($abonos)) {
                             $quotation->total_anticipo = $abonos->amount_anticipo_a;
                         } else {

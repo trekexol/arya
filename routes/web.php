@@ -211,10 +211,15 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('refresorigen','WarehouseController@refresorigen')->name('warehouse.refresorigen');
     Route::get('refresdestino','WarehouseController@refresdestino')->name('warehouse.refresdestino');
     Route::get('transferencia','WarehouseController@transferencia')->name('warehouse.transferencia');
+<<<<<<< HEAD
     Route::get('verificalmacen','WarehouseController@verificalmacen')->name('warehouse.verificalmacen');
     
     
     
+=======
+
+
+>>>>>>> 8923048551d51e8b96fe8cf2296a22e1eb3d87e4
 });
 
 
@@ -636,8 +641,8 @@ Route::group(["prefix"=>'facrestaurante'],function(){
     Route::post('cliente','FactrestauranteController@cliente')->name('cliente');
     Route::post('upcarritonew','FactrestauranteController@upcarritonew')->name('upcarritonew');
     Route::post('cambiocliente','FactrestauranteController@cambiocliente')->name('cambiocliente');
-    Route::post('metodos','FactrestauranteController@metodos')->name('metodos');
     Route::post('facturarpedido','FactrestauranteController@facturarpedido')->name('facturarpedido');
+    Route::get('/metodos/{numero?}/{monto?}','FactrestauranteController@metodos')->name('metodos');
  });
 
 
@@ -879,7 +884,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::get('registerexpense/{id_provider?}','ExpensesAndPurchaseController@create_expense')->name('expensesandpurchases.create');
     Route::post('store', 'ExpensesAndPurchaseController@store')->name('expensesandpurchases.store');
 
-    Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}/{centro_costo?}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
+    Route::get('updateexpense/{id_quotation}/{coin}/{observation?}/{invoice?}/{serie?}/{date}/{rate}/{centro_costo?}/{dateregistro?}','ExpensesAndPurchaseController@updateexpense')->name('expensesandpurchases.updateexpense');
 
     Route::patch('selectproviderexpense/{id}','ExpensesAndPurchaseController@selectproviderexpense')->name('expensesandpurchases.selectproviderexpense');
     Route::get('updateproviderexpense/{id_expense}/{id_provider}/{coin}','ExpensesAndPurchaseController@updateproviderexpense')->name('expensesandpurchases.updateproviderexpense');
