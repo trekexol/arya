@@ -225,7 +225,7 @@ class WarehouseController extends Controller
                         $texto_select .= '<option value="'.$destin->id.'">'.$destin->description.'</option>';
                     }
                 }
-                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $select = "<select class='destino form-control selectdestino' id='selectdestino".$var->id."' name='destino' data-producto='".$var->id."'>";
                 $var->destino = $select.' '.$texto_select.' '.$fin_select;
                 $var->id_origen = $branch;
                 $var->id_destino = $branch_end;
@@ -398,7 +398,7 @@ class WarehouseController extends Controller
                         $texto_select .= '<option value="'.$destin->id.'">'.$destin->description.'</option>';
                     }
                 }
-                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $select = "<select class='destino form-control selectdestino' id='selectdestino".$var->id."' name='destino' data-producto='".$var->id."'>";
                 $var->destino = $select.' '.$texto_select.' '.$fin_select;
                 $var->id_origen = $branch;
                 $var->id_destino = $branch_end;
@@ -509,7 +509,7 @@ class WarehouseController extends Controller
                     }
 
                 }
-                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $select = "<select class='destino form-control selectdestino' id='selectdestino".$var->id."' name='destino' data-producto='".$var->id."'>";
                 $var->destino = $select.' '.$texto_select.' '.$fin_select;
                 $var->id_origen = $branch;
                 $var->id_destino = $branch_end;
@@ -626,7 +626,7 @@ class WarehouseController extends Controller
                     }
 
                 }
-                $select = "<select class='destino form-control' id='selectdestino".$var->id."' name='destino' data-almacen=''>";
+                $select = "<select class='destino form-control selectdestino' id='selectdestino".$var->id."' name='destino' data-producto='".$var->id."'>";
                 $var->destino = $select.' '.$texto_select.' '.$fin_select;
                 $var->id_origen = $branch;
                 $var->id_destino = $branch_end;
