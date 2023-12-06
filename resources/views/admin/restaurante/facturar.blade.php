@@ -60,7 +60,7 @@
 
 
     <script>
-
+ $("#montoculto").mask('000000000000000.00', { reverse: true });
 $(document).ready(function(){
     var numero = 0;
     $('.metodo').click(function(e){
@@ -69,11 +69,20 @@ $(document).ready(function(){
 
         if(numero < 8){
         var valor = $("#montoculto").val();
-            var url = "{{ route('metodos') }}";
-            $.post(url,{valor:valor,numero:numero,"_token": "{{ csrf_token() }}"},function(data){
-                $(".add").append(data);
+            var url = "{{ route('metodos') }}/" + numero + "/" + valor;
+
+            $.get(url, function(data) {
+                $('.add').append('<div id="'+numero+'"></div>');
+                $("#"+numero).append(data);
             });
 
+
+            /*$.post(url,{valor:valor,numero:numero,"_token": "{{ csrf_token() }}"},function(data){
+
+            });*/
+
+        }else{
+            numero -= 1;
         }
 
     });

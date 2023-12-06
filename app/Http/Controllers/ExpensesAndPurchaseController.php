@@ -253,7 +253,7 @@ class ExpensesAndPurchaseController extends Controller
                    $total_less_percentage = ($var->price * $var->amount) - $percentage;
 
                    $total += number_format($var->price * $var->amount_expense, 2, '.', '');
-                   
+
                //-----------------------------
 
                if($var->retiene_iva_expense == 0){
@@ -357,8 +357,8 @@ class ExpensesAndPurchaseController extends Controller
 
         } else {
 
-            $periodo_pago = substr($expense->date,0,4);
-            $mes_pago = substr($expense->date,5,2);
+            $periodo_pago = substr($expense->dateregistro,0,4);
+            $mes_pago = substr($expense->dateregistro,5,2);
         }
 
         if((isset($expense)) && ($expense->retencion_iva != 0)){
@@ -407,7 +407,7 @@ class ExpensesAndPurchaseController extends Controller
                     }
 
                     $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
-                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date, 'id_branch' => $centro_costo]);
+                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date, 'id_branch' => $centro_costo,'dateregistro'=>$request->dateregistro]);
 
 
             return redirect('/expensesandpurchases/register/'.$request->id_quotation.'/'.$request->coin)->withSuccess('Actualizacion Exitosa!');
@@ -682,13 +682,13 @@ class ExpensesAndPurchaseController extends Controller
                 $percentage = ($var->price * $var->amount) * ($var->porc_discount/100);
 
                 $total_less_percentage = ($var->price * $var->amount) - $percentage;
-                
+
                 if($coin == 'bolivares'){
                     $total += number_format($total_less_percentage,2,'.','');
                 }else {
                     $total += number_format($total_less_percentage / $expense->rate,2,'.','');
                 }
-                
+
                   //  $total += ($var->price * $var->amount);
 
                 if($var->exento == 0){
@@ -1102,6 +1102,7 @@ class ExpensesAndPurchaseController extends Controller
             $var->serie = request('serie');
             $var->observation = request('observation');
             $var->date = request('date-begin');
+            $var->dateregistro = request('date-registro');
             $var->coin = 'bolivares';
 
             $company = Company::on(Auth::user()->database_name)->find(1);

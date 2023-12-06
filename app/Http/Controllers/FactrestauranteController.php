@@ -366,7 +366,7 @@ public function cliente(Request $request){
 
 public function metodos(Request $request){
 
-    $monto = $request->valor;
+    $monto = $request->monto;
     $numero = $request->numero;
     $accounts_bank = DB::connection(Auth::user()->database_name)->table('accounts')->where('code_one', 1)
     ->where('code_two', 1)
@@ -810,8 +810,7 @@ public function facturarpedido(Request $request){
 
     if($request->ajax()){
         try{
-
-            if(array_sum($request->input('monto', [])) > (float) $request->montoculto){
+            if(array_sum($request->input('monto', [])) >  $request->montoculto){
 
                 $resp['error'] = false;
                 $resp['msg'] = 'El Monto Ingresado No puede Superar al Monto de la factura';
@@ -821,15 +820,87 @@ public function facturarpedido(Request $request){
                 $resp['error'] = false;
                 $resp['msg'] = 'Ingrese Monto..';
 
-            }elseif(array_sum($request->input('monto', [])) == (float) $request->montoculto){
+            }elseif(array_sum($request->input('monto', [])) ==  $request->montoculto){
 
+                $company = Company::on(Auth::user()->database_name)->find(1);
+                $global = new GlobalController();
 
+                //Si la taza es automatica
+                if($company->tiporate_id == 1){
+                    $bcv = $global->search_bcv();
+                }else{
+                    //si la tasa es fija
+                    $bcv = $company->rate;
+                }
+
+                $request->idfactura; //id factura
 
                 foreach ($request->input('tipopago', []) as $i => $tipopago) {
+
+
+                    $var = new QuotationPayment();
+                    $var->setConnection(Auth::user()->database_name);
+
+                    /****** VALORES DE LOS INPUTS */
                     $banco = $request->input('banco.' . $i);
                     $caja = $request->input('caja.' . $i);
                     $referencia = $request->input('referencia.' . $i);
                     $monto = $request->input('monto.' . $i);
+
+                    if($tipopago == 1 || $tipopago == 11 || $tipopago == 5 AND $monto > 0 AND $banco > 0){
+
+                        $var->id_account = $banco;
+                        $var->reference = $referencia;
+                        $var->amount = $monto;
+                        $var->id_quotation = $request->idfactura;
+                        $var->payment_type = $tipopago;
+                        $var->rate = $bcv;
+                        $var->status = 1;
+                        $var->save();
+
+                    }elseif($tipopago == 2 AND $monto > 0){
+
+                        $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica%')->first();
+                        $var->id_account = $account_contado->id;
+                        $var->amount = $monto;
+                        $var->id_quotation = $request->idfactura;
+                        $var->payment_type = $tipopago;
+                        $var->rate = $bcv;
+                        $var->status = 1;
+                        $var->save();
+
+                    }elseif($tipopago == 6 AND $monto > 0 AND $caja > 0){
+
+                        $var->id_account = $caja;
+                        $var->reference = $referencia;
+                        $var->amount = $monto;
+                        $var->id_quotation = $request->idfactura;
+                        $var->payment_type = $tipopago;
+                        $var->rate = $bcv;
+                        $var->status = 1;
+                        $var->save();
+
+                    }
+
+                    elseif($tipopago == 9 || $tipopago == 10 AND $monto > 0){
+
+                        $accounts_punto_de_venta = Account::on(Auth::user()->database_name)->where('description','LIKE', 'Punto de Venta%')->first();
+                        $var->id_account = $accounts_punto_de_venta->id;
+                        $var->amount = $monto;
+                        $var->id_quotation = $request->idfactura;
+                        $var->payment_type = $tipopago;
+                        $var->rate = $bcv;
+                        $var->status = 1;
+                        $var->save();
+
+                    }else{
+
+                        $resp['error'] = true;
+                        $resp['msg'] = 'Verifique Monto y Metodo de pagos';
+                    }
+
+
+
 
                 }
 
@@ -843,10 +914,8 @@ public function facturarpedido(Request $request){
 
 
 
-               // dd($request);
-
-            $resp['error'] = true;
-            $resp['msg'] = 'Cliente Actualizado Con Exito';
+            $resp['error'] = false;
+            $resp['msg'] = 'Monto';
 
             }
 
