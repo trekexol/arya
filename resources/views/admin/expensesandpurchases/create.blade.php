@@ -604,11 +604,7 @@
                 rate = 1;
             }
 
-<<<<<<< Updated upstream
-            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+centro_costo;
-=======
-            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+dateregistro;
->>>>>>> Stashed changes
+            window.location = "{{ route('expensesandpurchases.updateexpense',[$expense->id,$coin,'','','','','','']) }}"+"/"+observation+"/"+invoice+"/"+serie+"/"+date+"/"+rate+"/"+centro_costo+"/"+dateregistro;
 
         }
 

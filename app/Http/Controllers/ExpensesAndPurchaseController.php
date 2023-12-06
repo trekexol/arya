@@ -406,15 +406,8 @@ class ExpensesAndPurchaseController extends Controller
                         $serie = $request->serie;
                     }
 
-<<<<<<< Updated upstream
                     $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
-                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date, 'id_branch' => $centro_costo]);
-=======
-        $update =  ExpensesAndPurchase::on(Auth::user()->database_name)->where('id',$request->id_quotation)
-                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date,'dateregistro'=>$request->dateregistro]);
-
-
->>>>>>> Stashed changes
+                                    ->update(['coin'=>$request->coin,'observation' => $observation,'invoice' => $invoice,'serie' => $serie,'date'=>$request->date, 'id_branch' => $centro_costo,'dateregistro'=>$request->dateregistro]);
 
 
             return redirect('/expensesandpurchases/register/'.$request->id_quotation.'/'.$request->coin)->withSuccess('Actualizacion Exitosa!');
