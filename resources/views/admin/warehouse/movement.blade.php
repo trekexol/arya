@@ -415,7 +415,7 @@
 
                 ?>
  
-                <select id="type_transf"  name="type_transf" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
+                <select id="type_transf"  name="type_transf" autocomplete="off" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
                     <option {{$atributo1}} value="1">Almacén a Almacén</option>
                     <option {{$atributo2}} value="2">Almacén a Sucursal</option>
                     <option {{$atributo3}} value="3">Sucursal a Almacén</option>
@@ -431,10 +431,10 @@
             </div>
 
 
-            <label for="begin" class="col-sm-2 col-form-label text-md-right">Tipo:</label>  
+            <label style="display:none;" for="begin" class="col-sm-2 col-form-label text-md-right">Tipo:</label>  
             <div class="col-sm-3">
                
-                <select id="type"  name="type" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
+                <select style="display:none;" id="type" name="type" class="form-select sm-3 form-control @error('type_transf') is-invalid @enderror">
                     <option selected value="1">Mercancia y Materia Prima</option>
                     <option value="2">Mercancia</option>
                     <option value="3">Matria Prima</option>
@@ -453,7 +453,11 @@
 
             <label for="begin" class="col-sm-2 col-form-label text-md-right">Origen:</label>  
             <div class="col-sm-3">
-               
+                
+                <select style="display:none;" class="form-select sm-3 form-control" id="textdevolution">
+                    <option selected  value="" disabled>DEVOLUCIÓN</option> 
+                </select>
+
                 <select id="id_branch" name="id_branch" class="form-select sm-3 form-control @error('id_branch') is-invalid @enderror">
                     @isset($branches)
                         @foreach($branches as $branchs)
@@ -506,12 +510,12 @@
                 <th style="width:1%;" class="text-center">ID</th>
                 <th style="width:1%;" class="text-center">Código Comercial</th>
                 <th class="text-center">Descripción</th>
-                <th style="width:1%;"class="text-center">Tipo</th>
+                <th style="width:1%; display:none;"class="text-center">Tipo</th>
                 <th class="text-center">Origen</th>
-                <th class="text-center"  style="width: 1%">Cantidad Actual</th>
+                <th class="text-center"  style="width: 1%">Inventario Actual</th>
                 <th class="text-center">Destino</th>
                 <th class="text-center"  style="width: 1%">Cantidad a Transferir</th>
-                <th style="width:1%;" class="text-center">Foto</th>
+                <th style="width:1%; display:none;" class="text-center">Foto</th>
                 <th class="text-center" style="width: 1%">Acción</th>
        
             </thead>
@@ -531,7 +535,7 @@
                             <td style="width:1%;"class="text-center">{{ $var->id ?? '' }}</td>
                             <td style="width:1%;" class="text-center">{{ $var->code_comercial ?? '' }}</td>
                             <td class="text-center">{{$descripcion }}</td>
-                            <td class="text-center">{{ $var->type ?? '' }}</td>
+                            <td style="display:none;" class="text-center">{{ $var->type ?? '' }}</td>
                             <td class="text-right">
                                 <?php echo $var->origen ?>
                             </td>
@@ -543,7 +547,7 @@
                             </td>
                        
                             <td class='text-right' style='width: 1%'><input onkeyup="noespac(this)" id='inputransf{{$var->id}}' type='text' class='form-control' style='text-align: right;' value='0'></td>
-                            <td class="text-center">
+                            <td class="text-center" style="display:none;">
 
                                 @if(isset($var->photo_product))
                                 <!--arya/storage/app/public/img/-->
@@ -627,7 +631,6 @@
                 }
         }
 
-   
         $(document).on('click','.btn_transferir',function(event){ // Añade el parámetro event
 
             event.preventDefault(); // Añade esta línea para prevenir la acción predeterminada
@@ -672,27 +675,40 @@
         var type = document.getElementById("type").value;
 
         if (type_transf == 1){
+            $("#id_branch").show();
+            $("#textdevolution").hide();
             get_select(1);
             get_select_end(1);
         }
 
         if (type_transf == 2){
+            $("#id_branch").show();
+            $("#textdevolution").hide();
             get_select(1);
             get_select_end(2);
         }
         if (type_transf == 3){
+            $("#id_branch").show();
+            $("#textdevolution").hide();
             get_select(2);
             get_select_end(1);
         }
         if (type_transf == 4){
+            $("#id_branch").show();
+            $("#textdevolution").hide();
             get_select(2);
             get_select_end(2);
         }
 
         if (type_transf == 5){
+            
+            $("#id_branch").hide();
+            $("#textdevolution").show();
             get_select_end(1);
         }
         if (type_transf == 6){
+            $("#id_branch").hide();
+            $("#textdevolution").show();
             get_select_end(2);
         }
 
@@ -719,7 +735,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
 
-                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-center' style='display:none;'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
                         newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
                         newRow += "<td class='text-center'>" + row.destino + "</td>";
@@ -727,13 +743,13 @@
 
                         if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
-                            newRow += "<td class='text-center'>";
+                            newRow += "<td class='text-center' style='display:none;'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
                             newRow += "<div class='file-footer-buttons'>";
                             newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
                             newRow += "</div></td>";
                         } else {
-                            newRow += "<td class='text-center'></td>";
+                            newRow += "<td class='text-center' style='display:none;'></td>";
                         }
                         
                         newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
@@ -743,7 +759,6 @@
                     });
                 }
             });
-
 
     });
 
@@ -776,7 +791,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
 
-                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-center' style='display:none;'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
                         newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
                         newRow += "<td class='text-center'>" + row.destino + "</td>";
@@ -784,13 +799,13 @@
 
                         if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
-                            newRow += "<td class='text-center'>";
+                            newRow += "<td class='text-center' style='display:none;'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
                             newRow += "<div class='file-footer-buttons'>";
                             newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
                             newRow += "</div></td>";
                         } else {
-                            newRow += "<td class='text-center'></td>";
+                            newRow += "<td class='text-center' style='display:none;'></td>";
                         }
                         
                         newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
@@ -834,7 +849,7 @@
                             newRow += "<td class='text-center'></td>";
                         }
 
-                        newRow += "<td class='text-center'>" + row.type + "</td>";
+                        newRow += "<td class='text-center' style='display:none;'>" + row.type + "</td>";
                         newRow += "<td class='text-right'>" + row.origen + "</td>";
                         newRow += "<td class='text-right' style='width: 1%'><span id='amountext"+row.id+"'>" + row.amount + "</span></td>";
                         newRow += "<td class='text-center'>" + row.destino + "</td>";
@@ -842,13 +857,13 @@
 
                         if (photoProduct !== null) {
                             var imgSrc = 'arya/storage/app/public/img/' + companyLogin + '/productos/' + photoProduct;
-                            newRow += "<td class='text-center'>";
+                            newRow += "<td class='text-center' style='display:none;'>";
                             newRow += "<img style='width:60px; max-width:60px; height:80px; max-height:80px' src='" + imgSrc + "'>";
                             newRow += "<div class='file-footer-buttons'>";
                             newRow += "<button type='button' class='btnimg btn-sm' title='Ver detalles' data-toggle='modal' data-target='#imagenModal' onclick='loadimg(\"" + imgSrc + "\")'><i class='fas fa-search-plus'></i></button>";
                             newRow += "</div></td>";
                         } else {
-                            newRow += "<td class='text-center'></td>";
+                            newRow += "<td class='text-center' style='display:none;'></td>";
                         }
                         
                         newRow += "<td class='text-center' style='width: 1%'><a type='button' data-origen='"+row.id_origen+"' data-destino='"+row.id_destino+"' data-typet='"+type_transf+"' data-product='"+row.id+"' href='#' class='btn btn-primary btn_transferir'>Transferir</a>"
