@@ -365,9 +365,10 @@ class WarehouseController extends Controller
 
 
         if($typet == 5 || $typet == 6){
-            //$inventories = array(array(''));
 
-            $inventories = $inventories;
+            foreach ($inventories as $inventorie) {
+                $inventorie->amount = "";
+            }
 
             if($typet == 6){
                 $destino = Branch::on(Auth::user()->database_name)->where('status',1)->get();
@@ -681,6 +682,17 @@ class WarehouseController extends Controller
             $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
             $amount = $global->consul_prod_invt($producto,$origen,null);
         }  
+
+        if($typet == 5){
+            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = '';
+        }  
+
+        if($typet == 6){
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $amount = '';
+        }  
+
 
         return response()->json(['amount' => $amount]);
 
