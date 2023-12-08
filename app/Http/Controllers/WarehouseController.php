@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App;
 use App\UserAccess;
 use App\Warehouse;
 use App\WarehouseHistories;
+use App\InventoryHistories;
 use App\Company;
 use App\Product;
 use App\Account;
@@ -20,7 +22,7 @@ class WarehouseController extends Controller
         $this->middleware('auth');
         $this->middleware('valiuser')->only('index');
         $this->middleware('valimodulo:Inventario');
-        $this->middleware('valimodulo:Inventario')->only('indexmovements');
+        $this->middleware('valimodulo:Inventario')->only('indexmovementswarehouse');
 
     }
 
@@ -662,37 +664,34 @@ class WarehouseController extends Controller
         $global = new GlobalController;
             
 
-       if($typet == 1){
-            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
-            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+        if($typet == 1){
+            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null,$selectdestino,$typet);
+            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,$origen,$typet);
             $amount = $global->consul_prod_invt($producto,1,$origen);
         }
         if($typet == 2){
-            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
-            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $global->transaction_inv_almac('almacen','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null,$selectdestino,$typet);
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,$origen,$typet);
             $amount = $global->consul_prod_invt($producto,1,$origen);
         }
         if($typet == 3){
-            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
-            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null,$selectdestino,$typet);
+            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,$origen,$typet);
             $amount = $global->consul_prod_invt($producto,$origen,null);
         }
         if($typet == 4){
-            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null);
-            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $global->transaction_inv_almac('sucursal','salida',$producto,'-',$monto,0,$date,$origen,$origen,0,0,0,0,null,$selectdestino,$typet);
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,$origen,$typet);
             $amount = $global->consul_prod_invt($producto,$origen,null);
         }  
-
         if($typet == 5){
-            $global->transaction_inv_almac('almacen','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $global->transaction_inv_almac('almacen','entrada',$producto,'Devolución',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,'D',$typet);
             $amount = '';
         }  
-
         if($typet == 6){
-            $global->transaction_inv_almac('sucursal','entrada',$producto,'-',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null);
+            $global->transaction_inv_almac('sucursal','entrada',$producto,'Devolución',$monto,0,$date,$selectdestino,$selectdestino,0,0,0,0,null,'D',$typet);
             $amount = '';
         }  
-
 
         return response()->json(['amount' => $amount]);
 
@@ -728,5 +727,189 @@ class WarehouseController extends Controller
   
     }
 
+
+    public function indexmovementswarehouse(request $request,$coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_branch = 'todas')
+   {
+
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+
+       $user       =   auth()->user();
+       $users_role =   $user->role_id;
+
+         /* para hacer el submenu "dinamico" */
+         $sistemas = UserAccess::on("logins")
+         ->join('modulos','modulos.id','id_modulo')
+         ->where('id_user',$user->id)
+         ->Where('modulos.estatus','1')
+         ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+         ->select('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+         ->groupby('modulos.name','modulos.ruta','user_access.agregar','user_access.actualizar','user_access.eliminar')
+         ->get();
+
+       $global = new GlobalController();
+
+       if($date_frist == 'todo'){
+        $date_frist = $global->data_first_month_day();
+        }
+
+       if($date_end == 'todo'){
+        $date_end =  $global->data_last_month_day();
+       }
+        //$inventories = InventoryHistories::on(Auth::user()->database_name)
+        $inventories = Product::on(Auth::user()->database_name)
+        ->where(function ($query){
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','COMBO')
+                ->orWhere('type','MATERIAP');
+        })
+        ->where('products.status',1)
+        ->select('products.id as id_inventory','products.*')
+        ->get();
+
+        
+        $branches = DB::connection(Auth::user()->database_name)
+        ->table('warehouses')
+        ->where('status',1)
+        ->get();
+
+
+         return view('admin.warehouse.indexmovementwarehouse',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory','branches','id_branch'));
+   }
+
+
+   public function movementswarehouse_pdf($coin = 'dolares',$date_frist = 'todo',$date_end = 'todo',$type = 'todo',$id_inventory = 'todos',$id_branch = 'todas')
+   {
+
+        $pdf = App::make('dompdf.wrapper');
+
+        $global = new GlobalController();
+
+        $invoice = null;
+        $note = null;
+        $expense = null;
+
+        if($date_frist == 'todo'){
+            $date_frist = $global->data_first_month_day();
+            }
+
+        if($date_end == 'todo'){
+            $date_end =  $global->data_last_month_day();
+        }
+
+        if ($type == 'todo') {
+                $cond = '!=';
+                $type = '';
+
+            } else {
+                $cond = '=';
+
+            }
+
+            if($id_inventory == 'todos') {
+                $cond2 = '!=';
+                $id_inventory = 'r';
+
+            } else {
+                $cond2 = '=';
+
+            }
+
+            if($id_branch == 'todas') {
+                $cond3 = '!=';
+                $id_branch = 0;
+
+            } else {
+                $cond3 = '=';
+
+            }
+
+        $inventories = WarehouseHistories::on(Auth::user()->database_name)
+        ->join('products','products.id','warehouse_histories.id_product')
+        ->where('warehouse_histories.date','>=',$date_frist)
+        ->where('warehouse_histories.date','<=',$date_end)
+        ->where('warehouse_histories.type',$cond,$type)
+        ->where('warehouse_histories.id_product',$cond2,$id_inventory)
+        ->where('warehouse_histories.id_warehouse',$cond3,$id_branch)
+        ->orderBy('warehouse_histories.id' ,'ASC')
+        ->select('warehouse_histories.*','products.id as id_product_pro','products.code_comercial as code_comercial','products.description as description')
+        ->get();
+
+
+        foreach ($inventories as $inventory) {
+
+
+                $branch = DB::connection(Auth::user()->database_name)
+                ->table('warehouses')
+                ->where('id','=',$inventory->id_warehouse)
+                ->select('description')
+                ->get()->last();
+
+
+                if (!empty($branch)) {
+                    $inventory->branch = $branch->description;
+                } else {
+                    $inventory->branch = '';
+                }
+    }
+
+
+
+    $pdf = $pdf->loadView('admin.reports.movementswarehouse',compact('coin','inventories','id_branch'))->setPaper('letter', 'landscape');
+    return $pdf->stream();
+
+
+   }
+
+   
+   public function storemovementswarehouse(Request $request)
+   {
+    $namemodulomiddleware = $request->get('namemodulomiddleware');
+        $user       =   auth()->user();
+        $users_role =   $user->role_id;
+        $date_end = request('date_end');
+        $date_frist = request('date_begin');
+        $type = request('type');
+        $coin = request('coin');
+        $id_inventory = request('id_inventories');
+        $id_branch = request('branch');
+
+        $global = new GlobalController();
+
+        $sistemas = UserAccess::on("logins")
+                ->join('modulos','modulos.id','id_modulo')
+                ->where('id_user',$user->id)
+                ->Where('modulos.estatus','1')
+                ->whereIn('modulos.name', ['Inventario','Productos y Servicio','Combos'])
+                ->select('modulos.name','modulos.ruta')
+                ->get();
+
+
+        if($date_frist == 'todo'){
+            $date_frist = $global->data_first_month_day();
+            }
+
+        if($date_end == 'todo'){
+            $date_end =  $global->data_last_month_day();
+        }
+
+        //$inventories = InventoryHistories::on(Auth::user()->database_name)
+        $inventories = Product::on(Auth::user()->database_name)
+        ->where(function ($query){
+            $query->where('type','MERCANCIA')
+                ->orWhere('type','MATERIAP');
+        })
+        ->where('products.status',1)
+        ->select('products.id as id_inventory','products.*')
+        ->get();
+
+        $branches = DB::connection(Auth::user()->database_name)
+        ->table('warehouses')
+        ->where('status',1)
+        ->get();
+
+
+        return view('admin.warehouse.indexmovementwarehouse',compact('namemodulomiddleware','sistemas','inventories','coin','date_frist','date_end','type','id_inventory','id_branch','branches'));
+
+    }
 }
 

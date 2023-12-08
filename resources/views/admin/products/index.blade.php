@@ -88,6 +88,10 @@
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
       </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.indexmovementwarehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Movimiento de Almacén</a>
+      </li>
+
 
     @else
 

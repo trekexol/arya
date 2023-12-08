@@ -7,6 +7,8 @@ use Goutte\Clientg;
 use App\ComboProduct;
 use App\Company;
 use App\Product;
+use App\Warehouse;
+use App\Branch;
 use App\ExpensePayment;
 use App\ExpensesDetail;
 use App\HeaderVoucher;
@@ -1347,31 +1349,27 @@ class GlobalController extends Controller
 
 
 
-    function transaction_inv_almac($typet,$type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null){
+    function transaction_inv_almac($typet,$type,$id_product,$description = '-',$amount = 0,$price = 0,$date,$branch = 1,$centro_cost = 1,$delivery_note = 0,$id_historial_inv = 0,$id,$quotation = 0,$expense = null,$origen_destino,$typet_id){
 
         $msg = 'Sin Registro';
 
         if ($typet == 'sucursal'){       
-
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('inventory_histories')
                 ->where('id_product','=',$id_product)
                 ->where('id_branch','=',$branch)
                 ->select('*')
-                ->get()->last();
-            
+                ->get()->last(); 
         }
 
 
         if ($typet == 'almacen'){       
-
                 $inventories_quotations = DB::connection(Auth::user()->database_name)
                 ->table('warehouse_histories')
                 ->where('id_product','=',$id_product)
                 ->where('id_warehouse','=',$branch)
                 ->select('*')
                 ->get()->last();
-            
         }
 
  
@@ -1434,7 +1432,51 @@ class GlobalController extends Controller
                                 'status' => 'A']);
                              }
 
-                             if ($typet == 'almacen'){     
+                            if ($typet == 'almacen'){     
+
+                                $almacen_origen = '';
+                                $almacen_destino = '';
+
+                                    if($typet_id == 1){
+                                        
+                                        if($type == 'entrada'){
+                                            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($branch);
+                                            $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($origen_destino);
+                                            $almacen_origen = $origen->description;
+                                            $almacen_destino = $destino->description;
+                                        }
+                                        
+                                        if($type == 'salida'){
+                                            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($branch);
+                                            $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($origen_destino);
+                                            $almacen_origen = $origen->description;
+                                            $almacen_destino = $destino->description;
+                                        }
+
+                                    }
+                                    if($typet_id == 2){
+                                        
+                                        if($type == 'salida'){
+                                            $origen = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($branch);
+                                            $destino = Branch::on(Auth::user()->database_name)->where('status',1)->find($origen_destino);
+                                            $almacen_origen = $origen->description;
+                                            $almacen_destino = $destino->description;
+                                        }
+                                    
+                                    }
+
+                                    if($typet_id == 3){
+
+                                        if($type == 'entrada'){
+                                            $origen = Branch::on(Auth::user()->database_name)->where('status',1)->find($origen_destino);
+                                            $destino = Warehouse::on(Auth::user()->database_name)->where('status',1)->find($branch);
+                                            $almacen_origen = $origen->description;
+                                            $almacen_destino = $destino->description;
+                                        }
+                                        
+                                    }
+
+
                                 DB::connection(Auth::user()->database_name)->table('warehouse_histories')->insert([
                                 'id_product' => $id_product,
                                 'id_user' => $user->id,
@@ -1445,6 +1487,8 @@ class GlobalController extends Controller
                                 'price' => $price,
                                 'amount' => $amount,
                                 'amount_real' => $transaccion,
+                                'almacen_origen' => $almacen_origen,
+                                'almacen_destino' => $almacen_destino,
                                 'status' => 'A']);
                              }
 
