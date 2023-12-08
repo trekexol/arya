@@ -62,7 +62,7 @@ function cambio(select,numero) {
             else  if(valor == 6){
                 $(".bank"+numero).hide();
                 $(".check"+numero).show();
-                $(".referencia"+numero).show();
+                $(".referencia"+numero).hide();
 
             }else{
                 $(".bank"+numero).hide();

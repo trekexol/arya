@@ -33,12 +33,12 @@ class FacturarController extends Controller
     public $userAccess;
     public $modulo = 'Facturas';
 
- 
+
     public function __construct(){
 
        $this->middleware('auth');
        $this->userAccess = new UserAccessController();
-      
+
    }
 
     public function createfacturar($id_quotation,$coin,$type = 'Cotización')
@@ -1804,7 +1804,7 @@ class FacturarController extends Controller
         }*/
 
 
-        $sin_formato_total_pay = floatval($sin_formato_total_pay); 
+        $sin_formato_total_pay = floatval($sin_formato_total_pay);
         $epsilon = 0.00001;
 
         //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
@@ -1834,14 +1834,9 @@ class FacturarController extends Controller
 
             $header_voucher  = new HeaderVoucher();
             $header_voucher->setConnection(Auth::user()->database_name);
-
-
             $header_voucher->description = "Cobro de Bienes o servicios.";
             $header_voucher->date = $date_payment;
-
-
             $header_voucher->status =  "1";
-
             $header_voucher->save();
 
 
@@ -2022,7 +2017,7 @@ class FacturarController extends Controller
             if($retencion_islr != 0){
                 $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
                                                 ->where('code_four',1)->where('code_five',3)->first();
- 
+
                 if(isset($account_islr_pagago)){
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
                 }
@@ -2200,7 +2195,7 @@ class FacturarController extends Controller
 
                         foreach($accounts_for_movements as $movement){
 
-                            $movement->total = $movement->total * $quotation->bcv;
+                            $movement->total = $movement->total;
 
                             if(isset($account_cuentas_por_cobrar)){
                                 $this->add_movement($bcv,$header_voucher->id,$movement->id_account,$quotation->id,$user_id,0,$movement->total);

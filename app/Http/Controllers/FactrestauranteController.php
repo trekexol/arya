@@ -96,7 +96,36 @@ class FactrestauranteController extends Controller
         $cantidadmesas = Mesas::on(Auth::user()->database_name)->orderBy('numero' ,'ASC')->get(); //Cantidad de mesas
 
 
-            return view('admin.restaurante.pedidos',compact('cantidadmesas','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware'));
+        $valimesa = Mesas::on(Auth::user()->database_name)
+        ->where('estatus','0')->get();
+        $arreglo = array();
+        foreach($valimesa  as $valimesas ){
+            $arreglom = array();
+            $quotations = QuotationProduct::on(Auth::user()->database_name)
+            ->where('status','O')
+            ->where('id_quotation',$valimesas->id_quotations)
+            ->get();
+
+            foreach($quotations as $q){
+
+                $inventories = Product::on(Auth::user()->database_name)
+                ->whereIN('type',['MERCANCIA','COMBO'])
+                ->where('status',1)
+                ->where('id',$q->id_inventory)
+                ->first();
+
+                $arreglom[] = ['producto' => $inventories->description,'cantidad' => $q->amount];
+
+            }
+
+
+            $arreglo[] = ['numero' => $valimesas->numero, 'producto' => $arreglom];
+        }
+
+
+
+
+            return view('admin.restaurante.pedidos',compact('arreglo','cantidadmesas','agregarmiddleware','actualizarmiddleware','eliminarmiddleware','namemodulomiddleware'));
 
     }
 
@@ -339,6 +368,7 @@ public function facturar(Request $request){
 
 
         $q->nombreproducto = $inventories->description;
+        $q->costodeproducto = $inventories->price_buy;
 
     }
     /************************************************** */
@@ -469,6 +499,7 @@ public function carrito(Request $request){
         $fac->id_user = Auth::user()->id;
         $fac->id_branch  = 1;
         $fac->date_quotation  = $datenow;
+        $fac->date_billing  = $datenow;
         $fac->iva_percentage  = 16;
         $fac->coin  = 'bolivares';
         $fac->bcv  = $bcv;
@@ -824,7 +855,7 @@ public function facturarpedido(Request $request){
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
-
+                $iduser = Auth::user()->id;
                 //Si la taza es automatica
                 if($company->tiporate_id == 1){
                     $bcv = $global->search_bcv();
@@ -834,6 +865,14 @@ public function facturarpedido(Request $request){
                 }
 
                 $request->idfactura; //id factura
+                $request->montoiva; //iva 16%
+                $request->montoproductos; //monto total en productos sin iva
+                $request->totalcosto; //monto total en de costos de los productos
+
+
+                /**VARIABLE PARA VALIDAR QUE LA CANTIDAD DE METODO DE PAGOS SI ES VERDADERA Y CONTINUAR EL PROCESO */
+                $cantidadmetodos = count($request->input('tipopago', []));
+                $contador = 0;
 
                 foreach ($request->input('tipopago', []) as $i => $tipopago) {
 
@@ -857,6 +896,7 @@ public function facturarpedido(Request $request){
                         $var->rate = $bcv;
                         $var->status = 1;
                         $var->save();
+                        $contador++;
 
                     }elseif($tipopago == 2 AND $monto > 0){
 
@@ -868,7 +908,7 @@ public function facturarpedido(Request $request){
                         $var->rate = $bcv;
                         $var->status = 1;
                         $var->save();
-
+                        $contador++;
                     }elseif($tipopago == 6 AND $monto > 0 AND $caja > 0){
 
                         $var->id_account = $caja;
@@ -879,7 +919,7 @@ public function facturarpedido(Request $request){
                         $var->rate = $bcv;
                         $var->status = 1;
                         $var->save();
-
+                        $contador++;
                     }
 
                     elseif($tipopago == 9 || $tipopago == 10 AND $monto > 0){
@@ -892,30 +932,150 @@ public function facturarpedido(Request $request){
                         $var->rate = $bcv;
                         $var->status = 1;
                         $var->save();
-
+                        $contador++;
                     }else{
 
                         $resp['error'] = true;
                         $resp['msg'] = 'Verifique Monto y Metodo de pagos';
                     }
 
+                    $arryid[] = ['id' => $var->id]; //id para eliminar pagos en caso de error
+                    $arrayparapago[] = ['tipopago' => $tipopago, 'cuenta' => $var->id_account, 'monto' => $monto];
+                }
+
+                /****SI LA CANTIDAD DE METODO DE PAGOS es mayor al contado se eliminan los pagos y se manda mensaje de error */
+                if($cantidadmetodos > $contador){
+
+                 QuotationPayment::on(Auth::user()->database_name)
+                ->whereIN('id',$arryid)->delete();
+
+                $resp['error'] = false;
+                $resp['msg'] = 'Error en Forma de Pago';
+                }else{
+
+                $date = Carbon::now();
+                $datenow = $date->format('Y-m-d');
 
 
+                /*****************************VENTA ********************/
+                //***** se crea cabecera de voucher */
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Ventas de Bienes o servicios.";
+                $header_voucher->date = $datenow;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
+                /***cambio el estatus de los productos de la factura a cobrados */
+                DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $request->idfactura)
+                ->where('status','!=','X')
+                ->update(['status' => 'C']);
+
+
+                $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
+                ->where('id_quotation', '=', $request->idfactura)
+                ->where('status','!=','X')
+                ->get(); // Conteo de Productos para incluiro en el historial de inventario
+
+                foreach($quotation_products as $det_products){ // guardado historial de inventario
+
+                $global->transaction_inv('venta',$det_products->id_inventory,'venta_n',$det_products->amount,$det_products->price,$datenow,1,1,0,$det_products->id_inventory_histories,$det_products->id,$request->idfactura);
 
                 }
 
 
-                $resp['error'] = false;
-                $resp['msg'] = 'proceder con el pago';
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$request->idfactura,$iduser,$request->montoculto,0);
+                }
+
+                $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Bienes')->first();
+
+                if(isset($account_subsegmento)){
+                    $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$request->idfactura,$iduser,0,$request->montoproductos);
+                }
+
+                }
+
+                $account_debito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'Debito Fiscal IVA por Pagar')->first();
+
+                    if(isset($account_debito_iva_fiscal)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$request->idfactura,$iduser,0,$request->montoiva);
+                    }
+
+                $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Mercancia para la Venta')->first();
+
+                    if(isset( $account_mercancia_venta)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_mercancia_venta->id,$request->idfactura,$iduser,0,$request->totalcosto);
+                    }
+
+                //Costo de Mercancia
+
+                $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancia')->first();
+
+                    if(isset($account_costo_mercancia)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$request->idfactura,$iduser,$request->totalcosto,0);
+                    }
+
+                    /**************************************FIN DE VENTA **********************/
+
+
+
+                /***********************COBRO*************************************************************** */
+                $header_voucherc  = new HeaderVoucher();
+                $header_voucherc->setConnection(Auth::user()->database_name);
+                $header_voucherc->description = "Cobro de Bienes o servicios.";
+                $header_voucherc->date = $datenow;
+                $header_voucherc->status =  "1";
+                $header_voucherc->save();
+
+                foreach($arrayparapago as $pagos ){
+
+                    $this->add_pay_movement($bcv,$pagos['tipopago'],$header_voucherc->id,$pagos['cuenta'],$request->idfactura,$iduser,$pagos['monto'],0);
+
+                }
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description','like','Cuentas por Cobrar Clientes')->first();
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movement($bcv,$header_voucherc->id,$account_cuentas_por_cobrar->id,$request->idfactura,$iduser,0,$request->montoculto);
+                }
+
+                $retorno = $global->discount_inventory($request->idfactura);
+                /*******************FIN DEL COBRO*************************************************** */
+                $last_number = Quotation::on(Auth::user()->database_name)
+                    ->where('id_branch',Auth::user()->id_branch)
+                    ->where('number_invoice','<>',NULL)
+                    ->orderBy('number_invoice','desc')->first();
+                    //Asigno un numero incrementando en 1
+                    if(isset($last_number)){
+                        $numerofactura = $last_number->number_invoice + 1;
+                    }else{
+                        $numerofactura = 1;
+                    }
+
+
+                DB::connection(Auth::user()->database_name)->table('quotations')
+                ->where('id', '=', $request->idfactura)
+                ->where('status','O')
+                ->update(['status' => 'C','number_invoice' => $numerofactura]);
+
+
+                DB::connection(Auth::user()->database_name)->table('mesas')
+                ->where('id_quotations', '=', $request->idfactura)
+                ->where('estatus','0')
+                ->update(['estatus' => '1','id_quotations' => null]);
+
+                $resp['error'] = True;
+                $resp['msg'] = 'Pago Procesado con Exito';
 
             }else{
 
 
-
-
-
             $resp['error'] = false;
-            $resp['msg'] = 'Monto';
+            $resp['msg'] = 'Verifique los Montos';
 
             }
 
@@ -933,5 +1093,110 @@ return response()->json($resp);
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public function add_movement($bcv,$id_header,$id_account,$id_invoice,$id_user,$debe,$haber){
+
+    $detail = new DetailVoucher();
+    $detail->setConnection(Auth::user()->database_name);
+
+
+    $detail->id_account = $id_account;
+    $detail->id_header_voucher = $id_header;
+    $detail->user_id = $id_user;
+    $detail->tasa = $bcv;
+    $detail->id_invoice = $id_invoice;
+
+  /*  $valor_sin_formato_debe = str_replace(',', '.', str_replace('.', '', $debe));
+    $valor_sin_formato_haber = str_replace(',', '.', str_replace('.', '', $haber));*/
+
+
+    $detail->debe = $debe;
+    $detail->haber = $haber;
+
+
+    $detail->status =  "C";
+
+     /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
+
+        $account = Account::on(Auth::user()->database_name)->findOrFail($detail->id_account);
+
+        if($account->status != "M"){
+            $account->status = "M";
+            $account->save();
+        }
+
+
+    $detail->save();
+
+}
+
+
+
+
+
+public function add_pay_movement($bcv,$payment_type,$header_voucher,$id_account,$quotation_id,$user_id,$amount_debe,$amount_haber){
+
+
+    //Cuentas por Cobrar Clientes
+
+        //AGREGA EL MOVIMIENTO DE LA CUENTA CON LA QUE SE HIZO EL PAGO
+        if(isset($id_account)){
+            $this->add_movement($bcv,$header_voucher,$id_account,$quotation_id,$user_id,$amount_debe,0);
+
+        }//SIN DETERMINAR
+        else if($payment_type == 7){
+                    //------------------Sin Determinar
+            $account_sin_determinar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Otros Ingresos No Identificados')->first();
+
+            if(isset($account_sin_determinar)){
+                $this->add_movement($bcv,$header_voucher,$account_sin_determinar->id,$quotation_id,$user_id,$amount_debe,0);
+            }
+        }//PAGO DE CONTADO
+        else if($payment_type == 2){
+
+            $account_contado = Account::on(Auth::user()->database_name)->where('description', 'like', 'Caja Chica')->first();
+
+            if(isset($account_contado)){
+                $this->add_movement($bcv,$header_voucher,$account_contado->id,$quotation_id,$user_id,$amount_debe,0);
+            }
+        }//CONTRA ANTICIPO
+        else if($payment_type == 3){
+                    //--------------
+            $account_contra_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Anticipos a Proveedores Nacionales')->first();
+
+            if(isset($account_contra_anticipo)){
+                $this->add_movement($bcv,$header_voucher,$account_contra_anticipo->id,$quotation_id,$user_id,$amount_debe,0);
+            }
+        }
+        //Tarjeta Corporativa
+       /* else if($payment_type == 8){
+                    //---------------
+            $account_contra_anticipo = Account::on(Auth::user()->database_name)->where('description', 'like', 'Tarjeta Corporativa')->first();
+
+            if(isset($account_contra_anticipo)){
+                $this->add_movement($bcv,$header_voucher,$account_contra_anticipo->id,$quotation_id,$user_id,$amount_debe,0);
+            }
+        } */
+
+
+
+}
+
 
 }
