@@ -3,7 +3,7 @@
     <div class="col-3">
         <small>
             <select onchange="cambio(this,{{ $numero }})" id="tipopago"  name="tipopago[]" class="form-control form-control-sm tipopago">
-                <option selected="" value="">Forma de Pago</option>
+                <option selected="" value="0">Forma de Pago</option>
                 <option value="1">Cheque</option>
                 <option value="2">Contado</option>
                 <option value="5">Depósito Bancario</option>

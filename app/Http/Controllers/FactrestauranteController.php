@@ -841,17 +841,17 @@ public function facturarpedido(Request $request){
 
     if($request->ajax()){
         try{
-            if(array_sum($request->input('monto', [])) >  $request->montoculto){
+        if(array_sum($request->input('monto', [])) >  $request->montoculto){
 
                 $resp['error'] = false;
                 $resp['msg'] = 'El Monto Ingresado No puede Superar al Monto de la factura';
 
-            }elseif(array_sum($request->input('monto', [])) == 0){
+        }elseif(array_sum($request->input('monto', [])) == 0){
 
                 $resp['error'] = false;
                 $resp['msg'] = 'Ingrese Monto..';
 
-            }elseif(array_sum($request->input('monto', [])) ==  $request->montoculto){
+        }elseif(array_sum($request->input('monto', [])) ==  $request->montoculto){
 
                 $company = Company::on(Auth::user()->database_name)->find(1);
                 $global = new GlobalController();
@@ -935,8 +935,9 @@ public function facturarpedido(Request $request){
                         $contador++;
                     }else{
 
-                        $resp['error'] = true;
+                        $resp['error'] = false;
                         $resp['msg'] = 'Verifique Monto y Metodo de pagos';
+
                     }
 
                     $arryid[] = ['id' => $var->id]; //id para eliminar pagos en caso de error
@@ -946,18 +947,19 @@ public function facturarpedido(Request $request){
                 /****SI LA CANTIDAD DE METODO DE PAGOS es mayor al contado se eliminan los pagos y se manda mensaje de error */
                 if($cantidadmetodos > $contador){
 
-                 QuotationPayment::on(Auth::user()->database_name)
+                QuotationPayment::on(Auth::user()->database_name)
                 ->whereIN('id',$arryid)->delete();
 
                 $resp['error'] = false;
                 $resp['msg'] = 'Error en Forma de Pago';
-                }else{
+
+                }
+            else{
 
                 $date = Carbon::now();
                 $datenow = $date->format('Y-m-d');
 
-
-                /*****************************VENTA ********************/
+                 /*****************************VENTA ********************/
                 //***** se crea cabecera de voucher */
                 $header_voucher  = new HeaderVoucher();
                 $header_voucher->setConnection(Auth::user()->database_name);
@@ -966,11 +968,11 @@ public function facturarpedido(Request $request){
                 $header_voucher->status =  "1";
                 $header_voucher->save();
 
-                /***cambio el estatus de los productos de la factura a cobrados */
-                DB::connection(Auth::user()->database_name)->table('quotation_products')
-                ->where('id_quotation', '=', $request->idfactura)
-                ->where('status','!=','X')
-                ->update(['status' => 'C']);
+                  /***cambio el estatus de los productos de la factura a cobrados */
+                  DB::connection(Auth::user()->database_name)->table('quotation_products')
+                  ->where('id_quotation', '=', $request->idfactura)
+                  ->where('status','!=','X')
+                  ->update(['status' => 'C']);
 
 
                 $quotation_products = DB::connection(Auth::user()->database_name)->table('quotation_products')
@@ -982,7 +984,7 @@ public function facturarpedido(Request $request){
 
                 $global->transaction_inv('venta',$det_products->id_inventory,'venta_n',$det_products->amount,$det_products->price,$datenow,1,1,0,$det_products->id_inventory_histories,$det_products->id,$request->idfactura);
 
-                }
+                }//fin foreach det_prodc
 
 
                 $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
@@ -997,30 +999,27 @@ public function facturarpedido(Request $request){
                     $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$request->idfactura,$iduser,0,$request->montoproductos);
                 }
 
-                }
-
                 $account_debito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'Debito Fiscal IVA por Pagar')->first();
 
-                    if(isset($account_debito_iva_fiscal)){
+                if(isset($account_debito_iva_fiscal)){
                         $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$request->idfactura,$iduser,0,$request->montoiva);
-                    }
+                }
 
                 $account_mercancia_venta = Account::on(Auth::user()->database_name)->where('description', 'like', 'Mercancia para la Venta')->first();
 
-                    if(isset( $account_mercancia_venta)){
+                if(isset( $account_mercancia_venta)){
                         $this->add_movement($bcv,$header_voucher->id,$account_mercancia_venta->id,$request->idfactura,$iduser,0,$request->totalcosto);
-                    }
+                }
 
-                //Costo de Mercancia
+                     //Costo de Mercancia
 
                 $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancia')->first();
 
-                    if(isset($account_costo_mercancia)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$request->idfactura,$iduser,$request->totalcosto,0);
-                    }
+                if(isset($account_costo_mercancia)){
+                         $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$request->idfactura,$iduser,$request->totalcosto,0);
+                }
 
-                    /**************************************FIN DE VENTA **********************/
-
+                /**************************************FIN DE VENTA **********************/
 
 
                 /***********************COBRO*************************************************************** */
@@ -1045,42 +1044,45 @@ public function facturarpedido(Request $request){
 
                 $retorno = $global->discount_inventory($request->idfactura);
                 /*******************FIN DEL COBRO*************************************************** */
-                $last_number = Quotation::on(Auth::user()->database_name)
-                    ->where('id_branch',Auth::user()->id_branch)
-                    ->where('number_invoice','<>',NULL)
-                    ->orderBy('number_invoice','desc')->first();
-                    //Asigno un numero incrementando en 1
-                    if(isset($last_number)){
-                        $numerofactura = $last_number->number_invoice + 1;
-                    }else{
-                        $numerofactura = 1;
-                    }
+
+                        $last_number = Quotation::on(Auth::user()->database_name)
+                        ->where('id_branch',Auth::user()->id_branch)
+                        ->where('number_invoice','<>',NULL)
+                        ->orderBy('number_invoice','desc')->first();
+                        //Asigno un numero incrementando en 1
+                        if(isset($last_number)){
+                            $numerofactura = $last_number->number_invoice + 1;
+                        }else{
+                            $numerofactura = 1;
+                        }
 
 
-                DB::connection(Auth::user()->database_name)->table('quotations')
-                ->where('id', '=', $request->idfactura)
-                ->where('status','O')
-                ->update(['status' => 'C','number_invoice' => $numerofactura]);
+                    DB::connection(Auth::user()->database_name)->table('quotations')
+                    ->where('id', '=', $request->idfactura)
+                    ->where('status','O')
+                    ->update(['status' => 'C','number_invoice' => $numerofactura]);
 
 
-                DB::connection(Auth::user()->database_name)->table('mesas')
-                ->where('id_quotations', '=', $request->idfactura)
-                ->where('estatus','0')
-                ->update(['estatus' => '1','id_quotations' => null]);
+                    DB::connection(Auth::user()->database_name)->table('mesas')
+                    ->where('id_quotations', '=', $request->idfactura)
+                    ->where('estatus','0')
+                    ->update(['estatus' => '1','id_quotations' => null]);
 
-                $resp['error'] = True;
-                $resp['msg'] = 'Pago Procesado con Exito';
+                    $resp['error'] = True;
+                    $resp['msg'] = 'Pago Procesado con Exito';
 
-            }else{
+            }//fin else
+
+
+
+
+        }else{
 
 
             $resp['error'] = false;
             $resp['msg'] = 'Verifique los Montos';
 
-            }
-
-
-
+        }
 
     }catch(\error $error){
         $resp['error'] = false;
@@ -1093,20 +1095,6 @@ return response()->json($resp);
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
