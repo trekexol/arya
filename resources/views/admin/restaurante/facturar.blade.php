@@ -15,7 +15,10 @@
                   </thead>
 
                   <tbody>
-                    <?php $total = 0; ?>
+                    <?php
+                    $total = 0;
+                    $totalcosto = 0;
+                     ?>
                     @foreach ($quotations as $quotations)
                     <tr>
                         <td>{{ $quotations->nombreproducto }}</td>
@@ -23,7 +26,10 @@
                         <td>{{ number_format($quotations->price, 2, ',', '.') }}</td>
                         <td>{{number_format($quotations->price * $quotations->amount, 2, ',', '.')}}</td>
                     </tr>
-                    <?php $total += $quotations->price * $quotations->amount; ?>
+                    <?php
+                    $total += $quotations->price * $quotations->amount;
+                    $totalcosto += $quotations->costodeproducto * $quotations->amount;
+                    ?>
                     @endforeach
                     <?php
                         $iva = $total * 16 / 100;
@@ -37,6 +43,9 @@
                   </tbody>
             </table>
             <input type="hidden" name="montoculto" id="montoculto" value="{{number_format($totalconiva, 2)}}" />
+            <input type="hidden" name="montoiva" id="montoiva" value="{{number_format($iva, 2)}}" />
+            <input type="hidden" name="montoproductos" id="montoproductos" value="{{number_format($total, 2)}}" />
+            <input type="hidden" name="totalcosto" id="totalcosto" value="{{number_format($totalcosto, 2)}}" />
 
     </div>
     <div class="card-footer">
