@@ -16,7 +16,7 @@
           <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('combos') }}" role="tab" aria-controls="home" aria-selected="true">Combos</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link active font-weight-bold" style="color: black;" href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
+        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('inventories.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Movimientos de Inventario</a>
       </li>
       <li class="nav-item" role="presentation">
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Almacenes</a>
@@ -25,8 +25,9 @@
         <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.movement') }}" role="tab" aria-controls="contact" aria-selected="false">Transferencia de Almacén</a>
       </li>
       <li class="nav-item" role="presentation">
-        <a class="nav-link font-weight-bold" style="color: black;" href="{{ route('warehouse.indexmovementwarehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Movimiento de Almacén</a>
+        <a class="nav-link active font-weight-bold" style="color: black;" href="{{ route('warehouse.indexmovementwarehouse') }}" role="tab" aria-controls="contact" aria-selected="false">Movimiento de Almacén</a>
       </li>
+
     @else
 
         @foreach($sistemas as $sistemas)
@@ -70,13 +71,13 @@
         </div>
         <div class="col-sm-12">
             <div class="card">
-                <form id="formPost" method="POST" action="{{ route('reports.storemovements') }}">
+                <form id="formPost" method="POST" action="{{ route('reports.storemovementswarehouse') }}">
                     @csrf
 
 
 
                 <div class="card-header text-center h4">
-                       Historial de Inventario
+                       Movimiento de Almacén
                 </div>
 
                 <div class="card-body">
@@ -91,14 +92,6 @@
                                 <select class="form-control" name="type" id="type">
                                    <?php
                                    $typearray[] = array('todo','Todo');
-                                   $typearray[] = array('nota','Nota');
-                                   $typearray[] = array('venta','Ventas');
-                                   $typearray[] = array('compra','Compras');
-                                   $typearray[] = array('pedido','Pedidos');
-                                   $typearray[] = array('combo','Combos');
-                                   $typearray[] = array('aju_nota','Ajuste de Nota');
-                                   $typearray[] = array('rev_nota','Reverso de Nota');
-                                   $typearray[] = array('rev_venta','Reverso de Venta');
                                    $typearray[] = array('entrada','Entrada de Inventario');
                                    $typearray[] = array('salida','Salida de Inventario');
                                    ?>
@@ -121,29 +114,25 @@
                                 </select>
                             </div>
                             <div class="col-sm-3">
-                                <select class="form-control" name="id_account" id="id_account">
+                                <select class="form-control" name="branch" id="branch">
 
+                                                   <option value="todas">Todos</option>
+                                            @if(!empty($branches))
+                                                   @foreach ($branches as $var)
 
-                                            @if (isset($accounts))
-                                                   <option value="todas">Todas</option>
-                                                    @foreach ($accounts as $var)
-                                                        @if($id_account == $var->id)
-                                                        <option selected value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
+                                                        @if ($id_branch == $var->id)
+                                                        <option selected value="{{ $var->id }}">{{ $var->description }}</option>
                                                         @else
-                                                       <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
-                                                       @endif
-                                                    @endforeach
-                                            @else
-                                                    <option selected value="todas">Todas</option>
-                                                    @foreach ($accounts as $var)
-                                                    <option value="{{$var->id}}">{{$var->code_one.'.'.$var->code_two.'.'.$var->code_three.'.'.$var->code_four.'.'.str_pad($var->code_five, 3, "0", STR_PAD_LEFT)}} - {{$var->description}}</option>
-                                                    @endforeach
+                                                        <option value="{{ $var->id }}">{{ $var->description }}</option>
+                                                        @endif
+
+                                                   @endforeach
 
                                             @endif
                                 </select>
                             </div>
 
-                            <div class="col-sm-3  dropdown mb-4">
+                            <!--<div class="col-sm-3  dropdown mb-4">
                                 <button class="btn btn-success" type="button"
                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="false"
                                     aria-expanded="false">
@@ -154,7 +143,7 @@
                                     aria-labelledby="dropdownMenuButton">
                                     <a href="#" onclick="exportToExcel();" class="dropdown-item bg-light">Exportar a Excel</a>
                                 </div>
-                            </div>
+                            </div> -->
 
                         </div>
 
@@ -218,7 +207,7 @@
                         </div>
                     </form>
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{route('reports.movements_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory,$id_account ?? 'todas'])}}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{route('reports.movementswarehouse_pdf',[$coin ?? 'dolares',$date_frist ?? 'todo',$date_end ?? 'todo',$type ?? 'todo',$id_inventory,$id_branch ?? 'todas'])}}" allowfullscreen></iframe>
                             </div>
 
                         </div>

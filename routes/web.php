@@ -205,6 +205,12 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::patch('{id}/update','WarehouseController@update')->name('warehouse.update');
 
     Route::get('movement/{type?}/{typet?}/{branch?}/{branch_end?}','WarehouseController@movement')->name('warehouse.movement');
+    Route::get('movementwarehouse','WarehouseController@indexmovementswarehouse')->name('warehouse.indexmovementwarehouse');
+
+    Route::post('storemovementswarehouse','WarehouseController@storemovementswarehouse')->name('reports.storemovementswarehouse');
+    Route::get('movementswarehouse_pdf/{coin}/{date_frist}/{date_end}/{type}/{id_inventory}/{id_branch}','WarehouseController@movementswarehouse_pdf')->name('reports.movementswarehouse_pdf');
+
+
 
     Route::get('getselect/{typet?}','WarehouseController@getselect')->name('warehouse.getselect');
     Route::get('refreshtable','WarehouseController@refreshtable')->name('warehouse.refreshtable');
@@ -213,7 +219,7 @@ Route::group(["prefix"=>'warehouse'],function(){
     Route::get('transferencia','WarehouseController@transferencia')->name('warehouse.transferencia');
     Route::get('verificalmacen','WarehouseController@verificalmacen')->name('warehouse.verificalmacen');
     
-    
+     
     
 });
 
