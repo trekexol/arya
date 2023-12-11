@@ -1803,6 +1803,119 @@ class FacturarController extends Controller
             }
         }*/
 
+        
+////////////////////////COMPROBANTE DE VENTA///////////////////////////////
+$date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            if($quotation_status == 1){
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+
+                $header_voucher->description = "Ventas de Bienes o servicios.";
+                $header_voucher->date = $date_payment;
+
+
+                $header_voucher->status =  "1";
+
+                $header_voucher->save();
+
+                /*Busqueda de Cuentas*/
+
+                //Cuentas por Cobrar Clientes
+
+                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
+
+                if(isset($account_cuentas_por_cobrar)){
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,$sin_formato_grandtotal,0);
+                }
+
+                //Ingresos por SubSegmento de Bienes
+
+                if($total_mercancia != 0){
+                    $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Bienes')->first();
+
+                    if(isset($account_subsegmento)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_mercancia);
+                    }
+                }
+
+                if($total_servicios != 0){
+                    $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
+
+                    if(isset($account_subsegmento)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_servicios);
+                    }
+                }
+
+                //Debito Fiscal IVA por Pagar
+
+                $account_debito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'Debito Fiscal IVA por Pagar')->first();
+
+                if($base_imponible != 0){
+                    $total_iva = ($base_imponible * $iva_percentage)/100;
+
+                    if(isset($account_cuentas_por_cobrar)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$total_iva);
+                    }
+                }
+
+                //anadir movimiento de IGTF
+
+                    if ($IGTF_input > 0){
+                        $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', '%Cuentas por Pagar IGTF%')->first();
+
+                        if(isset($account_IGTF)){
+
+                            $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
+                        }
+                    }
+
+                  //anadir movimiento de IGTF
+
+
+                //Mercancia para la Venta
+                $validation_factura = new FacturaValidationController($quotation);
+
+                $return_validation_factura = $validation_factura->validate_movement_mercancia();
+
+
+                if(empty($quotation->date_delivery_note)){
+                    if($price_cost_total != 0){
+
+                        //BUSCA EL TOTAL DEL COSTO DE MERCANCIA POR PRODUCTO
+                        $facturaCalculation = new FacturaCalculationController($quotation);
+
+                        $accounts_for_movements = $facturaCalculation->calculateTotalForAccount($quotation->id);
+
+                        $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancía')->first();
+
+
+                        foreach($accounts_for_movements as $movement){
+
+                            $movement->total = $movement->total;
+
+                            if(isset($account_cuentas_por_cobrar)){
+                                $this->add_movement($bcv,$header_voucher->id,$movement->id_account,$quotation->id,$user_id,0,$movement->total);
+                            }
+
+                            //Costo de Mercancia
+                            if(isset($account_cuentas_por_cobrar)){
+                                $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$movement->total,0);
+                            }
+                        }
+
+
+
+
+                    }
+                }
+                /*----------- */
+            }
+///////////////////////////////FIN COMPROBENTE DE VENTA////////////////////////////////////////////
+
+
 
         $sin_formato_total_pay = floatval($sin_formato_total_pay);
         $epsilon = 0.00001;
@@ -1971,15 +2084,12 @@ class FacturarController extends Controller
 
 
             if($coin == 'dolares'){
-            $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
-
+                $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
             } else {
-            $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
-
+                $sin_formato_grandtotal = (($sin_formato_grandtotal + $debitnote) - $creditnote);
             }
 
             //incluyendo el todal de debit note en el total asiento cuanta por cobrar
-
             /*Anticipos*/
 
             if(isset($anticipo) && ($anticipo != 0)){
@@ -2016,7 +2126,7 @@ class FacturarController extends Controller
 
             if($retencion_islr != 0){
                 $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                ->where('code_four',1)->where('code_five',3)->first();
+                                                ->where('code_four',1)->where('code_five',3)->first(); 
 
                 if(isset($account_islr_pagago)){
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
@@ -2106,114 +2216,7 @@ class FacturarController extends Controller
 
             /*---------------------- */
 
-            $date = Carbon::now();
-            $datenow = $date->format('Y-m-d');
-
-            if($quotation_status == 1){
-
-                $header_voucher  = new HeaderVoucher();
-                $header_voucher->setConnection(Auth::user()->database_name);
-
-                $header_voucher->description = "Ventas de Bienes o servicios.";
-                $header_voucher->date = $date_payment;
-
-
-                $header_voucher->status =  "1";
-
-                $header_voucher->save();
-
-                /*Busqueda de Cuentas*/
-
-                //Cuentas por Cobrar Clientes
-
-                $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Cobrar Clientes')->first();
-
-                if(isset($account_cuentas_por_cobrar)){
-                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_cobrar->id,$quotation->id,$user_id,$sin_formato_grandtotal,0);
-                }
-
-                //Ingresos por SubSegmento de Bienes
-
-                if($total_mercancia != 0){
-                    $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Bienes')->first();
-
-                    if(isset($account_subsegmento)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_mercancia);
-                    }
-                }
-
-                if($total_servicios != 0){
-                    $account_subsegmento = Account::on(Auth::user()->database_name)->where('description', 'like', 'Ventas por Servicios')->first();
-
-                    if(isset($account_subsegmento)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_subsegmento->id,$quotation->id,$user_id,0,$total_servicios);
-                    }
-                }
-
-                //Debito Fiscal IVA por Pagar
-
-                $account_debito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'Debito Fiscal IVA por Pagar')->first();
-
-                if($base_imponible != 0){
-                    $total_iva = ($base_imponible * $iva_percentage)/100;
-
-                    if(isset($account_cuentas_por_cobrar)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_debito_iva_fiscal->id,$quotation->id,$user_id,0,$total_iva);
-                    }
-                }
-
-                //anadir movimiento de IGTF
-
-                    if ($IGTF_input > 0){
-                        $account_IGTF = Account::on(Auth::user()->database_name)->where('description', 'like', '%Cuentas por Pagar IGTF%')->first();
-
-                        if(isset($account_IGTF)){
-
-                            $this->add_movement($bcv,$header_voucher->id,$account_IGTF->id,$quotation->id,$user_id,0,$IGTF_input);
-                        }
-                    }
-
-                  //anadir movimiento de IGTF
-
-
-                //Mercancia para la Venta
-                $validation_factura = new FacturaValidationController($quotation);
-
-                $return_validation_factura = $validation_factura->validate_movement_mercancia();
-
-
-                if(empty($quotation->date_delivery_note)){
-                    if($price_cost_total != 0){
-
-                        //BUSCA EL TOTAL DEL COSTO DE MERCANCIA POR PRODUCTO
-                        $facturaCalculation = new FacturaCalculationController($quotation);
-
-                        $accounts_for_movements = $facturaCalculation->calculateTotalForAccount($quotation->id);
-
-                        $account_costo_mercancia = Account::on(Auth::user()->database_name)->where('description', 'like', 'Costo de Mercancía')->first();
-
-
-                        foreach($accounts_for_movements as $movement){
-
-                            $movement->total = $movement->total;
-
-                            if(isset($account_cuentas_por_cobrar)){
-                                $this->add_movement($bcv,$header_voucher->id,$movement->id_account,$quotation->id,$user_id,0,$movement->total);
-                            }
-
-                            //Costo de Mercancia
-                            if(isset($account_cuentas_por_cobrar)){
-                                $this->add_movement($bcv,$header_voucher->id,$account_costo_mercancia->id,$quotation->id,$user_id,$movement->total,0);
-                            }
-                        }
-
-
-
-
-                    }
-                }
-                /*----------- */
-            }
+            
 
                    /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
            if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
@@ -2230,8 +2233,6 @@ class FacturarController extends Controller
         }
     /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
-
-
             $global = new GlobalController;
 
             //Aqui pasa los quotation_products a status C de Cobrado
@@ -2241,9 +2242,7 @@ class FacturarController extends Controller
                                                         ->update(['status' => 'C']);
 
             $global->procesar_anticipos($quotation,$sin_formato_total_pay);
-
             /*------------------------------------------------- */
-
             $historial_quotation = new HistorialQuotationController();
 
             $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
