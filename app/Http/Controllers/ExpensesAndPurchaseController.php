@@ -1285,9 +1285,7 @@ class ExpensesAndPurchaseController extends Controller
 
         //Saber cuantos pagos vienen
         $come_pay = request('amount_of_payments');
-
         $global = new GlobalController();
-
         $user_id = request('user_id');
 
         /*Validar cuales son los pagos a guardar */
@@ -1300,7 +1298,6 @@ class ExpensesAndPurchaseController extends Controller
             $validate_boolean7 = false;
 
         //-----------------------
-
         $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->findOrFail(request('id_expense'));
 
         $bcv = $expense->rate;
@@ -1309,7 +1306,6 @@ class ExpensesAndPurchaseController extends Controller
         $anticipo = request('anticipo_form');
         $retencion_iva = request('total_retiene_iva');
         $retencion_islr = request('total_retiene_islr');
-
 
         $sub_total = request('sub_total_form');
         $base_imponible = request('base_imponible_form');
@@ -1321,17 +1317,10 @@ class ExpensesAndPurchaseController extends Controller
 
         $sin_formato_total_pay = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
         $total_pay_form = str_replace(',', '.', str_replace('.', '', request('total_pay_form')));
-
-
         $porc_descuento = request('porc_descuento_form');
-
-
-
         $descuento = request('descuento_form');
-
         $date_payment = request('date_payment_form');
         $date_payment_expense = request('date_payment_expense');
-
         $sin_formato_grandtotal = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
         $sin_formato_amount_iva = str_replace(',', '.', str_replace('.', '', request('iva_amount_form')));
 
@@ -1351,7 +1340,6 @@ class ExpensesAndPurchaseController extends Controller
                 if($come_pay >= 1){
 
                     /*-------------PAGO NUMERO 1----------------------*/
-
                     $var = new ExpensePayment();
                     $var->setConnection(Auth::user()->database_name);
 
@@ -1364,15 +1352,10 @@ class ExpensesAndPurchaseController extends Controller
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 1!');
                     }
 
-
                     $account_bank = request('account_bank');
                     $account_efectivo = request('account_efectivo');
                     $account_punto_de_venta = request('account_punto_de_venta');
-
                     $credit_days = request('credit_days');
-
-
-
                     $reference = request('reference');
 
                     if($valor_sin_formato_amount_pay != 0){
@@ -1434,9 +1417,6 @@ class ExpensesAndPurchaseController extends Controller
                                 }
                             }
 
-
-
-
                                 $var->payment_type = request('payment_type');
                                 $var->amount = $valor_sin_formato_amount_pay;
 
@@ -1445,16 +1425,12 @@ class ExpensesAndPurchaseController extends Controller
                                 }
 
                                 $var->status =  1;
-
                                 $total_pay += $valor_sin_formato_amount_pay;
-
                                 $validate_boolean1 = true;
-
 
                         }else{
                             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe seleccionar un Tipo de Pago 1!');
                         }
-
 
                     }else{
                             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('El pago debe ser distinto de Cero!');
@@ -1465,14 +1441,11 @@ class ExpensesAndPurchaseController extends Controller
                 if($come_pay >= 2){
 
                     /*-------------PAGO NUMERO 2----------------------*/
-
                     $var2 = new ExpensePayment();
                     $var2->setConnection(Auth::user()->database_name);
-
                     $amount_pay2 = request('amount_pay2');
 
                     if(isset($amount_pay2)){
-
                         $valor_sin_formato_amount_pay2 = str_replace(',', '.', str_replace('.', '', $amount_pay2));
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 2!');
@@ -1482,11 +1455,7 @@ class ExpensesAndPurchaseController extends Controller
                     $account_bank2 = request('account_bank2');
                     $account_efectivo2 = request('account_efectivo2');
                     $account_punto_de_venta2 = request('account_punto_de_venta2');
-
                     $credit_days2 = request('credit_days2');
-
-
-
                     $reference2 = request('reference2');
 
                     if($valor_sin_formato_amount_pay2 != 0){
@@ -1547,10 +1516,6 @@ class ExpensesAndPurchaseController extends Controller
                                 return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe seleccionar una Cuenta de Punto de Venta en pago numero 2!');
                             }
                         }
-
-
-
-
                             $var2->payment_type = request('payment_type2');
                             $var2->amount = $valor_sin_formato_amount_pay2;
 
@@ -1559,12 +1524,8 @@ class ExpensesAndPurchaseController extends Controller
                             }
 
                             $var2->status =  1;
-
                             $total_pay += $valor_sin_formato_amount_pay2;
-
                             $validate_boolean2 = true;
-
-
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe seleccionar un Tipo de Pago 2!');
                     }
@@ -1579,7 +1540,6 @@ class ExpensesAndPurchaseController extends Controller
                 if($come_pay >= 3){
 
                         /*-------------PAGO NUMERO 3----------------------*/
-
                         $var3 = new ExpensePayment();
                         $var3->setConnection(Auth::user()->database_name);
 
@@ -1592,15 +1552,10 @@ class ExpensesAndPurchaseController extends Controller
                             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 3!');
                         }
 
-
                         $account_bank3 = request('account_bank3');
                         $account_efectivo3 = request('account_efectivo3');
                         $account_punto_de_venta3 = request('account_punto_de_venta3');
-
                         $credit_days3 = request('credit_days3');
-
-
-
                         $reference3 = request('reference3');
 
                         if($valor_sin_formato_amount_pay3 != 0){
@@ -1662,20 +1617,14 @@ class ExpensesAndPurchaseController extends Controller
                                     }
                                 }
 
-
-
-
                                     $var3->payment_type = request('payment_type3');
                                     $var3->amount = $valor_sin_formato_amount_pay3;
 
                                     if($coin != 'bolivares'){
                                         $var3->amount = $var3->amount * $bcv;
                                     }
-
                                     $var3->status =  1;
-
                                     $total_pay += $valor_sin_formato_amount_pay3;
-
                                     $validate_boolean3 = true;
 
 
@@ -1693,10 +1642,8 @@ class ExpensesAndPurchaseController extends Controller
                 if($come_pay >= 4){
 
                         /*-------------PAGO NUMERO 4----------------------*/
-
                         $var4 = new expensePayment();
                         $var4->setConnection(Auth::user()->database_name);
-
                         $amount_pay4 = request('amount_pay4');
 
                         if(isset($amount_pay4)){
@@ -1706,15 +1653,10 @@ class ExpensesAndPurchaseController extends Controller
                             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 4!');
                         }
 
-
                         $account_bank4 = request('account_bank4');
                         $account_efectivo4 = request('account_efectivo4');
                         $account_punto_de_venta4 = request('account_punto_de_venta4');
-
                         $credit_days4 = request('credit_days4');
-
-
-
                         $reference4 = request('reference4');
 
                         if($valor_sin_formato_amount_pay4 != 0){
@@ -1776,22 +1718,15 @@ class ExpensesAndPurchaseController extends Controller
                                     }
                                 }
 
-
-
-
                                     $var4->payment_type = request('payment_type4');
                                     $var4->amount = $valor_sin_formato_amount_pay4;
 
                                     if($coin != 'bolivares'){
                                         $var4->amount = $var4->amount * $bcv;
                                     }
-
                                     $var4->status =  1;
-
                                     $total_pay += $valor_sin_formato_amount_pay4;
-
                                     $validate_boolean4 = true;
-
 
                             }else{
                                 return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe seleccionar un Tipo de Pago 4!');
@@ -1810,25 +1745,18 @@ class ExpensesAndPurchaseController extends Controller
 
                     $var5 = new expensePayment();
                     $var5->setConnection(Auth::user()->database_name);
-
                     $amount_pay5 = request('amount_pay5');
 
                     if(isset($amount_pay5)){
-
                         $valor_sin_formato_amount_pay5 = str_replace(',', '.', str_replace('.', '', $amount_pay5));
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 5!');
                     }
 
-
                     $account_bank5 = request('account_bank5');
                     $account_efectivo5 = request('account_efectivo5');
                     $account_punto_de_venta5 = request('account_punto_de_venta5');
-
                     $credit_days5 = request('credit_days5');
-
-
-
                     $reference5 = request('reference5');
 
                     if($valor_sin_formato_amount_pay5 != 0){
@@ -1890,9 +1818,6 @@ class ExpensesAndPurchaseController extends Controller
                                 }
                             }
 
-
-
-
                                 $var5->payment_type = request('payment_type5');
                                 $var5->amount = $valor_sin_formato_amount_pay5;
 
@@ -1901,11 +1826,8 @@ class ExpensesAndPurchaseController extends Controller
                                 }
 
                                 $var5->status =  1;
-
                                 $total_pay += $valor_sin_formato_amount_pay5;
-
                                 $validate_boolean5 = true;
-
 
                         }else{
                             return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe seleccionar un Tipo de Pago 5!');
@@ -1921,28 +1843,20 @@ class ExpensesAndPurchaseController extends Controller
                 if($come_pay >= 6){
 
                     /*-------------PAGO NUMERO 6----------------------*/
-
                     $var6 = new expensePayment();
                     $var6->setConnection(Auth::user()->database_name);
-
                     $amount_pay6 = request('amount_pay6');
 
                     if(isset($amount_pay6)){
-
                         $valor_sin_formato_amount_pay6 = str_replace(',', '.', str_replace('.', '', $amount_pay6));
                     }else{
                         return redirect('expensesandpurchases/registerpaymentafter/'.$expense->id.'/'.$coin.'')->withDanger('Debe ingresar un monto de pago 6!');
                     }
 
-
                     $account_bank6 = request('account_bank6');
                     $account_efectivo6 = request('account_efectivo6');
                     $account_punto_de_venta6 = request('account_punto_de_venta6');
-
                     $credit_days6 = request('credit_days6');
-
-
-
                     $reference6 = request('reference6');
 
                     if($valor_sin_formato_amount_pay6 != 0){
@@ -2004,9 +1918,6 @@ class ExpensesAndPurchaseController extends Controller
                                 }
                             }
 
-
-
-
                                 $var6->payment_type = request('payment_type6');
                                 $var6->amount = $valor_sin_formato_amount_pay6;
 
@@ -2015,9 +1926,7 @@ class ExpensesAndPurchaseController extends Controller
                                 }
 
                                 $var6->status =  1;
-
                                 $total_pay += $valor_sin_formato_amount_pay6;
-
                                 $validate_boolean6 = true;
 
 
@@ -2118,9 +2027,6 @@ class ExpensesAndPurchaseController extends Controller
                                 }
                             }
 
-
-
-
                                 $var7->payment_type = request('payment_type7');
                                 $var7->amount = $valor_sin_formato_amount_pay7;
 
@@ -2147,110 +2053,128 @@ class ExpensesAndPurchaseController extends Controller
                 }
             }
 
-
             $total_pay = (string) $total_pay;
-                //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
-            if(($total_pay - $total_pay_form) < "1" || ($sin_formato_total_pay <= "0"))
-            {
 
+            ////////////////////////////////////COMPROBANTE DE COMPRA////////////////////////////////////////////////////////////
+            $date = Carbon::now();
+            $datenow = $date->format('Y-m-d');
+
+            if(($expense->status != 'C') && ($expense->status != 'P')){
 
                 $header_voucher  = new HeaderVoucher();
                 $header_voucher->setConnection(Auth::user()->database_name);
 
 
-                $header_voucher->description = "Pago de Bienes o servicios.";
-                $header_voucher->date = $date_payment_expense ?? $datenow;
+                $header_voucher->description = "Compras de Bienes o servicios.";
+                $header_voucher->date = $date_payment ?? $datenow;
 
 
                 $header_voucher->status =  "1";
 
                 $header_voucher->save();
 
+                $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
+
+                foreach($expense_details as $exp){ // CUENTAS USADAS EN LA FACTURA DE COMPRA por producto
+                    $account = Account::on(Auth::user()->database_name)->find($exp->id_account);
+
+                    if(isset($account)){
+                        $this->add_movement($bcv,$header_voucher->id,$account->id,$expense->id,$user_id,$exp->price * $exp->amount,0);
+                    }
+                }
+
+                //Credito Fiscal IVA por Pagar
+                $account_credito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA (Credito Fiscal)')->first();
+                if(isset($account_credito_iva_fiscal)){
+                    if($sin_formato_amount_iva != 0){
+                        $this->add_movement($bcv,$header_voucher->id,$account_credito_iva_fiscal->id,$expense->id,$user_id,$sin_formato_amount_iva,0);
+                    }
+                }
+                //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
+                $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
+
+                if(isset($account_cuentas_por_pagar_proveedores)){
+                    $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal);
+                } 
+
+                if($descuento > 0){
+                    $account_descount = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Compras')->first();
+
+                    if(isset($account_descount)){
+                        $this->add_movement($bcv,$header_voucher->id,$account_descount->id,$expense->id,$user_id,0,$descuento);
+                    }
+                }
+            }
+////////////////////////////////////FINCOMPROBANTE DE COMPRA///////////////////////////////////////////////////////
+////////////////////////////////////COMPROBANTE DE PAGO////////////////////////////////////////////////////////////
+            //VALIDA QUE LA SUMA MONTOS INGRESADOS SEAN IGUALES AL MONTO TOTAL DEL PAGO
+            if(($total_pay - $total_pay_form) < "1" || ($sin_formato_total_pay <= "0"))
+            {
+
+                $header_voucher  = new HeaderVoucher();
+                $header_voucher->setConnection(Auth::user()->database_name);
+                $header_voucher->description = "Pago de Bienes o servicios.";
+                $header_voucher->date = $date_payment_expense ?? $datenow;
+                $header_voucher->status =  "1";
+                $header_voucher->save();
+
                  if($coin != 'bolivares'){
                     $anticipo =  $anticipo * $bcv;
                     $retencion_iva = $retencion_iva * $bcv;
                     $retencion_islr = $retencion_islr * $bcv;
-
                     $sin_formato_amount_iva = $sin_formato_amount_iva * $bcv;
                     $base_imponible = $base_imponible * $bcv;
                     $sin_formato_amount = $sin_formato_amount * $bcv;
                     $sin_formato_total_pay = $sin_formato_total_pay * $bcv;
-
                     $sin_formato_grandtotal = $sin_formato_grandtotal * $bcv;
-
                     $sub_total = $sub_total * $bcv;
-
                     $igftmonto = $igftmonto * $bcv;
 
                 }
 
-
-
-
                 if($validate_boolean1 == true){
                     $var->save();
-
                     $this->add_pay_movement($bcv,$payment_type,$header_voucher->id,$var->id_account,$expense->id,$user_id,0,$var->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var,"expense_payment","Se registró un Pago");
 
                 }
 
                 if($validate_boolean2 == true){
                     $var2->save();
-
                     $this->add_pay_movement($bcv,$payment_type2,$header_voucher->id,$var2->id_account,$expense->id,$user_id,0,$var2->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var2,"expense_payment","Se registró un Pago");
                 }
 
                 if($validate_boolean3 == true){
                     $var3->save();
-
                     $this->add_pay_movement($bcv,$payment_type3,$header_voucher->id,$var3->id_account,$expense->id,$user_id,0,$var3->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var3,"expense_payment","Se registró un Pago");
                 }
                 if($validate_boolean4 == true){
                     $var4->save();
-
                     $this->add_pay_movement($bcv,$payment_type4,$header_voucher->id,$var4->id_account,$expense->id,$user_id,0,$var4->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var4,"expense_payment","Se registró un Pago");
                 }
                 if($validate_boolean5 == true){
                     $var5->save();
-
                     $this->add_pay_movement($bcv,$payment_type5,$header_voucher->id,$var5->id_account,$expense->id,$user_id,0,$var5->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var5,"expense_payment","Se registró un Pago");
                 }
                 if($validate_boolean6 == true){
                     $var6->save();
-
                     $this->add_pay_movement($bcv,$payment_type6,$header_voucher->id,$var6->id_account,$expense->id,$user_id,0,$var6->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var6,"expense_payment","Se registró un Pago");
                 }
                 if($validate_boolean7 == true){
                     $var7->save();
-
                     $this->add_pay_movement($bcv,$payment_type7,$header_voucher->id,$var7->id_account,$expense->id,$user_id,0,$var7->amount);
-
                     $historial_expense = new HistorialExpenseController();
-
                     $historial_expense->registerAction($var7,"expense_payment","Se registró un Pago");
                 }
 
@@ -2259,7 +2183,7 @@ class ExpensesAndPurchaseController extends Controller
 
                 if($retencion_iva !=0 and $expense->number_iva == NULL){
 
-                    $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
+                    $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', '%IVA Retenido a Terceros%')->first();
                     if(isset($account_iva_retenido)){
                         $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$expense->id,$user_id,0,$retencion_iva);
                     }
@@ -2276,8 +2200,7 @@ class ExpensesAndPurchaseController extends Controller
 
                 if($retencion_islr != 0 and $expense->number_islr == NULL){
 
-                    $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                    ->where('code_four',1)->where('code_five',3)->first();
+                    $account_islr_pagago = Account::on(Auth::user()->database_name)->where('description', 'like', '%ISLR Retenido a Terceros%')->first();
 
                     if(isset($account_islr_pagago)){
                         $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$expense->id,$user_id,0,$retencion_islr);
@@ -2326,63 +2249,7 @@ class ExpensesAndPurchaseController extends Controller
                     $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,$sin_formato_grandtotal,0);
                 }
 
-                $date = Carbon::now();
-                $datenow = $date->format('Y-m-d');
-
-                if(($expense->status != 'C') && ($expense->status != 'P')){
-
-                    $header_voucher  = new HeaderVoucher();
-                    $header_voucher->setConnection(Auth::user()->database_name);
-
-
-                    $header_voucher->description = "Compras de Bienes o servicios.";
-                    $header_voucher->date = $date_payment ?? $datenow;
-
-
-                    $header_voucher->status =  "1";
-
-                    $header_voucher->save();
-
-                    $expense_details = ExpensesDetail::on(Auth::user()->database_name)->where('id_expense',$expense->id)->get();
-
-                    foreach($expense_details as $var){ // CUENTAS USADAS EN LA FACTURA DE COMPRA por producto
-                        $account = Account::on(Auth::user()->database_name)->find($var->id_account);
-
-                        if(isset($account)){
-                            $this->add_movement($bcv,$header_voucher->id,$account->id,$expense->id,$user_id,$var->price * $var->amount,0);
-                        }
-                    }
-
-                    //Credito Fiscal IVA por Pagar
-
-                    $account_credito_iva_fiscal = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA (Credito Fiscal)')->first();
-
-                    if(isset($account_credito_iva_fiscal)){
-                        if($sin_formato_amount_iva != 0){
-                            $this->add_movement($bcv,$header_voucher->id,$account_credito_iva_fiscal->id,$expense->id,$user_id,$sin_formato_amount_iva,0);
-                        }
-                    }
-
-                    //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
-                    $account_cuentas_por_pagar_proveedores = Account::on(Auth::user()->database_name)->where('description', 'like', 'Cuentas por Pagar Proveedores')->first();
-
-                    if(isset($account_cuentas_por_pagar_proveedores)){
-                        $this->add_movement($bcv,$header_voucher->id,$account_cuentas_por_pagar_proveedores->id,$expense->id,$user_id,0,$sin_formato_grandtotal);
-                    }
-
-
-                    if($descuento > 0){
-                        $account_descount = Account::on(Auth::user()->database_name)->where('description', 'like', 'Descuentos en Compras')->first();
-
-                        if(isset($account_descount)){
-                            $this->add_movement($bcv,$header_voucher->id,$account_descount->id,$expense->id,$user_id,0,$descuento);
-                        }
-                    }
-
-
-
-
-                }
+               
 
                 /*Modifica la cotizacion */
                     $expense->date_payment = $date_payment_expense ?? $datenow;
@@ -2446,8 +2313,8 @@ class ExpensesAndPurchaseController extends Controller
 
 
 
-           /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
-           if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
+        /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
+        if($request->court != null AND  $request->tifac != null AND $request->nrofactcou != null AND Auth::user()->company['id'] == '26'){
 
             $factcour  = new FacturasCour();
             $factcour->setConnection(Auth::user()->database_name);
@@ -2461,14 +2328,13 @@ class ExpensesAndPurchaseController extends Controller
         }
     /////////////////////////////**************LO DE COURIERTOOL**************/////////////////
 
+        //Aqui pasa los quotation_products a status C de Cobrado
+        DB::connection(Auth::user()->database_name)->table('expenses_details')
+        ->where('id_expense', '=', $expense->id)
+        ->update(['status' => 'C']);
 
-                 //Aqui pasa los quotation_products a status C de Cobrado
-                DB::connection(Auth::user()->database_name)->table('expenses_details')
-                ->where('id_expense', '=', $expense->id)
-                ->update(['status' => 'C']);
-
-                $global = new GlobalController;
-                $global->procesar_anticipos_expense($expense,$sin_formato_total_pay);
+        $global = new GlobalController;
+        $global->procesar_anticipos_expense($expense,$sin_formato_total_pay);
 
 
     }else{
