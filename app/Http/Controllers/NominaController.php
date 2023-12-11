@@ -806,12 +806,13 @@ class NominaController extends Controller
         $user =   auth()->user();
 
 
-        if ($user->id_company == 1) {
+        /*if ($user->id_company == 1) {
             $amount_total_asignacion = $amount_total_asignacion;
         } else {
-            $amount_total_asignacion = $amount_total_asignacion + $amount_total_otras_asignaciones;
-        }
-
+           // $amount_total_asignacion = $amount_total_asignacion + $amount_total_otras_asignaciones; POR AHORA SERA SOLO SALARIO HASTA CONFIRMACION
+            ///
+        }*/
+        $amount_total_asignacion = $amount_total_asignacion;
         $amount_total_asignacion_m_deducciones = ($amount_total_asignacion + $amount_total_otras_asignaciones) - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
 
 
@@ -1116,8 +1117,7 @@ class NominaController extends Controller
         //MOVIMIENTO DE aporte patronal
         if ($amount_total_deduccion_sso > 0) {
 
-           /* $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
-            */
+           $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
 
             $accounts_sso_patronal = DB::connection(Auth::user()->database_name)->table('accounts')
             ->where('code_one','=','6')
