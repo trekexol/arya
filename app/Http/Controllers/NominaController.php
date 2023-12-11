@@ -812,8 +812,10 @@ class NominaController extends Controller
            // $amount_total_asignacion = $amount_total_asignacion + $amount_total_otras_asignaciones; POR AHORA SERA SOLO SALARIO HASTA CONFIRMACION
             ///
         }*/
-        $amount_total_asignacion = $amount_total_asignacion;
-        $amount_total_asignacion_m_deducciones = ($amount_total_asignacion + $amount_total_otras_asignaciones) - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
+
+        $amount_total_asignacion = $amount_total_asignacion  + $amount_total_otras_asignaciones;
+        $amount_total_asignacion_m_deducciones = $amount_total_asignacion - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
+
 
 
 
