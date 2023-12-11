@@ -762,7 +762,7 @@ class NominaController extends Controller
 
 
                     // Otras Asignaciones
-                    if (($concepto->abbreviation != 'SSO' and $concepto->abbreviation != 'FAOV' and $concepto->abbreviation != 'PIE' and $concepto->abbreviation != 'INCES') and $concepto->sign == 'A'){
+                    if (($concepto->abbreviation != 'BALIM' AND $concepto->abbreviation != 'SUEM' AND $concepto->abbreviation != 'SUES' AND $concepto->abbreviation != 'SUEQ' AND $concepto->abbreviation != 'SSO' AND $concepto->abbreviation != 'FAOV' AND $concepto->abbreviation != 'PIE' AND $concepto->abbreviation != 'INCES') AND $concepto->sign == 'A'){
                        $amount_total_otras_asignaciones += $calculos->amount;
 
                        $account_sueldos = $concepto->account_name;
@@ -773,14 +773,15 @@ class NominaController extends Controller
 
                     }
 
+
+
                     // Deducciones diferentes
-                    if (($concepto->abbreviation != 'SSO' and $concepto->abbreviation != 'FAOV' and $concepto->abbreviation != 'INCES') and $concepto->sign == 'D') {
+                    if (($concepto->abbreviation != 'SSO' AND $concepto->abbreviation != 'FAOV' AND $concepto->abbreviation != 'INCES' AND $concepto->abbreviation != 'PIE') and $concepto->sign == 'D') {
                         $amount_total_otras_deducciones += $calculos->amount;
                     } else {
                         $amount_total_otras_deducciones += 0;
 
                     }
-
 
 
                 } else {
@@ -805,7 +806,6 @@ class NominaController extends Controller
 
         $user =   auth()->user();
 
-
         /*if ($user->id_company == 1) {
             $amount_total_asignacion = $amount_total_asignacion;
         } else {
@@ -814,8 +814,6 @@ class NominaController extends Controller
         }*/
         $amount_total_asignacion = $amount_total_asignacion;
         $amount_total_asignacion_m_deducciones = ($amount_total_asignacion + $amount_total_otras_asignaciones) - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
-
-
 
 
 
