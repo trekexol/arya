@@ -2514,7 +2514,7 @@ class ExpensesAndPurchaseController extends Controller
 
             if($sin_formato_iva_retencion > 0){
 
-                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
+                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido a Terceros')->first();
                 if(isset($account_iva_retenido)){
                     $this->add_movement($expense->rate,$header_voucher->id,$account_iva_retenido->id,$expense->id,$user_id,0,$sin_formato_iva_retencion);
                 }
@@ -2530,8 +2530,8 @@ class ExpensesAndPurchaseController extends Controller
 
             if($sin_formato_islr_retencion > 0){
 
-                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                ->where('code_four',1)->where('code_five',4)->first();
+                
+                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('description', 'like', '%ISLR Retenido a Terceros%')->first();
                 if(isset($account_islr_pagago)){
                     $this->add_movement($expense->rate,$header_voucher->id,$account_islr_pagago->id,$expense->id,$user_id,0,$sin_formato_islr_retencion);
                 }
