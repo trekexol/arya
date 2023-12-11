@@ -222,15 +222,27 @@
         }
       </script>
       <script>
-        function noespac(e) { //funcion no permite letras y reemplaza coma por punto
-
+        function noespac(e) {
             e.value = e.value.replace(/\,/g, '.');
             e.value = e.value.replace(/[A-Z]/g, '');
             e.value = e.value.replace(/[a-z]/g, '');
             e.value = e.value.replace(/-/g, '');
+            e.value = e.value.replace(/\+/g, '');
+            e.value = e.value.replace(/\*/g, '');
+
+            // Asegurarse de que no haya más de un punto en la cadena
+            var primerIndice = e.value.indexOf('.');
+            var segundoIndice = e.value.indexOf('.', primerIndice + 1);
+            while (segundoIndice !== -1) {
+                e.value = e.value.slice(0, primerIndice) + e.value.slice(primerIndice + 1);
+                primerIndice = e.value.indexOf('.');
+                segundoIndice = e.value.indexOf('.', primerIndice + 1);
+            }
+
+            // Eliminar cualquier otro símbolo que no sea un número o un punto
+            e.value = e.value.replace(/[^0-9.]/g, '');
 
             return e.value;
-
         }
       </script>
 </body>
