@@ -161,7 +161,19 @@ class ExpensesAndPurchaseController extends Controller
        $users_role =   $user->role_id;
 
            $expense = ExpensesAndPurchase::on(Auth::user()->database_name)->find($id_expense);
-           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_expense',$id_expense)->whereIn('status',['C','F'])->get();
+           $detailvouchers = DetailVoucher::on(Auth::user()->database_name)
+           ->join('accounts','accounts.id','id_account')
+           ->where('detail_vouchers.status','!=','X')
+           ->where('detail_vouchers.id_expense',$id_expense)
+           ->whereIn('detail_vouchers.status',['C','F'])
+           ->orderBy('detail_vouchers.debe','desc')
+           ->orderBy('accounts.code_one','desc')
+           ->orderBy('accounts.code_two','asc')
+           ->orderBy('accounts.code_three','asc')
+           ->orderBy('accounts.code_four','asc')
+           ->orderBy('accounts.code_five','asc')
+           ->get();
+           
 
             $multipayments_detail = null;
             $expenses = null;
@@ -170,7 +182,21 @@ class ExpensesAndPurchaseController extends Controller
             $multipayment = MultipaymentExpense::on(Auth::user()->database_name)->where('id_expense',$id_expense)->first();
             if(isset($multipayment)){
                 $expenses = MultipaymentExpense::on(Auth::user()->database_name)->where('id_header',$multipayment->id_header)->get();
-                $multipayments_detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$multipayment->id_header)->get();
+                /*$multipayments_detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$multipayment->id_header)
+                ->orderBy('debe','DESC')
+                ->get();*/
+
+                $multipayments_detail = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$multipayment->id_header)
+                ->join('accounts','accounts.id','id_account')
+                ->where('detail_vouchers.status','!=','X')
+                ->orderBy('detail_vouchers.debe','desc')
+                ->orderBy('accounts.code_one','desc')
+                ->orderBy('accounts.code_two','asc')
+                ->orderBy('accounts.code_three','asc')
+                ->orderBy('accounts.code_four','asc')
+                ->orderBy('accounts.code_five','asc')
+                ->get();
+
             }
 
 
@@ -2387,8 +2413,6 @@ class ExpensesAndPurchaseController extends Controller
             $sin_formato_islr_retencion = 0;
         }
 
-
-
         $sin_formato_anticipo = str_replace(',', '.', str_replace('.', '', request('anticipo')));
         $sin_formato_total_pay = str_replace(',', '.', str_replace('.', '', request('total_pay')));
 
@@ -2525,6 +2549,8 @@ class ExpensesAndPurchaseController extends Controller
                 }else{
                     $expense->number_iva = 1;
                 }
+            } else {
+                $sin_formato_iva_retencion = 0;
             }
 
 
@@ -2544,9 +2570,14 @@ class ExpensesAndPurchaseController extends Controller
                 }else{
                     $expense->number_islr = 1;
                 }
+
+            } else {
+                $sin_formato_islr_retencion = 0;
             }
 
             $expense->date_payment = $expense->date;
+
+            $sin_formato_amount_with_iva = $sin_formato_amount_with_iva - ($sin_formato_iva_retencion + $sin_formato_islr_retencion);
         }
 
         $expense->save();
@@ -2595,13 +2626,6 @@ class ExpensesAndPurchaseController extends Controller
 
           /* $providers = Provider::on(Auth::user()->database_name) /// BUSCAR PROVEEDOR
         ->find($expense->id_provider);*/
-
-
-
-
-
-
-
 
         $historial_expense = new HistorialExpenseController();
 
