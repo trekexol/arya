@@ -86,12 +86,13 @@ class DetailVoucherController extends Controller
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)
                 ->join('accounts','accounts.id','id_account')
                 ->where('detail_vouchers.status','!=','X')
-                ->orderBy('debe','desc')
-                ->orderBy('code_one','desc')
-                ->orderBy('code_two','asc')
-                ->orderBy('code_three','asc')
-                ->orderBy('code_four','asc')
-                ->orderBy('code_five','asc')
+                ->orderBy('detail_vouchers.debe','desc')
+                ->orderBy('accounts.code_one','desc')
+                ->orderBy('accounts.code_two','asc')
+                ->orderBy('accounts.code_three','asc')
+                ->orderBy('accounts.code_four','asc')
+                ->orderBy('accounts.code_five','asc')
+                ->select('detail_vouchers.*','accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five')
                 ->get();
 
                // dd($detailvouchers);
@@ -136,7 +137,8 @@ class DetailVoucherController extends Controller
 
    public function createvalidation($coin,$id_header = null,$id_account = null)
    {
-        $date = Carbon::now();
+    dd('v1');    
+    $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
        // $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->get();
         $header_disponible = HeaderVoucher::on(Auth::user()->database_name)->orderBy('id','desc')->first();
@@ -193,6 +195,7 @@ class DetailVoucherController extends Controller
 
    public function createselect($id_header)
    {
+    dd('v2');
         $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
 
         if(isset($header)){
@@ -214,6 +217,7 @@ class DetailVoucherController extends Controller
    public function selectaccount($coin,$id_header,$id_detail)
    {
 
+    dd('v3');
        if($id_header != -1){
 
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
@@ -248,9 +252,22 @@ class DetailVoucherController extends Controller
 
         if(isset($header)){
 
-            $affected = DB::connection(Auth::user()->database_name)->table('detail_vouchers')->where('id_header_voucher', '=', $id_header)->update(array('status' => 'C'));
+            $affected = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->whereIn('status',['1','N'])
+            ->where('id_header_voucher', '=', $id_header)
+            ->update(array('status' => 'C'));
 
-            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)->get();
+            $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)
+            ->join('accounts','accounts.id','id_account')
+            ->where('detail_vouchers.status','!=','X')
+            ->orderBy('detail_vouchers.debe','desc')
+            ->orderBy('accounts.code_one','desc')
+            ->orderBy('accounts.code_two','asc')
+            ->orderBy('accounts.code_three','asc')
+            ->orderBy('accounts.code_four','asc')
+            ->orderBy('accounts.code_five','asc')
+            ->select('detail_vouchers.*','accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five')
+            ->get();
 
 
              /*Le cambiamos el status a la cuenta a M, para saber que tiene Movimientos en detailVoucher */
@@ -437,7 +454,9 @@ class DetailVoucherController extends Controller
             }
             $var->save();
 
-            $affected = DB::connection(Auth::user()->database_name)->table('detail_vouchers')->where('id_header_voucher', '=', $var->id_header_voucher)->update(array('status' => 'N'));
+            $affected = DB::connection(Auth::user()->database_name)->table('detail_vouchers')
+            ->whereIn('status',['1','N','C'])
+            ->where('id_header_voucher', '=', $var->id_header_voucher)->update(array('status' => 'N'));
 
             $this->check_exist_movement_in_account();
 
@@ -519,20 +538,20 @@ class DetailVoucherController extends Controller
     if(isset($header->id_anticipo)){
         $id_delete = $header->id_anticipo;
         $type_delete = "anticipo";
-        $message_delete = "Este movimiento posee el anticipo Numero ".$header->id_anticipo.", seguro desea eliminarlo?";
+        $message_delete = "Este movimiento posee el anticipo Numero ".$header->id_anticipo;
     }else{
         if(isset($detail->id_invoice)){
             $id_delete = $detail->id_invoice;
             $type_delete = "factura";
-            $message_delete = "Este movimiento posee la factura Numero ".$detail->id_invoice.", seguro desea eliminarla?";
+            $message_delete = "Este movimiento posee la factura Numero ".$detail->id_invoice;
         }elseif(isset($detail->id_expense)){
             $id_delete = $detail->id_expense;
             $type_delete = "compra";
 
             if(substr($header->description, 0, 4) == "Pago"){
-                $message_delete = "Este movimiento posee Los Pagos de la Compra Numero. ".$detail->id_expense.", seguro desea eliminar los Pagos?";
+                $message_delete = "Este movimiento posee Los Pagos de la Compra Numero. ".$detail->id_expense;
             }else{
-                $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense.", seguro desea eliminarla?";
+                $message_delete = "Este movimiento posee la compra Numero ".$detail->id_expense;
             }
             }
     }
@@ -564,16 +583,17 @@ class DetailVoucherController extends Controller
         if(isset($type_modal) && ($type_modal == "anticipo")){
             $anticipo = new AnticipoController();
             $anticipo->delete_anticipo_with_id($id_delete);
+
         }else if(isset($type_modal) && ($type_modal == "factura")){
-            $invoice = new QuotationController();
-            $invoice->reversar_quotation_with_id($id_delete);
+           /* $invoice = new QuotationController();
+            $invoice->reversar_quotation_with_id($id_delete);*/
             $this->destroy($id_header);
         }else if(isset($type_modal) && ($type_modal == "compra")){
             $expense = new ExpensesAndPurchaseController();
 
             if(substr($header->description, 0, 4) == "Pago"){
-                $expense_payment = new PaymentExpenseController();
-                $expense_payment->deleteAllPaymentsWithId($id_delete);
+                /*/$expense_payment = new PaymentExpenseController();
+                $expense_payment->deleteAllPaymentsWithId($id_delete);*/
             }else{
                 $expense->reversar_expense_with_id($id_delete);
             }

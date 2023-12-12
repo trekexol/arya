@@ -100,7 +100,7 @@ $suma_haber = 0;
 
                                 <div class="col-md-4">
                                     @if(isset($header))
-                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $header->description ?? old('description') }} Factura({{$detailvouchers[0]->quotations['number_invoice'] ?? '' }})"  required autocomplete="description" >
+                                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $header->description ?? old('description') }} Factura({{$detailvouchers[0]->quotations['number_invoice'] ?? $detailvouchers[0]->expenses['invoice'] }})"  required autocomplete="description" >
                                     @else
                                         <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description"  required autocomplete="description" >
                                     @endif
