@@ -85,6 +85,7 @@ class DetailVoucherController extends Controller
                 $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->where('id_header_voucher',$id_header)
                 ->join('accounts','accounts.id','id_account')
                 ->where('detail_vouchers.status','!=','X')
+                ->orderBy('debe','desc')
                 ->orderBy('code_one','desc')
                 ->orderBy('code_two','asc')
                 ->orderBy('code_three','asc')

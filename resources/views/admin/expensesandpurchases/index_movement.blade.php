@@ -63,9 +63,9 @@
                 @if (isset($multipayments_detail))
                     @foreach ($multipayments_detail as $key => $var)
                     <tr>
-                    <td class="text-center font-weight-bold">{{ date('d-m-Y', strtotime( $var->headers['date'] ?? ''))  }}</td>
+                    <td class="text-center font-weight-bold">{{ date('d-m-Y', strtotime( $var->headers['date'] ?? '')) }}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
-                    <td class="text-center font-weight-bold">{{$var->id_header_voucher}}</td>
+                    <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
                     <td class="font-weight-bold">{{$var->headers['description']}} fact(@foreach ($expenses as $expense) {{$expense->id_expense}}, @endforeach) / {{$var->accounts['description']}}</td>
 
                     @if ($coin == 'bolivares')
@@ -92,10 +92,9 @@
                 @else
                     @foreach ($detailvouchers as $key => $var)
                     <tr>
-                    <td class="text-center font-weight-bold">{{$var->headers['date']}}</td>
-                    <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}</td>
-                    <td class="text-center font-weight-bold">{{$var->id_header_voucher}}</td>
-                    
+                    <td class="text-center font-weight-bold">{{date('d-m-Y', strtotime( $var->headers['date'] ?? ''))}}</td>
+                    <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
+                    <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
                     <td>{{$var->headers['description']}} Compra({{ $var->id_expense }}) / {{$var->accounts['description']}}</td>
 
                     @if ($coin == 'bolivares')
@@ -120,11 +119,11 @@
 @section('javascript')
 
     <script>
-    $('#dataTable').DataTable({
-        "ordering": false,
-        "order": [],
+    /*$('#dataTable').DataTable({
+        "ordering": true,
+        "order": [[ 4,'DESC']],
         'aLengthMenu': [[50, 100, 150, -1], [50, 100, 150, "All"]]
-    });
+    });*/
 
     
     </script> 

@@ -152,7 +152,7 @@
                             </div>
 
 
-                            <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retencion IVA:</label>
+                            <label for="iva_retencion" class="col-md-2 col-form-label text-md-right">Retención IVA:</label>
 
                             <div class="col-md-3">
                                 <input id="iva_retencion" type="text" class="form-control @error('iva_retencion') is-invalid @enderror" name="iva_retencion" value="{{ number_format($total_retiene_iva / ($bcv ?? 1), 2, ',', '.') }}" readonly required autocomplete="iva_retencion">
@@ -178,7 +178,7 @@
                                     </span>
                                 @enderror
                             </div>
-                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retencion ISLR:</label>
+                            <label for="islr_retencion" class="col-md-2 col-form-label text-md-right">Retención ISLR:</label>
 
                             <div class="col-md-3">
                                 <input id="islr_retencion" type="text" class="form-control @error('islr_retencion') is-invalid @enderror" name="islr_retencion" value="0" readonly required autocomplete="islr_retencion">
@@ -1054,9 +1054,13 @@
 
         var islr_concept = '<?php echo $provider->porc_retencion_islr ?>';
 
+        islr_concept = Number(islr_concept);
+
         if (islr_concept > 0) {
+            $("#retencion_islr_check").prop('checked', true);
             $("#islr-form").show();
         } else {
+            $("#retencion_islr_check").prop('checked', false);
             $("#islr-form").hide();
         }
         
