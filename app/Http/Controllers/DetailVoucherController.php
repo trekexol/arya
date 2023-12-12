@@ -94,6 +94,8 @@ class DetailVoucherController extends Controller
                 ->orderBy('code_five','asc')
                 ->get();
 
+
+
                // dd($detailvouchers);
 
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
