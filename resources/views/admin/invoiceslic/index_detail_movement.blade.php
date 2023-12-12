@@ -98,8 +98,8 @@
                     <td class="text-center font-weight-bold">{{$var->headers['date']}}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
                     <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
-                    <td class="text-center font-weight-bold">{{$var->id_invoice}}</td>
-                    <td class="font-weight-bold">{{$var->accounts['description']}} <br> {{$var->headers['description']}} Factura({{ $var->quotations['number_invoice'] }})</td>
+                    <td class="text-center font-weight-bold">{{$var->quotations['number_invoice'] ?? ''}}</td>
+                    <td class="font-weight-bold">{{$var->accounts['description']}} <br> {{$var->headers['description']}} Factura({{ $var->quotations['number_invoice'] ?? '' }})</td>
 
                     @if ($coin == 'bolivares')
                         <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
