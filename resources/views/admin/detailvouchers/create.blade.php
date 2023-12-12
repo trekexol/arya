@@ -279,9 +279,10 @@ $suma_haber = 0;
                                             ?>
                                             <td>{{number_format($var->debe, 2, ',', '.')}}</td>
                                             <td>{{number_format($var->haber, 2, ',', '.')}}</td>
+
                                         @else
                                             <?php
-                                                $suma_debe +=$var->debe / $var->tasa;
+                                                $suma_debe += $var->debe / $var->tasa;
                                                 $suma_haber += $var->haber / $var->tasa;
                                             ?>
                                             @if ($var->tasa != 0)
@@ -312,7 +313,7 @@ $suma_haber = 0;
                         <tfoot>
                             <tr>
 
-                                @if($suma_debe == $suma_haber)
+                                @if(number_format($suma_debe,2) == number_format($suma_haber,2))
                                     <td style="color: rgb(84, 196, 84)">El comprobante está cuadrado</td>
                                     <td>Total</td>
                                     <td>{{ number_format($suma_debe, 2, ',', '.') }}</td>

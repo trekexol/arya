@@ -95,6 +95,8 @@ class DetailVoucherController extends Controller
                 ->select('detail_vouchers.*','accounts.code_one','accounts.code_two','accounts.code_three','accounts.code_four','accounts.code_five')
                 ->get();
 
+
+
                // dd($detailvouchers);
 
                 //se usa el ultimo movimiento agregado de la cabecera para tomar cual fue la tasa que se uso
