@@ -48,7 +48,7 @@
             <tr>
                 <th>Fecha</th>
                 <th>Cuenta</th>
-                <th>Referencia</th>
+                <th>Comprobante</th>
                 
                 <th>Descripción</th>
                 <th>Debe</th>
@@ -66,7 +66,7 @@
                     <td class="text-center font-weight-bold">{{ date('d-m-Y', strtotime( $var->headers['date'] ?? '')) }}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
                     <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
-                    <td class="font-weight-bold">{{$var->headers['description']}} fact(@foreach ($expenses as $expense) {{$expense->id_expense}}, @endforeach) / {{$var->accounts['description']}}</td>
+                    <td class="font-weight-bold"> {{$var->accounts['description']}} <br> {{$var->headers['description']}} fact(@foreach ($expenses as $expense) {{$expense->invoice}}, @endforeach)</td>
 
                     @if ($coin == 'bolivares')
                         <td class="text-right font-weight-bold">{{number_format($var->debe, 2, ',', '.')}}</td>
@@ -95,7 +95,8 @@
                     <td class="text-center font-weight-bold">{{date('d-m-Y', strtotime( $var->headers['date'] ?? ''))}}</td>
                     <td class="text-center font-weight-bold">{{$var->accounts['code_one']}}.{{$var->accounts['code_two']}}.{{$var->accounts['code_three']}}.{{$var->accounts['code_four']}}.{{$var->accounts['code_five']}}</td>
                     <td class="text-center font-weight-bold"><a href="{{ route('detailvouchers.create',[$coin,$var->id_header_voucher ?? '']) }}" title="Ver comprobante contable">{{ $var->id_header_voucher ?? '' }}</a></td>
-                    <td>{{$var->headers['description']}} Compra({{ $var->id_expense }}) / {{$var->accounts['description']}}</td>
+                    
+                    <td>{{$var->accounts['description']}} <br> {{$var->headers['description']}} Compra({{ $var->expenses['invoice'] }})</td>
 
                     @if ($coin == 'bolivares')
                         <td class="text-right">{{number_format($var->debe, 2, ',', '.')}}</td>
