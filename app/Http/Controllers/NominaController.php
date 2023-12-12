@@ -778,6 +778,7 @@ class NominaController extends Controller
                     // Deducciones diferentes
                     if (($concepto->abbreviation != 'SSO' AND $concepto->abbreviation != 'FAOV' AND $concepto->abbreviation != 'INCES' AND $concepto->abbreviation != 'PIE') and $concepto->sign == 'D') {
                         $amount_total_otras_deducciones += $calculos->amount;
+
                     } else {
                         $amount_total_otras_deducciones += 0;
 
@@ -813,11 +814,13 @@ class NominaController extends Controller
             ///
         }*/
 
-        $amount_total_asignacion = $amount_total_asignacion  + $amount_total_otras_asignaciones;
-        $amount_total_asignacion_m_deducciones = $amount_total_asignacion - ($amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones );
+        $totalasignaciones = $amount_total_asignacion  + $amount_total_otras_asignaciones;
 
+        $deduccionestotales = $amount_total_deduccion_sso + $amount_total_deduccion_faov + $amount_total_deduccion_ince + $amount_total_deduccion_pie + $amount_total_otras_deducciones;
 
-
+        $amount_total_asignacion_m_deducciones = $totalasignaciones - $deduccionestotales;
+        //dd($amount_total_otras_asignaciones);
+       // dd($amount_total_deduccion_sso.' '.$amount_total_deduccion_faov.' '.$amount_total_deduccion_ince.' '.$amount_total_deduccion_pie.' '.$amount_total_otras_deducciones);
 
         if($nomina->rate == 0 or $nomina->rate == null){
             $nomina->rate = $bcv;
@@ -913,7 +916,7 @@ class NominaController extends Controller
         //MOVIMIENTO DE aporte patronal
         if ($amount_total_deduccion_sso > 0) {
 
-             $amount_total_asignacion = ($amount_total_asignacion);
+            // $amount_total_asignacion = ($amount_total_asignacion);
 
              $total_sso_patronal = (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->sso_company/100);
 
@@ -932,7 +935,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_faov > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion);
+           // $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_faov_patronal = $amount_total_asignacion * ($nominabases->faov_company/100);
@@ -951,7 +954,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_pie > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion);
+           // $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_pie_patronal =  (($amount_total_asignacion * 12)/52) * $lunes * ($nominabases->pie_company/100);
@@ -973,7 +976,7 @@ class NominaController extends Controller
 
          if ($amount_total_deduccion_ince > 0){
 
-            $amount_total_asignacion = ($amount_total_asignacion);
+         //   $amount_total_asignacion = ($amount_total_asignacion);
 
 
              $total_pie_patronal =  ($amount_total_asignacion * 12)/52 * $lunes * (1/100);
@@ -1000,7 +1003,7 @@ class NominaController extends Controller
                 ->where('id',$c_sueldo)
                 ->first();
 
-            $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$amount_total_asignacion,0);
+            $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_sueldos->id,$nomina->id,$totalasignaciones,0);
 
 
             //AHORA LOS MOVIMIENTOS POR PAGAR
@@ -1015,6 +1018,7 @@ class NominaController extends Controller
 
 
         }
+
 
          //bono alimentacion
          if($amount_total_bono_alim > 0){
@@ -1190,6 +1194,16 @@ class NominaController extends Controller
 
             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$accounts_pie_patronal->id,$nomina->id,0,$total_pie_patronal);
         }
+
+        if($amount_total_otras_deducciones > 0){
+
+             $cuentasporcobrarcliente = DB::connection(Auth::user()->database_name)->table('accounts')
+             ->where('code_one','=','1')
+             ->where('description','LIKE', 'Cuentas por Cobrar Empleados')
+             ->first();
+
+             $this->add_movement($nomina->rate ?? $bcv,$header_voucher->id,$cuentasporcobrarcliente->id,$nomina->id,0,$amount_total_otras_deducciones);
+         }
 
 
     }
