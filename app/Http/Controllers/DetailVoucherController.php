@@ -139,7 +139,7 @@ class DetailVoucherController extends Controller
 
    public function createvalidation($coin,$id_header = null,$id_account = null)
    {
-    dd('v1');    
+     
     $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
        // $detailvouchers = DetailVoucher::on(Auth::user()->database_name)->get();
@@ -197,7 +197,7 @@ class DetailVoucherController extends Controller
 
    public function createselect($id_header)
    {
-    dd('v2');
+ 
         $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
 
         if(isset($header)){
@@ -219,7 +219,6 @@ class DetailVoucherController extends Controller
    public function selectaccount($coin,$id_header,$id_detail)
    {
 
-    dd('v3');
        if($id_header != -1){
 
             $header = HeaderVoucher::on(Auth::user()->database_name)->find($id_header);
