@@ -618,6 +618,7 @@ class FacturarController extends Controller
         $sin_formato_amount_with_iva = str_replace(',', '.', str_replace('.', '', request('total_pay')));
        /*$sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grand_total_form')));*/
         $sin_formato_grand_total = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+        $impuesto_tf = request('impuesto_tf');
 
         /************PARA LO DE COURIERTOOL NO TOCAR ********/
         $montocour = str_replace(',', '.', str_replace('.', '', request('total_pay')));
@@ -664,14 +665,13 @@ class FacturarController extends Controller
 
         $quotation->date_billing = request('date-begin-form');
 
-        $quotation->retencion_iva =  $total_retiene_iva;
-        $quotation->retencion_islr =  $total_retiene_islr;
-        $quotation->anticipo =  $anticipo;
-
+        $quotation->retencion_iva = $total_retiene_iva;
+        $quotation->retencion_islr = $total_retiene_islr;
+        $quotation->anticipo = $anticipo;
         $quotation->base_imponible = $sin_formato_base_imponible;
-        $quotation->amount_exento =  $amount_exento;
-        $quotation->amount =  $sin_formato_amount;
-        $quotation->amount_iva =  $sin_formato_amount_iva;
+        $quotation->amount_exento = $amount_exento;
+        $quotation->amount = $sin_formato_amount;
+        $quotation->amount_iva = $sin_formato_amount_iva;
         $quotation->amount_with_iva = $sin_formato_grand_total;
 
         $credit = request('credit');
@@ -703,6 +703,7 @@ class FacturarController extends Controller
 
         $quotation->IGTF_amount = $IGTF_input;
         $quotation->IGTF_percentage = $igtfporc;
+        $quotation->impuesto_tf;
 
         $quotation->save();
 
@@ -851,9 +852,9 @@ class FacturarController extends Controller
     public function storefactura(Request $request)
     {
 
-           /************PARA LO DE COURIERTOOL NO TOCAR ********/
-           $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
-           /***************************************************************/
+        /************PARA LO DE COURIERTOOL NO TOCAR ********/
+        $montocour = str_replace(',', '.', str_replace('.', '', request('grandtotal_form')));
+        /***************************************************************/
 
         $quotation = Quotation::on(Auth::user()->database_name)->findOrFail(request('id_quotation'));
 
@@ -895,6 +896,7 @@ class FacturarController extends Controller
         $anticipo = request('anticipo_form');
         $retencion_iva = request('total_retiene_iva');
         $retencion_islr = request('total_retiene_islr');
+        $impuesto_tf = request('impuesto_tf_form');
         $anticipo = request('anticipo_form');
 
         $sub_total = request('sub_total_form');
@@ -1805,7 +1807,7 @@ class FacturarController extends Controller
 
         
 ////////////////////////COMPROBANTE DE VENTA///////////////////////////////
-$date = Carbon::now();
+            $date = Carbon::now();
             $datenow = $date->format('Y-m-d');
 
             if($quotation_status == 1){
@@ -2047,7 +2049,8 @@ $date = Carbon::now();
             $quotation->iva_percentage = $iva_percentage;
         }
             $quotation->retencion_iva = $retencion_iva;
-            $quotation->retencion_islr = $retencion_islr;
+            $quotation->retencion_islr = $retencion_islr; 
+            $quotation->impuesto_tf = $impuesto_tf;
             $quotation->IGTF_percentage = $IGTF_porc;
             $quotation->IGTF_amount = $IGTF_input;
 
@@ -2065,6 +2068,7 @@ $date = Carbon::now();
                 $sub_total = $sub_total * $bcv;
                 $total_mercancia = $total_mercancia * $bcv;
                 $total_servicios = $total_servicios * $bcv;
+                $impuesto_tf = $impuesto_tf * $bcv;
 
                 if ($quotation_status == 1){
                 $quotation->base_imponible = $base_imponible;
@@ -2078,6 +2082,7 @@ $date = Carbon::now();
 
                 $quotation->retencion_iva = $retencion_iva;
                 $quotation->retencion_islr = $retencion_islr;
+                $quotation->impuesto_tf = $impuesto_tf;
                 $quotation->IGTF_percentage = $IGTF_porc * $bcv;
                 $quotation->IGTF_amount = $IGTF_input * $bcv;
             }
@@ -2115,7 +2120,7 @@ $date = Carbon::now();
              }
             /*---------- */
 
-            if($retencion_iva !=0){
+            if($retencion_iva > 0){
                 $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
 
                 if(isset($account_iva_retenido)){
@@ -2124,7 +2129,7 @@ $date = Carbon::now();
             }
 
 
-            if($retencion_islr != 0){
+            if($retencion_islr > 0){
                 $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
                                                 ->where('code_four',1)->where('code_five',3)->first(); 
 
@@ -2132,8 +2137,16 @@ $date = Carbon::now();
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
                 }
             }
+            
+            if($impuesto_tf > 0){
 
+                
+                $account_impuesto_tf = Account::on(Auth::user()->database_name)->where('description','like','%Impuesto No deducible TF%')->first(); 
 
+                if(isset($account_impuesto_tf)){
+                    $this->add_movement($bcv,$header_voucher->id,$account_impuesto_tf->id,$quotation->id,$user_id,$impuesto_tf,0);
+                }
+            }
 
             //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
             $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description','like','Cuentas por Cobrar Clientes')->first();
@@ -2248,7 +2261,6 @@ $date = Carbon::now();
             $historial_quotation->registerAction($quotation,"quotation","Registro de Factura Realizada");
 
             return redirect('quotations/facturado/'.$quotation->id.'/'.$coin.'')->withSuccess('Factura Guardada con Exito!');
-
 
         }else{
             return redirect('quotations/facturar/'.$quotation->id.'/'.$coin.'')->withDanger('La suma de los pagos es diferente al monto Total a Pagar!');

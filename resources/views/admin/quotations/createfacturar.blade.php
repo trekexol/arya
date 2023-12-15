@@ -222,6 +222,20 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                            </div>
+                            <label for="impuesto_tf" class="col-md-3 col-form-label text-md-right">Impuesto No deducible TF :</label>
+                            <div class="col-md-3">
+                                <input onkeyup="noespac(this)" id="impuesto_tf" type="text" class="form-control @error('impuesto_tf') is-invalid @enderror" name="impuesto_tf" value="0" autocomplete="impuesto_tf">
+
+                                @error('impuesto_tf')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
 
 
                         <div class="form-group row">
@@ -453,6 +467,7 @@
 
                         <!--Total del pago que se va a realizar-->
                         <input type="hidden" id="total_pay_form" name="total_pay_form"  readonly>
+                        <input type="hidden" id="impuesto_tf_form" name="impuesto_tf_form"  readonly>
 
                         <!--IGTF-->
                         <input type="hidden" id="total_pay_form_before" name="total_pay_form_before">
@@ -1220,7 +1235,12 @@
 
         $("#saveinvoice").on('focus', function() {
          $("#primer_form").attr("action",'{{route("quotations.storefactura")}}');
-        });;
+        });
+
+        
+        $("#impuesto_tf").on('blur', function() {
+            calculate();
+        });
 
         function cambioderuta() {
             $("#primer_form").attr("action",'{{route("quotations.storeanticiposaldar")}}');
@@ -1229,6 +1249,7 @@
         function restauraruta() {
             $("#primer_form").attr("action",'{{route("quotations.storefactura")}}');
         }
+        
         /*------------fin Saldar contra anticipo---------*/
 
     </script>
@@ -1253,7 +1274,7 @@
 
                 let total_debit_notes = "<?php echo $total_debit_notes ?>";
                 let total_credit_notes = "<?php echo $total_credit_notes ?>";
-
+                let impuesto_tf = document.getElementById("impuesto_tf").value;
 
                     if (total_debit_notes == '') {
                         total_debit_notes = 0.00;
@@ -1347,7 +1368,7 @@
                 var total_islr_retencion = document.getElementById("total_retiene_islr").value;
                 //------------------------------------
 
-                var total_pay = total_pay - calc_retencion_iva - total_islr_retencion;
+                var total_pay = total_pay - calc_retencion_iva - total_islr_retencion - impuesto_tf;
 
                 var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
@@ -1362,6 +1383,7 @@
 
 
                 document.getElementById("total_pay").value =  total_payformat;
+                document.getElementById("amount_pay").value = total_payformat;
 
                 document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
                 //////IGTF/////////
@@ -1389,6 +1411,8 @@
 
                 document.getElementById("grandtotal_form").value = grand_totalformat ;
                 document.getElementById("grandtotal_form_credit").value = grand_totalformat ;
+                
+                document.getElementById("impuesto_tf_form").value = impuesto_tf;
 
                 //Quiere decir que el monto total a pagar es negativo o igual a cero
                 if(total_pay.toFixed(2) <= 0){
