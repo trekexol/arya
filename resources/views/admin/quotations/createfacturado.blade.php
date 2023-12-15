@@ -223,7 +223,21 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                            </div>
+                            <label for="impuesto_tf" class="col-md-3 col-form-label text-md-right">Impuesto No deducible TF :</label>
+                            <div class="col-md-3">
+                                <input onkeyup="noespac(this)" id="impuesto_tf" type="text" class="form-control @error('impuesto_tf') is-invalid @enderror" name="impuesto_tf" value="{{$quotation->impuesto_tf ?? 0}}" autocomplete="impuesto_tf" readonly>
 
+                                @error('impuesto_tf')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        
                         <div class="form-group row">
                             <label for="anticipo" class="col-md-2 col-form-label text-md-right">Menos Anticipo:</label>
                             @if (empty($anticipos_sum))
@@ -704,7 +718,12 @@
 
         $("#saveinvoice").on('focus', function() {
          $("#primer_form").attr("action",'{{route("quotations.storefactura")}}');
-        });;
+        });
+
+                
+        $("#impuesto_tf").on('blur', function() {
+            calculate();
+        });
 
         function cambioderuta() {
             $("#primer_form").attr("action",'{{route("quotations.storeanticiposaldar")}}');
@@ -764,7 +783,7 @@
 
                 let total_debit_notes = "<?php echo $total_debit_notes ?>";
                 let total_credit_notes = "<?php echo $total_credit_notes ?>";
-
+                let impuesto_tf = document.getElementById("impuesto_tf").value;
 
                     if (total_debit_notes == '') {
                         total_debit_notes = 0.00;
