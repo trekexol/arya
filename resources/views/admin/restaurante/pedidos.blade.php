@@ -34,16 +34,17 @@ body {
 
 
 .circulo {
-    width: 8rem;
-    height: 8rem;
-    border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 20%;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2rem;
+    padding: 1%;
     color: #fff;
-    margin: 10px;
+    margin: 5px;
     display: inline-block;
+    font-size: 10px;
 }
 
 #accordionSidebar {
@@ -104,17 +105,17 @@ body {
                 <?php $numero = 0; ?>
             @foreach ($cantidadmesas as $cantidadmesas)
 
-            @if($numero == 4)
+            @if($numero == 15)
             <br>
             <?php $numero = 0; ?>
             @endif
 
             @if($cantidadmesas->estatus == 0)
-           <span class="circulo pedido" data-toggle="modal" data-target="#MatchModal" data-nro="{{ $cantidadmesas->numero.'/editar' }}" style="background-color: #a10909;"> Mesa {{ $cantidadmesas->numero }}</span>
+           <span class="circulo pedido" data-toggle="modal" data-target="#MatchModal" data-nro="{{ $cantidadmesas->numero.'/editar' }}" style="background-color: #a10909;"> M {{ $cantidadmesas->numero }}</span>
 
             @else
 
-            <span class="circulo pedido" data-toggle="modal" data-target="#MatchModal" data-nro="{{ $cantidadmesas->numero.'/agregar' }}" style="background-color: rgb(9, 161, 9);"> Mesa {{ $cantidadmesas->numero }}</span>
+            <span class="circulo pedido" data-toggle="modal" data-target="#MatchModal" data-nro="{{ $cantidadmesas->numero.'/agregar' }}" style="background-color: rgb(9, 161, 9);"> M {{ $cantidadmesas->numero }}</span>
 
             @endif
             <?php $numero++; ?>
