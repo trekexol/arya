@@ -92,8 +92,8 @@ body {
 
     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 
-        <div class="modal modal-danger fade bd-example-modal-md" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-md" role="document">
+        <div class="modal modal-danger fade bd-example-modal-lg" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content" id="modalfacturas">
 
                 </div>
