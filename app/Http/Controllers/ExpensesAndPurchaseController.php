@@ -770,13 +770,30 @@ class ExpensesAndPurchaseController extends Controller
              $impuesto2 = $company->tax_2 ?? 1;
              $impuesto3 = $company->tax_3 ?? 1;
 
+
+             if (isset($provider->concepto_islr)){
+
+                if ($provider->concepto_islr > 0){
+                    $islrconcept_ps = IslrConcept::on(Auth::user()->database_name)->find($provider->concepto_islr);
+                    $islr_pagos_mayores = $islrconcept_ps->pagos_mayores;
+                    $islr_sustraendo = $islrconcept_ps->sustraendo;
+                } else {
+                    $islr_pagos_mayores = 0;
+                    $islr_sustraendo = 0;
+                }
+             } else {
+                    $islr_pagos_mayores = 0;
+                    $islr_sustraendo = 0;
+             }
+
+
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
 
              return view('admin.expensesandpurchases.create_payment',compact('coin','expense','datenow'
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','igtfporc','impuesto','impuesto2','impuesto3'));
+                                ,'islrconcepts','igtfporc','impuesto','impuesto2','impuesto3','islr_pagos_mayores','islr_sustraendo'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -963,6 +980,21 @@ class ExpensesAndPurchaseController extends Controller
              /*Aqui revisamos el porcentaje de retencion de iva que tiene el proveedor, para aplicarlo a productos que retengan iva */
              $provider = Provider::on(Auth::user()->database_name)->find($expense->id_provider);
 
+             if (isset($provider->concepto_islr)){
+
+                if ($provider->concepto_islr > 0){
+                    $islrconcept_ps = IslrConcept::on(Auth::user()->database_name)->find($provider->concepto_islr);
+                    $islr_pagos_mayores = $islrconcept_ps->pagos_mayores;
+                    $islr_sustraendo = $islrconcept_ps->sustraendo;
+                } else {
+                    $islr_pagos_mayores = 0;
+                    $islr_sustraendo = 0;
+                }
+             } else {
+                    $islr_pagos_mayores = 0;
+                    $islr_sustraendo = 0;
+             }
+
 
             $islrconcepts = IslrConcept::on(Auth::user()->database_name)->orderBy('id','asc')->get();
 
@@ -977,7 +1009,7 @@ class ExpensesAndPurchaseController extends Controller
                                 ,'expense_details','accounts_bank', 'accounts_efectivo'
                                 ,'accounts_punto_de_venta','anticipos_sum'
                                 ,'total_retiene_iva','total_retiene_islr','bcv','provider'
-                                ,'islrconcepts','debitnoteexpense','igtfporc','impuesto','impuesto2','impuesto3'));
+                                ,'islrconcepts','debitnoteexpense','igtfporc','impuesto','impuesto2','impuesto3','islr_pagos_mayores','islr_sustraendo'));
 
                             }else{
                                 return redirect('/expensesandpurchases')->withDanger('No Tiene Permiso');
@@ -4017,5 +4049,32 @@ public function notas(request $request)
 
     }
 
+    public function getislramount(Request $request) {
+        $id = $request->get('id'); 
+
+        $islrconcepts = IslrConcept::on(Auth::user()->database_name)->find($id);
+        
+       /* if(empty($islrconcepts)){
+            
+            if (isset($islrconcepts->pagos_mayores)){
+                $pagos_mayores = $islrconcepts->pagos_mayores;
+            } else {
+                $islrconcepts->pagos_mayores = 0;
+            }
+
+            if (isset($islrconcepts->pagos_mayores)){
+                $sustraendo = $islrconcepts->sustraendo;
+            } else {
+                $islrconcepts->sustraendo = 0;
+            }
+            
+        } else {
+            $pagos_mayores = 0;
+            $sustraendo = 0;
+        }*/
+        
+        return response()->json($islrconcepts);
+
+    }
 
 }

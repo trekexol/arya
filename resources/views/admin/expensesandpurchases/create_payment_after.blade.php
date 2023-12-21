@@ -31,7 +31,7 @@
                 <div class="card-body" >
                     <input id="user_id" type="hidden" class="form-control @error('user_id') is-invalid @enderror" name="user_id" value="{{ Auth::user()->id }}" required autocomplete="user_id">
                     <input type="hidden" name="coin" value="{{$coin}}" readonly>
-
+                    <input type="hidden" id="id_islr_concept_credit" name="id_islr_concept_credit" value="0" readonly>
                     <div class="form-group row">
                         <label for="date_payment" class="col-md-2 col-form-label text-md-right">Fecha de Factura:</label>
                         <div class="col-md-4">
@@ -181,19 +181,21 @@
                         </div>
                         <div id="islr-form" class="form-group row">
                             <div class="col-sm-3 offset-sm-8">
-                            <select class="form-control" name="islr_concept" id="islr_concept">
+                            <select class="form-control" name="islr_concept" id="islr_concept" data-ajax="{{url('expensesandpurchases/getislramount')}}"> 
                                 <option disabled selected value="0">Seleccionar</option>
                                 @if (isset($islrconcepts))
-                                    @foreach ($islrconcepts as $islrconcept)
-                                        @if ($provider->concepto_islr > 0 and ($provider->concepto_islr == $islrconcept->id))
-                                            <option selected value="{{$islrconcept->value}}" selected>{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
-                                        @else
-                                            <option value="{{$islrconcept->value}}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
-                                        @endif
-                                         @endforeach
-                                @endif
 
+                                    @foreach ($islrconcepts as $islrconcept)
+                                        @if($provider->concepto_islr > 0 and $islrconcept->id == $provider->concepto_islr)
+                                            <option selected value="{{$islrconcept->value}}" data-id="{{ $islrconcept->id }}" data-pagosmayores="{{ $islrconcept->pagos_mayores }}" data-sustraendo="{{ $islrconcept->sustraendo }}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @else
+                                            <option value="{{$islrconcept->value}}" data-id="{{ $islrconcept->id }}" data-pagosmayores="{{ $islrconcept->pagos_mayores }}" data-sustraendo="{{ $islrconcept->sustraendo }}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                        @endif
+                                    @endforeach
+                                
+                                @endif
                             </select>
+
                             </div>
                         </div>
 
@@ -985,6 +987,9 @@
 
         var islr_concept = '<?php echo $provider->porc_retencion_islr ?>';
 
+        var pagos_mayores = '<?php echo $islr_pagos_mayores ?>';
+        var sustraendo = '<?php echo $islr_sustraendo ?>';
+
         if(islr_concept == 0){
             $("#islr-form").hide();
         }else{
@@ -1012,8 +1017,23 @@
 
         $("#islr_concept").on('change',function(){
             islr_concept = $(this).val();
+            var selected_option = $(this).find('option:selected');
+            var id_islr = selected_option.attr('data-id');
+            var rutamount = $(this).attr('data-ajax');
+            var Ruta = rutamount;
+            let pagos_mayores_form = $("#pagos_mayores_form");
+            let sustraendo_form = $("#sustraendo_form");
+
+            pagos_mayores = selected_option.attr('data-pagosmayores');
+            sustraendo = selected_option.attr('data-sustraendo');
+
             document.getElementById("id_islr_concept").value = $(this).find(':selected').data('id');
+            document.getElementById("id_islr_concept_credit").value = $(this).find(':selected').data('id');
+            
+            pagos_mayores_form.val(pagos_mayores);
+            sustraendo_form.val(sustraendo);
             calculate(1);
+
         });
     </script>
     <script type="text/javascript">
@@ -1129,8 +1149,28 @@ function calculate(valor) {
     var retencion_islr_check = $("#retencion_islr_check").is(':checked');
     let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
 
+    pagos_mayores = Number(pagos_mayores);
+
+    if (pagos_mayores > 0) {
+
+        if (total_retiene_islr > pagos_mayores){
+            var sustraendo_form = Number(sustraendo);
+        } else {
+            var sustraendo_form = 0;
+        }
+    } else {
+        var sustraendo_form = 0;
+    }
+
+    if(retencion_islr_check){
+        sustraendo_form = sustraendo_form;
+    } else {
+        sustraendo_form = 0;
+    }
+
+
     let porc_retencion_islr = islr_concept;
-    var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+    var calc_retencion_islr = (total_retiene_islr * porc_retencion_islr / 100) - sustraendo_form;
     var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
     document.getElementById("islr_retencion").value =  total_retencion_islr;

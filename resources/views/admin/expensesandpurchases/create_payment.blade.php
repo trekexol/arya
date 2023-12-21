@@ -195,15 +195,15 @@
                         </div>
                         <div id="islr-form" class="form-group row">
                             <div class="col-sm-3 offset-sm-8">
-                            <select class="form-control" name="islr_concept" id="islr_concept"> 
                                 <option selected value="0">Seleccionar</option>
+                                <select class="form-control" name="islr_concept" id="islr_concept" data-ajax="{{url('expensesandpurchases/getislramount')}}"> 
                                 @if (isset($islrconcepts))
 
                                     @foreach ($islrconcepts as $islrconcept)
                                         @if($provider->concepto_islr > 0 and $islrconcept->id == $provider->concepto_islr)
-                                            <option selected value="{{$islrconcept->value}}"  data-id="{{ $islrconcept->id }}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                            <option selected value="{{$islrconcept->value}}" data-id="{{ $islrconcept->id }}" data-pagosmayores="{{ $islrconcept->pagos_mayores }}" data-sustraendo="{{ $islrconcept->sustraendo }}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
                                         @else
-                                            <option value="{{$islrconcept->value}}"  data-id="{{ $islrconcept->id }}" >{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
+                                            <option value="{{$islrconcept->value}}" data-id="{{ $islrconcept->id }}" data-pagosmayores="{{ $islrconcept->pagos_mayores }}" data-sustraendo="{{ $islrconcept->sustraendo }}">{{ $islrconcept->description }} - {{$islrconcept->value}}%</option>
                                         @endif
                                     @endforeach
                                 
@@ -434,6 +434,10 @@
                         <input type="hidden" id="date_payment_form" name="date_payment_form" value="{{$expense->date}}" readonly>
 
                         <input type="hidden" id="date_payment_form_expense" name="date_payment_expense" value="{{$expense->date_payment ?? $datenow}}" readonly>
+                        
+                        <input type="hidden" id="pagos_mayores_form" name="pagos_mayores_form" value="" readonly>                        
+                        <input type="hidden" id="sustraendo_form" name="sustraendo_form" value="" readonly>
+
 
                         @if (Auth::user()->company['id']  == '26' )
                         <div class="form-group row" id="newcour2">
@@ -1053,6 +1057,8 @@
         });
 
         var islr_concept = '<?php echo $provider->porc_retencion_islr ?>';
+        var pagos_mayores = '<?php echo $islr_pagos_mayores ?>';
+        var sustraendo = '<?php echo $islr_sustraendo ?>';
 
         islr_concept = Number(islr_concept);
 
@@ -1087,10 +1093,24 @@
 
 
         $("#islr_concept").on('change',function(){
-            islr_concept = $(this).val();
+                islr_concept = $(this).val();
+            var selected_option = $(this).find('option:selected');
+            var id_islr = selected_option.attr('data-id');
+            var rutamount = $(this).attr('data-ajax');
+            var Ruta = rutamount;
+            let pagos_mayores_form = $("#pagos_mayores_form");
+            let sustraendo_form = $("#sustraendo_form");
+
+            pagos_mayores = selected_option.attr('data-pagosmayores');
+            sustraendo = selected_option.attr('data-sustraendo');
+
             document.getElementById("id_islr_concept").value = $(this).find(':selected').data('id');
             document.getElementById("id_islr_concept_credit").value = $(this).find(':selected').data('id');
-            calculate(0);
+            
+            pagos_mayores_form.val(pagos_mayores);
+            sustraendo_form.val(sustraendo);
+
+            calculate(0);         
         });
     </script>
     <script type="text/javascript">
@@ -1206,8 +1226,27 @@ var retencion_islr_check = $("#retencion_islr_check").is(':checked');
 
 let total_retiene_islr= "<?php echo $total_retiene_islr / ($bcv ?? 1) ?>";
 
+pagos_mayores = Number(pagos_mayores);
+
+if (pagos_mayores > 0) {
+
+    if (total_retiene_islr > pagos_mayores){
+        var sustraendo_form = Number(sustraendo);
+    } else {
+        var sustraendo_form = 0;
+    }
+} else {
+    var sustraendo_form = 0;
+}
+
+if(retencion_islr_check){
+        sustraendo_form = sustraendo_form;
+} else {
+    sustraendo_form = 0;
+}
+
 let porc_retencion_islr = islr_concept;
-var calc_retencion_islr = total_retiene_islr * porc_retencion_islr / 100;
+var calc_retencion_islr = (total_retiene_islr * porc_retencion_islr / 100) - sustraendo_form;
 var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
 document.getElementById("islr_retencion").value =  total_retencion_islr;
@@ -1228,9 +1267,7 @@ var numbertotal_iva_exento = parseFloat(total_iva_exento).toFixed(2);
 // var grand_total = parseFloat(totalFactura) + parseFloat(totalIva);
 var grand_total = parseFloat(numbertotalfactura) + parseFloat(numbertotal_iva_exento) ;
 
-
 var grand_totalformat = grand_total.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
 
 
 document.getElementById("grand_total").value = grand_totalformat;
@@ -1260,121 +1297,116 @@ var total_islr_retencion = document.getElementById("total_retiene_islr").value;
 var total_pay = total_pay - total_iva_retencion - total_islr_retencion ;
 
 
-
-
-if (valor == '3'){
+   if (valor == '3'){
         $(".IGTF").show();
 
-var porcentajeigft = document.getElementById("IGTF_porc").value;
+        var porcentajeigft = document.getElementById("IGTF_porc").value;
 
-var calc_porc = grand_total * porcentajeigft / 100;
+        var calc_porc = grand_total * porcentajeigft / 100;
 
-var IGTF_input = calc_porc.toFixed(2);
-var IGTF_input = IGTF_input.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-document.getElementById("IGTF_input").value = IGTF_input;
-document.getElementById("igtfvalor").value = IGTF_input;
-document.getElementById("igtfvalor2").value = IGTF_input;
+        var IGTF_input = calc_porc.toFixed(2);
+        var IGTF_input = IGTF_input.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+        document.getElementById("IGTF_input").value = IGTF_input;
+        document.getElementById("igtfvalor").value = IGTF_input;
+        document.getElementById("igtfvalor2").value = IGTF_input;
 
-total_pay = total_pay + parseFloat(IGTF_input);
+        total_pay = total_pay + parseFloat(IGTF_input);
 
     }else{
         $(".IGTF").hide();
         $('#customSwitchesIGTFTotal').prop('checked',false);
 
-                    //$("#IGTF_input").val(0);
-                    var IGTF_input = 0;
-                    document.getElementById("igtfvalor").value = IGTF_input;
-                    document.getElementById("igtfvalor2").value = IGTF_input;
+        //$("#IGTF_input").val(0);
+        var IGTF_input = 0;
+        document.getElementById("igtfvalor").value = IGTF_input;
+        document.getElementById("igtfvalor2").value = IGTF_input;
 
-                    //document.getElementById("IGTF_input").value = IGTF_input;
+        //document.getElementById("IGTF_input").value = IGTF_input;
 
-                    total_pay = total_pay + parseFloat(IGTF_input);
+        total_pay = total_pay + parseFloat(IGTF_input);
     }
 
 
-var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+    var total_payformat = total_pay.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
-document.getElementById("total_pay").value =  total_payformat;
+    document.getElementById("total_pay").value =  total_payformat;
 
-document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
+    document.getElementById("total_pay_form").value =  total_pay.toFixed(2);
 
-document.getElementById("iva_form").value =  inputIva;
+    document.getElementById("iva_form").value =  inputIva;
 
-document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
+    document.getElementById("iva_amount_form").value = document.getElementById("iva_amount").value;
 
-document.getElementById("grandtotal_form").value = grand_totalformat;
-
-
-
-var grand_totalformat_m_discount = discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-var totalFactura_form = totalFactura.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
-
-$("#descuento_general").val(grand_totalformat_m_discount);
-$("#total_descuento_general").val(totalFactura_form);
-
-$("#descuento_general_form").val(discount);
-$("#descuento_form").val(discount);
-$("#porc_descuento_form").val(porc_discount);
-
-//Quiere decir que el monto total a pagar es negativo o igual a cero
-if(total_pay.toFixed(2) <= 0){
-    document.getElementById("amount_pay").required = false;
-    document.getElementById("payment_type").required = false;
-    $("#amount_pay").hide();
-    $("#payment_type").hide();
-    $("#btn_agregar").hide();
-    $("#label_amount_pays").hide();
-}
-
-}
-
-function myRound(num, dec) {
-  var exp = Math.pow(10, dec || 2); // 2 decimales por defecto
-  return parseInt(num * exp, 10) / exp;
-}
-
-            $("#date_payment").on('change',function(){
-                 document.getElementById("date_payment_form").value = document.getElementById("date_payment").value;
-            });
-            $("#date_payment_expense").on('change',function(){
-                 document.getElementById("date_payment_form_expense").value = document.getElementById("date_payment_expense").value;
-            });
+    document.getElementById("grandtotal_form").value = grand_totalformat;
 
 
-            $("#iva").on('change',function(){
-                calculate(0);
-            });
+    var grand_totalformat_m_discount = discount.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
+    var totalFactura_form = totalFactura.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
-            $("#anticipo").on('keyup',function(){
-                calculate(0);
-            });
+    $("#descuento_general").val(grand_totalformat_m_discount);
+    $("#total_descuento_general").val(totalFactura_form);
 
-            $("#porc_descuento_general").on('change',function(){
-                calculate(1);
-            });
+    $("#descuento_general_form").val(discount);
+    $("#descuento_form").val(discount);
+    $("#porc_descuento_form").val(porc_discount);
 
-            $("#descuento_general").on('change',function(){
-                calculate(2);
-            });
-
-            var valorigtf = $("#IGTF_input").val();
-console.log(valorigtf);
-if(valorigtf > 0){
-    $('#customSwitchesIGTFTotal').prop('checked',true);
-
-    calculate(3);
+    //Quiere decir que el monto total a pagar es negativo o igual a cero
+    if(total_pay.toFixed(2) <= 0){
+        document.getElementById("amount_pay").required = false;
+        document.getElementById("payment_type").required = false;
+        $("#amount_pay").hide();
+        $("#payment_type").hide();
+        $("#btn_agregar").hide();
+        $("#label_amount_pays").hide();
+    }
 
     }
+
+    function myRound(num, dec) {
+    var exp = Math.pow(10, dec || 2); // 2 decimales por defecto
+    return parseInt(num * exp, 10) / exp;
+    }
+
+        $("#date_payment").on('change',function(){
+                document.getElementById("date_payment_form").value = document.getElementById("date_payment").value;
+        });
+        $("#date_payment_expense").on('change',function(){
+                document.getElementById("date_payment_form_expense").value = document.getElementById("date_payment_expense").value;
+        });
+
+
+        $("#iva").on('change',function(){
+            calculate(0);
+        });
+
+        $("#anticipo").on('keyup',function(){
+            calculate(0);
+        });
+
+        $("#porc_descuento_general").on('change',function(){
+            calculate(1);
+        });
+
+        $("#descuento_general").on('change',function(){
+            calculate(2);
+        });
+
+        var valorigtf = $("#IGTF_input").val();
+        console.log(valorigtf);
+
+        if(valorigtf > 0){
+            $('#customSwitchesIGTFTotal').prop('checked',true);
+
+            calculate(3);
+
+        }
 
             $("#customSwitchesIGTFTotal").on('change', function() {
                 if ($(this).is(':checked')) {
                     calculate(3);
-
                 } else {
                     calculate(1);
-
-
-                    }
+                }
 
             });
 

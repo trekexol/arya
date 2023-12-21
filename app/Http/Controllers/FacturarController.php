@@ -866,7 +866,6 @@ class FacturarController extends Controller
             return redirect('quotations/facturar/'.$quotation->id.'/'.$quotation->coin.'')->withDanger('Ya esta factura fue procesada!');
         }else{
 
-
         $date = Carbon::now();
         $datenow = $date->format('Y-m-d');
 
@@ -2121,7 +2120,7 @@ class FacturarController extends Controller
             /*---------- */
 
             if($retencion_iva > 0){
-                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', 'IVA Retenido por Terceros')->first();
+                $account_iva_retenido = Account::on(Auth::user()->database_name)->where('description', 'like', '%IVA Retenido por Terceros%')->first();
 
                 if(isset($account_iva_retenido)){
                     $this->add_movement($bcv,$header_voucher->id,$account_iva_retenido->id,$quotation->id,$user_id,$retencion_iva,0);
@@ -2130,8 +2129,7 @@ class FacturarController extends Controller
 
 
             if($retencion_islr > 0){
-                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('code_one',1)->where('code_two',1)->where('code_three',4)
-                                                ->where('code_four',1)->where('code_five',3)->first(); 
+                $account_islr_pagago = Account::on(Auth::user()->database_name)->where('description','like','%ISLR Retenido por Terceros%')->first(); 
 
                 if(isset($account_islr_pagago)){
                     $this->add_movement($bcv,$header_voucher->id,$account_islr_pagago->id,$quotation->id,$user_id,$retencion_islr,0);
@@ -2148,7 +2146,7 @@ class FacturarController extends Controller
                 }
             }
 
-            //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas por cobrar clientes
+            //Al final de agregar los movimientos de los pagos, agregamos el monto total de los pagos a cuentas `
             $account_cuentas_por_cobrar = Account::on(Auth::user()->database_name)->where('description','like','Cuentas por Cobrar Clientes')->first();
 
             if(isset($account_cuentas_por_cobrar)){
