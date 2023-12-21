@@ -180,7 +180,6 @@
                             <div class="col-sm-4">
                                 <select class="form-control" name="id_inventories" id="id_inventories">
 
-
                                             @if (isset($id_inventory))
                                                    <option value="todos">Todos</option>
                                                     @foreach ($inventories as $var)

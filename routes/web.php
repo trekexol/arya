@@ -956,7 +956,7 @@ Route::group(["prefix"=>'expensesandpurchases'],function(){
     Route::delete('deletenota','ExpensesAndPurchaseController@deletenota')->name('deletenota');
 
     Route::post('asignarcouriertool','ExpensesAndPurchaseController@asignarcouriertool')->name('asignarcouriertool');
-
+    Route::get('getislramount','ExpensesAndPurchaseController@getislramount')->name('expensesandpurchases.getislramount');
 
     });
 
