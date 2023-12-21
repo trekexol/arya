@@ -69,7 +69,7 @@ body {
         <div class="container">
             <div class="row">
                 @foreach ($arreglo as $cantidadmesas2)
-                <div class="col-md-3 mb-2">
+                <div class="col-md-6 mb-2">
                     <div class="card border-dark ">
                         <div class="card border-dark  mb-2 card-header"><h5 class="card-title">Pedido Mesa {{ $cantidadmesas2['numero'] }}</h5></div>
                         <div class="card-body text-dark ">
@@ -92,8 +92,8 @@ body {
 
     <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 
-        <div class="modal modal-danger fade bd-example-modal-md" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-md" role="document">
+        <div class="modal modal-danger fade bd-example-modal-lg" id="MatchModal" tabindex="-1" role="dialog" aria-labelledby="Delete" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content" id="modalfacturas">
 
                 </div>
@@ -105,7 +105,7 @@ body {
                 <?php $numero = 0; ?>
             @foreach ($cantidadmesas as $cantidadmesas)
 
-            @if($numero == 15)
+            @if($numero == 10)
             <br>
             <?php $numero = 0; ?>
             @endif
