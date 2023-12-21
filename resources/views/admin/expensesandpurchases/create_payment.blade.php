@@ -1239,9 +1239,14 @@ if (pagos_mayores > 0) {
     var sustraendo_form = 0;
 }
 
+if(retencion_islr_check){
+        sustraendo_form = sustraendo_form;
+} else {
+    sustraendo_form = 0;
+}
 
 let porc_retencion_islr = islr_concept;
-var calc_retencion_islr = (total_retiene_islr * porc_retencion_islr / 100) + sustraendo_form;
+var calc_retencion_islr = (total_retiene_islr * porc_retencion_islr / 100) - sustraendo_form;
 var total_retencion_islr = calc_retencion_islr.toLocaleString('de-DE', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 
 document.getElementById("islr_retencion").value =  total_retencion_islr;

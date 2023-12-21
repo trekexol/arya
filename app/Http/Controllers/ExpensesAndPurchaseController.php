@@ -984,8 +984,8 @@ class ExpensesAndPurchaseController extends Controller
 
                 if ($provider->concepto_islr > 0){
                     $islrconcept_ps = IslrConcept::on(Auth::user()->database_name)->find($provider->concepto_islr);
-                    $islr_pagos_mayores = $islrconcept_ps->islr_pagos_mayores;
-                    $islr_sustraendo = $islrconcept_ps->islr_sustraendo;
+                    $islr_pagos_mayores = $islrconcept_ps->pagos_mayores;
+                    $islr_sustraendo = $islrconcept_ps->sustraendo;
                 } else {
                     $islr_pagos_mayores = 0;
                     $islr_sustraendo = 0;
